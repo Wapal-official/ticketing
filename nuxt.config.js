@@ -17,10 +17,10 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ["@/assets/css/index.css", ,],
+  css: ["@/assets/css/index.css", "@/assets/css/style.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [{ src: "~/plugins/persistedState.client.ts" }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -39,7 +39,7 @@ export default {
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    customVariables: ["~/assets/variables.scss"],
+    customVariables: ["~/assets/css/vuetify-variable.scss"],
     theme: {
       dark: true,
       themes: {
@@ -52,6 +52,12 @@ export default {
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
         },
+      },
+    },
+    treeShake: true,
+    defaultAssets: {
+      font: {
+        family: "Poppins",
       },
     },
   },

@@ -1,0 +1,29 @@
+/* Gradient Buttons */
+.gradient-button::before {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0) 70%
+  );
+  top: 0;
+  left: -100px;
+  transition: all 550ms linear;
+}
+
+.gradient-button:hover::before {
+  left: 100%;
+}
+.gradient-button {
+  @apply px-6 py-2 w-full rounded-md bg-gradient-to-r from-[#000000] via-[#34107B] to-[#1B0051] font-medium relative overflow-hidden;
+}
+
+/*FAQ Card*/
+.faq-card {
+  box-shadow: -0px -2px 16px 8px rgba(86, 86, 86, 0.25),
+    4px 4px 15px rgba(86, 86, 86, 0.25);
+}
