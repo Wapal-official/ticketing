@@ -2,6 +2,10 @@ import colors from "vuetify/es5/util/colors";
 const API_URL = process.env.API_URL;
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
+  server: {
+    port: process.env.PORT,
+    host: "0.0.0.0",
+  },
   head: {
     title: "Wapal | Zero Code, Zero Fee NFT Creator Studio on Aptos and Sui",
     htmlAttrs: {
