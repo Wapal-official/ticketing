@@ -223,7 +223,7 @@ export default {
         this.signupForm.wallet_address = this.walletAddress;
 
         try {
-          await SignupService.signup(this.form);
+          await SignupService.signup(this.signupForm);
           this.error = false;
           this.signupMessage = true;
           this.message = "Request Submitted Successfully";
