@@ -1,22 +1,22 @@
 version: '3.1'
 
 services:
-  wapal-production:
-    container_name: wapal-production
-    hostname: wapal-production
+  production-wapal:
+    container_name: production-wapal
+    hostname: production-wapal
     build:
       context: ./
       dockerfile: Dockerfile
       args:
         - NODE_ENV=development
         - IMG=16.17-alpine3.15
-        - LOCATION=wapal-production
+        - LOCATION=production-wapal
     restart: always
     user: root:root
     env_file:
       - ./.env
     environment:
       - NODE_ENV=${NODE_ENV}
-      - COMPOSE_PROJECT_NAME=wapal-production
+      - COMPOSE_PROJECT_NAME=production-wapal
     ports:
       - ${PORT}:${PORT}
