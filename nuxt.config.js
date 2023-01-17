@@ -1,26 +1,36 @@
 import colors from "vuetify/es5/util/colors";
-
+const API_URL = process.env.API_URL;
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: "Wapal",
+    title: "Wapal | Zero Code, Zero Fee NFT Creator Studio on Aptos and Sui",
     htmlAttrs: {
       lang: "en",
     },
     meta: [
+      {
+        name: "description",
+        content:
+          "Wapal is a Zero Code, Zero Fee NFT Creator Studio on Aptos and Sui",
+      },
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { hid: "description", name: "description", content: "" },
       { name: "format-detection", content: "telephone=no" },
+      {
+        name: "keywords",
+        content:
+          "NFT, Creator Studio, Aptos, Sui, NFT Launchpad, Zero Code, Zero Fee",
+      },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ["@/assets/css/index.css", ,],
+  css: ["@/assets/css/index.css", "@/assets/css/style.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [{ src: "~/plugins/persistedState.client.ts" }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -35,11 +45,11 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [],
+  modules: ["cookie-universal-nuxt", "@nuxtjs/axios", "@nuxtjs/proxy"],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    customVariables: ["~/assets/variables.scss"],
+    customVariables: ["~/assets/css/vuetify-variable.scss"],
     theme: {
       dark: true,
       themes: {
@@ -54,6 +64,12 @@ export default {
         },
       },
     },
+    treeShake: true,
+    defaultAssets: {
+      font: {
+        family: "Poppins",
+      },
+    },
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
@@ -65,4 +81,6 @@ export default {
       },
     },
   },
+  axios: { baseURL: API_URL },
+  env: { baseURL: API_URL },
 };

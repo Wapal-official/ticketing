@@ -9,12 +9,18 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^5.13.6",
+    "@types/js-cookie": "^3.0.2",
+    "cookie-universal-nuxt": "^2.2.2",
     "core-js": "^3.25.3",
+    "js-cookie": "^3.0.1",
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10",
-    "vuetify": "^2.6.10"
+    "vuetify": "^2.6.10",
+    "vuex-module-decorators": "^2.0.0",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@nuxt/postcss8": "^1.1.3",
