@@ -27,3 +27,41 @@
   box-shadow: -0px -2px 16px 8px rgba(86, 86, 86, 0.25),
     4px 4px 15px rgba(86, 86, 86, 0.25);
 }
+
+/*Signup Form*/
+.signup-input input::placeholder {
+  @apply !text-wapal-gray;
+}
+
+.signup-input .v-label {
+  @apply !text-wapal-gray;
+}
+
+.signup-input input {
+  @apply !text-wapal-gray;
+}
+
+.signup-input .v-messages__message {
+  @apply !text-base;
+}
+
+.discord-icon {
+  fill: #fff;
+  @apply !text-4xl transition duration-200 ease-linear;
+}
+
+.discord-icon:hover {
+  fill: #1e40af;
+}
+
+.signup-input .mdi-close::before {
+  top: -18px;
+  position: absolute;
+}
+
+.signup-input .v-input__slot {
+  min-height: 44px !important;
+}
+.signup-input .v-label {
+  top: 13px !important;
+}

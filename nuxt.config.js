@@ -1,17 +1,27 @@
 import colors from "vuetify/es5/util/colors";
-
+const API_URL = process.env.API_URL;
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: "Wapal",
+    title: "Wapal | Zero Code, Zero Fee NFT Creator Studio on Aptos and Sui",
     htmlAttrs: {
       lang: "en",
     },
     meta: [
+      {
+        name: "description",
+        content:
+          "Wapal is a Zero Code, Zero Fee NFT Creator Studio on Aptos and Sui",
+      },
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { hid: "description", name: "description", content: "" },
       { name: "format-detection", content: "telephone=no" },
+      {
+        name: "keywords",
+        content:
+          "NFT, Creator Studio, Aptos, Sui, NFT Launchpad, Zero Code, Zero Fee",
+      },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
@@ -35,7 +45,7 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [],
+  modules: ["cookie-universal-nuxt", "@nuxtjs/axios", "@nuxtjs/proxy"],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -71,4 +81,6 @@ export default {
       },
     },
   },
+  axios: { baseURL: API_URL },
+  env: { baseURL: API_URL },
 };

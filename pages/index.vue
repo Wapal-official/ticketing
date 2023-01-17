@@ -16,7 +16,7 @@
       >
     </div>
     <div
-      class="absolute z-[999] top-[30%] left-1/5 md:left-1/2 lg:left-[70%] px-24 py-4 bg-[#EA59BE] text-white transition duration-1000 ease-linear transform"
+      class="absolute text-sm z-[999] top-[30%] left-1/5 md:left-1/2 lg:left-[70%] lg:text-base px-24 py-4 bg-[#EA59BE] text-white transition duration-1000 ease-linear transform"
       :class="signUpToastClass"
     >
       Connect Your wallet First

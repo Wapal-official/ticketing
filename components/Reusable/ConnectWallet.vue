@@ -2,7 +2,7 @@
   <div class="text-sm">
     <button
       class="gradient-button"
-      @click="showConnectWalletDialog = true"
+      @click="connectWallet"
       v-if="!walletStore.wallet"
     >
       Connect Wallet {{ walletStore.wallet }}
@@ -10,7 +10,7 @@
 
     <button
       class="gradient-button px-6 py-2 text-xs w-full flex flex-row items-center justify-start gap-2 rounded-md bg-gradient-to-r from-[#000000] via-[#34107B] to-[#1B0051] font-medium relative overflow-hidden"
-      @click="showDisconnectWalletDialog = true"
+      @click="disconnectWallet"
       v-else
     >
       <client-only>
@@ -18,17 +18,29 @@
       >
       <span>{{ displayWalletAddress }}</span>
     </button>
-    <v-dialog v-model="showConnectWalletDialog" max-width="400px">
+    <v-dialog
+      v-model="showConnectWalletDialog"
+      content-class="!w-full md:!w-1/2 lg:!w-1/4"
+    >
       <connect-wallet-modal
         @closeModal="showConnectWalletDialog = false"
         @walletConnected="displayWalletConnectedMessage"
       />
     </v-dialog>
-    <v-dialog v-model="showDisconnectWalletDialog" max-width="400px">
+    <v-dialog
+      v-model="showDisconnectWalletDialog"
+      content-class="!w-full md:!w-1/2 lg:!w-1/4"
+    >
       <disconnect-wallet-modal
         @closeModal="showDisconnectWalletDialog = false"
         @walletDisconnected="displayWalletDisconnectedMessage"
       />
+    </v-dialog>
+    <v-dialog
+      v-model="showSignupDialog"
+      content-class="!w-full md:!w-1/2 lg:!w-[35%]"
+    >
+      <signupModal @close="showSignupDialog = false" />
     </v-dialog>
     <v-snackbar
       v-model="walletConnectedSnackbar"
@@ -57,6 +69,7 @@ export default {
     return {
       showConnectWalletDialog: false,
       showDisconnectWalletDialog: false,
+      showSignupDialog: false,
       walletConnectedSnackbar: false,
       defaultTheme,
       walletStore: this.$store.state.walletStore.wallet,
@@ -67,11 +80,20 @@ export default {
     closeNavBar() {
       this.$emit("close");
     },
+    connectWallet() {
+      this.showConnectWalletDialog = true;
+      this.closeNavBar();
+    },
+    disconnectWallet() {
+      this.showDisconnectWalletDialog = true;
+      this.closeNavBar();
+    },
     displayWalletConnectedMessage() {
       this.showConnectWalletDialog = false;
       this.walletConnectedSnackbar = true;
       this.walletStore = this.$store.state.walletStore.wallet;
       this.message = `${this.walletStore.wallet} Wallet Connected Successfully`;
+      this.showSignupDialog = true;
     },
     displayWalletDisconnectedMessage() {
       this.showDisconnectWalletDialog = false;

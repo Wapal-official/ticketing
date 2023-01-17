@@ -1,4 +1,5 @@
 import WalletAddress from "@/interfaces/walletAddress";
+import Cookies from "js-cookie";
 
 export const state = () => ({
   wallet: {
@@ -15,17 +16,10 @@ export const mutations = {
 };
 
 export const actions = {
-  async nuxtServerInit({ commit }: { commit: any }, { req }: { req: any }) {
-    if (req.cookies.vuex) {
-      const wallet: WalletAddress = JSON.parse(req.cookies.vuex);
-      commit("setWallet", wallet);
-    } else {
-      const wallet: WalletAddress = {
-        wallet: "",
-        walletAddress: "",
-        publicKey: "",
-      };
-      commit("setWallet", wallet);
-    }
+  setWallet({ commit }: { commit: any }) {
+    commit("setWallet");
+    Cookies.set("vuex", JSON.stringify(state), {
+      expires: new Date(new Date().getTime() + 1000 * 3600 * 24 * 30),
+    });
   },
 };

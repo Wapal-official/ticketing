@@ -1,5 +1,8 @@
-export default function ({ store, redirect }: { store: any; redirect: any }) {
-  if (!store.state.walletStore.wallet.wallet) {
+export default function ({ app, redirect }: { app: any; redirect: any }) {
+  if (
+    !app.$cookies.get("vuex") ||
+    !app.$cookies.get("vuex").walletStore.wallet.wallet
+  ) {
     return redirect("/");
   }
 }

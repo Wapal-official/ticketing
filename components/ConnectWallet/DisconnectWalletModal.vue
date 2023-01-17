@@ -10,7 +10,7 @@
         :src="walletStore.wallet === 'petra' ? petraLogo : martianLogo"
         class="w-12 h-12"
       />
-      <p class="text-base md:text-lg">Wallet Currently Connected</p>
+      <p class="text-sm md:text-lg">Wallet Currently Connected</p>
     </div>
     <primary-button @click.native="disconnectWallet" class="ml-4"
       >Disconnect Wallet

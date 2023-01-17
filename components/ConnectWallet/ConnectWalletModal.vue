@@ -62,7 +62,6 @@ export default {
             publicKey: response.publicKey,
           };
           this.$store.commit("walletStore/setWallet", this.walletStore);
-
           this.$emit("walletConnected");
         } catch (error) {}
       }
@@ -90,7 +89,6 @@ export default {
   },
   mounted() {
     this.walletStore = this.$store.state.walletStore.wallet;
-    console.log(this.$store.state.walletStore.wallet);
   },
 };
 </script>
