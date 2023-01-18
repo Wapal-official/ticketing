@@ -9,9 +9,8 @@
           <template #question> What is Wapal? </template>
           <template #answer>
             Wapal is a Zero Code, Zero Fee NFT Creator Studio and Launchpad on
-            Aptos and Sui. Wapal is developed by Mokshya, an open-source
-            protocol that builds smart contract solutions for various
-            Blockchains.
+            Aptos. Wapal is developed by Mokshya, an open-source protocol that
+            builds smart contract solutions for various Blockchains.
           </template>
         </faq-card>
         <faq-card>

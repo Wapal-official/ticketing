@@ -14,10 +14,10 @@
     <p class="text-lg">Choose a wallet to connect</p>
     <div class="w-full flex flex-row items-center justify-center gap-4">
       <button @click="connectPetra">
-        <img :src="petraLogo" class="w-12 h-12" />
+        <img :src="petraLogo" alt="petra" class="w-12 h-12" />
       </button>
       <button @click="connectMartian">
-        <img :src="martianLogo" class="w-12 h-12" />
+        <img :src="martianLogo" alt="martian" class="w-12 h-12" />
       </button>
     </div>
   </div>
