@@ -13,7 +13,7 @@
       />
       <p class="text-sm md:text-lg">Wallet Currently Connected</p>
     </div>
-    <primary-button @click.native="disconnectWallet" class="ml-4"
+    <primary-button @click.native="disconnectWallet" class="ml-4 mt-2"
       >Disconnect Wallet
     </primary-button>
   </div>
@@ -29,7 +29,6 @@ export default {
   components: { PrimaryButton },
   data() {
     return {
-      walletStore: this.$store.state.walletStore.wallet,
       petraLogo,
       martianLogo,
     };
@@ -46,6 +45,11 @@ export default {
       };
       this.$store.commit("walletStore/setWallet", wallet);
       this.$emit("walletDisconnected");
+    },
+  },
+  computed: {
+    walletStore() {
+      return this.$store.state.walletStore.wallet;
     },
   },
 };

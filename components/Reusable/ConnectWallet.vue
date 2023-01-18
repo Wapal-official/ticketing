@@ -91,7 +91,6 @@ export default {
     displayWalletConnectedMessage() {
       this.showConnectWalletDialog = false;
       this.walletConnectedSnackbar = true;
-      this.walletStore = this.$store.state.walletStore.wallet;
       this.message = `${this.walletStore.wallet} Wallet Connected Successfully`;
       this.showSignupDialog = true;
     },
@@ -99,7 +98,6 @@ export default {
       this.showDisconnectWalletDialog = false;
       this.walletConnectedSnackbar = true;
       this.message = `${this.walletStore.wallet} Wallet Disconnected Successfully`;
-      this.walletStore = this.$store.state.walletStore.wallet;
     },
   },
   computed: {

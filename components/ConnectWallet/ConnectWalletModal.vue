@@ -11,7 +11,8 @@
       Please use Kiwi Browser for wallet connection if you are using mobile
       devices
     </div>
-    <p class="text-lg">Choose a wallet to connect</p>
+    <p class="text-base md:text-lg" v-if="message">{{ message }}</p>
+    <p class="text-base md:text-lg">Choose a wallet to connect</p>
     <div class="w-full flex flex-row items-center justify-center gap-4">
       <button @click="connectPetra">
         <img :src="petraLogo" alt="petra" class="w-12 h-12" />
@@ -28,6 +29,7 @@ import petraLogo from "@/assets/img/connect-wallet/petra-logo.svg";
 import martianLogo from "@/assets/img/connect-wallet/martian-logo.svg";
 
 export default {
+  props: { message: { type: String, default: "" } },
   data() {
     return {
       petraLogo,
