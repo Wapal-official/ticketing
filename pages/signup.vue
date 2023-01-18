@@ -23,6 +23,7 @@
           class="signup-input w-full"
           :rules="rules.email"
           ref="email"
+          type="email"
         ></v-text-field>
       </div>
       <div class="w-full flex flex-col items-start gap-4 justify-start">
@@ -57,6 +58,7 @@
           class="signup-input w-full"
           :rules="rules.twitter"
           ref="twitter"
+          type="email"
         ></v-text-field>
       </div>
       <div class="w-full flex flex-col items-start gap-4 justify-start">
@@ -74,6 +76,7 @@
           class="signup-input w-full"
           :rules="rules.website"
           ref="website"
+          type="url"
         ></v-text-field>
       </div>
 

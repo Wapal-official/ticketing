@@ -4,9 +4,9 @@
       <h3 class="text-wapal-pink text-xl md:text-[28px] pb-16 font-medium">
         Frequently Asked Questions
       </h3>
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12">
+      <div class="flex flex-col items-start justify-start gap-8 w-full">
         <faq-card>
-          <template #question> What is Wapal? </template>
+          <template #question> 1. What is Wapal? </template>
           <template #answer>
             Wapal is a Zero Code, Zero Fee NFT Creator Studio and Launchpad on
             Aptos. Wapal is developed by Mokshya, an open-source protocol that
@@ -15,7 +15,7 @@
         </faq-card>
         <faq-card>
           <template #question>
-            Why did you decide to build a creator studio and a
+            2. Why did you decide to build a creator studio and a
             launchpad?</template
           >
           <template #answer>
@@ -33,7 +33,7 @@
         </faq-card>
         <faq-card>
           <template #question>
-            Who can launch NFT projects from your Launchpad?</template
+            3. Who can launch NFT projects from your Launchpad?</template
           >
           <template #answer>
             Anyone can launch NFT projects from our launchpad. There is no
@@ -42,7 +42,7 @@
         </faq-card>
         <faq-card>
           <template #question>
-            Who can launch NFT projects from your Launchpad?</template
+            4. Who can launch NFT projects from your Launchpad?</template
           >
           <template #answer>
             Anyone can launch NFT projects from our launchpad. There is no
@@ -51,8 +51,8 @@
         </faq-card>
         <faq-card>
           <template #question>
-            How will you determine which one is a good NFT project and which one
-            is not?
+            5. How will you determine which one is a good NFT project and which
+            one is not?
           </template>
           <template #answer>
             We won't determine if a project is good or bad, we let the users
@@ -62,21 +62,21 @@
           </template>
         </faq-card>
         <faq-card>
-          <template #question> Will there be any fees? </template>
+          <template #question> 6. Will there be any fees? </template>
           <template #answer>
             There won't be any fees. We're building this as an open-source
             project.
           </template>
         </faq-card>
         <faq-card>
-          <template #question> What about security? </template>
+          <template #question>7. What about security? </template>
           <template #answer>
             Our source codes will be open-sourced and the smart contract will be
             audited by top security firm.
           </template>
         </faq-card>
         <faq-card>
-          <template #question>What is your vision? </template>
+          <template #question>8. What is your vision? </template>
           <template #answer>
             Our vision is to build a trustless NFT launchpad and creator studio
           </template>
