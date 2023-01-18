@@ -7,15 +7,14 @@ export default {
     host: "0.0.0.0",
   },
   head: {
-    title: "Wapal | Zero Code, Zero Fee NFT Creator Studio on Aptos and Sui",
+    title: "Wapal | Zero Code, Zero Fee NFT Creator Studio on Aptos",
     htmlAttrs: {
       lang: "en",
     },
     meta: [
       {
         name: "description",
-        content:
-          "Wapal is a Zero Code, Zero Fee NFT Creator Studio on Aptos and Sui",
+        content: "Wapal is a Zero Code, Zero Fee NFT Creator Studio on Aptos",
       },
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -24,7 +23,7 @@ export default {
       {
         name: "keywords",
         content:
-          "NFT, Creator Studio, Aptos, Sui, NFT Launchpad, Zero Code, Zero Fee",
+          "NFT, Creator Studio, Aptos, NFT Launchpad, Zero Code, Zero Fee",
       },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],

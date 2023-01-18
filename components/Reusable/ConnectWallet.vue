@@ -40,7 +40,7 @@
       v-model="showSignupDialog"
       content-class="!w-full md:!w-1/2 lg:!w-[35%]"
     >
-      <signupModal @close="showSignupDialog = false" />
+      <signup-modal @close="showSignupDialog = false" />
     </v-dialog>
     <v-snackbar
       v-model="walletConnectedSnackbar"
@@ -62,9 +62,10 @@
 <script lang="ts">
 import ConnectWalletModal from "@/components/ConnectWallet/ConnectWalletModal.vue";
 import DisconnectWalletModal from "@/components/ConnectWallet/DisconnectWalletModal.vue";
+import SignupModal from "@/components/Signup/SignupModal.vue";
 import { defaultTheme } from "@/theme/wapaltheme";
 export default {
-  components: { ConnectWalletModal, DisconnectWalletModal },
+  components: { ConnectWalletModal, DisconnectWalletModal, SignupModal },
   data() {
     return {
       showConnectWalletDialog: false,
@@ -72,7 +73,6 @@ export default {
       showSignupDialog: false,
       walletConnectedSnackbar: false,
       defaultTheme,
-      walletStore: this.$store.state.walletStore.wallet,
       message: "Wallet Connected Successfully",
     };
   },
@@ -109,6 +109,10 @@ export default {
             "..." +
             this.walletStore.walletAddress.slice(-3)
         : "";
+    },
+
+    walletStore() {
+      return this.$store.state.walletStore.wallet;
     },
   },
 };

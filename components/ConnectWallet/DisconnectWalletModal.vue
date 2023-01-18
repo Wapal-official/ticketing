@@ -8,6 +8,7 @@
     <div class="flex flex-row items-center justify-start gap-4">
       <img
         :src="walletStore.wallet === 'petra' ? petraLogo : martianLogo"
+        :alt="walletStore.wallet"
         class="w-12 h-12"
       />
       <p class="text-sm md:text-lg">Wallet Currently Connected</p>
