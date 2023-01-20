@@ -4,7 +4,7 @@
       <h3 class="text-wapal-pink text-xl md:text-[28px] pb-16 font-medium">
         Frequently Asked Questions
       </h3>
-      <div class="flex flex-col items-start justify-start gap-8 w-full">
+      <div class="flex flex-col items-start justify-start gap-8 lg:px-16">
         <faq-card>
           <template #question> 1. What is Wapal? </template>
           <template #answer>

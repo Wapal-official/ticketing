@@ -1,12 +1,9 @@
 <template>
-  <button @click="toggleAnswer">
-    <div
-      class="flex flex-col items-start justify-start rounded px-4 py-4 border border-[#EA59BE] text-white transition-all duration-200 ease-linear"
-      :class="{ 'gap-2 border-none': showAnswer }"
-    >
+  <div class="w-full">
+    <button @click="toggleAnswer">
       <h4
-        class="text-sm md:text-lg flex flex-row items-center justify-between w-full text-left gap-4 transition-all duration-200 ease-linear"
-        :class="{ 'text-[#EA59BE]': showAnswer }"
+        class="text-sm flex flex-row items-center justify-between text-left gap-4 transition-all duration-200 ease-linear rounded px-4 py-2 border border-[#EA59BE] text-white md:text-lg lg:gap-12"
+        :class="{ 'text-[#EA59BE] border-none': showAnswer }"
       >
         <slot name="question"></slot>
         <v-icon
@@ -15,14 +12,14 @@
           >mdi-chevron-right</v-icon
         >
       </h4>
-      <p
-        class="overflow-hidden text-left text-sm md:text-base !my-0"
-        :class="{ 'h-full': showAnswer, 'h-0': !showAnswer }"
-      >
-        <slot name="answer"></slot>
-      </p>
+    </button>
+    <div
+      class="px-4 overflow-hidden text-justify text-sm md:text-base !my-0 lg:max-w-[70%]"
+      :class="{ 'h-full': showAnswer, 'h-0': !showAnswer }"
+    >
+      <slot name="answer"></slot>
     </div>
-  </button>
+  </div>
 </template>
 <script lang="ts">
 export default {
