@@ -33,7 +33,15 @@
         />
       </v-dialog>
     </section>
-    <landing-slider />
+    <div class="landing-background">
+      <landing-slider />
+      <div class="px-4 md:px-16">
+        <div class="md:px-16">
+          <landing-image-grid />
+        </div>
+        <landing-section-heading heading="Live" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -41,10 +49,19 @@
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 import ConnectWalletModal from "@/components/ConnectWallet/ConnectWalletModal.vue";
 import SignupModal from "@/components/Signup/SignupModal.vue";
-import LandingSlider from "~/components/Landing/LandingSlider.vue";
+import LandingSlider from "@/components/Landing/LandingSlider.vue";
+import LandingImageGrid from "@/components/Landing/LandingImageGrid.vue";
+import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vue";
 export default {
   name: "IndexPage",
-  components: { PrimaryButton, ConnectWalletModal, SignupModal, LandingSlider },
+  components: {
+    PrimaryButton,
+    ConnectWalletModal,
+    SignupModal,
+    LandingSlider,
+    LandingImageGrid,
+    LandingSectionHeading,
+  },
   data() {
     return {
       showConnectWalletModal: false,
@@ -77,3 +94,14 @@ export default {
   },
 };
 </script>
+<style scoped>
+.landing-background {
+  background: linear-gradient(
+    180deg,
+    #0e0d0d 0%,
+    #010a1b 23.47%,
+    #11151c 81.73%,
+    #0e0d0d 100%
+  );
+}
+</style>
