@@ -40,6 +40,8 @@
           <landing-image-grid />
         </div>
         <live-section />
+        <upcoming-section />
+        <fastest-soldout-section />
       </div>
     </div>
   </div>
@@ -52,6 +54,8 @@ import SignupModal from "@/components/Signup/SignupModal.vue";
 import LandingSlider from "@/components/Landing/LandingSlider.vue";
 import LandingImageGrid from "@/components/Landing/LandingImageGrid.vue";
 import LiveSection from "@/components/Landing/LiveSection.vue";
+import UpcomingSection from "@/components/Landing/UpcomingSection.vue";
+import FastestSoldoutSection from "@/components/Landing/FastestSoldoutSection.vue";
 export default {
   name: "IndexPage",
   components: {
@@ -61,6 +65,8 @@ export default {
     LandingSlider,
     LandingImageGrid,
     LiveSection,
+    UpcomingSection,
+    FastestSoldoutSection,
   },
   data() {
     return {
