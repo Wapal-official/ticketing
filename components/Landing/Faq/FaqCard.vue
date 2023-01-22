@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="w-full md:font-light">
     <button @click="toggleAnswer">
       <h4
         class="text-sm flex flex-row items-center justify-between text-left gap-4 transition-all duration-200 ease-linear rounded px-4 py-2 border border-[#EA59BE] text-white md:text-lg lg:gap-12"
