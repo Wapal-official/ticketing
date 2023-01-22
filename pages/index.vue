@@ -39,7 +39,7 @@
         <div class="md:px-16">
           <landing-image-grid />
         </div>
-        <landing-section-heading heading="Live" />
+        <live-section />
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@ import ConnectWalletModal from "@/components/ConnectWallet/ConnectWalletModal.vu
 import SignupModal from "@/components/Signup/SignupModal.vue";
 import LandingSlider from "@/components/Landing/LandingSlider.vue";
 import LandingImageGrid from "@/components/Landing/LandingImageGrid.vue";
-import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vue";
+import LiveSection from "@/components/Landing/LiveSection.vue";
 export default {
   name: "IndexPage",
   components: {
@@ -60,7 +60,7 @@ export default {
     SignupModal,
     LandingSlider,
     LandingImageGrid,
-    LandingSectionHeading,
+    LiveSection,
   },
   data() {
     return {
