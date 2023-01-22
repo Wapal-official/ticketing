@@ -65,3 +65,58 @@
 .signup-input .v-label {
   top: 13px !important;
 }
+
+/*Image Grid Landing page*/
+.display-image-container,
+.display-images {
+  pointer-events: none;
+}
+
+.third-display-image,
+.second-display-image,
+.first-display-image {
+  pointer-events: auto;
+}
+
+.display-images:hover .third-display-image,
+.display-images:hover .second-display-image,
+.display-image-container:hover .display-images img {
+  @apply scale-90;
+}
+
+.first-display-image:hover ~ .display-images img {
+  @apply !scale-90;
+}
+
+.display-image-container:hover .first-display-image {
+  @apply scale-x-90 lg:-translate-x-12;
+}
+
+/*Footer*/
+.footer-shadow {
+  box-shadow: 0px 0px 10px 0px rgba(194, 2, 211, 1);
+}
+.footer-gradient-border {
+  padding-top: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(254, 135, 255, 0.2),
+    rgba(253, 43, 255, 0.2),
+    rgba(62, 45, 221, 0.2),
+    rgba(253, 43, 255, 0.2),
+    rgba(254, 135, 255, 0.2)
+  );
+}
+
+.footer-icon-container {
+  padding: 1.5px;
+  width: 36px;
+  height: 36px;
+}
+.footer-icon-border {
+  background: linear-gradient(90deg, #fe87ff, #c202d3, #5e0fff, #1905da);
+  @apply transition-all duration-200 ease-linear rounded-full;
+}
+.footer-icon-container:hover .footer-icon-border {
+  transform: rotate(180deg);
+}
