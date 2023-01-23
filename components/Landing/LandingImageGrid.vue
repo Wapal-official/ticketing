@@ -1,23 +1,23 @@
 <template>
-  <section class="rounded-lg px-4 py-8 md:py-12 md:px-12 bg-[#010416]">
-    <div
-      class="flex flex-col lg:flex-row items-center justify-center gap-8 display-image-container"
-    >
-      <img
-        :src="firstImage"
-        alt="image"
-        class="w-full h-full lg:w-[600px] lg:h-[600px] transition-all ease-linear duration-200 transform hover:!scale-110 hover:!translate-x-0 first-display-image"
-      />
-      <div class="flex flex-col items-start justify-start gap-8 display-images">
+  <section class="rounded-lg px-4 py-8 lg:py-12 lg:px-12 bg-[#010416]">
+    <div class="flex flex-col items-center justify-center gap-8 lg:flex-row">
+      <div
+        class="w-full lg:w-1/2 hover:lg:w-[55%] transition-all duration-300 ease-linear"
+      >
+        <img :src="firstImage" alt="image" class="w-full h-full" />
+      </div>
+      <div
+        class="lg:w-1/2 flex flex-col items-end justify-end gap-8 transition-all duration-300 ease-linear display-images hover:lg:w-[55%]"
+      >
         <img
           :src="secondImage"
           alt="image"
-          class="w-full h-full lg:w-[700px] lg:h-[280px] object-contain transition-all ease-linear duration-200 transform hover:!scale-110 second-display-image"
+          class="w-full transition-all ease-linear duration-300 transform hover:!w-full second-display-image"
         />
         <img
           :src="thirdImage"
           alt="image"
-          class="w-full h-full lg:w-[700px] lg:h-[280px] object-contain transition-all ease-linear duration-200 transform hover:!scale-110 third-display-image"
+          class="w-full transition-all ease-linear duration-300 transform hover:!w-full third-display-image"
         />
       </div>
     </div>
