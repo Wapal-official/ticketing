@@ -9,7 +9,7 @@
         >
           <img
             :src="image"
-            class="object-fill w-full h-[250px] md:w-[250px] md:h-[250px]"
+            class="object-fill w-[300] h-[300px] mx-auto md:mx-0 md:w-[250px] md:h-[250px]"
             alt="Image"
           />
         </div>
@@ -20,29 +20,34 @@
 <script>
 import Swiper from "swiper/swiper-bundle.min";
 import "swiper/swiper-bundle.min.css";
-import fox from "@/assets/img/fox.png";
-import firstImage from "@/assets/img/800.png";
-import secondImage from "@/assets/img/921.png";
-import thirdImage from "@/assets/img/6896.png";
+import sliderImage1 from "@/assets/img/slider1.png";
+import sliderImage2 from "@/assets/img/slider2.png";
+import sliderImage3 from "@/assets/img/slider3.png";
+import sliderImage4 from "@/assets/img/slider4.png";
+import sliderImage5 from "@/assets/img/slider5.png";
+import sliderImage6 from "@/assets/img/slider6.png";
+import sliderImage7 from "@/assets/img/slider7.png";
 export default {
   data() {
     return {
       sliderImages: [],
-      fox,
-      firstImage,
-      secondImage,
-      thirdImage,
+      sliderImage1,
+      sliderImage2,
+      sliderImage3,
+      sliderImage4,
+      sliderImage5,
+      sliderImage6,
+      sliderImage7,
     };
   },
   async mounted() {
-    this.sliderImages.push(fox);
-    this.sliderImages.push(firstImage);
-    this.sliderImages.push(secondImage);
-    this.sliderImages.push(thirdImage);
-    this.sliderImages.push(fox);
-    this.sliderImages.push(firstImage);
-    this.sliderImages.push(secondImage);
-    this.sliderImages.push(thirdImage);
+    this.sliderImages.push(this.sliderImage1);
+    this.sliderImages.push(this.sliderImage2);
+    this.sliderImages.push(this.sliderImage3);
+    this.sliderImages.push(this.sliderImage4);
+    this.sliderImages.push(this.sliderImage5);
+    this.sliderImages.push(this.sliderImage6);
+    this.sliderImages.push(this.sliderImage7);
     await this.$nextTick();
     new Swiper(this.$refs.swiper, {
       spaceBetween: 16,
