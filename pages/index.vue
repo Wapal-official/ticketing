@@ -36,7 +36,7 @@
     <div class="landing-background">
       <landing-slider />
       <div class="px-4 md:px-16">
-        <div class="md:px-16">
+        <div class="lg:px-16">
           <landing-image-grid />
         </div>
         <live-section />

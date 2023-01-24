@@ -1,7 +1,7 @@
 <template>
-  <section class="py-8">
-    <landing-section-heading heading="Fastest Soldout" />
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+  <section class="py-8 container mx-auto">
+    <landing-section-heading heading="Fastest Soldout" class="px-4" />
+    <div class="flex flex-row flex-wrap">
       <nft-card
         v-for="nft in liveNfts"
         :key="nft.name"

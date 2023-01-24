@@ -67,7 +67,7 @@
 }
 
 /*Image Grid Landing page*/
-.display-image-container,
+
 .display-images {
   pointer-events: none;
 }
@@ -78,18 +78,9 @@
   pointer-events: auto;
 }
 
-.display-images:hover .third-display-image,
 .display-images:hover .second-display-image,
-.display-image-container:hover .display-images img {
-  @apply scale-90;
-}
-
-.first-display-image:hover ~ .display-images img {
-  @apply !scale-90;
-}
-
-.display-image-container:hover .first-display-image {
-  @apply scale-x-90 lg:-translate-x-12;
+.display-images:hover .third-display-image {
+  @apply w-[90%];
 }
 
 /*Footer*/

@@ -1,16 +1,18 @@
 <template>
-  <div class="rounded relative">
-    <img :src="image" :alt="name" class="w-full h-full object-contain" />
-    <div
-      class="absolute bottom-0 left-0 w-full px-8 py-2 text-white flex flex-col items-center justify-center gap-1 nft-card"
-    >
-      <h5 class="text-lg uppercase font-medium">{{ name }}</h5>
-      <h6 class="text-xl text-wapal-pink font-normal">{{ status }}</h6>
+  <div class="p-4 w-full md:w-1/2 lg:w-1/4">
+    <div class="rounded relative w-full">
+      <img :src="image" :alt="name" class="w-full h-full object-contain" />
       <div
-        class="flex flex-row items-center justify-start gap-12 capitalize w-full"
+        class="absolute bottom-0 left-0 w-full px-8 py-2 text-white flex flex-col items-center justify-center gap-1 nft-card"
       >
-        <div>items {{ stock }}</div>
-        <div>price {{ price }}</div>
+        <h5 class="text-lg uppercase font-medium">{{ name }}</h5>
+        <h6 class="text-xl text-wapal-pink font-normal">{{ status }}</h6>
+        <div
+          class="flex flex-row items-center justify-start gap-12 capitalize w-full"
+        >
+          <div>items {{ stock }}</div>
+          <div>price {{ price }}</div>
+        </div>
       </div>
     </div>
   </div>

@@ -45,8 +45,15 @@
           class="w-full"
           single-line
           prepend-inner-icon="mdi-email"
-          append-icon="mdi-arrow-right"
+          type="email"
         >
+          <v-icon
+            slot="append"
+            class="!text-white !cursor-pointer"
+            @click="newsLetterSignup"
+          >
+            mdi-arrow-right
+          </v-icon>
         </v-text-field>
         <p>Your email is safe with us. We don't spam.</p>
       </div>
@@ -113,6 +120,9 @@ export default {
       const date = new Date();
       return date.getFullYear();
     },
+  },
+  methods: {
+    newsLetterSignup() {},
   },
 };
 </script>
