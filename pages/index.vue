@@ -5,7 +5,7 @@
         class="text-white px-8 lg:w-[60%] flex flex-col items-center justify-center gap-10 text-center"
       >
         <h1
-          class="text-3xl font-semibold text-wapal-gray flex flex-col items-center justify-center gap-2"
+          class="text-3xl text-wapal-gray flex flex-col items-center justify-center gap-2"
         >
           Zero Code, Zero Fee NFT Creator Studio on Aptos
         </h1>

@@ -53,7 +53,9 @@
         </a>
       </div>
       <div class="text-wapal-gray pb-12">
-        <h3 class="text-[2rem] font-medium uppercase">Pontem Space Pirates</h3>
+        <h3 class="text-2xl pb-4 font-medium uppercase md:text-[2rem]">
+          Pontem Space Pirates
+        </h3>
         <p class="font-light">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum a
           rhoncus augue. Phasellus egestas varius ex, vitae egestas velit
