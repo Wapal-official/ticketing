@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 w-full md:w-1/2 lg:w-1/4">
+  <NuxtLink :to="`/nft/${name}`" class="p-4 w-full md:w-1/2 lg:w-1/4">
     <div class="rounded relative w-full">
       <img :src="image" :alt="name" class="w-full h-full object-contain" />
       <div
@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>
 <script lang="ts">
 export default {
