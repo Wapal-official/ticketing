@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-start justify-start w-full text-base gap-8 md:w-1/2 lg:w-full lg:flex-row lg:justify-between lg:items-center"
+    class="flex flex-col items-start justify-start w-full text-base gap-8 md:w-1/2 lg:w-full lg:flex-row lg:!justify-end lg:items-center lg:gap-8"
   >
     <v-menu offset-y>
       <template v-slot:activator="{ on, attrs }">
