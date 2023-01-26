@@ -1,7 +1,9 @@
 <template>
-  <button class="px-6 py-2 bg-wapal-gray text-black rounded text-lg">
+  <button
+    class="tw-px-6 tw-py-2 tw-bg-wapal-gray tw-text-black tw-rounded tw-text-lg"
+  >
     <span
-      class="bg-clip-text text-transparent bg-gradient-to-r from-[#000000] via-[#34107B] to-[#1B0051] font-medium"
+      class="tw-bg-clip-text tw-text-transparent tw-bg-gradient-to-r tw-from-[#000000] tw-via-[#34107B] tw-to-[#1B0051] tw-font-medium"
       ><slot></slot
     ></span>
   </button>

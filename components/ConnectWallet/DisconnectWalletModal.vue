@@ -1,19 +1,21 @@
 <template>
-  <div class="bg-modal-gray px-8 py-4 text-wapal-gray text-center">
-    <div class="w-full flex flex-row items-center justify-end">
-      <button class="text-black text-base" @click="close">
-        <v-icon class="!text-black !font-semibold">mdi-close</v-icon>
+  <div
+    class="tw-bg-modal-gray tw-px-8 tw-py-4 tw-text-wapal-gray tw-text-center"
+  >
+    <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end">
+      <button class="tw-text-black tw-text-base" @click="close">
+        <v-icon class="!tw-text-black !tw-font-semibold">mdi-close</v-icon>
       </button>
     </div>
-    <div class="flex flex-row items-center justify-start gap-4">
+    <div class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4">
       <img
         :src="walletStore.wallet === 'petra' ? petraLogo : martianLogo"
         :alt="walletStore.wallet"
-        class="w-12 h-12"
+        class="tw-w-12 tw-h-12"
       />
-      <p class="text-sm md:text-lg">Wallet Currently Connected</p>
+      <p class="tw-text-sm md:tw-text-lg">Wallet Currently Connected</p>
     </div>
-    <primary-button @click.native="disconnectWallet" class="ml-4 mt-2"
+    <primary-button @click.native="disconnectWallet" class="tw-ml-4 tw-mt-2"
       >Disconnect Wallet
     </primary-button>
   </div>

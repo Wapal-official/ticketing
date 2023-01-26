@@ -1,14 +1,23 @@
 <template>
-  <NuxtLink :to="`/nft/${name}`" class="p-4 w-full md:w-1/2 lg:w-1/4">
-    <div class="rounded relative w-full">
-      <img :src="image" :alt="name" class="w-full h-full object-contain" />
+  <NuxtLink
+    :to="`/nft/${name}`"
+    class="tw-p-4 tw-w-full md:tw-w-1/2 lg:tw-w-1/4"
+  >
+    <div class="tw-rounded tw-relative tw-w-full">
+      <img
+        :src="image"
+        :alt="name"
+        class="tw-w-full tw-h-full tw-object-contain"
+      />
       <div
-        class="absolute bottom-0 left-0 w-full px-8 py-2 text-white flex flex-col items-center justify-center gap-1 nft-card"
+        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-2 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
       >
-        <h5 class="text-lg uppercase font-medium">{{ name }}</h5>
-        <h6 class="text-xl text-wapal-pink font-normal">{{ status }}</h6>
+        <h5 class="tw-text-lg tw-uppercase tw-font-medium">{{ name }}</h5>
+        <h6 class="tw-text-xl tw-text-wapal-pink tw-font-normal">
+          {{ status }}
+        </h6>
         <div
-          class="flex flex-row items-center justify-start gap-12 capitalize w-full"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12 tw-capitalize tw-w-full"
         >
           <div>items {{ stock }}</div>
           <div>price {{ price }}</div>

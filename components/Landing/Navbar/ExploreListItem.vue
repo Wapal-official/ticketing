@@ -3,13 +3,13 @@
     <NuxtLink :to="link" @click.native="close">
       <v-list-item>
         <v-list-item-title
-          class="!text-white transition-all duration-150 ease-linear hover:!text-wapal-pink"
+          class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
           >{{ name }}</v-list-item-title
         >
       </v-list-item></NuxtLink
     >
-    <div class="w-full px-4" v-if="!last">
-      <div class="w-full h-[1.5px] bg-white"></div>
+    <div class="tw-w-full tw-px-4" v-if="!last">
+      <div class="tw-w-full tw-h-[1.5px] tw-bg-white"></div>
     </div>
   </div>
 </template>

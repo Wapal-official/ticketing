@@ -1,5 +1,5 @@
 <template>
-  <v-app class="!bg-wapal-background min-h-screen w-full">
+  <v-app class="!tw-bg-wapal-background tw-min-h-screen tw-w-full">
     <Navbar />
     <Nuxt />
     <wapal-footer />

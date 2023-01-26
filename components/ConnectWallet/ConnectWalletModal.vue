@@ -1,24 +1,26 @@
 <template>
-  <div class="bg-modal-gray px-8 py-4 text-white text-center">
-    <div class="w-full flex flex-row items-center justify-end">
-      <button class="text-base" @click="close">
-        <v-icon class="!text-black !font-semibold">mdi-close</v-icon>
+  <div class="tw-bg-modal-gray tw-px-8 tw-py-4 tw-text-white tw-text-center">
+    <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end">
+      <button class="tw-text-base" @click="close">
+        <v-icon class="!tw-text-black !tw-font-semibold">mdi-close</v-icon>
       </button>
     </div>
     <div
-      class="w-full bg-wapal-pink text-white my-2 px-2 py-2 flex text-xs lg:hidden"
+      class="tw-w-full tw-bg-wapal-pink tw-text-white tw-my-2 tw-px-2 tw-py-2 tw-flex tw-text-xs lg:tw-hidden"
     >
       Please use Kiwi Browser for wallet connection if you are using mobile
       devices
     </div>
-    <p class="text-base md:text-lg" v-if="message">{{ message }}</p>
-    <p class="text-base md:text-lg">Choose a wallet to connect</p>
-    <div class="w-full flex flex-row items-center justify-center gap-4">
+    <p class="tw-text-base md:tw-text-lg" v-if="message">{{ message }}</p>
+    <p class="tw-text-base md:tw-text-lg">Choose a wallet to connect</p>
+    <div
+      class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4"
+    >
       <button @click="connectPetra">
-        <img :src="petraLogo" alt="petra" class="w-12 h-12" />
+        <img :src="petraLogo" alt="petra" class="tw-w-12 tw-h-12" />
       </button>
       <button @click="connectMartian">
-        <img :src="martianLogo" alt="martian" class="w-12 h-12" />
+        <img :src="martianLogo" alt="martian" class="tw-w-12 tw-h-12" />
       </button>
     </div>
   </div>

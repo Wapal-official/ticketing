@@ -1,18 +1,18 @@
 <template>
   <div
-    class="flex flex-col items-start justify-start w-full text-base gap-8 md:w-1/2 lg:w-full lg:flex-row lg:!justify-end lg:items-center lg:gap-8"
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-text-base tw-gap-8 md:tw-w-1/2 lg:tw-w-full lg:tw-flex-row lg:!tw-justify-end lg:tw-items-center lg:tw-gap-8"
   >
     <v-menu offset-y>
       <template v-slot:activator="{ on, attrs }">
         <div
-          class="!text-white transition duration-200 ease-linear hover:!text-wapal-pink uppercase !font-normal"
+          class="!tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink tw-uppercase !tw-font-normal"
           v-bind="attrs"
           v-on="on"
         >
           Explore
         </div>
       </template>
-      <v-list class="!bg-modal-gray !min-w-[200px]">
+      <v-list class="!tw-bg-modal-gray !tw-min-w-[200px]">
         <explore-list-item name="All NFTs" @close="close" />
         <explore-list-item name="Arts" :last="true" @close="close" />
       </v-list>

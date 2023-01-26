@@ -1,39 +1,41 @@
 <template>
-  <div class="flex flex-col items-start justify-start w-full">
+  <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
     <nav
-      class="flex flex-row items-center justify-between gap-8 text-white w-full px-8 py-6 lg:!px-24"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-8 tw-py-6 lg:!tw-px-24"
     >
-      <NuxtLink to="/" class="text-lg font-medium min-w-[120px] max-w-[120px]">
+      <NuxtLink to="/" class="tw-min-w-[120px] tw-max-w-[120px]">
         <img :src="logo" alt="logo" />
       </NuxtLink>
-      <div class="flex flex-row items-center justify-end gap-8 w-full">
-        <div class="hidden md:flex lg:w-[60%]">
+      <div
+        class="tw-flex tw-flex-row tw-items-center jtw-ustify-end tw-gap-8 tw-w-full"
+      >
+        <div class="tw-hidden md:tw-flex lg:tw-w-[60%]">
           <search-bar />
         </div>
-        <div class="hidden lg:flex lg:w-[40%]">
+        <div class="tw-hidden lg:tw-flex lg:tw-w-[40%]">
           <landing-menu />
         </div>
       </div>
       <div
-        class="w-full absolute transition-all duration-500 ease-linear z-50 left-0 top-0"
+        class="tw-w-full tw-absolute tw-transition-all tw-duration-500 tw-ease-linear tw-z-50 tw-left-0 tw-top-0"
         :class="searchBarClass"
       >
         <search-bar @closeSearchBar="closeSearchBar" />
       </div>
-      <div class="flex flex-row items-center justify-end gap-4">
-        <button @click="displaySearchBar" class="flex md:hidden">
-          <v-icon class="!text-wapal-gray">mdi-magnify</v-icon>
+      <div class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4">
+        <button @click="displaySearchBar" class="tw-flex md:tw-hidden">
+          <v-icon class="!tw-text-wapal-gray">mdi-magnify</v-icon>
         </button>
-        <button @click="toggleLandingMenu" class="flex lg:hidden">
-          <v-icon class="!text-wapal-gray">mdi-menu</v-icon>
+        <button @click="toggleLandingMenu" class="tw-flex lg:tw-hidden">
+          <v-icon class="!tw-text-wapal-gray">mdi-menu</v-icon>
         </button>
       </div>
     </nav>
     <div
-      class="w-full overflow-hidden px-4 transition-all duration-500 ease-linear bg-modal-gray text-white flex lg:hidden"
+      class="tw-w-full tw-overflow-hidden tw-px-4 tw-transition-all tw-duration-500 tw-ease-linear tw-bg-modal-gray tw-text-white tw-flex lg:tw-hidden"
       :class="landingMenuClass"
     >
-      <landing-menu class="py-4" @close="close" />
+      <landing-menu class="tw-py-4" @close="close" />
     </div>
   </div>
 </template>
@@ -47,31 +49,31 @@ export default {
   components: { LandingMenu, SearchBar },
   data() {
     return {
-      landingMenuClass: "h-0",
+      landingMenuClass: "tw-h-0",
       landingMenuShowing: false,
       searchBarShowing: false,
-      searchBarClass: "-translate-y-full",
+      searchBarClass: "tw--translate-y-full",
       logo,
     };
   },
   methods: {
     toggleLandingMenu() {
       if (!this.landingMenuShowing) {
-        this.landingMenuClass = "h-[250px]";
+        this.landingMenuClass = "tw-h-[250px]";
       } else {
-        this.landingMenuClass = "h-0";
+        this.landingMenuClass = "tw-h-0";
       }
       this.landingMenuShowing = !this.landingMenuShowing;
     },
     close() {
-      this.landingMenuClass = "h-0";
+      this.landingMenuClass = "tw-h-0";
       this.landingMenuShowing = false;
     },
     displaySearchBar() {
-      this.searchBarClass = "translate-y-0";
+      this.searchBarClass = "tw-translate-y-0";
     },
     closeSearchBar() {
-      this.searchBarClass = "-translate-y-full";
+      this.searchBarClass = "tw--translate-y-full";
     },
   },
 };
