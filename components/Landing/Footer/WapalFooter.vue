@@ -1,5 +1,5 @@
 <template>
-  <footer class="tw-w-full tw-footer-shadow tw-mt-12">
+  <footer class="tw-w-full footer-shadow tw-mt-12">
     <div
       class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-px-8 tw-py-8 lg:!tw-px-24"
     >

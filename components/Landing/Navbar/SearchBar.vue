@@ -71,6 +71,6 @@ export default {
 <style scoped>
 .search-bar-input {
   border-style: solid !important;
-  @apply w-full pl-10 pr-4 py-2 bg-modal-gray  text-white border border-transparent transition-all duration-200 ease-linear placeholder:text-white focus:outline-none focus:border-modal-gray focus:shadow focus:shadow-modal-gray md:rounded md:focus:bg-transparent;
+  @apply tw-w-full tw-pl-10 tw-pr-4 tw-py-2 tw-bg-modal-gray  tw-text-white tw-border tw-border-transparent tw-transition-all tw-duration-200 tw-ease-linear placeholder:tw-text-white focus:tw-outline-none focus:tw-border-modal-gray focus:tw-shadow focus:tw-shadow-modal-gray md:tw-rounded md:focus:tw-bg-transparent;
 }
 </style>

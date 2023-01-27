@@ -24,14 +24,14 @@
           label="Enter your Email"
           clearable
           :color="defaultTheme.wapalGray"
-          class="signup-input w-full"
+          class="signup-input tw-w-full"
           :rules="rules.email"
           ref="email"
           type="email"
         ></v-text-field>
       </div>
       <div
-        class="tw-w-full tw-h-[300px] tw-transition-all tw-ease-linear tw-duration-300 tw-transform hover:!tw-w-full md:tw-h-auto"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-gap-4 tw-justify-start"
       >
         <label
           class="tw-text-wapal-gray tw-text-lg after:tw-content-['*'] after:tw-text-red-700"
@@ -44,13 +44,13 @@
           label="Enter your Discord Server"
           clearable
           :color="defaultTheme.wapalGray"
-          class="signup-input w-full"
+          class="signup-input tw-w-full"
           :rules="rules.discord"
           ref="discord"
         ></v-text-field>
       </div>
       <div
-        class="tw-w-full tw-h-[300px] tw-transition-all tw-ease-linear tw-duration-300 tw-transform hover:!tw-w-full md:tw-h-auto"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-gap-4 tw-justify-start"
       >
         <label
           class="tw-text-wapal-gray tw-text-lg after:tw-content-['*'] after:tw-text-red-700"
@@ -63,14 +63,14 @@
           label="Enter your Twitter Handle"
           clearable
           :color="defaultTheme.wapalGray"
-          class="signup-input w-full"
+          class="signup-input tw-w-full"
           :rules="rules.twitter"
           ref="twitter"
           type="email"
         ></v-text-field>
       </div>
       <div
-        class="tw-w-full tw-h-[300px] tw-transition-all tw-ease-linear tw-duration-300 tw-transform hover:!tw-w-full md:tw-h-auto"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-gap-4 tw-justify-start"
       >
         <label
           class="tw-text-wapal-gray tw-text-lg after:tw-content-['*'] after:tw-text-red-700"
@@ -83,7 +83,7 @@
           label="Enter your Website"
           clearable
           :color="defaultTheme.wapalGray"
-          class="signup-input w-full"
+          class="signup-input tw-w-full"
           :rules="rules.website"
           ref="website"
           type="url"

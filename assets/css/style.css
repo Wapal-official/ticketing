@@ -19,7 +19,7 @@
   left: 100%;
 }
 .gradient-button {
-  @apply px-6 py-2 w-full rounded-md bg-gradient-to-r from-[#000000] via-[#34107B] to-[#1B0051] font-medium relative overflow-hidden;
+  @apply tw-px-6 tw-py-2 tw-w-full tw-rounded-md tw-bg-gradient-to-r tw-from-[#000000] tw-via-[#34107B] tw-to-[#1B0051] tw-font-medium tw-relative tw-overflow-hidden;
 }
 
 /*FAQ Card*/
@@ -30,25 +30,25 @@
 
 /*Signup Form*/
 .signup-input input::placeholder {
-  @apply !text-wapal-gray;
+  @apply !tw-text-wapal-gray;
 }
 
 .signup-input .v-label {
-  @apply !text-wapal-gray;
+  @apply !tw-text-wapal-gray;
 }
 
 .signup-input input {
-  @apply !text-wapal-gray;
+  @apply !tw-text-wapal-gray;
 }
 
 .signup-input .v-messages__message {
-  @apply !text-base;
+  @apply !tw-text-base;
 }
 
 .discord-icon,
 .nft-discord-icon {
   fill: #fff;
-  @apply !text-4xl transition duration-200 ease-linear;
+  @apply !tw-text-4xl tw-transition tw-duration-200 tw-ease-linear;
 }
 
 .discord-icon:hover {
@@ -81,7 +81,7 @@
 
 .display-images:hover .second-display-image,
 .display-images:hover .third-display-image {
-  @apply w-[90%];
+  @apply tw-w-[90%];
 }
 
 /*Footer*/
@@ -107,7 +107,7 @@
 }
 .footer-icon-border {
   background: linear-gradient(90deg, #fe87ff, #c202d3, #5e0fff, #1905da);
-  @apply transition-all duration-200 ease-linear rounded-full;
+  @apply tw-transition-all tw-duration-200 tw-ease-linear tw-rounded-full;
 }
 .footer-icon-container:hover .footer-icon-border {
   transform: rotate(180deg);
@@ -131,7 +131,7 @@
 }
 
 .live-counter-shadow {
-  text-shadow: 0px 3px 10px #e229a0;
+  text-shadow: 0px 1px 15px #e229a0;
 }
 
 .nft-discord-icon:hover {

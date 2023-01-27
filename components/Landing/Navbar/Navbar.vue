@@ -6,10 +6,8 @@
       <NuxtLink to="/" class="tw-min-w-[120px] tw-max-w-[120px]">
         <img :src="logo" alt="logo" />
       </NuxtLink>
-      <div
-        class="tw-flex tw-flex-row tw-items-center jtw-ustify-end tw-gap-8 tw-w-full"
-      >
-        <div class="tw-hidden md:tw-flex lg:tw-w-[60%]">
+      <div class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full">
+        <div class="tw-hidden md:tw-w-full md:tw-flex lg:tw-w-[60%] tw-mx-auto">
           <search-bar />
         </div>
         <div class="tw-hidden lg:tw-flex lg:tw-w-[40%]">
