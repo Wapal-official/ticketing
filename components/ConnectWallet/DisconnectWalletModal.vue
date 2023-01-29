@@ -23,7 +23,6 @@
 import petraLogo from "@/assets/img/connect-wallet/petra-logo.svg";
 import martianLogo from "@/assets/img/connect-wallet/martian-logo.svg";
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
-import WalletAddress from "@/interfaces/walletAddress";
 
 export default {
   components: { PrimaryButton },
@@ -38,12 +37,7 @@ export default {
       this.$emit("closeModal");
     },
     disconnectWallet() {
-      const wallet: WalletAddress = {
-        wallet: "",
-        walletAddress: "",
-        publicKey: "",
-      };
-      this.$store.commit("walletStore/setWallet", wallet);
+      this.$store.dispatch("walletStore/disconnectWallet");
       this.$emit("walletDisconnected");
     },
   },

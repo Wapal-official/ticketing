@@ -13,12 +13,12 @@
     </div>
     <p class="text-base md:text-lg" v-if="message">{{ message }}</p>
     <p class="text-base md:text-lg">Choose a wallet to connect</p>
-    <div class="w-full flex flex-row items-center justify-center gap-4">
-      <button @click="connectPetra">
-        <img :src="petraLogo" alt="petra" class="w-12 h-12" />
-      </button>
-      <button @click="connectMartian">
-        <img :src="martianLogo" alt="martian" class="w-12 h-12" />
+    <div>{{ getWalletDetail }}</div>
+    <div
+      class="w-full flex flex-row flex-wrap items-center justify-center gap-4"
+    >
+      <button @click="connectWallet(wallet.name)" v-for="wallet in wallets">
+        <div>{{ wallet.name }}</div>
       </button>
     </div>
   </div>
@@ -34,7 +34,7 @@ export default {
     return {
       petraLogo,
       martianLogo,
-      walletStore: null,
+      wallets: JSON.parse(this.$store.state.walletStore.wallets),
     };
   },
   methods: {
@@ -51,46 +51,26 @@ export default {
       }
       window.open("https://www.martianwallet.xyz/", "_blank");
     },
-    async connectPetra() {
-      if (this.getPetraWallet()) {
-        const wallet = this.getPetraWallet();
-
-        try {
-          const response = await wallet.connect();
-
-          this.walletStore = {
-            wallet: "petra",
-            walletAddress: response.address,
-            publicKey: response.publicKey,
-          };
-          this.$store.commit("walletStore/setWallet", this.walletStore);
-          this.$emit("walletConnected");
-        } catch (error) {}
+    async connectWallet(wallet: string) {
+      const res = await this.$store.dispatch(
+        "walletStore/connectWallet",
+        wallet
+      );
+      if (res) {
+        this.$emit("walletConnected");
       }
-    },
-    async connectMartian() {
-      if (this.getMartianWallet()) {
-        const wallet = this.getMartianWallet();
-        try {
-          const response = await wallet.connect();
-
-          this.walletStore = {
-            wallet: "martian",
-            walletAddress: response.address,
-            publicKey: response.publicKey,
-          };
-          this.$store.commit("walletStore/setWallet", this.walletStore);
-
-          this.$emit("walletConnected");
-        } catch (error) {}
-      }
+      this.close();
     },
     close() {
       this.$emit("closeModal");
     },
   },
-  mounted() {
-    this.walletStore = this.$store.state.walletStore.wallet;
+  computed: {
+    getWalletDetail() {
+      console.log("first");
+      return this.$store.getters.getWalletDetail;
+    },
   },
+  mounted() {},
 };
 </script>
