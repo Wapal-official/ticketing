@@ -12,85 +12,44 @@
       devices
     </div>
     <p class="text-base md:text-lg" v-if="message">{{ message }}</p>
-    <p class="text-base md:text-lg">Choose a wallet to connect</p>
-    <div class="w-full flex flex-row items-center justify-center gap-4">
-      <button @click="connectPetra">
-        <img :src="petraLogo" alt="petra" class="w-12 h-12" />
-      </button>
-      <button @click="connectMartian">
-        <img :src="martianLogo" alt="martian" class="w-12 h-12" />
+    <p class="text-base md:text-lg pb-4">Choose a wallet to connect</p>
+    <div
+      class="w-full flex flex-row flex-wrap items-start justify-start gap-x-4 gap-y-6 cursor"
+    >
+      <button
+        @click="connectWallet(wallet.name)"
+        v-for="wallet in wallets"
+        :class="{ '!cursor-not-allowed': wallet.readyState === 'NotDetected' }"
+        :disabled="wallet.readyState === 'NotDetected' ? true : false"
+      >
+        <img :src="wallet.icon" :alt="wallet.name" class="w-12 h-12" />
       </button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import petraLogo from "@/assets/img/connect-wallet/petra-logo.svg";
-import martianLogo from "@/assets/img/connect-wallet/martian-logo.svg";
-
 export default {
   props: { message: { type: String, default: "" } },
   data() {
     return {
-      petraLogo,
-      martianLogo,
-      walletStore: null,
+      wallets: this.$store.getters["walletStore/getWalletsDetail"],
     };
   },
   methods: {
-    getPetraWallet() {
-      if ("aptos" in window) {
-        return window.aptos;
-      } else {
-        window.open("https://petra.app/", `_blank`);
+    async connectWallet(wallet: string) {
+      const res = await this.$store.dispatch(
+        "walletStore/connectWallet",
+        wallet
+      );
+      if (res) {
+        this.$emit("walletConnected");
       }
-    },
-    getMartianWallet() {
-      if ("martian" in window) {
-        return window.martian;
-      }
-      window.open("https://www.martianwallet.xyz/", "_blank");
-    },
-    async connectPetra() {
-      if (this.getPetraWallet()) {
-        const wallet = this.getPetraWallet();
-
-        try {
-          const response = await wallet.connect();
-
-          this.walletStore = {
-            wallet: "petra",
-            walletAddress: response.address,
-            publicKey: response.publicKey,
-          };
-          this.$store.commit("walletStore/setWallet", this.walletStore);
-          this.$emit("walletConnected");
-        } catch (error) {}
-      }
-    },
-    async connectMartian() {
-      if (this.getMartianWallet()) {
-        const wallet = this.getMartianWallet();
-        try {
-          const response = await wallet.connect();
-
-          this.walletStore = {
-            wallet: "martian",
-            walletAddress: response.address,
-            publicKey: response.publicKey,
-          };
-          this.$store.commit("walletStore/setWallet", this.walletStore);
-
-          this.$emit("walletConnected");
-        } catch (error) {}
-      }
+      this.close();
     },
     close() {
       this.$emit("closeModal");
     },
-  },
-  mounted() {
-    this.walletStore = this.$store.state.walletStore.wallet;
   },
 };
 </script>
