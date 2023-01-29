@@ -12,45 +12,31 @@
       devices
     </div>
     <p class="text-base md:text-lg" v-if="message">{{ message }}</p>
-    <p class="text-base md:text-lg">Choose a wallet to connect</p>
-    <div>{{ getWalletDetail }}</div>
+    <p class="text-base md:text-lg pb-4">Choose a wallet to connect</p>
     <div
-      class="w-full flex flex-row flex-wrap items-center justify-center gap-4"
+      class="w-full flex flex-row flex-wrap items-start justify-start gap-x-4 gap-y-6 cursor"
     >
-      <button @click="connectWallet(wallet.name)" v-for="wallet in wallets">
-        <div>{{ wallet.name }}</div>
+      <button
+        @click="connectWallet(wallet.name)"
+        v-for="wallet in wallets"
+        :class="{ '!cursor-not-allowed': wallet.readyState === 'NotDetected' }"
+        :disabled="wallet.readyState === 'NotDetected' ? true : false"
+      >
+        <img :src="wallet.icon" :alt="wallet.name" class="w-12 h-12" />
       </button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import petraLogo from "@/assets/img/connect-wallet/petra-logo.svg";
-import martianLogo from "@/assets/img/connect-wallet/martian-logo.svg";
-
 export default {
   props: { message: { type: String, default: "" } },
   data() {
     return {
-      petraLogo,
-      martianLogo,
-      wallets: JSON.parse(this.$store.state.walletStore.wallets),
+      wallets: this.$store.getters["walletStore/getWalletsDetail"],
     };
   },
   methods: {
-    getPetraWallet() {
-      if ("aptos" in window) {
-        return window.aptos;
-      } else {
-        window.open("https://petra.app/", `_blank`);
-      }
-    },
-    getMartianWallet() {
-      if ("martian" in window) {
-        return window.martian;
-      }
-      window.open("https://www.martianwallet.xyz/", "_blank");
-    },
     async connectWallet(wallet: string) {
       const res = await this.$store.dispatch(
         "walletStore/connectWallet",
@@ -65,12 +51,5 @@ export default {
       this.$emit("closeModal");
     },
   },
-  computed: {
-    getWalletDetail() {
-      console.log("first");
-      return this.$store.getters.getWalletDetail;
-    },
-  },
-  mounted() {},
 };
 </script>

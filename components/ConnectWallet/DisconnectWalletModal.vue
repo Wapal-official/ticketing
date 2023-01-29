@@ -7,7 +7,7 @@
     </div>
     <div class="flex flex-row items-center justify-start gap-4">
       <img
-        :src="walletStore.wallet === 'petra' ? petraLogo : martianLogo"
+        :src="currentWallet.icon"
         :alt="walletStore.wallet"
         class="w-12 h-12"
       />
@@ -20,17 +20,12 @@
 </template>
 
 <script lang="ts">
-import petraLogo from "@/assets/img/connect-wallet/petra-logo.svg";
-import martianLogo from "@/assets/img/connect-wallet/martian-logo.svg";
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 
 export default {
   components: { PrimaryButton },
   data() {
-    return {
-      petraLogo,
-      martianLogo,
-    };
+    return {};
   },
   methods: {
     close() {
@@ -44,6 +39,19 @@ export default {
   computed: {
     walletStore() {
       return this.$store.state.walletStore.wallet;
+    },
+    currentWallet() {
+      const wallets: any = this.$store.getters["walletStore/getWalletsDetail"];
+
+      const wallet = wallets.find(
+        (wallet: any) => wallet.name === this.walletStore.wallet
+      );
+
+      if (!wallet) {
+        return wallets[0];
+      }
+
+      return wallet;
     },
   },
 };
