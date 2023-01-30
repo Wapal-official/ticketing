@@ -11,34 +11,35 @@
       Please use Kiwi Browser for wallet connection if you are using mobile
       devices
     </div>
-    <p class="text-base md:text-lg" v-if="message">{{ message }}</p>
-    <p class="text-base md:text-lg pb-4">Choose a wallet to connect</p>
+    <p class="tw-text-base md:tw-text-lg" v-if="message">{{ message }}</p>
+    <p class="tw-text-base md:tw-text-lg tw-pb-4">Choose a wallet to connect</p>
     <div
-      class="w-full flex flex-col items-start justify-start gap-x-4 gap-y-6 cursor"
+      class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-x-4 tw-gap-y-6"
       v-if="installedWallets.length > 0"
     >
-      <h6 class="text-lg text-white">Installed</h6>
+      <h6 class="tw-text-lg tw-text-white">Installed</h6>
       <button
         @click="connectWallet(wallet.name)"
         v-for="wallet in installedWallets"
-        class="w-full rounded flex flex-row items-center justify-start gap-4 pl-20 pr-4 py-4 bg-gray-900"
+        class="tw-w-full tw-rounded tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-pl-4 tw-pr-4 tw-py-4 tw-bg-gray-900 md:tw-pl-20"
       >
-        <img :src="wallet.icon" :alt="wallet.name" class="w-12 h-12" />
+        <img :src="wallet.icon" :alt="wallet.name" class="tw-w-12 tw-h-12" />
+        <span class="tw-text-lg tw-text-wapal-gray">{{ wallet.name }}</span>
       </button>
     </div>
     <div
-      class="w-full flex flex-col items-start justify-start gap-x-4 gap-y-6 cursor py-4"
+      class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-x-4 tw-gap-y-6 tw-py-4"
       v-if="availableWallets.length > 0"
     >
-      <h6 class="text-lg text-white">Available</h6>
+      <h6 class="tw-text-lg tw-text-white">Available</h6>
       <a
         :href="wallet.url"
         target="_blank"
         v-for="wallet in availableWallets"
-        class="w-full rounded flex flex-row items-center justify-start gap-4 pl-20 pr-4 py-4 bg-gray-900"
+        class="tw-w-full tw-rounded tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-pl-4 tw-pr-4 tw-py-4 tw-bg-gray-900 md:tw-pl-20"
       >
-        <img :src="wallet.icon" :alt="wallet.name" class="w-12 h-12" />
-        <span class="text-lg text-wapal-gray">{{ wallet.name }}</span>
+        <img :src="wallet.icon" :alt="wallet.name" class="tw-w-12 tw-h-12" />
+        <span class="tw-text-lg tw-text-wapal-gray">{{ wallet.name }}</span>
       </a>
     </div>
   </div>
@@ -77,8 +78,6 @@ export default {
       this.availableWallets = this.wallets.filter(
         (wallet: any) => wallet.readyState === "NotDetected"
       );
-      console.log(this.installedWallets);
-      console.log(this.availableWallets);
     },
   },
   mounted() {
