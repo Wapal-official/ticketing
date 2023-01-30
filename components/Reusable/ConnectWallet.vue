@@ -44,7 +44,7 @@
     </v-dialog>
     <v-snackbar
       v-model="walletConnectedSnackbar"
-      :timeout="5000"
+      :timeout="3000"
       top
       centered
       :color="defaultTheme.modalGray"
