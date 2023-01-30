@@ -9,12 +9,23 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@aptos-labs/wallet-adapter-core": "^0.2.3",
+    "@blocto/aptos-wallet-adapter-plugin": "^0.1.2",
+    "@martianwallet/aptos-wallet-adapter": "0.0.3",
     "@nuxtjs/axios": "^5.13.6",
+    "@pontem/wallet-adapter-plugin": "^0.1.4",
+    "@rise-wallet/wallet-adapter": "^0.1.2",
+    "@solana/web3.js": "^1.73.0",
+    "@spika/aptos-plugin": "^0.1.2",
+    "@trustwallet/aptos-wallet-adapter": "^0.1.6",
     "@types/js-cookie": "^3.0.2",
     "cookie-universal-nuxt": "^2.2.2",
     "core-js": "^3.25.3",
+    "fewcha-plugin-wallet-adapter": "^0.1.1",
     "js-cookie": "^3.0.1",
+    "msafe-plugin-wallet-adapter": "^0.1.0",
     "nuxt": "^2.15.8",
+    "petra-plugin-wallet-adapter": "^0.1.3",
     "swiper": "^8.4.6",
     "vue": "^2.7.10",
     "vue-server-renderer": "^2.7.10",
@@ -24,6 +35,7 @@
     "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.20.7",
     "@nuxt/postcss8": "^1.1.3",
     "@nuxt/types": "^2.15.8",
     "@nuxt/typescript-build": "^2.1.0",
