@@ -7,11 +7,11 @@
     </div>
     <div class="flex flex-row items-center justify-start gap-4">
       <img
-        :src="walletStore.wallet === 'petra' ? petraLogo : martianLogo"
+        :src="currentWallet.icon"
         :alt="walletStore.wallet"
         class="w-12 h-12"
       />
-      <p class="text-sm md:text-lg">Wallet Currently Connected</p>
+      <div class="text-sm md:text-lg">Wallet Currently Connected</div>
     </div>
     <primary-button @click.native="disconnectWallet" class="ml-4 mt-2"
       >Disconnect Wallet
@@ -20,36 +20,34 @@
 </template>
 
 <script lang="ts">
-import petraLogo from "@/assets/img/connect-wallet/petra-logo.svg";
-import martianLogo from "@/assets/img/connect-wallet/martian-logo.svg";
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
-import WalletAddress from "@/interfaces/walletAddress";
-
 export default {
   components: { PrimaryButton },
   data() {
-    return {
-      petraLogo,
-      martianLogo,
-    };
+    return {};
   },
   methods: {
     close() {
       this.$emit("closeModal");
     },
     disconnectWallet() {
-      const wallet: WalletAddress = {
-        wallet: "",
-        walletAddress: "",
-        publicKey: "",
-      };
-      this.$store.commit("walletStore/setWallet", wallet);
+      this.$store.dispatch("walletStore/disconnectWallet");
       this.$emit("walletDisconnected");
     },
   },
   computed: {
     walletStore() {
       return this.$store.state.walletStore.wallet;
+    },
+    currentWallet() {
+      const wallets: any = this.$store.getters["walletStore/getWalletsDetail"];
+      const wallet = wallets.find(
+        (wallet: any) => wallet.name === this.walletStore.wallet
+      );
+      if (!wallet) {
+        return wallets[0];
+      }
+      return wallet;
     },
   },
 };

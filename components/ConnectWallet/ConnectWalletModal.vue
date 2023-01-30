@@ -12,85 +12,75 @@
       devices
     </div>
     <p class="text-base md:text-lg" v-if="message">{{ message }}</p>
-    <p class="text-base md:text-lg">Choose a wallet to connect</p>
-    <div class="w-full flex flex-row items-center justify-center gap-4">
-      <button @click="connectPetra">
-        <img :src="petraLogo" alt="petra" class="w-12 h-12" />
+    <p class="text-base md:text-lg pb-4">Choose a wallet to connect</p>
+    <div
+      class="w-full flex flex-col items-start justify-start gap-x-4 gap-y-6 cursor"
+      v-if="installedWallets.length > 0"
+    >
+      <h6 class="text-lg text-white">Installed</h6>
+      <button
+        @click="connectWallet(wallet.name)"
+        v-for="wallet in installedWallets"
+        class="w-full rounded flex flex-row items-center justify-start gap-4 pl-20 pr-4 py-4 bg-gray-900"
+      >
+        <img :src="wallet.icon" :alt="wallet.name" class="w-12 h-12" />
+        <span class="text-lg text-wapal-gray">{{ wallet.name }}</span>
       </button>
-      <button @click="connectMartian">
-        <img :src="martianLogo" alt="martian" class="w-12 h-12" />
-      </button>
+    </div>
+    <div
+      class="w-full flex flex-col items-start justify-start gap-x-4 gap-y-6 cursor py-4"
+      v-if="availableWallets.length > 0"
+    >
+      <h6 class="text-lg text-white">Available</h6>
+      <a
+        :href="wallet.url"
+        target="_blank"
+        v-for="wallet in availableWallets"
+        class="w-full rounded flex flex-row items-center justify-start gap-4 pl-20 pr-4 py-4 bg-gray-900"
+      >
+        <img :src="wallet.icon" :alt="wallet.name" class="w-12 h-12" />
+        <span class="text-lg text-wapal-gray">{{ wallet.name }}</span>
+      </a>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import petraLogo from "@/assets/img/connect-wallet/petra-logo.svg";
-import martianLogo from "@/assets/img/connect-wallet/martian-logo.svg";
-
 export default {
   props: { message: { type: String, default: "" } },
   data() {
     return {
-      petraLogo,
-      martianLogo,
-      walletStore: null,
+      wallets: this.$store.getters["walletStore/getWalletsDetail"],
+      installedWallets: [{ name: "", icon: "", url: "" }],
+      availableWallets: [{ name: "", icon: "", url: "" }],
     };
   },
   methods: {
-    getPetraWallet() {
-      if ("aptos" in window) {
-        return window.aptos;
-      } else {
-        window.open("https://petra.app/", `_blank`);
+    async connectWallet(wallet: string) {
+      const res = await this.$store.dispatch(
+        "walletStore/connectWallet",
+        wallet
+      );
+      if (res) {
+        this.$emit("walletConnected");
       }
-    },
-    getMartianWallet() {
-      if ("martian" in window) {
-        return window.martian;
-      }
-      window.open("https://www.martianwallet.xyz/", "_blank");
-    },
-    async connectPetra() {
-      if (this.getPetraWallet()) {
-        const wallet = this.getPetraWallet();
-
-        try {
-          const response = await wallet.connect();
-
-          this.walletStore = {
-            wallet: "petra",
-            walletAddress: response.address,
-            publicKey: response.publicKey,
-          };
-          this.$store.commit("walletStore/setWallet", this.walletStore);
-          this.$emit("walletConnected");
-        } catch (error) {}
-      }
-    },
-    async connectMartian() {
-      if (this.getMartianWallet()) {
-        const wallet = this.getMartianWallet();
-        try {
-          const response = await wallet.connect();
-
-          this.walletStore = {
-            wallet: "martian",
-            walletAddress: response.address,
-            publicKey: response.publicKey,
-          };
-          this.$store.commit("walletStore/setWallet", this.walletStore);
-
-          this.$emit("walletConnected");
-        } catch (error) {}
-      }
+      this.close();
     },
     close() {
       this.$emit("closeModal");
     },
+    separateWallets() {
+      this.installedWallets = this.wallets.filter(
+        (wallet: any) =>
+          wallet.readyState === "Installed" || wallet.readyState === "Loadable"
+      );
+      this.availableWallets = this.wallets.filter(
+        (wallet: any) => wallet.readyState === "NotDetected"
+      );
+    },
   },
   mounted() {
-    this.walletStore = this.$store.state.walletStore.wallet;
+    this.separateWallets();
   },
 };
 </script>
