@@ -14,16 +14,33 @@
     <p class="text-base md:text-lg" v-if="message">{{ message }}</p>
     <p class="text-base md:text-lg pb-4">Choose a wallet to connect</p>
     <div
-      class="w-full flex flex-row flex-wrap items-start justify-start gap-x-4 gap-y-6 cursor"
+      class="w-full flex flex-col items-start justify-start gap-x-4 gap-y-6 cursor"
+      v-if="installedWallets.length > 0"
     >
+      <h6 class="text-lg text-white">Installed</h6>
       <button
         @click="connectWallet(wallet.name)"
-        v-for="wallet in wallets"
-        :class="{ '!cursor-not-allowed': wallet.readyState === 'NotDetected' }"
-        :disabled="wallet.readyState === 'NotDetected' ? true : false"
+        v-for="wallet in installedWallets"
+        class="w-full rounded flex flex-row items-center justify-start gap-4 pl-20 pr-4 py-4 bg-gray-900"
       >
         <img :src="wallet.icon" :alt="wallet.name" class="w-12 h-12" />
+        <span class="text-lg text-wapal-gray">{{ wallet.name }}</span>
       </button>
+    </div>
+    <div
+      class="w-full flex flex-col items-start justify-start gap-x-4 gap-y-6 cursor py-4"
+      v-if="availableWallets.length > 0"
+    >
+      <h6 class="text-lg text-white">Available</h6>
+      <a
+        :href="wallet.url"
+        target="_blank"
+        v-for="wallet in availableWallets"
+        class="w-full rounded flex flex-row items-center justify-start gap-4 pl-20 pr-4 py-4 bg-gray-900"
+      >
+        <img :src="wallet.icon" :alt="wallet.name" class="w-12 h-12" />
+        <span class="text-lg text-wapal-gray">{{ wallet.name }}</span>
+      </a>
     </div>
   </div>
 </template>
@@ -34,6 +51,8 @@ export default {
   data() {
     return {
       wallets: this.$store.getters["walletStore/getWalletsDetail"],
+      installedWallets: [{ name: "", icon: "", url: "" }],
+      availableWallets: [{ name: "", icon: "", url: "" }],
     };
   },
   methods: {
@@ -50,6 +69,18 @@ export default {
     close() {
       this.$emit("closeModal");
     },
+    separateWallets() {
+      this.installedWallets = this.wallets.filter(
+        (wallet: any) =>
+          wallet.readyState === "Installed" || wallet.readyState === "Loadable"
+      );
+      this.availableWallets = this.wallets.filter(
+        (wallet: any) => wallet.readyState === "NotDetected"
+      );
+    },
+  },
+  mounted() {
+    this.separateWallets();
   },
 };
 </script>

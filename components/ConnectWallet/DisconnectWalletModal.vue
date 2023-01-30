@@ -11,7 +11,7 @@
         :alt="walletStore.wallet"
         class="w-12 h-12"
       />
-      <p class="text-sm md:text-lg">Wallet Currently Connected</p>
+      <div class="text-sm md:text-lg">Wallet Currently Connected</div>
     </div>
     <primary-button @click.native="disconnectWallet" class="ml-4 mt-2"
       >Disconnect Wallet
@@ -21,7 +21,6 @@
 
 <script lang="ts">
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
-
 export default {
   components: { PrimaryButton },
   data() {
@@ -42,15 +41,12 @@ export default {
     },
     currentWallet() {
       const wallets: any = this.$store.getters["walletStore/getWalletsDetail"];
-
       const wallet = wallets.find(
         (wallet: any) => wallet.name === this.walletStore.wallet
       );
-
       if (!wallet) {
         return wallets[0];
       }
-
       return wallet;
     },
   },
