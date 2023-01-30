@@ -11,7 +11,7 @@
         :alt="walletStore.wallet"
         class="w-12 h-12"
       />
-      <p class="text-sm md:text-lg">Wallet Currently Connected</p>
+      <div class="text-sm md:text-lg">Wallet Currently Connected</div>
     </div>
     <primary-button @click.native="disconnectWallet" class="ml-4 mt-2"
       >Disconnect Wallet
