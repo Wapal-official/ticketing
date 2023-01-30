@@ -22,7 +22,7 @@
       </h3>
     </div>
     <div
-      class="tw-rounded tw-w-full tw-bg-[#001233] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-px-8 tw-py-8 lg:tw-w-[60%]"
+      class="tw-rounded tw-w-full tw-bg-[#001233] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-px-8 tw-py-8 lg:tw-w-[60%] preview-shadow"
     >
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
