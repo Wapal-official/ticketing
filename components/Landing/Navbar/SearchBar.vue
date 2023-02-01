@@ -25,7 +25,7 @@
       >mdi-close</v-icon
     >
     <div
-      class="tw-absolute tw-top-[110%] tw-bg-modal-gray tw-rounded tw-py-4 tw-px-8 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center"
+      class="tw-absolute tw-top-[110%] tw-bg-modal-gray tw-rounded tw-py-4 tw-px-8 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-z-50"
       v-if="showSearchResults"
     >
       <v-progress-circular
@@ -68,9 +68,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.search-bar-input {
-  border-style: solid !important;
-  @apply tw-w-full tw-pl-10 tw-pr-4 tw-py-2 tw-bg-modal-gray  tw-text-white tw-border tw-border-transparent tw-transition-all tw-duration-200 tw-ease-linear placeholder:tw-text-white focus:tw-outline-none focus:tw-border-modal-gray focus:tw-shadow focus:tw-shadow-modal-gray md:tw-rounded md:focus:tw-bg-transparent;
-}
-</style>

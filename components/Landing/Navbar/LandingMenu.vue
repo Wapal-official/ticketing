@@ -1,24 +1,46 @@
 <template>
   <div
-    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-text-base tw-gap-8 md:tw-w-1/2 lg:tw-w-full lg:tw-flex-row lg:!tw-justify-end lg:tw-items-center lg:tw-gap-8"
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-text-base tw-gap-4 lg:tw-w-full lg:tw-flex-row lg:!tw-justify-end lg:tw-items-center lg:tw-gap-8"
   >
-    <v-menu offset-y>
-      <template v-slot:activator="{ on, attrs }">
-        <div
-          class="!tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink tw-uppercase !tw-font-normal"
-          v-bind="attrs"
-          v-on="on"
+    <div class="tw-hidden lg:tw-flex">
+      <v-menu offset-y open-on-hover>
+        <template v-slot:activator="{ on, attrs }">
+          <div v-bind="attrs" v-on="on">
+            <NuxtLink
+              to="/faq"
+              class="!tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink tw-uppercase !tw-font-normal"
+            >
+              Explore
+            </NuxtLink>
+          </div>
+        </template>
+        <v-list class="!tw-bg-modal-gray !tw-min-w-[200px]">
+          <explore-list-item name="All NFTs" @close="close" />
+          <explore-list-item name="Arts" :last="true" @close="close" />
+        </v-list>
+      </v-menu>
+    </div>
+    <div class="tw-flex tw-w-full lg:tw-hidden">
+      <v-list-group
+        :ripple="false"
+        id="explore-list-group"
+        v-model="showExploreMenu"
+        active-class="!tw-text-wapal-pink "
+        class="!tw-text-white tw-w-full"
+      >
+        <template
+          v-slot:activator
+          class="focus:before:!tw-opacity-0"
+          @click="showExploreMenu = !showExploreMenu"
         >
-          Explore
-        </div>
-      </template>
-      <v-list class="!tw-bg-modal-gray !tw-min-w-[200px]">
+          <span class="tw-w-full"> Explore</span>
+        </template>
         <explore-list-item name="All NFTs" @close="close" />
         <explore-list-item name="Arts" :last="true" @close="close" />
-      </v-list>
-    </v-menu>
+      </v-list-group>
+    </div>
     <menu-item text="FAQS" link="/faq" @close="close" />
-    <connect-wallet @close="close" />
+    <connect-wallet @close="close" class="tw-mx-auto" />
   </div>
 </template>
 <script lang="ts">
@@ -27,8 +49,12 @@ import ConnectWallet from "@/components/Reusable/ConnectWallet.vue";
 import ExploreListItem from "@/components/Landing/Navbar/ExploreListItem.vue";
 export default {
   components: { MenuItem, ConnectWallet, ExploreListItem },
+  data() {
+    return { showExploreMenu: false };
+  },
   methods: {
     close() {
+      this.showExploreMenu = false;
       this.$emit("close");
     },
   },

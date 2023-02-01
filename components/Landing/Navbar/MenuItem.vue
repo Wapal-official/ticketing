@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     :to="link"
-    class="!tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink tw-uppercase !tw-font-normal"
+    class="!tw-text-white tw-transition tw-duration-200 tw-ease-linear tw-uppercase !tw-font-normal tw-px-4 tw-w-full hover:!tw-text-wapal-pink lg:tw-px-0"
     @click.native="close"
     >{{ text }}</NuxtLink
   >
