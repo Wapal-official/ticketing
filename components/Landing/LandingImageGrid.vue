@@ -1,25 +1,27 @@
 <template>
   <section
-    class="rounded-lg px-4 py-8 container mx-auto lg:py-12 lg:px-12 bg-[#010416]"
+    class="tw-rounded-lg tw-px-4 tw-py-8 tw-container tw-mx-auto lg:tw-py-12 lg:tw-px-12 tw-bg-[#010416]"
   >
-    <div class="flex flex-col items-center justify-center gap-8 lg:flex-row">
+    <div
+      class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 lg:tw-flex-row"
+    >
       <div
-        class="w-[300px] h-[300px] md:w-full md:h-auto lg:w-1/2 hover:scale-105 hover:lg:scale-100 hover:lg:w-[55%] transition-all duration-300 ease-linear"
+        class="tw-w-[300px] tw-h-[300px] md:tw-w-full md:tw-h-auto lg:tw-w-1/2 hover:tw-scale-105 hover:lg:tw-scale-100 hover:lg:tw-w-[55%] tw-transition-all tw-duration-300 tw-ease-linear"
       >
         <img :src="firstImage" alt="image" class="w-full h-full" />
       </div>
       <div
-        class="w-[300px] md:w-full lg:w-1/2 flex flex-col items-end justify-end gap-8 transition-all duration-300 ease-linear display-images hover:scale-105 hover:lg:scale-100 hover:lg:w-[55%]"
+        class="tw-w-[300px] md:tw-w-full lg:tw-w-1/2 tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-8 tw-transition-all tw-duration-300 tw-ease-linear display-images hover:tw-scale-105 hover:lg:tw-scale-100 hover:lg:tw-w-[55%]"
       >
         <img
           :src="secondImage"
           alt="image"
-          class="w-full h-[300px] transition-all ease-linear duration-300 transform hover:!w-full md:h-auto second-display-image"
+          class="tw-w-full tw-h-[300px] tw-transition-all tw-ease-linear tw-duration-300 tw-transform hover:!tw-w-full md:tw-h-auto second-display-image"
         />
         <img
           :src="thirdImage"
           alt="image"
-          class="w-full h-[300px] transition-all ease-linear duration-300 transform hover:!w-full md:h-auto third-display-image"
+          class="tw-w-full tw-h-[300px] tw-transition-all tw-ease-linear tw-duration-300 tw-transform hover:!tw-w-full md:tw-h-auto third-display-image"
         />
       </div>
     </div>

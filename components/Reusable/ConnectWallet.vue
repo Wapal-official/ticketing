@@ -1,26 +1,31 @@
 <template>
-  <div class="text-sm">
+  <div class="tw-text-sm tw-w-full">
     <button
       class="gradient-button"
       @click="connectWallet"
       v-if="!walletStore.wallet"
     >
-      Connect Wallet {{ walletStore.wallet }}
+      Connect Wallet
     </button>
 
     <button
-      class="gradient-button px-6 py-2 text-xs w-full flex flex-row items-center justify-start gap-2 rounded-md bg-gradient-to-r from-[#000000] via-[#34107B] to-[#1B0051] font-medium relative overflow-hidden"
+      class="gradient-button tw-px-6 tw-py-2 tw-text-xs tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-rounded-md tw-bg-gradient-to-r tw-from-[#000000] tw-via-[#34107B] tw-to-[#1B0051] tw-font-medium tw-relative tw-overflow-hidden md:tw-items-start"
       @click="disconnectWallet"
       v-else
     >
       <client-only>
-        <v-icon class="!text-wapal-pink">mdi-account</v-icon></client-only
+        <v-icon class="!tw-text-wapal-pink">mdi-account</v-icon></client-only
       >
-      <span>{{ displayWalletAddress }}</span>
+      <span class="tw-text-lg lg:tw-text-sm md:tw-hidden lg:tw-flex">{{
+        displayFormattedWalletAddress
+      }}</span>
+      <span class="tw-text-lg tw-hidden md:tw-flex lg:tw-hidden">{{
+        displayFormattedWalletAddressForMediumScreens
+      }}</span>
     </button>
     <v-dialog
       v-model="showConnectWalletDialog"
-      content-class="!w-full md:!w-1/2 lg:!w-1/4"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-1/4"
     >
       <connect-wallet-modal
         @closeModal="showConnectWalletDialog = false"
@@ -29,7 +34,7 @@
     </v-dialog>
     <v-dialog
       v-model="showDisconnectWalletDialog"
-      content-class="!w-full md:!w-1/2 lg:!w-1/4"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-1/4"
     >
       <disconnect-wallet-modal
         @closeModal="showDisconnectWalletDialog = false"
@@ -38,7 +43,7 @@
     </v-dialog>
     <v-dialog
       v-model="showSignupDialog"
-      content-class="!w-full md:!w-1/2 lg:!w-[35%]"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
     >
       <signup-modal @close="showSignupDialog = false" />
     </v-dialog>
@@ -50,10 +55,10 @@
       :color="defaultTheme.modalGray"
     >
       <div
-        class="w-full h-full flex flex-row items-center justify-center gap-2"
+        class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2"
       >
-        <v-icon class="!text-green-500">mdi-check-circle</v-icon
-        ><span class="capitalize">{{ message }}</span>
+        <v-icon class="!tw-text-green-500">mdi-check-circle</v-icon
+        ><span class="tw-capitalize">{{ message }}</span>
       </div>
     </v-snackbar>
   </div>
@@ -101,14 +106,20 @@ export default {
     },
   },
   computed: {
-    displayWalletAddress() {
+    displayFormattedWalletAddress() {
       return this.walletStore.walletAddress
         ? this.walletStore.walletAddress.substring(0, 8) +
             "..." +
             this.walletStore.walletAddress.slice(-3)
         : "";
     },
-
+    displayFormattedWalletAddressForMediumScreens() {
+      return this.walletStore.walletAddress
+        ? this.walletStore.walletAddress.substring(0, 15) +
+            "..." +
+            this.walletStore.walletAddress.slice(-10)
+        : "";
+    },
     walletStore() {
       return this.$store.state.walletStore.wallet;
     },

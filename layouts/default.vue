@@ -1,8 +1,8 @@
 <template>
-  <v-app class="!bg-wapal-background min-h-screen w-full">
-    <Navbar />
-    <Nuxt />
-    <wapal-footer />
+  <v-app class="!tw-bg-wapal-background tw-w-full">
+    <Navbar @landingMenuToggled="toggleMainContainer" />
+    <Nuxt :class="mainClass" />
+    <wapal-footer :class="mainClass" />
   </v-app>
 </template>
 
@@ -11,5 +11,17 @@ import Navbar from "@/components/Landing/Navbar/Navbar.vue";
 import WapalFooter from "@/components/Landing/Footer/WapalFooter.vue";
 export default {
   components: { Navbar, WapalFooter },
+  data() {
+    return { mainClass: "" };
+  },
+  methods: {
+    toggleMainContainer(landingMenuShowing: boolean) {
+      if (landingMenuShowing) {
+        this.mainClass = "tw-hidden lg:tw-flex";
+      } else {
+        this.mainClass = "";
+      }
+    },
+  },
 };
 </script>

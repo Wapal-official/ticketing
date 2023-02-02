@@ -1,5 +1,5 @@
 <template>
-  <section class="px-4 py-16">
+  <section class="tw-px-4 tw-py-16">
     <div class="swiper mySwiper" ref="swiper">
       <div class="swiper-wrapper">
         <div
@@ -9,7 +9,7 @@
         >
           <img
             :src="image"
-            class="object-fill w-[300] h-[300px] mx-auto md:mx-0 md:w-[250px] md:h-[250px]"
+            class="tw-object-fill tw-w-[300] tw-h-[300px] tw-mx-auto md:tw-mx-0 md:tw-w-[250px] md:tw-h-[250px]"
             alt="Image"
           />
         </div>

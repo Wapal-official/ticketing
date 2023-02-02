@@ -1,11 +1,13 @@
 <template>
   <div>
-    <section class="flex flex-row items-center justify-center gap-8 py-60">
+    <section
+      class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-8 tw-py-60"
+    >
       <div
-        class="text-white px-8 lg:w-[60%] flex flex-col items-center justify-center gap-10 text-center"
+        class="tw-text-white tw-px-8 lg:tw-w-[60%] tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-10 tw-text-center"
       >
         <h1
-          class="text-3xl font-semibold text-wapal-gray flex flex-col items-center justify-center gap-2"
+          class="tw-text-3xl tw-text-wapal-gray tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
         >
           Zero Code, Zero Fee NFT Creator Studio on Aptos
         </h1>
@@ -15,7 +17,7 @@
       </div>
       <v-dialog
         v-model="showConnectWalletModal"
-        content-class="!w-full md:!w-1/2 lg:!w-[30%]"
+        content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
       >
         <connect-wallet-modal
           message="Please Connect your wallet to Sign Up"
@@ -25,7 +27,7 @@
       </v-dialog>
       <v-dialog
         v-model="showSignupDialog"
-        content-class="!w-full md:!w-1/2 lg:!w-[35%]"
+        content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
       >
         <signup-modal
           @close="showSignupDialog = false"
@@ -35,8 +37,8 @@
     </section>
     <div class="landing-background">
       <landing-slider />
-      <div class="px-4 md:px-16">
-        <div class="lg:px-16">
+      <div class="tw-px-4 md:tw-px-16">
+        <div class="lg:tw-px-16">
           <landing-image-grid />
         </div>
         <live-section />

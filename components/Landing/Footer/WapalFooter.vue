@@ -1,21 +1,21 @@
 <template>
-  <footer class="w-full footer-shadow mt-12">
+  <footer class="tw-w-full footer-shadow tw-mt-12">
     <div
-      class="w-full grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 px-8 py-8 lg:!px-24"
+      class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-px-8 tw-py-8 lg:!tw-px-24"
     >
       <div
-        class="text-sm font-normal flex flex-col items-start justify-start gap-4"
+        class="tw-text-sm tw-font-normal tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
       >
-        <h5 class="text-base font-medium pb-8">Marketplace</h5>
+        <h5 class="tw-text-base tw-font-medium tw-pb-8">Marketplace</h5>
         <footer-link name="All NFTs" />
         <footer-link name="Domain Names" />
         <footer-link name="Virtual World" />
         <footer-link name="Collectibles" />
       </div>
       <div
-        class="text-sm font-normal flex flex-col items-start justify-start gap-4"
+        class="tw-text-sm tw-font-normal tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
       >
-        <h5 class="text-base font-medium pb-8">Resources</h5>
+        <h5 class="tw-text-base tw-font-medium tw-pb-8">Resources</h5>
         <footer-link name="Help Center" />
         <footer-link name="Partners" />
         <footer-link name="Suggestions" />
@@ -24,9 +24,9 @@
         <footer-link name="Newsletter" />
       </div>
       <div
-        class="text-sm font-normal flex flex-col items-start justify-start gap-4"
+        class="tw-text-sm tw-font-normal tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
       >
-        <h5 class="text-base font-medium pb-8">Community</h5>
+        <h5 class="tw-text-base tw-font-medium tw-pb-8">Community</h5>
         <footer-link name="Community" />
         <footer-link name="Documentation" />
         <footer-link name="Brand Access" />
@@ -35,9 +35,9 @@
         <footer-link name="Mailing List" />
       </div>
       <div
-        class="text-sm font-normal flex flex-col items-start justify-start gap-4"
+        class="tw-text-sm tw-font-normal tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
       >
-        <h5 class="text-base font-medium pb-8">Newsletter</h5>
+        <h5 class="tw-text-base tw-font-medium tw-pb-8">Newsletter</h5>
         <p>Signup for our newsletter to get the latest news in your inbox.</p>
         <v-text-field
           label="Enter your email"
@@ -49,7 +49,7 @@
         >
           <v-icon
             slot="append"
-            class="!text-white !cursor-pointer"
+            class="!tw-text-white !tw-cursor-pointer"
             @click="newsLetterSignup"
           >
             mdi-arrow-right
@@ -58,32 +58,34 @@
         <p>Your email is safe with us. We don't spam.</p>
       </div>
     </div>
-    <div class="footer-gradient-border w-full">
+    <div class="footer-gradient-border tw-w-full">
       <div
-        class="w-full bg-wapal-background px-8 py-2 flex flex-col items-center gap-4 md:flex-row md:justify-between lg:!px-24"
+        class="tw-w-full tw-bg-wapal-background tw-px-8 tw-py-2 tw-flex tw-flex-col tw-items-center tw-gap-4 md:tw-flex-row md:tw-justify-between lg:!tw-px-24"
       >
-        <div class="text-xs">&#169; Copyright {{ currentYear }} - Wapal</div>
-        <div class="flex flex-row items-center gap-4 justify-start">
+        <div class="tw-text-xs">&#169; Copyright {{ currentYear }} - Wapal</div>
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-gap-4 tw-justify-start"
+        >
           <a href="https://twitter.com/wapal_official" target="_blank">
             <div
-              class="relative footer-icon-container rounded-full flex flex-col items-center justify-center"
+              class="tw-relative footer-icon-container tw-rounded-full tw-flex tw-flex-col tw-items-center tw-justify-center"
             >
               <div
-                class="w-full h-full flex flex-col items-center justify-center bg-wapal-background z-20 rounded-full"
+                class="tw-w-full tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-wapal-background tw-z-20 tw-rounded-full"
               >
-                <v-icon class="!text-white !text-xl">mdi-twitter</v-icon>
+                <v-icon class="!tw-text-white !tw-text-xl">mdi-twitter</v-icon>
               </div>
               <div
-                class="absolute z-10 w-full h-full footer-icon-border top-0 left-0"
+                class="tw-absolute tw-z-10 tw-w-full tw-h-full footer-icon-border tw-top-0 tw-left-0"
               ></div>
             </div>
           </a>
           <a href="https://t.co/3KwwcoQ2xW" target="_blank">
             <div
-              class="relative footer-icon-container rounded-full flex flex-col items-center justify-center"
+              class="tw-relative footer-icon-container tw-rounded-full tw-flex tw-flex-col tw-items-center tw-justify-center"
             >
               <div
-                class="w-full h-full flex flex-col items-center justify-center bg-wapal-background z-20 rounded-full"
+                class="tw-w-full tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-wapal-background tw-z-20 tw-rounded-full"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +100,7 @@
                 </svg>
               </div>
               <div
-                class="absolute z-10 w-full h-full footer-icon-border top-0 left-0"
+                class="tw-absolute tw-z-10 tw-w-full tw-h-full footer-icon-border tw-top-0 tw-left-0"
               ></div>
             </div>
           </a>

@@ -1,7 +1,7 @@
 <template>
-  <section class="py-8 container mx-auto">
-    <landing-section-heading heading="Upcoming" class="px-4" />
-    <div class="flex flex-row flex-wrap">
+  <section class="tw-py-8 tw-container tw-mx-auto">
+    <landing-section-heading heading="Upcoming" class="tw-px-4" />
+    <div class="tw-flex tw-flex-row tw-flex-wrap">
       <nft-card
         v-for="nft in liveNfts"
         :key="nft.name"

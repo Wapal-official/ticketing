@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-white transition-all duration-200 ease-linear hover:text-wapal-pink"
+    class="tw-text-white tw-transition-all tw-duration-200 tw-ease-linear hover:tw-text-wapal-pink"
   >
     {{ name }}
   </div>
