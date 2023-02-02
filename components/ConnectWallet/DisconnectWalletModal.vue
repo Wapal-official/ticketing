@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
-
 export default {
   components: { PrimaryButton },
   data() {
@@ -44,15 +43,12 @@ export default {
     },
     currentWallet() {
       const wallets: any = this.$store.getters["walletStore/getWalletsDetail"];
-
       const wallet = wallets.find(
         (wallet: any) => wallet.name === this.walletStore.wallet
       );
-
       if (!wallet) {
         return wallets[0];
       }
-
       return wallet;
     },
   },

@@ -74,7 +74,6 @@ export default {
         (wallet: any) =>
           wallet.readyState === "Installed" || wallet.readyState === "Loadable"
       );
-
       this.availableWallets = this.wallets.filter(
         (wallet: any) => wallet.readyState === "NotDetected"
       );
