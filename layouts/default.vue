@@ -1,5 +1,5 @@
 <template>
-  <v-app class="!tw-bg-wapal-background tw-min-h-screen tw-w-full">
+  <v-app class="!tw-bg-wapal-background tw-w-full">
     <Navbar @landingMenuToggled="toggleMainContainer" />
     <Nuxt :class="mainClass" />
     <wapal-footer :class="mainClass" />

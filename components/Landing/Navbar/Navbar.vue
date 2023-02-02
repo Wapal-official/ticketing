@@ -9,10 +9,10 @@
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full tw-gap-8"
       >
-        <div class="tw-hidden md:tw-w-full md:tw-flex tw-mx-auto">
+        <div class="tw-hidden md:tw-flex tw-flex-1 tw-mx-auto">
           <search-bar />
         </div>
-        <div class="tw-hidden lg:tw-flex lg:tw-w-auto">
+        <div class="tw-hidden lg:tw-flex">
           <landing-menu />
         </div>
       </div>
