@@ -17,7 +17,7 @@
         </div>
       </div>
       <div
-        class="tw-w-full tw-absolute tw-transition-all tw-duration-500 tw-ease-linear tw-z-50 tw-left-0 tw-top-0"
+        class="tw-w-full tw-absolute tw-transition-all tw-duration-300 tw-ease-linear tw-z-50 tw-left-0 tw-top-0"
         :class="searchBarClass"
       >
         <search-bar @closeSearchBar="closeSearchBar" />
@@ -52,7 +52,7 @@ export default {
   components: { LandingMenu, SearchBar },
   data() {
     return {
-      landingMenuClass: "tw--translate-x-full",
+      landingMenuClass: "tw-translate-x-full",
       landingMenuShowing: false,
       searchBarShowing: false,
       searchBarClass: "tw--translate-y-full",
@@ -64,13 +64,13 @@ export default {
       if (!this.landingMenuShowing) {
         this.landingMenuClass = "tw-translate-x-0";
       } else {
-        this.landingMenuClass = "tw--translate-x-full";
+        this.landingMenuClass = "tw-translate-x-full";
       }
       this.landingMenuShowing = !this.landingMenuShowing;
       this.$emit("landingMenuToggled", this.landingMenuShowing);
     },
     close() {
-      this.landingMenuClass = "tw--translate-x-full";
+      this.landingMenuClass = "tw-translate-x-full";
       this.landingMenuShowing = false;
       this.$emit("landingMenuToggled", this.landingMenuShowing);
     },

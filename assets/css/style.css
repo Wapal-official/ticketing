@@ -163,3 +163,8 @@
 #explore-tab .v-tabs-slider {
   @apply !tw-bg-wapal-pink;
 }
+
+#explore-tab .v-tab:focus::before,
+#explore-tab .v-tab:hover::before {
+  opacity: 0 !important;
+}
