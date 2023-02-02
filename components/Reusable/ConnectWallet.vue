@@ -5,7 +5,7 @@
       @click="connectWallet"
       v-if="!walletStore.wallet"
     >
-      Connect Wallet {{ walletStore.wallet }}
+      Connect Wallet
     </button>
 
     <button
