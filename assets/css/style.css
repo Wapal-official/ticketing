@@ -154,3 +154,12 @@
 #explore-list-group .v-list-item:hover::before {
   opacity: 0 !important;
 }
+
+/*Explore Page*/
+#explore-tab .v-tabs-bar,
+#explore-tab-items.v-tabs-items {
+  background: transparent !important;
+}
+#explore-tab .v-tabs-slider {
+  @apply !tw-bg-wapal-pink;
+}

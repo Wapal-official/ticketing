@@ -7,7 +7,7 @@
         <template v-slot:activator="{ on, attrs }">
           <div v-bind="attrs" v-on="on">
             <NuxtLink
-              to="/faq"
+              to="/explore"
               class="!tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink tw-uppercase !tw-font-normal"
             >
               Explore
