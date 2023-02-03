@@ -8,7 +8,7 @@
       <h1
         class="text-3xl font-semibold text-wapal-gray flex flex-col items-center justify-center gap-2"
       >
-        Zero Code, Zero Fee NFT Creator Studio on Aptos
+        No Code NFT Creator Studio on Aptos
       </h1>
       <primary-button @click.native="checkWalletStatus"
         >Sign Up Early</primary-button
