@@ -1,7 +1,7 @@
 <template>
   <div class="tw-text-sm tw-w-full">
     <button
-      class="gradient-button"
+      class="gradient-button tw-text-base lg:tw-text-sm"
       @click="connectWallet"
       v-if="!walletStore.wallet"
     >
@@ -9,7 +9,7 @@
     </button>
 
     <button
-      class="gradient-button tw-px-6 tw-py-2 tw-text-xs tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-rounded-md tw-bg-gradient-to-r tw-from-[#000000] tw-via-[#34107B] tw-to-[#1B0051] tw-font-medium tw-relative tw-overflow-hidden md:tw-items-start"
+      class="gradient-button tw-px-6 tw-py-2 tw-text-xs tw-w-full tw-flex tw-flex-row tw-justify-center tw-gap-2 tw-rounded-md tw-bg-gradient-to-r tw-from-[#000000] tw-via-[#34107B] tw-to-[#1B0051] tw-font-medium tw-relative tw-overflow-hidden md:tw-items-start lg:tw-items-center"
       @click="disconnectWallet"
       v-else
     >

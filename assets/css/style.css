@@ -19,7 +19,7 @@
   left: 100%;
 }
 .gradient-button {
-  @apply tw-px-6 tw-py-2 tw-w-full tw-rounded-md tw-bg-gradient-to-r tw-from-[#000000] tw-via-[#34107B] tw-to-[#1B0051] tw-font-medium tw-relative tw-overflow-hidden;
+  @apply tw-px-6 tw-py-4 tw-w-full tw-rounded-md tw-bg-gradient-to-r tw-from-[#000000] tw-via-[#34107B] tw-to-[#1B0051] tw-font-medium tw-relative tw-overflow-hidden lg:tw-py-2;
 }
 
 /*FAQ Card*/
