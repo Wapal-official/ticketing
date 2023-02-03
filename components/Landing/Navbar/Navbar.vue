@@ -35,7 +35,7 @@
       </div>
     </nav>
     <div
-      class="tw-overflow-auto tw-px-4 tw-transition-all tw-duration-500 tw-ease-linear tw-bg-modal-gray tw-text-white tw-flex tw-absolute tw-z-40 tw-top-[95px] tw-left-0 tw-w-screen tw-transform lg:tw-hidden mobile-menu"
+      class="tw-overflow-auto tw-px-4 tw-transition-all tw-duration-500 tw-ease-linear tw-bg-modal-gray tw-text-white tw-absolute tw-z-40 tw-top-[95px] tw-left-0 tw-w-screen tw-transform lg:tw-hidden mobile-menu"
       :class="landingMenuClass"
     >
       <landing-menu class="tw-py-4" @close="close" />
@@ -62,7 +62,10 @@ export default {
   methods: {
     toggleLandingMenu() {
       if (!this.landingMenuShowing) {
-        this.landingMenuClass = "tw-translate-x-0";
+        this.landingMenuClass = "tw-flex tw-translate-x-full";
+        setTimeout(() => {
+          this.landingMenuClass = "tw-translate-x-0";
+        }, 100);
       } else {
         this.landingMenuClass = "tw-translate-x-full";
       }
@@ -73,6 +76,9 @@ export default {
       this.landingMenuClass = "tw-translate-x-full";
       this.landingMenuShowing = false;
       this.$emit("landingMenuToggled", this.landingMenuShowing);
+      setTimeout(() => {
+        this.landingMenuClass = "tw-hidden";
+      }, 200);
     },
     displaySearchBar() {
       this.searchBarClass = "tw-translate-y-0";

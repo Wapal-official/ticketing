@@ -40,7 +40,7 @@
       </v-list-group>
     </div>
     <menu-item text="FAQS" link="/faq" @close="close" />
-    <connect-wallet @close="close" />
+    <connect-wallet @close="close" class="tw-mt-8 lg:tw-mt-0" />
   </div>
 </template>
 <script lang="ts">
