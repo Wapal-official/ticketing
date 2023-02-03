@@ -19,7 +19,7 @@
   left: 100%;
 }
 .gradient-button {
-  @apply px-6 py-2 w-full rounded-md bg-gradient-to-r from-[#000000] via-[#34107B] to-[#1B0051] font-medium relative overflow-hidden;
+  @apply tw-px-6 tw-py-2 tw-w-full tw-rounded-md tw-bg-gradient-to-r tw-from-[#000000] tw-via-[#34107B] tw-to-[#1B0051] tw-font-medium tw-relative tw-overflow-hidden;
 }
 
 /*FAQ Card*/
@@ -30,24 +30,25 @@
 
 /*Signup Form*/
 .signup-input input::placeholder {
-  @apply !text-wapal-gray;
+  @apply !tw-text-wapal-gray;
 }
 
 .signup-input .v-label {
-  @apply !text-wapal-gray;
+  @apply !tw-text-wapal-gray;
 }
 
 .signup-input input {
-  @apply !text-wapal-gray;
+  @apply !tw-text-wapal-gray;
 }
 
 .signup-input .v-messages__message {
-  @apply !text-base;
+  @apply !tw-text-base;
 }
 
-.discord-icon {
+.discord-icon,
+.nft-discord-icon {
   fill: #fff;
-  @apply !text-4xl transition duration-200 ease-linear;
+  @apply !tw-text-4xl tw-transition tw-duration-200 tw-ease-linear;
 }
 
 .discord-icon:hover {
@@ -64,4 +65,106 @@
 }
 .signup-input .v-label {
   top: 13px !important;
+}
+
+/*Image Grid Landing page*/
+
+.display-images {
+  pointer-events: none;
+}
+
+.third-display-image,
+.second-display-image,
+.first-display-image {
+  pointer-events: auto;
+}
+
+.display-images:hover .second-display-image,
+.display-images:hover .third-display-image {
+  @apply tw-w-[90%];
+}
+
+/*Footer*/
+.footer-shadow {
+  box-shadow: 0px 0px 10px 0px rgba(194, 2, 211, 1);
+}
+.footer-gradient-border {
+  padding-top: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(254, 135, 255, 0.2),
+    rgba(253, 43, 255, 0.2),
+    rgba(62, 45, 221, 0.2),
+    rgba(253, 43, 255, 0.2),
+    rgba(254, 135, 255, 0.2)
+  );
+}
+
+.footer-icon-container {
+  padding: 1.5px;
+  width: 36px;
+  height: 36px;
+}
+.footer-icon-border {
+  background: linear-gradient(90deg, #fe87ff, #c202d3, #5e0fff, #1905da);
+  @apply tw-transition-all tw-duration-200 tw-ease-linear tw-rounded-full;
+}
+.footer-icon-container:hover .footer-icon-border {
+  transform: rotate(180deg);
+}
+
+/*NFT Preview*/
+.nft-preview-card-border {
+  padding: 3px;
+  background: linear-gradient(
+    120deg,
+    rgba(234, 89, 190, 1),
+    rgba(234, 89, 190, 0)
+  );
+}
+
+.live-counter {
+  font-size: 2rem;
+  font-weight: 700;
+  -webkit-text-fill-color: #070f1c;
+  -webkit-text-stroke: 2px #ff36ab;
+}
+
+.live-counter-shadow {
+  text-shadow: 0px 0px 7px #ff36ab;
+}
+
+.nft-discord-icon:hover {
+  fill: #ea59be;
+}
+
+.preview-shadow {
+  box-shadow: -4px -4px 15px rgba(86, 86, 86, 0.25),
+    4px 4px 15px rgba(86, 86, 86, 0.25);
+}
+
+/*Search Bar*/
+.search-bar-input {
+  border-style: solid !important;
+  @apply tw-w-full tw-pl-10 tw-pr-4 tw-py-2 tw-bg-[#4b4b4b] tw-text-white tw-border tw-border-transparent tw-transition-all tw-duration-200 tw-ease-linear placeholder:tw-text-white focus:tw-outline-none focus:tw-border-modal-gray focus:tw-shadow focus:tw-shadow-modal-gray md:tw-rounded md:focus:tw-bg-transparent;
+}
+
+/*Explore List*/
+#explore-list-group .v-list-item:focus::before,
+#explore-list-group .v-list-item:hover::before {
+  opacity: 0 !important;
+}
+
+/*Explore Page*/
+#explore-tab .v-tabs-bar,
+#explore-tab-items.v-tabs-items {
+  background: transparent !important;
+}
+#explore-tab .v-tabs-slider {
+  @apply !tw-bg-wapal-pink;
+}
+
+#explore-tab .v-tab:focus::before,
+#explore-tab .v-tab:hover::before {
+  opacity: 0 !important;
 }

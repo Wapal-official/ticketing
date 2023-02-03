@@ -99,5 +99,7 @@ export default {
     },
   },
   axios: { baseURL: API_URL },
-  env: { baseURL: API_URL },
+  env: {
+    baseURL: API_URL,
+  },
 };
