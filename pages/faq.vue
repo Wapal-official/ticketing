@@ -42,16 +42,7 @@
         </faq-card>
         <faq-card>
           <template #question>
-            4. Who can launch NFT projects from your Launchpad?</template
-          >
-          <template #answer>
-            Anyone can launch NFT projects from our launchpad. There is no
-            restriction of any kind to launch on Wapal.
-          </template>
-        </faq-card>
-        <faq-card>
-          <template #question>
-            5. How will you determine which one is a good NFT project and which
+            4. How will you determine which one is a good NFT project and which
             one is not?
           </template>
           <template #answer>
@@ -62,21 +53,21 @@
           </template>
         </faq-card>
         <faq-card>
-          <template #question> 6. Will there be any fees? </template>
+          <template #question> 5. Will there be any fees? </template>
           <template #answer>
             There won't be any fees. We're building this as an open-source
             project.
           </template>
         </faq-card>
         <faq-card>
-          <template #question>7. What about security? </template>
+          <template #question>6. What about security? </template>
           <template #answer>
             Our source codes will be open-sourced and the smart contract will be
             audited by top security firm.
           </template>
         </faq-card>
         <faq-card>
-          <template #question>8. What is your vision? </template>
+          <template #question>7. What is your vision? </template>
           <template #answer>
             Our vision is to build a trustless NFT launchpad and creator studio
           </template>
