@@ -23,6 +23,10 @@ export default {
         name: "keywords",
         content: "NFT, Creator Studio, Aptos, NFT Launchpad, No Code",
       },
+      {
+        name: "google-site-verification",
+        conent: "-gtqMmWvm6PvKy22HLrJtoQhJkE9_npEXhoOvbQGFU0",
+      },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
