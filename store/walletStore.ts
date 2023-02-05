@@ -25,7 +25,7 @@ const wallets = [
   new TrustWallet(),
   new MSafeWalletAdapter(),
   new BloctoWallet({
-    network: NetworkName.Testnet,
+    network: NetworkName.Mainnet,
     bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
   }),
 ];
