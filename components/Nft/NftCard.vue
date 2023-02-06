@@ -34,10 +34,6 @@
 </template>
 <script lang="ts">
 import CountDown from "@/components/Reusable/CountDown.vue";
-import fox from "@/assets/img/fox.png";
-import astronaut from "@/assets/img/6195.png";
-import pirate from "@/assets/img/6197.png";
-import undead from "@/assets/img/3469.png";
 
 export default {
   components: { CountDown },
@@ -45,7 +41,7 @@ export default {
     collection: { type: Object },
   },
   data() {
-    return { image: "", fox, astronaut, pirate, undead };
+    return {};
   },
   computed: {
     getStatus() {
@@ -90,13 +86,13 @@ export default {
       if (this.collection.image) {
         const test = this.collection.image.substring(18);
         if (test.includes("fox")) {
-          return this.fox;
+          return "/img/fox.png";
         } else if (test.includes("6195")) {
-          return this.astronaut;
+          return "/img/6195.png";
         } else if (test.includes("6197")) {
-          return this.pirate;
+          return "/img/6197.png";
         } else {
-          return this.undead;
+          return "/img/3469.png";
         }
       }
     },
