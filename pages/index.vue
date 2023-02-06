@@ -41,16 +41,20 @@
         <div class="lg:tw-px-16">
           <landing-image-grid />
         </div>
-        <live-section
-          v-if="liveCollections.length > 0"
-          :collections="liveCollections"
-          :loading="loading"
-        />
-        <upcoming-section
-          v-if="upcomingCollections.length > 0"
-          :collections="upcomingCollections"
-          :loading="loading"
-        />
+
+        <section class="tw-py-8 tw-container tw-mx-auto">
+          <landing-section-heading heading="Live" class="tw-px-4" />
+          <live-section v-if="!loading" :collections="liveCollections" />
+          <loading v-else />
+        </section>
+        <section class="tw-py-8 tw-container tw-mx-auto">
+          <landing-section-heading heading="Upcoming" class="tw-px-4" />
+          <upcoming-section
+            v-if="!loading"
+            :collections="upcomingCollections"
+          />
+          <loading v-else />
+        </section>
         <!-- <fastest-soldout-section
           v-if="collections.length > 0"
           :collections="collections"
@@ -70,7 +74,11 @@ import LandingImageGrid from "@/components/Landing/LandingImageGrid.vue";
 import LiveSection from "@/components/Landing/LiveSection.vue";
 import UpcomingSection from "@/components/Landing/UpcomingSection.vue";
 import FastestSoldoutSection from "@/components/Landing/FastestSoldoutSection.vue";
+import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vue";
+import Loading from "@/components/Reusable/Loading.vue";
+
 import { getCollections } from "@/services/CollectionService.ts";
+
 export default {
   name: "IndexPage",
   components: {
@@ -82,6 +90,8 @@ export default {
     LiveSection,
     UpcomingSection,
     FastestSoldoutSection,
+    LandingSectionHeading,
+    Loading,
   },
   data() {
     return {
@@ -143,6 +153,7 @@ export default {
   },
   async created() {
     await this.getCollections();
+    this.loading = false;
   },
 };
 </script>
