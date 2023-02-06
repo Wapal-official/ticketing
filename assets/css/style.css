@@ -9,7 +9,8 @@
   );
 }
 /* Gradient Buttons */
-.gradient-button::before {
+.gradient-button::before,
+.dashboard-gradient-button::before {
   content: "";
   position: absolute;
   width: 100px;
@@ -25,7 +26,8 @@
   transition: all 550ms linear;
 }
 
-.gradient-button:hover::before {
+.gradient-button:hover::before,
+.dashboard-gradient-button:hover::before {
   left: 100%;
 }
 .gradient-button {
@@ -189,4 +191,70 @@
 #explore-tab .v-tab:focus::before,
 #explore-tab .v-tab:hover::before {
   opacity: 0 !important;
+}
+
+/*Dashboard*/
+/*Launchpad*/
+.dashboard-gradient-button {
+  background: linear-gradient(
+    264.44deg,
+    #fe87ff 2.87%,
+    #c202d3 34.05%,
+    #48cae4 67.82%,
+    #48cae4 99.15%
+  ) !important;
+  @apply tw-rounded tw-text-sm tw-px-4 tw-py-2 !tw-text-white tw-overflow-hidden tw-relative;
+}
+
+/* Create Collection*/
+
+.dashboard-text-field-border {
+  padding: 1px;
+  border-radius: 7px;
+}
+
+.dashboard-text-field-group:nth-child(odd) .dashboard-text-field-border {
+  background: linear-gradient(
+    270deg,
+    rgba(254, 135, 255, 1),
+    rgba(194, 2, 211, 1),
+    rgba(72, 202, 228, 1),
+    rgba(72, 202, 228, 1)
+  );
+}
+
+.dashboard-text-field-group:nth-child(even) .dashboard-text-field-border {
+  background: linear-gradient(
+    270deg,
+    rgba(254, 135, 255, 1),
+    rgba(194, 2, 211, 1),
+    rgba(72, 202, 228, 1),
+    rgba(25, 5, 218, 1)
+  );
+}
+
+.dashboard-input {
+  border-radius: 7px !important;
+  @apply !tw-bg-wapal-background;
+}
+.dashboard-input.v-text-field--outlined > .v-input__control > .v-input__slot {
+  min-height: 50px !important;
+}
+.dashboard-input.v-text-field--outlined fieldset {
+  border: none !important;
+}
+.dashboard-input.v-text-field--enclosed .v-input__append-inner {
+  margin-top: 15px !important;
+}
+
+.dashboard-input.v-text-field--outlined.v-input--is-focused
+  .v-input__slot:before {
+  border: none !important;
+}
+.dashboard-input.v-text-field--outlined .v-label {
+  top: 15px !important;
+}
+
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
 }

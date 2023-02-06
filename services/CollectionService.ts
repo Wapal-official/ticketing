@@ -11,3 +11,11 @@ export const getCollection = async (collectionId: string) => {
   );
   return res.data;
 };
+
+export const createCollection = async (collection: any) => {
+  const res = await axios.post(
+    `${process.env.baseURL}/api/collection/create/`,
+    collection
+  );
+  return res;
+};
