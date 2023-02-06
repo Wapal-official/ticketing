@@ -19,7 +19,7 @@
         >
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full md:tw-items-center lg:tw-flex-row lg:tw-items-center"
-            v-if="checkWhitelistSaleTime || checkPublicSaleTime"
+            v-if="checkWhitelistSaleTime && checkPublicSaleTime"
           >
             <span class="tw-pr-4 lg:tw-pr-8">Live In</span>
             <count-down :shadow="true" :startTime="getShortestTime" />
