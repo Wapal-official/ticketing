@@ -1,24 +1,31 @@
 <template>
   <div
     class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-py-16 md:tw-px-16 lg:tw-flex-row lg:tw-gap-16"
+    v-if="!loading"
   >
     <div
       class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full md:tw-w-[60%] lg:tw-w-[40%]"
     >
       <div class="tw-rounded-lg nft-preview-card-border tw-w-full">
-        <img :src="pirateImage" alt="pirate" class="tw-w-full tw-rounded-lg" />
+        <img
+          :src="collection.image"
+          :alt="collection.name"
+          class="tw-w-full tw-rounded-lg"
+        />
       </div>
-      <h3 class="tw-text-[1.75rem] tw-text-wapal-pink tw-font-normal">
-        Live In
-        <span class="live-counter live-counter-shadow tw-pl-4 md:tw-pl-8"
-          >{{ whitelistSaleHours }} </span
-        ><span class="live-counter live-counter-shadow">H</span>
-        <span class="live-counter live-counter-shadow"
-          >{{ whitelistSaleMinutes }} </span
-        ><span class="live-counter live-counter-shadow">M</span>
-        <span class="live-counter live-counter-shadow"
-          >{{ whitelistSaleSeconds }} </span
-        ><span class="live-counter live-counter-shadow">S</span>
+      <h3 class="tw-text-[1.75rem] tw-text-wapal-pink tw-font-normal tw-w-full">
+        <div
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full md:tw-items-center lg:tw-flex-row lg:tw-items-center"
+          v-if="checkWhitelistSaleTime || checkPublicSaleTime"
+        >
+          <span class="tw-pr-4 lg:tw-pr-8">Live In</span>
+          <count-down :shadow="true" :startTime="getShortestTime" />
+        </div>
+        <span
+          class="tw-flex tw-flex-row tw-items-center tw-justify-center"
+          v-else
+          >Live</span
+        >
       </h3>
     </div>
     <div
@@ -32,16 +39,12 @@
         >
           Doxxed
         </div>
-        <a href="https://twitter.com/wapal_official" target="_blank">
+        <a :href="collection.twitter" target="_blank">
           <v-icon
             class="!tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink"
             >mdi-twitter</v-icon
           > </a
-        ><a
-          href="https://t.co/3KwwcoQ2xW"
-          target="_blank"
-          class="nft-discord-icon"
-        >
+        ><a :href="collection.discord" target="_blank" class="nft-discord-icon">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -55,18 +58,16 @@
         </a>
       </div>
       <div class="tw-text-wapal-gray tw-pb-12">
-        <h3
+        <h1
           class="tw-text-2xl tw-pb-4 tw-font-medium tw-uppercase md:tw-text-[2rem]"
         >
-          Pontem Space Pirates
-        </h3>
+          {{ collection.name }}
+        </h1>
         <p class="tw-font-light">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum a
-          rhoncus augue. Phasellus egestas varius ex, vitae egestas velit
-          aliquet sed.
+          {{ collection.description }}
         </p>
       </div>
-      <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
+      <!-- <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
         >
@@ -82,14 +83,17 @@
             class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-[#E500A4] tw-w-[10%] tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
           ></div>
         </div>
-      </div>
+      </div> -->
       <div
-        class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-[#F0F0F0] tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row md:tw-gap-24"
+        class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-[#F0F0F0] tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
+        v-if="!checkPublicSaleTime || !checkWhitelistSaleTime"
       >
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
         >
-          <h6 class="tw-capitalize tw-text-white">price 0.2 sol</h6>
+          <h6 class="tw-capitalize tw-text-white">
+            price {{ getCurrentPrice }} apt
+          </h6>
           <button
             class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold"
           >
@@ -98,110 +102,128 @@
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
+          v-if="checkPublicSaleTime || checkWhitelistSaleTime"
         >
           <h6 class="tw-uppercase tw-text-wapal-pink tw-text-xl tw-font-medium">
             End In
           </h6>
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
-          >
-            <div
-              class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1"
-            >
-              <div>Hours</div>
-              <span class="live-counter">{{ whitelistSaleHours }}</span>
-            </div>
-            <div
-              class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1"
-            >
-              <div>Minutes</div>
-              <span class="live-counter">{{ whitelistSaleMinutes }}</span>
-            </div>
-            <div
-              class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1"
-            >
-              <div>Seconds</div>
-              <span class="live-counter">{{ whitelistSaleSeconds }}</span>
-            </div>
-          </div>
+          <count-down :vertical="true" :startTime="getLongestTime" />
         </div>
       </div>
       <div
         class="tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-2 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
+        v-if="checkWhitelistSaleTime"
       >
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 md:tw-gap-4"
         >
           <div>Whitelist Sale</div>
-          <div class="tw-capitalize">price 0.5 sol</div>
+          <div class="tw-capitalize">
+            price {{ collection.whitelist_price }} apt
+          </div>
         </div>
-        <div class="tw-text-lg">
+        <div
+          class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start"
+        >
           Starts In
-          <span class="tw-text-wapal-pink tw-pl-2">
-            {{ whitelistSaleHours }}h {{ whitelistSaleMinutes }}m
-            {{ whitelistSaleSeconds }}s</span
-          >
+          <count-down :startTime="collection.whitelist_sale_time" />
         </div>
       </div>
       <div
         class="tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-2 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
+        v-if="checkPublicSaleTime"
       >
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 md:tw-gap-4"
         >
           <div>Public Sale</div>
-          <div class="tw-capitalize">price 0.5 sol</div>
+          <div class="tw-capitalize">
+            price {{ collection.public_sale_price }} apt
+          </div>
         </div>
-        <div class="tw-text-lg">
+        <div
+          class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start"
+        >
           Starts In
-          <span class="tw-text-wapal-pink tw-pl-2"
-            >{{ whitelistSaleHours }}h {{ whitelistSaleMinutes }}m
-            {{ whitelistSaleSeconds }}s</span
-          >
+          <count-down :startTime="collection.public_sale_time" />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import pirateImage from "@/assets/img/6195.png";
+import { getCollection } from "@/services/CollectionService";
+import CountDown from "@/components/Reusable/CountDown.vue";
 export default {
+  components: { CountDown },
   data() {
     return {
-      pirateImage,
-      date: null,
-      whitelistSaleHours: 0,
-      whitelistSaleMinutes: 0,
-      whitelistSaleSeconds: 0,
+      loading: true,
+      collection: {
+        _id: null,
+        name: "",
+        description: null,
+        public_sale_time: "",
+        whitelist_sale_time: "",
+        image: "",
+        twitter: "",
+        discord: "",
+        whitelist_price: null,
+        public_sale_price: null,
+      },
+      whitelistSaleDate: null,
+      publicSaleDate: null,
     };
   },
-  methods: {
-    getWhitelistSaleTime() {
-      const timer = setInterval(() => {
-        if (this.date) {
-          const now = new Date().getTime();
-          const interval = this.date.getTime() - now;
-          let hours = Math.floor(
-            (interval % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-          );
-          let minutes = Math.floor((interval % (1000 * 60 * 60)) / (1000 * 60));
-          let seconds = Math.floor((interval % (1000 * 60)) / 1000);
+  methods: {},
+  computed: {
+    getShortestTime() {
+      if (this.publicSaleDate > this.whitelistSaleDate) {
+        return this.whitelistSaleDate.toString();
+      } else {
+        return this.publicSaleDate.toString();
+      }
+    },
+    getLongestTime() {
+      if (this.whitelistSaleDate > this.publicSaleDate) {
+        return this.whitelistSaleDate.toString();
+      } else {
+        return this.publicSaleDate.toString();
+      }
+    },
+    checkWhitelistSaleTime() {
+      const date = new Date();
+      if (this.whitelistSaleDate < date) {
+        return false;
+      }
+      return true;
+    },
+    checkPublicSaleTime() {
+      const date = new Date();
+      if (this.publicSaleDate < date) {
+        return false;
+      }
+      return true;
+    },
+    getCurrentPrice() {
+      const whiteListDate = new Date(this.collection.whitelist_sale_time);
+      const publicSaleDate = new Date(this.collection.public_sale_time);
+      const now = new Date();
 
-          this.whitelistSaleHours = hours < 10 ? "0" + hours : hours;
-          this.whitelistSaleMinutes = minutes < 10 ? "0" + minutes : minutes;
-          this.whitelistSaleSeconds = seconds < 10 ? "0" + seconds : seconds;
-        }
-        if (this.interval < 0) {
-          clearInterval(timer);
-        }
-      }, 1000);
+      if (whiteListDate < publicSaleDate) {
+        return this.collection.whitelist_price;
+      } else {
+        return this.collection.public_sale_price;
+      }
     },
   },
-  computed: {},
-  mounted() {
-    this.date = new Date();
-    this.date.setDate(this.date.getDate() + 1);
-    this.getWhitelistSaleTime();
+  async mounted() {
+    const res = await getCollection(this.$route.params.id);
+    this.collection = res.collection[0];
+
+    this.whitelistSaleDate = new Date(this.collection.whitelist_sale_time);
+    this.publicSaleDate = new Date(this.collection.public_sale_time);
+    this.loading = false;
   },
 };
 </script>

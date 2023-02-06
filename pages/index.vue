@@ -41,9 +41,21 @@
         <div class="lg:tw-px-16">
           <landing-image-grid />
         </div>
-        <live-section />
-        <upcoming-section />
-        <fastest-soldout-section />
+        <live-section
+          v-if="liveCollections.length > 0"
+          :collections="liveCollections"
+          :loading="loading"
+        />
+        <upcoming-section
+          v-if="upcomingCollections.length > 0"
+          :collections="upcomingCollections"
+          :loading="loading"
+        />
+        <!-- <fastest-soldout-section
+          v-if="collections.length > 0"
+          :collections="collections"
+          :loading="loading"
+        /> -->
       </div>
     </div>
   </div>
@@ -58,6 +70,7 @@ import LandingImageGrid from "@/components/Landing/LandingImageGrid.vue";
 import LiveSection from "@/components/Landing/LiveSection.vue";
 import UpcomingSection from "@/components/Landing/UpcomingSection.vue";
 import FastestSoldoutSection from "@/components/Landing/FastestSoldoutSection.vue";
+import { getCollections } from "@/services/CollectionService.ts";
 export default {
   name: "IndexPage",
   components: {
@@ -75,6 +88,10 @@ export default {
       showConnectWalletModal: false,
       message: "",
       showSignupDialog: "",
+      collections: [],
+      liveCollections: [],
+      upcomingCollections: [],
+      loading: true,
     };
   },
   methods: {
@@ -91,6 +108,30 @@ export default {
       this.message = `${this.$store.state.walletStore.wallet} Wallet Connected Successfully`;
       this.showSignupDialog = true;
     },
+    async getCollections() {
+      const res = await getCollections();
+      this.collections = res;
+      this.liveCollections = this.collections.filter((collection) => {
+        const whitelistSaleDate = new Date(collection.whitelist_sale_time);
+        const publicSaleDate = new Date(collection.public_sale_date);
+
+        const now = new Date();
+
+        if (now > whitelistSaleDate || now > publicSaleDate) {
+          return collection;
+        }
+      });
+
+      this.upcomingCollections = this.collections.filter((collection) => {
+        const whitelistSaleDate = new Date(collection.whitelist_sale_time);
+        const publicSaleDate = new Date(collection.public_sale_time);
+        const now = new Date();
+
+        if (whitelistSaleDate > now && publicSaleDate > now) {
+          return collection;
+        }
+      });
+    },
   },
   computed: {
     getWalletStatus() {
@@ -100,16 +141,8 @@ export default {
       return false;
     },
   },
+  async created() {
+    await this.getCollections();
+  },
 };
 </script>
-<style scoped>
-.landing-background {
-  background: linear-gradient(
-    180deg,
-    #0e0d0d 0%,
-    #010a1b 23.47%,
-    #11151c 81.73%,
-    #0e0d0d 100%
-  );
-}
-</style>
