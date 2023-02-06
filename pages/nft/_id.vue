@@ -171,10 +171,6 @@
 import { getCollection } from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
-import fox from "@/assets/img/fox.png";
-import astronaut from "@/assets/img/6195.png";
-import pirate from "@/assets/img/6197.png";
-import undead from "@/assets/img/3469.png";
 
 export default {
   components: { CountDown, Loading },
@@ -195,10 +191,6 @@ export default {
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
-      fox,
-      astronaut,
-      pirate,
-      undead,
     };
   },
   methods: {},
@@ -245,13 +237,13 @@ export default {
       if (this.collection.image) {
         const test = this.collection.image.substring(18);
         if (test.includes("fox")) {
-          return this.fox;
+          return "/img/fox.png";
         } else if (test.includes("6195")) {
-          return this.astronaut;
+          return "/img/6195.png";
         } else if (test.includes("6197")) {
-          return this.pirate;
+          return "/img/6197.png";
         } else {
-          return this.undead;
+          return "/img/3469.png";
         }
       }
     },
