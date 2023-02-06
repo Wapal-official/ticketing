@@ -18,6 +18,7 @@ module.exports = {
         error: "#D03050",
         "wapal-pink": "#EA59BE",
         "wapal-background": "#0E0D0D",
+        "wapal-dashboard-active": "#48CAE4",
       },
     },
   },
