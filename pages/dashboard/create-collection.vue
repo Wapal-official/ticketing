@@ -417,15 +417,16 @@ export default {
   methods: {
     async submitCollection() {
       try {
-        // const rng = Math.floor(Math.random() * 3);
-        // if (rng === 0) {
-        //   this.collection.image = astronaut;
-        // } else if (rng === 1) {
-        //   this.collection.image = pirate;
-        // } else {
-        //   this.collection.image = fox;
-        // }
-        this.collection.image = astronaut;
+        const rng = Math.floor(Math.random() * 4);
+        if (rng === 0) {
+          this.collection.image = astronaut;
+        } else if (rng === 1) {
+          this.collection.image = pirate;
+        } else if(rng === 2) {
+          this.collection.image = fox;
+        }else{
+          this.collection.image = undead;
+        }
         await createCollection(this.collection);
         this.error = false;
         this.showCreateCollectionMessage = true;
@@ -443,61 +444,3 @@ export default {
   },
 };
 </script>
-<style>
-.dashboard-gradient-button {
-  background: linear-gradient(
-    264.44deg,
-    #fe87ff 2.87%,
-    #c202d3 34.05%,
-    #48cae4 67.82%,
-    #48cae4 99.15%
-  );
-  @apply tw-rounded tw-text-sm tw-px-4 tw-py-2 !tw-text-white;
-}
-.dashboard-text-field-border {
-  padding: 1px;
-  border-radius: 7px;
-}
-
-.dashboard-text-field-group:nth-child(odd) .dashboard-text-field-border {
-  background: linear-gradient(
-    270deg,
-    rgba(254, 135, 255, 1),
-    rgba(194, 2, 211, 1),
-    rgba(72, 202, 228, 1),
-    rgba(72, 202, 228, 1)
-  );
-}
-
-.dashboard-text-field-group:nth-child(even) .dashboard-text-field-border {
-  background: linear-gradient(
-    270deg,
-    rgba(254, 135, 255, 1),
-    rgba(194, 2, 211, 1),
-    rgba(72, 202, 228, 1),
-    rgba(25, 5, 218, 1)
-  );
-}
-
-.dashboard-input {
-  border-radius: 7px !important;
-  @apply !tw-bg-wapal-background;
-}
-.dashboard-input.v-text-field--outlined > .v-input__control > .v-input__slot {
-  min-height: 50px !important;
-}
-.dashboard-input.v-text-field--outlined fieldset {
-  border: none !important;
-}
-.dashboard-input.v-text-field--enclosed .v-input__append-inner {
-  margin-top: 15px !important;
-}
-
-.dashboard-input.v-text-field--outlined.v-input--is-focused
-  .v-input__slot:before {
-  border: none !important;
-}
-.dashboard-input.v-text-field--outlined .v-label {
-  top: 15px !important;
-}
-</style>

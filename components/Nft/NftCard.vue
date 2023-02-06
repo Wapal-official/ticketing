@@ -7,7 +7,7 @@
       <img
         :src="collection?.image"
         :alt="collection?.name"
-        class="tw-w-full tw-h-full tw-object-contain"
+        class="tw-w-full tw-h-full tw-object-contain tw-min-h-[370px]"
       />
       <div
         class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-2 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
