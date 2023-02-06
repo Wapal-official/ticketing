@@ -5,7 +5,7 @@
   >
     <div class="tw-rounded tw-relative tw-w-full">
       <img
-        :src="collection?.image"
+        :src="getImage"
         :alt="collection?.name"
         class="tw-w-full tw-h-full tw-object-contain tw-min-h-[370px]"
       />
@@ -34,10 +34,18 @@
 </template>
 <script lang="ts">
 import CountDown from "@/components/Reusable/CountDown.vue";
+import fox from "@/assets/img/fox.png";
+import astronaut from "@/assets/img/6195.png";
+import pirate from "@/assets/img/6197.png";
+import undead from "@/assets/img/3469.png";
+
 export default {
   components: { CountDown },
   props: {
     collection: { type: Object },
+  },
+  data() {
+    return { image: "", fox, astronaut, pirate, undead };
   },
   computed: {
     getStatus() {
@@ -78,7 +86,20 @@ export default {
         return this.collection.public_sale_price;
       }
     },
+    getImage() {
+      if (this.collection.image) {
+        const test = this.collection.image.substring(18);
+        if (test.includes("fox")) {
+          return this.fox;
+        } else if (test.includes("6195")) {
+          return this.astronaut;
+        } else if (test.includes("6197")) {
+          return this.pirate;
+        } else {
+          return this.undead;
+        }
+      }
+    },
   },
-  mounted() {},
 };
 </script>
