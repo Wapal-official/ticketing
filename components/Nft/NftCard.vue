@@ -57,9 +57,9 @@ export default {
       const publicSaleDate = new Date(this.collection.public_sale_time);
 
       if (whiteListDate > publicSaleDate) {
-        return whiteListDate.toString();
-      } else {
         return publicSaleDate.toString();
+      } else {
+        return whiteListDate.toString();
       }
     },
     getPrice() {
