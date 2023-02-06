@@ -25,7 +25,7 @@
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12 tw-capitalize tw-w-full"
         >
-          <div>items {{ collection?.stock }}</div>
+          <div>items {{ collection?.supply }}</div>
           <div>price {{ getPrice }} apt</div>
         </div>
       </div>

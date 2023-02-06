@@ -141,6 +141,16 @@ export default {
           return collection;
         }
       });
+
+      this.liveCollections = this.liveCollections.slice(
+        this.liveCollections.length - 4,
+        this.liveCollections.length
+      );
+
+      this.upcomingCollections = this.upcomingCollections.slice(
+        this.upcomingCollections.length - 4,
+        this.upcomingCollections.length
+      );
     },
   },
   computed: {
