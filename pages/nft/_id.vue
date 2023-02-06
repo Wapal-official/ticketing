@@ -9,7 +9,7 @@
       >
         <div class="tw-rounded-lg nft-preview-card-border tw-w-full">
           <img
-            :src="collection.image"
+            :src="getImage"
             :alt="collection.name"
             class="tw-w-full tw-rounded-lg"
           />
@@ -171,6 +171,11 @@
 import { getCollection } from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
+import fox from "@/assets/img/fox.png";
+import astronaut from "@/assets/img/6195.png";
+import pirate from "@/assets/img/6197.png";
+import undead from "@/assets/img/3469.png";
+
 export default {
   components: { CountDown, Loading },
   data() {
@@ -190,6 +195,10 @@ export default {
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
+      fox,
+      astronaut,
+      pirate,
+      undead,
     };
   },
   methods: {},
@@ -230,6 +239,20 @@ export default {
         return this.collection.whitelist_price;
       } else {
         return this.collection.public_sale_price;
+      }
+    },
+    getImage() {
+      if (this.collection.image) {
+        const test = this.collection.image.substring(18);
+        if (test.includes("fox")) {
+          return this.fox;
+        } else if (test.includes("6195")) {
+          return this.astronaut;
+        } else if (test.includes("6197")) {
+          return this.pirate;
+        } else {
+          return this.undead;
+        }
       }
     },
   },
