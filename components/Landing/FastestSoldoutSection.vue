@@ -3,57 +3,28 @@
     <landing-section-heading heading="Fastest Soldout" class="tw-px-4" />
     <div class="tw-flex tw-flex-row tw-flex-wrap">
       <nft-card
-        v-for="nft in liveNfts"
-        :key="nft.name"
-        :name="nft.name"
-        :image="nft.image"
-        :status="nft.status"
-        :price="nft.price"
-        :stock="nft.stock"
+        v-for="collection in fastestSoldOutCollection"
+        :key="collection._id"
+        :collection="collection"
       />
     </div>
   </section>
 </template>
-<script>
+<script lang="ts">
 import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vue";
 import NftCard from "@/components/Nft/NftCard.vue";
-import fox from "@/assets/img/fox.png";
-import pirate from "@/assets/img/6195.png";
-import astronaut from "@/assets/img/6197.png";
+import Collection from "@/interfaces/collection";
 export default {
+  props: { loading: { type: Boolean }, collections: { type: Array } },
   components: { LandingSectionHeading, NftCard },
   data() {
-    return { liveNfts: [], fox, pirate, astronaut };
+    return {
+      fastestSoldOutCollection: [{ _id: null }],
+    };
   },
   mounted() {
-    this.liveNfts.push({
-      name: "NINE TAILS NFT",
-      image: this.fox,
-      status: "23h 32m 56s",
-      price: "0.2 sol",
-      stock: 14,
-    });
-    this.liveNfts.push({
-      name: "Pirate NFT",
-      image: this.pirate,
-      status: "2h 32m 56s",
-      price: "0.2 sol",
-      stock: 14,
-    });
-    this.liveNfts.push({
-      name: "Astronaut NFT",
-      image: this.astronaut,
-      status: "3h 32m 56s",
-      price: "0.2 sol",
-      stock: 14,
-    });
-    this.liveNfts.push({
-      name: "Second Pirate NFT",
-      image: this.pirate,
-      status: "23h 32m 56s",
-      price: "0.2 sol",
-      stock: 14,
-    });
+    const collections: Collection[] = this.collections;
+    this.fastestSoldOutCollection = collections;
   },
 };
 </script>
