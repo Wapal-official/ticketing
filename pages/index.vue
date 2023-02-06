@@ -41,9 +41,25 @@
         <div class="lg:tw-px-16">
           <landing-image-grid />
         </div>
-        <live-section />
-        <upcoming-section />
-        <fastest-soldout-section />
+
+        <section class="tw-py-8 tw-container tw-mx-auto">
+          <landing-section-heading heading="Live" class="tw-px-4" />
+          <live-section v-if="!loading" :collections="liveCollections" />
+          <loading v-else />
+        </section>
+        <section class="tw-py-8 tw-container tw-mx-auto">
+          <landing-section-heading heading="Upcoming" class="tw-px-4" />
+          <upcoming-section
+            v-if="!loading"
+            :collections="upcomingCollections"
+          />
+          <loading v-else />
+        </section>
+        <!-- <fastest-soldout-section
+          v-if="collections.length > 0"
+          :collections="collections"
+          :loading="loading"
+        /> -->
       </div>
     </div>
   </div>
@@ -58,6 +74,11 @@ import LandingImageGrid from "@/components/Landing/LandingImageGrid.vue";
 import LiveSection from "@/components/Landing/LiveSection.vue";
 import UpcomingSection from "@/components/Landing/UpcomingSection.vue";
 import FastestSoldoutSection from "@/components/Landing/FastestSoldoutSection.vue";
+import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vue";
+import Loading from "@/components/Reusable/Loading.vue";
+
+import { getCollections } from "@/services/CollectionService.ts";
+
 export default {
   name: "IndexPage",
   components: {
@@ -69,12 +90,18 @@ export default {
     LiveSection,
     UpcomingSection,
     FastestSoldoutSection,
+    LandingSectionHeading,
+    Loading,
   },
   data() {
     return {
       showConnectWalletModal: false,
       message: "",
       showSignupDialog: "",
+      collections: [],
+      liveCollections: [],
+      upcomingCollections: [],
+      loading: true,
     };
   },
   methods: {
@@ -91,6 +118,40 @@ export default {
       this.message = `${this.$store.state.walletStore.wallet} Wallet Connected Successfully`;
       this.showSignupDialog = true;
     },
+    async getCollections() {
+      const res = await getCollections();
+      this.collections = res;
+      this.liveCollections = this.collections.filter((collection) => {
+        const whitelistSaleDate = new Date(collection.whitelist_sale_time);
+        const publicSaleDate = new Date(collection.public_sale_date);
+
+        const now = new Date();
+
+        if (now > whitelistSaleDate || now > publicSaleDate) {
+          return collection;
+        }
+      });
+
+      this.upcomingCollections = this.collections.filter((collection) => {
+        const whitelistSaleDate = new Date(collection.whitelist_sale_time);
+        const publicSaleDate = new Date(collection.public_sale_time);
+        const now = new Date();
+
+        if (whitelistSaleDate > now && publicSaleDate > now) {
+          return collection;
+        }
+      });
+
+      this.liveCollections = this.liveCollections.slice(
+        this.liveCollections.length - 4,
+        this.liveCollections.length
+      );
+
+      this.upcomingCollections = this.upcomingCollections.slice(
+        this.upcomingCollections.length - 4,
+        this.upcomingCollections.length
+      );
+    },
   },
   computed: {
     getWalletStatus() {
@@ -100,16 +161,9 @@ export default {
       return false;
     },
   },
+  async created() {
+    await this.getCollections();
+    this.loading = false;
+  },
 };
 </script>
-<style scoped>
-.landing-background {
-  background: linear-gradient(
-    180deg,
-    #0e0d0d 0%,
-    #010a1b 23.47%,
-    #11151c 81.73%,
-    #0e0d0d 100%
-  );
-}
-</style>
