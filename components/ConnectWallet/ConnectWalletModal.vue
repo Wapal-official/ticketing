@@ -15,6 +15,24 @@
     <p class="tw-text-base md:tw-text-lg tw-pb-4">Choose a wallet to connect</p>
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-x-4 tw-gap-y-6"
+    >
+      <h6 class="tw-text-lg tw-text-white">Preferred Wallet</h6>
+      <button
+        @click="connectWallet(preferredWallet.name)"
+        class="tw-w-full tw-rounded tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-pl-20 tw-pr-4 tw-py-4 tw-bg-gray-900"
+      >
+        <img
+          :src="bloctoIcon"
+          :alt="preferredWallet.name"
+          class="tw-w-12 tw-h-12"
+        />
+        <span class="tw-text-lg tw-text-wapal-gray">{{
+          preferredWallet.name
+        }}</span>
+      </button>
+    </div>
+    <div
+      class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-x-4 tw-gap-y-6 tw-py-4"
       v-if="installedWallets.length > 0"
     >
       <h6 class="tw-text-lg tw-text-white">Installed</h6>
@@ -46,6 +64,7 @@
 </template>
 
 <script lang="ts">
+import bloctoIcon from "@/assets/img/blocto-icon-svg.svg";
 export default {
   props: { message: { type: String, default: "" } },
   data() {
@@ -53,6 +72,7 @@ export default {
       wallets: this.$store.getters["walletStore/getWalletsDetail"],
       installedWallets: [{ name: "", icon: "", url: "" }],
       availableWallets: [{ name: "", icon: "", url: "" }],
+      bloctoIcon,
     };
   },
   methods: {
@@ -71,12 +91,16 @@ export default {
     },
     separateWallets() {
       this.installedWallets = this.wallets.filter(
-        (wallet: any) =>
-          wallet.readyState === "Installed" || wallet.readyState === "Loadable"
+        (wallet: any) => wallet.readyState === "Installed"
       );
       this.availableWallets = this.wallets.filter(
         (wallet: any) => wallet.readyState === "NotDetected"
       );
+    },
+  },
+  computed: {
+    preferredWallet() {
+      return this.wallets.find((wallet: any) => wallet.name === "Blocto");
     },
   },
   mounted() {
