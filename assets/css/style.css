@@ -214,7 +214,7 @@
     #48cae4 67.82%,
     #48cae4 99.15%
   ) !important;
-  @apply tw-rounded tw-text-sm tw-px-4 tw-py-2 !tw-text-white tw-overflow-hidden tw-relative;
+  @apply tw-rounded tw-text-sm tw-px-6 tw-py-3 !tw-text-white tw-overflow-hidden tw-relative;
 }
 
 /* Create Collection*/

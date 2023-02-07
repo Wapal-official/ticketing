@@ -12,15 +12,17 @@
       <dashboard-sidebar />
     </div>
     <dashboard-footer />
+    <toast />
   </v-app>
 </template>
 <script lang="ts">
 import DashboardNavbar from "@/components/Dashboard/DashboardNavbar.vue";
 import DashboardFooter from "@/components/Dashboard/DashboardFooter.vue";
 import DashboardSidebar from "@/components/Dashboard/Sidebar/DashboardSidebar.vue";
+import Toast from "@/components/Reusable/Toast.vue";
 export default {
   middleware: "signup",
-  components: { DashboardNavbar, DashboardFooter, DashboardSidebar },
+  components: { DashboardNavbar, DashboardFooter, DashboardSidebar, Toast },
   data() {
     return { sidebarClass: "-tw-translate-x-full" };
   },
