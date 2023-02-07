@@ -13,7 +13,7 @@
           <img
             :src="getImage"
             :alt="collection.name"
-            class="tw-w-full tw-rounded-lg tw-transition-all tw-duration-150 tw-ease-linear tw-transform group-hover:tw-scale-125"
+            class="tw-w-full tw-rounded-lg"
           />
         </div>
         <h3
