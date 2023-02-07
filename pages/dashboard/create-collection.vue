@@ -342,7 +342,7 @@
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4"
         >
           <button
-            class="dashboard-gradient-button tw-font-semibold !tw-px-12"
+            class="dashboard-gradient-button tw-font-semibold"
             type="submit"
           >
             Submit
@@ -350,22 +350,6 @@
         </div>
       </form>
     </ValidationObserver>
-    <v-snackbar
-      v-model="showCreateCollectionMessage"
-      :timeout="3000"
-      top
-      centered
-      :color="defaultTheme.modalGray"
-    >
-      <div
-        class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2"
-      >
-        <v-icon class="!tw-text-green-500" v-if="!error"
-          >mdi-check-circle</v-icon
-        ><v-icon class="!tw-text-red-600" v-else>mdi-close-circle</v-icon
-        ><span class="tw-capitalize">{{ message }}</span>
-      </div>
-    </v-snackbar>
   </div>
 </template>
 <script lang="ts">
@@ -376,7 +360,6 @@ import fox from "@/assets/img/fox.png";
 import astronaut from "@/assets/img/6195.png";
 import pirate from "@/assets/img/6197.png";
 import undead from "@/assets/img/3469.png";
-import { defaultTheme } from "@/theme/wapaltheme";
 
 extend("required", {
   ...required,
@@ -404,14 +387,11 @@ export default {
         discord: null,
         website: null,
       },
-      showCreateCollectionMessage: false,
       message: "",
-      error: false,
       fox,
       pirate,
       astronaut,
       undead,
-      defaultTheme,
     };
   },
   methods: {
@@ -422,22 +402,19 @@ export default {
           this.collection.image = astronaut;
         } else if (rng === 1) {
           this.collection.image = pirate;
-        } else if(rng === 2) {
+        } else if (rng === 2) {
           this.collection.image = fox;
-        }else{
+        } else {
           this.collection.image = undead;
         }
         await createCollection(this.collection);
-        this.error = false;
-        this.showCreateCollectionMessage = true;
         this.message = "Collection Created Successfully";
-        setTimeout(() => {
-          this.$router.push("/dashboard");
-        }, 700);
+        this.$toast.showMessage({ message: this.message, error: false });
+        this.$router.push("/dashboard");
       } catch (error) {
-        this.error = true;
-        this.showCreateCollectionMessage = true;
         this.message = error;
+        this.$toast.showMessage({ message: this.message, error: true });
+        this.$router.push("/dashboard");
       }
     },
     uploadImage() {},
