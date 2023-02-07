@@ -137,6 +137,17 @@
   box-shadow: -1px 1px 2px #ff36ab, 1.5px 1px 2px #ff36ab;
 }
 
+.landing-gradient-border-button {
+  padding: 8px 1px 8px 1px;
+  background: linear-gradient(
+    270deg,
+    rgba(254, 135, 255, 1),
+    rgba(194, 2, 211, 1),
+    rgba(94, 15, 255, 1),
+    rgba(25, 5, 218, 1)
+  );
+}
+
 /*NFT Preview*/
 .nft-preview-card-border {
   padding: 3px;

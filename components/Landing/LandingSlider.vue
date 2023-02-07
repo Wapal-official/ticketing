@@ -7,11 +7,13 @@
           v-for="(image, index) in sliderImages"
           :key="index"
         >
-          <img
-            :src="image"
-            class="tw-object-fill tw-w-[300] tw-h-[300px] tw-mx-auto md:tw-mx-0 md:tw-w-[250px] md:tw-h-[250px]"
-            alt="Image"
-          />
+          <div class="tw-overflow-hidden tw-rounded-2xl tw-w-fit">
+            <img
+              :src="image"
+              class="tw-object-fill tw-w-[300px] tw-h-[300px] tw-mx-auto md:tw-mx-0 md:tw-w-[250px] md:tw-h-[250px] tw-transition-all tw-duration-150 tw-ease-linear tw-transform tw-cursor-pointer hover:tw-scale-110"
+              alt="Image"
+            />
+          </div>
         </div>
       </div>
     </div>

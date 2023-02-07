@@ -75,6 +75,7 @@ export default {
 
         if (this.interval < 0) {
           clearInterval(timer);
+          this.$emit("countdownComplete");
         }
       }, 1000);
     },

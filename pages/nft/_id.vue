@@ -5,13 +5,15 @@
       v-if="!loading"
     >
       <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full md:tw-w-[60%] lg:tw-w-[40%]"
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full tw-group md:tw-w-[60%] lg:tw-w-[40%]"
       >
-        <div class="tw-rounded-lg nft-preview-card-border tw-w-full">
+        <div
+          class="tw-rounded-lg nft-preview-card-border tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear"
+        >
           <img
             :src="getImage"
             :alt="collection.name"
-            class="tw-w-full tw-rounded-lg"
+            class="tw-w-full tw-rounded-lg tw-transition-all tw-duration-150 tw-ease-linear tw-transform group-hover:tw-scale-125"
           />
         </div>
         <h3
@@ -25,7 +27,7 @@
             <count-down :shadow="true" :startTime="getShortestTime" />
           </div>
           <span
-            class="tw-flex tw-flex-row tw-items-center tw-justify-center"
+            class="tw-text-3xl tw-flex tw-flex-row tw-items-center tw-justify-center live-counter live-counter-shadow tw-tracking-widest tw-uppercase"
             v-else
             >Live</span
           >
@@ -64,7 +66,7 @@
             </svg>
           </a>
         </div>
-        <div class="tw-text-wapal-gray tw-pb-12">
+        <div class="tw-text-wapal-gray tw-pb-8">
           <h1
             class="tw-text-2xl tw-pb-4 tw-font-medium tw-uppercase md:tw-text-[2rem]"
           >

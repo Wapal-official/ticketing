@@ -1,10 +1,25 @@
 <template>
-  <div class="tw-flex tw-flex-row tw-flex-wrap">
-    <nft-card
-      v-for="collection in liveCollection"
-      :key="collection._id"
-      :collection="collection"
-    />
+  <div
+    class="tw-w-full tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-8"
+  >
+    <div
+      class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4"
+    >
+      <nft-card
+        v-for="collection in liveCollection"
+        :key="collection._id"
+        :collection="collection"
+      />
+    </div>
+
+    <NuxtLink
+      class="landing-gradient-border-button tw-rounded tw-w-fit !tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
+      to="/explore"
+    >
+      <span class="tw-rounded tw-h-full tw-bg-wapal-background tw-px-6 tw-py-2">
+        View All</span
+      >
+    </NuxtLink>
   </div>
 </template>
 <script lang="ts">

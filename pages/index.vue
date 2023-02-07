@@ -42,7 +42,7 @@
           <landing-image-grid />
         </div>
 
-        <section class="tw-py-8 tw-container tw-mx-auto">
+        <section class="tw-pt-8 tw-pb-4 tw-container tw-mx-auto">
           <landing-section-heading heading="Live" class="tw-px-4" />
           <live-section v-if="!loading" :collections="liveCollections" />
           <loading v-else />
@@ -123,7 +123,7 @@ export default {
       this.collections = res;
       this.liveCollections = this.collections.filter((collection) => {
         const whitelistSaleDate = new Date(collection.whitelist_sale_time);
-        const publicSaleDate = new Date(collection.public_sale_date);
+        const publicSaleDate = new Date(collection.public_sale_time);
 
         const now = new Date();
 

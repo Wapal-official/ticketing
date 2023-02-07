@@ -19,7 +19,7 @@
       <h6 class="tw-text-lg tw-text-white">Preferred Wallet</h6>
       <button
         @click="connectWallet(preferredWallet.name)"
-        class="tw-w-full tw-rounded tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-pl-20 tw-pr-4 tw-py-4 tw-bg-gray-900"
+        class="tw-w-full tw-rounded tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-pl-4 tw-pr-4 tw-py-4 tw-bg-gray-900 md:tw-pl-20"
       >
         <img
           :src="bloctoIcon"
