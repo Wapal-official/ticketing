@@ -15,6 +15,18 @@
     <p class="text-base md:text-lg pb-4">Choose a wallet to connect</p>
     <div
       class="w-full flex flex-col items-start justify-start gap-x-4 gap-y-6 cursor"
+    >
+      <h6 class="text-lg text-white">Preferred Wallet</h6>
+      <button
+        @click="connectWallet(preferredWallet.name)"
+        class="w-full rounded flex flex-row items-center justify-start gap-4 pl-20 pr-4 py-4 bg-gray-900"
+      >
+        <img :src="bloctoIcon" :alt="preferredWallet.name" class="w-12 h-12" />
+        <span class="text-lg text-wapal-gray">{{ preferredWallet.name }}</span>
+      </button>
+    </div>
+    <div
+      class="w-full flex flex-col items-start justify-start gap-x-4 gap-y-6 cursor py-4"
       v-if="installedWallets.length > 0"
     >
       <h6 class="text-lg text-white">Installed</h6>
@@ -46,6 +58,7 @@
 </template>
 
 <script lang="ts">
+import bloctoIcon from "@/assets/img/blocto-icon-svg.svg";
 export default {
   props: { message: { type: String, default: "" } },
   data() {
@@ -53,6 +66,7 @@ export default {
       wallets: this.$store.getters["walletStore/getWalletsDetail"],
       installedWallets: [{ name: "", icon: "", url: "" }],
       availableWallets: [{ name: "", icon: "", url: "" }],
+      bloctoIcon,
     };
   },
   methods: {
@@ -71,12 +85,16 @@ export default {
     },
     separateWallets() {
       this.installedWallets = this.wallets.filter(
-        (wallet: any) =>
-          wallet.readyState === "Installed" || wallet.readyState === "Loadable"
+        (wallet: any) => wallet.readyState === "Installed"
       );
       this.availableWallets = this.wallets.filter(
         (wallet: any) => wallet.readyState === "NotDetected"
       );
+    },
+  },
+  computed: {
+    preferredWallet() {
+      return this.wallets.find((wallet: any) => wallet.name === "Blocto");
     },
   },
   mounted() {

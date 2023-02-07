@@ -21,10 +21,13 @@
 
 <script lang="ts">
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
+import bloctoIcon from "@/assets/img/blocto-icon-svg.svg";
 export default {
   components: { PrimaryButton },
   data() {
-    return {};
+    return {
+      bloctoIcon,
+    };
   },
   methods: {
     close() {
@@ -47,6 +50,11 @@ export default {
       if (!wallet) {
         return wallets[0];
       }
+
+      if (wallet.name === "Blocto") {
+        wallet.icon = this.bloctoIcon;
+      }
+
       return wallet;
     },
   },
