@@ -9,7 +9,7 @@
       @input="search"
     />
     <v-icon
-      class="!tw-text-black !tw-text-2xl !tw-absolute !tw-left-[1%] tw-peer peer-focus:!tw-text-wapal-gray"
+      class="!tw-text-black !tw-text-2xl !tw-absolute !tw-left-[1%] tw-peer md:!tw-text-wapal-gray peer-focus:!tw-text-wapal-gray"
       >mdi-magnify</v-icon
     >
     <v-icon
