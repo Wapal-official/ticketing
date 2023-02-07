@@ -1,16 +1,20 @@
 <template>
   <div
-    class="px-8 pb-8 flex flex-col items-center justify-center h-full w-full text-center text-wapal-gray"
+    class="tw-px-8 tw-pb-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-h-full tw-w-full tw-text-center tw-text-wapal-gray"
   >
-    <h2 class="text-3xl text-wapal-gray py-4 font-semibold">Wapal</h2>
-    <p class="text-lg">Sign Up Early to get a chance for free promotion.</p>
-    <div class="flex flex-col items-center justify-center"></div>
+    <h2 class="tw-text-3xl tw-text-wapal-gray tw-py-4 tw-font-semibold">
+      Wapal
+    </h2>
+    <p class="tw-text-lg">Sign Up Early to get a chance for free promotion.</p>
+    <div class="tw-flex tw-flex-col tw-items-center tw-justify-center"></div>
     <div
-      class="flex flex-col items-start justify-start text-left w-full md:w-1/2 lg:w-1/4"
+      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-text-left tw-w-full md:tw-w-1/2 lg:tw-w-1/4"
     >
-      <div class="w-full flex flex-col items-start gap-4 justify-start">
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-gap-4 tw-justify-start"
+      >
         <label
-          class="text-wapal-gray text-lg after:content-['*'] after:text-red-700"
+          class="tw-text-wapal-gray tw-text-lg after:tw-content-['*'] after:tw-text-red-700"
           >Email
         </label>
         <v-text-field
@@ -20,15 +24,17 @@
           label="Enter your Email"
           clearable
           :color="defaultTheme.wapalGray"
-          class="signup-input w-full"
+          class="signup-input tw-w-full"
           :rules="rules.email"
           ref="email"
           type="email"
         ></v-text-field>
       </div>
-      <div class="w-full flex flex-col items-start gap-4 justify-start">
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-gap-4 tw-justify-start"
+      >
         <label
-          class="text-wapal-gray text-lg after:content-['*'] after:text-red-700"
+          class="tw-text-wapal-gray tw-text-lg after:tw-content-['*'] after:tw-text-red-700"
           >Discord
         </label>
         <v-text-field
@@ -38,14 +44,16 @@
           label="Enter your Discord Server"
           clearable
           :color="defaultTheme.wapalGray"
-          class="signup-input w-full"
+          class="signup-input tw-w-full"
           :rules="rules.discord"
           ref="discord"
         ></v-text-field>
       </div>
-      <div class="w-full flex flex-col items-start gap-4 justify-start">
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-gap-4 tw-justify-start"
+      >
         <label
-          class="text-wapal-gray text-lg after:content-['*'] after:text-red-700"
+          class="tw-text-wapal-gray tw-text-lg after:tw-content-['*'] after:tw-text-red-700"
           >Twitter
         </label>
         <v-text-field
@@ -55,15 +63,17 @@
           label="Enter your Twitter Handle"
           clearable
           :color="defaultTheme.wapalGray"
-          class="signup-input w-full"
+          class="signup-input tw-w-full"
           :rules="rules.twitter"
           ref="twitter"
           type="email"
         ></v-text-field>
       </div>
-      <div class="w-full flex flex-col items-start gap-4 justify-start">
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-gap-4 tw-justify-start"
+      >
         <label
-          class="text-wapal-gray text-lg after:content-['*'] after:text-red-700"
+          class="tw-text-wapal-gray tw-text-lg after:tw-content-['*'] after:tw-text-red-700"
           >Website
         </label>
         <v-text-field
@@ -73,7 +83,7 @@
           label="Enter your Website"
           clearable
           :color="defaultTheme.wapalGray"
-          class="signup-input w-full"
+          class="signup-input tw-w-full"
           :rules="rules.website"
           ref="website"
           type="url"
@@ -81,33 +91,35 @@
       </div>
 
       <primary-button
-        class="px-6 py-2 bg-wapal-gray text-black rounded text-lg mx-auto mt-8"
+        class="tw-px-6 tw-py-2 tw-bg-wapal-gray tw-text-black tw-rounded tw-text-lg tw-mx-auto tw-mt-8"
         @click.native="validateInputs"
-      >
-        <span
-          class="bg-clip-text text-transparent bg-gradient-to-r from-[#000000] via-[#34107B] to-[#1B0051]"
-          >Submit</span
-        >
+        >Submit
       </primary-button>
     </div>
 
     <v-dialog
       v-model="showJoinUsDialog"
-      content-class="!w-full mx-4 px-8 py-4 bg-modal-gray border-none text-white  md:!w-1/2 lg:!w-[30%]"
+      content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white  md:!tw-w-1/2 lg:!tw-w-[30%]"
     >
-      <div class="w-full flex flex-row items-center justify-end">
-        <button class="text-black text-base" @click="close">
-          <v-icon class="!text-black !font-semibold">mdi-close</v-icon>
+      <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end">
+        <button class="tw-text-black tw-text-base" @click="close">
+          <v-icon class="!tw-text-black !tw-font-semibold">mdi-close</v-icon>
         </button>
       </div>
-      <div class="flex flex-col items-center justify-center gap-4">
-        <h3 class="text-base md:text-lg">Request Submitted Successfully</h3>
+      <div
+        class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4"
+      >
+        <h3 class="tw-text-base md:tw-text-lg">
+          Request Submitted Successfully
+        </h3>
 
-        <h4 class="text-xl">Join us on</h4>
-        <div class="flex flex-row items-center justify-between gap-8">
+        <h4 class="tw-text-xl">Join us on</h4>
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8"
+        >
           <a href="https://twitter.com/wapal_official" target="_blank">
             <v-icon
-              class="!text-4xl transition duration-200 ease-linear hover:!text-blue-800"
+              class="!tw-text-4xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-blue-800"
               >mdi-twitter</v-icon
             > </a
           ><a
@@ -137,11 +149,12 @@
       :color="defaultTheme.modalGray"
     >
       <div
-        class="w-full h-full flex flex-row items-center justify-center gap-2"
+        class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2"
       >
-        <v-icon class="!text-green-500" v-if="!error">mdi-check-circle</v-icon
-        ><v-icon class="!text-red-600" v-else>mdi-close-circle</v-icon
-        ><span class="capitalize">{{ message }}</span>
+        <v-icon class="!tw-text-green-500" v-if="!error"
+          >mdi-check-circle</v-icon
+        ><v-icon class="!tw-text-red-600" v-else>mdi-close-circle</v-icon
+        ><span class="tw-capitalize">{{ message }}</span>
       </div>
     </v-snackbar>
   </div>
