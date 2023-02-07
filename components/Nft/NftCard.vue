@@ -1,14 +1,13 @@
 <template>
-  <NuxtLink
-    :to="`/nft/${collection?._id}`"
-    class="tw-p-4 tw-w-full md:tw-w-1/2 lg:tw-w-1/4"
-  >
-    <div class="tw-rounded tw-relative tw-w-full">
-      <img
-        :src="getImage"
-        :alt="collection?.name"
-        class="tw-w-full tw-h-full tw-object-contain tw-min-h-[370px]"
-      />
+  <NuxtLink :to="`/nft/${collection?._id}`" class="tw-group">
+    <div class="tw-rounded tw-relative tw-w-full tw-h-full">
+      <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
+        <img
+          :src="getImage"
+          :alt="collection?.name"
+          class="tw-w-full tw-h-full tw-min-h-[370px] tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
+        />
+      </div>
       <div
         class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-2 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
       >

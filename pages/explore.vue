@@ -5,75 +5,124 @@
       class="!tw-bg-transparent"
       id="explore-tab"
       v-model="exploreTab"
+      @change="tabChanged(exploreTab)"
     >
-      <v-tab :ripple="false" class="!tw-capitalize !tw-text-white">Top</v-tab>
-      <v-tab :ripple="false" class="!tw-capitalize !tw-text-white"
-        >Trending</v-tab
-      >
-      <v-tab :ripple="false" class="!tw-capitalize !tw-text-white"
-        >All NFTs</v-tab
+      <v-tab
+        :ripple="false"
+        class="!tw-capitalize !tw-text-white"
+        v-for="tab in exploreTabs"
+        :key="tab.id"
+        >{{ tab.title }}</v-tab
       >
     </v-tabs>
     <v-tabs-items
       v-model="exploreTab"
       id="explore-tab-items"
       class="tw-py-8 tw-px-8"
+      v-if="!loading && collections[0]._id !== null"
     >
       <v-tab-item class="tw-container tw-mx-auto">
-        <div class="tw-flex tw-flex-row tw-flex-wrap">
+        <div
+          class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4"
+        >
           <nft-card
-            v-for="nft in liveNfts"
-            :key="nft.name"
-            :name="nft.name"
-            :image="nft.image"
-            :status="nft.status"
-            :price="nft.price"
-            :stock="nft.stock"
+            v-for="collection in collections"
+            :key="collection._id"
+            :collection="collection"
+          />
+        </div>
+      </v-tab-item>
+      <v-tab-item class="tw-container tw-mx-auto">
+        <div
+          class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4"
+        >
+          <nft-card
+            v-for="collection in liveCollections"
+            :key="collection._id"
+            :collection="collection"
+          />
+        </div>
+      </v-tab-item>
+      <v-tab-item class="tw-container tw-mx-auto">
+        <div
+          class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4"
+        >
+          <nft-card
+            v-for="collection in upcomingCollections"
+            :key="collection._id"
+            :collection="collection"
           />
         </div>
       </v-tab-item>
     </v-tabs-items>
+    <div class="py-16" v-else>
+      <loading />
+    </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import NftCard from "@/components/Nft/NftCard.vue";
-import fox from "@/assets/img/fox.png";
-import pirate from "@/assets/img/6195.png";
-import astronaut from "@/assets/img/6197.png";
+import Loading from "@/components/Reusable/Loading.vue";
+import { getCollections } from "@/services/CollectionService";
 export default {
-  components: { NftCard },
+  components: { NftCard, Loading },
   data() {
-    return { exploreTab: null, liveNfts: [], fox, pirate, astronaut };
+    return {
+      exploreTab: null,
+      exploreTabs: [
+        { id: 0, title: "All NFT" },
+        { id: 1, title: "Live" },
+        { id: 2, title: "Upcoming" },
+      ],
+      collections: [{ _id: null }],
+      liveCollections: [{ _id: null }],
+      upcomingCollections: [{ _id: null }],
+      loading: true,
+    };
+  },
+  computed: {},
+  methods: {
+    tabChanged(tab: any) {
+      this.loading = true;
+
+      if (tab === 1) {
+        this.getLiveCollection();
+      } else if (tab === 2) {
+        this.getUpcomingCollection();
+      }
+
+      this.loading = false;
+    },
+    getLiveCollection() {
+      this.liveCollections = this.collections.filter((collection: any) => {
+        const whitelistSaleDate = new Date(collection.whitelist_sale_time);
+        const publicSaleDate = new Date(collection.public_sale_time);
+
+        const now = new Date();
+
+        if (now > whitelistSaleDate || now > publicSaleDate) {
+          return collection;
+        }
+      });
+    },
+    getUpcomingCollection() {
+      this.upcomingCollections = this.collections.filter((collection: any) => {
+        const whitelistSaleDate = new Date(collection.whitelist_sale_time);
+        const publicSaleDate = new Date(collection.public_sale_time);
+        const now = new Date();
+
+        if (whitelistSaleDate > now && publicSaleDate > now) {
+          return collection;
+        }
+      });
+    },
+    async getAllCollections() {
+      this.collections = await getCollections();
+    },
   },
   mounted() {
-    this.liveNfts.push({
-      name: "NINE TAILS NFT",
-      image: this.fox,
-      status: "23h 32m 56s",
-      price: "0.2 sol",
-      stock: 14,
-    });
-    this.liveNfts.push({
-      name: "Pirate NFT",
-      image: this.pirate,
-      status: "2h 32m 56s",
-      price: "0.2 sol",
-      stock: 14,
-    });
-    this.liveNfts.push({
-      name: "Astronaut NFT",
-      image: this.astronaut,
-      status: "3h 32m 56s",
-      price: "0.2 sol",
-      stock: 14,
-    });
-    this.liveNfts.push({
-      name: "Second Pirate NFT",
-      image: this.pirate,
-      status: "23h 32m 56s",
-      price: "0.2 sol",
-      stock: 14,
-    });
+    this.getAllCollections();
+    this.loading = false;
   },
 };
 </script>

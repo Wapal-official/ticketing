@@ -137,6 +137,17 @@
   box-shadow: -1px 1px 2px #ff36ab, 1.5px 1px 2px #ff36ab;
 }
 
+.landing-gradient-border-button {
+  padding: 8px 1px 8px 1px;
+  background: linear-gradient(
+    270deg,
+    rgba(254, 135, 255, 1),
+    rgba(194, 2, 211, 1),
+    rgba(94, 15, 255, 1),
+    rgba(25, 5, 218, 1)
+  );
+}
+
 /*NFT Preview*/
 .nft-preview-card-border {
   padding: 3px;
@@ -170,7 +181,7 @@
 /*Search Bar*/
 .search-bar-input {
   border-style: solid !important;
-  @apply tw-w-full tw-pl-10 tw-pr-4 tw-py-2 tw-bg-[#4b4b4b] tw-text-white tw-border tw-border-transparent tw-transition-all tw-duration-200 tw-ease-linear placeholder:tw-text-white focus:tw-outline-none focus:tw-border-modal-gray focus:tw-shadow focus:tw-shadow-modal-gray md:tw-rounded md:focus:tw-bg-transparent;
+  @apply tw-w-full tw-pl-10 tw-pr-4 tw-py-2 tw-bg-[#4b4b4b] tw-text-white tw-border tw-border-transparent tw-transition-all tw-duration-200 tw-ease-linear placeholder:tw-text-white focus:tw-outline-none focus:tw-border-modal-gray focus:tw-shadow focus:tw-shadow-modal-gray md:tw-rounded  md:tw-bg-transparent md:tw-border-modal-gray;
 }
 
 /*Explore List*/
