@@ -20,6 +20,7 @@
       id="explore-tab-items"
       class="tw-py-8 tw-px-8"
       v-if="!loading && collections[0]._id !== null"
+      @change="tabChanged(exploreTab)"
     >
       <v-tab-item class="tw-container tw-mx-auto">
         <div
