@@ -13,7 +13,7 @@
     </div>
 
     <NuxtLink
-      class="landing-gradient-border-button tw-rounded tw-w-fit !tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
+      class="landing-gradient-border-button tw-w-fit !tw-text-white tw-transition-all tw-duration-500 tw-ease-linear"
       to="/explore"
     >
       <span class="tw-rounded tw-h-full tw-bg-wapal-background tw-px-6 tw-py-2">
