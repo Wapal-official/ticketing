@@ -73,32 +73,24 @@ export default {
         this.minutes = minutes < 10 ? "0" + minutes : minutes;
         this.seconds = seconds < 10 ? "0" + seconds : seconds;
 
-        if (this.interval < 0) {
-          clearInterval(timer);
+        if (interval <= 0) {
+          this.days = "00";
+          this.hours = "00";
+          this.minutes = "00";
+          this.seconds = "00";
           this.$emit("countdownComplete");
+          clearInterval(timer);
         }
       }, 1000);
     },
-    setDate(saleTime: string) {
-      const date = new Date(saleTime);
-      const now = new Date().getTime();
-
-      const interval = date.getTime() - now;
-
-      let days = Math.floor(interval / (1000 * 60 * 60 * 24));
-      let hours = Math.floor(
-        (interval % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
-      let minutes = Math.floor((interval % (1000 * 60 * 60)) / (1000 * 60));
-      let seconds = Math.floor((interval % (1000 * 60)) / 1000);
-
-      this.days = days < 10 ? "0" + days : days;
-      this.hours = hours < 10 ? "0" + hours : hours;
-      this.minutes = minutes < 10 ? "0" + minutes : minutes;
-      this.seconds = seconds < 10 ? "0" + seconds : seconds;
+    setDate() {
+      this.days = "00";
+      this.hours = "00";
+      this.minutes = "00";
+      this.seconds = "00";
     },
   },
-  mounted() {
+  created() {
     this.setDate(this.startTime);
     this.startCountdown(this.startTime);
   },

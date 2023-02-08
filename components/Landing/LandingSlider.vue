@@ -3,7 +3,7 @@
     <div class="swiper mySwiper" ref="swiper">
       <div class="swiper-wrapper">
         <div
-          class="swiper-slide"
+          class="swiper-slide tw-flex tw-flex-row tw-items-center tw-justify-center"
           v-for="(image, index) in sliderImages"
           :key="index"
         >
