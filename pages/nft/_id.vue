@@ -21,7 +21,7 @@
         >
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full md:tw-items-center lg:tw-flex-row lg:tw-items-center"
-            v-if="checkWhitelistSaleTime && checkPublicSaleTime"
+            v-if="showWhitelistSaleTimer && showPublicSaleTimer"
           >
             <span class="tw-pr-4 lg:tw-pr-8">Live In</span>
             <count-down :shadow="true" :startTime="getShortestTime" />
@@ -95,7 +95,7 @@
       </div> -->
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-[#F0F0F0] tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
-          v-if="!checkPublicSaleTime || !checkWhitelistSaleTime"
+          v-if="!showWhitelistSaleTimer || !showPublicSaleTimer"
         >
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
@@ -111,19 +111,24 @@
           </div>
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
-            v-if="checkPublicSaleTime || checkWhitelistSaleTime"
+            v-if="showWhitelistSaleTimer || showPublicSaleTimer"
           >
             <h6
               class="tw-uppercase tw-text-wapal-pink tw-text-xl tw-font-medium"
             >
               End In
             </h6>
-            <count-down :vertical="true" :startTime="getLongestTime" />
+            <count-down
+              :vertical="true"
+              :startTime="getLongestTime"
+              @countdownComplete="hideEndInTimer"
+              v-if="showEndInTimer"
+            />
           </div>
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-2 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
-          v-if="checkWhitelistSaleTime"
+          v-if="showWhitelistSaleTimer"
         >
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 md:tw-gap-4"
@@ -137,12 +142,15 @@
             class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start"
           >
             Starts In
-            <count-down :startTime="collection.whitelist_sale_time" />
+            <count-down
+              :startTime="collection.whitelist_sale_time"
+              @countdownComplete="whitelistCountdownComplete"
+            />
           </div>
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-2 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
-          v-if="checkPublicSaleTime"
+          v-if="showPublicSaleTimer"
         >
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 md:tw-gap-4"
@@ -156,7 +164,10 @@
             class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start"
           >
             Starts In
-            <count-down :startTime="collection.public_sale_time" />
+            <count-down
+              :startTime="collection.public_sale_time"
+              @countdownComplete="publicSaleCountdownComplete"
+            />
           </div>
         </div>
       </div>
@@ -193,9 +204,49 @@ export default {
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
+      showWhitelistSaleTimer: false,
+      showPublicSaleTimer: false,
+      showEndInTimer: false,
     };
   },
-  methods: {},
+  methods: {
+    countdownComplete() {
+      this.showCountdown = false;
+    },
+    whitelistCountdownComplete() {
+      this.showWhitelistSaleTimer = false;
+      this.changeEndInTimer();
+    },
+    publicSaleCountdownComplete() {
+      this.showWhitelistSaleTimer = false;
+      this.changeEndInTimer();
+    },
+
+    checkWhitelistSaleTimer() {
+      const date = new Date();
+
+      if (this.whitelistSaleDate < date) {
+        return false;
+      }
+      return true;
+    },
+    checkPublicSaleTimer() {
+      const date = new Date();
+      if (this.publicSaleDate < date) {
+        return false;
+      }
+      return true;
+    },
+    hideEndInTimer() {
+      this.showEndInTime = false;
+    },
+    changeEndInTimer() {
+      this.showEndInTimer = false;
+      setTimeout(() => {
+        this.showEndInTimer = true;
+      }, 1);
+    },
+  },
   computed: {
     getShortestTime() {
       if (this.publicSaleDate > this.whitelistSaleDate) {
@@ -210,20 +261,6 @@ export default {
       } else {
         return this.publicSaleDate.toString();
       }
-    },
-    checkWhitelistSaleTime() {
-      const date = new Date();
-      if (this.whitelistSaleDate < date) {
-        return false;
-      }
-      return true;
-    },
-    checkPublicSaleTime() {
-      const date = new Date();
-      if (this.publicSaleDate < date) {
-        return false;
-      }
-      return true;
     },
     getCurrentPrice() {
       const whiteListDate = new Date(this.collection.whitelist_sale_time);
@@ -256,6 +293,11 @@ export default {
 
     this.whitelistSaleDate = new Date(this.collection.whitelist_sale_time);
     this.publicSaleDate = new Date(this.collection.public_sale_time);
+
+    this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
+    this.showPublicSaleTimer = this.checkPublicSaleTimer();
+
+    this.showEndInTimer = true;
 
     this.loading = false;
   },

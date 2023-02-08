@@ -14,13 +14,14 @@
         <h5 class="tw-text-lg tw-uppercase tw-font-medium">
           {{ collection?.name }}
         </h5>
-        <h6
-          class="tw-text-xl tw-text-wapal-pink tw-font-normal"
-          v-if="getStatus"
-        >
+        <h6 class="tw-text-xl tw-text-wapal-pink tw-font-normal" v-if="status">
           Live
         </h6>
-        <count-down :startTime="getStartTime" v-else />
+        <count-down
+          :startTime="getStartTime"
+          @countdownComplete="countdownComplete"
+          v-else
+        />
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12 tw-capitalize tw-w-full"
         >
@@ -40,7 +41,9 @@ export default {
     collection: { type: Object },
   },
   data() {
-    return {};
+    return {
+      status: false,
+    };
   },
   computed: {
     getStatus() {
@@ -95,6 +98,14 @@ export default {
         }
       }
     },
+  },
+  methods: {
+    countdownComplete() {
+      this.status = true;
+    },
+  },
+  mounted() {
+    this.status = this.getStatus;
   },
 };
 </script>
