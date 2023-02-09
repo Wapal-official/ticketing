@@ -3,7 +3,7 @@
     <div class="tw-rounded tw-relative tw-w-full tw-h-full">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
         <img
-          :src="getImage"
+          :src="collection?.image"
           :alt="collection?.name"
           class="tw-w-full tw-h-full tw-min-h-[370px] tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
         />
@@ -82,20 +82,6 @@ export default {
         return this.collection.whitelist_price;
       } else {
         return this.collection.public_sale_price;
-      }
-    },
-    getImage() {
-      if (this.collection.image) {
-        const test = this.collection.image.substring(18);
-        if (test.includes("fox")) {
-          return "/img/fox.png";
-        } else if (test.includes("6195")) {
-          return "/img/6195.png";
-        } else if (test.includes("6197")) {
-          return "/img/6197.png";
-        } else {
-          return "/img/3469.png";
-        }
       }
     },
   },
