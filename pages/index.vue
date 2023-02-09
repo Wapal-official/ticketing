@@ -12,7 +12,7 @@
           No Code NFT Creator Studio on Aptos
         </h1>
         <primary-button @click.native="checkWalletStatus"
-          >Sign Up Early</primary-button
+          >Launch</primary-button
         >
       </div>
       <v-dialog
@@ -20,7 +20,7 @@
         content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
       >
         <connect-wallet-modal
-          message="Please Connect your wallet to Sign Up"
+          message="Please Connect your wallet to Launch"
           @closeModal="showConnectWalletModal = false"
           @walletConnected="displayWalletConnectedMessage"
         />
@@ -107,7 +107,7 @@ export default {
   methods: {
     checkWalletStatus() {
       if (this.getWalletStatus) {
-        this.$router.push("/signup");
+        this.$router.push("/dashboard");
       } else {
         this.showConnectWalletModal = true;
       }
