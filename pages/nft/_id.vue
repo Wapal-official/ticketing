@@ -11,7 +11,7 @@
           class="tw-rounded-lg nft-preview-card-border tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear"
         >
           <img
-            :src="getImage"
+            :src="collection.image"
             :alt="collection.name"
             class="tw-w-full tw-rounded-lg"
           />
@@ -270,20 +270,6 @@ export default {
         return this.collection.whitelist_price;
       } else {
         return this.collection.public_sale_price;
-      }
-    },
-    getImage() {
-      if (this.collection.image) {
-        const test = this.collection.image.substring(18);
-        if (test.includes("fox")) {
-          return "/img/fox.png";
-        } else if (test.includes("6195")) {
-          return "/img/6195.png";
-        } else if (test.includes("6197")) {
-          return "/img/6197.png";
-        } else {
-          return "/img/3469.png";
-        }
       }
     },
   },

@@ -1,5 +1,8 @@
 import colors from "vuetify/es5/util/colors";
 const API_URL = process.env.API_URL;
+const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
+const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   server: {
@@ -108,5 +111,7 @@ export default {
   axios: { baseURL: API_URL },
   env: {
     baseURL: API_URL,
+    AWS_ACCESS_KEY: AWS_ACCESS_KEY,
+    AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY,
   },
 };
