@@ -488,6 +488,11 @@ export default {
         });
         this.collection.image = res.Location;
       } catch (error) {
+        console.log(error);
+        console.log(
+          process.env.AWS_ACCESS_KEY,
+          process.env.AWS_SECRET_ACCESS_KEY
+        );
         this.message = "Something Went Wrong Please try again";
         this.$toast.showMessage({ message: this.message, error: true });
       }
