@@ -5,6 +5,7 @@
       <form
         class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full lg:tw-w-[60%]"
         @submit.prevent="handleSubmit(submitCollection)"
+        novalidate
       >
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -122,6 +123,7 @@
               hide-details
               clearable
               class="dashboard-input"
+              type="url"
             >
             </v-text-field>
           </div>
@@ -495,6 +497,7 @@ export default {
         );
         this.message = "Something Went Wrong Please try again";
         this.$toast.showMessage({ message: this.message, error: true });
+        this.uploading = false;
       }
     },
 
@@ -502,10 +505,7 @@ export default {
       this.image = event.target.files[0];
     },
     setImage(image: string) {
-      console.log(image);
-
       this.collection.image = image;
-      console.log(this.collection.image);
     },
 
     awsUpload() {
