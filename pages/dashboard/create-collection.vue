@@ -62,6 +62,7 @@
           >
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full md:tw-flex-row md:tw-justify-start dashboard-text-field-group"
+            ref="imageSelect"
           >
             <label
               class="dashboard-text-field-border tw-cursor-pointer tw-w-full md:tw-w-fit"
@@ -86,19 +87,6 @@
                 @change="imageSelected"
               />
             </label>
-            <button
-              class="tw-px-8 tw-py-2 tw-bg-[#A0A0A0] tw-font-semibold tw-rounded disabled:tw-cursor-not-allowed tw-flex tw-flex-row tw-items-center tw-gap-4"
-              @click.prevent="uploadImage"
-              :disabled="!image.name || uploading"
-            >
-              <v-progress-circular
-                indeterminate
-                color="#000"
-                v-if="uploading"
-              ></v-progress-circular>
-
-              Upload
-            </button>
           </div>
           <div class="tw-text-red-600" v-if="imageError">
             {{ imageErrorMessage }}
@@ -393,7 +381,13 @@
           <button
             class="dashboard-gradient-button tw-font-semibold"
             type="submit"
+            :disabled="submitting"
           >
+            <v-progress-circular
+              indeterminate
+              color="white"
+              v-if="submitting"
+            ></v-progress-circular>
             Submit
           </button>
         </div>
@@ -449,25 +443,36 @@ export default {
       image: { name: null },
       imageErrorMessage: "",
       imageError: false,
-      uploading: false,
+      submitting: false,
     };
   },
   methods: {
     async submitCollection() {
       this.imageError = false;
-      if (!this.collection.image) {
+      if (!this.image.name) {
         this.imageError = true;
-        this.imageErrorMessage = "Please upload an image for collection";
+        this.imageErrorMessage = "Please select an image for collection";
+        this.$refs["imageSelect"].scrollIntoView({ behavior: "smooth" });
         return;
       }
       try {
+        this.submitting = true;
+        await this.uploadImage();
+        if (this.imageError) {
+          return;
+        }
         await createCollection(this.collection);
+
+        this.submitting = false;
+
         this.message = "Collection Created Successfully";
         this.$toast.showMessage({ message: this.message, error: false });
         this.$router.push("/dashboard");
       } catch (error) {
         this.message = error;
         this.$toast.showMessage({ message: this.message, error: true });
+
+        this.submitting = false;
       }
     },
     async uploadImage() {
@@ -477,27 +482,15 @@ export default {
       if (!allowedExtensions.exec(this.image.name.toLowerCase())) {
         this.imageError = true;
         this.imageErrorMessage = "Please upload a jpg, jpeg or png image";
-        return;
+        return false;
       }
 
       try {
-        this.uploading = true;
         const res = await this.awsUpload();
-        this.uploading = false;
-        this.$toast.showMessage({
-          message: "Image Uploaded Successfully",
-          error: false,
-        });
         this.collection.image = res.Location;
       } catch (error) {
-        console.log(error);
-        console.log(
-          process.env.AWS_ACCESS_KEY,
-          process.env.AWS_SECRET_ACCESS_KEY
-        );
         this.message = "Something Went Wrong Please try again";
         this.$toast.showMessage({ message: this.message, error: true });
-        this.uploading = false;
       }
     },
 
