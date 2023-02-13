@@ -11,8 +11,8 @@
           class="tw-rounded-lg nft-preview-card-border tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear"
         >
           <img
-            :src="collection.image"
-            :alt="collection.name"
+            :src="collection.collection_id.image"
+            :alt="collection.collection_id.name"
             class="tw-w-full tw-rounded-lg"
           />
         </div>
@@ -44,13 +44,13 @@
           >
             Doxxed
           </div>
-          <a :href="collection.twitter" target="_blank">
+          <a :href="collection.collection_id.twitter" target="_blank">
             <v-icon
               class="!tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink"
               >mdi-twitter</v-icon
             > </a
           ><a
-            :href="collection.discord"
+            :href="collection.collection_id.discord"
             target="_blank"
             class="nft-discord-icon"
           >
@@ -70,10 +70,10 @@
           <h1
             class="tw-text-2xl tw-pb-4 tw-font-medium tw-uppercase md:tw-text-[2rem]"
           >
-            {{ collection.name }}
+            {{ collection.collection_id.name }}
           </h1>
           <p class="tw-font-light">
-            {{ collection.description }}
+            {{ collection.collection_id.description }}
           </p>
         </div>
         <!-- <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
@@ -191,16 +191,19 @@ export default {
     return {
       loading: true,
       collection: {
-        _id: null,
-        name: "",
-        description: null,
+        collection_id: {
+          _id: null,
+          name: "",
+          description: null,
+          image: "",
+          twitter: "",
+          discord: "",
+        },
         public_sale_time: "",
         whitelist_sale_time: "",
-        image: "",
-        twitter: "",
-        discord: "",
         whitelist_price: null,
         public_sale_price: null,
+        resource_account: null,
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
