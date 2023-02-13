@@ -399,6 +399,7 @@
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
 import { createCollection } from "@/services/CollectionService";
+
 import AWS from "aws-sdk";
 extend("required", {
   ...required,
@@ -438,6 +439,7 @@ export default {
         twitter: null,
         discord: null,
         website: null,
+        resource_account: null,
       },
       message: "",
       image: { name: null },
@@ -461,6 +463,9 @@ export default {
         if (this.imageError) {
           return;
         }
+
+        await this.sendDataToCandyMachineCreator();
+
         await createCollection(this.collection);
 
         this.submitting = false;
@@ -520,6 +525,34 @@ export default {
           else resolve(data);
         });
       });
+    },
+    async sendDataToCandyMachineCreator() {
+      const candyMachineArguments = {
+        collection_name: this.collection.name,
+        collection_description: this.collection.description,
+        baseuri: this.collection.baseURL,
+        royalty_payee_address: this.collection.royalty_payee_address,
+        royalty_points_denominator: 1000,
+        royalty_points_numerator: this.collection.royalty_percentage * 10,
+        presale_mint_time: new Date(
+          this.collection.whitelist_sale_time
+        ).getTime(),
+        public_sale_mint_time: new Date(
+          this.collection.public_sale_time
+        ).getTime(),
+        presale_mint_price: this.collection.whitelist_price * 100000000,
+        public_sale_mint_price: this.collection.public_sale_price * 100000000,
+        total_supply: this.collection.supply,
+      };
+
+      const res = await this.$store.dispatch(
+        "walletStore/createCandyMachine",
+        candyMachineArguments
+      );
+
+      this.collection.resource_account = res;
+
+      this.$store.dispatch("walletStore/createCandyMachine");
     },
   },
 };
