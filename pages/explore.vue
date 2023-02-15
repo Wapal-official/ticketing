@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-py-8 tw-w-full">
+  <div class="tw-pt-24 tw-pb-8 tw-w-full">
     <v-tabs
       active-class="!tw-text-wapal-pink"
       class="!tw-bg-transparent"

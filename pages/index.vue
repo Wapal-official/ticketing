@@ -1,13 +1,20 @@
 <template>
   <div>
     <section
-      class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-8 tw-py-60"
+      class="tw-flex tw-flex-row tw-gap-8 tw-h-screen tw-relative tw-items-center tw-justify-center md:tw-h-[70vh] lg:tw-h-[100vh] lg:tw-items-center lg:tw-justify-start"
     >
+      <div class="tw-absolute tw-top-0 tw-bottom-0 tw-z-10 tw-w-full tw-h-full">
+        <img
+          :src="banner"
+          alt="banner"
+          class="tw-w-full tw-h-full tw-object-fill tw-hidden lg:tw-flex"
+        />
+      </div>
       <div
-        class="tw-text-white tw-px-8 lg:tw-w-[60%] tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-10 tw-text-center"
+        class="tw-text-white tw-px-8 lg:tw-w-[60%] tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-10 tw-text-center tw-z-20"
       >
         <h1
-          class="tw-text-3xl tw-text-wapal-gray tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
+          class="tw-text-3xl tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
         >
           No Code NFT Creator Studio on Aptos
         </h1>
@@ -79,6 +86,8 @@ import Loading from "@/components/Reusable/Loading.vue";
 
 import { getCollections } from "@/services/CollectionService.ts";
 
+import banner from "@/assets/img/banner.png";
+
 export default {
   name: "IndexPage",
   components: {
@@ -102,6 +111,7 @@ export default {
       liveCollections: [],
       upcomingCollections: [],
       loading: true,
+      banner,
     };
   },
   methods: {

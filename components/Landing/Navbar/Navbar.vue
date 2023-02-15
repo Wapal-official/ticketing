@@ -1,5 +1,7 @@
 <template>
-  <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
+  <div
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-absolute tw-top-0 tw-left-0 tw-z-20"
+  >
     <nav
       class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-8 tw-py-6 lg:!tw-px-24"
     >
