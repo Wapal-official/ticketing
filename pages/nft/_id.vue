@@ -11,8 +11,8 @@
           class="tw-rounded-lg nft-preview-card-border tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear"
         >
           <img
-            :src="collection.collection_id.image"
-            :alt="collection.collection_id.name"
+            :src="collection.image"
+            :alt="collection.name"
             class="tw-w-full tw-rounded-lg"
           />
         </div>
@@ -44,13 +44,13 @@
           >
             Doxxed
           </div>
-          <a :href="collection.collection_id.twitter" target="_blank">
+          <a :href="collection.twitter" target="_blank">
             <v-icon
               class="!tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink"
               >mdi-twitter</v-icon
             > </a
           ><a
-            :href="collection.collection_id.discord"
+            :href="collection.discord"
             target="_blank"
             class="nft-discord-icon"
           >
@@ -70,10 +70,10 @@
           <h1
             class="tw-text-2xl tw-pb-4 tw-font-medium tw-uppercase md:tw-text-[2rem]"
           >
-            {{ collection.collection_id.name }}
+            {{ collection.name }}
           </h1>
           <p class="tw-font-light">
-            {{ collection.collection_id.description }}
+            {{ collection.description }}
           </p>
         </div>
         <!-- <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
@@ -104,8 +104,15 @@
               price {{ getCurrentPrice }} apt
             </h6>
             <button
-              class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold"
+              class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
+              :class="{
+                '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
+              }"
+              @click="mintCollection"
+              :disabled="minting"
             >
+              <v-progress-circular indeterminate v-if="minting" color="white">
+              </v-progress-circular>
               Mint
             </button>
           </div>
@@ -135,7 +142,7 @@
           >
             <div>Whitelist Sale</div>
             <div class="tw-capitalize">
-              price {{ collection.whitelist_price }} apt
+              price {{ collection.candyMachine_id.whitelist_price }} apt
             </div>
           </div>
           <div
@@ -143,7 +150,7 @@
           >
             Starts In
             <count-down
-              :startTime="collection.whitelist_sale_time"
+              :startTime="collection.candyMachine_id.whitelist_sale_time"
               @countdownComplete="whitelistCountdownComplete"
             />
           </div>
@@ -157,7 +164,7 @@
           >
             <div>Public Sale</div>
             <div class="tw-capitalize">
-              price {{ collection.public_sale_price }} apt
+              price {{ collection.candyMachine_id.public_sale_price }} apt
             </div>
           </div>
           <div
@@ -165,7 +172,7 @@
           >
             Starts In
             <count-down
-              :startTime="collection.public_sale_time"
+              :startTime="collection.candyMachine_id.public_sale_time"
               @countdownComplete="publicSaleCountdownComplete"
             />
           </div>
@@ -178,6 +185,16 @@
     >
       <loading />
     </div>
+    <v-dialog
+      v-model="showConnectWalletModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <connect-wallet-modal
+        message="Please Connect your wallet to Mint"
+        @closeModal="showConnectWalletModal = false"
+        @walletConnected="displayWalletConnectedMessage"
+      />
+    </v-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -191,25 +208,27 @@ export default {
     return {
       loading: true,
       collection: {
-        collection_id: {
-          _id: null,
-          name: "",
-          description: null,
-          image: "",
-          twitter: "",
-          discord: "",
+        candyMachine_id: {
+          public_sale_price: null,
+          public_sale_time: "",
+          resource_account: null,
+          whitelist_price: null,
+          whitelist_sale_time: "",
         },
-        public_sale_time: "",
-        whitelist_sale_time: "",
-        whitelist_price: null,
-        public_sale_price: null,
-        resource_account: null,
+        _id: null,
+        name: "",
+        description: null,
+        image: "",
+        twitter: "",
+        discord: "",
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
       showWhitelistSaleTimer: false,
       showPublicSaleTimer: false,
       showEndInTimer: false,
+      minting: false,
+      showConnectWalletModal: false,
     };
   },
   methods: {
@@ -249,6 +268,57 @@ export default {
         this.showEndInTimer = true;
       }, 1);
     },
+    async mintCollection() {
+      try {
+        if (!this.$store.state.walletStore.wallet.wallet) {
+          this.showConnectWalletModal = true;
+          return;
+        }
+
+        this.minting = true;
+        const balance = await this.$store.dispatch("walletStore/checkBalance");
+
+        const mintPrice = this.getCurrentPrice;
+
+        if (balance < mintPrice) {
+          this.$toast.showMessage({
+            message: "Your account has insufficient balance for Minting",
+            error: true,
+          });
+          return;
+        }
+
+        const res = await this.$store.dispatch(
+          "walletStore/mintCollection",
+          this.collection.candyMachine_id.resource_account
+        );
+        console.log(res);
+        if (res.success) {
+          this.$toast.showMessage({
+            message: `${this.collection.name} Minted Successfully`,
+          });
+        } else {
+          this.$toast.showMessage({
+            message: "Collection Not Minted",
+            error: true,
+          });
+        }
+
+        this.minting = false;
+        return;
+      } catch (error) {
+        this.$toast.showMessage({ message: error, error: true });
+        this.minting = false;
+        console.log(error);
+      }
+    },
+    displayWalletConnectedMessage() {
+      this.showConnectWalletModal = false;
+
+      this.$toast.showMessage({
+        message: `${this.$store.state.walletStore.wallet.wallet} Wallet Connected Successfully`,
+      });
+    },
   },
   computed: {
     getShortestTime() {
@@ -266,13 +336,17 @@ export default {
       }
     },
     getCurrentPrice() {
-      const whiteListDate = new Date(this.collection.whitelist_sale_time);
-      const publicSaleDate = new Date(this.collection.public_sale_time);
+      const whiteListDate = new Date(
+        this.collection.candyMachine_id.whitelist_sale_time
+      );
+      const publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
 
       if (whiteListDate < publicSaleDate) {
-        return this.collection.whitelist_price;
+        return this.collection.candyMachine_id.whitelist_price;
       } else {
-        return this.collection.public_sale_price;
+        return this.collection.candyMachine_id.public_sale_price;
       }
     },
   },
@@ -280,8 +354,12 @@ export default {
     const res = await getCollection(this.$route.params.id);
     this.collection = res.collection[0];
 
-    this.whitelistSaleDate = new Date(this.collection.whitelist_sale_time);
-    this.publicSaleDate = new Date(this.collection.public_sale_time);
+    this.whitelistSaleDate = new Date(
+      this.collection.candyMachine_id.whitelist_sale_time
+    );
+    this.publicSaleDate = new Date(
+      this.collection.candyMachine_id.public_sale_time
+    );
 
     this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
     this.showPublicSaleTimer = this.checkPublicSaleTimer();

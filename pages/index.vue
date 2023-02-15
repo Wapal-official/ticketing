@@ -142,15 +142,9 @@ export default {
         }
       });
 
-      this.liveCollections = this.liveCollections.slice(
-        this.liveCollections.length - 4,
-        this.liveCollections.length
-      );
+      this.liveCollections = this.liveCollections.slice(0, 4);
 
-      this.upcomingCollections = this.upcomingCollections.slice(
-        this.upcomingCollections.length - 4,
-        this.upcomingCollections.length
-      );
+      this.upcomingCollections = this.upcomingCollections.slice(0, 4);
     },
   },
   computed: {

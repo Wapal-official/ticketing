@@ -144,7 +144,7 @@
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="royaltyPercentage"
-          rules="required"
+          rules="required|number|percentage"
           v-slot="{ errors }"
         >
           <label
@@ -172,7 +172,7 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
             name="whitelistSaleTime"
-            rules="required"
+            rules="required|saleTime"
             v-slot="{ errors }"
           >
             <label
@@ -189,6 +189,7 @@
                 clearable
                 class="dashboard-input tw-w-full focus:tw-outline-none"
                 type="datetime-local"
+                ref="whitelistSaleTime"
               >
               </v-text-field>
             </div>
@@ -197,7 +198,7 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
             name="publicSaleTime"
-            rules="required"
+            rules="required|saleTime|public_sale_time:@whitelistSaleTime"
             v-slot="{ errors }"
           >
             <label
@@ -226,7 +227,7 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
             name="whitelistSalePrice"
-            rules="required"
+            rules="required|number"
             v-slot="{ errors }"
             ><label
               class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
@@ -251,7 +252,7 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
             name="publicSalePrice"
-            rules="required"
+            rules="required|number"
             v-slot="{ errors }"
           >
             <label
@@ -278,7 +279,7 @@
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="supply"
-          rules="required"
+          rules="required|number"
           v-slot="{ errors }"
         >
           <label
@@ -397,7 +398,7 @@
 </template>
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
-import { required } from "vee-validate/dist/rules";
+import { required, numeric } from "vee-validate/dist/rules";
 import { createCollection } from "@/services/CollectionService";
 
 import AWS from "aws-sdk";
@@ -417,6 +418,53 @@ extend("link", {
     return true;
   },
   message: "Please enter a valid link",
+});
+
+extend("public_sale_time", {
+  params: ["target"],
+  validate(value, target: any) {
+    if (value < target.target) {
+      return false;
+    }
+
+    return true;
+  },
+  message: "Public Sale Time should be greater than whitelist sale time",
+});
+
+extend("saleTime", {
+  validate(value) {
+    if (new Date(value).getTime() < Date.now()) {
+      return false;
+    }
+    return true;
+  },
+  message: "Sale time should be greater than current time",
+});
+
+extend("percentage", {
+  validate(value) {
+    const getDecimalVal = value.toString().indexOf(".");
+    if (getDecimalVal < 1) {
+      return true;
+    }
+    const decimalPart = value.toString().substring(getDecimalVal + 1);
+    if (decimalPart.length > 1) {
+      return false;
+    }
+    return true;
+  },
+  message: "Please enter only one decimal point in percentage",
+});
+
+extend("number", {
+  validate(value) {
+    if (isNaN(value)) {
+      return false;
+    }
+    return true;
+  },
+  message: "This field must be a number",
 });
 
 export default {
@@ -440,6 +488,7 @@ export default {
         discord: null,
         website: null,
         resource_account: null,
+        transaction_hash: null,
       },
       message: "",
       image: { name: null },
@@ -459,14 +508,25 @@ export default {
       }
       try {
         this.submitting = true;
-        await this.uploadImage();
+
         if (this.imageError) {
           return;
         }
 
         await this.sendDataToCandyMachineCreator();
 
-        await createCollection(this.collection);
+        await this.uploadImage();
+
+        const tempCollection = this.collection;
+
+        tempCollection.whitelist_sale_time = new Date(
+          tempCollection.whitelist_sale_time
+        ).toISOString();
+        tempCollection.public_sale_time = new Date(
+          tempCollection.public_sale_time
+        ).toISOString();
+
+        await createCollection(tempCollection);
 
         this.submitting = false;
 
@@ -527,6 +587,13 @@ export default {
       });
     },
     async sendDataToCandyMachineCreator() {
+      const whitelistTime = Math.floor(
+        new Date(this.collection.whitelist_sale_time).getTime() / 1000
+      );
+      const publicSaleTime = Math.floor(
+        new Date(this.collection.public_sale_time).getTime() / 1000
+      );
+
       const candyMachineArguments = {
         collection_name: this.collection.name,
         collection_description: this.collection.description,
@@ -534,12 +601,8 @@ export default {
         royalty_payee_address: this.collection.royalty_payee_address,
         royalty_points_denominator: 1000,
         royalty_points_numerator: this.collection.royalty_percentage * 10,
-        presale_mint_time: new Date(
-          this.collection.whitelist_sale_time
-        ).getTime(),
-        public_sale_mint_time: new Date(
-          this.collection.public_sale_time
-        ).getTime(),
+        presale_mint_time: whitelistTime,
+        public_sale_mint_time: publicSaleTime,
         presale_mint_price: this.collection.whitelist_price * 100000000,
         public_sale_mint_price: this.collection.public_sale_price * 100000000,
         total_supply: this.collection.supply,
@@ -550,9 +613,8 @@ export default {
         candyMachineArguments
       );
 
-      this.collection.resource_account = res;
-
-      this.$store.dispatch("walletStore/createCandyMachine");
+      this.collection.resource_account = res.resourceAccount;
+      this.collection.transaction_hash = res.transactionHash;
     },
   },
 };
