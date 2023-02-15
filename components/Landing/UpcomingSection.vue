@@ -1,6 +1,13 @@
 <template>
   <div
+    class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-center tw-text-wapal-pink tw-text-xl py-8"
+    v-if="upcomingCollection.length < 1"
+  >
+    No Upcoming Collections
+  </div>
+  <div
     class="tw-w-full tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-4"
+    v-else
   >
     <div class="tw-flex tw-flex-row tw-flex-wrap">
       <div

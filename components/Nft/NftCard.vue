@@ -1,10 +1,10 @@
 <template>
-  <NuxtLink :to="`/nft/${collection?._id}`" class="tw-group">
+  <NuxtLink :to="`/nft/${nft?._id}`" class="tw-group">
     <div class="tw-rounded tw-relative tw-w-full tw-h-full">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
         <img
-          :src="collection?.image"
-          :alt="collection?.name"
+          :src="nft?.image"
+          :alt="nft?.name"
           class="tw-w-full tw-h-full tw-min-h-[370px] tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
         />
       </div>
@@ -12,7 +12,7 @@
         class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-2 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
       >
         <h5 class="tw-text-lg tw-uppercase tw-font-medium">
-          {{ collection?.name }}
+          {{ nft?.name }}
         </h5>
         <h6 class="tw-text-xl tw-text-wapal-pink tw-font-normal" v-if="status">
           Live
@@ -25,7 +25,7 @@
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12 tw-capitalize tw-w-full"
         >
-          <div>items {{ collection?.supply }}</div>
+          <div>items {{ nft?.supply }}</div>
           <div>price {{ getPrice }} apt</div>
         </div>
       </div>
@@ -43,12 +43,28 @@ export default {
   data() {
     return {
       status: false,
+      nft: {
+        _id: "",
+        name: "",
+        image: "",
+        supply: "",
+        candyMachine_id: {
+          whitelist_sale_time: null,
+          public_sale_time: null,
+          whitelist_sale_price: null,
+          public_sale_price: null,
+        },
+      },
     };
   },
   computed: {
     getStatus() {
-      const whiteListDate = new Date(this.collection.whitelist_sale_time);
-      const publicSaleDate = new Date(this.collection.public_sale_time);
+      const whiteListDate = new Date(
+        this.nft.candyMachine_id.whitelist_sale_time
+      );
+      const publicSaleDate = new Date(
+        this.nft.candyMachine_id.public_sale_time
+      );
 
       const date = new Date();
 
@@ -59,8 +75,12 @@ export default {
       return false;
     },
     getStartTime() {
-      const whiteListDate = new Date(this.collection.whitelist_sale_time);
-      const publicSaleDate = new Date(this.collection.public_sale_time);
+      const whiteListDate = new Date(
+        this.nft.candyMachine_id.whitelist_sale_time
+      );
+      const publicSaleDate = new Date(
+        this.nft.candyMachine_id.public_sale_time
+      );
 
       if (whiteListDate > publicSaleDate) {
         return publicSaleDate.toString();
@@ -69,19 +89,24 @@ export default {
       }
     },
     getPrice() {
-      const whiteListDate = new Date(this.collection.whitelist_sale_time);
-      const publicSaleDate = new Date(this.collection.public_sale_time);
+      const whiteListDate = new Date(
+        this.nft.candyMachine_id.whitelist_sale_time
+      );
+      const publicSaleDate = new Date(
+        this.nft.candyMachine_id.public_sale_time
+      );
       const now = new Date();
       if (
-        this.collection.public_sale_price == this.collection.whitelist_price
+        this.nft.candyMachine_id.public_sale_price ==
+        this.nft.candyMachine_id.whitelist_price
       ) {
-        return this.collection.public_sale_price;
+        return this.nft.candyMachine_id.public_sale_price;
       }
 
       if (whiteListDate > now && whiteListDate < publicSaleDate) {
-        return this.collection.whitelist_price;
+        return this.nft.candyMachine_id.whitelist_price;
       } else {
-        return this.collection.public_sale_price;
+        return this.nft.candyMachine_id.public_sale_price;
       }
     },
   },
@@ -92,6 +117,7 @@ export default {
   },
   mounted() {
     this.status = this.getStatus;
+    this.nft = this.collection;
   },
 };
 </script>
