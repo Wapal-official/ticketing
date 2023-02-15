@@ -36,7 +36,22 @@ export default {
   props: { collections: { type: Array } },
   components: { NftCard },
   data() {
-    return { liveCollection: [{ _id: null }] };
+    return {
+      liveCollection: [
+        {
+          _id: "",
+          name: "",
+          image: "",
+          supply: "",
+          candyMachine_id: {
+            whitelist_sale_time: null,
+            public_sale_time: null,
+            whitelist_sale_price: null,
+            public_sale_price: null,
+          },
+        },
+      ],
+    };
   },
   mounted() {
     const collections: Collection[] = this.collections;

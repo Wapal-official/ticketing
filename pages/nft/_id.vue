@@ -122,6 +122,7 @@
           >
             <h6
               class="tw-uppercase tw-text-wapal-pink tw-text-xl tw-font-medium"
+              v-if="showEndInTimer"
             >
               End In
             </h6>
@@ -129,7 +130,6 @@
               :vertical="true"
               :startTime="getLongestTime"
               @countdownComplete="hideEndInTimer"
-              v-if="showEndInTimer"
             />
           </div>
         </div>
@@ -260,7 +260,7 @@ export default {
       return true;
     },
     hideEndInTimer() {
-      this.showEndInTime = false;
+      this.showEndInTimer = false;
     },
     changeEndInTimer() {
       this.showEndInTimer = false;
