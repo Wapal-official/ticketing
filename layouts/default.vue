@@ -1,16 +1,20 @@
 <template>
-  <v-app class="!tw-bg-wapal-background tw-w-full tw-overflow-hidden">
+  <v-app
+    class="!tw-bg-wapal-background tw-w-full tw-overflow-hidden tw-relative"
+  >
     <Navbar @landingMenuToggled="toggleMainContainer" />
     <Nuxt :class="mainClass" />
     <wapal-footer :class="mainClass" />
+    <toast />
   </v-app>
 </template>
 
 <script lang="ts">
 import Navbar from "@/components/Landing/Navbar/Navbar.vue";
 import WapalFooter from "@/components/Landing/Footer/WapalFooter.vue";
+import Toast from "@/components/Reusable/Toast.vue";
 export default {
-  components: { Navbar, WapalFooter },
+  components: { Navbar, WapalFooter, Toast },
   data() {
     return { mainClass: "" };
   },

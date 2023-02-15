@@ -14,9 +14,9 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
-import { AptosClient, AptosAccount, HexString } from "aptos";
+import { AptosClient } from "aptos";
 
-const NODE_URL = "https://fullnode.testnet.aptoslabs.com";
+const NODE_URL = `https://fullnode.${process.env.NETWORK}.aptoslabs.com`;
 
 const client = new AptosClient(NODE_URL);
 
@@ -100,12 +100,9 @@ export const actions = {
       await wallet.connect(state.wallet.wallet);
     }
 
-    const pid =
-      "0xb9c7b4d7da344bbf03a3d4b144c2020dec1049427b96d0411024153485621185";
-
     const create_candy_machine = {
       type: "entry_function_payload",
-      function: pid + "::candymachine::init_candy",
+      function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
       type_arguments: [],
       arguments: [
         candyMachineArguments.collection_name,
@@ -133,6 +130,39 @@ export const actions = {
       transactionRes.hash
     );
 
-    return getResourceAccount["changes"][2]["address"];
+    return {
+      resourceAccount: getResourceAccount["changes"][2]["address"],
+      transactionHash: transactionRes.hash,
+    };
+  },
+  async checkBalance({ state }: { state: any }) {
+    const res: any = await client.getAccountResources(
+      state.wallet.walletAddress
+    );
+
+    const lamports = res[res.length - 1].data.coin.value;
+
+    const balance = lamports / 100000000;
+    return balance.toFixed(4);
+  },
+  async mintCollection({ state }: { state: any }, resourceAccount: string) {
+    if (!wallet.isConnected()) {
+      await wallet.connect(state.wallet.wallet);
+    }
+
+    const create_mint_script = {
+      type: "entry_function_payload",
+      function: process.env.CANDY_MACHINE_ID + "::candymachine::mint_script",
+      type_arguments: [],
+      arguments: [resourceAccount],
+    };
+
+    const transaction = await wallet.signAndSubmitTransaction(
+      create_mint_script
+    );
+
+    const res = await client.waitForTransactionWithResult(transaction.hash);
+
+    return res;
   },
 };

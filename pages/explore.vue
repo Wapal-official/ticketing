@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-py-8 tw-w-full">
+  <div class="tw-pt-24 tw-pb-8 tw-w-full">
     <v-tabs
       active-class="!tw-text-wapal-pink"
       class="!tw-bg-transparent"
@@ -96,8 +96,12 @@ export default {
     },
     getLiveCollection() {
       this.liveCollections = this.collections.filter((collection: any) => {
-        const whitelistSaleDate = new Date(collection.whitelist_sale_time);
-        const publicSaleDate = new Date(collection.public_sale_time);
+        const whitelistSaleDate = new Date(
+          collection.candyMachine_id.whitelist_sale_time
+        );
+        const publicSaleDate = new Date(
+          collection.candyMachine_id.public_sale_time
+        );
 
         const now = new Date();
 
@@ -108,8 +112,12 @@ export default {
     },
     getUpcomingCollection() {
       this.upcomingCollections = this.collections.filter((collection: any) => {
-        const whitelistSaleDate = new Date(collection.whitelist_sale_time);
-        const publicSaleDate = new Date(collection.public_sale_time);
+        const whitelistSaleDate = new Date(
+          collection.candyMachine_id.whitelist_sale_time
+        );
+        const publicSaleDate = new Date(
+          collection.candyMachine_id.public_sale_time
+        );
         const now = new Date();
 
         if (whitelistSaleDate > now && publicSaleDate > now) {

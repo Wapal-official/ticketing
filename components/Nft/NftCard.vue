@@ -23,7 +23,7 @@
           v-else
         />
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12 tw-capitalize tw-w-full"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 tw-capitalize tw-w-full"
         >
           <div>items {{ collection?.supply }}</div>
           <div>price {{ getPrice }} apt</div>
@@ -47,8 +47,12 @@ export default {
   },
   computed: {
     getStatus() {
-      const whiteListDate = new Date(this.collection.whitelist_sale_time);
-      const publicSaleDate = new Date(this.collection.public_sale_time);
+      const whiteListDate = new Date(
+        this.collection.candyMachine_id.whitelist_sale_time
+      );
+      const publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
 
       const date = new Date();
 
@@ -59,8 +63,12 @@ export default {
       return false;
     },
     getStartTime() {
-      const whiteListDate = new Date(this.collection.whitelist_sale_time);
-      const publicSaleDate = new Date(this.collection.public_sale_time);
+      const whiteListDate = new Date(
+        this.collection.candyMachine_id.whitelist_sale_time
+      );
+      const publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
 
       if (whiteListDate > publicSaleDate) {
         return publicSaleDate.toString();
@@ -69,19 +77,24 @@ export default {
       }
     },
     getPrice() {
-      const whiteListDate = new Date(this.collection.whitelist_sale_time);
-      const publicSaleDate = new Date(this.collection.public_sale_time);
+      const whiteListDate = new Date(
+        this.collection.candyMachine_id.whitelist_sale_time
+      );
+      const publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
       const now = new Date();
       if (
-        this.collection.public_sale_price == this.collection.whitelist_price
+        this.collection.candyMachine_id.public_sale_price ==
+        this.collection.candyMachine_id.whitelist_price
       ) {
-        return this.collection.public_sale_price;
+        return this.collection.candyMachine_id.public_sale_price;
       }
 
       if (whiteListDate > now && whiteListDate < publicSaleDate) {
-        return this.collection.whitelist_price;
+        return this.collection.candyMachine_id.whitelist_price;
       } else {
-        return this.collection.public_sale_price;
+        return this.collection.candyMachine_id.public_sale_price;
       }
     },
   },
