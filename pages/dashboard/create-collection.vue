@@ -379,18 +379,14 @@
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4"
         >
-          <button
-            class="dashboard-gradient-button tw-font-semibold"
-            type="submit"
-            :disabled="submitting"
-          >
+          <gradient-border-button type="submit" :disabled="submitting">
             <v-progress-circular
               indeterminate
               color="white"
               v-if="submitting"
             ></v-progress-circular>
             Submit
-          </button>
+          </gradient-border-button>
         </div>
       </form>
     </ValidationObserver>
@@ -398,8 +394,9 @@
 </template>
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
-import { required, numeric } from "vee-validate/dist/rules";
+import { required } from "vee-validate/dist/rules";
 import { createCollection } from "@/services/CollectionService";
+import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 
 import AWS from "aws-sdk";
 extend("required", {
@@ -469,7 +466,7 @@ extend("number", {
 
 export default {
   layout: "dashboard",
-  components: { ValidationProvider, ValidationObserver },
+  components: { ValidationProvider, ValidationObserver, GradientBorderButton },
   data() {
     return {
       collection: {
