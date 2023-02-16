@@ -15,8 +15,9 @@
           </div>
         </template>
         <v-list class="!tw-bg-modal-gray !tw-min-w-[200px]">
-          <explore-list-item name="All NFTs" @close="close" />
-          <explore-list-item name="Arts" :last="true" @close="close" />
+          <explore-list-item name="All NFT" @close="close" />
+          <explore-list-item name="Live" @close="close" />
+          <explore-list-item name="Upcoming" :last="true" @close="close" />
         </v-list>
       </v-menu>
     </div>
@@ -35,8 +36,9 @@
         >
           <span class="tw-w-full"> Explore</span>
         </template>
-        <explore-list-item name="All NFTs" @close="close" />
-        <explore-list-item name="Arts" :last="true" @close="close" />
+        <explore-list-item name="All NFT" @close="close" />
+        <explore-list-item name="Live" @close="close" />
+        <explore-list-item name="Upcoming" :last="true" @close="close" />
       </v-list-group>
     </div>
     <menu-item text="FAQS" link="/faq" @close="close" />
