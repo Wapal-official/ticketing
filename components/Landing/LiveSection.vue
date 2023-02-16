@@ -19,22 +19,18 @@
       />
     </div>
 
-    <NuxtLink
-      class="landing-gradient-border-button tw-w-fit !tw-text-white tw-transition-all tw-duration-500 tw-ease-linear"
-      to="/explore"
-    >
-      <span class="tw-rounded tw-h-full tw-bg-wapal-background tw-px-6 tw-py-2">
-        View All</span
-      >
-    </NuxtLink>
+    <gradient-border-button @click.native="goToExplorePage">
+      View All
+    </gradient-border-button>
   </div>
 </template>
 <script lang="ts">
 import NftCard from "@/components/Nft/NftCard.vue";
 import Collection from "@/interfaces/collection";
+import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 export default {
   props: { collections: { type: Array } },
-  components: { NftCard },
+  components: { NftCard, GradientBorderButton },
   data() {
     return {
       liveCollection: [
@@ -56,6 +52,12 @@ export default {
   mounted() {
     const collections: Collection[] = this.collections;
     this.liveCollection = collections;
+  },
+  methods: {
+    goToExplorePage() {
+      this.$store.commit("exploreStore/setExploreTab", "live");
+      this.$router.push("/explore");
+    },
   },
 };
 </script>

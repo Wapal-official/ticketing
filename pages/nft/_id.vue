@@ -24,7 +24,10 @@
             v-if="showWhitelistSaleTimer && showPublicSaleTimer"
           >
             <span class="tw-pr-4 lg:tw-pr-8">Live In</span>
-            <count-down :shadow="true" :startTime="getShortestTime" />
+            <count-down
+              :shadow="true"
+              :startTime="collection.candyMachine_id.whitelist_sale_time"
+            />
           </div>
           <span
             class="tw-text-3xl tw-flex tw-flex-row tw-items-center tw-justify-center live-counter live-counter-shadow tw-tracking-widest tw-uppercase"
@@ -128,8 +131,9 @@
             </h6>
             <count-down
               :vertical="true"
-              :startTime="getLongestTime"
+              :startTime="this.collection.candyMachine_id.public_sale_time"
               @countdownComplete="hideEndInTimer"
+              v-if="showEndInTimer"
             />
           </div>
         </div>
@@ -240,7 +244,7 @@ export default {
       this.changeEndInTimer();
     },
     publicSaleCountdownComplete() {
-      this.showWhitelistSaleTimer = false;
+      this.showPublicSaleTimer = false;
       this.changeEndInTimer();
     },
 
@@ -321,20 +325,6 @@ export default {
     },
   },
   computed: {
-    getShortestTime() {
-      if (this.publicSaleDate > this.whitelistSaleDate) {
-        return this.whitelistSaleDate.toString();
-      } else {
-        return this.publicSaleDate.toString();
-      }
-    },
-    getLongestTime() {
-      if (this.whitelistSaleDate > this.publicSaleDate) {
-        return this.whitelistSaleDate.toString();
-      } else {
-        return this.publicSaleDate.toString();
-      }
-    },
     getCurrentPrice() {
       const whiteListDate = new Date(
         this.collection.candyMachine_id.whitelist_sale_time
