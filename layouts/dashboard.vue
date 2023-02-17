@@ -3,7 +3,7 @@
     <dashboard-navbar @toggleSidebar="toggleSidebar" />
     <div class="tw-flex tw-flex-row tw-items-start">
       <dashboard-sidebar class="tw-hidden lg:tw-flex" />
-      <Nuxt class="tw-px-8 tw-py-4" />
+      <Nuxt class="!tw-px-8 !tw-py-4" />
     </div>
     <div
       class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background"
@@ -34,6 +34,37 @@ export default {
         this.sidebarClass = "-tw-translate-x-full";
       }
     },
+  },
+  mounted() {
+    if (process.client) {
+      window.addEventListener("dragenter", (e) => e.preventDefault());
+      window.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.dataTransfer!.dropEffect = "copy";
+
+        const element = e.target as Element;
+
+        if (element.id !== "drop-zone") {
+          e.preventDefault();
+          e.dataTransfer!.effectAllowed = "none";
+          e.dataTransfer!.dropEffect = "none";
+        }
+      });
+      window.addEventListener("dragleave", (e) => e.preventDefault());
+      window.addEventListener("drop", (e) => {
+        e.preventDefault();
+
+        const element = e.target as Element;
+
+        e.dataTransfer!.dropEffect = "copy";
+
+        if (element.id !== "drop-zone") {
+          e.preventDefault();
+          e.dataTransfer!.effectAllowed = "none";
+          e.dataTransfer!.dropEffect = "none";
+        }
+      });
+    }
   },
 };
 </script>
