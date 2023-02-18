@@ -80,8 +80,8 @@
           name="royaltyPercentage" rules="required" v-slot="{ errors }">
           <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Royalty Percentage</label>
           <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field v-model="collection.royalty_percentage" outlined single-line color="#fff" hide-details
-              clearable class="dashboard-input" inputmode="numeric">
+            <v-text-field v-model="collection.royalty_percentage" outlined single-line color="#fff" hide-details clearable
+              class="dashboard-input" inputmode="numeric">
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
@@ -104,8 +104,8 @@
             name="publicSaleTime" rules="required" v-slot="{ errors }">
             <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Public Sale Time</label>
             <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field v-model="collection.public_sale_time" outlined single-line color="#fff" hide-details
-                clearable class="dashboard-input focus:tw-outline-none" type="datetime-local">
+              <v-text-field v-model="collection.public_sale_time" outlined single-line color="#fff" hide-details clearable
+                class="dashboard-input focus:tw-outline-none" type="datetime-local">
               </v-text-field>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
@@ -129,8 +129,8 @@
             name="publicSalePrice" rules="required" v-slot="{ errors }">
             <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Public Sale Price in Apt</label>
             <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field v-model="collection.public_sale_price" placeholder="eg: 0.1" outlined single-line
-                color="#fff" hide-details clearable class="dashboard-input" inputmode="numeric">
+              <v-text-field v-model="collection.public_sale_price" placeholder="eg: 0.1" outlined single-line color="#fff"
+                hide-details clearable class="dashboard-input" inputmode="numeric">
               </v-text-field>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
@@ -187,7 +187,7 @@
         </div>
       </form>
     </ValidationObserver>
-  </div>
+</div>
 </template>
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
