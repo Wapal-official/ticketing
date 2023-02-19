@@ -27,20 +27,27 @@
     </div>
     <form
       class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
-      @dragover.prevent="dragover"
-      @dragleave.prevent="dragleave"
-      @drop.prevent="drop"
     >
       <label
-        class="tw-w-full tw-h-full tw-px-8 tw-py-8 tw-border-2 tw-border-dashed tw-border-wapal-gray tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-cursor-pointer md:tw-w-1/2"
+        class="tw-w-full tw-h-full tw-px-8 tw-py-8 tw-border-2 tw-border-dashed tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-cursor-pointer md:tw-w-1/2"
+        :class="dropZoneClass"
         id="drop-zone"
+        @dragover.prevent="dragover"
+        @dragleave.prevent="dragleave"
+        @drop.prevent="drop"
       >
+        <img :src="UploadIcon" alt="upload" />
         <div id="drop-zone">Drag and Drop Your Folders Here</div>
         <div id="drop-zone">OR</div>
-        <div id="drop-zone">Click Here</div>
+        <div
+          id="drop-zone"
+          class="tw-bg-wapal-gray tw-text-white tw-px-8 tw-py-2 tw-rounded tw-cursor-pointer"
+        >
+          Browse
+        </div>
         <input
           type="file"
-          class="folder-upload"
+          class="!tw-hidden"
           webkitdirectory
           mozdirectory
           msdirectory
@@ -82,6 +89,7 @@
 <script lang="ts">
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 import AssetsBreadCrumbs from "@/components/Dashboard/Assets/AssetsBreadCrumbs.vue";
+import UploadIcon from "@/assets/img/upload-icon.svg";
 export default {
   layout: "dashboard",
   components: { GradientBorderButton, AssetsBreadCrumbs },
@@ -91,14 +99,18 @@ export default {
       uploadedFolder: null,
       newFolderDialog: false,
       newFolderName: null,
+      dropZoneClass: "tw-border-wapal-gray",
+      UploadIcon,
     };
   },
   methods: {
     dragover(e: any) {
       e.dataTransfer!.dropEffect = "copy";
+      this.dropZoneClass = "tw-border-green-600";
     },
     dragleave(e: any) {
       e.dataTransfer!.dropEffect = "copy";
+      this.dropZoneClass = "tw-border-wapal-gray";
     },
     async drop(event: any) {
       const items = event.dataTransfer.items;
@@ -117,6 +129,8 @@ export default {
 
       if (item.isDirectory) {
         this.pushFolder(this.uploadedFolder);
+
+        this.dropZoneClass = "tw-border-wapal-gray";
       } else {
         this.$toast.showMessage({
           message: "Please Upload a Folder",
@@ -183,8 +197,3 @@ export default {
   },
 };
 </script>
-<style>
-.folder-upload {
-  display: none;
-}
-</style>

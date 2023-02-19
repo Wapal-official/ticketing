@@ -1,0 +1,124 @@
+<template>
+  <div
+    class="tw-w-full tw-max-w-[580px] tw-relative tw-bg-wapal-background tw-h-full tw-overflow-auto"
+  >
+    <button class="tw-absolute tw-top-4 tw-right-4" @click="close">
+      <v-icon class="!tw-text-white">mdi-close</v-icon>
+    </button>
+    <div
+      class="tw-w-full tw-border tw-border-transparent tw-px-4 tw-py-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-border-wapal-dashboard-active"
+    >
+      <img
+        :src="pirate"
+        alt="pirate"
+        class="tw-max-w-[300px] tw-max-h-[300px]"
+      />
+      <h3 class="tw-text-white tw-font-medium tw-uppercase tw-text-sm">
+        Phontem Space Pirates
+      </h3>
+      <div class="tw-h-[2px] tw-w-full tw-bg-wapal-dashboard-active"></div>
+      <h4 class="tw-text-xl tw-text-wapal-dashboard-active tw-font-normal">
+        Properties
+      </h4>
+      <div class="tw-grid tw-grid-cols-3 tw-gap-4 tw-w-full">
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+        <div
+          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+        >
+          <h5 class="tw-text-wapal-gray">Background</h5>
+          <h5>Pink</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script lang="ts">
+import pirate from "@/assets/img/6195.png";
+export default {
+  data() {
+    return { pirate };
+  },
+  methods: {
+    close() {
+      this.$emit("close");
+    },
+  },
+};
+</script>
