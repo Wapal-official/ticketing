@@ -57,7 +57,7 @@
                     </div>
                     <div class="tw-text-red-600">{{ errors[0] }}</div>
                 </ValidationProvider>
-                <div v-for="(role, index) in roles" :key="index.id">
+                <div v-for="(role, index) in roles" :key="index">
                     <ValidationProvider
                         class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
                         name="discord_role_name" rules="required" v-slot="{ errors }">
@@ -212,7 +212,7 @@ export default {
             });
             this.nextId++;
         },
-        removeRole(index) {
+        removeRole(index: number) {
             this.roles.splice(index, 1)
         },
     }
