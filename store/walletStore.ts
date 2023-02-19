@@ -14,6 +14,11 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
+import { AptosClient } from "aptos";
+
+const NODE_URL = `https://fullnode.${process.env.NETWORK}.aptoslabs.com`;
+
+const client = new AptosClient(NODE_URL);
 
 const wallets = [
   new PetraWallet(),
@@ -31,7 +36,15 @@ const wallets = [
 ];
 
 const wallet = new WalletCore(wallets);
-
+const makeId = (length: number) => {
+  var result = "";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
 export const state = () => ({
   wallet: {
     wallet: "",
@@ -78,5 +91,78 @@ export const actions = {
       wallet: "",
       walletAddress: "",
     });
+  },
+  async createCandyMachine(
+    { state }: { state: any },
+    candyMachineArguments: any
+  ) {
+    if (!wallet.isConnected()) {
+      await wallet.connect(state.wallet.wallet);
+    }
+
+    const create_candy_machine = {
+      type: "entry_function_payload",
+      function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
+      type_arguments: [],
+      arguments: [
+        candyMachineArguments.collection_name,
+        candyMachineArguments.collection_description,
+        candyMachineArguments.baseuri,
+        candyMachineArguments.royalty_payee_address,
+        candyMachineArguments.royalty_points_denominator,
+        candyMachineArguments.royalty_points_numerator,
+        candyMachineArguments.presale_mint_time,
+        candyMachineArguments.public_sale_mint_time,
+        candyMachineArguments.presale_mint_price,
+        candyMachineArguments.public_sale_mint_price,
+        candyMachineArguments.total_supply,
+        [false, false, false],
+        [false, false, false, false, false],
+        "" + makeId(5),
+      ],
+    };
+
+    let transactionRes = await wallet.signAndSubmitTransaction(
+      create_candy_machine
+    );
+
+    let getResourceAccount: any = await client.waitForTransactionWithResult(
+      transactionRes.hash
+    );
+
+    return {
+      resourceAccount: getResourceAccount["changes"][2]["address"],
+      transactionHash: transactionRes.hash,
+    };
+  },
+  async checkBalance({ state }: { state: any }) {
+    const res: any = await client.getAccountResources(
+      state.wallet.walletAddress
+    );
+
+    const lamports = res[res.length - 1].data.coin.value;
+
+    const balance = lamports / 100000000;
+    return balance.toFixed(4);
+  },
+  async mintCollection({ state }: { state: any }, resourceAccount: string) {
+    if (!wallet.isConnected()) {
+      await wallet.connect(state.wallet.wallet);
+    }
+
+    const create_mint_script = {
+      type: "entry_function_payload",
+      function: process.env.CANDY_MACHINE_ID + "::candymachine::mint_script",
+      type_arguments: [],
+      arguments: [resourceAccount],
+    };
+
+    const transaction = await wallet.signAndSubmitTransaction(
+      create_mint_script
+    );
+
+    const res = await client.waitForTransactionWithResult(transaction.hash);
+
+    return res;
   },
 };

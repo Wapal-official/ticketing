@@ -3,7 +3,7 @@
     <h1 class="tw-text-xl tw-font-bold">Create NFT Collection</h1>
     <ValidationObserver v-slot="{ handleSubmit }">
       <form class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full lg:tw-w-[60%]"
-        @submit.prevent="handleSubmit(submitCollection)">
+        @submit.prevent="handleSubmit(submitCollection)" novalidate>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group" name="name"
           rules="required" v-slot="{ errors }">
@@ -28,7 +28,8 @@
         <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2">
           <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Image Collection</label>
           <div
-            class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full md:tw-flex-row md:tw-justify-start dashboard-text-field-group">
+            class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full md:tw-flex-row md:tw-justify-start dashboard-text-field-group"
+            ref="imageSelect">
             <label class="dashboard-text-field-border tw-cursor-pointer tw-w-full md:tw-w-fit">
               <div
                 class="tw-bg-wapal-background tw-px-4 tw-py-2 tw-rounded-lg tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
@@ -41,13 +42,6 @@
               </div>
               <input type="file" class="image-collection" accept="image/*" @change="imageSelected" />
             </label>
-            <button
-              class="tw-px-8 tw-py-2 tw-bg-[#A0A0A0] tw-font-semibold tw-rounded disabled:tw-cursor-not-allowed tw-flex tw-flex-row tw-items-center tw-gap-4"
-              @click.prevent="uploadImage" :disabled="!image.name || uploading">
-              <v-progress-circular indeterminate color="#000" v-if="uploading"></v-progress-circular>
-
-              Upload
-            </button>
           </div>
           <div class="tw-text-red-600" v-if="imageError">
             {{ imageErrorMessage }}
@@ -59,7 +53,7 @@
           <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Baseurl</label>
           <div class="dashboard-text-field-border tw-w-full">
             <v-text-field v-model="collection.baseURL" outlined single-line color="#fff" hide-details clearable
-              class="dashboard-input">
+              class="dashboard-input" type="url">
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
@@ -77,7 +71,7 @@
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="royaltyPercentage" rules="required" v-slot="{ errors }">
+          name="royaltyPercentage" rules="required|number|percentage" v-slot="{ errors }">
           <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Royalty Percentage</label>
           <div class="dashboard-text-field-border tw-w-full">
             <v-text-field v-model="collection.royalty_percentage" outlined single-line color="#fff" hide-details clearable
@@ -90,18 +84,19 @@
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center">
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="whitelistSaleTime" rules="required" v-slot="{ errors }">
+            name="whitelistSaleTime" rules="required|saleTime" v-slot="{ errors }">
             <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Whitelist Sale Time</label>
             <div class="dashboard-text-field-border tw-w-full">
               <v-text-field v-model="collection.whitelist_sale_time" outlined single-line color="#fff" hide-details
-                clearable class="dashboard-input tw-w-full focus:tw-outline-none" type="datetime-local">
+                clearable class="dashboard-input tw-w-full focus:tw-outline-none" type="datetime-local"
+                ref="whitelistSaleTime">
               </v-text-field>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="publicSaleTime" rules="required" v-slot="{ errors }">
+            name="publicSaleTime" rules="required|saleTime|public_sale_time:@whitelistSaleTime" v-slot="{ errors }">
             <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Public Sale Time</label>
             <div class="dashboard-text-field-border tw-w-full">
               <v-text-field v-model="collection.public_sale_time" outlined single-line color="#fff" hide-details clearable
@@ -115,7 +110,7 @@
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center">
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="whitelistSalePrice" rules="required" v-slot="{ errors }"><label
+            name="whitelistSalePrice" rules="required|number" v-slot="{ errors }"><label
               class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Whitelist Sale Price in Apt</label>
             <div class="dashboard-text-field-border tw-w-full">
               <v-text-field v-model="collection.whitelist_price" placeholder="eg: 0.1" outlined single-line color="#fff"
@@ -126,7 +121,7 @@
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="publicSalePrice" rules="required" v-slot="{ errors }">
+            name="publicSalePrice" rules="required|number" v-slot="{ errors }">
             <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Public Sale Price in Apt</label>
             <div class="dashboard-text-field-border tw-w-full">
               <v-text-field v-model="collection.public_sale_price" placeholder="eg: 0.1" outlined single-line color="#fff"
@@ -138,7 +133,7 @@
         </div>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group" name="supply"
-          rules="required" v-slot="{ errors }">
+          rules="required|number" v-slot="{ errors }">
           <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Supply</label>
           <div class="dashboard-text-field-border tw-w-full">
             <v-text-field v-model="collection.supply" outlined single-line color="#fff" hide-details clearable
@@ -181,18 +176,21 @@
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
         <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4">
-          <button class="dashboard-gradient-button tw-font-semibold" type="submit">
+          <gradient-border-button type="submit" :disabled="submitting">
+            <v-progress-circular indeterminate color="white" v-if="submitting"></v-progress-circular>
             Submit
-          </button>
+          </gradient-border-button>
         </div>
       </form>
     </ValidationObserver>
-</div>
+  </div>
 </template>
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
 import { createCollection } from "@/services/CollectionService";
+import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
+
 import AWS from "aws-sdk";
 extend("required", {
   ...required,
@@ -212,9 +210,56 @@ extend("link", {
   message: "Please enter a valid link",
 });
 
+extend("public_sale_time", {
+  params: ["target"],
+  validate(value, target: any) {
+    if (value < target.target) {
+      return false;
+    }
+
+    return true;
+  },
+  message: "Public Sale Time should be greater than whitelist sale time",
+});
+
+extend("saleTime", {
+  validate(value) {
+    if (new Date(value).getTime() < Date.now()) {
+      return false;
+    }
+    return true;
+  },
+  message: "Sale time should be greater than current time",
+});
+
+extend("percentage", {
+  validate(value) {
+    const getDecimalVal = value.toString().indexOf(".");
+    if (getDecimalVal < 1) {
+      return true;
+    }
+    const decimalPart = value.toString().substring(getDecimalVal + 1);
+    if (decimalPart.length > 1) {
+      return false;
+    }
+    return true;
+  },
+  message: "Please enter only one decimal point in percentage",
+});
+
+extend("number", {
+  validate(value) {
+    if (isNaN(value)) {
+      return false;
+    }
+    return true;
+  },
+  message: "This field must be a number",
+});
+
 export default {
   layout: "dashboard",
-  components: { ValidationProvider, ValidationObserver },
+  components: { ValidationProvider, ValidationObserver, GradientBorderButton },
   data() {
     return {
       collection: {
@@ -232,30 +277,57 @@ export default {
         twitter: null,
         discord: null,
         website: null,
+        resource_account: null,
+        transaction_hash: null,
       },
       message: "",
       image: { name: null },
       imageErrorMessage: "",
       imageError: false,
-      uploading: false,
+      submitting: false,
     };
   },
   methods: {
     async submitCollection() {
       this.imageError = false;
-      if (!this.collection.image) {
+      if (!this.image.name) {
         this.imageError = true;
-        this.imageErrorMessage = "Please upload an image for collection";
+        this.imageErrorMessage = "Please select an image for collection";
+        this.$refs["imageSelect"].scrollIntoView({ behavior: "smooth" });
         return;
       }
       try {
-        await createCollection(this.collection);
+        this.submitting = true;
+
+        if (this.imageError) {
+          return;
+        }
+
+        await this.sendDataToCandyMachineCreator();
+
+        await this.uploadImage();
+
+        const tempCollection = this.collection;
+
+        tempCollection.whitelist_sale_time = new Date(
+          tempCollection.whitelist_sale_time
+        ).toISOString();
+        tempCollection.public_sale_time = new Date(
+          tempCollection.public_sale_time
+        ).toISOString();
+
+        await createCollection(tempCollection);
+
+        this.submitting = false;
+
         this.message = "Collection Created Successfully";
         this.$toast.showMessage({ message: this.message, error: false });
         this.$router.push("/dashboard");
       } catch (error) {
         this.message = error;
         this.$toast.showMessage({ message: this.message, error: true });
+
+        this.submitting = false;
       }
     },
     async uploadImage() {
@@ -265,24 +337,13 @@ export default {
       if (!allowedExtensions.exec(this.image.name.toLowerCase())) {
         this.imageError = true;
         this.imageErrorMessage = "Please upload a jpg, jpeg or png image";
-        return;
+        return false;
       }
 
       try {
-        this.uploading = true;
         const res = await this.awsUpload();
-        this.uploading = false;
-        this.$toast.showMessage({
-          message: "Image Uploaded Successfully",
-          error: false,
-        });
         this.collection.image = res.Location;
       } catch (error) {
-        console.log(error);
-        console.log(
-          process.env.AWS_ACCESS_KEY,
-          process.env.AWS_SECRET_ACCESS_KEY
-        );
         this.message = "Something Went Wrong Please try again";
         this.$toast.showMessage({ message: this.message, error: true });
       }
@@ -292,10 +353,7 @@ export default {
       this.image = event.target.files[0];
     },
     setImage(image: string) {
-      console.log(image);
-
       this.collection.image = image;
-      console.log(this.collection.image);
     },
 
     awsUpload() {
@@ -317,6 +375,36 @@ export default {
           else resolve(data);
         });
       });
+    },
+    async sendDataToCandyMachineCreator() {
+      const whitelistTime = Math.floor(
+        new Date(this.collection.whitelist_sale_time).getTime() / 1000
+      );
+      const publicSaleTime = Math.floor(
+        new Date(this.collection.public_sale_time).getTime() / 1000
+      );
+
+      const candyMachineArguments = {
+        collection_name: this.collection.name,
+        collection_description: this.collection.description,
+        baseuri: this.collection.baseURL,
+        royalty_payee_address: this.collection.royalty_payee_address,
+        royalty_points_denominator: 1000,
+        royalty_points_numerator: this.collection.royalty_percentage * 10,
+        presale_mint_time: whitelistTime,
+        public_sale_mint_time: publicSaleTime,
+        presale_mint_price: this.collection.whitelist_price * 100000000,
+        public_sale_mint_price: this.collection.public_sale_price * 100000000,
+        total_supply: this.collection.supply,
+      };
+
+      const res = await this.$store.dispatch(
+        "walletStore/createCandyMachine",
+        candyMachineArguments
+      );
+
+      this.collection.resource_account = res.resourceAccount;
+      this.collection.transaction_hash = res.transactionHash;
     },
   },
 };

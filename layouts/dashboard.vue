@@ -3,7 +3,7 @@
     <dashboard-navbar @toggleSidebar="toggleSidebar" />
     <div class="tw-flex tw-flex-row tw-items-start">
       <dashboard-sidebar class="tw-hidden lg:tw-flex" />
-      <Nuxt class="tw-px-8" />
+      <Nuxt class="tw-px-8 tw-py-4" />
     </div>
     <div
       class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background"

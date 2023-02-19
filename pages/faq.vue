@@ -1,16 +1,10 @@
 <template>
-  <div class="tw-bg-wapal-background tw-w-full tw-py-8">
-    <div
-      class="tw-w-4/5 tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-center"
-    >
-      <h3
-        class="tw-text-wapal-pink tw-text-xl md:tw-text-[28px] tw-pb-16 tw-font-medium"
-      >
+  <div class="tw-bg-wapal-background tw-w-full tw-pt-24 tw-pb-8">
+    <div class="tw-w-4/5 tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-center">
+      <h3 class="tw-text-wapal-pink tw-text-xl md:tw-text-[28px] tw-pb-16 tw-font-medium">
         Frequently Asked Questions
       </h3>
-      <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 lg:tw-px-16"
-      >
+      <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 lg:tw-px-16">
         <faq-card>
           <template #question> 1. What is Wapal? </template>
           <template #answer>
@@ -22,8 +16,7 @@
         <faq-card>
           <template #question>
             2. Why did you decide to build a creator studio and a
-            launchpad?</template
-          >
+            launchpad?</template>
           <template #answer>
             <p>
               We decided to build a creator studio to help creators build NFT
@@ -39,8 +32,7 @@
         </faq-card>
         <faq-card>
           <template #question>
-            3. Who can launch NFT projects from your Launchpad?</template
-          >
+            3. Who can launch NFT projects from your Launchpad?</template>
           <template #answer>
             Anyone can launch NFT projects from our launchpad. There is no
             restriction of any kind to launch on Wapal.
@@ -61,7 +53,7 @@
         <faq-card>
           <template #question> 5. Will there be any fees? </template>
           <template #answer>
-            There'll only be 1% fee on every NFT minted through Wapal.
+            There'll only be 3% fee on every NFT minted through Wapal.
           </template>
         </faq-card>
         <faq-card>

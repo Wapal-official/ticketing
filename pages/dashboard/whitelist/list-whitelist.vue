@@ -7,13 +7,13 @@
     </div>
 
     <div v-if="!loading && collections[0]._id !== null"
-      class="tw-grid tw-grid-cols-1 tw-gap-4 md:tw-grid-cols-2 lg:tw-grid-cols-3">
+      class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-3">
       <nft-card v-for="collection in collections" :key="collection._id" :collection="collection" />
     </div>
     <div class="py-16" v-else>
       <loading />
     </div>
-</div>
+  </div>
 </template>
 <script lang="ts">
 import NftCard from "@/components/Nft/NftCard.vue";

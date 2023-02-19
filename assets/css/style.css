@@ -138,7 +138,7 @@
 }
 
 .landing-gradient-border-button {
-  padding: 8px 1px 8px 1px;
+  padding: 1.5px;
   position: relative;
   background: linear-gradient(
     270deg,

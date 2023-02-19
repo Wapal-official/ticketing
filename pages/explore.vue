@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-py-8 tw-w-full">
+  <div class="tw-pt-24 tw-pb-8 tw-w-full">
     <v-tabs
       active-class="!tw-text-wapal-pink"
       class="!tw-bg-transparent"
@@ -96,8 +96,12 @@ export default {
     },
     getLiveCollection() {
       this.liveCollections = this.collections.filter((collection: any) => {
-        const whitelistSaleDate = new Date(collection.whitelist_sale_time);
-        const publicSaleDate = new Date(collection.public_sale_time);
+        const whitelistSaleDate = new Date(
+          collection.candyMachine_id.whitelist_sale_time
+        );
+        const publicSaleDate = new Date(
+          collection.candyMachine_id.public_sale_time
+        );
 
         const now = new Date();
 
@@ -108,8 +112,12 @@ export default {
     },
     getUpcomingCollection() {
       this.upcomingCollections = this.collections.filter((collection: any) => {
-        const whitelistSaleDate = new Date(collection.whitelist_sale_time);
-        const publicSaleDate = new Date(collection.public_sale_time);
+        const whitelistSaleDate = new Date(
+          collection.candyMachine_id.whitelist_sale_time
+        );
+        const publicSaleDate = new Date(
+          collection.candyMachine_id.public_sale_time
+        );
         const now = new Date();
 
         if (whitelistSaleDate > now && publicSaleDate > now) {
@@ -120,9 +128,31 @@ export default {
     async getAllCollections() {
       this.collections = await getCollections();
     },
+    getActiveTab() {
+      this.exploreTab = 1;
+
+      const activeTabTitle = this.$store.state.exploreStore.tab;
+
+      const activeTab = this.exploreTabs.find(
+        (tab: any) => tab.title.toLowerCase() === activeTabTitle.toLowerCase()
+      );
+
+      if (activeTab.id === 0) {
+        this.getAllCollections();
+      } else if (activeTab.id === 1) {
+        this.getLiveCollection();
+      } else {
+        this.getUpcomingCollection();
+      }
+
+      this.exploreTab = activeTab.id;
+    },
   },
-  mounted() {
-    this.getAllCollections();
+  async mounted() {
+    await this.getAllCollections();
+
+    this.getActiveTab();
+
     this.loading = false;
   },
 };

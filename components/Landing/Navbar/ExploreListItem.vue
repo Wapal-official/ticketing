@@ -1,13 +1,13 @@
 <template>
   <div>
-    <NuxtLink :to="link" @click.native="close">
+    <button @click="goToExplorePage">
       <v-list-item>
         <v-list-item-title
           class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
           >{{ name }}</v-list-item-title
         >
-      </v-list-item></NuxtLink
-    >
+      </v-list-item>
+    </button>
     <div class="tw-w-full tw-px-4" v-if="!last">
       <div class="tw-w-full tw-h-[1.5px] tw-bg-white"></div>
     </div>
@@ -21,7 +21,9 @@ export default {
     last: { type: Boolean, default: false },
   },
   methods: {
-    close() {
+    goToExplorePage() {
+      this.$store.commit("exploreStore/setExploreTab", this.name);
+      this.$router.push("/explore");
       this.$emit("close");
     },
   },
