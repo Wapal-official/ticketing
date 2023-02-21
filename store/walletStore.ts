@@ -165,4 +165,28 @@ export const actions = {
 
     return res;
   },
+
+  async checkBalanceForFolderUpload(
+    { state, dispatch }: { state: any; dispatch: any },
+    requiredArweaveBalance: any
+  ) {
+    const arweaveRate = await this.$axios.get(
+      "https://api.coinconvert.net/convert/ar/usd?amount=1"
+    );
+    const aptosRate = await this.$axios.get(
+      "https://api.coinconvert.net/convert/apt/usd?amount=1"
+    );
+
+    const balance = await dispatch("checkBalance");
+
+    const totalAR = (100000000000000 / 1000000000000) * arweaveRate.data.USD;
+    const totalAPT = totalAR / aptosRate.data.USD;
+
+    console.log(totalAPT);
+    if (balance < totalAPT) {
+      return { requiredBalance: totalAPT, yourBalance: balance, error: true };
+    }
+
+    return { requiredBalance: totalAPT, yourBalance: balance, error: false };
+  },
 };

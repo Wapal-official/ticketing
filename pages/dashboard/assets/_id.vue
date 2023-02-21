@@ -5,7 +5,7 @@
     <div
       class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
     >
-      <assets-bread-crumbs :folderName="folderName" />
+      <assets-bread-crumbs :folderName="folderInfo.folder_name" />
       <button>
         <v-icon class="!tw-text-white" v-if="!listView" @click="listView = true"
           >mdi-view-list</v-icon
@@ -15,7 +15,10 @@
         >
       </button>
     </div>
-    <div class="tw-flex tw-flex-row tw-w-full tw-gap-4" v-if="files[0].name">
+    <div
+      class="tw-flex tw-flex-row tw-w-full tw-gap-4"
+      v-if="folderInfo.files[0]"
+    >
       <div class="tw-w-fit">
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 tw-flex-wrap tw-flex-shrink md:tw-justify-start"
@@ -23,10 +26,10 @@
         >
           <assets-file-card
             @displayFileDetails="displayFileDetails"
-            v-for="file in files"
-            :key="file.createdDate"
-            :type="file.type"
-            :name="file.name"
+            v-for="file in folderInfo.files"
+            :key="file?.createdDate"
+            :type="file?.type"
+            :name="file?.name"
           />
         </div>
         <v-data-table
@@ -76,6 +79,7 @@
     </div>
     <form
       class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
+      v-if="!folderInfo.files[0]"
     >
       <label
         class="tw-w-full tw-h-full tw-px-8 tw-py-8 tw-border-2 tw-border-dashed tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-cursor-pointer md:tw-w-1/2"
@@ -105,12 +109,16 @@ import AssetsFileCard from "@/components/Dashboard/Assets/AssetsFileCard.vue";
 import AssetsImageDetails from "@/components/Dashboard/Assets/AssetsImageDetails.vue";
 import UploadIcon from "@/assets/img/upload-icon.svg";
 import pirate from "@/assets/img/6195.png";
+import { getFolderById } from "~/services/AssetsService";
 export default {
   layout: "dashboard",
   components: { AssetsBreadCrumbs, AssetsFileCard, AssetsImageDetails },
   data() {
     return {
-      folderName: "Assets",
+      folderInfo: {
+        folder_name: "",
+        files: [{ createdDate: null, type: "", name: "" }],
+      },
       showFileDetails: false,
       listView: false,
       headers: [
@@ -197,14 +205,10 @@ export default {
     },
 
     pushFile(file: any) {
-      if (!this.files[0].name) {
-        this.files = [];
-      }
-      console.log(file);
-      this.files.push(file);
+      this.folderInfo.files.push(file);
     },
     checkDuplicateFile(item: any) {
-      const duplicate = this.files.find((file: any) => {
+      const duplicate = this.folderInfo.files.find((file: any) => {
         if (file.name.toLowerCase() === item.name.toLowerCase()) {
           return file;
         }
@@ -225,8 +229,12 @@ export default {
       return (size / 1024).toFixed(2) + " KB";
     },
   },
-  mounted() {
-    const param = this.$route.params.id;
+  async mounted() {
+    const folderId = this.$route.params.id;
+
+    const res = await getFolderById(folderId);
+
+    this.folderInfo = res.data.folderInfo;
   },
 };
 </script>
