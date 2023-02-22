@@ -412,5 +412,6 @@ export default {
 <style>
 .image-collection {
   display: none;
+  background-color: #878787;
 }
 </style>

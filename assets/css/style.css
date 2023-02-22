@@ -328,3 +328,7 @@
 ::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
+
+.border-bar {
+  border-left: 4px solid #48cae4;
+}

@@ -1,15 +1,16 @@
 <template>
     <div class="tw-w-full md:tw-px-16 lg:te-px-0">
         <h1 class="tw-text-xl tw-font-blod">Create Whitelist</h1>
-        <ValidationObserver v-slot="{ hadleSubmit }">
+        <ValidationObserver v-slot="{ handleSubmit }">
             <form class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full lg:tw-w-[60%]"
-                @submit.prevent="">
+                @submit.prevent="handleSubmit(submitWhitelist)">
                 <ValidationProvider
                     class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
                     name="collection" rules="required" v-slot="{ errors }">
                     <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Select Collection:</label>
                     <div class="dashboard-text-field-border tw-w-full">
-                        <v-select v-model="whitelist.selectCollection" outlined single-line color="#fff" hide-details
+                        <v-select :items="selectCollectionOptions" item-text="name" item-value="_id"
+                            v-model.value="whitelist.selectCollection" outlined single-line color="#fff" hide-details
                             clearable class="dashboard-input"></v-select>
                     </div>
                     <div class="tw-text-red-600">{{ errors[0] }}</div>
@@ -98,7 +99,7 @@
                     class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center">
                     <ValidationProvider
                         class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-                        name="whitelistSaleTime" rules="required|wnitelistStart" v-slot="{ errors }">
+                        name="whitelistSaleTime" rules="required|whitelistStart" v-slot="{ errors }">
                         <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Whitelist Start
                             Time</label>
                         <div class="dashboard-text-field-border tw-w-full">
@@ -120,9 +121,10 @@
                     </ValidationProvider>
                 </div>
                 <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4">
-                    <button class="dashboard-gradient-button tw-font-semibold" type="submit">
-                        Create
-                    </button>
+                    <gradient-border-button type="submit" :disabled="submitting">
+                        <v-progress-circular indeterminate color="white" v-if="submitting"></v-progress-circular>
+                        Submit
+                    </gradient-border-button>
                 </div>
             </form>
         </ValidationObserver>
@@ -132,8 +134,14 @@
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
-import { createCollection } from "@/services/CollectionService";
+// import { createCollection } from "@/services/CollectionService";
+import { getCollections } from "@/services/CollectionService"
 import Collection from "@/interfaces/collection";
+import NftCard from "@/components/Nft/NftCard.vue";
+import { Country, State, City } from 'country-state-city';
+import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
+
+
 
 extend("required", {
     ...required,
@@ -177,7 +185,8 @@ extend("whitelistStart", {
 
 export default {
     layout: "dashboard",
-    components: { ValidationProvider, ValidationObserver },
+    props: { collection: { type: Array } },
+    components: { ValidationProvider, ValidationObserver, NftCard, GradientBorderButton },
     data() {
         return {
             whitelist: {
@@ -187,21 +196,37 @@ export default {
                 discord_id: null,
                 discord_url: null,
                 whitelist_start: null,
-                whitelist_end: null
+                whitelist_end: null,
+                test: null,
             },
             roles: [{
                 id: 1,
                 discord_role_name: null,
                 discord_role_id: null,
             }],
-            // items: ['Item 1', 'Item 2', 'Item 3'],
+            selectCollectionOptions: [],
             nextId: 2,
             message: "",
+            submitting: false,
+
         }
     },
+
+    async created() {
+        const selectCollections: any[] = await getCollections();
+        selectCollections.map((whitelistCollection: any) => {
+            this.selectCollectionOptions.push({
+                name: whitelistCollection.name,
+                value: whitelistCollection._id,
+            });
+        });
+        console.log(selectCollections)
+    },
     mounted() {
-        const collections: Collection[] = this.collections;
-        this.selectCollection = collections;
+        // const collections: Collection[] = this.collections;
+        // this.testCollection = collections;
+        // this.upcomingCollection = collections;
+
     },
     methods: {
         addRole() {
@@ -215,7 +240,36 @@ export default {
         removeRole(index: number) {
             this.roles.splice(index, 1)
         },
-    }
+        async submitWhitelist() {
 
+        }
+    },
+
+    async submitwhitelist() {
+        try {
+            this.submitting = true;
+
+            await this.sendDataToCandyMachineCreator();
+
+            const tempWhitelist = this.whitelist;
+            tempWhitelist.whitelist_start = new Date(
+                tempWhitelist.whitelist_start).toISOString();
+            tempWhitelist.whitelist_end = new Date(
+                tempWhitelist.whitelist_end
+            ).toISOString();
+
+            // await createWhitelist(tempWhitelist);
+
+            this.submitting = false;
+            this.message = "Whitelist Created Successfully";
+            this.$toast.showMessage({ message: this.message, error: false });
+            this.$router.push("/dashboard");
+        } catch (error) {
+            this.message = error;
+            this.$toast.showMessage({ message: this.message, error: true });
+
+            this.submitting = false;
+        }
+    }
 }
 </script>
