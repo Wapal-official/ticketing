@@ -91,7 +91,7 @@
                                 <div class="border-bar tw-px-4 tw-mt-8 tw-mb-4">
                                     <h2>Residential Address</h2>
                                 </div>
-                                <ValidationProvider
+                                <!-- <ValidationProvider
                                     class="tw-flex tw-py-1 tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
                                     name="res_country" rules="required" v-slot="{ errors }">
                                     <label
@@ -111,6 +111,29 @@
                                         <v-select :items="resState" item-text="name" item-value="isoCode"
                                             v-model="verification.res_state" outlined single-line color="#fff" hide-details
                                             clearable class="dashboard-input"></v-select>
+                                    </div>
+                                    <div class="tw-text-red-600">{{ errors[0] }}</div>
+                                </ValidationProvider> -->
+                                <ValidationProvider
+                                    class="tw-flex tw-py-1 tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+                                    name="per_country" rules="required" v-slot="{ errors }">
+                                    <label
+                                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Country:</label>
+                                    <div class="dashboard-text-field-border tw-w-full">
+                                        <v-select v-model="resSelectedCountryCode" :items="resCountryList" outlined
+                                            single-line color="#fff" hide-details clearable class="dashboard-input"
+                                            item-value="iso2" item-text="name" @change="onChangeResCountry"></v-select>
+                                    </div>
+                                    <div class="tw-text-red-600">{{ errors[0] }}</div>
+                                </ValidationProvider>
+                                <ValidationProvider
+                                    class="tw-flex tw-py-1 tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+                                    name="per_state" rules="required" v-slot="{ errors }">
+                                    <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">State:</label>
+                                    <div class="dashboard-text-field-border tw-w-full">
+                                        <v-select v-model="resSelectedStateId" :items="resStateList" outlined single-line
+                                            color="#fff" hide-details clearable class="dashboard-input" item-value="id"
+                                            item-text="name"></v-select>
                                     </div>
                                     <div class="tw-text-red-600">{{ errors[0] }}</div>
                                 </ValidationProvider>
@@ -155,9 +178,10 @@
                                     <label
                                         class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Country:</label>
                                     <div class="dashboard-text-field-border tw-w-full">
-                                        <v-select :items="perCountry" item-text="name" item-value="isoCode"
+                                        <v-select :items="perCountry" item-text="name" item-value="iso2"
                                             v-model="verification.per_country" outlined single-line color="#fff"
-                                            hide-details clearable class="dashboard-input"></v-select>
+                                            hide-details clearable class="dashboard-input"
+                                            @chnage="onChangePerCountry"></v-select>
                                     </div>
                                     <div class="tw-text-red-600">{{ errors[0] }}</div>
                                 </ValidationProvider>
@@ -166,16 +190,35 @@
                                     name="per_state" rules="required" v-slot="{ errors }">
                                     <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">State:</label>
                                     <div class="dashboard-text-field-border tw-w-full">
-                                        <v-select :items="verification.per_country ? perState : []" item-text="name"
-                                            item-value="isoCode" v-model="verification.per_state" outlined single-line
-                                            color="#fff" hide-details clearable class="dashboard-input"></v-select>
+                                        <v-select :items="perState" item-text="name" item-value="id"
+                                            v-model="verification.per_state" outlined single-line color="#fff" hide-details
+                                            clearable class="dashboard-input"></v-select>
                                     </div>
                                     <div class="tw-text-red-600">{{ errors[0] }}</div>
                                 </ValidationProvider> -->
-                                <v-select v-model="verification.per_country" :items="countries" label="Country"
-                                    item-value="_id" item-text="name" />
-                                <v-select v-model="verification.per_state" :items="states" label="State" item-value="_id"
-                                    item-text="name" />
+                                <ValidationProvider
+                                    class="tw-flex tw-py-1 tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+                                    name="per_country" rules="required" v-slot="{ errors }">
+                                    <label
+                                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Country:</label>
+                                    <div class="dashboard-text-field-border tw-w-full">
+                                        <v-select v-model="selectedCountryCode" :items="countryList" outlined single-line
+                                            color="#fff" hide-details clearable class="dashboard-input" item-value="iso2"
+                                            item-text="name" @change="onChangeCountry"></v-select>
+                                    </div>
+                                    <div class="tw-text-red-600">{{ errors[0] }}</div>
+                                </ValidationProvider>
+                                <ValidationProvider
+                                    class="tw-flex tw-py-1 tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+                                    name="per_state" rules="required" v-slot="{ errors }">
+                                    <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">State:</label>
+                                    <div class="dashboard-text-field-border tw-w-full">
+                                        <v-select v-model="selectedStateId" :items="stateList" outlined single-line
+                                            color="#fff" hide-details clearable class="dashboard-input" item-value="id"
+                                            item-text="name"></v-select>
+                                    </div>
+                                    <div class="tw-text-red-600">{{ errors[0] }}</div>
+                                </ValidationProvider>
                                 <div
                                     class="tw-flex tw-py-1 tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center">
                                     <ValidationProvider
@@ -396,12 +439,20 @@ export default {
                 { value: 'female', label: 'Female' },
                 { value: 'other', label: 'Other' },
             ],
-            perCountry: [],
-            perState: [],
-            resCountry: [],
-            resState: [],
-            countries: [],
-            states: []
+            // perCountry: [],
+            // perState: [],
+            // resCountry: [],
+            // resState: [],
+            // countries: [],
+            // states: [],
+            resSelectedCountryCode: null,
+            resSelectedStateId: null,
+            resCountryList: [],
+            resStateList: [],
+            selectedCountryCode: null,
+            selectedStateId: null,
+            countryList: [],
+            stateList: []
         }
     },
     methods: {
@@ -418,6 +469,8 @@ export default {
                 per_code: res_code,
                 per_city: res_city,
             };
+            this.selectedCountryCode = this.resSelectedCountryCode;
+            this.selectedStateId = this.resSelectedStateId;
         },
         nextClick() {
             this.e1 = 2;
@@ -427,6 +480,129 @@ export default {
             this.e1 = 1;
             this.steps = 1;
         },
+
+        async getStates() {
+            try {
+                const response = await this.$axios.get(
+                    `https://api.countrystatecity.in/v1/countries/${this.selectedCountry.iso2}/states`,
+                    {
+                        headers: {
+                            'X-CSCAPI-KEY': 'MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ==',
+                        },
+                    }
+                );
+                this.states = response.data.data;
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        fetchCountries() {
+            fetch("https://api.countrystatecity.in/v1/countries", {
+                headers: {
+                    "X-CSCAPI-KEY": "MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ=="
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.countryList = data.map((country: { iso2: any; name: any; }) => ({
+                        iso2: country.iso2,
+                        name: country.name
+                    }))
+                })
+                .catch(error => console.error(error))
+        },
+        fetchStates() {
+            fetch(`https://api.countrystatecity.in/v1/countries/${this.selectedCountryCode}/states`, {
+                headers: {
+                    "X-CSCAPI-KEY": "MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ=="
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.stateList = data.map((state: { id: any; name: any; }) => ({
+                        id: state.id,
+                        name: state.name
+                    }))
+                })
+                .catch(error => console.error(error))
+        },
+        onChangeCountry() {
+            this.selectedStateId = null
+            this.fetchStates()
+        },
+
+        fetchResCountries() {
+            fetch("https://api.countrystatecity.in/v1/countries", {
+                headers: {
+                    "X-CSCAPI-KEY": "MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ=="
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.resCountryList = data.map((country: { iso2: any; name: any; }) => ({
+                        iso2: country.iso2,
+                        name: country.name
+                    }))
+                })
+                .catch(error => console.error(error))
+        },
+        fetchResStates() {
+            fetch(`https://api.countrystatecity.in/v1/countries/${this.resSelectedCountryCode}/states`, {
+                headers: {
+                    "X-CSCAPI-KEY": "MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ=="
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.resStateList = data.map((state: { id: any; name: any; }) => ({
+                        id: state.id,
+                        name: state.name
+                    }))
+                })
+                .catch(error => console.error(error))
+        },
+
+        onChangeResCountry() {
+            this.resSelectedStateId = null
+            this.fetchResStates()
+        },
+
+        fetchPerCountries() {
+            fetch("https://api.countrystatecity.in/v1/countries", {
+                headers: {
+                    "X-CSCAPI-KEY": "MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ=="
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.perCountry = data.map((country: { iso2: any; name: any; }) => ({
+                        iso2: country.iso2,
+                        name: country.name
+                    }))
+                })
+                .catch(error => console.error(error))
+        },
+        fetchPerStates() {
+            fetch(`https://api.countrystatecity.in/v1/countries/${this.verification.per_country}/states`, {
+                headers: {
+                    "X-CSCAPI-KEY": "MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ=="
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.perState = data.map((state: { id: any; name: any; }) => ({
+                        id: state.id,
+                        name: state.name
+                    }))
+                })
+                .catch(error => console.error(error))
+        },
+
+
+        onChangePerCountry() {
+            this.verification.per_state;
+            this.fetchPerStates;
+        }
         // getStatesByCountry() {
         //     if (this.selectedCountry) {
         //         const countryStates = State.getStatesOfCountry(this.selectedCountry.isoCode);
@@ -463,26 +639,29 @@ export default {
     },
 
     async mounted() {
-        this.countries = await Country.getAllCountries();
+        this.fetchCountries();
+        this.fetchResCountries();
+        this.fetchPerCountries();
+
+        // this.countries = await Country.getAllCountries();
         // console.log(this.countries.isoCode == "IN");
         // console.log(Country.getAllCountries())
         // console.log(State.getStateByCode())
-        const resCountries: any[] = await Country.getAllCountries();
-        resCountries.map((resCountryList: any) => {
-            this.resCountry.push({
-                name: resCountryList.name,
-                isoCode: resCountryList._id
-            });
-            // console.log(countries)
-        });
-        const resStates: any[] = await State.getAllStates();
-        resStates.map((resStateList: any) => {
-            this.resState.push({
-                name: resStateList.name,
-                isoCode: resStateList._id
-            });
-            // console.log(countries)
-        });
+        // const resCountries: any[] = await Country.getAllCountries();
+        // resCountries.map((resCountryList: any) => {
+        //     this.resCountry.push({
+        //         name: resCountryList.name,
+        //         isoCode: resCountryList._id
+        //     });
+        //     // console.log(countries)
+        // });
+        // const resStates: any[] = await State.getAllStates();
+        // resStates.map((resStateList: any) => {
+        //     this.resState.push({
+        //         name: resStateList.name,
+        //         isoCode: resStateList._id
+        //     }); 
+        // });
         // const states: any[] = await State.getAllStates();
         // states.map((stateList: any) => {
         //     this.perState.push({
@@ -491,41 +670,41 @@ export default {
         //     });
         // })
         // console.log(await Country.getAllCountries())
-        const countries: any[] = await Country.getAllCountries();
-        this.perCountry = countries.map((countryList: { name: any; _id: any; }) => {
-            return {
-                name: countryList.name,
-                isoCode: countryList._id
-            };
-        });
+        // const countries: any[] = await Country.getAllCountries();
+        // this.perCountry = countries.map((countryList: { name: any; _id: any; }) => {
+        //     return {
+        //         name: countryList.name,
+        //         isoCode: countryList._id
+        //     };
+        // });
 
-        if (this.perCountry.isoCode == this.perState.isoCode) {
-            const perStates: any[] = await State.getAllStates();
-            perStates.map((perStateList: any) => {
-                this.perState.push({
-                    name: perStateList.name,
-                    isoCode: perStateList._id
-                });
-                // console.log(countries)
-            });
-        }
-        var axios = require('axios');
+        // if (this.perCountry.isoCode == this.perState.isoCode) {
+        //     const perStates: any[] = await State.getAllStates();
+        //     perStates.map((perStateList: any) => {
+        //         this.perState.push({
+        //             name: perStateList.name,
+        //             isoCode: perStateList._id
+        //         });
+        //         // console.log(countries)
+        //     });
+        // }
+        // var axios = require('axios');
 
-        var config = {
-            method: 'get',
-            url: 'https://api.countrystatecity.in/v1/countries',
-            headers: {
-                'X-CSCAPI-KEY': 'MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ==Y'
-            }
-        };
+        // var config = {
+        //     method: 'get',
+        //     url: 'https://api.countrystatecity.in/v1/countries',
+        //     headers: {
+        //         'X-CSCAPI-KEY': 'MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ=='
+        //     }
+        // };
 
-        axios(config)
-            .then(function (response: { data: any; }) {
-                console.log("axxxxios" + JSON.stringify(response.data));
-            })
-            .catch(function (error: any) {
-                console.log(error);
-            });
+        // axios(config)
+        //     .then(function (response: { data: any; }) {
+        //         console.log("axxxxios" + JSON.stringify(response.data));
+        //     })
+        //     .catch(function (error: any) {
+        //         console.log(error);
+        //     });
 
         // const headers = new Headers();
         // headers.append("X-CSCAPI-KEY", "MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ==");
@@ -573,58 +752,76 @@ export default {
         //     .then(result => console.log(result))
         //     .catch(error => console.log('error', error));
 
-        const headers = new Headers({ "X-CSCAPI-KEY": "MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ==" });
+        // const headers = new Headers({ "X-CSCAPI-KEY": "MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ==" });
 
-        const getCountries = fetch("https://api.countrystatecity.in/v1/countries", {
-            method: 'GET',
-            headers: headers,
-            redirect: 'follow'
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.countries = data.map((country: { name: any; iso2: any; }) => {
-                    return {
-                        name: country.name,
-                        _id: country.iso2
-                    };
-                });
-            })
-            .catch(error => console.log('error', error));
+        // const getCountries = fetch("https://api.countrystatecity.in/v1/countries", {
+        //     method: 'GET',
+        //     headers: headers,
+        //     redirect: 'follow'
+        // })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         this.countries = data.map((country: { name: any; iso2: any; }) => {
+        //             return {
+        //                 name: country.name,
+        //                 _id: country.iso2
+        //             };
+        //         });
+        //     })
+        //     .catch(error => console.log('error', error));
 
-        const getStates = fetch(`https://api.countrystatecity.in/v1/countries/${this.verification.per_country}/states`, {
-            method: 'GET',
-            headers: headers,
-            redirect: 'follow'
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.states = data.map((state: { name: any; id: any; }) => {
-                    return {
-                        name: state.name,
-                        _id: state.id
-                    };
-                });
-            })
-            .catch(error => console.log('error', error));
+        // const getStates = fetch(`https://api.countrystatecity.in/v1/countries/${this.verification.per_country}/states`, {
+        //     method: 'GET',
+        //     headers: headers,
+        //     redirect: 'follow'
+        // })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         this.states = data.map((state: { name: any; id: any; }) => {
+        //             return {
+        //                 name: state.name,
+        //                 _id: state.id
+        //             };
+        //         });
+        //     })
+        //     .catch(error => console.log('error', error));
 
     },
-    watch: {
-        'verification.per_country': function (newValue: string, oldValue: string) {
-            if (newValue) {
-                const headers = new Headers({ "X-CSCAPI-KEY": "MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ==" });
-                fetch(`https://api.countrystatecity.in/v1/countries/${newValue}/states`, {
-                    method: 'GET',
-                    headers: headers,
-                    redirect: 'follow'
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        this.perStates = data.map((state: any) => ({ name: state.name, _id: state.iso2 }));
-                    })
-                    .catch(error => console.log('error', error));
-            }
-        },
-    }
+    // watch: {
+    //     'verification.per_country': function (newValue: string, oldValue: string) {
+    //         if (newValue) {
+    //             const headers = new Headers({ "X-CSCAPI-KEY": "MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ==" });
+    //             fetch(`https://api.countrystatecity.in/v1/countries/${newValue}/states`, {
+    //                 method: 'GET',
+    //                 headers: headers,
+    //                 redirect: 'follow'
+    //             })
+    //                 .then(response => response.json())
+    //                 .then(data => {
+    //                     this.perStates = data.map((state: any) => ({ name: state.name, _id: state.iso2 }));
+    //                 })
+    //                 .catch(error => console.log('error', error));
+    //         }
+    //     },
+    // },
+
+    // async asyncData({ $axios }) {
+    //     try {
+    //         const response = await $axios.get(
+    //             'https://api.countrystatecity.in/v1/countries',
+    //             {
+    //                 headers: {
+    //                     'X-CSCAPI-KEY': 'MUpaQkxnREszUk00c0V3UFhEYXU5QXU0a2ZnNm1aZ2pTZlZsald3NQ==',
+    //                 },
+    //             }
+    //         );
+    //         return {
+    //             countries: response.data.data,
+    //         };
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // },
 }
 </script>
 
