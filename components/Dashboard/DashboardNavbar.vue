@@ -22,8 +22,16 @@ import logo from "@/assets/img/logo/logo-horizontal-white.png";
 import ConnectWallet from "@/components/Reusable/ConnectWallet.vue";
 export default {
   components: { ConnectWallet },
+  props: {
+    closeIcon: {
+      type: Boolean
+    }
+  },
   data() {
-    return { sidebarIsShowing: false, logo };
+    return {
+      sidebarIsShowing: false,
+      logo
+    };
   },
   methods: {
     toggleSidebar() {
@@ -31,5 +39,10 @@ export default {
       this.sidebarIsShowing = !this.sidebarIsShowing;
     },
   },
+  watch: {
+    closeIcon(closeIcon: Boolean) {
+      this.sidebarIsShowing = closeIcon;
+    }
+  }
 };
 </script>

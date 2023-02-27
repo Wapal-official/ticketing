@@ -1,5 +1,9 @@
 <template>
-    <div class="tw-w-full md:tw-px-16 lg:te-px-0">
+    <div class="tw-w-full md:tw-px-8 lg:tw-px-0">
+        <div>
+            <DashboardDbBreadcrumb class="tw-mb-1" :breadcrumbs="breadcrumb" />
+
+        </div>
         <h1 class="tw-text-xl tw-font-blod">Create Whitelist</h1>
         <ValidationObserver v-slot="{ handleSubmit }">
             <form class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full lg:tw-w-[60%]"
@@ -83,7 +87,7 @@
                     </ValidationProvider>
                     <div class="tw-w-half tw-text-left tw-pt-4">
                         <button type="button"
-                            class="tw-px-8 tw-py-2 tw-bg-[#FF36AB] tw-font-semibold tw-rounded tw-flex-row tw-items-center tw-gap-4"
+                            class="tw-px-8 tw-py-2 tw-mb-2 tw-bg-[#FF36AB] tw-font-semibold tw-rounded tw-flex-row tw-items-center tw-gap-4"
                             @click="removeRole(index)" v-show="index != 0">
                             Remove Role
                         </button>
@@ -134,11 +138,7 @@
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
-// import { createCollection } from "@/services/CollectionService";
 import { getCollections } from "@/services/CollectionService"
-import Collection from "@/interfaces/collection";
-import NftCard from "@/components/Nft/NftCard.vue";
-import { Country, State, City } from 'country-state-city';
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 
 
@@ -186,7 +186,7 @@ extend("whitelistStart", {
 export default {
     layout: "dashboard",
     props: { collection: { type: Array } },
-    components: { ValidationProvider, ValidationObserver, NftCard, GradientBorderButton },
+    components: { ValidationProvider, ValidationObserver, GradientBorderButton },
     data() {
         return {
             whitelist: {
@@ -208,7 +208,18 @@ export default {
             nextId: 2,
             message: "",
             submitting: false,
-
+            breadcrumb: [
+                {
+                    text: 'WhiteList',
+                    disabled: false,
+                    to: '/dashboard',
+                },
+                {
+                    text: 'Create Whitelist',
+                    disabled: true,
+                    to: '/dashboard/create-whitelist',
+                }
+            ]
         }
     },
 
@@ -221,12 +232,6 @@ export default {
             });
         });
         console.log(selectCollections)
-    },
-    mounted() {
-        // const collections: Collection[] = this.collections;
-        // this.testCollection = collections;
-        // this.upcomingCollection = collections;
-
     },
     methods: {
         addRole() {

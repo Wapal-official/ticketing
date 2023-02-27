@@ -1,5 +1,8 @@
 <template>
-  <div class="tw-w-full md:tw-px-16 lg:tw-px-0">
+  <div class="tw-w-full md:tw-px-8 lg:tw-px-0">
+    <div>
+      <DashboardDbBreadcrumb class="tw-mb-1" :breadcrumbs="breadcrumb" />
+    </div>
     <h1 class="tw-text-xl tw-font-bold">Create NFT Collection</h1>
     <ValidationObserver v-slot="{ handleSubmit }">
       <form class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full lg:tw-w-[60%]"
@@ -285,6 +288,18 @@ export default {
       imageErrorMessage: "",
       imageError: false,
       submitting: false,
+      breadcrumb: [
+        {
+          text: 'Launchpad',
+          disabled: false,
+          to: '/dashboard',
+        },
+        {
+          text: 'Create Collection',
+          disabled: true,
+          to: '/dashboard/create-whitelist',
+        }
+      ]
     };
   },
   methods: {
