@@ -557,6 +557,8 @@ export default {
     async sendDataToUploadFolder() {
       try {
         this.showUploadingDialog = true;
+        this.uploadComplete = false;
+        this.uploading = true;
 
         const formData = new FormData();
 

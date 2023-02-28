@@ -417,7 +417,7 @@ export default {
   },
   async mounted() {
     const res = await getAllFolder();
-    console.log(res);
+    this.folders = res.data.folderInfo;
   },
 };
 </script>
