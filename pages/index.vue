@@ -45,10 +45,6 @@
     <div class="landing-background">
       <landing-slider />
       <div class="tw-px-4 md:tw-px-16">
-        <div class="lg:tw-px-16">
-          <landing-image-grid />
-        </div>
-
         <section class="tw-pt-8 tw-pb-4 tw-container tw-mx-auto">
           <landing-section-heading heading="Live" class="tw-px-4" />
           <live-section v-if="!loading" :collections="liveCollections" />
@@ -77,7 +73,6 @@ import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 import ConnectWalletModal from "@/components/ConnectWallet/ConnectWalletModal.vue";
 import SignupModal from "@/components/Signup/SignupModal.vue";
 import LandingSlider from "@/components/Landing/LandingSlider.vue";
-import LandingImageGrid from "@/components/Landing/LandingImageGrid.vue";
 import LiveSection from "@/components/Landing/LiveSection.vue";
 import UpcomingSection from "@/components/Landing/UpcomingSection.vue";
 import FastestSoldoutSection from "@/components/Landing/FastestSoldoutSection.vue";
@@ -95,7 +90,6 @@ export default {
     ConnectWalletModal,
     SignupModal,
     LandingSlider,
-    LandingImageGrid,
     LiveSection,
     UpcomingSection,
     FastestSoldoutSection,
