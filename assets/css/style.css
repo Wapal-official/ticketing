@@ -331,4 +331,5 @@
 
 .border-bar {
   border-left: 4px solid #48cae4;
+  border-radius: 0;
 }

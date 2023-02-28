@@ -1,8 +1,7 @@
 <template>
     <div class="tw-w-full md:tw-px-8 lg:tw-px-0">
         <div>
-            <DashboardDbBreadcrumb class="tw-mb-1" :breadcrumbs="breadcrumb" />
-
+            <DashboardBreadcrumb class="tw-mb-1" :breadcrumbs="breadcrumb"></DashboardBreadcrumb>
         </div>
         <h1 class="tw-text-xl tw-font-blod">Create Whitelist</h1>
         <ValidationObserver v-slot="{ handleSubmit }">
@@ -77,7 +76,7 @@
                     <ValidationProvider
                         class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
                         name="discord_role_id" rules="required" v-slot="{ errors }">
-                        <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Discord role name
+                        <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Discord role id
                             {{ `role ${index + 1}` }}:</label>
                         <div class="dashboard-text-field-border tw-w-full">
                             <v-text-field v-model="role.discord_role_id" outlined single-line color="#fff" hide-details
@@ -138,7 +137,7 @@
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
-import { getCollections } from "@/services/CollectionService"
+import { getCollections } from "@/services/CollectionService";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 
 
@@ -212,12 +211,12 @@ export default {
                 {
                     text: 'WhiteList',
                     disabled: false,
-                    to: '/dashboard',
+                    href: '/dashboard/whitelist',
                 },
                 {
                     text: 'Create Whitelist',
                     disabled: true,
-                    to: '/dashboard/create-whitelist',
+                    href: '/dashboard/create-whitelist',
                 }
             ]
         }

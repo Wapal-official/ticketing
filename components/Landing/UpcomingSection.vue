@@ -10,7 +10,7 @@
           <nft-card v-for="collection in upcomingCollection" :key="collection._id" :collection="collection" />
         </div>
       </div>
-      <gradient-border-button @click.native="goToExplorePage" class="tw-mt-2">
+      <gradient-border-button @click.native="goToExplorePage" class="tw-mt-2 tw-self-end">
         View All
       </gradient-border-button>
     </div>

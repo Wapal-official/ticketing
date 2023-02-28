@@ -1,7 +1,7 @@
 <template>
   <div class="tw-w-full md:tw-px-8 lg:tw-px-0">
     <div>
-      <DashboardDbBreadcrumb class="tw-mb-1" :breadcrumbs="breadcrumb" />
+      <DashboardBreadcrumb class="tw-mb-1" :breadcrumbs="breadcrumb" />
     </div>
     <h1 class="tw-text-xl tw-font-bold">Create NFT Collection</h1>
     <ValidationObserver v-slot="{ handleSubmit }">
@@ -292,12 +292,12 @@ export default {
         {
           text: 'Launchpad',
           disabled: false,
-          to: '/dashboard',
+          href: '/dashboard',
         },
         {
           text: 'Create Collection',
           disabled: true,
-          to: '/dashboard/create-whitelist',
+          href: '/dashboard/create-whitelist',
         }
       ]
     };
