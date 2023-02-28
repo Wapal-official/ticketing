@@ -1,6 +1,7 @@
 <template>
   <div
     class="tw-w-full tw-max-w-[580px] tw-relative tw-bg-wapal-background tw-h-full tw-overflow-auto"
+    v-if="!loading"
   >
     <button class="tw-absolute tw-top-4 tw-right-4" @click="close">
       <v-icon class="!tw-text-white">mdi-close</v-icon>
@@ -9,12 +10,12 @@
       class="tw-w-full tw-border tw-border-transparent tw-px-4 tw-py-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-border-wapal-dashboard-active"
     >
       <img
-        :src="pirate"
-        alt="pirate"
+        :src="file?.src"
+        :alt="file?.name"
         class="tw-max-w-[300px] tw-max-h-[300px]"
       />
       <h3 class="tw-text-white tw-font-medium tw-uppercase tw-text-sm">
-        Phontem Space Pirates
+        {{ file?.name }}
       </h3>
       <div class="tw-h-[2px] tw-w-full tw-bg-wapal-dashboard-active"></div>
       <h4 class="tw-text-xl tw-text-wapal-dashboard-active tw-font-normal">
@@ -108,12 +109,15 @@
       </div>
     </div>
   </div>
+  <div v-else></div>
 </template>
 <script lang="ts">
-import pirate from "@/assets/img/6195.png";
 export default {
+  props: { file: { type: Object } },
   data() {
-    return { pirate };
+    return {
+      loading: false,
+    };
   },
   methods: {
     close() {

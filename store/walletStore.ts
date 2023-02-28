@@ -16,6 +16,8 @@ import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
 import { AptosClient } from "aptos";
 
+import { getPrice } from "@/services/AssetsService";
+
 const NODE_URL = `https://fullnode.${process.env.NETWORK}.aptoslabs.com`;
 
 const client = new AptosClient(NODE_URL);
@@ -136,6 +138,10 @@ export const actions = {
     };
   },
   async checkBalance({ state }: { state: any }) {
+    if (!wallet.isConnected()) {
+      await wallet.connect(state.wallet.wallet);
+    }
+
     const res: any = await client.getAccountResources(
       state.wallet.walletAddress
     );
@@ -166,10 +172,7 @@ export const actions = {
     return res;
   },
 
-  async checkBalanceForFolderUpload(
-    { state, dispatch }: { state: any; dispatch: any },
-    requiredArweaveBalance: any
-  ) {
+  async checkBalanceForFolderUpload({ dispatch }: { dispatch: any }) {
     const arweaveRate = await this.$axios.get(
       "https://api.coinconvert.net/convert/ar/usd?amount=1"
     );
@@ -179,14 +182,45 @@ export const actions = {
 
     const balance = await dispatch("checkBalance");
 
-    const totalAR = (100000000000000 / 1000000000000) * arweaveRate.data.USD;
+    const res = await getPrice();
+
+    const price = res.data.price;
+
+    const totalAR = (price / 1000000000000) * arweaveRate.data.USD;
+
     const totalAPT = totalAR / aptosRate.data.USD;
 
-    console.log(totalAPT);
     if (balance < totalAPT) {
-      return { requiredBalance: totalAPT, yourBalance: balance, error: true };
+      return {
+        requiredBalance: totalAPT.toFixed(4),
+        yourBalance: balance,
+        error: true,
+      };
     }
 
-    return { requiredBalance: totalAPT, yourBalance: balance, error: false };
+    return {
+      requiredBalance: totalAPT.toFixed(4),
+      yourBalance: balance,
+      error: false,
+    };
+  },
+  async signTransactionForUploadingFolder({}, requiredBalance: any) {
+    const transactionAmount = requiredBalance * 100000000;
+
+    const payload = {
+      arguments: [
+        "0xca717d6cc82ec8f6146423e90b0fb79a753a9d5efb8e2c4f89772c3cd78cf8a0",
+        transactionAmount,
+      ],
+      function: "0x1::coin::transfer",
+      type: "entry_function_payload",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+    };
+
+    const transaction = await wallet.signAndSubmitTransaction(payload);
+
+    const res = await client.waitForTransactionWithResult(transaction.hash);
+
+    return res;
   },
 };

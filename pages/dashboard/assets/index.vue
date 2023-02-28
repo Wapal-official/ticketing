@@ -12,7 +12,7 @@
         v-if="folders[0].folder_name"
         v-for="folder in folders"
         :key="folder.folder_name"
-        @click="folderClicked(folder.folder_name)"
+        @click="folderClicked(folder._id)"
       >
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
@@ -45,7 +45,7 @@
         </v-menu>
       </button>
     </div>
-    <form
+    <!-- <form
       class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
       @submit.prevent
     >
@@ -76,7 +76,7 @@
           directory
           @change="fileChanged"
       /></label>
-    </form>
+    </form> -->
     <v-dialog
       v-model="newFolderDialog"
       content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]"
@@ -144,6 +144,7 @@ import { defaultTheme } from "@/theme/wapaltheme";
 import {
   createFolder,
   deleteFolder,
+  getAllFolder,
   updateFolder,
 } from "@/services/AssetsService";
 
@@ -311,7 +312,7 @@ export default {
 
       this.newFolderDialog = false;
     },
-    folderClicked(folderName: string) {
+    folderClicked(folderName: string | null) {
       this.$router.push(`/dashboard/assets/${folderName}`);
     },
     async sendDataToCreateFolder(folderName: string) {
@@ -413,6 +414,10 @@ export default {
         this.newFolderName = "";
       }
     },
+  },
+  async mounted() {
+    const res = await getAllFolder();
+    console.log(res);
   },
 };
 </script>
