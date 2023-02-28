@@ -603,7 +603,12 @@ export default {
           this.uploadedFiles.files = [];
 
           this.uploadComplete = false;
-          socket.emit("upload", newFolder);
+          socket.emit(
+            "upload",
+            this.folderInfo.user_id,
+            this.folderInfo.folder_name,
+            newFolder
+          );
         }
       } catch (error) {
         console.log(error);
@@ -634,10 +639,6 @@ export default {
 
       if (lines[0] === "\u001b[36mSummary\u001b[39m") {
         this.fileDetailsStart = false;
-
-        this.uploadComplete = true;
-
-        this.$toast.showMessage({ message: "Files Uploaded Successfully" });
       }
 
       if (
@@ -696,6 +697,12 @@ export default {
 
     socket.on("output", (output) => {
       this.uploadingFiles(output);
+    });
+
+    socket.on("post-deployment", (response) => {
+      this.uploadComplete = true;
+
+      this.$toast.showMessage({ message: "Files Uploaded Successfully" });
     });
   },
   unmounted() {
