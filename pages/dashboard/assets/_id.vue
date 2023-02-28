@@ -96,7 +96,7 @@
     </div>
     <form
       class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
-      v-if="fileLoading && !folderInfo.files[0]"
+      v-if="!fileLoading && !folderInfo.files[0]"
     >
       <label
         class="tw-w-full tw-h-full tw-px-8 tw-py-8 tw-border-2 tw-border-dashed tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-cursor-pointer md:tw-w-1/2"

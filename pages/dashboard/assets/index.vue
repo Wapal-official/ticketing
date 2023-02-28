@@ -296,13 +296,13 @@ export default {
       return duplicate;
     },
     createNewFolder() {
-      if (this.checkDuplicateFolder({ name: this.newFolderName })) {
-        this.$toast.showMessage({
-          message: "Please do not create duplicate Folder",
-          error: true,
-        });
-        return;
-      }
+      //if (this.checkDuplicateFolder({ name: this.newFolderName })) {
+      //this.$toast.showMessage({
+      //message: "Please do not create duplicate Folder",
+      //error: true,
+      //});
+      //return;
+      //}
 
       if (!this.currentFolder) {
         this.sendDataToCreateFolder(this.newFolderName);
@@ -319,22 +319,22 @@ export default {
       this.uploading = true;
       const formData = new FormData();
 
-      if (folderName && !this.uploadedFolder) {
-        formData.append("folder_name", folderName);
-      } else {
-        [...this.uploadedFolder].forEach((file) => {
-          formData.append("files", file);
-        });
+      // if (folderName && !this.uploadedFolder) {
+      //  formData.append("folder_name", folderName);
+      //} else {
+      // [...this.uploadedFolder].forEach((file) => {
+      //  formData.append("files", file);
+      //});
 
-        // [...this.uploadedFolder].forEach((file) => {
-        //   files.push(file);
-        // });
-        // console.log(JSON.stringify(files));
-        // formData.set("files", JSON.stringify(files));
+      // [...this.uploadedFolder].forEach((file) => {
+      //   files.push(file);
+      // });
+      // console.log(JSON.stringify(files));
+      // formData.set("files", JSON.stringify(files));
 
-        formData.append("folder_name", folderName);
-        formData.append("user_id", "63a2c4031fd037c1629eb63d");
-      }
+      //formData.append("folder_name", folderName);
+      //formData.append("user_id", "63a2c4031fd037c1629eb63d");
+      // }
 
       try {
         const res = await createFolder({
@@ -347,7 +347,7 @@ export default {
           _id: res.data.folderInfo._id,
         });
 
-        this.$toast.showMessage({ message: "Folder Uploaded Successfully" });
+        this.$toast.showMessage({ message: "Folder Created Successfully" });
 
         this.uploading = false;
         this.uploadedFolder = null;
