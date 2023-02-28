@@ -1,15 +1,14 @@
 <template>
   <v-app>
-    <dashboard-navbar @toggleSidebar="toggleSidebar" />
+    <dashboard-navbar :closeIcon="closeIcon" @toggleSidebar="toggleSidebar" />
     <div class="tw-flex tw-flex-row tw-items-start">
       <dashboard-sidebar class="tw-hidden lg:tw-flex" />
       <Nuxt class="!tw-px-8 !tw-py-4" />
     </div>
     <div
       class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background"
-      :class="sidebarClass"
-    >
-      <dashboard-sidebar />
+      :class="sidebarClass">
+      <dashboard-sidebar @close="closeSideBar" />
     </div>
     <dashboard-footer />
     <toast />
@@ -24,15 +23,26 @@ export default {
   middleware: "signup",
   components: { DashboardNavbar, DashboardFooter, DashboardSidebar, Toast },
   data() {
-    return { sidebarClass: "-tw-translate-x-full" };
+    return {
+      sidebarClass: "-tw-translate-x-full",
+      closeIcon: false
+    };
   },
   methods: {
     toggleSidebar(isSidebarShowing: boolean) {
       if (!isSidebarShowing) {
         this.sidebarClass = "tw-translate-x-0";
+        this.closeIcon = true;
+
       } else {
         this.sidebarClass = "-tw-translate-x-full";
+        this.closeIcon = false;
+
       }
+    },
+    closeSideBar() {
+      this.sidebarClass = "-tw-translate-x-full";
+      this.closeIcon = false;
     },
   },
   mounted() {

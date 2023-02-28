@@ -1,27 +1,20 @@
 <template>
-  <div
-    class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-center tw-text-wapal-pink tw-text-xl py-8"
-    v-if="liveCollection.length < 1"
-  >
-    No Live Collections
-  </div>
-  <div
-    class="tw-w-full tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-8"
-    v-else
-  >
-    <div
-      class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4"
-    >
-      <nft-card
-        v-for="collection in liveCollection"
-        :key="collection._id"
-        :collection="collection"
-      />
+  <div class="tw-w-full">
+    <div class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-center tw-text-wapal-pink tw-text-xl py-8"
+      v-if="liveCollection.length < 1">
+      No Live Collections
     </div>
+    <div class="tw-w-full tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-8" v-else>
+      <div class="tw-flex tw-flex-row tw-flex-wrap">
+        <div class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4">
+          <nft-card v-for="collection in liveCollection" :key="collection._id" :collection="collection" />
+        </div>
+      </div>
 
-    <gradient-border-button @click.native="goToExplorePage">
-      View All
-    </gradient-border-button>
+      <gradient-border-button @click.native="goToExplorePage">
+        View All
+      </gradient-border-button>
+    </div>
   </div>
 </template>
 <script lang="ts">
