@@ -29,14 +29,14 @@
           <div
             class="tw-flex tw-flex-col tw-justify-items-start tw-items-start tw-bg-modal-gray tw-py-4"
           >
-            <!-- <button
-              class="tw-w-full tw-py-2 tw-px-8 tw-transition-all tw-duration-200 tw-ease-linear hover:tw-bg-black/60"
+            <button
+              class="tw-w-full tw-py-1 tw-px-4 tw-text-left tw-transition-all tw-duration-200 tw-ease-linear hover:tw-bg-black/60"
               @click="showRenameFolderDialog(folder)"
             >
               Rename
-            </button> -->
+            </button>
             <button
-              class="tw-w-full tw-py-2 tw-px-8 tw-transition-all tw-duration-200 tw-ease-linear hover:tw-bg-black/60"
+              class="tw-w-full tw-py-1 tw-px-4 tw-text-left tw-transition-all tw-duration-200 tw-ease-linear hover:tw-bg-black/60"
               @click="deleteFolder(folder)"
             >
               Delete
@@ -103,35 +103,6 @@
         >
           {{ currentFolder ? "Rename" : "Create" }}
         </button>
-      </div>
-    </v-dialog>
-    <v-dialog
-      v-model="uploading"
-      content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]"
-      persistent
-    >
-      <h2 class="tw-text-lg tw-font-semibold">Uploading Folder</h2>
-      <div
-        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-      >
-        <v-progress-circular
-          indeterminate
-          :color="defaultTheme.wapalPink"
-        ></v-progress-circular>
-      </div>
-      <div
-        class="tw-text-red-600 tw-flex tw-flex-col tw-gap-2 tw-w-full"
-        v-if="balanceNotEnoughError.error"
-      >
-        {{ balanceNotEnoughError.message }}
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
-        >
-          <div>
-            Required Balance: {{ balanceNotEnoughError.requiredBalance }}
-          </div>
-          <div>Your Balance: {{ balanceNotEnoughError.yourBalance }}</div>
-        </div>
       </div>
     </v-dialog>
   </div>
@@ -389,6 +360,7 @@ export default {
         this.$toast.showMessage({
           message: "Folder Renamed Successfully",
         });
+        this.mapFolders();
       } catch (error) {
         this.$toast.showMessage({ message: error, error: true });
       }
@@ -407,6 +379,10 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
       }
     },
+    async mapFolders() {
+      const res = await getAllFolder();
+      this.folders = res.data.folderInfo;
+    },
   },
   watch: {
     newFolderDialog(showNewFolderDialog: any) {
@@ -415,9 +391,8 @@ export default {
       }
     },
   },
-  async mounted() {
-    const res = await getAllFolder();
-    this.folders = res.data.folderInfo;
+  mounted() {
+    this.mapFolders();
   },
 };
 </script>
