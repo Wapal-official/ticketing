@@ -396,7 +396,7 @@ export default {
 
         this.currentFolder = { folder_name: "" };
 
-        await updateFolder(folder);
+        await this.mapFolders();
       } catch (error) {
         this.$toast.showMessage({ message: error, error: true });
       }
