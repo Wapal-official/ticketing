@@ -34,7 +34,7 @@
       class="tw-flex tw-flex-row tw-w-full tw-gap-4"
       v-if="folderInfo.files[0]"
     >
-      <div class="tw-w-fit">
+      <div class="tw-w-fit tw-max-w-full">
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 tw-flex-wrap tw-flex-shrink md:tw-justify-start"
           v-if="!listView"
@@ -458,18 +458,6 @@ export default {
 
       this.uploadedFile = files;
 
-      // if (this.checkDuplicateFile({ name: this.uploadedFile.name })) {
-      //   this.$toast.showMessage({
-      //     message: "Please do not upload duplicate Files",
-      //     error: true,
-      //   });
-      //   return;
-      // }
-
-      // this.uploadedFile.createdDate = new Date().toISOString();
-
-      // this.sendDataToCreateFile();
-
       this.sendDataToUploadFolder();
     },
 
@@ -577,7 +565,9 @@ export default {
       this.folderInfo.user_id = res.data.folderInfo.user_id;
 
       this.loading = false;
-      this.fileLoading = false;
+      if (!res.data.folderInfo.files[0]) {
+        this.fileLoading = false;
+      }
     },
     async sendDataToUploadFolder() {
       try {
@@ -745,7 +735,6 @@ export default {
     });
 
     socket.on("post-deployment", (response) => {
-      console.log(response);
       this.uploadComplete = true;
 
       this.$toast.showMessage({ message: "Files Uploaded Successfully" });
