@@ -225,6 +225,7 @@
             <v-icon class="!tw-text-green-600">mdi-check-circle</v-icon>
           </div>
         </div>
+        <div v-if="uploadComplete">{{ uploadSummary }}</div>
         <!-- <div class="tw-w-full">
           <div
             class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px]"
@@ -337,6 +338,7 @@ export default {
       uploadId: 0,
       fileDetailsStart: false,
       uploadStatusClass: "tw-h-0",
+      uploadSummary: "",
       UploadIcon,
       defaultTheme,
     };
@@ -735,7 +737,14 @@ export default {
     });
 
     socket.on("post-deployment", (response) => {
+      let stringRes = response;
+      stringRes = stringRes.slice(10);
+
+      const res = JSON.parse(stringRes);
+
       this.uploadComplete = true;
+
+      this.uploadSummary = res.msg;
 
       this.$toast.showMessage({ message: "Files Uploaded Successfully" });
     });

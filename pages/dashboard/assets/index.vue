@@ -37,7 +37,7 @@
             </button> -->
             <button
               class="tw-w-full tw-py-1 tw-px-4 tw-text-left tw-transition-all tw-duration-200 tw-ease-linear hover:tw-bg-black/60"
-              @click="deleteFolder(folder)"
+              @click="showDeleteFolderDialog(folder)"
             >
               Delete
             </button>
@@ -101,7 +101,30 @@
           :disabled="!newFolderName"
           @click="createNewFolder"
         >
-          {{ currentFolder ? "Rename" : "Create" }}
+          {{ currentFolder.folder_name ? "Rename" : "Create" }}
+        </button>
+      </div>
+    </v-dialog>
+    <v-dialog
+      v-model="deleteFolderDialog"
+      content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <h2 class="tw-text-xl tw-font-semibold">Delete Folder</h2>
+      <p>Are you sure you want to Delete {{ currentFolder?.folder_name }}?</p>
+      <div
+        class="tw-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
+      >
+        <button
+          class="tw-px-4 tw-py-2 tw-rounded-sm tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-pink"
+          @click="deleteFolderDialog = false"
+        >
+          No
+        </button>
+        <button
+          class="tw-px-4 tw-py-2 tw-rounded-sm tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-pink disabled:tw-bg-wapal-pink/80"
+          @click="deleteFolder(currentFolder)"
+        >
+          Yes
         </button>
       </div>
     </v-dialog>
@@ -137,7 +160,8 @@ export default {
         requiredBalance: 0,
         yourBalance: 0,
       },
-      currentFolder: null,
+      currentFolder: { folder_name: "" },
+      deleteFolderDialog: false,
       defaultTheme,
       UploadIcon,
     };
@@ -275,7 +299,7 @@ export default {
       //return;
       //}
 
-      if (!this.currentFolder) {
+      if (!this.currentFolder.folder_name) {
         this.sendDataToCreateFolder(this.newFolderName);
       } else {
         this.renameFolder(this.currentFolder);
@@ -351,12 +375,7 @@ export default {
         folder.folder_name = this.newFolderName;
         await updateFolder(folder);
 
-        this.folders.forEach((tempFolder: any) => {
-          if (tempFolder._id === folder._id) {
-            tempFolder.folder_name = this.newFolderName;
-          }
-        });
-        this.currentFolder = null;
+        this.currentFolder = { folder_name: "" };
         this.$toast.showMessage({
           message: "Folder Renamed Successfully",
         });
@@ -369,12 +388,15 @@ export default {
       try {
         await deleteFolder(folder);
 
-        this.folders = this.folders.filter(
-          (tempFolder: any) => tempFolder._id !== folder._id
-        );
         this.$toast.showMessage({
           message: "Folder Deleted Successfully",
         });
+
+        this.deleteFolderDialog = false;
+
+        this.currentFolder = { folder_name: "" };
+
+        await updateFolder(folder);
       } catch (error) {
         this.$toast.showMessage({ message: error, error: true });
       }
@@ -382,6 +404,10 @@ export default {
     async mapFolders() {
       const res = await getAllFolder();
       this.folders = res.data.folderInfo;
+    },
+    showDeleteFolderDialog(folder: any) {
+      this.currentFolder = folder;
+      this.deleteFolderDialog = true;
     },
   },
   watch: {
