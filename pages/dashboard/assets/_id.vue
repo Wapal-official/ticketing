@@ -204,8 +204,8 @@
         </div>
       </div>
       <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
-        v-if="!uploading"
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-overflow-hidden"
+        :class="uploadStatusClass"
       >
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full tw-h-32 tw-max-h-32 tw-overflow-y-auto"
@@ -331,6 +331,7 @@ export default {
       },
       uploadId: 0,
       fileDetailsStart: false,
+      uploadStatusClass: "tw-h-0",
       UploadIcon,
       defaultTheme,
     };
@@ -476,6 +477,7 @@ export default {
     },
     async sendDataToCreateFile() {
       try {
+        this.uploadStatusClass = "tw-h-0";
         this.uploading = true;
         this.showUploadingDialog = true;
         this.balanceNotEnoughError = await this.$store.dispatch(
@@ -599,6 +601,7 @@ export default {
 
         if (transaction.success) {
           this.uploading = false;
+          this.uploadStatusClass = "tw-h-full";
 
           this.uploadedFiles.files = [];
 
