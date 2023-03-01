@@ -23,8 +23,11 @@ export const createFolder = async (folder: any) => {
 export const updateFolder = async (folder: any) => {
   const res = await axios.patch(
     `${process.env.baseURL}/api/folder/${folder._id}`,
-    { id: folder._id, folder_name: folder.folder_name }
+    { folder_name: folder.folder_name }
   );
+
+  console.log(folder);
+  console.log(res);
 
   return res;
 };

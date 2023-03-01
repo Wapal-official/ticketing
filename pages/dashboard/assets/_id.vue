@@ -4,10 +4,12 @@
     v-if="!loading"
   >
     <div
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+      class="tw-flex tw-flex-col-reverse tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between tw-w-full"
     >
       <assets-bread-crumbs :folderName="folderInfo.folder_name" />
-      <div class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4">
+      <div
+        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 tw-w-full md:tw-w-fit md:tw-justify-end"
+      >
         <gradient-border-button
           class="tw-bg-wapal-gray tw-text-white tw-px-8 tw-py-2 tw-rounded tw-cursor-pointer"
           v-if="folderInfo.files[0]"
@@ -32,7 +34,7 @@
       class="tw-flex tw-flex-row tw-w-full tw-gap-4"
       v-if="folderInfo.files[0]"
     >
-      <div class="tw-w-fit">
+      <div class="tw-w-fit tw-max-w-full">
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 tw-flex-wrap tw-flex-shrink md:tw-justify-start"
           v-if="!listView"
@@ -124,6 +126,8 @@
           msdirectory
           odirectory
           directory
+          multiple
+          name="file"
       /></label>
     </form>
 
@@ -160,6 +164,7 @@
             msdirectory
             odirectory
             directory
+            multiple
             name="file"
         /></label>
       </form>
@@ -220,6 +225,7 @@
             <v-icon class="!tw-text-green-600">mdi-check-circle</v-icon>
           </div>
         </div>
+        <div v-if="uploadComplete">{{ uploadSummary }}</div>
         <!-- <div class="tw-w-full">
           <div
             class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px]"
@@ -332,6 +338,7 @@ export default {
       uploadId: 0,
       fileDetailsStart: false,
       uploadStatusClass: "tw-h-0",
+      uploadSummary: "",
       UploadIcon,
       defaultTheme,
     };
@@ -352,39 +359,56 @@ export default {
     async drop(event: any) {
       const items = event.dataTransfer.items;
 
-      const file = items[0].webkitGetAsEntry();
-
-      if (file.isDirectory) {
-        const files: File[] = [];
+      if (items.length > 1) {
+        const tempFiles = [];
         for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          if (item.kind === "file") {
-            if (typeof item.webkitGetAsEntry === "function") {
-              const entry = item.webkitGetAsEntry();
-              const entryContent = await this.readEntryContentAsync(entry);
-              files.push(...entryContent);
-              continue;
-            }
-
-            const file = item.getAsFile();
-            if (file) {
-              files.push(file);
-            }
+          const tempFile = items[i].webkitGetAsEntry();
+          if (tempFile.isFile) {
+            const file = items[i].getAsFile();
+            tempFiles.push(file);
+          } else {
+            this.$toast.showMessage({
+              message:
+                "If you are uploading multiple items please upload files and not directories",
+              error: true,
+            });
+            break;
           }
         }
-        this.uploadedFile = files;
 
-        this.sendDataToUploadFolder(this.uploadedFile);
+        if (tempFiles.length > 0) {
+          this.uploadedFile = tempFiles;
+          this.sendDataToUploadFolder(this.uploadedFile);
+        }
       } else {
-        this.uploadedFile = items[0].getAsFile();
+        const file = items[0].webkitGetAsEntry();
+        if (file.isDirectory) {
+          const files: File[] = [];
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === "file") {
+              if (typeof item.webkitGetAsEntry === "function") {
+                const entry = item.webkitGetAsEntry();
+                const entryContent = await this.readEntryContentAsync(entry);
+                files.push(...entryContent);
+                continue;
+              }
 
-        this.sendDataToCreateFile();
+              const file = item.getAsFile();
+              if (file) {
+                files.push(file);
+              }
+            }
+          }
+          this.uploadedFile = files;
 
-        this.dropZoneClass = "tw-border-wapal-gray";
-        return;
+          this.sendDataToUploadFolder(this.uploadedFile);
+        } else {
+          this.uploadedFile = items[0].getAsFile();
+
+          this.sendDataToCreateFile();
+        }
       }
-
-      this.uploadedFile.createdDate = new Date().toISOString();
 
       this.showFileUploadDialog = false;
 
@@ -436,18 +460,6 @@ export default {
 
       this.uploadedFile = files;
 
-      // if (this.checkDuplicateFile({ name: this.uploadedFile.name })) {
-      //   this.$toast.showMessage({
-      //     message: "Please do not upload duplicate Files",
-      //     error: true,
-      //   });
-      //   return;
-      // }
-
-      // this.uploadedFile.createdDate = new Date().toISOString();
-
-      // this.sendDataToCreateFile();
-
       this.sendDataToUploadFolder();
     },
 
@@ -477,6 +489,7 @@ export default {
     },
     async sendDataToCreateFile() {
       try {
+        this.uploadComplete = false;
         this.uploadStatusClass = "tw-h-0";
         this.uploading = true;
         this.showUploadingDialog = true;
@@ -554,13 +567,16 @@ export default {
       this.folderInfo.user_id = res.data.folderInfo.user_id;
 
       this.loading = false;
-      this.fileLoading = false;
+      if (!res.data.folderInfo.files[0]) {
+        this.fileLoading = false;
+      }
     },
     async sendDataToUploadFolder() {
       try {
-        this.showUploadingDialog = true;
         this.uploadComplete = false;
+        this.uploadStatusClass = "tw-h-0";
         this.uploading = true;
+        this.showUploadingDialog = true;
 
         const formData = new FormData();
 
@@ -640,6 +656,22 @@ export default {
         this.uploadId++;
       }
 
+      if (lines[0].includes("Deploying")) {
+        const startIndex = lines[0].indexOf("Deploying");
+
+        const endIndex = lines[0].indexOf("files") + "files".length;
+
+        const result = lines[0].substring(startIndex, endIndex);
+
+        this.uploadedFiles.files.push({
+          message: result,
+          type: "preparing",
+          id: this.uploadId,
+        });
+
+        this.uploadId++;
+      }
+
       if (lines[0] === "\u001b[36mSummary\u001b[39m") {
         this.fileDetailsStart = false;
       }
@@ -674,8 +706,10 @@ export default {
       }
 
       if (!this.uploadComplete) {
-        this.$refs.uploadStatus.scrollTop =
-          this.$refs.uploadStatus.scrollHeight;
+        setTimeout(() => {
+          this.$refs.uploadStatus.scrollTop =
+            this.$refs.uploadStatus.scrollHeight;
+        }, 100);
       }
 
       // console.log(output);
@@ -703,7 +737,14 @@ export default {
     });
 
     socket.on("post-deployment", (response) => {
+      let stringRes = response;
+      stringRes = stringRes.slice(10);
+
+      const res = JSON.parse(stringRes);
+
       this.uploadComplete = true;
+
+      this.uploadSummary = res.msg;
 
       this.$toast.showMessage({ message: "Files Uploaded Successfully" });
     });
