@@ -1,10 +1,44 @@
 <template>
   <div
-    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-relative"
     v-if="!loading"
+    @dragover.prevent="showDropZone = true"
   >
+    <form
+      class="tw-w-full tw-h-full tw-absolute tw-rounded tw-z-50 tw-top-0 tw-left-0 tw-bg-white/80"
+      submit.prevent=""
+      id="drop-zone"
+      v-if="showDropZone && folderInfo.files[0]"
+    >
+      <label
+        class="tw-w-full tw-h-full tw-flex tw-flex-row tw-gap-4 tw-cursor-pointer tw-rounded tw-items-center tw-justify-center"
+        :class="dropZoneClass"
+        id="drop-zone"
+        @dragover.prevent="dragover"
+        @dragleave.prevent="dragleave"
+        @drop.prevent="drop"
+      >
+        <input
+          type="file"
+          class="!tw-hidden"
+          @change="fileChanged"
+          webkitdirectory
+          mozdirectory
+          msdirectory
+          odirectory
+          directory
+          multiple
+          name="file"
+        />
+        <div
+          class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-text-green-800 tw-font-medium tw-text-xl"
+        >
+          Drop your files here to upload
+        </div>
+      </label>
+    </form>
     <div
-      class="tw-flex tw-flex-col-reverse tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between tw-w-full"
+      class="tw-flex tw-flex-col-reverse tw-items-start tw-justify-start tw-gap-4 tw-rounded tw-px-4 tw-py-4 md:tw-flex-row md:tw-items-center md:tw-justify-between tw-w-full"
     >
       <assets-bread-crumbs :folderName="folderInfo.folder_name" />
       <div
@@ -339,6 +373,7 @@ export default {
       fileDetailsStart: false,
       uploadStatusClass: "tw-h-0",
       uploadSummary: "",
+      showDropZone: false,
       UploadIcon,
       defaultTheme,
     };
@@ -351,12 +386,15 @@ export default {
     dragover(e: any) {
       e.dataTransfer!.dropEffect = "copy";
       this.dropZoneClass = "tw-border-green-600";
+      this.showDropZone = true;
     },
     dragleave(e: any) {
       e.dataTransfer!.dropEffect = "copy";
       this.dropZoneClass = "tw-border-wapal-gray";
+      this.showDropZone = false;
     },
     async drop(event: any) {
+      this.showDropZone = false;
       const items = event.dataTransfer.items;
 
       if (items.length > 1) {
