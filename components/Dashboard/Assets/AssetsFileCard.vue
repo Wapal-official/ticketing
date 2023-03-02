@@ -62,6 +62,25 @@
         <v-icon class="!tw-text-black">mdi-file</v-icon>
         {{ file?.name }}
       </div>
+      <v-menu>
+        <template v-slot:activator="{ on, attrs }">
+          <button v-on="on">
+            <v-icon class="!tw-text-black">mdi-dots-vertical</v-icon>
+          </button>
+        </template>
+        <div
+          class="tw-flex tw-flex-col tw-justify-items-start tw-items-start tw-bg-modal-gray tw-py-4"
+        >
+          <button
+            class="tw-w-full tw-py-1 tw-px-4 tw-transition-all tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 hover:tw-bg-black/60"
+            @click="downloadFile"
+          >
+            <v-icon class="!tw-text-white !tw-text-lg"
+              >mdi-tray-arrow-down</v-icon
+            >Download
+          </button>
+        </div>
+      </v-menu>
     </button>
     <div v-else></div>
   </div>
