@@ -29,12 +29,12 @@
           <div
             class="tw-flex tw-flex-col tw-justify-items-start tw-items-start tw-bg-modal-gray tw-py-4"
           >
-            <!-- <button
+            <button
               class="tw-w-full tw-py-1 tw-px-4 tw-text-left tw-transition-all tw-duration-200 tw-ease-linear hover:tw-bg-black/60"
               @click="showRenameFolderDialog(folder)"
             >
               Rename
-            </button> -->
+            </button>
             <button
               class="tw-w-full tw-py-1 tw-px-4 tw-text-left tw-transition-all tw-duration-200 tw-ease-linear hover:tw-bg-black/60"
               @click="showDeleteFolderDialog(folder)"

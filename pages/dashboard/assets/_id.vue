@@ -383,26 +383,33 @@ export default {
       } else {
         const file = items[0].webkitGetAsEntry();
         if (file.isDirectory) {
-          const files: File[] = [];
-          for (let i = 0; i < items.length; i++) {
-            const item = items[i];
-            if (item.kind === "file") {
-              if (typeof item.webkitGetAsEntry === "function") {
-                const entry = item.webkitGetAsEntry();
-                const entryContent = await this.readEntryContentAsync(entry);
-                files.push(...entryContent);
-                continue;
-              }
+          const files: any[] = [];
+          let queue = [];
 
-              const file = item.getAsFile();
-              if (file) {
-                files.push(file);
-              }
+          for (let i = 0; i < items.length; i++) {
+            queue.push(items[i].webkitGetAsEntry());
+          }
+
+          while (queue.length > 0) {
+            let entry = queue.shift();
+            if (entry.isFile) {
+              const file = entry;
+              files.push(file);
+            } else if (entry.isDirectory) {
+              let reader = entry.createReader();
+              queue.push(...(await this.readAllDirectoryEntries(reader)));
             }
           }
-          this.uploadedFile = files;
+          const tempFiles: any = await Promise.all(
+            files.map(async (file) => {
+              const tempFile = await this.getFileFromFileEntry(file);
 
-          this.sendDataToUploadFolder(this.uploadedFile);
+              return tempFile;
+            })
+          );
+
+          this.uploadedFile = tempFiles;
+          this.sendDataToUploadFolder();
         } else {
           this.uploadedFile = items[0].getAsFile();
 
@@ -414,43 +421,28 @@ export default {
 
       this.dropZoneClass = "tw-border-wapal-gray";
     },
-    readEntryContentAsync(entry: any) {
-      return new Promise<File[]>((resolve, reject) => {
-        let reading = 0;
-        const contents: File[] = [];
+    async readAllDirectoryEntries(directoryReader: any) {
+      let entries = [];
+      let readEntries = await this.readEntriesPromise(directoryReader);
+      while (readEntries.length > 0) {
+        entries.push(...readEntries);
+        readEntries = await this.readEntriesPromise(directoryReader);
+      }
+      return entries;
+    },
 
-        readEntry(entry);
-
-        function readEntry(entry: any) {
-          if (entry.isFile) {
-            reading++;
-            entry.file((file: any) => {
-              reading--;
-              contents.push(file);
-
-              if (reading === 0) {
-                resolve(contents);
-              }
-            });
-          } else if (entry.isDirectory) {
-            readReaderContent(entry.createReader());
-          }
-        }
-
-        function readReaderContent(reader: any) {
-          reading++;
-
-          reader.readEntries(function (entries: any) {
-            reading--;
-            for (const entry of entries) {
-              readEntry(entry);
-            }
-
-            if (reading === 0) {
-              resolve(contents);
-            }
-          });
-        }
+    async readEntriesPromise(directoryReader: any) {
+      try {
+        return await new Promise((resolve, reject) => {
+          directoryReader.readEntries(resolve, reject);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    getFileFromFileEntry(fileEntry: any) {
+      return new Promise((resolve, reject) => {
+        fileEntry.file(resolve, reject);
       });
     },
     fileChanged(event: any) {
@@ -687,15 +679,28 @@ export default {
       if (this.fileDetailsStart) {
         lines.map((line: any) => {
           if (line !== "") {
-            const nameIndex = line.indexOf("                    ");
+            const trimmedString = line.trim();
 
-            const tempFileName = line.substring(nameIndex + 1);
+            let spaceIndex = 0;
+            let space = 0;
+            for (let i = trimmedString.length - 1; i >= 0; i--) {
+              if (trimmedString[i] === " ") {
+                space++;
+              }
 
-            const fileName = tempFileName.trim();
+              if (space > 4) {
+                spaceIndex = i;
+                break;
+              }
+            }
+
+            const fileName = trimmedString
+              .substring(spaceIndex, trimmedString.length)
+              .trim();
 
             if (fileName !== "-" && fileName !== "") {
               this.uploadedFiles.files.push({
-                message: `${fileName} Uploaded`,
+                message: `${fileName} Prepared`,
                 type: "details",
                 id: this.uploadId,
               });
@@ -706,13 +711,9 @@ export default {
       }
 
       if (!this.uploadComplete) {
-        setTimeout(() => {
-          this.$refs.uploadStatus.scrollTop =
-            this.$refs.uploadStatus.scrollHeight;
-        }, 100);
+        this.$refs.uploadStatus.scrollTop =
+          this.$refs.uploadStatus.scrollHeight;
       }
-
-      // console.log(output);
 
       // this.uploadedFiles.files.push(output);
 
