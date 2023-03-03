@@ -248,7 +248,7 @@
       >
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full tw-h-32 tw-max-h-32 tw-overflow-y-auto"
-          ref="uploadStatus"
+          id="uploadStatus"
         >
           <div
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-px-4"
@@ -298,6 +298,7 @@ import {
   folderUpload,
   getFolderById,
   singleFileUpload,
+  deleteFolderOnServer,
 } from "@/services/AssetsService";
 import { defaultTheme } from "@/theme/wapaltheme";
 import io from "socket.io-client";
@@ -663,9 +664,12 @@ export default {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
+        await deleteFolderOnServer();
       }
     },
     uploadingFiles(output: any) {
+      this.showUploadingDialog = true;
+
       this.uploading = false;
 
       const lines = output.split("\n");
@@ -749,8 +753,10 @@ export default {
       }
 
       if (!this.uploadComplete) {
-        this.$refs.uploadStatus.scrollTop =
-          this.$refs.uploadStatus.scrollHeight;
+        const uploadStatus = document.querySelector("#uploadStatus");
+        if (uploadStatus) {
+          uploadStatus.scrollTop = uploadStatus.scrollHeight;
+        }
       }
 
       // this.uploadedFiles.files.push(output);
@@ -771,6 +777,10 @@ export default {
   async mounted() {
     await this.mapFiles();
 
+    socket.on("connect", () => {
+      console.log("connected");
+    });
+
     socket.on("output", (output) => {
       this.uploadingFiles(output);
     });
@@ -787,9 +797,10 @@ export default {
 
       this.$toast.showMessage({ message: "Files Uploaded Successfully" });
     });
-  },
-  unmounted() {
-    socket.disconnect();
+
+    socket.on("disconnect", () => {
+      console.log("disconnected");
+    });
   },
   watch: {
     showUploadingDialog: async function (newValue: boolean) {
