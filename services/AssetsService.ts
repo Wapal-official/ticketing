@@ -25,10 +25,6 @@ export const updateFolder = async (folder: any) => {
     `${process.env.baseURL}/api/folder/${folder._id}`,
     { folder_name: folder.folder_name }
   );
-
-  console.log(folder);
-  console.log(res);
-
   return res;
 };
 
@@ -78,4 +74,8 @@ export const getPrice = async () => {
   const res = await axios.get(`${process.env.baseURL}/api/bundlr/fund`);
 
   return res;
+};
+
+export const deleteFolderOnServer = async () => {
+  const res = await axios.get(`${process.env.baseURL}/api/folder/check`);
 };
