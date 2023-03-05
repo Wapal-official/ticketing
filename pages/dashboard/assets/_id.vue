@@ -277,6 +277,15 @@
         </div> -->
       </div>
     </v-dialog>
+    <div
+      class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
+      v-if="mappingFiles"
+    >
+      <v-progress-circular
+        indeterminate
+        :color="defaultTheme.wapalPink"
+      ></v-progress-circular>
+    </div>
   </div>
   <div
     class="tw-py-16 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
@@ -380,6 +389,7 @@ export default {
       showDropZone: false,
       scrolledNumber: 1,
       fileIndex: 0,
+      mappingFiles: false,
       UploadIcon,
       defaultTheme,
     };
@@ -544,6 +554,7 @@ export default {
 
           this.showFileUploadDialog = false;
 
+          await this.fetchFiles();
           await this.mapFiles();
 
           this.$toast.showMessage({
@@ -555,9 +566,12 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
         this.showFileUploadDialog = false;
+
+        await deleteFolderOnServer();
       }
     },
     async fetchFiles() {
+      this.fileIndex = 0;
       this.loading = true;
       this.fileLoading = true;
 
@@ -606,6 +620,8 @@ export default {
           console.log(error);
         }
       });
+
+      this.mappingFiles = false;
     },
     async sendDataToUploadFolder() {
       try {
@@ -614,24 +630,47 @@ export default {
         this.uploading = true;
         this.showUploadingDialog = true;
 
-        const formData = new FormData();
+        await deleteFolderOnServer();
 
-        formData.append("user_id", this.folderInfo.user_id);
-        formData.append("folder_name", this.folderInfo.folder_name);
+        const batchLoop = Math.ceil(this.uploadedFile.length / 50);
 
-        [...this.uploadedFile].forEach((file) => {
-          formData.append("images", file);
-        });
+        let responseCount = 0;
+        let response = null;
 
-        const res = await folderUpload(formData);
+        for (let i = 1; i <= batchLoop; i++) {
+          const endIndex = i * 50;
+          const startIndex = endIndex - 50;
 
-        if (res.data.newFolder) {
-          this.transferFund(res.data.newFolder);
+          const formData = new FormData();
+
+          formData.append("user_id", this.folderInfo.user_id);
+          formData.append("folder_name", this.folderInfo.folder_name);
+
+          const tempFiles = this.uploadedFile.slice(startIndex, endIndex);
+
+          tempFiles.forEach((file: any) => {
+            formData.append("images", file);
+          });
+
+          const res = await folderUpload(formData);
+          if (res.data.newFolder) {
+            responseCount++;
+          }
+
+          if (responseCount === batchLoop) {
+            response = res.data.newFolder;
+          }
+        }
+
+        if (responseCount === batchLoop) {
+          this.transferFund(response);
         }
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
+
+        await deleteFolderOnServer();
       }
     },
     async transferFund(newFolder: any) {
@@ -713,48 +752,6 @@ export default {
         this.uploadId++;
       }
 
-      if (lines[0] === "\u001b[36mSummary\u001b[39m") {
-        this.fileDetailsStart = false;
-      }
-
-      if (
-        lines[0] ===
-        "\u001b[36mID\u001b[39m                                           \u001b[36mSize\u001b[39m           \u001b[36mFee\u001b[39m              \u001b[36mType\u001b[39m                          \u001b[36mPath\u001b[39m                "
-      ) {
-        this.fileDetailsStart = true;
-        return;
-      }
-
-      if (this.fileDetailsStart) {
-        lines.map((line: any) => {
-          if (line !== "") {
-            const trimmedString = line.trim();
-
-            let spaceIndex = 0;
-            let space = 0;
-            for (let i = trimmedString.length - 1; i >= 0; i--) {
-              if (trimmedString[i] === " ") {
-                space++;
-              }
-
-              if (space > 4) {
-                spaceIndex = i;
-                break;
-              }
-            }
-
-            const fileName = trimmedString
-              .substring(spaceIndex, trimmedString.length)
-              .trim();
-
-            if (fileName !== "-" && fileName !== "") {
-              this.uploadedFiles.files.push(`${fileName} Prepared`);
-            }
-            this.uploadId++;
-          }
-        });
-      }
-
       if (!this.uploadComplete) {
         const uploadStatus = document.querySelector("#uploadStatus");
         if (uploadStatus) {
@@ -781,6 +778,14 @@ export default {
     await this.fetchFiles();
     await this.mapFiles();
 
+    socket.on("connect", () => {
+      console.log("connected");
+    });
+
+    socket.on("disconnect", () => {
+      console.log("disconnected");
+    });
+
     socket.on("output", (output) => {
       this.uploadingFiles(output);
     });
@@ -805,6 +810,8 @@ export default {
           document.documentElement.scrollHeight
         ) {
           this.scrolledNumber++;
+
+          this.mappingFiles = true;
           await this.mapFiles(20 * this.scrolledNumber);
         }
       });
