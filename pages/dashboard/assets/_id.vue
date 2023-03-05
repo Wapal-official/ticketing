@@ -75,14 +75,14 @@
         >
           <assets-file-card
             @displayFileDetails="displayFileDetails(file)"
-            v-for="file in folderInfo.files"
-            :key="file.createdDate"
+            v-for="file in paginatedFiles"
+            :key="file._id"
             :file="file"
           />
         </div>
         <v-data-table
           :headers="headers"
-          :items="folderInfo.files"
+          :items="paginatedFiles"
           :items-per-page="5"
           class="assets-data-table"
           mobile-breakpoint="0"
@@ -253,9 +253,9 @@
           <div
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-px-4"
             v-for="file in uploadedFiles.files"
-            :key="file.id"
+            :key="file"
           >
-            {{ file.message }}
+            {{ file }}
             <v-icon class="!tw-text-green-600">mdi-check-circle</v-icon>
           </div>
         </div>
@@ -277,6 +277,15 @@
         </div> -->
       </div>
     </v-dialog>
+    <div
+      class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
+      v-if="mappingFiles"
+    >
+      <v-progress-circular
+        indeterminate
+        :color="defaultTheme.wapalPink"
+      ></v-progress-circular>
+    </div>
   </div>
   <div
     class="tw-py-16 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
@@ -321,6 +330,9 @@ export default {
         folder_name: "",
         files: [{ createdDate: null, type: "", name: "", src: "", _id: null }],
       },
+      paginatedFiles: [
+        { createdDate: null, type: "", name: "", src: "", _id: null },
+      ],
       showFileDetails: false,
       listView: false,
       headers: [
@@ -366,7 +378,7 @@ export default {
       loading: true,
       fileLoading: true,
       uploadedFiles: {
-        files: [{ id: "", message: "", type: "" }],
+        files: [],
         totalFiles: 333,
         uploadedFiles: 0,
       },
@@ -375,6 +387,9 @@ export default {
       uploadStatusClass: "tw-h-0",
       uploadSummary: "",
       showDropZone: false,
+      scrolledNumber: 1,
+      fileIndex: 0,
+      mappingFiles: false,
       UploadIcon,
       defaultTheme,
     };
@@ -493,21 +508,8 @@ export default {
 
       this.sendDataToUploadFolder();
     },
-
-    pushFile() {
-      this.folderInfo.files.push(this.uploadedFile);
-    },
-    checkDuplicateFile(item: any) {
-      const duplicate = this.folderInfo.files.find((file: any) => {
-        if (file.name.toLowerCase() === item.name.toLowerCase()) {
-          return file;
-        }
-      });
-
-      return duplicate;
-    },
     getFileType(item: any) {
-      if (item.type.includes("image")) {
+      if (item.type.includes("image/")) {
         return true;
       }
       return false;
@@ -552,6 +554,7 @@ export default {
 
           this.showFileUploadDialog = false;
 
+          await this.fetchFiles();
           await this.mapFiles();
 
           this.$toast.showMessage({
@@ -563,35 +566,22 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
         this.showFileUploadDialog = false;
+
+        await deleteFolderOnServer();
       }
     },
-    async mapFiles() {
+    async fetchFiles() {
+      this.fileIndex = 0;
       this.loading = true;
       this.fileLoading = true;
 
       const folderId = this.$route.params.id;
 
+      this.paginatedFiles = [];
+
       const res = await getFolderById(folderId);
 
-      let i = 0;
-      this.folderInfo.files = [];
-      res.data.folderInfo.files.map(async (file: string) => {
-        try {
-          const tempFile = await this.$axios.get(`https://arweave.net/${file}`);
-          this.folderInfo.files.push({
-            _id: file,
-            name: i.toString(),
-            src: `https://arweave.net/${file}`,
-            type: tempFile.headers["content-type"],
-            createdDate: new Date().toISOString(),
-            size: tempFile.headers["content-length"],
-          });
-
-          i++;
-        } catch (error) {
-          console.log(error);
-        }
-      });
+      this.folderInfo.files = res.data.folderInfo.files;
 
       this.folderInfo.folder_name = res.data.folderInfo.folder_name;
       this.folderInfo._id = res.data.folderInfo._id;
@@ -602,6 +592,37 @@ export default {
         this.fileLoading = false;
       }
     },
+    async mapFiles(scrollNumber: number) {
+      let tempFiles = [];
+      if (!scrollNumber) {
+        tempFiles = this.folderInfo.files.slice(0, 20);
+      } else {
+        tempFiles = this.folderInfo.files.slice(
+          scrollNumber - 20,
+          scrollNumber
+        );
+      }
+
+      tempFiles.map(async (file: string) => {
+        try {
+          const tempFile = await this.$axios.get(`https://arweave.net/${file}`);
+          this.paginatedFiles.push({
+            _id: file,
+            name: this.fileIndex.toString(),
+            src: `https://arweave.net/${file}`,
+            type: tempFile.headers["content-type"],
+            createdDate: new Date().toISOString(),
+            size: tempFile.headers["content-length"],
+          });
+
+          this.fileIndex++;
+        } catch (error) {
+          console.log(error);
+        }
+      });
+
+      this.mappingFiles = false;
+    },
     async sendDataToUploadFolder() {
       try {
         this.uploadComplete = false;
@@ -609,24 +630,47 @@ export default {
         this.uploading = true;
         this.showUploadingDialog = true;
 
-        const formData = new FormData();
+        await deleteFolderOnServer();
 
-        formData.append("user_id", this.folderInfo.user_id);
-        formData.append("folder_name", this.folderInfo.folder_name);
+        const batchLoop = Math.ceil(this.uploadedFile.length / 50);
 
-        [...this.uploadedFile].forEach((file) => {
-          formData.append("images", file);
-        });
+        let responseCount = 0;
+        let response = null;
 
-        const res = await folderUpload(formData);
+        for (let i = 1; i <= batchLoop; i++) {
+          const endIndex = i * 50;
+          const startIndex = endIndex - 50;
 
-        if (res.data.newFolder) {
-          this.transferFund(res.data.newFolder);
+          const formData = new FormData();
+
+          formData.append("user_id", this.folderInfo.user_id);
+          formData.append("folder_name", this.folderInfo.folder_name);
+
+          const tempFiles = this.uploadedFile.slice(startIndex, endIndex);
+
+          tempFiles.forEach((file: any) => {
+            formData.append("images", file);
+          });
+
+          const res = await folderUpload(formData);
+          if (res.data.newFolder) {
+            responseCount++;
+          }
+
+          if (responseCount === batchLoop) {
+            response = res.data.newFolder;
+          }
+        }
+
+        if (responseCount === batchLoop) {
+          this.transferFund(response);
         }
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
+
+        await deleteFolderOnServer();
       }
     },
     async transferFund(newFolder: any) {
@@ -681,11 +725,12 @@ export default {
 
         const result = lines[0].substring(startIndex, endIndex);
 
-        this.uploadedFiles.files.push({
-          message: result,
-          type: "preparing",
-          id: this.uploadId,
-        });
+        if (
+          this.uploadedFiles.files[this.uploadedFiles.files.length - 1] !==
+          result
+        ) {
+          this.uploadedFiles.files.push(result);
+        }
 
         this.uploadId++;
       }
@@ -697,59 +742,14 @@ export default {
 
         const result = lines[0].substring(startIndex, endIndex);
 
-        this.uploadedFiles.files.push({
-          message: result,
-          type: "preparing",
-          id: this.uploadId,
-        });
+        if (
+          this.uploadedFiles.files[this.uploadedFiles.files.length - 1] !==
+          result
+        ) {
+          this.uploadedFiles.files.push(result);
+        }
 
         this.uploadId++;
-      }
-
-      if (lines[0] === "\u001b[36mSummary\u001b[39m") {
-        this.fileDetailsStart = false;
-      }
-
-      if (
-        lines[0] ===
-        "\u001b[36mID\u001b[39m                                           \u001b[36mSize\u001b[39m           \u001b[36mFee\u001b[39m              \u001b[36mType\u001b[39m                          \u001b[36mPath\u001b[39m                "
-      ) {
-        this.fileDetailsStart = true;
-        return;
-      }
-
-      if (this.fileDetailsStart) {
-        lines.map((line: any) => {
-          if (line !== "") {
-            const trimmedString = line.trim();
-
-            let spaceIndex = 0;
-            let space = 0;
-            for (let i = trimmedString.length - 1; i >= 0; i--) {
-              if (trimmedString[i] === " ") {
-                space++;
-              }
-
-              if (space > 4) {
-                spaceIndex = i;
-                break;
-              }
-            }
-
-            const fileName = trimmedString
-              .substring(spaceIndex, trimmedString.length)
-              .trim();
-
-            if (fileName !== "-" && fileName !== "") {
-              this.uploadedFiles.files.push({
-                message: `${fileName} Prepared`,
-                type: "details",
-                id: this.uploadId,
-              });
-            }
-            this.uploadId++;
-          }
-        });
       }
 
       if (!this.uploadComplete) {
@@ -775,10 +775,15 @@ export default {
     },
   },
   async mounted() {
+    await this.fetchFiles();
     await this.mapFiles();
 
     socket.on("connect", () => {
       console.log("connected");
+    });
+
+    socket.on("disconnect", () => {
+      console.log("disconnected");
     });
 
     socket.on("output", (output) => {
@@ -798,14 +803,25 @@ export default {
       this.$toast.showMessage({ message: "Files Uploaded Successfully" });
     });
 
-    socket.on("disconnect", () => {
-      console.log("disconnected");
-    });
+    if (process.client) {
+      window.addEventListener("scroll", async () => {
+        if (
+          window.scrollY + window.innerHeight >=
+          document.documentElement.scrollHeight
+        ) {
+          this.scrolledNumber++;
+
+          this.mappingFiles = true;
+          await this.mapFiles(20 * this.scrolledNumber);
+        }
+      });
+    }
   },
   watch: {
     showUploadingDialog: async function (newValue: boolean) {
       if (!newValue) {
         if (this.uploadComplete) {
+          await this.fetchFiles();
           await this.mapFiles();
 
           this.uploadedFiles.uploadedFiles = 0;
