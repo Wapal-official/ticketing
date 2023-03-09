@@ -5,45 +5,90 @@
     </div>
     <h1 class="tw-text-xl tw-font-bold">Create NFT Collection</h1>
     <ValidationObserver v-slot="{ handleSubmit }">
-      <form class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full lg:tw-w-[60%]"
-        @submit.prevent="handleSubmit(submitCollection)" novalidate>
+      <form
+        class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full lg:tw-w-[60%]"
+        @submit.prevent="handleSubmit(submitCollection)"
+        novalidate
+      >
         <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group" name="name"
-          rules="required" v-slot="{ errors }">
-          <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Collection Name</label>
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="name"
+          rules="required"
+          v-slot="{ errors }"
+        >
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Collection Name</label
+          >
           <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field v-model="collection.name" outlined single-line color="#fff" hide-details clearable
-              class="dashboard-input">
+            <v-text-field
+              v-model="collection.name"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+            >
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="description" rules="required" v-slot="{ errors }">
-          <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Collection Description</label>
+          name="description"
+          rules="required"
+          v-slot="{ errors }"
+        >
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Collection Description</label
+          >
           <div class="dashboard-text-field-border tw-w-full">
-            <v-textarea v-model="collection.description" class="dashboard-input" background-color="transparent"
-              color="#fff" outlined single-line></v-textarea>
+            <v-textarea
+              v-model="collection.description"
+              class="dashboard-input"
+              background-color="transparent"
+              color="#fff"
+              outlined
+              single-line
+            ></v-textarea>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
-        <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2">
-          <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Image Collection</label>
+        <div
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+        >
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Image Collection</label
+          >
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full md:tw-flex-row md:tw-justify-start dashboard-text-field-group"
-            ref="imageSelect">
-            <label class="dashboard-text-field-border tw-cursor-pointer tw-w-full md:tw-w-fit">
+            ref="imageSelect"
+          >
+            <label
+              class="dashboard-text-field-border tw-cursor-pointer tw-w-full md:tw-w-fit"
+            >
               <div
                 class="tw-bg-wapal-background tw-px-4 tw-py-2 tw-rounded-lg tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
-                v-if="!image.name">
+                v-if="!image.name"
+              >
                 <v-icon class="!tw-text-wapal-gray">mdi-image</v-icon>
                 Select Image
               </div>
-              <div class="tw-bg-wapal-background tw-px-4 tw-py-2 tw-rounded-lg tw-max-w-4/5 tw-overflow-hidden" v-else>
+              <div
+                class="tw-bg-wapal-background tw-px-4 tw-py-2 tw-rounded-lg tw-max-w-4/5 tw-overflow-hidden"
+                v-else
+              >
                 {{ image.name }}
               </div>
-              <input type="file" class="image-collection" accept="image/*" @change="imageSelected" />
+              <input
+                type="file"
+                class="image-collection"
+                accept="image/*"
+                @change="imageSelected"
+              />
             </label>
           </div>
           <div class="tw-text-red-600" v-if="imageError">
@@ -51,136 +96,298 @@
           </div>
         </div>
         <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group" name="baseurl"
-          rules="required" v-slot="{ errors }">
-          <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Baseurl</label>
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="baseurl"
+          rules="required"
+          v-slot="{ errors }"
+        >
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Baseurl</label
+          >
           <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field v-model="collection.baseURL" outlined single-line color="#fff" hide-details clearable
-              class="dashboard-input" type="url">
+            <v-text-field
+              v-model="collection.baseURL"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="royaltyPayeeAddress" rules="required" v-slot="{ errors }">
-          <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Royalty Payee Address</label>
+          name="royaltyPayeeAddress"
+          rules="required"
+          v-slot="{ errors }"
+        >
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Royalty Payee Address</label
+          >
           <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field v-model="collection.royalty_payee_address" outlined single-line color="#fff" hide-details
-              clearable class="dashboard-input">
+            <v-text-field
+              v-model="collection.royalty_payee_address"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+            >
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="royaltyPercentage" rules="required|number|percentage" v-slot="{ errors }">
-          <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Royalty Percentage</label>
+          name="royaltyPercentage"
+          rules="required|number|percentage"
+          v-slot="{ errors }"
+        >
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Royalty Percentage</label
+          >
           <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field v-model="collection.royalty_percentage" outlined single-line color="#fff" hide-details clearable
-              class="dashboard-input" inputmode="numeric">
+            <v-text-field
+              v-model="collection.royalty_percentage"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              inputmode="numeric"
+            >
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
         <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center">
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
+        >
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="whitelistSaleTime" rules="required|saleTime" v-slot="{ errors }">
-            <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Whitelist Sale Time</label>
+            name="whitelistSaleTime"
+            rules="required|saleTime"
+            v-slot="{ errors }"
+          >
+            <label
+              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+              >Whitelist Sale Time</label
+            >
             <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field v-model="collection.whitelist_sale_time" outlined single-line color="#fff" hide-details
-                clearable class="dashboard-input tw-w-full focus:tw-outline-none" type="datetime-local"
-                ref="whitelistSaleTime">
+              <v-text-field
+                v-model="collection.whitelist_sale_time"
+                outlined
+                single-line
+                color="#fff"
+                hide-details
+                clearable
+                class="dashboard-input tw-w-full focus:tw-outline-none"
+                type="datetime-local"
+                ref="whitelistSaleTime"
+              >
               </v-text-field>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="publicSaleTime" rules="required|saleTime|public_sale_time:@whitelistSaleTime" v-slot="{ errors }">
-            <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Public Sale Time</label>
+            name="publicSaleTime"
+            rules="required|saleTime|public_sale_time:@whitelistSaleTime"
+            v-slot="{ errors }"
+          >
+            <label
+              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+              >Public Sale Time</label
+            >
             <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field v-model="collection.public_sale_time" outlined single-line color="#fff" hide-details clearable
-                class="dashboard-input focus:tw-outline-none" type="datetime-local">
+              <v-text-field
+                v-model="collection.public_sale_time"
+                outlined
+                single-line
+                color="#fff"
+                hide-details
+                clearable
+                class="dashboard-input focus:tw-outline-none"
+                type="datetime-local"
+              >
               </v-text-field>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
         </div>
         <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center">
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
+        >
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="whitelistSalePrice" rules="required|number" v-slot="{ errors }"><label
-              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Whitelist Sale Price in Apt</label>
+            name="whitelistSalePrice"
+            rules="required|number"
+            v-slot="{ errors }"
+            ><label
+              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+              >Whitelist Sale Price in Apt</label
+            >
             <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field v-model="collection.whitelist_price" placeholder="eg: 0.1" outlined single-line color="#fff"
-                hide-details clearable class="dashboard-input" inputmode="numeric">
+              <v-text-field
+                v-model="collection.whitelist_price"
+                placeholder="eg: 0.1"
+                outlined
+                single-line
+                color="#fff"
+                hide-details
+                clearable
+                class="dashboard-input"
+                inputmode="numeric"
+              >
               </v-text-field>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="publicSalePrice" rules="required|number" v-slot="{ errors }">
-            <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Public Sale Price in Apt</label>
+            name="publicSalePrice"
+            rules="required|number"
+            v-slot="{ errors }"
+          >
+            <label
+              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+              >Public Sale Price in Apt</label
+            >
             <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field v-model="collection.public_sale_price" placeholder="eg: 0.1" outlined single-line color="#fff"
-                hide-details clearable class="dashboard-input" inputmode="numeric">
+              <v-text-field
+                v-model="collection.public_sale_price"
+                placeholder="eg: 0.1"
+                outlined
+                single-line
+                color="#fff"
+                hide-details
+                clearable
+                class="dashboard-input"
+                inputmode="numeric"
+              >
               </v-text-field>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
         </div>
         <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group" name="supply"
-          rules="required|number" v-slot="{ errors }">
-          <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Supply</label>
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="supply"
+          rules="required|number"
+          v-slot="{ errors }"
+        >
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Supply</label
+          >
           <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field v-model="collection.supply" outlined single-line color="#fff" hide-details clearable
-              class="dashboard-input" inputmode="numeric">
+            <v-text-field
+              v-model="collection.supply"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              inputmode="numeric"
+            >
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
         <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group" name="twitter"
-          rules="required|link" v-slot="{ errors }">
-          <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Twitter Link</label>
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="twitter"
+          rules="required|link"
+          v-slot="{ errors }"
+        >
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Twitter Link</label
+          >
           <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field v-model="collection.twitter" outlined single-line color="#fff" hide-details clearable
-              class="dashboard-input" type="url">
+            <v-text-field
+              v-model="collection.twitter"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
         <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group" name="discord"
-          rules="required|link" v-slot="{ errors }">
-          <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Discord Link</label>
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="discord"
+          rules="required|link"
+          v-slot="{ errors }"
+        >
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Discord Link</label
+          >
           <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field v-model="collection.discord" outlined single-line color="#fff" hide-details clearable
-              class="dashboard-input" type="url">
+            <v-text-field
+              v-model="collection.discord"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
         <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group" name="website"
-          rules="required|link" v-slot="{ errors }">
-          <label class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2">Website</label>
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="website"
+          rules="required|link"
+          v-slot="{ errors }"
+        >
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Website</label
+          >
           <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field v-model="collection.website" outlined single-line color="#fff" hide-details clearable
-              class="dashboard-input" type="url">
+            <v-text-field
+              v-model="collection.website"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
-        <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4">
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4"
+        >
           <gradient-border-button type="submit" :disabled="submitting">
-            <v-progress-circular indeterminate color="white" v-if="submitting"></v-progress-circular>
+            <v-progress-circular
+              indeterminate
+              color="white"
+              v-if="submitting"
+            ></v-progress-circular>
             Submit
           </gradient-border-button>
         </div>
@@ -290,16 +497,16 @@ export default {
       submitting: false,
       breadcrumb: [
         {
-          text: 'Launchpad',
+          text: "Launchpad",
           disabled: false,
-          href: '/dashboard',
+          href: "/dashboard",
         },
         {
-          text: 'Create Collection',
+          text: "Create Collection",
           disabled: true,
-          href: '/dashboard/create-whitelist',
-        }
-      ]
+          href: "/dashboard/create-whitelist",
+        },
+      ],
     };
   },
   methods: {
@@ -320,7 +527,13 @@ export default {
 
         await this.sendDataToCandyMachineCreator();
 
-        await this.uploadImage();
+        const imageUploaded = await this.uploadImage();
+
+        if (!imageUploaded) {
+          this.$refs["imageSelect"].scrollIntoView({ behavior: "smooth" });
+          this.submitting = false;
+          return;
+        }
 
         const tempCollection = this.collection;
 
@@ -347,20 +560,22 @@ export default {
     },
     async uploadImage() {
       this.imageError = false;
-      const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+      const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
 
       if (!allowedExtensions.exec(this.image.name.toLowerCase())) {
         this.imageError = true;
-        this.imageErrorMessage = "Please upload a jpg, jpeg or png image";
+        this.imageErrorMessage = "Please upload a jpg, jpeg, png or gif image";
         return false;
       }
 
       try {
         const res = await this.awsUpload();
         this.collection.image = res.Location;
+        return true;
       } catch (error) {
         this.message = "Something Went Wrong Please try again";
         this.$toast.showMessage({ message: this.message, error: true });
+        return false;
       }
     },
 
