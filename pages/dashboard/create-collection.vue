@@ -106,17 +106,17 @@
             >Baseurl</label
           >
           <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.baseURL"
+            <v-autocomplete
+              v-model="folderInfo"
+              :items="folders"
               outlined
-              single-line
               color="#fff"
-              hide-details
-              clearable
               class="dashboard-input"
-              type="url"
+              placeholder="Base URL"
+              item-text="folder_name"
+              hide-details
             >
-            </v-text-field>
+            </v-autocomplete>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
@@ -398,8 +398,10 @@
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
-import { createCollection } from "@/services/CollectionService";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
+
+import { createCollection } from "@/services/CollectionService";
+import { getAllFolder } from "@/services/AssetsService";
 
 import AWS from "aws-sdk";
 extend("required", {
@@ -507,6 +509,8 @@ export default {
           href: "/dashboard/create-whitelist",
         },
       ],
+      folders: [],
+      folderInfo: null,
     };
   },
   methods: {
@@ -520,6 +524,8 @@ export default {
       }
       try {
         this.submitting = true;
+
+        this.collection.baseURL = "https://arweave.net/";
 
         if (this.imageError) {
           return;
@@ -636,6 +642,10 @@ export default {
       this.collection.resource_account = res.resourceAccount;
       this.collection.transaction_hash = res.transactionHash;
     },
+  },
+  async mounted() {
+    const res = await getAllFolder();
+    this.folders = res.data.folderInfo;
   },
 };
 </script>
