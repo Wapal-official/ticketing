@@ -16,6 +16,7 @@
 </template>
 <script lang="ts">
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
+import { login } from "@/services/LoginService";
 
 export default {
   components: { PrimaryButton },
@@ -30,6 +31,39 @@ export default {
       try {
         const res = await this.$store.dispatch("walletStore/signLoginMessage");
         console.log(res);
+
+        const body = { walletAddress: "", signature: "" };
+        if (res.result) {
+          if (res.result.address) {
+            body.walletAddress = res.result.address;
+          } else {
+            body.walletAddress =
+              this.$store.state.walletStore.wallet.walletAddress;
+          }
+
+          if (Array.isArray(res.result.signature)) {
+            body.signature = res.result.signature[0];
+          } else {
+            body.signature = res.result.signature;
+          }
+        } else {
+          if (res.address) {
+            body.walletAddress = res.address;
+          } else {
+            body.walletAddress =
+              this.$store.state.walletStore.wallet.walletAddress;
+          }
+
+          if (Array.isArray(res.signature)) {
+            body.signature = res.signature[0];
+          } else {
+            body.signature = res.signature;
+          }
+        }
+        console.log(body);
+
+        // const loginRes = await login(body);
+
         this.$toast.showMessage({ message: "Logged In Successfully" });
         this.$emit("close");
       } catch (error) {
