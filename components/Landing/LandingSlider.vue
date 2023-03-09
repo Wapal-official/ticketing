@@ -7,7 +7,9 @@
           v-for="(image, index) in sliderImages"
           :key="index"
         >
-          <div class="tw-overflow-hidden tw-rounded-2xl tw-w-fit">
+          <div
+            class="tw-overflow-hidden tw-rounded-2xl tw-w-fit tw-select-none"
+          >
             <img
               :src="image"
               class="tw-object-fill tw-w-[300px] tw-h-[300px] tw-mx-auto md:tw-mx-0 md:tw-w-[250px] md:tw-h-[250px] tw-transition-all tw-duration-150 tw-ease-linear tw-transform tw-cursor-pointer hover:tw-scale-110"
@@ -53,7 +55,10 @@ export default {
     await this.$nextTick();
     new Swiper(this.$refs.swiper, {
       spaceBetween: 16,
-      autoplay: true,
+      autoplay: {
+        delay: 3000,
+      },
+      grabCursor: true,
       loop: true,
       breakpoints: {
         375: {
@@ -77,3 +82,8 @@ export default {
   },
 };
 </script>
+<style>
+.swiper-wrapper {
+  transition-timing-function: linear;
+}
+</style>
