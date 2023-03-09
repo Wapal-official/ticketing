@@ -9,12 +9,9 @@
       Wallet registered successfully.
     </p>
     <p class="tw-text-sm md:tw-text-lg tw-font-normal tw-pb-4">
-      Are you a creator? If yes, submit your project details to get chance for
-      free promotion when we launch in March.
+      Sign in a message to log in into Wapal
     </p>
-    <NuxtLink to="/signup">
-      <primary-button @click.native="close">Sign Up Early</primary-button>
-    </NuxtLink>
+    <primary-button @click.native="signMessage">Sign Message</primary-button>
   </div>
 </template>
 <script lang="ts">
@@ -28,6 +25,17 @@ export default {
   methods: {
     close() {
       this.$emit("close");
+    },
+    async signMessage() {
+      try {
+        const res = await this.$store.dispatch("walletStore/signLoginMessage");
+        console.log(res);
+        this.$toast.showMessage({ message: "Logged In Successfully" });
+        this.$emit("close");
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+      }
     },
   },
 };

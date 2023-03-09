@@ -223,4 +223,11 @@ export const actions = {
 
     return res;
   },
+  async signLoginMessage() {
+    const message = "Login into Wapal";
+    const nonce = "random";
+    const signMessage = await wallet.signMessage({ message, nonce });
+
+    return signMessage;
+  },
 };

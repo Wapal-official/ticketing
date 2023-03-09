@@ -138,7 +138,7 @@
 }
 
 .landing-gradient-border-button {
-  padding: 1.5px;
+  padding: 1.6px;
   position: relative;
   background: linear-gradient(
     270deg,
@@ -279,7 +279,7 @@
 /* Create Collection*/
 
 .dashboard-text-field-border {
-  padding: 1px;
+  padding: 1.6px;
   border-radius: 7px;
 }
 

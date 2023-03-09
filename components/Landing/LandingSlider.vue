@@ -1,5 +1,5 @@
 <template>
-  <section class="tw-px-4 tw-py-16">
+  <section class="tw-py-16">
     <div class="swiper mySwiper" ref="swiper">
       <div class="swiper-wrapper">
         <div

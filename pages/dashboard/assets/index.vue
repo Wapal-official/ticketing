@@ -2,9 +2,9 @@
   <div
     class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
   >
-    <button class="dashboard-gradient-button" @click="newFolderDialog = true">
+    <gradient-border-button @click="newFolderDialog = true">
       Create New Folder +
-    </button>
+    </gradient-border-button>
     <assets-bread-crumbs />
     <div class="tw-flex tw-flex-row tw-flex-wrap tw-gap-4">
       <button
