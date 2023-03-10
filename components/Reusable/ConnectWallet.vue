@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-text-sm tw-w-full">
+  <div class="tw-text-sm">
     <gradient-border-button
       @click.native="connectWallet"
       v-if="!walletStore.wallet"
