@@ -1,28 +1,27 @@
 <template>
   <div class="tw-text-sm tw-w-full">
-    <button
-      class="gradient-button tw-text-base lg:tw-text-sm"
-      @click="connectWallet"
+    <gradient-border-button
+      @click.native="connectWallet"
       v-if="!walletStore.wallet"
     >
       Connect Wallet
-    </button>
+    </gradient-border-button>
 
-    <button
-      class="gradient-button tw-px-6 tw-py-2 tw-text-xs tw-w-full tw-flex tw-flex-row tw-justify-center tw-gap-2 tw-rounded-md tw-bg-gradient-to-r tw-from-[#000000] tw-via-[#34107B] tw-to-[#1B0051] tw-font-medium tw-relative tw-overflow-hidden md:tw-items-start lg:tw-items-center"
-      @click="disconnectWallet"
-      v-else
-    >
-      <client-only>
-        <v-icon class="!tw-text-wapal-pink">mdi-account</v-icon></client-only
+    <gradient-border-button @click.native="disconnectWallet" v-else
+      ><div
+        class="tw-text-xs tw-w-full tw-flex tw-flex-row tw-justify-center tw-gap-2 tw-rounded-md tw-font-medium tw-relative tw-overflow-hidden md:tw-items-start lg:tw-items-center"
       >
-      <span class="tw-text-lg lg:tw-text-sm md:tw-hidden lg:tw-flex">{{
-        displayFormattedWalletAddress
-      }}</span>
-      <span class="tw-text-lg tw-hidden md:tw-flex lg:tw-hidden">{{
-        displayFormattedWalletAddressForMediumScreens
-      }}</span>
-    </button>
+        <client-only>
+          <v-icon class="!tw-text-wapal-pink">mdi-account</v-icon></client-only
+        >
+        <span class="tw-text-lg lg:tw-text-sm md:tw-hidden lg:tw-flex">{{
+          displayFormattedWalletAddress
+        }}</span>
+        <span class="tw-text-lg tw-hidden md:tw-flex lg:tw-hidden">{{
+          displayFormattedWalletAddressForMediumScreens
+        }}</span>
+      </div>
+    </gradient-border-button>
     <v-dialog
       v-model="showConnectWalletDialog"
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-1/4"
@@ -68,9 +67,15 @@
 import ConnectWalletModal from "@/components/ConnectWallet/ConnectWalletModal.vue";
 import DisconnectWalletModal from "@/components/ConnectWallet/DisconnectWalletModal.vue";
 import SignupModal from "@/components/Signup/SignupModal.vue";
+import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 import { defaultTheme } from "@/theme/wapaltheme";
 export default {
-  components: { ConnectWalletModal, DisconnectWalletModal, SignupModal },
+  components: {
+    ConnectWalletModal,
+    DisconnectWalletModal,
+    SignupModal,
+    GradientBorderButton,
+  },
   data() {
     return {
       showConnectWalletDialog: false,

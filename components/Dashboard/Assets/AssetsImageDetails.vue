@@ -13,6 +13,7 @@
         :src="file?.src"
         :alt="file?.name"
         class="tw-max-w-[300px] tw-max-h-[300px]"
+        draggable="false"
       />
       <h3 class="tw-text-white tw-font-medium tw-uppercase tw-text-sm">
         {{ file?.name }}

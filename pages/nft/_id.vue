@@ -289,6 +289,8 @@ export default {
             message: "Your account has insufficient balance for Minting",
             error: true,
           });
+
+          this.minting = false;
           return;
         }
 

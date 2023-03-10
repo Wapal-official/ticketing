@@ -7,7 +7,8 @@
     </div>
     <div
       class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background"
-      :class="sidebarClass">
+      :class="sidebarClass"
+    >
       <dashboard-sidebar @close="closeSideBar" />
     </div>
     <dashboard-footer />
@@ -25,7 +26,7 @@ export default {
   data() {
     return {
       sidebarClass: "-tw-translate-x-full",
-      closeIcon: false
+      closeIcon: false,
     };
   },
   methods: {
@@ -33,16 +34,19 @@ export default {
       if (!isSidebarShowing) {
         this.sidebarClass = "tw-translate-x-0";
         this.closeIcon = true;
-
       } else {
         this.sidebarClass = "-tw-translate-x-full";
         this.closeIcon = false;
-
       }
     },
     closeSideBar() {
       this.sidebarClass = "-tw-translate-x-full";
       this.closeIcon = false;
+    },
+  },
+  computed: {
+    walletAddress() {
+      return this.$store.state.walletStore.wallet.walletAddress;
     },
   },
   mounted() {
@@ -75,6 +79,13 @@ export default {
         }
       });
     }
+  },
+  watch: {
+    walletAddress(newVal: any) {
+      if (!newVal) {
+        this.$router.push("/");
+      }
+    },
   },
 };
 </script>

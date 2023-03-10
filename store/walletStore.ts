@@ -52,6 +52,10 @@ export const state = () => ({
     wallet: "",
     walletAddress: "",
   },
+  user: {
+    user_id: "",
+    token: "",
+  },
 });
 
 export const getters = {
@@ -64,13 +68,16 @@ export const mutations = {
   setWallet(state: any, wallet: WalletAddress) {
     state.wallet = wallet;
   },
+  setUser(state: any, user: any) {
+    state.user = user;
+  },
 };
 
 export const actions = {
   setWallet({ commit }: { commit: any }) {
     commit("setWallet");
     Cookies.set("vuex", JSON.stringify(state), {
-      expires: new Date(new Date().getTime() + 1000 * 3600 * 24 * 30),
+      expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
     });
   },
   async connectWallet({ commit }: { commit: any }, walletName: WalletName) {
@@ -92,6 +99,10 @@ export const actions = {
     commit("setWallet", {
       wallet: "",
       walletAddress: "",
+    });
+    commit("setUser", {
+      user_id: "",
+      token: "",
     });
   },
   async createCandyMachine(
@@ -222,5 +233,14 @@ export const actions = {
     const res = await client.waitForTransactionWithResult(transaction.hash);
 
     return res;
+  },
+  async signLoginMessage() {
+    const message = "Login into Wapal";
+    const nonce = makeId(32);
+    const signMessage = await wallet.signMessage({ message, nonce });
+    return signMessage;
+  },
+  setUser({ commit }: { commit: any }) {
+    commit("setUser");
   },
 };
