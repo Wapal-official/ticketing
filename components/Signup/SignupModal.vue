@@ -30,7 +30,7 @@ export default {
     async signMessage() {
       try {
         const res = await this.$store.dispatch("walletStore/signLoginMessage");
-        console.log(res);
+        // console.log(res);
 
         const body = { walletAddress: "", signature: "" };
         if (res.result) {
@@ -60,7 +60,7 @@ export default {
             body.signature = res.signature;
           }
         }
-        console.log(body);
+        // console.log(body);
 
         // const loginRes = await login(body);
 

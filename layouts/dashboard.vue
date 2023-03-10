@@ -81,7 +81,7 @@ export default {
     }
   },
   watch: {
-    walletAddress(newVal) {
+    walletAddress(newVal: any) {
       if (!newVal) {
         this.$router.push("/");
       }

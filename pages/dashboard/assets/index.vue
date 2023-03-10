@@ -2,7 +2,7 @@
   <div
     class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
   >
-    <gradient-border-button @click="newFolderDialog = true">
+    <gradient-border-button @click.native="newFolderDialog = true">
       Create New Folder +
     </gradient-border-button>
     <assets-bread-crumbs />
