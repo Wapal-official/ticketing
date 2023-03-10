@@ -236,7 +236,7 @@ export const actions = {
   },
   async signLoginMessage() {
     const message = "Login into Wapal";
-    const nonce = makeId(32);
+    const nonce = makeId(16);
     const signMessage = await wallet.signMessage({ message, nonce });
     return signMessage;
   },
