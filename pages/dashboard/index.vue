@@ -10,6 +10,18 @@
         ></NuxtLink
       >
     </div>
+    <div
+      class="tw-container tw-mx-auto tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-3"
+      v-if="!loading"
+    >
+      <nft-card
+        v-for="collection in collections"
+        :key="collection._id"
+        v-if="collections[0]._id"
+        :collection="collection"
+      />
+    </div>
+    <loading v-else />
   </div>
 </template>
 
@@ -17,23 +29,24 @@
 import NftCard from "@/components/Nft/NftCard.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
-import { getCollections } from "@/services/CollectionService";
+import { getCollectionsOfUser } from "@/services/CollectionService";
 export default {
   layout: "dashboard",
   components: { NftCard, Loading, GradientBorderButton },
   data() {
     return {
-      collections: [{ _id: null }],
+      collections: [{ _id: "" }],
       loading: true,
     };
   },
-  methods: {
-    async getAllCollections() {
-      this.collections = await getCollections();
-    },
-  },
-  mounted() {
-    this.getAllCollections();
+  methods: {},
+  async mounted() {
+    const res = await getCollectionsOfUser(
+      this.$store.state.walletStore.user.user_id
+    );
+
+    this.collections = res.data.data;
+
     this.loading = false;
   },
 };
