@@ -640,6 +640,13 @@ export default {
         let responseCount = 0;
         let response = null;
 
+        let files = [];
+        if (Array.isArray(this.uploadedFile)) {
+          files = this.uploadedFile;
+        } else {
+          files = [...this.uploadedFile];
+        }
+
         for (let i = 1; i <= batchLoop; i++) {
           const endIndex = i * 50;
           const startIndex = endIndex - 50;
@@ -649,7 +656,7 @@ export default {
           formData.append("user_id", this.folderInfo.user_id);
           formData.append("folder_name", this.folderInfo.folder_name);
 
-          const tempFiles = this.uploadedFile.slice(startIndex, endIndex);
+          const tempFiles = files.slice(startIndex, endIndex);
 
           tempFiles.forEach((file: any) => {
             formData.append("images", file);
