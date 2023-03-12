@@ -107,13 +107,14 @@
           >
           <div class="dashboard-text-field-border tw-w-full">
             <v-autocomplete
-              v-model="folderInfo"
+              v-model="collection.baseURL"
               :items="folders"
               outlined
               color="#fff"
               class="dashboard-input"
               placeholder="Base URL"
               item-text="folder_name"
+              item-value="baseURL"
               hide-details
             >
             </v-autocomplete>
@@ -524,8 +525,6 @@ export default {
       }
       try {
         this.submitting = true;
-
-        this.collection.baseURL = "https://arweave.net/";
 
         if (this.imageError) {
           return;
