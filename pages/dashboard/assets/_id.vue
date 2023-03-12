@@ -311,6 +311,7 @@ import {
 } from "@/services/AssetsService";
 import { defaultTheme } from "@/theme/wapaltheme";
 import io from "socket.io-client";
+import moment from "moment";
 
 const socket = io("https://staging-api.wapal.io");
 
@@ -397,7 +398,7 @@ export default {
   methods: {
     displayFileDetails(file: any) {
       this.currentFile = file;
-      this.showFileDetails = true;
+      // this.showFileDetails = true;
     },
     dragover(e: any) {
       e.dataTransfer!.dropEffect = "copy";
@@ -544,7 +545,10 @@ export default {
         if (transaction) {
           const formData = new FormData();
 
-          formData.append("user_id", "63a2c4031fd037c1629eb63d");
+          formData.append(
+            "user_id",
+            this.$store.state.walletStore.user.user_id
+          );
           formData.append("folder_name", this.folderInfo.folder_name);
           formData.append("image", this.uploadedFile);
 
@@ -606,12 +610,13 @@ export default {
       tempFiles.map(async (file: string) => {
         try {
           const tempFile = await this.$axios.get(`https://arweave.net/${file}`);
+          const createdDate = moment().format("DD/MM/YYYY");
           this.paginatedFiles.push({
             _id: file,
             name: this.fileIndex.toString(),
             src: `https://arweave.net/${file}`,
             type: tempFile.headers["content-type"],
-            createdDate: new Date().toISOString(),
+            createdDate: createdDate,
             size: tempFile.headers["content-length"],
           });
 
@@ -629,8 +634,6 @@ export default {
         this.uploadStatusClass = "tw-h-0";
         this.uploading = true;
         this.showUploadingDialog = true;
-
-        await deleteFolderOnServer();
 
         const batchLoop = Math.ceil(this.uploadedFile.length / 50);
 

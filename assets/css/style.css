@@ -8,6 +8,10 @@
     #0e0d0d 100%
   );
 }
+.banner-shadow {
+  box-shadow: -2px -2px 15px rgba(86, 86, 86, 0.25),
+    2px 2px 15px rgba(86, 86, 86, 0.25);
+}
 /* Gradient Buttons */
 .gradient-button::before,
 .dashboard-gradient-button::before {

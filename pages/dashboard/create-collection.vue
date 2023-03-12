@@ -644,7 +644,7 @@ export default {
     },
   },
   async mounted() {
-    const res = await getAllFolder();
+    const res = await getAllFolder(this.$store.state.walletStore.user.user_id);
     this.folders = res.data.folderInfo;
   },
 };

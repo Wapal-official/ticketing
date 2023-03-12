@@ -291,13 +291,13 @@ export default {
       return duplicate;
     },
     createNewFolder() {
-      //if (this.checkDuplicateFolder({ name: this.newFolderName })) {
-      //this.$toast.showMessage({
-      //message: "Please do not create duplicate Folder",
-      //error: true,
-      //});
-      //return;
-      //}
+      if (this.checkDuplicateFolder({ name: this.newFolderName })) {
+        this.$toast.showMessage({
+          message: "Please do not create duplicate Folder",
+          error: true,
+        });
+        return;
+      }
 
       if (!this.currentFolder.folder_name) {
         this.sendDataToCreateFolder(this.newFolderName);
@@ -312,29 +312,11 @@ export default {
     },
     async sendDataToCreateFolder(folderName: string) {
       this.uploading = true;
-      const formData = new FormData();
-
-      // if (folderName && !this.uploadedFolder) {
-      //  formData.append("folder_name", folderName);
-      //} else {
-      // [...this.uploadedFolder].forEach((file) => {
-      //  formData.append("files", file);
-      //});
-
-      // [...this.uploadedFolder].forEach((file) => {
-      //   files.push(file);
-      // });
-      // console.log(JSON.stringify(files));
-      // formData.set("files", JSON.stringify(files));
-
-      //formData.append("folder_name", folderName);
-      //formData.append("user_id", "63a2c4031fd037c1629eb63d");
-      // }
 
       try {
         const res = await createFolder({
           folder_name: folderName,
-          user_id: "63a2c4031fd037c1629eb63d",
+          user_id: this.$store.state.walletStore.user.user_id,
         });
 
         this.pushFolder({
@@ -350,20 +332,6 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
         this.uploading = false;
       }
-
-      // const balance = await this.$store.dispatch(
-      //   "walletStore/checkBalanceForFolderUpload"
-      // );
-
-      // if (balance.error) {
-      //   this.balanceNotEnoughError.error = true;
-      //   this.balanceNotEnoughError.message =
-      //     "Your Account Does Not Have Enough Balance";
-      //   this.balanceNotEnoughError.requiredBalance = balance.requiredBalance;
-      //   this.balanceNotEnoughError.yourBalance = balance.yourBalance;
-
-      //   return;
-      // }
     },
     showRenameFolderDialog(folder: any) {
       this.currentFolder = folder;
@@ -372,6 +340,9 @@ export default {
     },
     async renameFolder(folder: any) {
       try {
+        if (this.checkDuplicateFolder({ name: this.newFolderName })) {
+          throw new Error("Please do not create duplicate Folder");
+        }
         folder.folder_name = this.newFolderName;
         await updateFolder(folder);
 
@@ -402,7 +373,9 @@ export default {
       }
     },
     async mapFolders() {
-      const res = await getAllFolder();
+      const res = await getAllFolder(
+        this.$store.state.walletStore.user.user_id
+      );
       this.folders = res.data.folderInfo;
     },
     showDeleteFolderDialog(folder: any) {

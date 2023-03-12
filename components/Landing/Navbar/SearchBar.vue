@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-relative"
+    class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-relative md:tw-w-[80%]"
   >
     <input
       class="search-bar-input tw-peer tw-min-h-[70px] md:tw-min-h-0"

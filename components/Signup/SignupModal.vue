@@ -9,7 +9,7 @@
       Wallet registered successfully.
     </p>
     <p class="tw-text-sm md:tw-text-lg tw-font-normal tw-pb-4">
-      Sign in a message to log in into Wapal
+      Sign a message to log in into Wapal
     </p>
     <primary-button @click.native="signMessage">Sign Message</primary-button>
   </div>
@@ -17,6 +17,8 @@
 <script lang="ts">
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 import { login } from "@/services/LoginService";
+import nacl from "tweetnacl";
+import { encodeBase64 } from "tweetnacl-util";
 
 export default {
   components: { PrimaryButton },
@@ -30,14 +32,14 @@ export default {
     async signMessage() {
       try {
         const res = await this.$store.dispatch("walletStore/signLoginMessage");
-        // console.log(res);
 
-        const body = { walletAddress: "", signature: "" };
+        const body = { wallet_address: "", message: "", signature: "" };
+
         if (res.result) {
           if (res.result.address) {
-            body.walletAddress = res.result.address;
+            body.wallet_address = res.result.address;
           } else {
-            body.walletAddress =
+            body.wallet_address =
               this.$store.state.walletStore.wallet.walletAddress;
           }
 
@@ -45,12 +47,13 @@ export default {
             body.signature = res.result.signature[0];
           } else {
             body.signature = res.result.signature;
+            body.message = res.result.fullMessage;
           }
         } else {
           if (res.address) {
-            body.walletAddress = res.address;
+            body.wallet_address = res.address;
           } else {
-            body.walletAddress =
+            body.wallet_address =
               this.$store.state.walletStore.wallet.walletAddress;
           }
 
@@ -58,11 +61,26 @@ export default {
             body.signature = res.signature[0];
           } else {
             body.signature = res.signature;
+
+            body.message = res.fullMessage;
           }
         }
-        // console.log(body);
 
-        // const loginRes = await login(body);
+        let messageBytes = new TextEncoder().encode(body.message);
+
+        let data = {
+          message: encodeBase64(messageBytes),
+          wallet_address: body.wallet_address,
+          publicKey: this.$store.state.walletStore.wallet.publicKey,
+          signature: body.signature,
+        };
+
+        const loginRes = await login(data);
+
+        this.$store.commit("walletStore/setUser", {
+          token: loginRes.data.token,
+          user_id: loginRes.data.user._id,
+        });
 
         this.$toast.showMessage({ message: "Logged In Successfully" });
         this.$emit("close");
