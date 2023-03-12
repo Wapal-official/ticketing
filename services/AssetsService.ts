@@ -84,4 +84,6 @@ export const getPrice = async () => {
 
 export const deleteFolderOnServer = async () => {
   const res = await axios.get(`${process.env.baseURL}/api/folder/check`);
+
+  return res;
 };
