@@ -1,7 +1,7 @@
 <template>
   <div class="tw-w-full">
     <div
-      class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full tw-mb-8"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-w-full tw-mb-8"
     >
       <NuxtLink to="/dashboard/create-whitelist">
         <gradient-border-button>Create Whitelist</gradient-border-button>

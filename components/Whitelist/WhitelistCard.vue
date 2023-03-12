@@ -23,13 +23,18 @@
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-text-sm tw-w-full"
           >
             <span>No. Of Spots</span>
-            <span class="tw-pr-1">25/100</span>
+            <span class="tw-pr-1"
+              >0/{{
+                whitelist?.whitelist_spots ? whitelist.whitelist_spots : 0
+              }}</span
+            >
           </div>
           <div
             class="tw-relative tw-w-full tw-h-2 tw-rounded-full tw-bg-wapal-gray"
           >
             <div
-              class="tw-absolute tw-top-0 tw-left-0 tw-w-1/4 tw-h-full tw-bg-wapal-pink tw-rounded-full"
+              class="tw-absolute tw-top-0 tw-left-0 tw-h-full tw-bg-wapal-pink tw-rounded-full"
+              :class="getOccupiedWhitelistClass"
             ></div>
           </div>
           <div
@@ -77,6 +82,9 @@ export default {
     },
     getEndDate() {
       return moment(this.whitelist.whitelist_end).format("MMM DD, hh:mm A");
+    },
+    getOccupiedWhitelistClass() {
+      return "tw-w-0";
     },
   },
   async mounted() {

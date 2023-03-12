@@ -79,7 +79,7 @@ export default {
     checkWalletStatus() {
       if (this.getWalletStatus && this.getUserStatus) {
         this.$emit("close");
-        this.$router.push("/dashboard");
+        this.$router.push("/dashboard/assets");
       } else if (!this.getWalletStatus) {
         this.showConnectWalletModal = true;
       } else {

@@ -571,7 +571,7 @@ export default {
         this.showUploadingDialog = false;
         this.showFileUploadDialog = false;
 
-        await deleteFolderOnServer();
+        await deleteFolderOnServer(this.$store.state.walletStore.user.user_id);
       }
     },
     async fetchFiles() {
@@ -680,7 +680,7 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
 
-        await deleteFolderOnServer();
+        await deleteFolderOnServer(this.$store.state.walletStore.user.user_id);
       }
     },
     async transferFund(newFolder: any) {
@@ -718,7 +718,9 @@ export default {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
-        await deleteFolderOnServer();
+        const res = await deleteFolderOnServer(
+          this.$store.state.walletStore.user.user_id
+        );
       }
     },
     uploadingFiles(output: any) {

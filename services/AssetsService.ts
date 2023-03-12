@@ -1,49 +1,37 @@
-import axios from "axios";
 import { publicRequest } from "./fetcher";
 
 export const getAllFolder = async (userId: string) => {
-  const res = await publicRequest.get(
-    "https://staging-api.wapal.io/api/folder/all",
-    {
-      params: {
-        user_id: userId,
-        limit: "100",
-        page: "1",
-      },
-    }
-  );
+  const res = await publicRequest.get("/api/folder/all", {
+    params: {
+      user_id: userId,
+      limit: "100",
+      page: "1",
+    },
+  });
   return res;
 };
 
 export const createFolder = async (folder: any) => {
-  const res = await publicRequest.post(
-    `${process.env.baseURL}/api/folder/create`,
-    folder
-  );
+  const res = await publicRequest.post(`/api/folder/create`, folder);
 
   return res;
 };
 
 export const updateFolder = async (folder: any) => {
-  const res = await publicRequest.patch(
-    `${process.env.baseURL}/api/folder/${folder._id}`,
-    { folder_name: folder.folder_name }
-  );
+  const res = await publicRequest.patch(`/api/folder/${folder._id}`, {
+    folder_name: folder.folder_name,
+  });
   return res;
 };
 
 export const deleteFolder = async (folder: any) => {
-  const res = await publicRequest.delete(
-    `${process.env.baseURL}/api/folder/${folder._id}`
-  );
+  const res = await publicRequest.delete(`/api/folder/${folder._id}`);
 
   return res;
 };
 
 export const getFolderById = async (folderId: string) => {
-  const res = await publicRequest.get(
-    `${process.env.baseURL}/api/folder/${folderId}`
-  );
+  const res = await publicRequest.get(`/api/folder/${folderId}`);
 
   return res;
 };
@@ -54,7 +42,7 @@ export const singleFileUpload = async (formData: any) => {
   };
 
   const res = await publicRequest.post(
-    `${process.env.baseURL}/api/bundlr/singleupload`,
+    `/api/bundlr/singleupload`,
     formData,
     config
   );
@@ -68,7 +56,7 @@ export const folderUpload = async (formData: any) => {
   };
 
   const res = await publicRequest.post(
-    `${process.env.baseURL}/api/bundlr/folderupload`,
+    `/api/bundlr/folderupload`,
     formData,
     config
   );
@@ -77,13 +65,13 @@ export const folderUpload = async (formData: any) => {
 };
 
 export const getPrice = async () => {
-  const res = await axios.get(`${process.env.baseURL}/api/bundlr/fund`);
+  const res = await publicRequest.get(`/api/bundlr/fund`);
 
   return res;
 };
 
-export const deleteFolderOnServer = async () => {
-  const res = await axios.get(`${process.env.baseURL}/api/folder/check`);
+export const deleteFolderOnServer = async (userId: string) => {
+  const res = await publicRequest.get(`/api/folder/check?id=${userId}`);
 
   return res;
 };

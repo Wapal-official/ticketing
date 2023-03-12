@@ -205,14 +205,14 @@ export const actions = {
 
     if (balance < totalAPT) {
       return {
-        requiredBalance: totalAPT.toFixed(4),
+        requiredBalance: totalAPT.toFixed(6),
         yourBalance: balance,
         error: true,
       };
     }
 
     return {
-      requiredBalance: totalAPT.toFixed(4),
+      requiredBalance: totalAPT.toFixed(6),
       yourBalance: balance,
       error: false,
     };
@@ -236,7 +236,11 @@ export const actions = {
 
     return res;
   },
-  async signLoginMessage() {
+  async signLoginMessage({ state }: { state: any }) {
+    if (!wallet.isConnected()) {
+      await wallet.connect(state.wallet.wallet);
+    }
+
     const message = "Login into Wapal";
     const nonce = makeId(16);
     const signMessage = await wallet.signMessage({ message, nonce });

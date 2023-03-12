@@ -41,7 +41,7 @@
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="collection"
-          rules="required"
+          rules="required|number"
           v-slot="{ errors }"
         >
           <label
@@ -50,7 +50,7 @@
           >
           <div class="dashboard-text-field-border tw-w-full">
             <v-text-field
-              v-model="whitelist.noOfSpots"
+              v-model="whitelist.whitelist_spots"
               outlined
               single-line
               color="#fff"
@@ -243,6 +243,7 @@
                 clearable
                 type="datetime-local"
                 class="dashboard-input"
+                ref="whitelistSaleTime"
               ></v-text-field>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
@@ -250,7 +251,7 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
             name="publicSaleTime"
-            rules="required|whitelistEnd"
+            rules="required|whitelistEnd:@whitelistSaleTime"
             v-slot="{ errors }"
           >
             <label
@@ -323,7 +324,7 @@ extend("whitelistEnd", {
 
     return true;
   },
-  message: "White list end time should be greater than whitelist start",
+  message: "White list end time should be greater than whitelist start time",
 });
 
 extend("whitelistStart", {
@@ -336,6 +337,16 @@ extend("whitelistStart", {
   message: "Whitelist Start time should be greater than current time",
 });
 
+extend("number", {
+  validate(value) {
+    if (isNaN(value)) {
+      return false;
+    }
+    return true;
+  },
+  message: "This field must be a number",
+});
+
 export default {
   layout: "dashboard",
   props: { collection: { type: Array } },
@@ -344,7 +355,7 @@ export default {
     return {
       whitelist: {
         collection_id: null,
-        noOfSpots: null,
+        whitelist_spots: null,
         twitter: null,
         discord_server_name: null,
         discord_server_id: null,
