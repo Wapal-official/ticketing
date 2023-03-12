@@ -7,7 +7,7 @@ export default ({ store }: { store: any }) => {
       getItem: (key) => Cookies.get(key),
       setItem: (key, value) =>
         Cookies.set(key, value, {
-          expires: new Date(new Date().getTime() + 1000 * 3600 * 24 * 30),
+          expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
         }),
       removeItem: (key) => Cookies.remove(key),
     },

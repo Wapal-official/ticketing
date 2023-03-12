@@ -6,7 +6,7 @@
       <Nuxt class="!tw-px-8 !tw-py-4" />
     </div>
     <div
-      class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background"
+      class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background tw-z-50"
       :class="sidebarClass"
     >
       <dashboard-sidebar @close="closeSideBar" />

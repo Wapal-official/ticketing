@@ -17,6 +17,8 @@
 <script lang="ts">
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 import { login } from "@/services/LoginService";
+import nacl from "tweetnacl";
+import { encodeBase64 } from "tweetnacl-util";
 
 export default {
   components: { PrimaryButton },
@@ -31,7 +33,8 @@ export default {
       try {
         const res = await this.$store.dispatch("walletStore/signLoginMessage");
 
-        const body = { wallet_address: "", message: "" };
+        const body = { wallet_address: "", message: "", signature: "" };
+
         if (res.result) {
           if (res.result.address) {
             body.wallet_address = res.result.address;
@@ -41,9 +44,10 @@ export default {
           }
 
           if (Array.isArray(res.result.signature)) {
-            body.message = res.result.signature[0];
+            body.signature = res.result.signature[0];
           } else {
-            body.message = res.result.signature;
+            body.signature = res.result.signature;
+            body.message = res.result.fullMessage;
           }
         } else {
           if (res.address) {
@@ -54,13 +58,24 @@ export default {
           }
 
           if (Array.isArray(res.signature)) {
-            body.message = res.signature[0];
+            body.signature = res.signature[0];
           } else {
-            body.message = res.signature;
+            body.signature = res.signature;
+
+            body.message = res.fullMessage;
           }
         }
 
-        const loginRes = await login(body);
+        let messageBytes = new TextEncoder().encode(body.message);
+
+        let data = {
+          message: encodeBase64(messageBytes),
+          wallet_address: body.wallet_address,
+          publicKey: this.$store.state.walletStore.wallet.publicKey,
+          signature: body.signature,
+        };
+
+        const loginRes = await login(data);
 
         this.$store.commit("walletStore/setUser", {
           token: loginRes.data.token,

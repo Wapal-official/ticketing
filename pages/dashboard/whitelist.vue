@@ -7,38 +7,40 @@
         <gradient-border-button>Create Whitelist</gradient-border-button>
       </NuxtLink>
     </div>
-    <!--
-        <div v-if="!loading && collections[0]._id !== null"
-            class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-3">
-            <nft-card v-for="collection in collections" :key="collection._id" :collection="collection" />
-        </div>
-        <div class="py-16" v-else>
-            <loading />
-        </div> -->
+    <div
+      class="tw-container tw-mx-auto tw-grid tw-grid-cols-1 tw-gap-6 md:tw-grid-cols-2 lg:tw-grid-cols-3"
+      v-if="!loading"
+    >
+      <whitelist-card
+        v-for="whitelist in whitelists"
+        :key="whitelist._id"
+        :whitelist="whitelist"
+      />
+    </div>
+    <loading v-else />
   </div>
 </template>
 <script lang="ts">
-import NftCard from "@/components/Nft/NftCard.vue";
+import WhitelistCard from "@/components/Whitelist/WhitelistCard.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
-import { getCollections } from "@/services/CollectionService";
+import { getWhitelistOfUser } from "@/services/WhitelistService";
 export default {
   layout: "dashboard",
-  components: { NftCard, Loading, GradientBorderButton },
+  components: { WhitelistCard, Loading, GradientBorderButton },
   data() {
     return {
-      collections: [{ _id: null }],
+      whitelists: [{ _id: null }],
       loading: true,
     };
   },
   computed: {},
-  methods: {
-    async getAllCollections() {
-      this.collections = await getCollections();
-    },
-  },
-  mounted() {
-    this.getAllCollections();
+  methods: {},
+  async mounted() {
+    const res = await getWhitelistOfUser(
+      this.$store.state.walletStore.user.user_id
+    );
+    this.whitelists = res.data.whitelists;
     this.loading = false;
   },
 };

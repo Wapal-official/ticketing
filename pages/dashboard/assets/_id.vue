@@ -398,7 +398,7 @@ export default {
   methods: {
     displayFileDetails(file: any) {
       this.currentFile = file;
-      this.showFileDetails = true;
+      // this.showFileDetails = true;
     },
     dragover(e: any) {
       e.dataTransfer!.dropEffect = "copy";

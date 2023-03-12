@@ -51,6 +51,7 @@ export const state = () => ({
   wallet: {
     wallet: "",
     walletAddress: "",
+    publicKey: "",
   },
   user: {
     user_id: "",
@@ -86,6 +87,7 @@ export const actions = {
       commit("setWallet", {
         wallet: wallet.wallet?.name,
         walletAddress: wallet.account?.address,
+        publicKey: wallet.account?.publicKey,
       });
       return true;
     } catch {
@@ -238,6 +240,8 @@ export const actions = {
     const message = "Login into Wapal";
     const nonce = makeId(16);
     const signMessage = await wallet.signMessage({ message, nonce });
+
+    console.log(signMessage);
     return signMessage;
   },
   setUser({ commit }: { commit: any }) {

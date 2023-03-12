@@ -77,11 +77,13 @@ export default {
       this.$emit("close");
     },
     checkWalletStatus() {
-      if (this.getWalletStatus) {
+      if (this.getWalletStatus && this.getUserStatus) {
         this.$emit("close");
         this.$router.push("/dashboard");
-      } else {
+      } else if (!this.getWalletStatus) {
         this.showConnectWalletModal = true;
+      } else {
+        this.showSignupDialog = true;
       }
     },
     displayWalletConnectedMessage() {
@@ -96,10 +98,13 @@ export default {
   },
   computed: {
     getWalletStatus() {
-      if (
-        this.$store.state.walletStore.wallet.wallet &&
-        this.$store.state.walletStore.user.token
-      ) {
+      if (this.$store.state.walletStore.wallet.wallet) {
+        return true;
+      }
+      return false;
+    },
+    getUserStatus() {
+      if (this.$store.state.walletStore.user.token) {
         return true;
       }
       return false;
