@@ -1,7 +1,7 @@
 <template>
   <div class="tw-w-full">
     <div
-      class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full tw-mb-8"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-w-full tw-mb-8"
     >
       <NuxtLink to="/dashboard/create-whitelist">
         <gradient-border-button>Create Whitelist</gradient-border-button>
@@ -15,6 +15,7 @@
         v-for="whitelist in whitelists"
         :key="whitelist._id"
         :whitelist="whitelist"
+        v-if="whitelists[0]._id"
       />
     </div>
     <loading v-else />
