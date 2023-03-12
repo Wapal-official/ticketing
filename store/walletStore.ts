@@ -218,7 +218,7 @@ export const actions = {
     };
   },
   async signTransactionForUploadingFolder({}, requiredBalance: any) {
-    const transactionAmount = requiredBalance * 100000000;
+    const transactionAmount = Math.ceil(requiredBalance * 100000000);
 
     const payload = {
       arguments: [
