@@ -40,6 +40,29 @@
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="collection"
+          rules="required"
+          v-slot="{ errors }"
+        >
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >No. of Spots</label
+          >
+          <div class="dashboard-text-field-border tw-w-full">
+            <v-text-field
+              v-model="whitelist.noOfSpots"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+            ></v-text-field>
+          </div>
+          <div class="tw-text-red-600">{{ errors[0] }}</div>
+        </ValidationProvider>
+        <ValidationProvider
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="twitter_acc"
           rules="required"
           v-slot="{ errors }"
@@ -321,6 +344,7 @@ export default {
     return {
       whitelist: {
         collection_id: null,
+        noOfSpots: null,
         twitter: null,
         discord_server_name: null,
         discord_server_id: null,
