@@ -567,13 +567,6 @@ export default {
     },
     async uploadImage() {
       this.imageError = false;
-      const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-
-      if (!allowedExtensions.exec(this.image.name.toLowerCase())) {
-        this.imageError = true;
-        this.imageErrorMessage = "Please upload a jpg, jpeg, png or gif image";
-        return false;
-      }
 
       try {
         const res = await this.awsUpload();
