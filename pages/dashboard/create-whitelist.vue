@@ -282,7 +282,7 @@
               color="white"
               v-if="submitting"
             ></v-progress-circular>
-            Submit
+            Create
           </gradient-border-button>
         </div>
       </form>
