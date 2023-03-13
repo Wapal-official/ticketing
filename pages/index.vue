@@ -1,6 +1,6 @@
 <template>
   <div class="landing-background">
-    <section class="tw-py-4">
+    <section class="tw-py-4 2xl:tw-container tw-mx-auto">
       <banner
         :collectionId="upcomingCollections[0] ? upcomingCollections[0]._id : ''"
       />
