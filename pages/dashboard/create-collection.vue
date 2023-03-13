@@ -116,6 +116,7 @@
               item-text="folder_name"
               item-value="baseURL"
               hide-details
+              clearable
             >
             </v-autocomplete>
           </div>
@@ -480,7 +481,8 @@ export default {
         description: null,
         image: null,
         baseURL: null,
-        royalty_payee_address: null,
+        royalty_payee_address:
+          this.$store.state.walletStore.wallet.walletAddress,
         royalty_percentage: null,
         whitelist_sale_time: null,
         public_sale_time: null,
