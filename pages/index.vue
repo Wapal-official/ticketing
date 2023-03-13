@@ -1,6 +1,6 @@
 <template>
   <div class="landing-background">
-    <section class="tw-py-4">
+    <section class="tw-py-4 2xl:tw-container tw-mx-auto">
       <banner
         :collectionId="upcomingCollections[0] ? upcomingCollections[0]._id : ''"
       />
@@ -9,12 +9,12 @@
       <landing-slider />
       <div class="tw-px-4 md:tw-px-16">
         <section class="tw-pt-8 tw-pb-4 tw-container tw-mx-auto">
-          <landing-section-heading heading="Live" class="tw-px-4" />
+          <landing-section-heading heading="Live" />
           <live-section v-if="!loading" :collections="liveCollections" />
           <loading v-else />
         </section>
         <section class="tw-py-8 tw-container tw-mx-auto">
-          <landing-section-heading heading="Upcoming" class="tw-px-4" />
+          <landing-section-heading heading="Upcoming" />
           <upcoming-section
             v-if="!loading"
             :collections="upcomingCollections"
@@ -26,6 +26,10 @@
           :collections="collections"
           :loading="loading"
         /> -->
+        <section class="tw-py-8 tw-container tw-mx-auto">
+          <landing-section-heading heading="Whitelist Opportunities" />
+          <whitelist-opportunities />
+        </section>
       </div>
     </div>
   </div>
@@ -40,6 +44,7 @@ import FastestSoldoutSection from "@/components/Landing/FastestSoldoutSection.vu
 import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 import Banner from "@/components/Landing/Banner.vue";
+import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.vue";
 
 import { getCollections } from "@/services/CollectionService.ts";
 
@@ -54,6 +59,7 @@ export default {
     LandingSectionHeading,
     Loading,
     Banner,
+    WhitelistOpportunities,
   },
   data() {
     return {

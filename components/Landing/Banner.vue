@@ -4,7 +4,7 @@
     v-if="!loading"
   >
     <div
-      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-group"
+      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-group md:tw-max-w-[75%] lg:tw-max-w-[27%]"
     >
       <div
         class="tw-rounded-lg tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear"
@@ -367,3 +367,4 @@ export default {
   },
 };
 </script>
+<style></style>

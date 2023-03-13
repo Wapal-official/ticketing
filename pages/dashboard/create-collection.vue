@@ -116,6 +116,7 @@
               item-text="folder_name"
               item-value="baseURL"
               hide-details
+              clearable
             >
             </v-autocomplete>
           </div>
@@ -480,7 +481,8 @@ export default {
         description: null,
         image: null,
         baseURL: null,
-        royalty_payee_address: null,
+        royalty_payee_address:
+          this.$store.state.walletStore.wallet.walletAddress,
         royalty_percentage: null,
         whitelist_sale_time: null,
         public_sale_time: null,
@@ -565,13 +567,6 @@ export default {
     },
     async uploadImage() {
       this.imageError = false;
-      const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-
-      if (!allowedExtensions.exec(this.image.name.toLowerCase())) {
-        this.imageError = true;
-        this.imageErrorMessage = "Please upload a jpg, jpeg, png or gif image";
-        return false;
-      }
 
       try {
         const res = await this.awsUpload();

@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <dashboard-navbar :closeIcon="closeIcon" @toggleSidebar="toggleSidebar" />
-    <div class="tw-flex tw-flex-row tw-items-start">
+    <div class="tw-flex tw-flex-row tw-items-start relative">
       <dashboard-sidebar class="tw-hidden lg:tw-flex" />
       <Nuxt class="!tw-px-8 !tw-py-4" />
     </div>
@@ -22,11 +22,17 @@ import DashboardSidebar from "@/components/Dashboard/Sidebar/DashboardSidebar.vu
 import Toast from "@/components/Reusable/Toast.vue";
 export default {
   middleware: "signup",
-  components: { DashboardNavbar, DashboardFooter, DashboardSidebar, Toast },
+  components: {
+    DashboardNavbar,
+    DashboardFooter,
+    DashboardSidebar,
+    Toast,
+  },
   data() {
     return {
       sidebarClass: "-tw-translate-x-full",
       closeIcon: false,
+      showUploadProgress: true,
     };
   },
   methods: {
@@ -42,6 +48,9 @@ export default {
     closeSideBar() {
       this.sidebarClass = "-tw-translate-x-full";
       this.closeIcon = false;
+    },
+    closeUploadProgress() {
+      this.showUploadProgress = false;
     },
   },
   computed: {
