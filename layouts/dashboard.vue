@@ -12,6 +12,10 @@
       <dashboard-sidebar @close="closeSideBar" />
     </div>
     <dashboard-footer />
+    <upload-progress
+      v-if="getUploadingStatus && showUploadProgress"
+      @close="closeUploadProgress"
+    />
     <toast />
   </v-app>
 </template>
@@ -20,6 +24,8 @@ import DashboardNavbar from "@/components/Dashboard/DashboardNavbar.vue";
 import DashboardFooter from "@/components/Dashboard/DashboardFooter.vue";
 import DashboardSidebar from "@/components/Dashboard/Sidebar/DashboardSidebar.vue";
 import Toast from "@/components/Reusable/Toast.vue";
+import UploadProgress from "@/components/Dashboard/UploadProgress.vue";
+import { socket, uploadSocketState } from "@/sockets/socket";
 export default {
   middleware: "signup",
   components: {
@@ -27,6 +33,7 @@ export default {
     DashboardFooter,
     DashboardSidebar,
     Toast,
+    UploadProgress,
   },
   data() {
     return {
@@ -56,6 +63,9 @@ export default {
   computed: {
     walletAddress() {
       return this.$store.state.walletStore.wallet.walletAddress;
+    },
+    getUploadingStatus() {
+      return uploadSocketState.progress > 0;
     },
   },
   mounted() {

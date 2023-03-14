@@ -33,74 +33,63 @@
     <div
       class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
     >
-      <span class="tw-text-sm" v-if="!filesPrepared"
+      <span class="tw-text-sm" v-if="!filesPrepared && getUploading"
         >Preparing {{ preparingFiles }} files</span
       >
-      <span class="tw-text-sm" v-else
+      <span class="tw-text-sm" v-if="filesPrepared && getUploading"
         >Deploying {{ deployingFiles }} files</span
       >
+      <span class="tw-text-sm" v-if="!getUploading">{{
+        getUploadSummary
+      }}</span>
       <span class="tw-text-sm">{{ progressPercent }}%</span>
     </div>
   </div>
 </template>
 <script lang="ts">
+import { uploadSocketState } from "@/sockets/socket";
 export default {
   data() {
     return {
       minimizeClicked: true,
       progressClass: "tw-h-[75px]",
       uploadComplete: false,
-      preparingFiles: 0,
-      deployingFiles: 0,
-      totalFiles: 10000,
       filesPrepared: false,
       progressPercent: 0,
+      preparingFiles: 0,
+      deployingFiles: 0,
     };
   },
-  mounted() {
-    setTimeout(() => {
-      this.startUploading();
-    }, 2000);
+  computed: {
+    getOutput() {
+      return uploadSocketState.progress;
+    },
+    getUploading() {
+      if (!uploadSocketState.uploading) {
+        const progressBar: any = document.querySelector("#progress-bar");
+        this.progressPercent = 100;
+        progressBar.style.width = 100 + "%";
+
+        this.uploadComplete = true;
+
+        this.$toast.showMessage({ message: this.getUploadSummary });
+      }
+      return uploadSocketState.uploading;
+    },
+    getUploadSummary() {
+      return uploadSocketState.uploadSummary;
+    },
+    getTotalFile() {
+      return uploadSocketState.totalFiles;
+    },
   },
   methods: {
     close() {
       this.$emit("close");
-    },
-    startUploading() {
-      const progressBar: any = document.querySelector("#progress-bar");
-
-      for (let i = 0; i < this.totalFiles; i++) {
-        this.preparingFiles++;
-        this.progressPercent = Math.ceil(
-          ((this.preparingFiles / this.totalFiles) * 100) / 2
-        );
-
-        progressBar.style.width = this.progressPercent + "%";
-      }
-
-      this.filesPrepared = true;
-
-      let prevPercent = 0;
-
-      for (let i = 0; i < this.totalFiles; i++) {
-        this.deployingFiles++;
-
-        const percent = Math.ceil(
-          ((this.deployingFiles / this.totalFiles) * 100) / 2
-        );
-
-        if (prevPercent === percent) {
-          continue;
-        }
-
-        prevPercent = percent;
-
-        this.progressPercent++;
-
-        progressBar.style.width = this.progressPercent + "%";
-      }
-
-      this.uploadComplete = true;
+      uploadSocketState.uploading = false;
+      uploadSocketState.previousResult = "";
+      uploadSocketState.progress = 0;
+      uploadSocketState.uploadSummary = "";
     },
   },
   watch: {
@@ -109,6 +98,39 @@ export default {
         this.progressClass = "tw-h-[75px]";
       } else {
         this.progressClass = "tw-h-[105px]";
+      }
+    },
+    getOutput(output: number) {
+      const progressBar: any = document.querySelector("#progress-bar");
+
+      this.progressPercent = Math.ceil(
+        ((output / this.getTotalFile) * 100) / 2
+      );
+
+      progressBar.style.width = this.progressPercent + "%";
+
+      if (Math.ceil(output / this.getTotalFile) > 1 && !this.filesPrepared) {
+        this.filesPrepared = true;
+      }
+
+      this.preparingFiles++;
+
+      if (this.filesPrepared) {
+        let prevPercent = 0;
+
+        const percent = Math.ceil(((output / this.getTotalFile) * 100) / 2);
+
+        if (prevPercent === percent) {
+          return;
+        }
+
+        prevPercent = percent;
+
+        this.progressPercent++;
+
+        this.deployingFiles++;
+
+        progressBar.style.width = this.progressPercent + "%";
       }
     },
   },

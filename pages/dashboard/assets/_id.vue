@@ -310,10 +310,8 @@ import {
   deleteFolderOnServer,
 } from "@/services/AssetsService";
 import { defaultTheme } from "@/theme/wapaltheme";
-import io from "socket.io-client";
 import moment from "moment";
-
-const socket = io("https://staging-api.wapal.io");
+import { socket, uploadSocketState } from "@/sockets/socket";
 
 export default {
   layout: "dashboard",
@@ -704,15 +702,24 @@ export default {
           this.uploading = false;
           this.uploadStatusClass = "tw-h-full";
 
-          this.uploadedFiles.files = [];
+          uploadSocketState.uploading = false;
+          uploadSocketState.previousResult = "";
+          uploadSocketState.progress = 0;
+          uploadSocketState.uploadSummary = "";
+          uploadSocketState.totalFiles = 0;
 
-          this.uploadComplete = false;
           socket.emit(
             "upload",
             this.folderInfo.user_id,
             this.folderInfo.folder_name,
             newFolder
           );
+
+          uploadSocketState.totalFiles = this.uploadedFile.length;
+
+          uploadSocketState.uploading = true;
+
+          this.showUploadingDialog = false;
         }
       } catch (error) {
         console.log(error);
@@ -723,98 +730,10 @@ export default {
         );
       }
     },
-    uploadingFiles(output: any) {
-      this.showUploadingDialog = true;
-
-      this.uploading = false;
-
-      const lines = output.split("\n");
-
-      if (lines[0].includes("Preparing")) {
-        const startIndex = lines[0].indexOf("Preparing");
-
-        const endIndex = lines[0].indexOf("files") + "files".length;
-
-        const result = lines[0].substring(startIndex, endIndex);
-
-        if (
-          this.uploadedFiles.files[this.uploadedFiles.files.length - 1] !==
-          result
-        ) {
-          this.uploadedFiles.files.push(result);
-        }
-
-        this.uploadId++;
-      }
-
-      if (lines[0].includes("Deploying")) {
-        const startIndex = lines[0].indexOf("Deploying");
-
-        const endIndex = lines[0].indexOf("files") + "files".length;
-
-        const result = lines[0].substring(startIndex, endIndex);
-
-        if (
-          this.uploadedFiles.files[this.uploadedFiles.files.length - 1] !==
-          result
-        ) {
-          this.uploadedFiles.files.push(result);
-        }
-
-        this.uploadId++;
-      }
-
-      if (!this.uploadComplete) {
-        const uploadStatus = document.querySelector("#uploadStatus");
-        if (uploadStatus) {
-          uploadStatus.scrollTop = uploadStatus.scrollHeight;
-        }
-      }
-
-      // this.uploadedFiles.files.push(output);
-
-      // this.uploadedFiles.uploadedFiles++;
-
-      // const uploadPercent =
-      //   (this.uploadedFiles.uploadedFiles / this.uploadedFiles.totalFiles) *
-      //   100;
-
-      // this.$refs.uploadProgressBar.style.width = `${uploadPercent}%`;
-
-      // if (this.uploadedFiles.uploadedFiles >= this.uploadedFiles.totalFiles) {
-      //   this.$toast.showMessage({ message: "Files Uploaded Successfully" });
-      // }
-    },
   },
   async mounted() {
     await this.fetchFiles();
     await this.mapFiles();
-
-    socket.on("connect", () => {
-      console.log("connected");
-    });
-
-    socket.on("disconnect", () => {
-      console.log("disconnected");
-    });
-
-    socket.on("output", (output) => {
-      this.uploadingFiles(output);
-    });
-
-    socket.on("post-deployment", (response) => {
-      let stringRes = response;
-      stringRes = stringRes.slice(10);
-
-      const res = JSON.parse(stringRes);
-
-      this.uploadComplete = true;
-
-      this.uploadSummary = res.msg;
-
-      this.$toast.showMessage({ message: "Files Uploaded Successfully" });
-    });
-
     if (process.client) {
       window.addEventListener("scroll", async () => {
         if (
