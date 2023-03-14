@@ -10,7 +10,7 @@
         <v-icon>mdi-chevron-right</v-icon>
       </template>
     </v-breadcrumbs>
-    <div class="tw-flex tw-flex-row tw-flex-wrap tw-gap-4">
+    <div class="tw-flex tw-flex-row tw-flex-wrap tw-gap-4" v-if="!loading">
       <button
         class="tw-bg-wapal-gray tw-px-4 tw-py-2 tw-text-black tw-rounded-sm tw-flex tw-flex-row tw-items-center tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-gray-300"
         v-if="folders[0].folder_name"
@@ -49,7 +49,7 @@
         </v-menu>
       </button>
     </div>
-
+    <loading v-else />
     <v-dialog
       v-model="newFolderDialog"
       content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]"
@@ -105,9 +105,9 @@
 </template>
 <script lang="ts">
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
-import AssetsBreadCrumbs from "@/components/Dashboard/Assets/AssetsBreadCrumbs.vue";
-import UploadIcon from "@/assets/img/upload-icon.svg";
+import Loading from "@/components/Reusable/Loading.vue";
 import { defaultTheme } from "@/theme/wapaltheme";
+
 import {
   createFolder,
   deleteFolder,
@@ -117,7 +117,7 @@ import {
 
 export default {
   layout: "dashboard",
-  components: { GradientBorderButton, AssetsBreadCrumbs },
+  components: { GradientBorderButton, Loading },
   data() {
     return {
       folders: [{ _id: null, folder_name: "" }],
@@ -136,119 +136,11 @@ export default {
       currentFolder: { folder_name: "" },
       deleteFolderDialog: false,
       breadcrumbs: [{ text: "Vaults" }],
+      loading: true,
       defaultTheme,
-      UploadIcon,
     };
   },
   methods: {
-    dragover(e: any) {
-      e.dataTransfer!.dropEffect = "copy";
-      this.dropZoneClass = "tw-border-green-600";
-    },
-    dragleave(e: any) {
-      e.dataTransfer!.dropEffect = "copy";
-      this.dropZoneClass = "tw-border-wapal-gray";
-    },
-    async drop(event: any) {
-      const items = event.dataTransfer.items;
-
-      const item = items[0].webkitGetAsEntry();
-
-      if (this.checkDuplicateFolder(item)) {
-        this.$toast.showMessage({
-          message: "Please do not upload duplicate Folders",
-          error: true,
-        });
-        return;
-      }
-
-      if (item.isDirectory) {
-        const files: File[] = [];
-        for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          if (item.kind === "file") {
-            if (typeof item.webkitGetAsEntry === "function") {
-              const entry = item.webkitGetAsEntry();
-              const entryContent = await this.readEntryContentAsync(entry);
-              files.push(...entryContent);
-              continue;
-            }
-
-            const file = item.getAsFile();
-            if (file) {
-              files.push(file);
-            }
-          }
-        }
-        this.uploadedFolder = files;
-
-        this.sendDataToCreateFolder(item.name);
-
-        this.dropZoneClass = "tw-border-wapal-gray";
-      } else {
-        this.$toast.showMessage({
-          message: "Please Upload a Folder",
-          error: true,
-        });
-      }
-    },
-    readEntryContentAsync(entry: any) {
-      return new Promise<File[]>((resolve, reject) => {
-        let reading = 0;
-        const contents: File[] = [];
-
-        readEntry(entry);
-
-        function readEntry(entry: any) {
-          if (entry.isFile) {
-            reading++;
-            entry.file((file: any) => {
-              reading--;
-              contents.push(file);
-
-              if (reading === 0) {
-                resolve(contents);
-              }
-            });
-          } else if (entry.isDirectory) {
-            readReaderContent(entry.createReader());
-          }
-        }
-
-        function readReaderContent(reader: any) {
-          reading++;
-
-          reader.readEntries(function (entries: any) {
-            reading--;
-            for (const entry of entries) {
-              readEntry(entry);
-            }
-
-            if (reading === 0) {
-              resolve(contents);
-            }
-          });
-        }
-      });
-    },
-    fileChanged(event: any) {
-      this.uploadedFolder = event.target.files;
-
-      const relativePath = this.uploadedFolder[0].webkitRelativePath;
-
-      const folderName = relativePath.split("/")[0];
-
-      if (this.checkDuplicateFolder({ name: folderName })) {
-        this.$toast.showMessage({
-          message: "Please do not upload duplicate Folders",
-          error: true,
-        });
-        return;
-      }
-
-      this.sendDataToCreateFolder(folderName, this.uploadedFolder);
-    },
-
     pushFolder(folder: any) {
       if (!this.folders[0] || !this.folders[0].folder_name) {
         this.folders = [];
@@ -351,6 +243,8 @@ export default {
         this.$store.state.walletStore.user.user_id
       );
       this.folders = res.data.folderInfo;
+
+      this.loading = false;
     },
     showDeleteFolderDialog(folder: any) {
       this.currentFolder = folder;

@@ -1,6 +1,7 @@
 <template>
   <div
     class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
+    v-if="!loading"
   >
     <v-breadcrumbs :items="breadcrumbs" class="breadcrumb !tw-text-base">
       <template v-slot:divider>
@@ -23,16 +24,19 @@
       </NuxtLink>
     </div>
   </div>
+  <loading v-else />
 </template>
 <script lang="ts">
 import { getFolderById } from "@/services/AssetsService";
-
+import Loading from "@/components/Reusable/Loading.vue";
 export default {
   layout: "dashboard",
+  components: { Loading },
   data() {
     return {
       folders: ["assets", "metadata"],
       vault: null,
+      loading: true,
     };
   },
   computed: {
@@ -50,6 +54,8 @@ export default {
     const res = await getFolderById(folderId);
 
     this.vault = res.data;
+
+    this.loading = false;
   },
 };
 </script>
