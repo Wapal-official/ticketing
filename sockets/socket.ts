@@ -24,12 +24,10 @@ export const socket = io(URL);
 
 socket.on("connect", () => {
   uploadSocketState.connected = true;
-  console.log("connected");
 });
 
 socket.on("disconnect", () => {
   uploadSocketState.connected = false;
-  console.log("disconnected");
 });
 
 const uploadingFiles = (output: any) => {

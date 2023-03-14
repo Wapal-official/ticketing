@@ -1,26 +1,58 @@
 <template>
-  <div class="tw-pt-24 tw-pb-8 tw-w-full">
-    <v-tabs active-class="!tw-text-wapal-pink" class="!tw-bg-transparent tw-px-3" id="explore-tab" v-model="exploreTab"
-      @change="tabChanged(exploreTab)">
-      <v-tab :ripple="false" class="!tw-capitalize !tw-text-white" v-for="tab in exploreTabs" :key="tab.id">{{
-        tab.title
-      }}</v-tab>
+  <div class="tw-pb-8 tw-w-full tw-min-h-screen">
+    <v-tabs
+      active-class="!tw-text-wapal-pink"
+      class="!tw-bg-transparent tw-px-8"
+      id="explore-tab"
+      v-model="exploreTab"
+      @change="tabChanged(exploreTab)"
+    >
+      <v-tab
+        :ripple="false"
+        class="!tw-capitalize !tw-text-white"
+        v-for="tab in exploreTabs"
+        :key="tab.id"
+        >{{ tab.title }}</v-tab
+      >
     </v-tabs>
-    <v-tabs-items v-model="exploreTab" id="explore-tab-items" class="tw-py-8 tw-px-8"
-      v-if="!loading && collections[0]._id !== null" @change="tabChanged(exploreTab)">
+    <v-tabs-items
+      v-model="exploreTab"
+      id="explore-tab-items"
+      class="tw-py-8 tw-px-8"
+      v-if="!loading && collections[0]._id !== null"
+      @change="tabChanged(exploreTab)"
+    >
       <v-tab-item class="tw-container tw-mx-auto">
-        <div class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4">
-          <nft-card v-for="collection in collections" :key="collection._id" :collection="collection" />
+        <div
+          class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4"
+        >
+          <nft-card
+            v-for="collection in collections"
+            :key="collection._id"
+            :collection="collection"
+          />
         </div>
       </v-tab-item>
       <v-tab-item class="tw-container tw-mx-auto">
-        <div class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4">
-          <nft-card v-for="collection in liveCollections" :key="collection._id" :collection="collection" />
+        <div
+          class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4"
+        >
+          <nft-card
+            v-for="collection in liveCollections"
+            :key="collection._id"
+            :collection="collection"
+          />
         </div>
       </v-tab-item>
       <v-tab-item class="tw-container tw-mx-auto">
-        <div class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4">
-          <nft-card v-for="collection in upcomingCollections" :key="collection._id" :collection="collection" />
+        <div
+          class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4"
+        >
+          <nft-card
+            v-for="collection in upcomingCollections"
+            :key="collection._id"
+            :collection="collection"
+          />
         </div>
       </v-tab-item>
     </v-tabs-items>

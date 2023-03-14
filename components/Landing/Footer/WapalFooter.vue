@@ -58,7 +58,12 @@
         class="tw-text-sm tw-font-normal tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
       >
         <h5 class="tw-text-base tw-font-medium md:tw-py-4">Resources</h5>
-        <footer-link name="Blog" />
+        <footer-link
+          name="Blog"
+          to="https://medium.com/@wapal"
+          target="_blank"
+          :external="true"
+        />
         <footer-link name="API" />
         <footer-link name="Docs" />
         <footer-link name="Faqs" to="/faq" />

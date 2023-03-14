@@ -103,7 +103,7 @@
         >
           <label
             class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Baseurl</label
+            >Assets</label
           >
           <div class="dashboard-text-field-border tw-w-full">
             <v-autocomplete
@@ -114,7 +114,6 @@
               class="dashboard-input"
               placeholder="Base URL"
               item-text="folder_name"
-              item-value="baseURL"
               hide-details
               clearable
             >
@@ -532,7 +531,15 @@ export default {
           return;
         }
 
+        const selectedFolder = this.folders.find(
+          (folder: any) => folder.folder_name === this.collection.baseURL
+        );
+
+        this.collection.baseURL = selectedFolder.metadata.baseURI;
+
         await this.sendDataToCandyMachineCreator();
+
+        const tempCollection = this.collection;
 
         const imageUploaded = await this.uploadImage();
 
@@ -541,8 +548,6 @@ export default {
           this.submitting = false;
           return;
         }
-
-        const tempCollection = this.collection;
 
         tempCollection.whitelist_sale_time = new Date(
           tempCollection.whitelist_sale_time
