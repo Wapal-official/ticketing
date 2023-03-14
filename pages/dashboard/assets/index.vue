@@ -54,7 +54,9 @@
       v-model="newFolderDialog"
       content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]"
     >
-      <h2 class="tw-text-xl tw-font-semibold">New NFT Vault</h2>
+      <h2 class="tw-text-xl tw-font-semibold">
+        {{ currentFolder.folder_name ? "Rename NFT Vault" : "New NFT Vault" }}
+      </h2>
       <input
         v-model="newFolderName"
         class="tw-w-full tw-px-4 tw-py-2 tw-text-white tw-bg-transparent tw-rounded tw-border-solid tw-border-2 tw-border-wapal-gray focus:tw-outline-none"
@@ -65,7 +67,7 @@
       >
         <button
           class="tw-px-4 tw-py-2 tw-rounded-sm tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-pink"
-          @click="newFolderDialog = false"
+          @click="cancelCreatingNewFolder"
         >
           Cancel
         </button>
@@ -249,6 +251,10 @@ export default {
     showDeleteFolderDialog(folder: any) {
       this.currentFolder = folder;
       this.deleteFolderDialog = true;
+    },
+    cancelCreatingNewFolder() {
+      this.newFolderDialog = false;
+      this.currentFolder = { folder_name: "" };
     },
   },
   watch: {

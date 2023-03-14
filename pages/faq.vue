@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-bg-wapal-background tw-w-full tw-pb-8">
+  <div class="tw-w-full tw-pb-8">
     <div
       class="tw-w-4/5 tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-center"
     >

@@ -405,6 +405,7 @@ import { createCollection } from "@/services/CollectionService";
 import { getAllFolder } from "@/services/AssetsService";
 
 import AWS from "aws-sdk";
+
 extend("required", {
   ...required,
   message: "This field is required",
