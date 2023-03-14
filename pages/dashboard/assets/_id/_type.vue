@@ -2,55 +2,18 @@
   <div
     class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-relative"
     v-if="!loading"
-    @dragover.prevent="showDropZone = true"
   >
-    <form
-      class="tw-w-full tw-h-full tw-absolute tw-rounded tw-z-50 tw-top-0 tw-left-0 tw-bg-white/80"
-      submit.prevent=""
-      id="drop-zone"
-      v-if="showDropZone && folderInfo.files[0]"
-    >
-      <label
-        class="tw-w-full tw-h-full tw-flex tw-flex-row tw-gap-4 tw-cursor-pointer tw-rounded tw-items-center tw-justify-center"
-        :class="dropZoneClass"
-        id="drop-zone"
-        @dragover.prevent="dragover"
-        @dragleave.prevent="dragleave"
-        @drop.prevent="drop"
-      >
-        <input
-          type="file"
-          class="!tw-hidden"
-          @change="fileChanged"
-          webkitdirectory
-          mozdirectory
-          msdirectory
-          odirectory
-          directory
-          multiple
-          name="file"
-        />
-        <div
-          class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-text-green-800 tw-font-medium tw-text-xl"
-        >
-          Drop your files here to upload
-        </div>
-      </label>
-    </form>
     <div
       class="tw-flex tw-flex-col-reverse tw-items-start tw-justify-start tw-gap-4 tw-rounded tw-px-4 tw-py-4 md:tw-flex-row md:tw-items-center md:tw-justify-between tw-w-full"
     >
-      <assets-bread-crumbs :folderName="folderInfo.folder_name" />
+      <v-breadcrumbs :items="breadcrumbs" class="breadcrumb !tw-text-base">
+        <template v-slot:divider>
+          <v-icon>mdi-chevron-right</v-icon>
+        </template>
+      </v-breadcrumbs>
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 tw-w-full md:tw-w-fit md:tw-justify-end"
       >
-        <gradient-border-button
-          class="tw-bg-wapal-gray tw-text-white tw-px-8 tw-py-2 tw-rounded tw-cursor-pointer"
-          v-if="folderInfo.files[0]"
-          @click.native="showFileUploadDialog = true"
-        >
-          Upload
-        </gradient-border-button>
         <button>
           <v-icon
             class="!tw-text-white"
@@ -130,6 +93,7 @@
         @close="showFileDetails = false"
       />
     </div>
+
     <form
       class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
       v-if="!fileLoading && !folderInfo.files[0]"
@@ -165,44 +129,6 @@
       /></label>
     </form>
 
-    <v-dialog
-      v-model="showFileUploadDialog"
-      content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2"
-    >
-      <form
-        class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
-      >
-        <label
-          class="tw-w-full tw-h-full tw-px-8 tw-py-8 tw-border-2 tw-border-dashed tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-cursor-pointer"
-          :class="dropZoneClass"
-          id="drop-zone"
-          @dragover.prevent="dragover"
-          @dragleave.prevent="dragleave"
-          @drop.prevent="drop"
-        >
-          <img :src="UploadIcon" alt="upload" id="drop-zone" />
-          <div id="drop-zone">Drag and Drop Your Files Here</div>
-          <div id="drop-zone">OR</div>
-          <div
-            id="drop-zone"
-            class="tw-bg-wapal-gray tw-text-white tw-px-8 tw-py-2 tw-rounded tw-cursor-pointer"
-          >
-            Browse
-          </div>
-          <input
-            type="file"
-            class="!tw-hidden"
-            @change="fileChanged"
-            webkitdirectory
-            mozdirectory
-            msdirectory
-            odirectory
-            directory
-            multiple
-            name="file"
-        /></label>
-      </form>
-    </v-dialog>
     <v-dialog
       v-model="showUploadingDialog"
       content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
@@ -241,40 +167,6 @@
           </div>
           <div>Your Balance: {{ balanceNotEnoughError.yourBalance }}</div>
         </div>
-      </div>
-      <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-overflow-hidden"
-        :class="uploadStatusClass"
-      >
-        <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full tw-h-32 tw-max-h-32 tw-overflow-y-auto"
-          id="uploadStatus"
-        >
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-px-4"
-            v-for="file in uploadedFiles.files"
-            :key="file"
-          >
-            {{ file }}
-            <v-icon class="!tw-text-green-600">mdi-check-circle</v-icon>
-          </div>
-        </div>
-        <div v-if="uploadComplete">{{ uploadSummary }}</div>
-        <!-- <div class="tw-w-full">
-          <div
-            class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px]"
-          >
-            <div
-              class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-wapal-pink tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
-              ref="uploadProgressBar"
-            ></div>
-          </div>
-          <div
-            class="tw-flex tw-flex-row tw-justify-end tw-items-center tw-pt-1"
-          >
-            {{ uploadedFiles.uploadedFiles }}/{{ uploadedFiles.totalFiles }}
-          </div>
-        </div> -->
       </div>
     </v-dialog>
     <div
@@ -389,6 +281,7 @@ export default {
       scrolledNumber: 1,
       fileIndex: 0,
       mappingFiles: false,
+      type: null,
       UploadIcon,
       defaultTheme,
     };
@@ -412,62 +305,66 @@ export default {
       this.showDropZone = false;
       const items = event.dataTransfer.items;
 
-      if (items.length > 1) {
-        const tempFiles = [];
-        for (let i = 0; i < items.length; i++) {
-          const tempFile = items[i].webkitGetAsEntry();
-          if (tempFile.isFile) {
-            const file = items[i].getAsFile();
-            tempFiles.push(file);
-          } else {
-            this.$toast.showMessage({
-              message:
-                "If you are uploading multiple items please upload files and not directories",
-              error: true,
-            });
-            break;
-          }
-        }
-
-        if (tempFiles.length > 0) {
-          this.uploadedFile = tempFiles;
-          this.sendDataToUploadFolder(this.uploadedFile);
-        }
-      } else {
-        const file = items[0].webkitGetAsEntry();
-        if (file.isDirectory) {
-          const files: any[] = [];
-          let queue = [];
-
+      try {
+        if (items.length > 1) {
+          const tempFiles = [];
           for (let i = 0; i < items.length; i++) {
-            queue.push(items[i].webkitGetAsEntry());
-          }
-
-          while (queue.length > 0) {
-            let entry = queue.shift();
-            if (entry.isFile) {
-              const file = entry;
-              files.push(file);
-            } else if (entry.isDirectory) {
-              let reader = entry.createReader();
-              queue.push(...(await this.readAllDirectoryEntries(reader)));
+            const tempFile = items[i].webkitGetAsEntry();
+            if (tempFile.isFile) {
+              const file = items[i].getAsFile();
+              tempFiles.push(file);
+            } else {
+              this.$toast.showMessage({
+                message:
+                  "If you are uploading multiple items please upload files and not directories",
+                error: true,
+              });
+              break;
             }
           }
-          const tempFiles: any = await Promise.all(
-            files.map(async (file) => {
-              const tempFile = await this.getFileFromFileEntry(file);
 
-              return tempFile;
-            })
-          );
-
-          this.uploadedFile = tempFiles;
-          this.sendDataToUploadFolder();
+          if (tempFiles.length > 0) {
+            this.uploadedFile = tempFiles;
+            this.sendDataToUploadFolder(this.uploadedFile);
+          }
         } else {
-          this.uploadedFile = items[0].getAsFile();
+          const file = items[0].webkitGetAsEntry();
+          if (file.isDirectory) {
+            const files: any[] = [];
+            let queue = [];
 
-          this.sendDataToCreateFile();
+            for (let i = 0; i < items.length; i++) {
+              queue.push(items[i].webkitGetAsEntry());
+            }
+
+            while (queue.length > 0) {
+              let entry = queue.shift();
+              if (entry.isFile) {
+                const file = entry;
+                files.push(file);
+              } else if (entry.isDirectory) {
+                let reader = entry.createReader();
+                queue.push(...(await this.readAllDirectoryEntries(reader)));
+              }
+            }
+            const tempFiles: any = await Promise.all(
+              files.map(async (file) => {
+                const tempFile = await this.getFileFromFileEntry(file);
+
+                return tempFile;
+              })
+            );
+
+            this.uploadedFile = tempFiles;
+            this.sendDataToUploadFolder();
+          } else {
+            throw new Error(
+              "If you are uploading Single file please upload it through a directory"
+            );
+          }
         }
+      } catch (error) {
+        this.$toast.showMessage({ message: error, error: true });
       }
 
       this.showFileUploadDialog = false;
@@ -583,14 +480,25 @@ export default {
 
       const res = await getFolderById(folderId);
 
-      this.folderInfo.files = res.data.folderInfo.files;
+      this.folderInfo.files =
+        this.type === "assets"
+          ? res.data.folderInfo.assets.files
+          : res.data.folderInfo.metadata.files;
 
       this.folderInfo.folder_name = res.data.folderInfo.folder_name;
       this.folderInfo._id = res.data.folderInfo._id;
       this.folderInfo.user_id = res.data.folderInfo.user_id;
+      this.folderInfo.assets = res.data.folderInfo.assets;
+      this.folderInfo.metadata = res.data.folderInfo.metadata;
 
       this.loading = false;
-      if (!res.data.folderInfo.files[0]) {
+
+      const fileCheck =
+        this.type === "assets"
+          ? !res.data.folderInfo.assets.files[0]
+          : !res.data.folderInfo.metadata.files[0];
+
+      if (fileCheck) {
         this.fileLoading = false;
       }
     },
@@ -633,6 +541,10 @@ export default {
         this.uploading = true;
         this.showUploadingDialog = true;
 
+        if (this.type === "metadata" && !this.folderInfo.assets.baseURI) {
+          throw new Error("Please upload Images in Asset Folder first");
+        }
+
         const batchLoop = Math.ceil(this.uploadedFile.length / 50);
 
         let responseCount = 0;
@@ -657,6 +569,20 @@ export default {
           const tempFiles = files.slice(startIndex, endIndex);
 
           tempFiles.forEach((file: any) => {
+            if (this.type === "assets") {
+              if (!file.type.includes("image/")) {
+                throw new Error("Please Only Upload Images on Asset Folder");
+              }
+            }
+
+            if (this.type === "metadata") {
+              if (file.type !== "application/json") {
+                throw new Error(
+                  "Please Only Upload JSON Files on Metadata Folder"
+                );
+              }
+            }
+
             formData.append("images", file);
           });
 
@@ -712,7 +638,8 @@ export default {
             "upload",
             this.folderInfo.user_id,
             this.folderInfo.folder_name,
-            newFolder
+            newFolder,
+            this.type
           );
 
           uploadSocketState.totalFiles = this.uploadedFile.length;
@@ -731,9 +658,30 @@ export default {
       }
     },
   },
+  computed: {
+    breadcrumbs() {
+      return this.loading
+        ? []
+        : [
+            { text: "Vault", href: "/dashboard/assets" },
+            {
+              text: this.folderInfo.folder_name,
+              href: `/dashboard/assets/${this.folderInfo._id}`,
+            },
+            { text: this.type },
+          ];
+    },
+  },
   async mounted() {
+    this.type = this.$route.params.type;
+
+    if (this.type !== "assets" && this.type !== "metadata") {
+      throw { statusCode: 404, message: "Page not found" };
+    }
+
     await this.fetchFiles();
     await this.mapFiles();
+
     if (process.client) {
       window.addEventListener("scroll", async () => {
         if (
