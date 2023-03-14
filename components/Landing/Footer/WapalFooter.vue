@@ -16,7 +16,7 @@
         >
           <img :src="discord" alt="discord" class="tw-group" />
           <span
-            class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear tw-group group-hover:tw-text-wapal-pink"
+            class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear tw-group group-hover:!tw-text-wapal-pink"
             >Discord</span
           >
         </a>
@@ -27,7 +27,7 @@
         >
           <img :src="telegram" alt="telegram" class="tw-group" />
           <span
-            class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear tw-group group-hover:tw-text-wapal-pink"
+            class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear tw-group group-hover:!tw-text-wapal-pink"
             >Telegram</span
           >
         </a>
@@ -38,7 +38,7 @@
         >
           <img :src="github" alt="github" class="tw-group" />
           <span
-            class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear tw-group group-hover:tw-text-wapal-pink"
+            class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear tw-group group-hover:!tw-text-wapal-pink"
             >Github</span
           >
         </a>
@@ -49,7 +49,7 @@
         >
           <img :src="twitter" alt="twitter" class="tw-group" />
           <span
-            class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear tw-group group-hover:tw-text-wapal-pink"
+            class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear tw-group group-hover:!tw-text-wapal-pink"
             >Twitter</span
           >
         </a>
