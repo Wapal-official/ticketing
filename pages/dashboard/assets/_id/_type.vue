@@ -574,6 +574,7 @@ export default {
 
           formData.append("user_id", this.folderInfo.user_id);
           formData.append("folder_name", this.folderInfo.folder_name);
+          formData.append("type", this.type);
 
           const tempFiles = files.slice(startIndex, endIndex);
 
