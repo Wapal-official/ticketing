@@ -112,7 +112,7 @@
               outlined
               color="#fff"
               class="dashboard-input"
-              placeholder="Base URL"
+              placeholder="Select your NFT Vault"
               item-text="folder_name"
               hide-details
               clearable
