@@ -1,21 +1,24 @@
 <template>
-  <v-app>
-    <dashboard-navbar :closeIcon="closeIcon" @toggleSidebar="toggleSidebar" />
-    <div class="tw-flex tw-flex-row tw-items-start relative">
-      <dashboard-sidebar class="tw-hidden lg:tw-flex" />
-      <Nuxt class="!tw-px-8 !tw-py-4" />
+  <v-app class="tw-w-full tw-h-full tw-overflow-hidden">
+    <verification v-if="!getVerifiedStatus" />
+    <div v-else>
+      <dashboard-navbar :closeIcon="closeIcon" @toggleSidebar="toggleSidebar" />
+      <div class="tw-flex tw-flex-row tw-items-start relative">
+        <dashboard-sidebar class="tw-hidden lg:tw-flex" />
+        <Nuxt class="!tw-px-8 !tw-py-4" />
+      </div>
+      <div
+        class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background tw-z-50"
+        :class="sidebarClass"
+      >
+        <dashboard-sidebar @close="closeSideBar" />
+      </div>
+      <dashboard-footer />
+      <upload-progress
+        v-if="getUploadingStatus && showUploadProgress"
+        @close="closeUploadProgress"
+      />
     </div>
-    <div
-      class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background tw-z-50"
-      :class="sidebarClass"
-    >
-      <dashboard-sidebar @close="closeSideBar" />
-    </div>
-    <dashboard-footer />
-    <upload-progress
-      v-if="getUploadingStatus && showUploadProgress"
-      @close="closeUploadProgress"
-    />
     <toast />
   </v-app>
 </template>
@@ -25,7 +28,9 @@ import DashboardFooter from "@/components/Dashboard/DashboardFooter.vue";
 import DashboardSidebar from "@/components/Dashboard/Sidebar/DashboardSidebar.vue";
 import Toast from "@/components/Reusable/Toast.vue";
 import UploadProgress from "@/components/Dashboard/UploadProgress.vue";
-import { socket, uploadSocketState } from "@/sockets/socket";
+import Verification from "@/components/Landing/Verification.vue";
+
+import { uploadSocketState } from "@/sockets/socket";
 export default {
   middleware: "signup",
   components: {
@@ -34,6 +39,7 @@ export default {
     DashboardSidebar,
     Toast,
     UploadProgress,
+    Verification,
   },
   data() {
     return {
@@ -66,6 +72,12 @@ export default {
     },
     getUploadingStatus() {
       return uploadSocketState.progress > 0;
+    },
+    getVerifiedStatus() {
+      if (process.client) {
+        return JSON.parse(localStorage.getItem("verified") || "false");
+      }
+      return false;
     },
   },
   mounted() {
