@@ -12,7 +12,7 @@
       <NuxtLink
         class="tw-bg-wapal-gray tw-px-4 tw-py-2 !tw-text-black tw-rounded-sm tw-flex tw-flex-row tw-items-center tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-gray-300"
         v-for="folder in folders"
-        :key="folder"
+        :key="folder.name"
         :to="`${$route.params.id}/${folder.type}`"
       >
         <div

@@ -122,7 +122,7 @@ export default {
   components: { GradientBorderButton, Loading },
   data() {
     return {
-      folders: [{ _id: null, folder_name: "" }],
+      folders: [{ _id: "64119a4635d5e95d27526f99", folder_name: "Wapal" }],
       uploadedFolder: null,
       newFolderDialog: false,
       newFolderName: null,
@@ -244,7 +244,10 @@ export default {
       const res = await getAllFolder(
         this.$store.state.walletStore.user.user_id
       );
-      this.folders = res.data.folderInfo;
+
+      res.data.folderInfo.map((folder: any) => {
+        this.folders.push(folder);
+      });
 
       this.loading = false;
     },

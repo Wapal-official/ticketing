@@ -547,6 +547,8 @@ export default {
         files = [...this.uploadedFile];
       }
 
+      files = files.filter((file: any) => file.name !== ".DS_Store");
+
       files.sort((a: any, b: any) => {
         const firstFileName = a.name;
         const firstExtensionIndex = firstFileName.lastIndexOf(".");
@@ -624,7 +626,7 @@ export default {
 
             if (nameWithoutExtension != fileNumber) {
               throw new Error(
-                "Please Name you files in a Sequence Eg: 1,2,3..."
+                "Please Name you files in a Sequence Eg: 0,1,2,3..."
               );
             }
 

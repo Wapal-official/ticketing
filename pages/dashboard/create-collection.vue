@@ -402,7 +402,7 @@ import { required } from "vee-validate/dist/rules";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 
 import { createCollection } from "@/services/CollectionService";
-import { getAllFolder } from "@/services/AssetsService";
+import { getAllFolder, getFolderById } from "@/services/AssetsService";
 
 import AWS from "aws-sdk";
 
@@ -644,8 +644,15 @@ export default {
     },
   },
   async mounted() {
+    const folderRes = await getFolderById("64119a4635d5e95d27526f99");
+
+    this.folders.push(folderRes.data.folderInfo);
+
     const res = await getAllFolder(this.$store.state.walletStore.user.user_id);
-    this.folders = res.data.folderInfo;
+
+    res.data.folderInfo.map((folder: any) => {
+      this.folders.push(folder);
+    });
   },
 };
 </script>
