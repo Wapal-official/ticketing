@@ -47,8 +47,9 @@ export default {
             body.signature = res.result.signature[0];
           } else {
             body.signature = res.result.signature;
-            body.message = res.result.fullMessage;
           }
+
+          body.message = res.result.fullMessage;
         } else {
           if (res.address) {
             body.wallet_address = res.address;
@@ -61,9 +62,8 @@ export default {
             body.signature = res.signature[0];
           } else {
             body.signature = res.signature;
-
-            body.message = res.fullMessage;
           }
+          body.message = res.fullMessage;
         }
 
         let messageBytes = new TextEncoder().encode(body.message);
