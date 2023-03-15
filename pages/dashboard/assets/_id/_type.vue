@@ -550,8 +550,13 @@ export default {
           throw new Error("Please upload Images in Asset Folder first");
         }
 
-        if (this.type === "metadata" && this.folderInfo.assets.files.length !== this.uploadedFile.length) {
-          throw new Error("Your metadata folder does not have same file length as Image Folder");
+        if (
+          this.type === "metadata" &&
+          this.folderInfo.assets.files.length !== this.uploadedFile.length
+        ) {
+          throw new Error(
+            "Your metadata folder does not have same file length as Image Folder"
+          );
         }
 
         const batchLoop = Math.ceil(this.uploadedFile.length / 50);
@@ -580,7 +585,7 @@ export default {
 
           tempFiles.forEach((file: any) => {
             if (this.type === "assets") {
-              if (!file.type.includes("image/")) {
+              if (file.type === "application/json") {
                 throw new Error("Please Only Upload Images on Asset Folder");
               }
             }
@@ -597,6 +602,7 @@ export default {
           });
 
           const res = await folderUpload(formData);
+
           if (res.data.newFolder) {
             responseCount++;
           }
