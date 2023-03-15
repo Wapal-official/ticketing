@@ -74,7 +74,6 @@ export const mutations = {
   },
 };
 
-
 export const actions = {
   setWallet({ commit }: { commit: any }) {
     commit("setWallet");
@@ -88,7 +87,9 @@ export const actions = {
       commit("setWallet", {
         wallet: wallet.wallet?.name,
         walletAddress: wallet.account?.address,
-        publicKey: wallet.account?.publicKey,
+        publicKey: Array.isArray(wallet.account?.publicKey)
+          ? wallet.account?.publicKey[0]
+          : wallet.account?.publicKey,
       });
       return true;
     } catch {
