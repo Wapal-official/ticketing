@@ -13,13 +13,13 @@
         class="tw-bg-wapal-gray tw-px-4 tw-py-2 !tw-text-black tw-rounded-sm tw-flex tw-flex-row tw-items-center tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-gray-300"
         v-for="folder in folders"
         :key="folder"
-        :to="`${$route.params.id}/${folder}`"
+        :to="`${$route.params.id}/${folder.type}`"
       >
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
           <v-icon class="!tw-text-black">mdi-folder</v-icon>
-          {{ folder }}
+          {{ folder.name }}
         </div>
       </NuxtLink>
     </div>
@@ -34,7 +34,10 @@ export default {
   components: { Loading },
   data() {
     return {
-      folders: ["assets", "metadata"],
+      folders: [
+        { name: "images", type: "assets" },
+        { name: "metadata", type: "metadata" },
+      ],
       vault: null,
       loading: true,
     };
