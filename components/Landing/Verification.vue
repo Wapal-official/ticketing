@@ -29,38 +29,17 @@
         >
           Submit
         </button>
-        <div class="tw-text-white tw-text-sm">Apply for invite code</div>
-        <!-- <button
-          data-tf-popup="JQhGXFFd"
+        <button
+          data-tf-popup="m1wO9UnJ"
           data-tf-opacity="100"
           data-tf-size="100"
-          data-tf-iframe-props="title=My typeform"
+          data-tf-iframe-props="title=Invite Code Campaign | Wapal"
           data-tf-transitive-search-params
           data-tf-medium="snippet"
-          style="
-            all: unset;
-            font-family: Helvetica, Arial, sans-serif;
-            display: inline-block;
-            max-width: 100%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            background-color: #0445af;
-            color: #fff;
-            font-size: 20px;
-            border-radius: 25px;
-            padding: 0 33px;
-            font-weight: bold;
-            height: 50px;
-            cursor: pointer;
-            line-height: 50px;
-            text-align: center;
-            margin: 0;
-            text-decoration: none;
-          "
+          class="tw-text-white tw-text-sm"
         >
-          Try me!
-        </button> -->
+          Apply for invite code
+        </button>
       </div>
     </div>
   </div>
