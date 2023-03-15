@@ -30,6 +30,37 @@
           Submit
         </button>
         <div class="tw-text-white tw-text-sm">Apply for invite code</div>
+        <!-- <button
+          data-tf-popup="JQhGXFFd"
+          data-tf-opacity="100"
+          data-tf-size="100"
+          data-tf-iframe-props="title=My typeform"
+          data-tf-transitive-search-params
+          data-tf-medium="snippet"
+          style="
+            all: unset;
+            font-family: Helvetica, Arial, sans-serif;
+            display: inline-block;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background-color: #0445af;
+            color: #fff;
+            font-size: 20px;
+            border-radius: 25px;
+            padding: 0 33px;
+            font-weight: bold;
+            height: 50px;
+            cursor: pointer;
+            line-height: 50px;
+            text-align: center;
+            margin: 0;
+            text-decoration: none;
+          "
+        >
+          Try me!
+        </button> -->
       </div>
     </div>
   </div>
@@ -93,6 +124,13 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
       }
     },
+  },
+  mounted() {
+    if (process.client) {
+      let script = document.createElement("script");
+      script.src = "//embed.typeform.com/next/embed.js";
+      document.body.appendChild(script);
+    }
   },
 };
 </script>

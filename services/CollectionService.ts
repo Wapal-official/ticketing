@@ -26,3 +26,11 @@ export const getCollectionsOfUser = async (userId: string) => {
 
   return res;
 };
+
+export const searchCollection = async (query: string) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/collection/search?page=1&limit=100&q=${query}`
+  );
+
+  return res;
+};
