@@ -1,5 +1,5 @@
 <template>
-  <footer class="tw-w-full footer-shadow tw-mt-12">
+  <footer class="tw-w-full footer-shadow tw-bg-wapal-background">
     <div
       class="tw-w-full tw-mx-auto tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-3 tw-px-8 tw-py-8 lg:tw-w-4/5 lg:!tw-px-24"
     >
@@ -58,7 +58,12 @@
         class="tw-text-sm tw-font-normal tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
       >
         <h5 class="tw-text-base tw-font-medium md:tw-py-4">Resources</h5>
-        <footer-link name="Blog" />
+        <footer-link
+          name="Blog"
+          to="https://medium.com/@wapal"
+          target="_blank"
+          :external="true"
+        />
         <footer-link name="API" />
         <footer-link name="Docs" />
         <footer-link name="Faqs" to="/faq" />

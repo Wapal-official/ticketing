@@ -3,10 +3,14 @@
     class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
   >
     <gradient-border-button @click.native="newFolderDialog = true">
-      Create New Folder +
+      Create New NFT Vault +
     </gradient-border-button>
-    <assets-bread-crumbs />
-    <div class="tw-flex tw-flex-row tw-flex-wrap tw-gap-4">
+    <v-breadcrumbs :items="breadcrumbs" class="breadcrumb !tw-text-base">
+      <template v-slot:divider>
+        <v-icon>mdi-chevron-right</v-icon>
+      </template>
+    </v-breadcrumbs>
+    <div class="tw-flex tw-flex-row tw-flex-wrap tw-gap-4" v-if="!loading">
       <button
         class="tw-bg-wapal-gray tw-px-4 tw-py-2 tw-text-black tw-rounded-sm tw-flex tw-flex-row tw-items-center tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-gray-300"
         v-if="folders[0].folder_name"
@@ -45,54 +49,25 @@
         </v-menu>
       </button>
     </div>
-    <!-- <form
-      class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
-      @submit.prevent
-    >
-      <label
-        class="tw-w-full tw-h-full tw-px-8 tw-py-8 tw-border-2 tw-border-dashed tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-cursor-pointer md:tw-w-1/2"
-        :class="dropZoneClass"
-        id="drop-zone"
-        @dragover.prevent="dragover"
-        @dragleave.prevent="dragleave"
-        @drop.prevent="drop"
-      >
-        <img :src="UploadIcon" alt="upload" />
-        <div id="drop-zone">Drag and Drop Your Folders Here</div>
-        <div id="drop-zone">OR</div>
-        <div
-          id="drop-zone"
-          class="tw-bg-wapal-gray tw-text-white tw-px-8 tw-py-2 tw-rounded tw-cursor-pointer"
-        >
-          Browse
-        </div>
-        <input
-          type="file"
-          class="!tw-hidden"
-          webkitdirectory
-          mozdirectory
-          msdirectory
-          odirectory
-          directory
-          @change="fileChanged"
-      /></label>
-    </form> -->
+    <loading v-else />
     <v-dialog
       v-model="newFolderDialog"
       content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]"
     >
-      <h2 class="tw-text-xl tw-font-semibold">New Folder</h2>
+      <h2 class="tw-text-xl tw-font-semibold">
+        {{ currentFolder.folder_name ? "Rename NFT Vault" : "New NFT Vault" }}
+      </h2>
       <input
         v-model="newFolderName"
         class="tw-w-full tw-px-4 tw-py-2 tw-text-white tw-bg-transparent tw-rounded tw-border-solid tw-border-2 tw-border-wapal-gray focus:tw-outline-none"
-        placeholder="Folder Name"
+        placeholder="Vault Name"
       />
       <div
         class="tw-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
       >
         <button
           class="tw-px-4 tw-py-2 tw-rounded-sm tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-pink"
-          @click="newFolderDialog = false"
+          @click="cancelCreatingNewFolder"
         >
           Cancel
         </button>
@@ -109,7 +84,7 @@
       v-model="deleteFolderDialog"
       content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]"
     >
-      <h2 class="tw-text-xl tw-font-semibold">Delete Folder</h2>
+      <h2 class="tw-text-xl tw-font-semibold">Delete NFT Vault</h2>
       <p>Are you sure you want to Delete {{ currentFolder?.folder_name }}?</p>
       <div
         class="tw-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
@@ -132,9 +107,9 @@
 </template>
 <script lang="ts">
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
-import AssetsBreadCrumbs from "@/components/Dashboard/Assets/AssetsBreadCrumbs.vue";
-import UploadIcon from "@/assets/img/upload-icon.svg";
+import Loading from "@/components/Reusable/Loading.vue";
 import { defaultTheme } from "@/theme/wapaltheme";
+
 import {
   createFolder,
   deleteFolder,
@@ -144,7 +119,7 @@ import {
 
 export default {
   layout: "dashboard",
-  components: { GradientBorderButton, AssetsBreadCrumbs },
+  components: { GradientBorderButton, Loading },
   data() {
     return {
       folders: [{ _id: null, folder_name: "" }],
@@ -162,119 +137,12 @@ export default {
       },
       currentFolder: { folder_name: "" },
       deleteFolderDialog: false,
+      breadcrumbs: [{ text: "Vaults" }],
+      loading: true,
       defaultTheme,
-      UploadIcon,
     };
   },
   methods: {
-    dragover(e: any) {
-      e.dataTransfer!.dropEffect = "copy";
-      this.dropZoneClass = "tw-border-green-600";
-    },
-    dragleave(e: any) {
-      e.dataTransfer!.dropEffect = "copy";
-      this.dropZoneClass = "tw-border-wapal-gray";
-    },
-    async drop(event: any) {
-      const items = event.dataTransfer.items;
-
-      const item = items[0].webkitGetAsEntry();
-
-      if (this.checkDuplicateFolder(item)) {
-        this.$toast.showMessage({
-          message: "Please do not upload duplicate Folders",
-          error: true,
-        });
-        return;
-      }
-
-      if (item.isDirectory) {
-        const files: File[] = [];
-        for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          if (item.kind === "file") {
-            if (typeof item.webkitGetAsEntry === "function") {
-              const entry = item.webkitGetAsEntry();
-              const entryContent = await this.readEntryContentAsync(entry);
-              files.push(...entryContent);
-              continue;
-            }
-
-            const file = item.getAsFile();
-            if (file) {
-              files.push(file);
-            }
-          }
-        }
-        this.uploadedFolder = files;
-
-        this.sendDataToCreateFolder(item.name);
-
-        this.dropZoneClass = "tw-border-wapal-gray";
-      } else {
-        this.$toast.showMessage({
-          message: "Please Upload a Folder",
-          error: true,
-        });
-      }
-    },
-    readEntryContentAsync(entry: any) {
-      return new Promise<File[]>((resolve, reject) => {
-        let reading = 0;
-        const contents: File[] = [];
-
-        readEntry(entry);
-
-        function readEntry(entry: any) {
-          if (entry.isFile) {
-            reading++;
-            entry.file((file: any) => {
-              reading--;
-              contents.push(file);
-
-              if (reading === 0) {
-                resolve(contents);
-              }
-            });
-          } else if (entry.isDirectory) {
-            readReaderContent(entry.createReader());
-          }
-        }
-
-        function readReaderContent(reader: any) {
-          reading++;
-
-          reader.readEntries(function (entries: any) {
-            reading--;
-            for (const entry of entries) {
-              readEntry(entry);
-            }
-
-            if (reading === 0) {
-              resolve(contents);
-            }
-          });
-        }
-      });
-    },
-    fileChanged(event: any) {
-      this.uploadedFolder = event.target.files;
-
-      const relativePath = this.uploadedFolder[0].webkitRelativePath;
-
-      const folderName = relativePath.split("/")[0];
-
-      if (this.checkDuplicateFolder({ name: folderName })) {
-        this.$toast.showMessage({
-          message: "Please do not upload duplicate Folders",
-          error: true,
-        });
-        return;
-      }
-
-      this.sendDataToCreateFolder(folderName, this.uploadedFolder);
-    },
-
     pushFolder(folder: any) {
       if (!this.folders[0] || !this.folders[0].folder_name) {
         this.folders = [];
@@ -377,10 +245,16 @@ export default {
         this.$store.state.walletStore.user.user_id
       );
       this.folders = res.data.folderInfo;
+
+      this.loading = false;
     },
     showDeleteFolderDialog(folder: any) {
       this.currentFolder = folder;
       this.deleteFolderDialog = true;
+    },
+    cancelCreatingNewFolder() {
+      this.newFolderDialog = false;
+      this.currentFolder = { folder_name: "" };
     },
   },
   watch: {
@@ -395,3 +269,8 @@ export default {
   },
 };
 </script>
+<style>
+.v-breadcrumbs__item {
+  font-size: 1rem !important;
+}
+</style>
