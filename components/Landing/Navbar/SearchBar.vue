@@ -25,36 +25,63 @@
       >mdi-close</v-icon
     >
     <div
-      class="tw-absolute tw-top-[110%] tw-bg-modal-gray tw-rounded tw-py-4 tw-px-8 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-z-50"
+      class="tw-absolute tw-top-[110%] tw-bg-modal-gray tw-rounded tw-py-4 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-z-50"
       v-if="showSearchResults"
     >
+      <div
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 tw-max-h-[350px] tw-overflow-auto"
+        v-if="!loading"
+      >
+        <div
+          class="tw-text-wapal-pink tw-w-full tw-text-center tw-py-4"
+          v-if="searchResult.length === 0"
+        >
+          No Results Found
+        </div>
+        <search-card
+          v-for="result in searchResult"
+          :key="result._id"
+          :collection="result"
+          @close="close"
+          v-else
+        />
+      </div>
       <v-progress-circular
         indeterminate
         :color="defaultTheme.wapalPink"
+        v-else
       ></v-progress-circular>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defaultTheme } from "@/theme/wapaltheme";
+import SearchCard from "@/components/Landing/SearchCard.vue";
+import { searchCollection } from "@/services/CollectionService";
 export default {
+  components: { SearchCard },
   data() {
     return {
       searchInput: "",
       debounce: null,
       showSearchResults: false,
+      searchResult: [{ _id: "" }],
+      loading: true,
       defaultTheme,
     };
   },
   methods: {
-    search() {
+    async search() {
+      this.loading = true;
       if (this.searchInput.length < 3) {
         this.showSearchResults = false;
       } else {
         this.showSearchResults = true;
         clearTimeout(this.debounce);
-        this.debounce = setTimeout(() => {
-          console.log("first");
+        this.debounce = setTimeout(async () => {
+          const res = await searchCollection(this.searchInput);
+          this.searchResult = res.data.result;
+          this.loading = false;
         }, 500);
       }
     },
@@ -64,6 +91,10 @@ export default {
     },
     closeSearchBar() {
       this.$emit("closeSearchBar");
+    },
+    close() {
+      this.clearSearch();
+      this.closeSearchBar();
     },
   },
 };

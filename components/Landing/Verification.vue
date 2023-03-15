@@ -29,7 +29,17 @@
         >
           Submit
         </button>
-        <div class="tw-text-white tw-text-sm">Apply for invite code</div>
+        <button
+          data-tf-popup="m1wO9UnJ"
+          data-tf-opacity="100"
+          data-tf-size="100"
+          data-tf-iframe-props="title=Invite Code Campaign | Wapal"
+          data-tf-transitive-search-params
+          data-tf-medium="snippet"
+          class="tw-text-white tw-text-sm"
+        >
+          Apply for invite code
+        </button>
       </div>
     </div>
   </div>
@@ -93,6 +103,13 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
       }
     },
+  },
+  mounted() {
+    if (process.client) {
+      let script = document.createElement("script");
+      script.src = "//embed.typeform.com/next/embed.js";
+      document.body.appendChild(script);
+    }
   },
 };
 </script>

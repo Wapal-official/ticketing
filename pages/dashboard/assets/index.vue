@@ -161,7 +161,7 @@ export default {
     createNewFolder() {
       if (this.checkDuplicateFolder({ name: this.newFolderName })) {
         this.$toast.showMessage({
-          message: "Please do not create duplicate Folder",
+          message: "Please do not create duplicate Vault",
           error: true,
         });
         return;
@@ -192,7 +192,7 @@ export default {
           _id: res.data.folderInfo._id,
         });
 
-        this.$toast.showMessage({ message: "Folder Created Successfully" });
+        this.$toast.showMessage({ message: "Vault Created Successfully" });
 
         this.uploading = false;
         this.uploadedFolder = null;
@@ -209,14 +209,14 @@ export default {
     async renameFolder(folder: any) {
       try {
         if (this.checkDuplicateFolder({ name: this.newFolderName })) {
-          throw new Error("Please do not create duplicate Folder");
+          throw new Error("Please do not create duplicate Vault");
         }
         folder.folder_name = this.newFolderName;
         await updateFolder(folder);
 
         this.currentFolder = { folder_name: "" };
         this.$toast.showMessage({
-          message: "Folder Renamed Successfully",
+          message: "Vault Renamed Successfully",
         });
         this.mapFolders();
       } catch (error) {
@@ -228,7 +228,7 @@ export default {
         await deleteFolder(folder);
 
         this.$toast.showMessage({
-          message: "Folder Deleted Successfully",
+          message: "Vault Deleted Successfully",
         });
 
         this.deleteFolderDialog = false;
