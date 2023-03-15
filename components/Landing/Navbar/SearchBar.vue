@@ -29,7 +29,7 @@
       v-if="showSearchResults"
     >
       <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4"
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 tw-max-h-[350px] tw-overflow-auto"
         v-if="!loading"
       >
         <div
