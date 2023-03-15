@@ -668,7 +668,7 @@ export default {
               text: this.folderInfo.folder_name,
               href: `/dashboard/assets/${this.folderInfo._id}`,
             },
-            { text: this.type },
+            { text: this.type === "assets" ? "images" : this.type },
           ];
     },
   },
