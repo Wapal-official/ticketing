@@ -57,7 +57,7 @@
             <tbody>
               <tr
                 v-for="item in items"
-                :key="item.createdDate"
+                :key="item.name"
                 class="tw-cursor-pointer hover:!tw-bg-black/60"
               >
                 <td
@@ -359,8 +359,8 @@ export default {
                 return tempFile;
               })
             );
-
             this.uploadedFile = tempFiles;
+
             this.sendDataToUploadFolder();
           } else {
             throw new Error(
@@ -540,6 +540,31 @@ export default {
       this.mappingFiles = false;
     },
     async sendDataToUploadFolder() {
+      let files = [];
+      if (Array.isArray(this.uploadedFile)) {
+        files = this.uploadedFile;
+      } else {
+        files = [...this.uploadedFile];
+      }
+
+      files.sort((a: any, b: any) => {
+        const firstFileName = a.name;
+        const firstExtensionIndex = firstFileName.lastIndexOf(".");
+        const firstNameWithoutExtension = firstFileName.substring(
+          0,
+          firstExtensionIndex
+        );
+
+        const secondFileName = b.name;
+        const secondExtensionIndex = secondFileName.lastIndexOf(".");
+        const secondNameWithoutExtension = secondFileName.substring(
+          0,
+          secondExtensionIndex
+        );
+
+        return firstNameWithoutExtension - secondNameWithoutExtension;
+      });
+
       try {
         this.uploadComplete = false;
         this.uploadStatusClass = "tw-h-0";
@@ -564,13 +589,6 @@ export default {
         let responseCount = 0;
         let response = null;
 
-        let files = [];
-        if (Array.isArray(this.uploadedFile)) {
-          files = this.uploadedFile;
-        } else {
-          files = [...this.uploadedFile];
-        }
-
         for (let i = 1; i <= batchLoop; i++) {
           const endIndex = i * 50;
           const startIndex = endIndex - 50;
@@ -582,6 +600,8 @@ export default {
           formData.append("type", this.type);
 
           const tempFiles = files.slice(startIndex, endIndex);
+
+          let fileNumber = startIndex;
 
           tempFiles.forEach((file: any) => {
             if (this.type === "assets") {
@@ -597,6 +617,18 @@ export default {
                 );
               }
             }
+
+            const filename = file.name;
+            const extensionIndex = filename.lastIndexOf(".");
+            const nameWithoutExtension = filename.substring(0, extensionIndex);
+
+            if (nameWithoutExtension != fileNumber) {
+              throw new Error(
+                "Please Name you files in a Sequence Eg: 1,2,3..."
+              );
+            }
+
+            fileNumber++;
 
             formData.append("images", file);
           });
