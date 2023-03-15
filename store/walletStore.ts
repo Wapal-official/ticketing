@@ -18,7 +18,7 @@ import { AptosClient } from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
 
-const NODE_URL = `https://fullnode.${process.env.NETWORK}.aptoslabs.com`;
+const NODE_URL = `https://fullnode.testnet.aptoslabs.com`;
 
 const client = new AptosClient(NODE_URL);
 
@@ -32,7 +32,7 @@ const wallets = [
   new TrustWallet(),
   new MSafeWalletAdapter(),
   new BloctoWallet({
-    network: NetworkName.Mainnet,
+    network: NetworkName.Testnet,
     bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
   }),
 ];
@@ -73,6 +73,7 @@ export const mutations = {
     state.user = user;
   },
 };
+
 
 export const actions = {
   setWallet({ commit }: { commit: any }) {

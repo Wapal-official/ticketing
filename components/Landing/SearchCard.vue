@@ -10,7 +10,7 @@
       class="tw-object-fill tw-rounded tw-w-[40px] tw-h-[40px]"
     />
     <div
-      class="tw-flex tw-flex-row tw-items-end tw-justify-end tw-gap-2 tw-text-sm tw-font-semibold"
+      class="tw-flex tw-flex-row tw-items-end tw-justify-end tw-gap-2 tw-text-sm tw-font-semibold !tw-text-white"
     >
       {{ collection?.name }}
     </div>
