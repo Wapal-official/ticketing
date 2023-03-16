@@ -27,7 +27,7 @@
           class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
           v-for="attribute in attributes"
           :key="attribute.trait_type"
-          v-if="attributes[0].trait_type"
+          v-if="attributes[0] && attributes[0].trait_type"
         >
           <h5 class="tw-text-wapal-gray">{{ attribute.trait_type }}</h5>
           <h5>{{ attribute.value }}</h5>
