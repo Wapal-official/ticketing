@@ -77,7 +77,8 @@ export default {
   },
   methods: {
     async connectWallet(wallet: string) {
-      const res = await this.$store.dispatch(
+      try{
+        const res = await this.$store.dispatch(
         "walletStore/connectWallet",
         wallet
       );
@@ -85,6 +86,9 @@ export default {
         this.$emit("walletConnected");
       }
       this.close();
+      }catch(error){
+        this.$toast.showMessage({message:error, error:true})
+      }
     },
     close() {
       this.$emit("closeModal");
