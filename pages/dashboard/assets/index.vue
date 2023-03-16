@@ -122,7 +122,12 @@ export default {
   components: { GradientBorderButton, Loading },
   data() {
     return {
-      folders: [{ _id: "64119a4635d5e95d27526f99", folder_name: "Wapal" }],
+      folders: [
+        {
+          _id: "",
+          folder_name: "",
+        },
+      ],
       uploadedFolder: null,
       newFolderDialog: false,
       newFolderName: null,
@@ -141,6 +146,13 @@ export default {
       loading: true,
       defaultTheme,
     };
+  },
+  computed: {
+    getFolderId() {
+      return process.env.baseURL?.includes("staging")
+        ? "64119a4635d5e95d27526f99"
+        : "6412e1ea50b3358d8ef7d47d";
+    },
   },
   methods: {
     pushFolder(folder: any) {
@@ -241,9 +253,13 @@ export default {
       }
     },
     async mapFolders() {
+      this.folders = [];
+
       const res = await getAllFolder(
         this.$store.state.walletStore.user.user_id
       );
+
+      this.folders.push({ _id: this.getFolderId, folder_name: "Wapal" });
 
       res.data.folderInfo.map((folder: any) => {
         this.folders.push(folder);
