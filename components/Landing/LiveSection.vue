@@ -1,13 +1,27 @@
 <template>
   <div class="tw-w-full">
-    <div class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-center tw-text-wapal-pink tw-text-xl py-8"
-      v-if="liveCollection.length < 1">
+    <div
+      class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-center tw-text-wapal-pink tw-text-xl py-8"
+      v-if="liveCollection.length < 1"
+    >
       No Live Collections
     </div>
-    <div class="tw-w-full tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-8" v-else>
-      <div class="tw-flex tw-flex-row tw-flex-wrap">
-        <div class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4">
-          <nft-card v-for="collection in liveCollection" :key="collection._id" :collection="collection" />
+    <div
+      class="tw-w-full tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-8"
+      v-else
+    >
+      <div class="tw-flex tw-flex-row tw-flex-wrap tw-w-full">
+        <div
+          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:grid-rows-1 lg:tw-grid-cols-3 lg:tw-grid-rows-1 2xl:tw-grid-cols-4"
+        >
+          <nft-card
+            v-for="(collection, index) in liveCollection"
+            :key="collection._id"
+            :collection="collection"
+            :class="{
+              'lg:tw-hidden 2xl:tw-flex': index === 3,
+            }"
+          />
         </div>
       </div>
 
