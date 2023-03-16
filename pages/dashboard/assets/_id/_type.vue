@@ -10,6 +10,16 @@
         <template v-slot:divider>
           <v-icon>mdi-chevron-right</v-icon>
         </template>
+        <template v-slot:item="{ item }">
+        <v-breadcrumbs-item :disabled="item.disabled">
+          <NuxtLink
+            class="!tw-text-white"
+            :to="item.href ? item.href : $route.fullPath"
+          >
+            {{ item.text }}
+          </NuxtLink>
+        </v-breadcrumbs-item>
+      </template>
       </v-breadcrumbs>
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 tw-w-full md:tw-w-fit md:tw-justify-end"
