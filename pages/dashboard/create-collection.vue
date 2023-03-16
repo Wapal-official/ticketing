@@ -644,7 +644,11 @@ export default {
     },
   },
   async mounted() {
-    const folderRes = await getFolderById("64119a4635d5e95d27526f99");
+    const folderRes = await getFolderById(
+      process.env.baseURL?.includes("staging")
+        ? "64119a4635d5e95d27526f99"
+        : "6412e1ea50b3358d8ef7d47d"
+    );
 
     this.folders.push(folderRes.data.folderInfo);
 
