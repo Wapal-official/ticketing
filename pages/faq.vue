@@ -1,10 +1,16 @@
 <template>
-  <div class="bg-wapal-background w-full py-8">
-    <div class="w-4/5 mx-auto flex flex-col items-center justify-center">
-      <h3 class="text-wapal-pink text-xl md:text-[28px] pb-16 font-medium">
+  <div class="tw-w-full tw-pb-8">
+    <div
+      class="tw-w-4/5 tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-center"
+    >
+      <h3
+        class="tw-text-wapal-pink tw-text-xl md:tw-text-[28px] tw-pb-16 tw-font-medium"
+      >
         Frequently Asked Questions
       </h3>
-      <div class="flex flex-col items-start justify-start gap-8 lg:px-16">
+      <div
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 lg:tw-px-16"
+      >
         <faq-card>
           <template #question> 1. What is Wapal? </template>
           <template #answer>
@@ -23,7 +29,7 @@
               projects without any coding knowledge. We know how difficult and
               costly it is to launch NFT projects on your own.
             </p>
-            <p class="py-2">
+            <p class="tw-py-2">
               We decided to build a launchpad to disrupt the monopoly of
               marketplaces. Marketplaces only allow a few selected NFT projects
               to launch. We'll allow everyone to launch NFT projects.

@@ -1,5 +1,11 @@
 import colors from "vuetify/es5/util/colors";
+
 const API_URL = process.env.API_URL;
+const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
+const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+const CANDY_MACHINE_ID = process.env.CANDY_MACHINE_ID;
+const NETWORK = process.env.NETWORK;
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   server: {
@@ -35,7 +41,10 @@ export default {
   css: ["@/assets/css/index.css", "@/assets/css/style.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [{ src: "~/plugins/persistedState.client.ts" }],
+  plugins: [
+    { src: "~/plugins/persistedState.client.ts" },
+    "~/plugins/toast.ts",
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -79,6 +88,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    transpile: ["vee-validate"],
     babel: {
       plugins: ["@babel/plugin-proposal-optional-chaining"],
     },
@@ -102,5 +112,11 @@ export default {
     },
   },
   axios: { baseURL: API_URL },
-  env: { baseURL: API_URL },
+  env: {
+    baseURL: API_URL,
+    AWS_ACCESS_KEY: AWS_ACCESS_KEY,
+    AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY,
+    CANDY_MACHINE_ID: CANDY_MACHINE_ID,
+    NETWORK: NETWORK,
+  },
 };

@@ -1,77 +1,122 @@
 <template>
-  <div
-    class="flex flex-row items-center justify-center gap-8 h-full py-60 md:py-80 lg:py-40"
-  >
-    <div
-      class="text-white px-8 lg:w-[60%] flex flex-col items-center justify-center gap-10 text-center"
-    >
-      <h1
-        class="text-3xl font-semibold text-wapal-gray flex flex-col items-center justify-center gap-2"
-      >
-        No Code NFT Creator Studio on Aptos
-      </h1>
-      <primary-button @click.native="checkWalletStatus"
-        >Sign Up Early</primary-button
-      >
+  <div class="">
+    <section class="tw-py-4 2xl:tw-container tw-mx-auto">
+      <banner
+        :collectionId="upcomingCollections[0] ? upcomingCollections[0]._id : ''"
+      />
+    </section>
+    <div>
+      <landing-slider />
+      <div class="tw-px-4 md:tw-px-16">
+        <section class="tw-pt-8 tw-pb-4 tw-container tw-mx-auto">
+          <landing-section-heading heading="Live" />
+          <live-section v-if="!loading" :collections="liveCollections" />
+          <loading v-else />
+        </section>
+        <section class="tw-py-8 tw-container tw-mx-auto">
+          <landing-section-heading heading="Upcoming" />
+          <upcoming-section
+            v-if="!loading"
+            :collections="upcomingCollections"
+          />
+          <loading v-else />
+        </section>
+        <!-- <fastest-soldout-section
+          v-if="collections.length > 0"
+          :collections="collections"
+          :loading="loading"
+        /> -->
+        <section class="tw-py-8 tw-container tw-mx-auto">
+          <landing-section-heading heading="Whitelist Opportunities" />
+          <whitelist-opportunities />
+        </section>
+      </div>
     </div>
-    <v-dialog
-      v-model="showConnectWalletModal"
-      content-class="!w-full md:!w-1/2 lg:!w-[30%]"
-    >
-      <connect-wallet-modal
-        message="Please Connect your wallet to Sign Up"
-        @closeModal="showConnectWalletModal = false"
-        @walletConnected="displayWalletConnectedMessage"
-      />
-    </v-dialog>
-    <v-dialog
-      v-model="showSignupDialog"
-      content-class="!w-full md:!w-1/2 lg:!w-[35%]"
-    >
-      <signup-modal
-        @close="showSignupDialog = false"
-        @walletConnected="displayWalletConnectedMessage"
-      />
-    </v-dialog>
   </div>
 </template>
 
 <script>
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
-import ConnectWalletModal from "@/components/ConnectWallet/ConnectWalletModal.vue";
-import SignupModal from "@/components/Signup/SignupModal.vue";
+import LandingSlider from "@/components/Landing/LandingSlider.vue";
+import LiveSection from "@/components/Landing/LiveSection.vue";
+import UpcomingSection from "@/components/Landing/UpcomingSection.vue";
+import FastestSoldoutSection from "@/components/Landing/FastestSoldoutSection.vue";
+import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vue";
+import Loading from "@/components/Reusable/Loading.vue";
+import Banner from "@/components/Landing/Banner.vue";
+import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.vue";
+
+import { getCollections } from "@/services/CollectionService.ts";
+
 export default {
   name: "IndexPage",
-  components: { PrimaryButton, ConnectWalletModal, SignupModal },
+  components: {
+    PrimaryButton,
+    LandingSlider,
+    LiveSection,
+    UpcomingSection,
+    FastestSoldoutSection,
+    LandingSectionHeading,
+    Loading,
+    Banner,
+    WhitelistOpportunities,
+  },
   data() {
     return {
       showConnectWalletModal: false,
       message: "",
-      showSignupDialog: "",
+      collections: [],
+      liveCollections: [],
+      upcomingCollections: [{ _id: "" }],
+      loading: true,
     };
   },
   methods: {
-    checkWalletStatus() {
-      if (this.getWalletStatus) {
-        this.$router.push("/signup");
-      } else {
-        this.showConnectWalletModal = true;
-      }
-    },
-    displayWalletConnectedMessage() {
-      this.showConnectWalletModal = false;
-      this.walletConnectedSnackbar = true;
-      this.message = `${this.$store.state.walletStore.wallet} Wallet Connected Successfully`;
-      this.showSignupDialog = true;
+    async getCollections() {
+      this.collections = [];
+      this.upcomingCollections = [];
+      this.liveCollections = [];
+
+      const res = await getCollections();
+      this.collections = res;
+
+      this.liveCollections = this.collections.filter((collection) => {
+        const whitelistSaleDate = new Date(
+          collection.candyMachine_id.whitelist_sale_time
+        );
+        const publicSaleDate = new Date(
+          collection.candyMachine_id.public_sale_time
+        );
+
+        const now = new Date();
+
+        if (now > whitelistSaleDate || now > publicSaleDate) {
+          return collection;
+        }
+      });
+
+      this.upcomingCollections = this.collections.filter((collection) => {
+        const whitelistSaleDate = new Date(
+          collection.candyMachine_id.whitelist_sale_time
+        );
+        const publicSaleDate = new Date(
+          collection.candyMachine_id.public_sale_time
+        );
+        const now = new Date();
+
+        if (whitelistSaleDate > now && publicSaleDate > now) {
+          return collection;
+        }
+      });
+
+      this.liveCollections = this.liveCollections.slice(0, 4);
+
+      this.upcomingCollections = this.upcomingCollections.slice(0, 4);
     },
   },
-  computed: {
-    getWalletStatus() {
-      if (this.$store.state.walletStore.wallet.wallet) {
-        return true;
-      }
-      return false;
-    },
+  async created() {
+    await this.getCollections();
+    this.loading = false;
   },
 };
 </script>
