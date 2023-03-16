@@ -38,6 +38,7 @@ const wallets = [
 ];
 
 const wallet = new WalletCore(wallets);
+
 const makeId = (length: number) => {
   var result = "";
   var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy";
@@ -47,6 +48,17 @@ const makeId = (length: number) => {
   }
   return result;
 };
+
+const connectWallet = async (walletName: WalletName) => {
+  await wallet.connect(walletName);
+
+  if (
+    wallet.network?.name.toLowerCase() !== NetworkName.Testnet.toLowerCase()
+  ) {
+    throw new Error("Please Change your network to Testnet");
+  }
+};
+
 export const state = () => ({
   wallet: {
     wallet: "",
@@ -83,7 +95,8 @@ export const actions = {
   },
   async connectWallet({ commit }: { commit: any }, walletName: WalletName) {
     try {
-      await wallet.connect(walletName);
+      await connectWallet(walletName);
+
       commit("setWallet", {
         wallet: wallet.wallet?.name,
         walletAddress: wallet.account?.address,
@@ -92,8 +105,8 @@ export const actions = {
           : wallet.account?.publicKey,
       });
       return true;
-    } catch {
-      return false;
+    } catch (error) {
+      throw error;
     }
   },
   async disconnectWallet({ commit }: { commit: any }) {
@@ -114,7 +127,7 @@ export const actions = {
     candyMachineArguments: any
   ) {
     if (!wallet.isConnected()) {
-      await wallet.connect(state.wallet.wallet);
+      await connectWallet(state.wallet.wallet);
     }
 
     const create_candy_machine = {
@@ -154,7 +167,7 @@ export const actions = {
   },
   async checkBalance({ state }: { state: any }) {
     if (!wallet.isConnected()) {
-      await wallet.connect(state.wallet.wallet);
+      await connectWallet(state.wallet.wallet);
     }
 
     const res: any = await client.getAccountResources(
@@ -168,7 +181,7 @@ export const actions = {
   },
   async mintCollection({ state }: { state: any }, resourceAccount: string) {
     if (!wallet.isConnected()) {
-      await wallet.connect(state.wallet.wallet);
+      await connectWallet(state.wallet.wallet);
     }
 
     const create_mint_script = {
@@ -240,7 +253,7 @@ export const actions = {
   },
   async signLoginMessage({ state }: { state: any }) {
     if (!wallet.isConnected()) {
-      await wallet.connect(state.wallet.wallet);
+      await connectWallet(state.wallet.wallet);
     }
 
     const message = "Login into Wapal";
