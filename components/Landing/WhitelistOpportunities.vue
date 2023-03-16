@@ -10,13 +10,16 @@
       No Whitelist Opportunities
     </div>
     <div
-      class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-4"
+      class="tw-grid tw-grid-cols-1 tw-grid-rows-4 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:grid-rows-1 lg:tw-grid-cols-3 lg:tw-grid-rows-1 2xl:tw-grid-cols-4"
       v-else
     >
       <whitelist-card
-        v-for="whitelist in whitelists"
+        v-for="(whitelist, index) in whitelists"
         :key="whitelist._id"
         :whitelist="whitelist"
+        :class="{
+          'lg:tw-hidden 2xl:tw-flex': index === 3,
+        }"
       />
     </div>
     <gradient-border-button @click.native="" class="tw-mt-2 tw-self-end">
@@ -46,3 +49,9 @@ export default {
   },
 };
 </script>
+<style>
+.landing-grid {
+  grid-auto-rows: 0;
+  overflow-y: hidden;
+}
+</style>

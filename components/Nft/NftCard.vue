@@ -23,7 +23,7 @@
           v-else
         />
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 tw-capitalize tw-w-full"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-8 tw-capitalize tw-w-full"
         >
           <div>items {{ collection?.supply }}</div>
           <div>price {{ getPrice }} apt</div>

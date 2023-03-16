@@ -7,8 +7,8 @@
     >
       <div class="tw-relative tw-max-h-[250px] tw-overflow-hidden">
         <img
-          :src="file?.src"
-          :alt="file?.name"
+          :src="getImageSrc"
+          :alt="getImageName"
           class="tw-w-[250px] tw-h-[250px] tw-object-cover"
         />
         <div
@@ -49,7 +49,7 @@
       <div
         class="tw-bg-[#F0F0F0] tw-text-[#363636] tw-uppercase tw-px-4 tw-text-center tw-py-4 tw-text-sm"
       >
-        <h2>{{ file?.name }}</h2>
+        <h2>{{ getImageName }}</h2>
       </div>
     </div>
     <button
@@ -89,16 +89,18 @@
 export default {
   props: {
     file: { type: Object },
+    type: { type: String },
   },
   data() {
     return {
       fileData: null,
       loading: true,
+      linkedAsset: { name: "", image: "" },
     };
   },
   methods: {
     displayFileDetails() {
-      this.$emit("displayFileDetails");
+      this.$emit("displayFileDetails", this.linkedAsset);
     },
     async downloadFile() {
       if (process.client) {
@@ -132,13 +134,27 @@ export default {
   },
   computed: {
     checkFileType() {
-      if (this.file.type.includes("image/")) {
+      if (this.file.type.includes("image/") || this.type === "assets") {
         return "image";
       }
       return "json";
     },
+    getImageSrc() {
+      return this.linkedAsset.image ? this.linkedAsset.image : this.file?.src;
+    },
+    getImageName() {
+      return this.linkedAsset.name ? this.linkedAsset.name : this.file?.name;
+    },
   },
   async mounted() {
+    const res = await this.$axios.get(`https://arweave.net/${this.file._id}`);
+    if (
+      this.type === "assets" &&
+      res.headers["content-type"] === "application/json; charset=utf-8"
+    ) {
+      this.linkedAsset = res.data;
+    }
+
     this.loading = false;
   },
 };

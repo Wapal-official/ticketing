@@ -120,3 +120,8 @@ export default {
   },
 };
 </script>
+<style>
+.v-breadcrumbs {
+  padding-left: 0 !important;
+}
+</style>

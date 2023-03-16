@@ -7,10 +7,10 @@
       <v-icon class="!tw-text-white">mdi-close</v-icon>
     </button>
     <div
-      class="tw-w-full tw-border tw-border-transparent tw-px-4 tw-py-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-border-wapal-dashboard-active"
+      class="tw-w-full tw-min-h-full tw-border tw-border-transparent tw-px-4 tw-py-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-border-wapal-dashboard-active"
     >
       <img
-        :src="file?.src"
+        :src="file?.image"
         :alt="file?.name"
         class="tw-max-w-[300px] tw-max-h-[300px]"
         draggable="false"
@@ -25,87 +25,12 @@
       <div class="tw-grid tw-grid-cols-3 tw-gap-4 tw-w-full">
         <div
           class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
+          v-for="attribute in attributes"
+          :key="attribute.trait_type"
+          v-if="attributes[0] && attributes[0].trait_type"
         >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
-        </div>
-        <div
-          class="tw-rounded-md tw-bg-wapal-dashboard-active/25 tw-px-2 tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-text-sm"
-        >
-          <h5 class="tw-text-wapal-gray">Background</h5>
-          <h5>Pink</h5>
+          <h5 class="tw-text-wapal-gray">{{ attribute.trait_type }}</h5>
+          <h5>{{ attribute.value }}</h5>
         </div>
       </div>
     </div>
@@ -118,12 +43,18 @@ export default {
   data() {
     return {
       loading: false,
+      attributes: [{ trait_type: "", value: "" }],
     };
   },
   methods: {
     close() {
       this.$emit("close");
     },
+  },
+  mounted() {
+    if (this.file.attributes) {
+      this.attributes = this.file.attributes;
+    }
   },
 };
 </script>
