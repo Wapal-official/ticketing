@@ -690,6 +690,7 @@ export default {
           uploadSocketState.progress = 0;
           uploadSocketState.uploadSummary = "";
           uploadSocketState.totalFiles = 0;
+          uploadSocketState.showUploadBar = true;
 
           socket.emit(
             "upload",

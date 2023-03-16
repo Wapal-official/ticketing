@@ -8,6 +8,7 @@ interface UploadSocket {
   previousResult: string;
   uploading: boolean;
   totalFiles: number;
+  showUploadBar: boolean;
 }
 
 export const uploadSocketState = reactive<UploadSocket>({
@@ -16,6 +17,7 @@ export const uploadSocketState = reactive<UploadSocket>({
   uploadSummary: "",
   previousResult: "",
   uploading: false,
+  showUploadBar: false,
   totalFiles: 0,
 });
 

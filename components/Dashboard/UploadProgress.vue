@@ -90,6 +90,7 @@ export default {
       uploadSocketState.previousResult = "";
       uploadSocketState.progress = 0;
       uploadSocketState.uploadSummary = "";
+      uploadSocketState.showUploadBar = false;
     },
   },
   watch: {
