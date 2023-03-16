@@ -11,15 +11,15 @@
           <v-icon>mdi-chevron-right</v-icon>
         </template>
         <template v-slot:item="{ item }">
-        <v-breadcrumbs-item :disabled="item.disabled">
-          <NuxtLink
-            class="!tw-text-white"
-            :to="item.href ? item.href : $route.fullPath"
-          >
-            {{ item.text }}
-          </NuxtLink>
-        </v-breadcrumbs-item>
-      </template>
+          <v-breadcrumbs-item :disabled="item.disabled">
+            <NuxtLink
+              class="!tw-text-white"
+              :to="item.href ? item.href : $route.fullPath"
+            >
+              {{ item.text }}
+            </NuxtLink>
+          </v-breadcrumbs-item>
+        </template>
       </v-breadcrumbs>
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 tw-w-full md:tw-w-fit md:tw-justify-end"
@@ -41,16 +41,17 @@
       class="tw-flex tw-flex-row tw-w-full tw-gap-4"
       v-if="folderInfo.files[0]"
     >
-      <div class="tw-w-fit tw-max-w-full">
+      <div class="tw-w-full">
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 tw-flex-wrap tw-flex-shrink md:tw-justify-start"
           v-if="!listView"
         >
           <assets-file-card
-            @displayFileDetails="displayFileDetails(file)"
+            @displayFileDetails="displayFileDetails"
             v-for="file in paginatedFiles"
             :key="file._id"
             :file="file"
+            :type="type"
           />
         </div>
         <v-data-table
@@ -87,15 +88,9 @@
           </template>
         </v-data-table>
       </div>
-      <assets-image-details
-        v-if="showFileDetails"
-        :file="currentFile"
-        @close="showFileDetails = false"
-        class="tw-hidden md:tw-flex"
-      />
     </div>
     <div
-      class="tw-fixed tw-w-screen tw-h-screen tw-top-0 tw-left-0 tw-bg-black/50 tw-flex tw-flex-row tw-justify-center md:tw-hidden"
+      class="tw-fixed tw-w-screen tw-h-screen tw-top-0 tw-left-0 tw-bg-black/50 tw-flex tw-flex-row tw-justify-center"
       v-if="showFileDetails"
     >
       <assets-image-details
@@ -296,7 +291,7 @@ export default {
       scrolledNumber: 1,
       fileIndex: 0,
       mappingFiles: false,
-      type: null,
+      type: "",
       UploadIcon,
       defaultTheme,
     };
@@ -304,7 +299,9 @@ export default {
   methods: {
     displayFileDetails(file: any) {
       this.currentFile = file;
-      // this.showFileDetails = true;
+      if (file.image) {
+        this.showFileDetails = true;
+      }
     },
     dragover(e: any) {
       e.dataTransfer!.dropEffect = "copy";
@@ -496,7 +493,7 @@ export default {
       const res = await getFolderById(folderId);
 
       this.folderInfo.files =
-        this.type === "assets"
+        this.type === "assets" && !res.data.folderInfo.metadata.baseURI
           ? res.data.folderInfo.assets.files
           : res.data.folderInfo.metadata.files;
 
