@@ -15,7 +15,7 @@
       </div>
       <dashboard-footer />
       <upload-progress
-        v-if="getUploadingStatus && showUploadProgress"
+        v-if="getUploadingStatus && getUploadingBar"
         @close="closeUploadProgress"
       />
     </div>
@@ -78,6 +78,9 @@ export default {
         return JSON.parse(localStorage.getItem("verified") || "false");
       }
       return false;
+    },
+    getUploadingBar() {
+      return uploadSocketState.showUploadBar;
     },
   },
   mounted() {
