@@ -107,7 +107,7 @@
           >
           <div class="dashboard-text-field-border tw-w-full">
             <v-autocomplete
-              v-model="collection.baseURL"
+              v-model="baseURL"
               :items="folders"
               outlined
               color="#fff"
@@ -514,6 +514,7 @@ export default {
       ],
       folders: [],
       folderInfo: null,
+      baseURL: null,
     };
   },
   methods: {
@@ -533,7 +534,7 @@ export default {
         }
 
         const selectedFolder = this.folders.find(
-          (folder: any) => folder.folder_name === this.collection.baseURL
+          (folder: any) => folder.folder_name === this.baseURL
         );
 
         this.collection.baseURL = selectedFolder.metadata.baseURI;
@@ -564,9 +565,8 @@ export default {
         this.message = "Collection Created Successfully";
         this.$toast.showMessage({ message: this.message, error: false });
         this.$router.push("/dashboard");
-      } catch (error) {
-        this.message = error;
-        this.$toast.showMessage({ message: this.message, error: true });
+      } catch (error: any) {
+        this.$toast.showMessage({ message: error, error: true });
 
         this.submitting = false;
       }
