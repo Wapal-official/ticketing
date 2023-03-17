@@ -740,6 +740,9 @@ export default {
 
       return true;
     },
+    checkUploadingStatus() {
+      return uploadSocketState.uploadSummary;
+    },
   },
   async mounted() {
     this.type = this.$route.params.type;
@@ -766,15 +769,15 @@ export default {
     }
   },
   watch: {
-    showUploadingDialog: async function (newValue: boolean) {
-      if (!newValue) {
-        if (this.uploadComplete) {
+    checkUploadingStatus: async function (newValue: string) {
+      if (newValue) {
+        setTimeout(async () => {
           await this.fetchFiles();
           await this.mapFiles();
 
           this.uploadedFiles.uploadedFiles = 0;
           this.uploadedFiles.files = [];
-        }
+        }, 2000);
       }
     },
   },

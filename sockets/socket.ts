@@ -9,6 +9,7 @@ interface UploadSocket {
   uploading: boolean;
   totalFiles: number;
   showUploadBar: boolean;
+  showUploadError: boolean;
 }
 
 export const uploadSocketState = reactive<UploadSocket>({
@@ -19,6 +20,7 @@ export const uploadSocketState = reactive<UploadSocket>({
   uploading: false,
   showUploadBar: false,
   totalFiles: 0,
+  showUploadError: false,
 });
 
 const URL = process.env.baseURL ? process.env.baseURL : "http://localhost:3000";
