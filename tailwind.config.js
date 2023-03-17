@@ -20,6 +20,9 @@ module.exports = {
         "wapal-background": "#0E0D0D",
         "wapal-dashboard-active": "#48CAE4",
       },
+      screens: {
+        "3xl": "1920px",
+      },
     },
   },
   plugins: [],
