@@ -299,7 +299,7 @@ export default {
           "walletStore/mintCollection",
           this.collection.candyMachine_id.resource_account
         );
-        console.log(res);
+
         if (res.success) {
           this.$toast.showMessage({
             message: `${this.collection.name} Minted Successfully`,
@@ -345,7 +345,7 @@ export default {
   },
   watch: {
     async collectionId(newVal: any) {
-      if (newVal) {
+      if (newVal && process.env.baseURL?.includes("staging")) {
         const res = await getCollection(this.collectionId);
         this.collection = res.collection[0];
 
@@ -364,6 +364,26 @@ export default {
         this.loading = false;
       }
     },
+  },
+  async mounted() {
+    if (!process.env.baseURL?.includes("staging")) {
+      const res = await getCollection("6415331e9cb214a367f1ee7a");
+      this.collection = res.collection[0];
+
+      this.whitelistSaleDate = new Date(
+        this.collection.candyMachine_id.whitelist_sale_time
+      );
+      this.publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
+
+      this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
+      this.showPublicSaleTimer = this.checkPublicSaleTimer();
+
+      this.showEndInTimer = true;
+
+      this.loading = false;
+    }
   },
 };
 </script>
