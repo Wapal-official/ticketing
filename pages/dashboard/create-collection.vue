@@ -665,7 +665,9 @@ export default {
     const res = await getAllFolder(this.$store.state.walletStore.user.user_id);
 
     res.data.folderInfo.map((folder: any) => {
-      this.folders.push(folder);
+      if (folder.metadata.baseURI) {
+        this.folders.push(folder);
+      }
     });
   },
 };
