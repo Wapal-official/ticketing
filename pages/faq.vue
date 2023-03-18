@@ -22,8 +22,7 @@
         <faq-card>
           <template #question>
             2. Why did you decide to build a creator studio and a
-            launchpad?</template
-          >
+            launchpad?</template>
           <template #answer>
             <p>
               We decided to build a creator studio to help creators build NFT
@@ -39,8 +38,7 @@
         </faq-card>
         <faq-card>
           <template #question>
-            3. Who can launch NFT projects from your Launchpad?</template
-          >
+            3. Who can launch NFT projects from your Launchpad?</template>
           <template #answer>
             Anyone can launch NFT projects from our launchpad. There is no
             restriction of any kind to launch on Wapal.
