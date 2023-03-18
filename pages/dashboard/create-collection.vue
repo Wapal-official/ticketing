@@ -37,7 +37,7 @@
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="description"
-          rules="required"
+          rules="required|descriptionLength"
           v-slot="{ errors }"
         >
           <label
@@ -469,6 +469,16 @@ extend("number", {
     return true;
   },
   message: "This field must be a number",
+});
+
+extend("descriptionLength", {
+  validate(value) {
+    if (value.length > 200) {
+      return false;
+    }
+    return true;
+  },
+  message: "This field must not exceed 200 characters",
 });
 
 export default {
