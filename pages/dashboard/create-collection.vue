@@ -644,6 +644,8 @@ export default {
     },
   },
   async mounted() {
+    console.log(process.env.CANDY_MACHINE_ID);
+
     const folderRes = await getFolderById(
       process.env.baseURL?.includes("staging")
         ? "64119a4635d5e95d27526f99"
