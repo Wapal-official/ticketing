@@ -581,7 +581,12 @@ export default {
         files = [...this.uploadedFile];
       }
 
-      files = files.filter((file: any) => file.name !== ".DS_Store");
+      files = files.filter((file: any) => {
+        return (
+          !/\.DS_Store$/i.test(file.webkitRelativePath) ||
+          !/\.DS_Store$/i.test(file.name)
+        );
+      });
 
       files.sort((a: any, b: any) => {
         const firstFileName = a.name;
