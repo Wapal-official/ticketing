@@ -555,8 +555,10 @@ export default {
       }
 
       files = files.filter((file: any) => {
-        !/\.DS_Store$/i.test(file.webkitRelativePath) &&
-          !/\.DS_Store$/i.test(file.name);
+        return (
+          !/\.DS_Store$/i.test(file.webkitRelativePath) ||
+          !/\.DS_Store$/i.test(file.name)
+        );
       });
 
       files.sort((a: any, b: any) => {
