@@ -583,7 +583,7 @@ export default {
 
       files = files.filter((file: any) => {
         return (
-          !/\.DS_Store$/i.test(file.webkitRelativePath) ||
+          !/\.DS_Store$/i.test(file.webkitRelativePath) &&
           !/\.DS_Store$/i.test(file.name)
         );
       });
@@ -618,14 +618,14 @@ export default {
 
         if (
           this.type === "metadata" &&
-          this.folderInfo.assets.files.length !== this.uploadedFile.length
+          this.folderInfo.assets.files.length !== files.length
         ) {
           throw new Error(
             "Your metadata folder does not have same file length as Image Folder"
           );
         }
 
-        const batchLoop = Math.ceil(this.uploadedFile.length / 50);
+        const batchLoop = Math.ceil(files.length / 50);
 
         let responseCount = 0;
         let response = null;
@@ -657,6 +657,10 @@ export default {
                   "Please Only Upload JSON Files on Metadata Folder"
                 );
               }
+            }
+
+            if (file.name !== file.name.trim()) {
+              throw new Error("Please Name your files without white spaces");
             }
 
             const filename = file.name;

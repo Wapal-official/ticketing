@@ -1,5 +1,6 @@
 import { publicRequest } from "./fetcher";
 import axios from "axios";
+
 export const getAllWhitelist = async () => {
   const res = await axios.get(
     `${process.env.baseURL}/api/whitelist/all?limit=100&page=1`
