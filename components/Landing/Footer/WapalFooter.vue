@@ -67,7 +67,6 @@
         <footer-link name="API" />
         <footer-link name="Docs" />
         <footer-link name="Faqs" to="/faq" />
-        <footer-link name="Newsletter" />
       </div>
       <div
         class="tw-text-sm tw-font-normal tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
