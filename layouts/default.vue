@@ -1,7 +1,6 @@
 <template>
   <v-app class="landing-background tw-w-full tw-overflow-hidden tw-relative">
-    <verification v-if="!getVerifiedStatus" />
-    <div v-else>
+    <div>
       <Navbar @landingMenuToggled="toggleMainContainer" />
       <Nuxt :class="mainClass" class="tw-pb-16" />
       <wapal-footer :class="mainClass" />
@@ -14,11 +13,10 @@
 import Navbar from "@/components/Landing/Navbar/Navbar.vue";
 import WapalFooter from "@/components/Landing/Footer/WapalFooter.vue";
 import Toast from "@/components/Reusable/Toast.vue";
-import Verification from "@/components/Landing/Verification.vue";
 export default {
-  components: { Navbar, WapalFooter, Toast, Verification },
+  components: { Navbar, WapalFooter, Toast },
   data() {
-    return { mainClass: "", showVerification: true };
+    return { mainClass: "" };
   },
   methods: {
     toggleMainContainer(landingMenuShowing: boolean) {
@@ -27,14 +25,6 @@ export default {
       } else {
         this.mainClass = "";
       }
-    },
-  },
-  computed: {
-    getVerifiedStatus() {
-      if (process.client) {
-        return JSON.parse(localStorage.getItem("verified") || "false");
-      }
-      return false;
     },
   },
 };
