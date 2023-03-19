@@ -55,6 +55,7 @@ const connectWallet = async (walletName: WalletName) => {
   if (
     wallet.network?.name.toLowerCase() !== NetworkName.Testnet.toLowerCase()
   ) {
+    await wallet.disconnect();
     throw new Error("Please Change your network to Testnet");
   }
 };
