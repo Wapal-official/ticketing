@@ -5,13 +5,13 @@
     :draggable="false"
   >
     <div
-      class="tw-relative tw-rounded-lg tw-w-[300px] tw-h-[300px] lg:tw-w-[250px] lg:tw-h-[250px] xl:tw-w-[280px] xl:tw-h-[280px]"
+      class="tw-relative tw-rounded-lg tw-w-[300px] tw-h-[300px] md:tw-w-[350px] md:tw-h-[350px] lg:tw-w-[250px] lg:tw-h-[250px] 2xl:tw-w-[280px] 2xl:tw-h-[280px]"
     >
       <div
-        class="tw-rounded-lg tw-w-[300px] tw-h-[300px] tw-overflow-hidden lg:tw-w-[250px] lg:tw-h-[250px] xl:tw-w-[280px] xl:tw-h-[280px]"
+        class="tw-rounded-lg tw-w-[300px] tw-h-[300px] tw-overflow-hidden md:tw-w-[350px] md:tw-h-[350px] lg:tw-w-[250px] lg:tw-h-[250px] 2xl:tw-w-[280px] 2xl:tw-h-[280px]"
       >
         <img
-          class="tw-object-cover tw-rounded-lg tw-w-[300px] tw-h-[300px] tw-mx-auto tw-group tw-transition-all tw-duration-200 tw-ease-linear lg:tw-w-[250px] lg:tw-h-[250px] md:tw-mx-0 group-hover:tw-scale-110 xl:tw-w-[280px] xl:tw-h-[280px]"
+          class="tw-object-cover tw-rounded-lg tw-w-[300px] tw-h-[300px] tw-mx-auto tw-group tw-transition-all tw-duration-200 tw-ease-linear md:tw-w-[350px] md:tw-h-[350px] lg:tw-w-[250px] lg:tw-h-[250px] md:tw-mx-0 group-hover:tw-scale-110 xl:tw-w-[280px] xl:tw-h-[280px]"
           :src="collection?.image"
           :alt="collection?.collection_name"
         />
@@ -22,19 +22,92 @@
         <h5 class="tw-uppercase tw-font-medium collection-name">
           {{ collection?.name }}
         </h5>
-        <h6 class="tw-text-lg tw-text-wapal-pink tw-font-normal">Live</h6>
+        <h6 class="tw-text-xl tw-text-wapal-pink tw-font-normal" v-if="status">
+          Live
+        </h6>
+        <count-down
+          :startTime="getStartTime"
+          @countdownComplete="countdownComplete"
+          v-else
+        />
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-6 tw-capitalize tw-w-full tw-text-sm"
         >
           <div>items {{ collection?.supply }}</div>
-          <div>price 0.005 apt</div>
+          <div v-if="getPrice != 0">{{ getPrice }} Apt</div>
+          <div v-else>Free Mint</div>
         </div>
       </div>
     </div>
   </NuxtLink>
 </template>
 <script lang="ts">
+import CountDown from "@/components/Reusable/CountDown.vue";
 export default {
+  components: { CountDown },
   props: { collection: { type: Object } },
+  data() {
+    return {
+      status: false,
+    };
+  },
+  computed: {
+    getStatus() {
+      const whiteListDate = new Date(
+        this.collection.candyMachine_id.whitelist_sale_time
+      );
+      const publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
+
+      const date = new Date();
+
+      if (date > whiteListDate || date > publicSaleDate) {
+        return true;
+      }
+
+      return false;
+    },
+    getPrice() {
+      const whiteListDate = new Date(
+        this.collection.candyMachine_id.whitelist_sale_time
+      );
+      const publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
+      const now = new Date();
+      if (
+        this.collection.candyMachine_id.public_sale_price ==
+        this.collection.candyMachine_id.whitelist_price
+      ) {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+
+      if (whiteListDate > now && whiteListDate < publicSaleDate) {
+        return this.collection.candyMachine_id.whitelist_price;
+      } else {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+    },
+    getStartTime() {
+      const whiteListDate = new Date(
+        this.collection.candyMachine_id.whitelist_sale_time
+      );
+      const publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
+
+      if (whiteListDate > publicSaleDate) {
+        return publicSaleDate.toString();
+      } else {
+        return whiteListDate.toString();
+      }
+    },
+  },
+  methods: {
+    countdownComplete() {
+      this.status = true;
+    },
+  },
 };
 </script>

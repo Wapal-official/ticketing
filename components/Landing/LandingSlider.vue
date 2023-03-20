@@ -3,7 +3,7 @@
     <div class="swiper mySwiper" ref="swiper">
       <div class="swiper-wrapper">
         <slider-card
-          v-for="(collection, index) in collections"
+          v-for="(collection, index) in sliderCollections"
           :key="index"
           :collection="collection"
         />
@@ -22,7 +22,7 @@ export default {
   components: { SliderCard },
   data() {
     return {
-      sliderImages: [],
+      sliderCollections: [],
     };
   },
   async mounted() {
@@ -51,7 +51,7 @@ export default {
           spaceBetween: 24,
         },
         1400: {
-          slidesPerView: 4,
+          slidesPerView: 5,
           slidesPerGroup: 1,
           spaceBetween: 16,
         },
@@ -67,6 +67,20 @@ export default {
         },
       },
     });
+  },
+  watch: {
+    collections(mountedCollections) {
+      if (mountedCollections.length > 0) {
+        this.sliderCollections = mountedCollections;
+      }
+    },
+    sliderCollections(newSliderCollection) {
+      if (newSliderCollection.length < 12) {
+        newSliderCollection.map((collection) => {
+          this.sliderCollections.push(collection);
+        });
+      }
+    },
   },
 };
 </script>
