@@ -103,9 +103,10 @@
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
           >
-            <h6 class="tw-capitalize tw-text-white">
+            <h6 class="tw-capitalize tw-text-white" v-if="getCurrentPrice != 0">
               price {{ getCurrentPrice }} apt
             </h6>
+            <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
             <button
               class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
               :class="{
@@ -145,9 +146,13 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 md:tw-gap-4"
           >
             <div>Whitelist Sale</div>
-            <div class="tw-capitalize">
+            <div
+              class="tw-capitalize"
+              v-if="collection.candyMachine_id.whitelist_price != 0"
+            >
               price {{ collection.candyMachine_id.whitelist_price }} apt
             </div>
+            <div class="tw-capitalize" v-else>Free Mint</div>
           </div>
           <div
             class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start"
@@ -167,9 +172,13 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 md:tw-gap-4"
           >
             <div>Public Sale</div>
-            <div class="tw-capitalize">
+            <div
+              class="tw-capitalize"
+              v-if="collection.candyMachine_id.public_sale_price != 0"
+            >
               price {{ collection.candyMachine_id.public_sale_price }} apt
             </div>
+            <div class="tw-capitalize" v-else>Free Mint</div>
           </div>
           <div
             class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start"

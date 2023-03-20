@@ -26,7 +26,8 @@
           class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-8 tw-capitalize tw-w-full"
         >
           <div>items {{ collection?.supply }}</div>
-          <div>price {{ getPrice }} apt</div>
+          <div v-if="getPrice !=0">price {{ getPrice }} apt</div>
+          <div v-else>Free Mint</div>
         </div>
       </div>
     </div>
