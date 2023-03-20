@@ -42,7 +42,7 @@
         <div
           class="tw-border tw-border-[#e229a0] tw-uppercase tw-text-xs tw-text-[#e229a0] tw-px-4 tw-py-2"
         >
-          Undoxxed
+          {{ collection.isVerified ? "Doxxed" : "Undoxxed" }}
         </div>
         <a :href="collection.twitter" target="_blank">
           <v-icon
@@ -227,6 +227,7 @@ export default {
         image: "",
         twitter: "",
         discord: "",
+        isVerified: false,
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
