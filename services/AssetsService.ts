@@ -42,7 +42,7 @@ export const singleFileUpload = async (formData: any) => {
   };
 
   const res = await publicRequest.post(
-    `/api/bundlr/singleupload`,
+    `/api/uploader/singleupload`,
     formData,
     config
   );
@@ -56,7 +56,7 @@ export const folderUpload = async (formData: any) => {
   };
 
   const res = await publicRequest.post(
-    `/api/bundlr/folderupload`,
+    `/api/uploader/folderupload`,
     formData,
     config
   );
@@ -65,7 +65,7 @@ export const folderUpload = async (formData: any) => {
 };
 
 export const getPrice = async () => {
-  const res = await publicRequest.get(`/api/bundlr/fund`);
+  const res = await publicRequest.get(`/api/uploader/fund`);
 
   return res;
 };

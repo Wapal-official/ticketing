@@ -1,9 +1,9 @@
 <template>
-  <div class="tw-pb-8 tw-w-full tw-min-h-screen">
-    <div class="tw-container tw-mx-auto">
+  <div class="tw-pb-8 tw-w-full tw-min-h-screen tw-px-8">
+    <div class="tw-container tw-mx-auto ">
       <v-tabs
         active-class="!tw-text-wapal-pink"
-        class="!tw-bg-transparent tw-px-8"
+        class="!tw-bg-transparent"
         id="explore-tab"
         v-model="exploreTab"
         @change="tabChanged(exploreTab)"
@@ -20,7 +20,7 @@
     <v-tabs-items
       v-model="exploreTab"
       id="explore-tab-items"
-      class="tw-py-8 tw-px-8"
+      class="tw-py-8"
       v-if="!loading && collections[0]._id !== null"
       @change="tabChanged(exploreTab)"
     >

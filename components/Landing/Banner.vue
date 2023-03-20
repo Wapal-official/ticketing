@@ -42,7 +42,7 @@
         <div
           class="tw-border tw-border-[#e229a0] tw-uppercase tw-text-xs tw-text-[#e229a0] tw-px-4 tw-py-2"
         >
-          Undoxxed
+          {{ collection.isVerified ? "Doxxed" : "Undoxxed" }}
         </div>
         <a :href="collection.twitter" target="_blank">
           <v-icon
@@ -79,9 +79,10 @@
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
         >
-          <h6 class="tw-capitalize tw-text-white">
+          <h6 class="tw-capitalize tw-text-white" v-if="getCurrentPrice != 0">
             price {{ getCurrentPrice }} apt
           </h6>
+          <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
           <button
             class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
             :class="{
@@ -226,6 +227,7 @@ export default {
         image: "",
         twitter: "",
         discord: "",
+        isVerified: false,
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
