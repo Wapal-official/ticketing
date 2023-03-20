@@ -1,11 +1,14 @@
 <template>
-  <NuxtLink :to="`/nft/${collection?._id}`" class="tw-group">
+  <NuxtLink
+    :to="`/nft/${collection?._id}`"
+    class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
+  >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
         <img
           :src="collection?.image"
           :alt="collection?.name"
-          class="tw-w-full tw-h-full tw-min-h-[370px] tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
+          class="tw-w-full tw-h-full tw-min-h-[370px] tw-object-fill tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
         />
       </div>
       <div
@@ -26,7 +29,7 @@
           class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-8 tw-capitalize tw-w-full"
         >
           <div>items {{ collection?.supply }}</div>
-          <div v-if="getPrice !=0">price {{ getPrice }} apt</div>
+          <div v-if="getPrice != 0">price {{ getPrice }} apt</div>
           <div v-else>Free Mint</div>
         </div>
       </div>

@@ -13,7 +13,7 @@
           <img
             :src="collection.image"
             :alt="collection.name"
-            class="tw-w-full tw-rounded-lg"
+            class="tw-w-full tw-rounded-lg tw-max-h-[550px] tw-object-fill"
           />
         </div>
         <h3
