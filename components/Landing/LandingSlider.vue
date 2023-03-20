@@ -1,22 +1,12 @@
 <template>
-  <section class="tw-py-16">
+  <section class="tw-py-16 tw-select-none tw-cursor-grab">
     <div class="swiper mySwiper" ref="swiper">
       <div class="swiper-wrapper">
-        <div
-          class="swiper-slide tw-flex tw-flex-row tw-items-center tw-justify-center"
-          v-for="(image, index) in sliderImages"
+        <slider-card
+          v-for="(collection, index) in collections"
           :key="index"
-        >
-          <div
-            class="tw-overflow-hidden tw-rounded-2xl tw-w-fit tw-select-none"
-          >
-            <img
-              :src="image"
-              class="tw-object-fill tw-w-[300px] tw-h-[300px] tw-mx-auto md:tw-mx-0 md:tw-w-[250px] md:tw-h-[250px] tw-transition-all tw-duration-150 tw-ease-linear tw-transform tw-cursor-pointer hover:tw-scale-110"
-              alt="Image"
-            />
-          </div>
-        </div>
+          :collection="collection"
+        />
       </div>
     </div>
   </section>
@@ -24,58 +14,56 @@
 <script>
 import Swiper from "swiper/swiper-bundle.min";
 import "swiper/swiper-bundle.min.css";
-import sliderImage1 from "@/assets/img/slider1.png";
-import sliderImage2 from "@/assets/img/slider2.png";
-import sliderImage3 from "@/assets/img/slider3.png";
-import sliderImage4 from "@/assets/img/slider4.png";
-import sliderImage5 from "@/assets/img/slider5.png";
-import sliderImage6 from "@/assets/img/slider6.png";
-import sliderImage7 from "@/assets/img/slider7.png";
+
+import SliderCard from "@/components/Landing/SliderCard.vue";
+
 export default {
+  props: { collections: { type: Array }, loading: { type: Boolean } },
+  components: { SliderCard },
   data() {
     return {
       sliderImages: [],
-      sliderImage1,
-      sliderImage2,
-      sliderImage3,
-      sliderImage4,
-      sliderImage5,
-      sliderImage6,
-      sliderImage7,
     };
   },
   async mounted() {
-    this.sliderImages.push(this.sliderImage1);
-    this.sliderImages.push(this.sliderImage2);
-    this.sliderImages.push(this.sliderImage3);
-    this.sliderImages.push(this.sliderImage4);
-    this.sliderImages.push(this.sliderImage5);
-    this.sliderImages.push(this.sliderImage6);
-    this.sliderImages.push(this.sliderImage7);
     await this.$nextTick();
     new Swiper(this.$refs.swiper, {
-      spaceBetween: 16,
       autoplay: {
         delay: 3000,
       },
       grabCursor: true,
       loop: true,
+      touchEventsTarget: "container",
       breakpoints: {
         375: {
           slidesPerView: 1,
           slidesPerGroup: 1,
+          spaceBetween: 24,
         },
         768: {
-          slidesPerView: 3,
+          slidesPerView: 2,
           slidesPerGroup: 1,
+          spaceBetween: 24,
         },
         1024: {
+          slidesPerView: 4,
+          slidesPerGroup: 1,
+          spaceBetween: 24,
+        },
+        1400: {
+          slidesPerView: 4,
+          slidesPerGroup: 1,
+          spaceBetween: 16,
+        },
+        1536: {
           slidesPerView: 5,
           slidesPerGroup: 1,
+          spaceBetween: 24,
         },
         1920: {
-          slidesPerView: 7,
+          slidesPerView: 6,
           slidesPerGroup: 1,
+          spaceBetween: 24,
         },
       },
     });
@@ -85,5 +73,9 @@ export default {
 <style>
 .swiper-wrapper {
   transition-timing-function: linear;
+}
+
+.swiper {
+  overflow: visible;
 }
 </style>

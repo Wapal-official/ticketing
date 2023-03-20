@@ -1,15 +1,17 @@
 <template>
   <div v-if="!loading">
     <div
-      class="tw-max-w-[250px] tw-max-h-[300px] tw-group tw-cursor-pointer"
+      class="tw-w-full tw-h-full tw-group tw-cursor-pointer xl:tw-min-h-[400px] 2xl:tw-min-h-[300px] 3xl:tw-min-h-[400px]"
       @click="displayFileDetails"
       v-if="checkFileType === 'image'"
     >
-      <div class="tw-relative tw-max-h-[250px] tw-overflow-hidden">
+      <div
+        class="tw-relative tw-max-h-[250px] xl:tw-max-h-[400px] tw-w-full tw-overflow-hidden 2xl:tw-min-h-[300px] 2xl:tw-max-h-[300px] 3xl:min-h-[400px] 3xl:tw-max-h-[400px]"
+      >
         <img
           :src="getImageSrc"
           :alt="getImageName"
-          class="tw-w-[250px] tw-h-[250px] tw-object-cover"
+          class="tw-min-h-[250px] xl:tw-min-h-[400px] tw-w-full tw-object-cover 2xl:tw-min-h-[300px] 3xl:tw-min-h-[400px]"
         />
         <div
           class="tw-w-full tw-h-full tw-px-4 tw-absolute tw-top-0 tw-left-0 tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-start tw-justify-end tw-gap-4 group-hover:tw-bg-black/25 group-hover:tw-opacity-100"

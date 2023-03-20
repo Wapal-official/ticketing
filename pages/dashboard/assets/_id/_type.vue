@@ -43,7 +43,7 @@
     >
       <div class="tw-w-full">
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 tw-flex-wrap tw-flex-shrink md:tw-justify-start"
+          class="tw-grid tw-container tw-mx-auto tw-grid-cols-1 tw-gap-4 md:tw-grid-cols-3 2xl:tw-grid-cols-4"
           v-if="!listView"
         >
           <assets-file-card
@@ -75,10 +75,9 @@
                   class="!tw-border-none tw-uppercase tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-8"
                 >
                   <img
-                    :src="item.src"
+                    :src="item.image ? item.image : item.src"
                     :alt="item.name"
                     class="tw-w-[45px] tw-h-[45px] tw-object-cover"
-                    v-if="getFileType(item)"
                   />{{ item.name }}
                 </td>
                 <td class="!tw-border-none">{{ item.createdDate }}</td>
@@ -89,15 +88,15 @@
         </v-data-table>
       </div>
     </div>
-    <div
-      class="tw-fixed tw-w-screen tw-h-screen tw-top-0 tw-left-0 tw-bg-black/50 tw-flex tw-flex-row tw-justify-center"
-      v-if="showFileDetails"
+    <v-dialog
+      v-model="showFileDetails"
+      content-class="!tw-w-full !tw-mx-2 !tw-rounded-none md:!tw-mx-auto md:!tw-w-1/2 md:!tw-border-t-wapal-dashboard-active md:!tw-border-b-wapal-dashboard-active lg:!tw-w-[40%]"
     >
       <assets-image-details
         :file="currentFile"
         @close="showFileDetails = false"
       />
-    </div>
+    </v-dialog>
 
     <form
       class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
@@ -527,16 +526,44 @@ export default {
 
       tempFiles.map(async (file: string) => {
         try {
-          const tempFile = await this.$axios.get(`https://arweave.net/${file}`);
-          const createdDate = moment().format("DD/MM/YYYY");
-          this.paginatedFiles.push({
-            _id: file,
-            name: this.fileIndex.toString(),
-            src: `https://arweave.net/${file}`,
-            type: tempFile.headers["content-type"],
-            createdDate: createdDate,
-            size: tempFile.headers["content-length"],
-          });
+          const res = await this.$axios.get(`https://arweave.net/${file}`);
+
+          const tempFile = res.data;
+
+          let fileType = "image";
+
+          if (
+            res.headers["content-type"] === "application/json; charset=utf-8"
+          ) {
+            fileType = "json";
+          }
+
+          if (fileType === "json" && this.type === "assets") {
+            const createdDate = moment(
+              tempFile.date ? tempFile.date : ""
+            ).format("DD/MM/YYYY");
+
+            this.paginatedFiles.push({
+              _id: file,
+              name: tempFile.name,
+              src: `https://arweave.net/${file}`,
+              type: res.headers["content-type"],
+              createdDate: createdDate,
+              size: res.headers["content-length"],
+              image: tempFile.image,
+            });
+          } else {
+            const createdDate = moment().format("DD/MM/YYYY");
+
+            this.paginatedFiles.push({
+              _id: file,
+              name: this.fileIndex.toString(),
+              src: `https://arweave.net/${file}`,
+              type: res.headers["content-type"],
+              createdDate: createdDate,
+              size: res.headers["content-length"],
+            });
+          }
 
           this.fileIndex++;
         } catch (error) {
@@ -554,7 +581,12 @@ export default {
         files = [...this.uploadedFile];
       }
 
-      files = files.filter((file: any) => file.name !== ".DS_Store");
+      files = files.filter((file: any) => {
+        return (
+          !/\.DS_Store$/i.test(file.webkitRelativePath) &&
+          !/\.DS_Store$/i.test(file.name)
+        );
+      });
 
       files.sort((a: any, b: any) => {
         const firstFileName = a.name;
@@ -586,14 +618,14 @@ export default {
 
         if (
           this.type === "metadata" &&
-          this.folderInfo.assets.files.length !== this.uploadedFile.length
+          this.folderInfo.assets.files.length !== files.length
         ) {
           throw new Error(
             "Your metadata folder does not have same file length as Image Folder"
           );
         }
 
-        const batchLoop = Math.ceil(this.uploadedFile.length / 50);
+        const batchLoop = Math.ceil(files.length / 50);
 
         let responseCount = 0;
         let response = null;
@@ -625,6 +657,10 @@ export default {
                   "Please Only Upload JSON Files on Metadata Folder"
                 );
               }
+            }
+
+            if (file.name !== file.name.trim()) {
+              throw new Error("Please Name your files without white spaces");
             }
 
             const filename = file.name;

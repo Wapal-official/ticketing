@@ -6,7 +6,7 @@
       />
     </section>
     <div>
-      <landing-slider />
+      <landing-slider :collections="sliderCollections" :loading="loading" />
       <div class="tw-px-4 md:tw-px-16">
         <section class="tw-pt-8 tw-pb-4 tw-container tw-mx-auto">
           <landing-section-heading heading="Live" />
@@ -69,6 +69,7 @@ export default {
       liveCollections: [],
       upcomingCollections: [{ _id: "" }],
       loading: true,
+      sliderCollections: [],
     };
   },
   methods: {
@@ -108,6 +109,8 @@ export default {
           return collection;
         }
       });
+
+      this.sliderCollections = this.liveCollections;
 
       this.liveCollections = this.liveCollections.slice(0, 4);
 
