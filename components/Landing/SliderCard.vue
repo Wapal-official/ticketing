@@ -13,25 +13,30 @@
         <img
           class="tw-object-cover tw-rounded-lg tw-w-[300px] tw-h-[300px] tw-mx-auto tw-group tw-transition-all tw-duration-200 tw-ease-linear md:tw-w-[350px] md:tw-h-[350px] lg:tw-w-[250px] lg:tw-h-[250px] md:tw-mx-0 group-hover:tw-scale-110 xl:tw-w-[280px] xl:tw-h-[280px]"
           :src="collection?.image"
-          :alt="collection?.collection_name"
+          :alt="collection?.name"
         />
       </div>
       <div
         class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-py-2 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card tw-opacity-0 tw-group tw-transition-all tw-duration-200 tw-ease-linear group-hover:tw-opacity-100"
       >
-        <h5 class="tw-uppercase tw-font-medium collection-name">
+        <h5 class="tw-uppercase tw-font-medium tw-pl-2 tw-pr-8 collection-name">
           {{ collection?.name }}
         </h5>
-        <h6 class="tw-text-xl tw-text-wapal-pink tw-font-normal" v-if="status">
-          Live
-        </h6>
-        <count-down
-          :startTime="getStartTime"
-          @countdownComplete="countdownComplete"
-          v-else
-        />
+        <div class="tw-pr-4">
+          <h6
+            class="tw-text-xl tw-text-wapal-pink tw-font-normal"
+            v-if="status"
+          >
+            Live
+          </h6>
+          <count-down
+            :startTime="getStartTime"
+            @countdownComplete="countdownComplete"
+            v-else
+          />
+        </div>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-6 tw-capitalize tw-w-full tw-text-sm"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-6 tw-capitalize tw-w-full tw-text-sm tw-pr-4"
         >
           <div>items {{ collection?.supply }}</div>
           <div v-if="getPrice != 0">{{ getPrice }} Apt</div>
