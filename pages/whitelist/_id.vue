@@ -23,10 +23,7 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full md:tw-items-center lg:tw-flex-row lg:tw-items-center"
           >
             <span class="tw-pr-4 lg:tw-pr-8">Live In</span>
-            <count-down
-              :shadow="true"
-              :startTime="collection.candyMachine_id.whitelist_sale_time"
-            />
+            <count-down :shadow="true" :startTime="whitelist.whitelist_start" />
           </div>
         </h3>
       </div>
@@ -102,9 +99,16 @@
           <div class="tw-text-lg">Connect Wallet</div>
           <button
             class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
+            @click="showConnectWalletModal = true"
+            v-if="!getWalletStatus"
           >
             Connect
           </button>
+          <div v-else>
+            <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+              >mdi-check-circle</v-icon
+            >
+          </div>
         </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded"
@@ -112,9 +116,16 @@
           <div class="tw-text-lg">Login to your Wapal Account</div>
           <button
             class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
+            @click="showSignupDialog = true"
+            v-if="!getUserStatus"
           >
             LogIn
           </button>
+          <div v-else>
+            <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+              >mdi-check-circle</v-icon
+            >
+          </div>
         </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded"
@@ -122,9 +133,16 @@
           <div class="tw-text-lg">Connect to Discord</div>
           <button
             class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
+            @click="connectDiscord"
+            v-if="!getDiscordStatus"
           >
             Connect
           </button>
+          <div v-else>
+            <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+              >mdi-check-circle</v-icon
+            >
+          </div>
         </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded"
@@ -132,13 +150,21 @@
           <div class="tw-text-lg">Connect to Twitter</div>
           <button
             class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
+            @click="connectTwitter"
           >
             Connect
           </button>
+          <!-- <div>
+            <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+              >mdi-check-circle</v-icon
+            >
+          </div> -->
         </div>
         <div class="tw-w-full tw-flex tw-flex-row tw-justify-center">
           <button
-            class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded md:tw-py-3 md:tw-px-16"
+            class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded md:tw-py-3 md:tw-px-16 disabled:tw-bg-[#FF36AB]/75"
+            @click="verifyAndEnter"
+            :disabled="disableVerifyAndEnter"
           >
             Verify and Enter
           </button>
@@ -156,22 +182,85 @@
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
     >
       <connect-wallet-modal
-        message="Please Connect your wallet to Mint"
         @closeModal="showConnectWalletModal = false"
         @walletConnected="displayWalletConnectedMessage"
       />
     </v-dialog>
+    <v-dialog
+      v-model="showSignupDialog"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
+    >
+      <signup-modal
+        @close="showSignupDialog = false"
+        @walletConnected="displayWalletConnectedMessage"
+      />
+    </v-dialog>
+    <v-dialog
+      v-model="showVerifyingDialog"
+      content-class="!tw-w-full md:!tw-w-1/2"
+    >
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-bg-modal-gray tw-rounded tw-py-4 tw-px-4 tw-gap-6"
+      >
+        <h2 class="tw-text-xl tw-font-semibold tw-text-white">Verifying</h2>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start"
+          v-if="error.discord.error"
+        >
+          <div
+            v-if="error.discord.type === 'server not joined'"
+            class="tw-text-lg tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4"
+          >
+            <h3>You have not joined the discord server for this whitelist</h3>
+            <p>
+              Please join
+              <a
+                :href="this.whitelist.discord_server_url"
+                target="_blank"
+                class="!tw-text-wapal-pink hover:tw-text-wapal-pink"
+                >{{ this.whitelist.discord_server_name }}</a
+              >
+            </p>
+          </div>
+          <div
+            v-if="error.discord.type === 'roles not provided'"
+            class="tw-text-lg tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4"
+          >
+            <h3>You are not promoted to roles required for this whitelist</h3>
+            <p>
+              Please get promoted to
+              <span
+                v-for="(role, index) in whitelist?.discord_roles"
+                :key="role.id"
+                v-if="whitelist?.discord_roles[0].name"
+              >
+                <span v-if="index === whitelist?.discord_roles.length - 1"
+                  >{{ role.name }}
+                </span>
+                <span v-else>{{ role.name }}, </span>
+              </span>
+            </p>
+          </div>
+        </div>
+        <div v-else>Enter</div>
+      </div>
+    </v-dialog>
   </div>
 </template>
 <script lang="ts">
-import { getCollection } from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
+import ConnectWalletModal from "@/components/ConnectWallet/ConnectWalletModal.vue";
+import SignupModal from "@/components/Signup/SignupModal.vue";
+
+import { getWhitelistById } from "@/services/WhitelistService";
+import { getCollection } from "@/services/CollectionService";
+import { discordRequest } from "@/services/DiscordInterceptor";
 
 import moment from "moment";
 
 export default {
-  components: { CountDown, Loading },
+  components: { CountDown, Loading, ConnectWalletModal, SignupModal },
   data() {
     return {
       loading: true,
@@ -190,13 +279,21 @@ export default {
         twitter: "",
         discord: "",
       },
-      whitelistSaleDate: null,
-      publicSaleDate: null,
-      showWhitelistSaleTimer: false,
-      showPublicSaleTimer: false,
-      showEndInTimer: false,
-      minting: false,
       showConnectWalletModal: false,
+      showSignupDialog: false,
+      whitelist: {
+        whitelist_start: "",
+        discord_roles: [{ name: "", id: "" }],
+      },
+      error: {
+        discord: {
+          message: "",
+          type: "",
+          error: false,
+        },
+      },
+      showVerifyingDialog: false,
+      disableVerifyAndEnter: false,
     };
   },
   methods: {
@@ -207,24 +304,122 @@ export default {
         message: `${this.$store.state.walletStore.wallet.wallet} Wallet Connected Successfully`,
       });
     },
+    displayMessageSignedMessage() {
+      this.showConnectWalletModal = false;
+
+      this.$toast.showMessage({
+        message: `Logged In Successfully`,
+      });
+    },
+    async connectTwitter() {},
+    async connectDiscord() {
+      try {
+        const discordOptions = this.$auth.strategies.discord.options;
+        console.log(discordOptions);
+
+        const scopes = encodeURIComponent(discordOptions.scope.join(" "));
+
+        const discordConnectionURL = `${discordOptions.endpoints.authorization}?client_id=${discordOptions.clientId}&redirect_uri=${discordOptions.redirectUri}&response_type=code&scope=${scopes}`;
+
+        window.open(discordConnectionURL, "_blank");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async verifyAndEnter() {
+      this.disableVerifyAndEnter = true;
+      this.error = {
+        discord: {
+          message: "",
+          type: "",
+          error: false,
+        },
+      };
+
+      this.showVerifyingDialog = true;
+
+      const checkDiscordRequirements = await this.checkJoinedDiscordServer();
+
+      if (checkDiscordRequirements === 0) {
+        this.error.discord.message = "Please join this discord Server";
+        this.error.discord.type = "server not joined";
+        this.error.discord.error = true;
+        this.enableVerifyAndEnterButton();
+
+        return false;
+      } else if (checkDiscordRequirements === -1) {
+        this.error.discord.message = "Please get promoted to these roles";
+        this.error.discord.type = "roles not provided";
+        this.error.discord.error = true;
+        this.enableVerifyAndEnterButton();
+
+        return false;
+      }
+      this.enableVerifyAndEnterButton();
+      return true;
+    },
+    async checkJoinedDiscordServer() {
+      try {
+        const res = await discordRequest.get(
+          `users/@me/guilds/${this.whitelist.discord_server_id}/member`
+        );
+
+        const roles = res.data.roles;
+
+        let checkedRoles = this.whitelist.discord_roles.length;
+        roles.map((role: any) => {
+          this.whitelist.discord_roles.map((whitelistRole: any) => {
+            if (role == whitelistRole.id) {
+              checkedRoles--;
+              return;
+            }
+          });
+        });
+
+        if (checkedRoles !== 0) {
+          return -1;
+        }
+
+        return 1;
+      } catch (error: any) {
+        if (error.response.data.message) {
+          if (error.response.data.message === "Unknown Guild") {
+            this.error.discord.error = true;
+            this.error.discord.message = "Please join guild";
+            this.error.discord.type = "server not joined";
+          }
+        }
+        return 0;
+      }
+    },
+    enableVerifyAndEnterButton() {
+      setTimeout(() => {
+        this.disableVerifyAndEnter = false;
+      }, 3000);
+    },
   },
   computed: {
     getMintDate() {
-      return moment(this.collection.whitelist_sale_time).format(
-        "MMM DD, hh:mm A"
-      );
+      return moment(this.whitelist.whitelist_start).format("MMM DD, hh:mm A");
+    },
+    getWalletStatus() {
+      return this.$store.state.walletStore.wallet.walletAddress ? true : false;
+    },
+    getUserStatus() {
+      return this.$store.state.walletStore.user.token ? true : false;
+    },
+    getDiscordStatus() {
+      return this.$store.state.discordStore.token ? true : false;
     },
   },
   async mounted() {
-    const res = await getCollection(this.$route.params.id);
-    this.collection = res.collection[0];
+    const res = await getWhitelistById(this.$route.params.id);
 
-    this.whitelistSaleDate = new Date(
-      this.collection.candyMachine_id.whitelist_sale_time
-    );
-    this.publicSaleDate = new Date(
-      this.collection.candyMachine_id.public_sale_time
-    );
+    this.whitelist = res.data.whitelist;
+
+    const collectionRes = await getCollection(this.whitelist.collection_id);
+
+    this.collection = collectionRes.collection[0];
 
     this.showEndInTimer = true;
 

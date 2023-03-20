@@ -6,9 +6,6 @@
       </button>
     </div>
     <p class="tw-text-sm md:tw-text-lg tw-font-normal tw-pb-4">
-      Wallet registered successfully.
-    </p>
-    <p class="tw-text-sm md:tw-text-lg tw-font-normal tw-pb-4">
       Sign a message to log in into Wapal
     </p>
     <primary-button @click.native="signMessage">Sign Message</primary-button>

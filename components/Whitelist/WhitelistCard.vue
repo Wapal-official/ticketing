@@ -1,5 +1,9 @@
 <template>
-  <div class="tw-group" v-if="!loading">
+  <NuxtLink
+    class="tw-group"
+    v-if="!loading"
+    :to="`/whitelist/${whitelist?._id}`"
+  >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
         <img
@@ -56,7 +60,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </NuxtLink>
   <div v-else>
     <div class="tw-rounded tw-relative tw-w-full tw-h-[400px]">
       <div

@@ -5,6 +5,8 @@ const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const CANDY_MACHINE_ID = process.env.CANDY_MACHINE_ID;
 const NETWORK = process.env.NETWORK;
+const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -59,7 +61,7 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["cookie-universal-nuxt", "@nuxtjs/axios", "@nuxtjs/proxy"],
+  modules: ["cookie-universal-nuxt", "@nuxtjs/axios", "@nuxtjs/auth-next"],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -118,5 +120,31 @@ export default {
     AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY,
     CANDY_MACHINE_ID: CANDY_MACHINE_ID,
     NETWORK: NETWORK,
+    DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
+    DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
+  },
+  auth: {
+    strategies: {
+      discord: {
+        scheme: "oauth2",
+        clientId: process.env.DISCORD_CLIENT_ID,
+        clientSecret: process.env.DISCORD_CLIENT_SECRET,
+        scope: [
+          "identify",
+          "email",
+          "connections",
+          "guilds",
+          "guilds.members.read",
+        ],
+        endpoints: {
+          authorization: "https://discord.com/oauth2/authorize",
+          token: "https://discord.com/api/oauth2/token",
+          userInfo: "https://discord.com/api/users/@me",
+        },
+        redirect_uri: "http://localhost:3000/discord/token",
+        redirectUri: "http://localhost:3000/discord/token",
+        fetchUser: false,
+      },
+    },
   },
 };
