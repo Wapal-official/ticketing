@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-group xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
+    class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
     v-if="!loading"
   >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full">
