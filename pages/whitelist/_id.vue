@@ -441,6 +441,10 @@ export default {
       console.log(whitelistData);
 
       this.showVerifyingDialog = false;
+
+      this.$toast.showMessage({
+        message: "Whitelist Request Sent Successfully",
+      });
     },
     watchCookies() {
       const interval = setInterval(() => {
