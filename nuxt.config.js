@@ -7,6 +7,18 @@ const CANDY_MACHINE_ID = process.env.CANDY_MACHINE_ID;
 const NETWORK = process.env.NETWORK;
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
+const NODE_ENV = process.env.NODE_ENV;
+const APTOS_API_KEY = process.env.APTOS_API_KEY;
+
+let discordRedirectURI = "";
+
+if (NODE_ENV === "development") {
+  discordRedirectURI = "http://localhost:3000/discord/token";
+} else if (NODE_ENV === "staging") {
+  discordRedirectURI = "https://staging-wapal.io/discord/token";
+} else {
+  discordRedirectURI = "https://wapal.io/discord/token";
+}
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -119,6 +131,7 @@ export default {
     NETWORK: NETWORK,
     DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
     DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
+    APTOS_API_KEY: APTOS_API_KEY,
   },
   auth: {
     strategies: {
@@ -138,8 +151,8 @@ export default {
           token: "https://discord.com/api/oauth2/token",
           userInfo: "https://discord.com/api/users/@me",
         },
-        redirect_uri: "http://localhost:3000/discord/token",
-        redirectUri: "http://localhost:3000/discord/token",
+        redirect_uri: discordRedirectURI,
+        redirectUri: discordRedirectURI,
         fetchUser: false,
       },
     },

@@ -18,7 +18,7 @@ import { AptosClient } from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
 
-const NODE_URL = `https://fullnode.testnet.aptoslabs.com`;
+const NODE_URL = `https://aptos-${process.env.NETWORK}.nodereal.io/v1/${process.env.APTOS_API_KEY}/v1`;
 
 const client = new AptosClient(NODE_URL);
 
