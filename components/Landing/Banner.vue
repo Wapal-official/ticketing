@@ -18,12 +18,16 @@
       <h3 class="tw-text-[1.75rem] tw-text-wapal-pink tw-font-normal tw-w-full">
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full"
-          v-if="showWhitelistSaleTimer && showPublicSaleTimer"
+          v-if="showLiveInTimer"
         >
           <span class="tw-pr-4 lg:tw-pr-8">Live In</span>
           <count-down
             :shadow="true"
-            :startTime="collection.candyMachine_id.whitelist_sale_time"
+            :startTime="
+              collection.candyMachine_id.whitelist_sale_time
+                ? collection.candyMachine_id.whitelist_sale_time
+                : collection.candyMachine_id.public_sale_time
+            "
           />
         </div>
         <span
@@ -74,7 +78,7 @@
       </div>
       <div
         class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-[#F0F0F0] tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
-        v-if="!showWhitelistSaleTimer || !showPublicSaleTimer"
+        v-if="showMintBox"
       >
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
@@ -331,17 +335,34 @@ export default {
   },
   computed: {
     getCurrentPrice() {
-      const whiteListDate = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
-      );
+      const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : "";
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
 
-      if (whiteListDate < publicSaleDate) {
+      if (whiteListDate && whiteListDate < publicSaleDate) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
         return this.collection.candyMachine_id.public_sale_price;
+      }
+    },
+    showMintBox() {
+      const publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
+      if (!this.whitelistSaleDate) {
+        return new Date() > publicSaleDate;
+      }
+
+      return !this.showWhitelistSaleTimer || !this.showPublicSaleTimer;
+    },
+    showLiveInTimer() {
+      if (!this.whitelistSaleDate) {
+        return this.showPublicSaleTimer;
+      } else {
+        return this.showWhitelistSaleTimer && this.showPublicSaleTimer;
       }
     },
   },
@@ -351,9 +372,11 @@ export default {
         const res = await getCollection(this.collectionId);
         this.collection = res.collection[0];
 
-        this.whitelistSaleDate = new Date(
-          this.collection.candyMachine_id.whitelist_sale_time
-        );
+        this.whitelistSaleDate = this.collection.candyMachine_id
+          .whitelist_sale_time
+          ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+          : "";
+
         this.publicSaleDate = new Date(
           this.collection.candyMachine_id.public_sale_time
         );
@@ -372,9 +395,11 @@ export default {
       const res = await getCollection("6415331e9cb214a367f1ee7a");
       this.collection = res.collection[0];
 
-      this.whitelistSaleDate = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
-      );
+      this.whitelistSaleDate = this.collection.candyMachine_id
+        .whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : "";
+
       this.publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
