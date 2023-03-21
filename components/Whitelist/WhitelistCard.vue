@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    class="tw-group"
+    class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
     v-if="!loading"
     :to="`/whitelist/${whitelist?._id}`"
   >
@@ -9,7 +9,7 @@
         <img
           :src="collection.image"
           :alt="collection.name"
-          class="tw-w-full tw-h-full tw-min-h-[370px] tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
+          class="tw-w-full tw-h-full tw-min-h-[370px] tw-object-fill tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
         />
       </div>
       <div
@@ -62,7 +62,7 @@
     </div>
   </NuxtLink>
   <div v-else>
-    <div class="tw-rounded tw-relative tw-w-full tw-h-[400px]">
+    <div class="tw-rounded tw-relative tw-w-full tw-h-[450px]">
       <div
         class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md tw-bg-gray-500 tw-transition-all tw-duration-300 tw-ease-linear tw-animate-pulse"
       ></div>
