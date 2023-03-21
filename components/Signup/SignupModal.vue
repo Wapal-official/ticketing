@@ -74,7 +74,7 @@ export default {
 
         const loginRes = await login(data);
 
-        this.$store.commit("walletStore/setUser", {
+        this.$store.dispatch("userStore/loginUser", {
           token: loginRes.data.token,
           user_id: loginRes.data.user._id,
         });

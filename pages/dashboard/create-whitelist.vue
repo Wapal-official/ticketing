@@ -389,7 +389,7 @@ export default {
   },
   async mounted() {
     const res = await getCollectionsOfUser(
-      this.$store.state.walletStore.user.user_id
+      this.$store.state.userStore.user.user_id
     );
 
     const selectCollections: any[] = res.data.data;

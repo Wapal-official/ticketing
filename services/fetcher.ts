@@ -8,7 +8,7 @@ export const publicRequest = axios.create({
 
 publicRequest.interceptors.request.use(function (config) {
   if (process.browser) {
-    const TOKEN = window.$nuxt.$store.state.walletStore.user.token;
+    const TOKEN = window.$nuxt.$store.state.userStore.user.token;
 
     if (TOKEN) {
       return {

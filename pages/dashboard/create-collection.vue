@@ -684,7 +684,7 @@ export default {
 
     this.folders.push(folderRes.data.folderInfo);
 
-    const res = await getAllFolder(this.$store.state.walletStore.user.user_id);
+    const res = await getAllFolder(this.$store.state.userStore.user.user_id);
 
     res.data.folderInfo.map((folder: any) => {
       if (folder.metadata.baseURI) {
