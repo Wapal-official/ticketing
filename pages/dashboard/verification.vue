@@ -467,7 +467,7 @@
                         >
                           <div
                             class="tw-bg-wapal-background tw-px-4 tw-py-2 tw-rounded-lg tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
-                            v-if="!document.name"
+                            v-if="!document[0].name"
                           >
                             Select Document
                           </div>
@@ -475,12 +475,22 @@
                             class="tw-bg-wapal-background tw-px-4 tw-py-2 tw-rounded-lg tw-max-w-4/5 tw-overflow-hidden"
                             v-else
                           >
-                            {{ document.name }}
+                            <span
+                              v-for="(singleDocument, index) in document"
+                              :key="index"
+                            >
+                              {{
+                                index === document.length - 1
+                                  ? singleDocument.name
+                                  : `${singleDocument.name},`
+                              }}</span
+                            >
                           </div>
                           <input
                             type="file"
                             class="image-collection"
                             @change="documentSelected"
+                            multiple
                           />
                         </label>
                       </div>
@@ -607,7 +617,7 @@ export default {
         per_code: null,
         profile_picture: null,
         document_type: null,
-        document: null,
+        document: [],
       },
       message: "",
       image: { name: null },
@@ -629,7 +639,7 @@ export default {
       countryList: [],
       stateList: [],
       profilePicture: { name: null },
-      document: { name: null },
+      document: [{ name: "" }],
       documentTypeOptions: [
         { label: "Select Document Type", value: null, disabled: true },
         { label: "Citizenship", value: "citizenship" },
@@ -641,7 +651,9 @@ export default {
   },
   methods: {
     imageSelected(event: any) {
-      this.image = event.target.files[0];
+      if (event.target.files) {
+        this.image = event.target.files[0];
+      }
     },
 
     copyAddress() {
@@ -751,7 +763,11 @@ export default {
       this.fetchResStates();
     },
     documentSelected(event: any) {
-      this.document = event.target.files[0];
+      if (!this.document[0].name) {
+        this.document = [];
+      }
+      this.document.push(event.target.files[0]);
+      console.log(this.document);
     },
     async uploadImage() {
       this.imageError = false;
@@ -764,7 +780,7 @@ export default {
       }
 
       try {
-        const res = await this.awsUpload(0);
+        const res = await this.awsUpload(this.image);
         this.verification.profile_picture = res.Location;
         return true;
       } catch (error) {
@@ -778,16 +794,25 @@ export default {
       this.documentError = false;
       const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.pdf)$/i;
 
-      if (!allowedExtensions.exec(this.document.name.toLowerCase())) {
-        this.documentError = true;
-        this.documentErrorMessage =
-          "Please upload a jpg, jpeg, png or pdf document";
-        throw Error("Please upload a jpg, jpeg, png or pdf document");
-      }
+      this.document.map((singleDocument: any) => {
+        if (!allowedExtensions.exec(singleDocument.name.toLowerCase())) {
+          this.documentError = true;
+          this.documentErrorMessage =
+            "Please upload a jpg, jpeg, png or pdf document";
+          throw Error("Please upload a jpg, jpeg, png or pdf document");
+        }
+      });
 
       try {
-        const res = await this.awsUpload(1);
-        this.verification.document = res.Location;
+        const res: any[] = await Promise.all(
+          this.document.map(async (singleDocument: any) => {
+            const res = await this.awsUpload(singleDocument);
+            return res;
+          })
+        );
+
+        this.verification.document.push(res[0].Location);
+        this.verification.document.push(res[1].Location);
         return true;
       } catch (error) {
         console.log(error);
@@ -796,7 +821,7 @@ export default {
         return false;
       }
     },
-    awsUpload(type: number) {
+    awsUpload(file: any) {
       const s3 = new AWS.S3({
         accessKeyId: process.env.AWS_ACCESS_KEY,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -807,7 +832,7 @@ export default {
       const params = {
         Bucket: "wapal-images",
         Key: key,
-        Body: type === 0 ? this.image : this.document,
+        Body: file,
       };
       return new Promise((resolve, reject) => {
         s3.upload(params, (err: any, data: any) => {
@@ -823,7 +848,7 @@ export default {
         // const imageUpload = await this.uploadImage();
         // const documentUpload = await this.uploadDocument();
 
-        console.log(this.verification);
+        // console.log(this.verification);
 
         this.submitting = false;
       } catch (error) {
@@ -835,6 +860,7 @@ export default {
   },
 
   async mounted() {
+    this.e1 = 2;
     this.fetchCountries();
     this.fetchResCountries();
   },
