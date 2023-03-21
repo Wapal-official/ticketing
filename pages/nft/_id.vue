@@ -83,23 +83,28 @@
             {{ collection.description }}
           </p>
         </div>
-        <!-- <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
-        <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
-        >
-          <span class="tw-capitalize tw-text-sm">pre sale mint</span>
-          <span class="tw-capitalize tw-text-sm"
-            >10% <span class="tw-text-[#ACACAC]">(100 out of 1000)</span></span
-          >
-        </div>
-        <div
-          class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px]"
-        >
+        <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
           <div
-            class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-[#E500A4] tw-w-[10%] tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
-          ></div>
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
+          >
+            <span class="tw-capitalize tw-text-sm">pre sale mint</span>
+            <span class="tw-capitalize tw-text-sm"
+              >{{ resource.mintedPercent }}%
+              <span class="tw-text-[#ACACAC]"
+                >({{ resource.minted }} out of
+                {{ resource.total_supply }})</span
+              ></span
+            >
+          </div>
+          <div
+            class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px]"
+          >
+            <div
+              class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-[#E500A4] tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
+              id="resourceMintedPercent"
+            ></div>
+          </div>
         </div>
-      </div> -->
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-[#F0F0F0] tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
           v-if="showMintBox"
@@ -218,6 +223,7 @@
 import { getCollection } from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
+import { clear } from "console";
 
 export default {
   components: { CountDown, Loading },
@@ -247,6 +253,12 @@ export default {
       showEndInTimer: false,
       minting: false,
       showConnectWalletModal: false,
+      resource: {
+        total_supply: 0,
+        minted: 0,
+        mintedPercent: 0,
+      },
+      unmounted: false,
     };
   },
   methods: {
@@ -312,7 +324,7 @@ export default {
           "walletStore/mintCollection",
           this.collection.candyMachine_id.resource_account
         );
-        console.log(res);
+
         if (res.success) {
           this.$toast.showMessage({
             message: `${this.collection.name} Minted Successfully`,
@@ -338,6 +350,28 @@ export default {
       this.$toast.showMessage({
         message: `${this.$store.state.walletStore.wallet.wallet} Wallet Connected Successfully`,
       });
+    },
+    showMintedProgress() {
+      const progressInterval = setInterval(async () => {
+        this.resource = await this.$store.dispatch(
+          "walletStore/getSupplyAndMintedOfCollection",
+          this.collection.candyMachine_id.resource_account
+        );
+
+        this.resource.mintedPercent = Math.ceil(
+          (this.resource.minted / this.resource.total_supply) * 100
+        );
+
+        const resourceMintedPercent: any = document.querySelector(
+          "#resourceMintedPercent"
+        );
+
+        resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
+
+        if (this.unmounted) {
+          clearInterval(progressInterval);
+        }
+      }, 5000);
     },
   },
   computed: {
@@ -391,6 +425,12 @@ export default {
     this.showEndInTimer = true;
 
     this.loading = false;
+
+    this.unmounted = true;
+    this.showMintedProgress();
+  },
+  unmounted() {
+    this.unmounted = true;
   },
 };
 </script>
