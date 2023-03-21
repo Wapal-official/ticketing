@@ -25,53 +25,54 @@ export default {
       sliderCollections: [],
     };
   },
-  async mounted() {},
+  async mounted() {
+    await this.$nextTick();
+    new Swiper(this.$refs.swiper, {
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
+      grabCursor: true,
+      loop: true,
+      touchEventsTarget: "container",
+      breakpoints: {
+        375: {
+          slidesPerView: 1,
+          slidesPerGroup: 1,
+          spaceBetween: 24,
+        },
+        768: {
+          slidesPerView: 2,
+          slidesPerGroup: 1,
+          spaceBetween: 24,
+        },
+        1024: {
+          slidesPerView: 4,
+          slidesPerGroup: 1,
+          spaceBetween: 24,
+        },
+        1400: {
+          slidesPerView: 5,
+          slidesPerGroup: 1,
+          spaceBetween: 16,
+        },
+        1536: {
+          slidesPerView: 5,
+          slidesPerGroup: 1,
+          spaceBetween: 24,
+        },
+        1920: {
+          slidesPerView: 6,
+          slidesPerGroup: 1,
+          spaceBetween: 24,
+        },
+      },
+    });
+  },
   watch: {
     async collections(mountedCollections) {
       if (mountedCollections.length > 0) {
         this.sliderCollections = mountedCollections;
-        await this.$nextTick();
-        new Swiper(this.$refs.swiper, {
-          autoplay: {
-            delay: 3000,
-            disableOnInteraction: false,
-          },
-          grabCursor: true,
-          loop: true,
-          touchEventsTarget: "container",
-          breakpoints: {
-            375: {
-              slidesPerView: 1,
-              slidesPerGroup: 1,
-              spaceBetween: 24,
-            },
-            768: {
-              slidesPerView: 2,
-              slidesPerGroup: 1,
-              spaceBetween: 24,
-            },
-            1024: {
-              slidesPerView: 4,
-              slidesPerGroup: 1,
-              spaceBetween: 24,
-            },
-            1400: {
-              slidesPerView: 5,
-              slidesPerGroup: 1,
-              spaceBetween: 16,
-            },
-            1536: {
-              slidesPerView: 5,
-              slidesPerGroup: 1,
-              spaceBetween: 24,
-            },
-            1920: {
-              slidesPerView: 6,
-              slidesPerGroup: 1,
-              spaceBetween: 24,
-            },
-          },
-        });
       }
     },
     sliderCollections(newSliderCollection) {
