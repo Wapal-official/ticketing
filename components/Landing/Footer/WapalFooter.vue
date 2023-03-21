@@ -65,17 +65,20 @@
           :external="true"
         />
         <footer-link name="API" />
-        <footer-link name="Docs" />
+        <footer-link
+          name="Docs"
+          to="https://docs.mokshya.io/aptos/aptos-candymachine"
+          target="_blank"
+          :external="true"
+        />
         <footer-link name="Faqs" to="/faq" />
       </div>
       <div
         class="tw-text-sm tw-font-normal tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
       >
         <h5 class="tw-text-base tw-font-medium md:tw-py-4">Company</h5>
-
-        <footer-link name="About Us" />
-        <footer-link name="Privacy Policy" />
-        <footer-link name="Terms of Services" />
+        <footer-link name="Privacy Policy" to="/privacy-policy" />
+        <footer-link name="Terms of Services" to="/terms-of-service" />
       </div>
     </div>
 
