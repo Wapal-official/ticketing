@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import Cookies from "js-cookie";
 let BASE_URL = "https://discord.com/api/v10/";
 
 export const discordRequest = axios.create({
@@ -8,7 +8,8 @@ export const discordRequest = axios.create({
 
 discordRequest.interceptors.request.use(function (config) {
   if (process.browser) {
-    const TOKEN = window.$nuxt.$store.state.discordStore.token;
+    const jsonToken = JSON.parse(Cookies.get("discord") || "");
+    const TOKEN = jsonToken.token;
 
     if (TOKEN) {
       return {

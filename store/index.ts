@@ -18,13 +18,18 @@ export const actions = {
   nuxtServerInit({ commit }: { commit: any }, { req }: { req: any }) {
     const cookieHeader = req.headers.cookie;
 
-    const cookies = parseCookies(cookieHeader);
+    if (cookieHeader) {
+      const cookies = parseCookies(cookieHeader);
 
-    const wallet = JSON.parse(cookies.wallet || "false");
+      const wallet = JSON.parse(cookies.wallet || "false");
 
-    const user = JSON.parse(cookies.user || "false");
+      const user = JSON.parse(cookies.user || "false");
 
-    commit("walletStore/setWallet", wallet ? wallet : {});
-    commit("userStore/setUser", user ? user : {});
+      const discordToken = JSON.parse(cookies.discord || "false");
+
+      commit("walletStore/setWallet", wallet ? wallet : {});
+      commit("userStore/setUser", user ? user : {});
+      commit("discordStore/setDiscordToken", discordToken ? discordToken : {});
+    }
   },
 };
