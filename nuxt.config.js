@@ -4,7 +4,7 @@ const API_URL = process.env.API_URL;
 const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const CANDY_MACHINE_ID = process.env.CANDY_MACHINE_ID;
-const NETWORK = process.env.NETWORK;
+const NETWORK = "testnet";
 const APTOS_API_KEY = "81ccb0d76e66433abaf7543d0ff16688";
 
 export default {
