@@ -10,7 +10,7 @@ const DISCORD_CLIENT_SECRET = "Ub3G0l8xMub7qxru6U4FQQKKbX039P0J";
 const NODE_ENV = process.env.NODE_ENV;
 const APTOS_API_KEY = "81ccb0d76e66433abaf7543d0ff16688";
 
-let discordRedirectURI = "https://staging-wapal.io/discord/token";
+let discordRedirectURI = "https://staging.wapal.io/discord/token";
 
 // if (NODE_ENV === "development") {
 //   discordRedirectURI = "http://localhost:3000/discord/token";
