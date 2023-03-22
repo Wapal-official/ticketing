@@ -76,23 +76,26 @@
           <div class="tw-text-lg">Mint Date</div>
           <div class="tw-text-xl">{{ getMintDate }}</div>
         </div>
-        <!-- <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
+        <div class="tw-w-full tw-flex tw-flex-col tw-gap-2 tw-py-4">
           <div
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
           >
-            <span class="tw-capitalize tw-text-sm">pre sale mint</span>
+            <span class="tw-capitalize tw-text-sm">No of Spots</span>
             <span class="tw-capitalize tw-text-sm"
-              >10% <span class="tw-text-[#ACACAC]">(100 out of 1000)</span></span
+              >0%
+              <span class="tw-text-[#ACACAC]"
+                >(0 out of {{ whitelist.whitelist_spots }})</span
+              ></span
             >
           </div>
           <div
             class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px]"
           >
             <div
-              class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-[#E500A4] tw-w-[10%] tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
+              class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-[#E500A4] tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
             ></div>
           </div>
-        </div> -->
+        </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded"
         >
@@ -300,6 +303,7 @@ export default {
       whitelist: {
         whitelist_start: "",
         discord_roles: [{ name: "", id: "" }],
+        whitelist_spots: "",
       },
       error: {
         discord: {

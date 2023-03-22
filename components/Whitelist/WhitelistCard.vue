@@ -2,7 +2,11 @@
   <NuxtLink
     class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
     v-if="!loading"
-    :to="`/whitelist/${whitelist?._id}`"
+    :to="
+      type === 'landing'
+        ? `/whitelist/${whitelist?._id}`
+        : `/dashboard/whitelist/${whitelist?._id}`
+    "
   >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
@@ -76,7 +80,10 @@
 import { getCollection } from "~/services/CollectionService";
 import moment from "moment";
 export default {
-  props: { whitelist: { type: Object } },
+  props: {
+    whitelist: { type: Object },
+    type: { type: String, default: "landing" },
+  },
   data() {
     return { collection: { _id: "", name: "", image: "" }, loading: true };
   },
