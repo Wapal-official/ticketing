@@ -18,7 +18,7 @@ import { AptosClient } from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
 
-const NODE_URL = `https://fullnode.testnet.aptoslabs.com`;
+const NODE_URL = `https://aptos-${process.env.NETWORK}.nodereal.io/v1/${process.env.APTOS_API_KEY}/v1`;
 
 const client = new AptosClient(NODE_URL);
 
@@ -265,5 +265,21 @@ export const actions = {
   },
   setUser({ commit }: { commit: any }) {
     commit("setUser");
+  },
+  async getSupplyAndMintedOfCollection({}, resourcecAccountAddress: string) {
+    const res = await client.getAccountResources(resourcecAccountAddress);
+
+    let resource: any = null;
+    for (let i = 0; i < res.length; i++) {
+      if (
+        res[i].type ===
+        process.env.CANDY_MACHINE_ID + "::candymachine::CandyMachine"
+      ) {
+        resource = res[i].data;
+        break;
+      }
+    }
+
+    return { total_supply: resource.total_supply, minted: resource.minted };
   },
 };
