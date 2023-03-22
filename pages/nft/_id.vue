@@ -87,7 +87,9 @@
           <div
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
           >
-            <span class="tw-capitalize tw-text-sm">pre sale mint</span>
+            <span class="tw-capitalize tw-text-sm">{{
+              showPublicSaleTimer ? "pre sale mint" : "public sale mint"
+            }}</span>
             <span class="tw-capitalize tw-text-sm"
               >{{ resource.mintedPercent }}%
               <span class="tw-text-[#ACACAC]"
@@ -110,6 +112,12 @@
           v-if="showMintBox"
         >
           <div
+            class="tw-w-1/4"
+            v-if="!showWhitelistSaleTimer && !showPublicSaleTimer"
+          >
+            Public Sale
+          </div>
+          <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
           >
             <h6 class="tw-capitalize tw-text-white" v-if="getCurrentPrice != 0">
@@ -122,11 +130,11 @@
                 '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
               }"
               @click="mintCollection"
-              :disabled="minting"
+              :disabled="minting || soldOut"
             >
               <v-progress-circular indeterminate v-if="minting" color="white">
               </v-progress-circular>
-              Mint
+              {{ !soldOut ? "Mint" : "Sold Out" }}
             </button>
           </div>
           <div
@@ -258,7 +266,8 @@ export default {
         minted: 0,
         mintedPercent: 0,
       },
-      unmounted: false,
+      progressInterval: null,
+      soldOut: false,
     };
   },
   methods: {
@@ -352,11 +361,15 @@ export default {
       });
     },
     showMintedProgress() {
-      const progressInterval = setInterval(async () => {
+      this.progressInterval = setInterval(async () => {
         this.resource = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfCollection",
           this.collection.candyMachine_id.resource_account
         );
+
+        if (this.resource.minted == this.resource.total_supply) {
+          this.soldOut = true;
+        }
 
         this.resource.mintedPercent = Math.ceil(
           (this.resource.minted / this.resource.total_supply) * 100
@@ -367,10 +380,6 @@ export default {
         );
 
         resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
-
-        if (this.unmounted) {
-          clearInterval(progressInterval);
-        }
       }, 5000);
     },
   },
@@ -424,13 +433,34 @@ export default {
 
     this.showEndInTimer = true;
 
+    this.resource = await this.$store.dispatch(
+      "walletStore/getSupplyAndMintedOfCollection",
+      this.collection.candyMachine_id.resource_account
+    );
+
+    this.resource.mintedPercent = Math.ceil(
+      (this.resource.minted / this.resource.total_supply) * 100
+    );
+
+    if (this.resource.minted == this.resource.total_supply) {
+      this.soldOut = true;
+    }
+
     this.loading = false;
 
-    this.unmounted = true;
-    this.showMintedProgress();
+    setTimeout(() => {
+      const resourceMintedPercent: any = document.querySelector(
+        "#resourceMintedPercent"
+      );
+
+      resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
+
+      this.unmounted = false;
+      this.showMintedProgress();
+    }, 200);
   },
-  unmounted() {
-    this.unmounted = true;
+  beforeDestroy() {
+    clearInterval(this.progressInterval);
   },
 };
 </script>
