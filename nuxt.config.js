@@ -8,7 +8,7 @@ const NETWORK = process.env.NETWORK;
 const DISCORD_CLIENT_ID = "1087230196450590770";
 const DISCORD_CLIENT_SECRET = "Ub3G0l8xMub7qxru6U4FQQKKbX039P0J";
 const NODE_ENV = process.env.NODE_ENV;
-const APTOS_API_KEY = "1ccb0d76e66433abaf7543d0ff16688";
+const APTOS_API_KEY = "81ccb0d76e66433abaf7543d0ff16688";
 
 let discordRedirectURI = "";
 
