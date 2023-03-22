@@ -451,10 +451,7 @@ export default {
         if (transaction) {
           const formData = new FormData();
 
-          formData.append(
-            "user_id",
-            this.$store.state.walletStore.user.user_id
-          );
+          formData.append("user_id", this.$store.state.userStore.user.user_id);
           formData.append("folder_name", this.folderInfo.folder_name);
           formData.append("image", this.uploadedFile);
 
@@ -477,7 +474,7 @@ export default {
         this.showUploadingDialog = false;
         this.showFileUploadDialog = false;
 
-        await deleteFolderOnServer(this.$store.state.walletStore.user.user_id);
+        await deleteFolderOnServer(this.$store.state.userStore.user.user_id);
       }
     },
     async fetchFiles() {
@@ -697,7 +694,7 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
 
-        await deleteFolderOnServer(this.$store.state.walletStore.user.user_id);
+        await deleteFolderOnServer(this.$store.state.userStore.user.user_id);
       }
     },
     async transferFund(newFolder: any) {
@@ -747,7 +744,7 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
         const res = await deleteFolderOnServer(
-          this.$store.state.walletStore.user.user_id
+          this.$store.state.userStore.user.user_id
         );
       }
     },

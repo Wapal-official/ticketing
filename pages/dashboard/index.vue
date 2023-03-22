@@ -41,7 +41,7 @@ export default {
   methods: {},
   async mounted() {
     const res = await getCollectionsOfUser(
-      this.$store.state.walletStore.user.user_id
+      this.$store.state.userStore.user.user_id
     );
 
     this.collections = res.data.data;

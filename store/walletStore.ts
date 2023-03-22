@@ -18,7 +18,7 @@ import { AptosClient } from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
 
-const NODE_URL = `https://fullnode.testnet.aptoslabs.com`;
+const NODE_URL = `https://aptos-${process.env.NETWORK}.nodereal.io/v1/${process.env.APTOS_API_KEY}/v1`;
 
 const client = new AptosClient(NODE_URL);
 
@@ -66,11 +66,13 @@ export const state = () => ({
     walletAddress: "",
     publicKey: "",
   },
-  user: {
-    user_id: "",
-    token: "",
-  },
 });
+
+export const mutations = {
+  setWallet(state: any, wallet: WalletAddress) {
+    state.wallet = wallet;
+  },
+};
 
 export const getters = {
   getWalletsDetail() {
@@ -78,21 +80,9 @@ export const getters = {
   },
 };
 
-export const mutations = {
-  setWallet(state: any, wallet: WalletAddress) {
-    state.wallet = wallet;
-  },
-  setUser(state: any, user: any) {
-    state.user = user;
-  },
-};
-
 export const actions = {
   setWallet({ commit }: { commit: any }) {
     commit("setWallet");
-    Cookies.set("vuex", JSON.stringify(state), {
-      expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
-    });
   },
   async connectWallet({ commit }: { commit: any }, walletName: WalletName) {
     try {
@@ -105,6 +95,19 @@ export const actions = {
           ? wallet.account?.publicKey[0]
           : wallet.account?.publicKey,
       });
+      Cookies.set(
+        "wallet",
+        JSON.stringify({
+          wallet: wallet.wallet?.name,
+          walletAddress: wallet.account?.address,
+          publicKey: Array.isArray(wallet.account?.publicKey)
+            ? wallet.account?.publicKey[0]
+            : wallet.account?.publicKey,
+        }),
+        {
+          expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
+        }
+      );
       return true;
     } catch (error) {
       throw error;
@@ -117,11 +120,16 @@ export const actions = {
     commit("setWallet", {
       wallet: "",
       walletAddress: "",
+      publicKey: "",
     });
-    commit("setUser", {
-      user_id: "",
-      token: "",
-    });
+    Cookies.set(
+      "wallet",
+      JSON.stringify({
+        wallet: "",
+        walletAddress: "",
+        publicKey: "",
+      })
+    );
   },
   async createCandyMachine(
     { state }: { state: any },
@@ -263,7 +271,20 @@ export const actions = {
 
     return signMessage;
   },
-  setUser({ commit }: { commit: any }) {
-    commit("setUser");
+  async getSupplyAndMintedOfCollection({}, resourcecAccountAddress: string) {
+    const res = await client.getAccountResources(resourcecAccountAddress);
+
+    let resource: any = null;
+    for (let i = 0; i < res.length; i++) {
+      if (
+        res[i].type ===
+        process.env.CANDY_MACHINE_ID + "::candymachine::CandyMachine"
+      ) {
+        resource = res[i].data;
+        break;
+      }
+    }
+
+    return { total_supply: resource.total_supply, minted: resource.minted };
   },
 };

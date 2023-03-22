@@ -1,14 +1,15 @@
 import axios from "axios";
+import Cookies from "js-cookie";
+let BASE_URL = "https://discord.com/api/v10/";
 
-let BASE_URL = process.env.baseURL;
-
-export const publicRequest = axios.create({
+export const discordRequest = axios.create({
   baseURL: BASE_URL,
 });
 
-publicRequest.interceptors.request.use(function (config) {
+discordRequest.interceptors.request.use(function (config) {
   if (process.browser) {
-    const TOKEN = window.$nuxt.$store.state.userStore.user.token;
+    const jsonToken = JSON.parse(Cookies.get("discord") || "");
+    const TOKEN = jsonToken.token;
 
     if (TOKEN) {
       return {

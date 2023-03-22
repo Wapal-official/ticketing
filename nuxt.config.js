@@ -5,6 +5,22 @@ const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const CANDY_MACHINE_ID = process.env.CANDY_MACHINE_ID;
 const NETWORK = process.env.NETWORK;
+const DISCORD_CLIENT_ID = "1087230196450590770";
+const DISCORD_CLIENT_SECRET = "Ub3G0l8xMub7qxru6U4FQQKKbX039P0J";
+const NODE_ENV = process.env.NODE_ENV;
+const APTOS_API_KEY = "1ccb0d76e66433abaf7543d0ff16688";
+
+let discordRedirectURI = "";
+
+if (NODE_ENV === "development") {
+  discordRedirectURI = "http://localhost:3000/discord/token";
+} else {
+  if (API_URL.includes("staging")) {
+    discordRedirectURI = "https://staging-wapal.io/discord/token";
+  } else {
+    discordRedirectURI = "https://wapal.io/discord/token";
+  }
+}
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -41,10 +57,7 @@ export default {
   css: ["@/assets/css/index.css", "@/assets/css/style.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    { src: "~/plugins/persistedState.client.ts" },
-    "~/plugins/toast.ts",
-  ],
+  plugins: ["~/plugins/toast.ts"],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -59,7 +72,7 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["cookie-universal-nuxt", "@nuxtjs/axios", "@nuxtjs/proxy"],
+  modules: ["cookie-universal-nuxt", "@nuxtjs/axios", "@nuxtjs/auth-next"],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -118,5 +131,32 @@ export default {
     AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY,
     CANDY_MACHINE_ID: CANDY_MACHINE_ID,
     NETWORK: NETWORK,
+    DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
+    DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
+    APTOS_API_KEY: APTOS_API_KEY,
+  },
+  auth: {
+    strategies: {
+      discord: {
+        scheme: "oauth2",
+        clientId: process.env.DISCORD_CLIENT_ID,
+        clientSecret: process.env.DISCORD_CLIENT_SECRET,
+        scope: [
+          "identify",
+          "email",
+          "connections",
+          "guilds",
+          "guilds.members.read",
+        ],
+        endpoints: {
+          authorization: "https://discord.com/oauth2/authorize",
+          token: "https://discord.com/api/oauth2/token",
+          userInfo: "https://discord.com/api/users/@me",
+        },
+        redirect_uri: discordRedirectURI,
+        redirectUri: discordRedirectURI,
+        fetchUser: false,
+      },
+    },
   },
 };

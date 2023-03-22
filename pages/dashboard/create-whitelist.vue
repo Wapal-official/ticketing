@@ -61,7 +61,7 @@
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
-        <ValidationProvider
+        <!-- <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="twitter_acc"
           rules="required"
@@ -83,7 +83,7 @@
             ></v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
+        </ValidationProvider> -->
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="discord_server"
@@ -389,7 +389,7 @@ export default {
   },
   async mounted() {
     const res = await getCollectionsOfUser(
-      this.$store.state.walletStore.user.user_id
+      this.$store.state.userStore.user.user_id
     );
 
     const selectCollections: any[] = res.data.data;

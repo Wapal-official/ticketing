@@ -196,7 +196,7 @@ export default {
       try {
         const res = await createFolder({
           folder_name: folderName,
-          user_id: this.$store.state.walletStore.user.user_id,
+          user_id: this.$store.state.userStore.user.user_id,
         });
 
         this.pushFolder({
@@ -255,9 +255,7 @@ export default {
     async mapFolders() {
       this.folders = [];
 
-      const res = await getAllFolder(
-        this.$store.state.walletStore.user.user_id
-      );
+      const res = await getAllFolder(this.$store.state.userStore.user.user_id);
 
       this.folders.push({ _id: this.getFolderId, folder_name: "Wapal" });
 

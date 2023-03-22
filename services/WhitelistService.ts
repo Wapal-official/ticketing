@@ -22,3 +22,11 @@ export const createWhitelist = async (whitelist: any) => {
 
   return res;
 };
+
+export const getWhitelistById = async (whitelistId: string) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/whitelist/${whitelistId}`
+  );
+
+  return res;
+};

@@ -12,6 +12,7 @@
     "@aptos-labs/wallet-adapter-core": "^0.2.3",
     "@blocto/aptos-wallet-adapter-plugin": "^0.1.2",
     "@martianwallet/aptos-wallet-adapter": "0.0.3",
+    "@nuxtjs/auth-next": "^5.0.0-1667386184.dfbbb54",
     "@nuxtjs/axios": "^5.13.6",
     "@pontem/wallet-adapter-plugin": "^0.1.4",
     "@rise-wallet/wallet-adapter": "^0.1.2",

@@ -39,7 +39,7 @@ export default {
   methods: {},
   async mounted() {
     const res = await getWhitelistOfUser(
-      this.$store.state.walletStore.user.user_id
+      this.$store.state.userStore.user.user_id
     );
     this.whitelists = res.data.whitelists;
     this.loading = false;
