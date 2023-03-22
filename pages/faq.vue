@@ -15,14 +15,16 @@
           <template #question> 1. What is Wapal? </template>
           <template #answer>
             Wapal is a No Code Creator Studio and Launchpad on Aptos. Wapal is
-            developed by Mokshya, an open-source protocol that builds smart
-            contract solutions for various Blockchains.
+            developed by Mokshya, Mokshya is an open-source protocol that builds
+            customizable smart contract libraries, SDKs, and developer tools on
+            Aptos Blockchain..
           </template>
         </faq-card>
         <faq-card>
           <template #question>
             2. Why did you decide to build a creator studio and a
-            launchpad?</template>
+            launchpad?</template
+          >
           <template #answer>
             <p>
               We decided to build a creator studio to help creators build NFT
@@ -38,7 +40,8 @@
         </faq-card>
         <faq-card>
           <template #question>
-            3. Who can launch NFT projects from your Launchpad?</template>
+            3. Who can launch NFT projects from your Launchpad?</template
+          >
           <template #answer>
             Anyone can launch NFT projects from our launchpad. There is no
             restriction of any kind to launch on Wapal.
@@ -65,8 +68,14 @@
         <faq-card>
           <template #question>6. What about security? </template>
           <template #answer>
-            Our source codes will be open-sourced and the smart contract will be
-            audited by top security firm.
+            The source code of Smart Contract for Aptos NFT Random Mint is
+            open-source and has been audited by MoveBit. You can find the
+            security audit report here -
+            <a
+              href="https://github.com/mokshyaprotocol/aptos-nft-random-mint/blob/merkle_tree/audit/Mokshya%20:%20Wapal%20-%20Movebit%20Audit.pdf"
+              target="_blank"
+              >https://github.com/mokshyaprotocol/aptos-nft-random-mint/blob/merkle_tree/audit/Mokshya%20:%20Wapal%20-%20Movebit%20Audit.pdf</a
+            >
           </template>
         </faq-card>
         <faq-card>

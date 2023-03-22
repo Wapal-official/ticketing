@@ -30,6 +30,7 @@ export default {
     new Swiper(this.$refs.swiper, {
       autoplay: {
         delay: 3000,
+        disableOnInteraction: false,
       },
       grabCursor: true,
       loop: true,
@@ -69,7 +70,7 @@ export default {
     });
   },
   watch: {
-    collections(mountedCollections) {
+    async collections(mountedCollections) {
       if (mountedCollections.length > 0) {
         this.sliderCollections = mountedCollections;
       }
