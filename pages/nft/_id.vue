@@ -21,12 +21,16 @@
         >
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full md:tw-items-center lg:tw-flex-row lg:tw-items-center"
-            v-if="showWhitelistSaleTimer && showPublicSaleTimer"
+            v-if="showLiveInTimer"
           >
             <span class="tw-pr-4 lg:tw-pr-8">Live In</span>
             <count-down
               :shadow="true"
-              :startTime="collection.candyMachine_id.whitelist_sale_time"
+              :startTime="
+                collection.candyMachine_id.whitelist_sale_time
+                  ? collection.candyMachine_id.whitelist_sale_time
+                  : collection.candyMachine_id.public_sale_time
+              "
             />
           </div>
           <span
@@ -79,27 +83,40 @@
             {{ collection.description }}
           </p>
         </div>
-        <!-- <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
-        <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
-        >
-          <span class="tw-capitalize tw-text-sm">pre sale mint</span>
-          <span class="tw-capitalize tw-text-sm"
-            >10% <span class="tw-text-[#ACACAC]">(100 out of 1000)</span></span
-          >
-        </div>
-        <div
-          class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px]"
-        >
+        <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
           <div
-            class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-[#E500A4] tw-w-[10%] tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
-          ></div>
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
+          >
+            <span class="tw-capitalize tw-text-sm">{{
+              showPublicSaleTimer ? "pre sale mint" : "public sale mint"
+            }}</span>
+            <span class="tw-capitalize tw-text-sm"
+              >{{ resource.mintedPercent }}%
+              <span class="tw-text-[#ACACAC]"
+                >({{ resource.minted }} out of
+                {{ resource.total_supply }})</span
+              ></span
+            >
+          </div>
+          <div
+            class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px]"
+          >
+            <div
+              class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-[#E500A4] tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
+              id="resourceMintedPercent"
+            ></div>
+          </div>
         </div>
-      </div> -->
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-[#F0F0F0] tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
-          v-if="!showWhitelistSaleTimer || !showPublicSaleTimer"
+          v-if="showMintBox"
         >
+          <div
+            class="tw-w-1/4"
+            v-if="!showWhitelistSaleTimer && !showPublicSaleTimer"
+          >
+            Public Sale
+          </div>
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
           >
@@ -113,11 +130,11 @@
                 '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
               }"
               @click="mintCollection"
-              :disabled="minting"
+              :disabled="minting || soldOut"
             >
               <v-progress-circular indeterminate v-if="minting" color="white">
               </v-progress-circular>
-              Mint
+              {{ !soldOut ? "Mint" : "Sold Out" }}
             </button>
           </div>
           <div
@@ -243,6 +260,13 @@ export default {
       showEndInTimer: false,
       minting: false,
       showConnectWalletModal: false,
+      resource: {
+        total_supply: 0,
+        minted: 0,
+        mintedPercent: 0,
+      },
+      progressInterval: null,
+      soldOut: false,
     };
   },
   methods: {
@@ -261,7 +285,7 @@ export default {
     checkWhitelistSaleTimer() {
       const date = new Date();
 
-      if (this.whitelistSaleDate < date) {
+      if (!this.whitelistSaleDate || this.whitelistSaleDate < date) {
         return false;
       }
       return true;
@@ -308,7 +332,7 @@ export default {
           "walletStore/mintCollection",
           this.collection.candyMachine_id.resource_account
         );
-        console.log(res);
+
         if (res.success) {
           this.$toast.showMessage({
             message: `${this.collection.name} Minted Successfully`,
@@ -335,20 +359,59 @@ export default {
         message: `${this.$store.state.walletStore.wallet.wallet} Wallet Connected Successfully`,
       });
     },
+    showMintedProgress() {
+      this.progressInterval = setInterval(async () => {
+        this.resource = await this.$store.dispatch(
+          "walletStore/getSupplyAndMintedOfCollection",
+          this.collection.candyMachine_id.resource_account
+        );
+
+        if (this.resource.minted == this.resource.total_supply) {
+          this.soldOut = true;
+        }
+
+        this.resource.mintedPercent = Math.ceil(
+          (this.resource.minted / this.resource.total_supply) * 100
+        );
+
+        const resourceMintedPercent: any = document.querySelector(
+          "#resourceMintedPercent"
+        );
+
+        resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
+      }, 5000);
+    },
   },
   computed: {
     getCurrentPrice() {
-      const whiteListDate = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
-      );
+      const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : "";
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
 
-      if (whiteListDate < publicSaleDate) {
+      if (whiteListDate && whiteListDate < publicSaleDate) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
         return this.collection.candyMachine_id.public_sale_price;
+      }
+    },
+    showMintBox() {
+      const publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
+      if (!this.whitelistSaleDate) {
+        return new Date() > publicSaleDate;
+      }
+
+      return !this.showWhitelistSaleTimer || !this.showPublicSaleTimer;
+    },
+    showLiveInTimer() {
+      if (!this.whitelistSaleDate) {
+        return this.showPublicSaleTimer;
+      } else {
+        return this.showWhitelistSaleTimer && this.showPublicSaleTimer;
       }
     },
   },
@@ -356,9 +419,10 @@ export default {
     const res = await getCollection(this.$route.params.id);
     this.collection = res.collection[0];
 
-    this.whitelistSaleDate = new Date(
-      this.collection.candyMachine_id.whitelist_sale_time
-    );
+    this.whitelistSaleDate = this.collection.candyMachine_id.whitelist_sale_time
+      ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+      : "";
+
     this.publicSaleDate = new Date(
       this.collection.candyMachine_id.public_sale_time
     );
@@ -368,7 +432,33 @@ export default {
 
     this.showEndInTimer = true;
 
+    this.resource = await this.$store.dispatch(
+      "walletStore/getSupplyAndMintedOfCollection",
+      this.collection.candyMachine_id.resource_account
+    );
+
+    this.resource.mintedPercent = Math.ceil(
+      (this.resource.minted / this.resource.total_supply) * 100
+    );
+
+    if (this.resource.minted == this.resource.total_supply) {
+      this.soldOut = true;
+    }
+
     this.loading = false;
+
+    setTimeout(() => {
+      const resourceMintedPercent: any = document.querySelector(
+        "#resourceMintedPercent"
+      );
+
+      resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
+
+      this.showMintedProgress();
+    }, 200);
+  },
+  beforeDestroy() {
+    clearInterval(this.progressInterval);
   },
 };
 </script>

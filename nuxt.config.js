@@ -5,6 +5,7 @@ const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const CANDY_MACHINE_ID = process.env.CANDY_MACHINE_ID;
 const NETWORK = process.env.NETWORK;
+const APTOS_API_KEY = "81ccb0d76e66433abaf7543d0ff16688";
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -118,5 +119,6 @@ export default {
     AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY,
     CANDY_MACHINE_ID: CANDY_MACHINE_ID,
     NETWORK: NETWORK,
+    APTOS_API_KEY: APTOS_API_KEY,
   },
 };
