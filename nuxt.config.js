@@ -139,8 +139,8 @@ export default {
     strategies: {
       discord: {
         scheme: "oauth2",
-        clientId: process.env.DISCORD_CLIENT_ID,
-        clientSecret: process.env.DISCORD_CLIENT_SECRET,
+        clientId: DISCORD_CLIENT_ID,
+        clientSecret: DISCORD_CLIENT_SECRET,
         scope: [
           "identify",
           "email",
