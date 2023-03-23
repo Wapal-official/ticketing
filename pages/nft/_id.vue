@@ -112,18 +112,22 @@
           v-if="showMintBox"
         >
           <div
-            class="tw-w-1/4"
-            v-if="!showWhitelistSaleTimer && !showPublicSaleTimer"
-          >
-            Public Sale
-          </div>
-          <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
           >
-            <h6 class="tw-capitalize tw-text-white" v-if="getCurrentPrice != 0">
-              price {{ getCurrentPrice }} apt
-            </h6>
-            <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+            >
+              <div v-if="!showWhitelistSaleTimer && !showPublicSaleTimer">
+                Public Sale
+              </div>
+              <h6
+                class="tw-capitalize tw-text-white"
+                v-if="getCurrentPrice != 0"
+              >
+                price {{ getCurrentPrice }} apt
+              </h6>
+              <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
+            </div>
             <button
               class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
               :class="{
