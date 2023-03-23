@@ -15,6 +15,7 @@
         v-for="whitelist in whitelists"
         :key="whitelist._id"
         :whitelist="whitelist"
+        type="dashboard"
         v-if="whitelists[0]._id"
       />
     </div>
