@@ -7,19 +7,14 @@ const CANDY_MACHINE_ID = process.env.CANDY_MACHINE_ID;
 const NETWORK = process.env.NETWORK;
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-const NODE_ENV = process.env.NODE_ENV;
 const APTOS_API_KEY = process.env.APTOS_API_KEY;
 
 let discordRedirectURI = "https://staging.wapal.io/discord/token";
 
-if (NODE_ENV === "development") {
-  discordRedirectURI = "http://localhost:3000/discord/token";
+if (API_URL.includes("staging")) {
+  discordRedirectURI = "https://staging.wapal.io/discord/token";
 } else {
-  if (API_URL.includes("staging")) {
-    discordRedirectURI = "https://staging.wapal.io/discord/token";
-  } else {
-    discordRedirectURI = "https://wapal.io/discord/token";
-  }
+  discordRedirectURI = "https://wapal.io/discord/token";
 }
 
 export default {
