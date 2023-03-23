@@ -623,34 +623,38 @@ export default {
       });
     },
     async sendDataToCandyMachineCreator() {
-      const whitelistTime = Math.floor(
-        new Date(this.collection.whitelist_sale_time).getTime() / 1000
-      );
-      const publicSaleTime = Math.floor(
-        new Date(this.collection.public_sale_time).getTime() / 1000
-      );
+      try {
+        const whitelistTime = Math.floor(
+          new Date(this.collection.whitelist_sale_time).getTime() / 1000
+        );
+        const publicSaleTime = Math.floor(
+          new Date(this.collection.public_sale_time).getTime() / 1000
+        );
 
-      const candyMachineArguments = {
-        collection_name: this.collection.name,
-        collection_description: this.collection.description,
-        baseuri: this.collection.baseURL,
-        royalty_payee_address: this.collection.royalty_payee_address,
-        royalty_points_denominator: 1000,
-        royalty_points_numerator: this.collection.royalty_percentage * 10,
-        presale_mint_time: whitelistTime,
-        public_sale_mint_time: publicSaleTime,
-        presale_mint_price: this.collection.whitelist_price * 100000000,
-        public_sale_mint_price: this.collection.public_sale_price * 100000000,
-        total_supply: this.collection.supply,
-      };
+        const candyMachineArguments = {
+          collection_name: this.collection.name,
+          collection_description: this.collection.description,
+          baseuri: this.collection.baseURL,
+          royalty_payee_address: this.collection.royalty_payee_address,
+          royalty_points_denominator: 1000,
+          royalty_points_numerator: this.collection.royalty_percentage * 10,
+          presale_mint_time: whitelistTime,
+          public_sale_mint_time: publicSaleTime,
+          presale_mint_price: this.collection.whitelist_price * 100000000,
+          public_sale_mint_price: this.collection.public_sale_price * 100000000,
+          total_supply: this.collection.supply,
+        };
 
-      const res = await this.$store.dispatch(
-        "walletStore/createCandyMachine",
-        candyMachineArguments
-      );
+        const res = await this.$store.dispatch(
+          "walletStore/createCandyMachine",
+          candyMachineArguments
+        );
 
-      this.collection.resource_account = res.resourceAccount;
-      this.collection.transaction_hash = res.transactionHash;
+        this.collection.resource_account = res.resourceAccount;
+        this.collection.transaction_hash = res.transactionHash;
+      } catch (error) {
+        this.$toast.showMessage({ message: error, error: true });
+      }
     },
   },
   async mounted() {

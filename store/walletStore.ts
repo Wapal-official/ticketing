@@ -161,6 +161,10 @@ export const actions = {
       transactionRes.hash
     );
 
+    if (!getResourceAccount.success) {
+      throw new Error("Transaction not Successful please try again");
+    }
+
     return {
       resourceAccount: getResourceAccount["changes"][2]["address"],
       transactionHash: transactionRes.hash,
