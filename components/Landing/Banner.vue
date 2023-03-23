@@ -369,7 +369,7 @@ export default {
   },
   async mounted() {
     if (!process.env.baseURL?.includes("staging")) {
-      const res = await getCollection("6419e6a133031eb6cfb83e5c");
+      const res = await getCollection("6415331e9cb214a367f1ee7a");
       this.collection = res.collection[0];
 
       this.whitelistSaleDate = new Date(
