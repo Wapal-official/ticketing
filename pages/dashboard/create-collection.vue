@@ -654,6 +654,7 @@ export default {
         this.collection.transaction_hash = res.transactionHash;
       } catch (error) {
         this.$toast.showMessage({ message: error, error: true });
+        this.submitting = false;
       }
     },
   },
