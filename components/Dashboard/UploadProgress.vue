@@ -7,7 +7,14 @@
     <div
       class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
     >
-      <span>Uploading</span>
+      <span v-if="!getUploadSummary">Uploading</span>
+      <span
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+        v-else
+      >
+        <v-icon class="!tw-text-green-600">mdi-check-circle</v-icon>
+        <span>Files Uploaded</span>
+      </span>
       <div class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-2">
         <button v-if="minimizeClicked" @click="minimizeClicked = false">
           <v-icon class="!tw-text-white !tw-text-sm"
