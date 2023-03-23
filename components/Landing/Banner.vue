@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-w-full tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-px-8 md:tw-py-8 lg:tw-gap-16 lg:tw-flex-row lg:tw-justify-start xl:tw-w-4/5"
+    class="tw-w-full tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-px-8 tw-pb-8 tw-pt-4 lg:tw-gap-16 lg:tw-flex-row lg:tw-justify-start xl:tw-w-4/5"
     v-if="!loading"
   >
     <div
@@ -12,7 +12,7 @@
         <img
           :src="collection.image"
           :alt="collection.name"
-          class="tw-w-full tw-rounded-lg"
+          class="tw-w-full tw-max-h-[500px] tw-rounded-lg tw-object-fill"
         />
       </div>
       <h3 class="tw-text-[1.75rem] tw-text-wapal-pink tw-font-normal tw-w-full">
@@ -123,11 +123,11 @@
               '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
             }"
             @click="mintCollection"
-            :disabled="minting"
+            :disabled="minting || soldOut"
           >
             <v-progress-circular indeterminate v-if="minting" color="white">
             </v-progress-circular>
-            Mint
+            {{ !soldOut ? "Mint" : "Sold Out" }}
           </button>
         </div>
       </div>
@@ -253,6 +253,9 @@ export default {
       showEndInTimer: false,
       minting: false,
       showConnectWalletModal: false,
+      resource: null,
+      soldOut: false,
+      progressInterval: null,
     };
   },
   methods: {
@@ -345,6 +348,14 @@ export default {
         message: `${this.$store.state.walletStore.wallet.wallet} Wallet Connected Successfully`,
       });
     },
+    showMintedProgress() {
+      this.progressInterval = setInterval(async () => {
+        this.resource = await this.$store.dispatch(
+          "walletStore/getSupplyAndMintedOfCollection",
+          this.collection.candyMachine_id.resource_account
+        );
+      }, 5000);
+    },
   },
   computed: {
     getCurrentPrice() {
@@ -379,46 +390,46 @@ export default {
       }
     },
   },
-  watch: {
-    async collectionId(newVal: any) {
-      if (newVal && process.env.baseURL?.includes("staging")) {
-        const res = await getCollection(this.collectionId);
-        this.collection = res.collection[0];
-        this.whitelistSaleDate = this.collection.candyMachine_id
-          .whitelist_sale_time
-          ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
-          : "";
-        this.publicSaleDate = new Date(
-          this.collection.candyMachine_id.public_sale_time
-        );
-        this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
-        this.showPublicSaleTimer = this.checkPublicSaleTimer();
-        this.showEndInTimer = true;
-        this.loading = false;
-      }
-    },
-  },
   async mounted() {
+    let res = null;
     if (!process.env.baseURL?.includes("staging")) {
-      const res = await getCollection("6415331e9cb214a367f1ee7a");
-      this.collection = res.collection[0];
-
-      this.whitelistSaleDate = this.collection.candyMachine_id
-        .whitelist_sale_time
-        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
-        : "";
-
-      this.publicSaleDate = new Date(
-        this.collection.candyMachine_id.public_sale_time
-      );
-
-      this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
-      this.showPublicSaleTimer = this.checkPublicSaleTimer();
-
-      this.showEndInTimer = true;
-
-      this.loading = false;
+      res = await getCollection("6415331e9cb214a367f1ee7a");
+    } else {
+      res = await getCollection("63edad2f8f6644c2145c3e16");
     }
+
+    this.collection = res.collection[0];
+
+    this.whitelistSaleDate = this.collection.candyMachine_id.whitelist_sale_time
+      ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+      : "";
+
+    this.publicSaleDate = new Date(
+      this.collection.candyMachine_id.public_sale_time
+    );
+
+    this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
+    this.showPublicSaleTimer = this.checkPublicSaleTimer();
+
+    this.showEndInTimer = true;
+
+    this.resource = await this.$store.dispatch(
+      "walletStore/getSupplyAndMintedOfCollection",
+      this.collection.candyMachine_id.resource_account
+    );
+
+    if (this.resource.minted == this.resource.total_supply) {
+      this.soldOut = true;
+    }
+
+    this.loading = false;
+
+    setTimeout(() => {
+      this.showMintedProgress();
+    }, 200);
+  },
+  beforeDestroy() {
+    clearInterval(this.progressInterval);
   },
 };
 </script>
