@@ -22,8 +22,6 @@ if (NODE_ENV === "development") {
   }
 }
 
-console.log(discordRedirectURI);
-
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   server: {
