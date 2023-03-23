@@ -292,7 +292,7 @@
         >
           <button
             class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-            @click="sendUserDetailsToWhitelist"
+            @click="sendUserDetailsToCreateWhitelistEntry"
             :disabled="!getFulfilledConditionStatus"
           >
             Enter
@@ -309,7 +309,10 @@ import ConnectWalletModal from "@/components/ConnectWallet/ConnectWalletModal.vu
 import SignupModal from "@/components/Signup/SignupModal.vue";
 import ButtonWithLoader from "@/components/Button/ButtonWithLoader.vue";
 
-import { getWhitelistById } from "@/services/WhitelistService";
+import {
+  getWhitelistById,
+  createWhitelistEntry,
+} from "@/services/WhitelistService";
 import { getCollection } from "@/services/CollectionService";
 import { discordRequest } from "@/services/DiscordInterceptor";
 
@@ -509,21 +512,35 @@ export default {
         this.disableVerifyAndEnter = false;
       }, 3000);
     },
-    sendUserDetailsToWhitelist() {
-      const whitelistData = {
-        wallet_address: this.$store.state.walletStore.wallet.walletAddress,
-        discord_user_id: this.discordDetails.id,
-        discord_username: this.discordDetails.username,
-        whitelist_id: this.$route.params.id,
-      };
+    async sendUserDetailsToCreateWhitelistEntry() {
+      try {
+        const discordRoles: string[] = [];
 
-      console.log(whitelistData);
+        this.whitelist.discord_roles.map((role: any) => {
+          discordRoles.push(role);
+        });
 
-      this.showVerifyingDialog = false;
+        const whitelistData = {
+          wallet_address: this.$store.state.walletStore.wallet.walletAddress,
+          discord: {
+            username: this.discordDetails.username,
+            id: this.discordDetails.id,
+            roles: discordRoles,
+          },
+          whitelist_id: this.$route.params.id,
+          date: new Date().toISOString(),
+        };
 
-      this.$toast.showMessage({
-        message: "Whitelist Request Sent Successfully",
-      });
+        await createWhitelistEntry(whitelistData);
+
+        this.showVerifyingDialog = false;
+
+        this.$toast.showMessage({
+          message: "Whitelist Request Sent Successfully",
+        });
+      } catch (error) {
+        this.$toast.showMessage({ message: error, error: true });
+      }
     },
     watchCookies() {
       const interval = setInterval(() => {
