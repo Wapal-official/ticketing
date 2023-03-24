@@ -396,11 +396,19 @@ export default {
         this.collection.candyMachine_id.public_sale_time
       );
 
-      if (publicSaleDate > new Date()) {
+      const now = new Date();
+      if (
+        this.collection.candyMachine_id.public_sale_price ==
+        this.collection.candyMachine_id.whitelist_price
+      ) {
         return this.collection.candyMachine_id.public_sale_price;
       }
 
-      if (whiteListDate && whiteListDate < publicSaleDate) {
+      if (publicSaleDate > now) {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+
+      if (whiteListDate && whiteListDate > now) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
         return this.collection.candyMachine_id.public_sale_price;
