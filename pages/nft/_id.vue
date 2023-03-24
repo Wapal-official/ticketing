@@ -404,14 +404,12 @@ export default {
         return this.collection.candyMachine_id.public_sale_price;
       }
 
-      if (publicSaleDate > now) {
+      if (now > publicSaleDate) {
         return this.collection.candyMachine_id.public_sale_price;
       }
 
-      if (whiteListDate && whiteListDate > now) {
+      if (whiteListDate) {
         return this.collection.candyMachine_id.whitelist_price;
-      } else {
-        return this.collection.candyMachine_id.public_sale_price;
       }
     },
     showMintBox() {

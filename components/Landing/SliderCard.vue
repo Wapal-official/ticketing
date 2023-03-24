@@ -80,6 +80,7 @@ export default {
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
+
       const now = new Date();
       if (
         this.collection.candyMachine_id.public_sale_price ==
@@ -88,7 +89,11 @@ export default {
         return this.collection.candyMachine_id.public_sale_price;
       }
 
-      if (whiteListDate > now && whiteListDate < publicSaleDate) {
+      if (now > publicSaleDate) {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+
+      if (whiteListDate) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
         return this.collection.candyMachine_id.public_sale_price;
