@@ -95,6 +95,10 @@ export default {
         return this.collection.candyMachine_id.public_sale_price;
       }
 
+      if (publicSaleDate > now) {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+
       if (whiteListDate > now && whiteListDate < publicSaleDate) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
