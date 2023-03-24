@@ -53,3 +53,22 @@ export const uploadCSVInWhitelistEntry = async (formData: any) => {
 
   return res;
 };
+
+export const getWhitelistEntryById = async (whitelist_id: string) => {
+  const res = await axios.get(`${process.env.baseURL}/api/whitelist/entry`, {
+    params: { whitelist_id: whitelist_id },
+  });
+
+  return res;
+};
+
+export const setRoot = async (rootData: any) => {
+  const res = await axios.post(
+    `${process.env.baseURL}/api/whitelist/root`,
+    rootData
+  );
+
+  console.log(res);
+
+  return res;
+};
