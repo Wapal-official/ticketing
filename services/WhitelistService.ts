@@ -33,9 +33,42 @@ export const getWhitelistById = async (whitelistId: string) => {
 
 export const createWhitelistEntry = async (whitelistDetails: any) => {
   const res = await axios.post(
-    `${process.env.baseURL}/api/whitelist/entry/create`,
+    `${process.env.baseURL}/api/whitelist/entry`,
     whitelistDetails
   );
+
+  return res;
+};
+
+export const uploadCSVInWhitelistEntry = async (formData: any) => {
+  const config = {
+    headers: { "content-type": "multipart/form-data" },
+  };
+
+  const res = await axios.post(
+    `${process.env.baseURL}/api/uploader/csv`,
+    formData,
+    config
+  );
+
+  return res;
+};
+
+export const getWhitelistEntryById = async (whitelist_id: string) => {
+  const res = await axios.get(`${process.env.baseURL}/api/whitelist/entry`, {
+    params: { whitelist_id: whitelist_id },
+  });
+
+  return res;
+};
+
+export const setRoot = async (rootData: any) => {
+  const res = await axios.post(
+    `${process.env.baseURL}/api/whitelist/root`,
+    rootData
+  );
+
+  console.log(res);
 
   return res;
 };

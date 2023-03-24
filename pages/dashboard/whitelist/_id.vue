@@ -20,10 +20,25 @@
     <div
       class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center"
     >
-      <button class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2">
-        Import CSV
-      </button>
-      <button class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2">
+      <form @submit.prevent="">
+        <label
+          class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
+        >
+          <input
+            type="file"
+            class="tw-invisible tw-w-0 tw-h-0"
+            @change="setCSVFile"
+          />
+          <div class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2">
+            Import CSV
+          </div>
+        </label>
+      </form>
+      <button
+        class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2"
+        @click="sendDataToSetRoot"
+        :disabled="sendingDataToSetRoot"
+      >
         Set Whitelist
       </button>
     </div>
@@ -32,12 +47,13 @@
     >
       <v-data-table
         :headers="headers"
-        :items="items"
+        :items="paginatedWhitelistEntries"
         :items-per-page="5"
         class="whitelist-data-table"
         mobile-breakpoint="0"
         :hide-default-footer="true"
         disable-pagination
+        v-if="!loading"
       >
         <template v-slot:body="{ items }">
           <tbody>
@@ -47,27 +63,69 @@
               class="tw-cursor-pointer hover:!tw-bg-black/60"
             >
               <td class="!tw-border-none tw-font-light">
-                {{ item.discord_username }}
+                {{ item.discord.username }}
               </td>
               <td class="!tw-border-none tw-font-light">
                 {{ item.wallet_address }}
               </td>
               <td class="!tw-border-none tw-font-light">
-                {{ item.discord_roles }}
+                <span v-for="(role, index) in item.discord.roles" :key="role">
+                  {{
+                    index === item.discord.roles.length - 1 ? role : `${role}, `
+                  }}
+                </span>
               </td>
               <td class="!tw-border-none tw-font-light">
-                {{ getFormattedDate(item.date_joined) }}
+                {{ getFormattedDate(item.date) }}
               </td>
             </tr>
           </tbody>
         </template>
       </v-data-table>
+      <loading v-else />
     </div>
+    <v-dialog
+      v-model="showCSVUploadModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <div
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
+      >
+        <h3 class="tw-text-lg">
+          Are you sure you want to import this CSV file?
+        </h3>
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
+        >
+          <button
+            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
+            @click="uploadCSV"
+          >
+            Yes
+          </button>
+          <button
+            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
+            @click="resetCSV"
+          >
+            No
+          </button>
+        </div>
+      </div>
+    </v-dialog>
   </div>
 </template>
 <script lang="ts">
+import Loading from "@/components/Reusable/Loading.vue";
+import {
+  getWhitelistById,
+  getWhitelistEntryById,
+  setRoot,
+  uploadCSVInWhitelistEntry,
+} from "@/services/WhitelistService";
+
 import moment from "moment";
 export default {
+  components: { Loading },
   layout: "dashboard",
   data() {
     return {
@@ -112,21 +170,89 @@ export default {
           width: "165px",
         },
       ],
-      items: [
-        {
-          discord_username: "Meol #3300",
-          wallet_address:
-            "0x11f0323f1d5b867414fdd80a4765f329546999241fc03bd9ec8bb089b1e9eea1",
-          discord_roles: "Verified",
-          date_joined: "03/22/2023",
-        },
-      ],
+      whitelistEntries: [],
+      paginatedWhitelistEntries: [],
+      selectedCSVFile: null,
+      showCSVUploadModal: false,
+      whitelist: null,
+      loading: true,
+      sendingDataToSetRoot: false,
     };
   },
   methods: {
     getFormattedDate(date: any) {
       return moment(date).format("MMM DD, YYYY");
     },
+    setCSVFile(event: any) {
+      if (event.target.files[0]) {
+        this.selectedCSVFile = event.target.files[0];
+        this.showCSVUploadModal = true;
+      }
+    },
+    async uploadCSV() {
+      try {
+        const formData = new FormData();
+
+        formData.append("collection_id", this.whitelist.collection_id);
+        formData.append("user_id", this.$store.state.userStore.user.user_id);
+        formData.append("csv", this.selectedCSVFile);
+
+        const res = await uploadCSVInWhitelistEntry(formData);
+
+        this.$toast.showMessage({ message: "CSV File Imported Successfully" });
+        this.showCSVUploadModal = false;
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+      }
+    },
+    resetCSV() {
+      this.showCSVUploadModal = false;
+      this.selectedCSVFile = false;
+    },
+    async fetchWhitelistEntries() {
+      this.loading = true;
+
+      const res = await getWhitelistEntryById(this.$route.params.id);
+
+      this.whitelistEntries = res.data.whitelistEntries;
+      this.paginatedWhitelistEntries = this.whitelistEntries;
+
+      this.loading = false;
+    },
+    async sendDataToSetRoot() {
+      try {
+        this.sendingDataToSetRoot = true;
+        const wallet_addresses: any[] = [];
+
+        this.whitelistEntries.map((whitelist: any) => {
+          wallet_addresses.push([whitelist.wallet_address, 1]);
+        });
+
+        const rootData = {
+          whitelistAddresses: wallet_addresses,
+          collection_id: this.whitelist.collection_id,
+        };
+
+        await setRoot(rootData);
+
+        this.$toast.showMessage({
+          message: "Wallet Addresses Added For Whitelist",
+        });
+
+        this.sendingDataToSetRoot = false;
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+      }
+    },
+  },
+  async mounted() {
+    const res = await getWhitelistById(this.$route.params.id);
+
+    this.whitelist = res.data.whitelist;
+
+    await this.fetchWhitelistEntries();
   },
 };
 </script>

@@ -129,7 +129,7 @@
               <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
             </div>
             <button
-              class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
+              class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-px-2 tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
               :class="{
                 '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
               }"
@@ -312,44 +312,45 @@ export default {
     },
     async mintCollection() {
       try {
-        if (!this.$store.state.walletStore.wallet.wallet) {
+        if (this.$store.state.walletStore.wallet.wallet) {
+          this.minting = true;
+          const balance = await this.$store.dispatch(
+            "walletStore/checkBalance"
+          );
+
+          const mintPrice = this.getCurrentPrice;
+
+          if (balance < mintPrice) {
+            this.$toast.showMessage({
+              message: "Your account has insufficient balance for Minting",
+              error: true,
+            });
+
+            this.minting = false;
+            return;
+          }
+
+          const res = await this.$store.dispatch(
+            "walletStore/mintCollection",
+            this.collection.candyMachine_id.resource_account
+          );
+
+          if (res.success) {
+            this.$toast.showMessage({
+              message: `${this.collection.name} Minted Successfully`,
+            });
+          } else {
+            this.$toast.showMessage({
+              message: "Collection Not Minted",
+              error: true,
+            });
+          }
+
+          this.minting = false;
+        } else {
           this.showConnectWalletModal = true;
           return;
         }
-
-        this.minting = true;
-        const balance = await this.$store.dispatch("walletStore/checkBalance");
-
-        const mintPrice = this.getCurrentPrice;
-
-        if (balance < mintPrice) {
-          this.$toast.showMessage({
-            message: "Your account has insufficient balance for Minting",
-            error: true,
-          });
-
-          this.minting = false;
-          return;
-        }
-
-        const res = await this.$store.dispatch(
-          "walletStore/mintCollection",
-          this.collection.candyMachine_id.resource_account
-        );
-
-        if (res.success) {
-          this.$toast.showMessage({
-            message: `${this.collection.name} Minted Successfully`,
-          });
-        } else {
-          this.$toast.showMessage({
-            message: "Collection Not Minted",
-            error: true,
-          });
-        }
-
-        this.minting = false;
-        return;
       } catch (error) {
         this.$toast.showMessage({ message: error, error: true });
         this.minting = false;

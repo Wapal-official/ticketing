@@ -192,14 +192,14 @@
     </v-dialog>
   </div>
   <div
-    class="tw-w-[95%] tw-mx-auto tw-bg-[#001233] tw-px-8 tw-py-8 banner-shadow tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-flex-row md:tw-justify-start"
+    class="tw-w-[95%] tw-mx-auto tw-px-8 tw-py-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-16 lg:tw-flex-row lg:tw-justify-start"
     v-else
   >
     <div
       class="tw-w-full lg:tw-w-[40%] tw-bg-wapal-gray tw-min-h-[400px] tw-rounded-lg tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
     ></div>
     <div
-      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 lg:tw-w-[60%]"
+      class="tw-px-8 tw-py-8 tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 lg:tw-w-[60%] tw-bg-[#001233] banner-shadow"
     >
       <div
         class="tw-py-4 tw-bg-wapal-gray tw-w-[75%] tw-rounded tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
@@ -208,7 +208,7 @@
         class="tw-py-4 tw-bg-wapal-gray tw-w-[75%] tw-rounded tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
       ></div>
       <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full lg:tw-flex-row"
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full"
       >
         <div
           class="tw-py-16 tw-bg-wapal-gray tw-w-full tw-rounded tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
