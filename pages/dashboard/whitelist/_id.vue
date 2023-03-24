@@ -20,9 +20,20 @@
     <div
       class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center"
     >
-      <button class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2">
-        Import CSV
-      </button>
+      <form @submit.prevent="">
+        <label
+          class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
+        >
+          <input
+            type="file"
+            class="tw-invisible tw-w-0 tw-h-0"
+            @change="setCSVFile"
+          />
+          <div class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2">
+            Import CSV
+          </div>
+        </label>
+      </form>
       <button class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2">
         Set Whitelist
       </button>
@@ -63,10 +74,42 @@
         </template>
       </v-data-table>
     </div>
+    <v-dialog
+      v-model="showCSVUploadModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <div
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
+      >
+        <h3 class="tw-text-lg">
+          Are you sure you want to import this CSV file?
+        </h3>
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
+        >
+          <button
+            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
+            @click="uploadCSV"
+          >
+            Yes
+          </button>
+          <button
+            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
+            @click="resetCSV"
+          >
+            No
+          </button>
+        </div>
+      </div>
+    </v-dialog>
   </div>
 </template>
 <script lang="ts">
 import moment from "moment";
+import {
+  getWhitelistById,
+  uploadCSVInWhitelistEntry,
+} from "@/services/WhitelistService";
 export default {
   layout: "dashboard",
   data() {
@@ -121,12 +164,45 @@ export default {
           date_joined: "03/22/2023",
         },
       ],
+      parsedWhitelistData: [],
+      selectedCSVFile: null,
+      showCSVUploadModal: false,
+      whitelist: null,
     };
   },
   methods: {
     getFormattedDate(date: any) {
       return moment(date).format("MMM DD, YYYY");
     },
+    setCSVFile(event: any) {
+      this.selectedCSVFile = event.target.files[0];
+      this.showCSVUploadModal = true;
+    },
+    async uploadCSV() {
+      try {
+        const formData = new FormData();
+
+        formData.append("collection_id", this.whitelist.collection_id);
+        formData.append("user_id", this.$store.state.userStore.user.user_id);
+        formData.append("csv", this.selectedCSVFile);
+
+        const res = await uploadCSVInWhitelistEntry(formData);
+
+        this.$toast.showMessage({ message: "CSV File Imported Successfully" });
+        this.showCSVUploadModal = false;
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+      }
+    },
+    resetCSV() {
+      this.showCSVUploadModal = false;
+      this.selectedCSVFile = false;
+    },
+  },
+  async mounted() {
+    const res = await getWhitelistById(this.$route.params.id);
+    this.whitelist = res.data.whitelist;
   },
 };
 </script>

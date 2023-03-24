@@ -517,13 +517,13 @@ export default {
         const discordRoles: string[] = [];
 
         this.whitelist.discord_roles.map((role: any) => {
-          discordRoles.push(role);
+          discordRoles.push(role.name);
         });
 
         const whitelistData = {
           wallet_address: this.$store.state.walletStore.wallet.walletAddress,
           discord: {
-            username: this.discordDetails.username,
+            username: `${this.discordDetails.username}#${this.discordDetails.discriminator}`,
             id: this.discordDetails.id,
             roles: discordRoles,
           },
