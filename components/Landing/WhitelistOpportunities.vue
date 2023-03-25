@@ -22,7 +22,10 @@
         }"
       />
     </div>
-    <gradient-border-button @click.native="" class="tw-mt-2 tw-self-end">
+    <gradient-border-button
+      @click.native="gotoWhitelistPage"
+      class="tw-mt-2 tw-self-end"
+    >
       View All
     </gradient-border-button>
   </div>
@@ -46,6 +49,11 @@ export default {
     const res = await getAllWhitelist();
     this.whitelists = res.data.whitelists.slice(0, 4);
     this.loading = false;
+  },
+  methods: {
+    gotoWhitelistPage() {
+      this.$router.push("/whitelist");
+    },
   },
 };
 </script>

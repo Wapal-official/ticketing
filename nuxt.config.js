@@ -5,22 +5,17 @@ const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const CANDY_MACHINE_ID = process.env.CANDY_MACHINE_ID;
 const NETWORK = process.env.NETWORK;
-const DISCORD_CLIENT_ID = "1087230196450590770";
-const DISCORD_CLIENT_SECRET = "Ub3G0l8xMub7qxru6U4FQQKKbX039P0J";
-const NODE_ENV = process.env.NODE_ENV;
-const APTOS_API_KEY = "81ccb0d76e66433abaf7543d0ff16688";
+const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
+const APTOS_API_KEY = process.env.APTOS_API_KEY;
 
 let discordRedirectURI = "https://staging.wapal.io/discord/token";
 
-// if (NODE_ENV === "development") {
-//   discordRedirectURI = "http://localhost:3000/discord/token";
-// } else {
-//   if (API_URL.includes("staging")) {
-//     discordRedirectURI = "https://staging-wapal.io/discord/token";
-//   } else {
-//     discordRedirectURI = "https://wapal.io/discord/token";
-//   }
-// }
+if (API_URL.includes("staging")) {
+  discordRedirectURI = "https://staging.wapal.io/discord/token";
+} else {
+  discordRedirectURI = "https://wapal.io/discord/token";
+}
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head

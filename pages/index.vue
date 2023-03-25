@@ -94,7 +94,6 @@ export default {
 
         if (!whitelistSaleDate) {
           if (now > publicSaleDate) {
-            console.log(collection);
             return collection;
           }
         } else {

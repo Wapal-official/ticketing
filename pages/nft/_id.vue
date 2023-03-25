@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-pt-28 tw-pb-16 md:tw-px-16 lg:tw-flex-row lg:tw-gap-16"
+      class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-pt-16 tw-pb-16 md:tw-px-16 lg:tw-flex-row lg:tw-gap-16"
       v-if="!loading"
     >
       <div
@@ -87,7 +87,9 @@
           <div
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
           >
-            <span class="tw-capitalize tw-text-sm">pre sale mint</span>
+            <span class="tw-capitalize tw-text-sm">{{
+              showPublicSaleTimer ? "pre sale mint" : "public sale mint"
+            }}</span>
             <span class="tw-capitalize tw-text-sm"
               >{{ resource.mintedPercent }}%
               <span class="tw-text-[#ACACAC]"
@@ -112,21 +114,31 @@
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
           >
-            <h6 class="tw-capitalize tw-text-white" v-if="getCurrentPrice != 0">
-              price {{ getCurrentPrice }} apt
-            </h6>
-            <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+            >
+              <div v-if="!showWhitelistSaleTimer && !showPublicSaleTimer">
+                Public Sale
+              </div>
+              <h6
+                class="tw-capitalize tw-text-white"
+                v-if="getCurrentPrice != 0"
+              >
+                price {{ getCurrentPrice }} apt
+              </h6>
+              <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
+            </div>
             <button
-              class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
+              class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-px-2 tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
               :class="{
                 '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
               }"
               @click="mintCollection"
-              :disabled="minting"
+              :disabled="minting || soldOut"
             >
               <v-progress-circular indeterminate v-if="minting" color="white">
               </v-progress-circular>
-              Mint
+              {{ !soldOut ? "Mint" : "Sold Out" }}
             </button>
           </div>
           <div
@@ -223,7 +235,6 @@
 import { getCollection } from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
-import { clear } from "console";
 
 export default {
   components: { CountDown, Loading },
@@ -258,7 +269,8 @@ export default {
         minted: 0,
         mintedPercent: 0,
       },
-      unmounted: false,
+      progressInterval: null,
+      soldOut: false,
     };
   },
   methods: {
@@ -300,44 +312,45 @@ export default {
     },
     async mintCollection() {
       try {
-        if (!this.$store.state.walletStore.wallet.wallet) {
+        if (this.$store.state.walletStore.wallet.wallet) {
+          this.minting = true;
+          const balance = await this.$store.dispatch(
+            "walletStore/checkBalance"
+          );
+
+          const mintPrice = this.getCurrentPrice;
+
+          if (balance < mintPrice) {
+            this.$toast.showMessage({
+              message: "Your account has insufficient balance for Minting",
+              error: true,
+            });
+
+            this.minting = false;
+            return;
+          }
+
+          const res = await this.$store.dispatch(
+            "walletStore/mintCollection",
+            this.collection.candyMachine_id.resource_account
+          );
+
+          if (res.success) {
+            this.$toast.showMessage({
+              message: `${this.collection.name} Minted Successfully`,
+            });
+          } else {
+            this.$toast.showMessage({
+              message: "Collection Not Minted",
+              error: true,
+            });
+          }
+
+          this.minting = false;
+        } else {
           this.showConnectWalletModal = true;
           return;
         }
-
-        this.minting = true;
-        const balance = await this.$store.dispatch("walletStore/checkBalance");
-
-        const mintPrice = this.getCurrentPrice;
-
-        if (balance < mintPrice) {
-          this.$toast.showMessage({
-            message: "Your account has insufficient balance for Minting",
-            error: true,
-          });
-
-          this.minting = false;
-          return;
-        }
-
-        const res = await this.$store.dispatch(
-          "walletStore/mintCollection",
-          this.collection.candyMachine_id.resource_account
-        );
-
-        if (res.success) {
-          this.$toast.showMessage({
-            message: `${this.collection.name} Minted Successfully`,
-          });
-        } else {
-          this.$toast.showMessage({
-            message: "Collection Not Minted",
-            error: true,
-          });
-        }
-
-        this.minting = false;
-        return;
       } catch (error) {
         this.$toast.showMessage({ message: error, error: true });
         this.minting = false;
@@ -352,11 +365,15 @@ export default {
       });
     },
     showMintedProgress() {
-      const progressInterval = setInterval(async () => {
+      this.progressInterval = setInterval(async () => {
         this.resource = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfCollection",
           this.collection.candyMachine_id.resource_account
         );
+
+        if (this.resource.minted == this.resource.total_supply) {
+          this.soldOut = true;
+        }
 
         this.resource.mintedPercent = Math.ceil(
           (this.resource.minted / this.resource.total_supply) * 100
@@ -367,10 +384,6 @@ export default {
         );
 
         resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
-
-        if (this.unmounted) {
-          clearInterval(progressInterval);
-        }
       }, 5000);
     },
   },
@@ -383,7 +396,19 @@ export default {
         this.collection.candyMachine_id.public_sale_time
       );
 
-      if (whiteListDate && whiteListDate < publicSaleDate) {
+      const now = new Date();
+      if (
+        this.collection.candyMachine_id.public_sale_price ==
+        this.collection.candyMachine_id.whitelist_price
+      ) {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+
+      if (now > publicSaleDate) {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+
+      if (whiteListDate && whiteListDate > now && publicSaleDate > now) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
         return this.collection.candyMachine_id.public_sale_price;
@@ -424,13 +449,34 @@ export default {
 
     this.showEndInTimer = true;
 
+    this.resource = await this.$store.dispatch(
+      "walletStore/getSupplyAndMintedOfCollection",
+      this.collection.candyMachine_id.resource_account
+    );
+
+    this.resource.mintedPercent = Math.ceil(
+      (this.resource.minted / this.resource.total_supply) * 100
+    );
+
+    if (this.resource.minted == this.resource.total_supply) {
+      this.soldOut = true;
+    }
+
     this.loading = false;
 
-    this.unmounted = true;
-    this.showMintedProgress();
+    setTimeout(() => {
+      const resourceMintedPercent: any = document.querySelector(
+        "#resourceMintedPercent"
+      );
+
+      resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
+
+      this.unmounted = false;
+      this.showMintedProgress();
+    }, 200);
   },
-  unmounted() {
-    this.unmounted = true;
+  beforeDestroy() {
+    clearInterval(this.progressInterval);
   },
 };
 </script>

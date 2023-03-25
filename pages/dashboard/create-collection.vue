@@ -184,6 +184,7 @@
             name="whitelistSaleTime"
             rules="saleTime"
             v-slot="{ errors }"
+            v-if="whitelistEnabled"
           >
             <label>Whitelist Sale Time</label>
             <div class="dashboard-text-field-border tw-w-full">
@@ -237,6 +238,7 @@
             name="whitelistSalePrice"
             rules="number"
             v-slot="{ errors }"
+            v-if="whitelistEnabled"
             ><label>Whitelist Sale Price in Apt</label>
             <div class="dashboard-text-field-border tw-w-full">
               <v-text-field

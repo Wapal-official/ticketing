@@ -5,7 +5,9 @@
       <dashboard-navbar :closeIcon="closeIcon" @toggleSidebar="toggleSidebar" />
       <div class="tw-flex tw-flex-row tw-items-start relative">
         <dashboard-sidebar class="tw-hidden lg:tw-flex" />
-        <Nuxt class="!tw-px-8 !tw-py-4" />
+        <div class="dashboard-container">
+          <Nuxt class="!tw-px-8 !tw-py-4" />
+        </div>
       </div>
       <div
         class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background tw-z-50"
@@ -126,5 +128,13 @@ export default {
 <style>
 .v-breadcrumbs {
   padding-left: 0 !important;
+}
+.dashboard-container {
+  width: calc(100vw - 320px);
+}
+@media only screen and (max-width: 1024px) {
+  .dashboard-container {
+    width: 100%;
+  }
 }
 </style>

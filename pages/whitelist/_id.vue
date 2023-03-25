@@ -76,23 +76,26 @@
           <div class="tw-text-lg">Mint Date</div>
           <div class="tw-text-xl">{{ getMintDate }}</div>
         </div>
-        <!-- <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
+        <div class="tw-w-full tw-flex tw-flex-col tw-gap-2 tw-py-4">
           <div
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
           >
-            <span class="tw-capitalize tw-text-sm">pre sale mint</span>
+            <span class="tw-capitalize tw-text-sm">No of Spots</span>
             <span class="tw-capitalize tw-text-sm"
-              >10% <span class="tw-text-[#ACACAC]">(100 out of 1000)</span></span
+              >0%
+              <span class="tw-text-[#ACACAC]"
+                >(0 out of {{ whitelist.whitelist_spots }})</span
+              ></span
             >
           </div>
           <div
             class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px]"
           >
             <div
-              class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-[#E500A4] tw-w-[10%] tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
+              class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-[#E500A4] tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
             ></div>
           </div>
-        </div> -->
+        </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded"
         >
@@ -163,8 +166,8 @@
         <div class="tw-w-full tw-flex tw-flex-row tw-justify-center">
           <button
             class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded md:tw-py-3 md:tw-px-16 disabled:tw-bg-[#FF36AB]/75"
-            @click="verifyAndEnter"
-            :disabled="disableVerifyAndEnter || !getVerificationStatus"
+            @click="displayVerificationOptions"
+            :disabled="!getVerificationStatus"
           >
             Verify and Enter
           </button>
@@ -198,66 +201,103 @@
     <v-dialog
       v-model="showVerifyingDialog"
       content-class="!tw-w-full md:!tw-w-1/2"
+      persistent
     >
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-bg-modal-gray tw-rounded tw-py-4 tw-px-4 tw-gap-6"
+        class="tw-relative tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-bg-modal-gray tw-rounded tw-py-8 tw-px-4 tw-gap-6"
       >
-        <h2 class="tw-text-xl tw-font-semibold tw-text-white">
-          {{ !verified ? "Verifying" : "Verified" }}
+        <button
+          class="tw-absolute tw-top-4 tw-right-4"
+          @click="showVerifyingDialog = false"
+        >
+          <v-icon class="!tw-text-lg !tw-text-white">mdi-close</v-icon>
+        </button>
+        <h2 class="tw-text-xl tw-font-medium tw-capitalize">
+          Fulfill following conditions to enter whitelist
         </h2>
-        <div class="tw-w-full" v-if="!verifying">
-          <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start"
-            v-if="error.discord.error"
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between"
+        >
+          <span class="tw-text-lg"
+            >Join {{ whitelist.discord_server_name }} server</span
           >
-            <div
-              v-if="error.discord.type === 'server not joined'"
-              class="tw-text-lg tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4"
+          <div
+            class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-end tw-gap-4 md:tw-w-fit"
+            v-if="!joinedDiscordServer"
+          >
+            <button-with-loader
+              class="tw-font-semibold tw-bg-[#FF36AB] tw-px-6 tw-py-2 tw-rounded"
+              @click.native="checkIfUserHasJoinedDiscordServer"
+              text="Verify"
+              loadingText="Verifying..."
+              :loading="verifyingJoinedDiscordServer"
+            />
+            <a
+              class="!tw-text-white tw-font-semibold tw-bg-[#FF36AB] tw-px-6 tw-py-2 tw-rounded"
+              :href="whitelist.discord_server_url"
+              target="_blank"
             >
-              <h3>You have not joined the discord server for this whitelist</h3>
-              <p>
-                Please join
-                <a
-                  :href="this.whitelist.discord_server_url"
-                  target="_blank"
-                  class="!tw-text-wapal-pink hover:tw-text-wapal-pink"
-                  >{{ this.whitelist.discord_server_name }}</a
-                >
-              </p>
-            </div>
-            <div
-              v-if="error.discord.type === 'roles not provided'"
-              class="tw-text-lg tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4"
-            >
-              <h3>You are not promoted to roles required for this whitelist</h3>
-              <p>
-                Please get promoted to
-                <span
-                  v-for="(role, index) in whitelist?.discord_roles"
-                  :key="role.id"
-                  v-if="whitelist?.discord_roles[0].name"
-                >
-                  <span v-if="index === whitelist?.discord_roles.length - 1"
-                    >{{ role.name }}
-                  </span>
-                  <span v-else>{{ role.name }}, </span>
-                </span>
-              </p>
-            </div>
+              Join
+            </a>
           </div>
-          <div
-            class="tw-w-full tw-items-center tw-justify-center tw-flex tw-flex-row"
-            v-else
-          >
-            <button
-              class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-              @click="sendUserDetailsToWhitelist"
+          <div v-else>
+            <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+              >mdi-check-circle</v-icon
             >
-              Enter
-            </button>
           </div>
         </div>
-        <loading v-else />
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between"
+        >
+          <div class="tw-text-lg">
+            Get promoted to
+            <span
+              v-for="(role, index) in whitelist?.discord_roles"
+              :key="role.id"
+              v-if="whitelist?.discord_roles[0].name"
+            >
+              <span v-if="index === whitelist?.discord_roles.length - 1"
+                >{{ role.name }}
+              </span>
+              <span v-else>{{ role.name }}, </span>
+            </span>
+          </div>
+          <div
+            class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-end tw-gap-4 md:tw-w-fit"
+            v-if="!promotedToRequiredRoles"
+          >
+            <button-with-loader
+              class="tw-font-semibold tw-bg-[#FF36AB] tw-px-6 tw-py-2 tw-rounded"
+              @click.native="checkIfUserIsPromotedToRequiredRoles"
+              text="Verify"
+              loadingText="Verifying..."
+              :loading="verifyingPromotedToDiscordRoles"
+            />
+            <a
+              class="!tw-text-white tw-font-semibold tw-bg-[#FF36AB] tw-px-6 tw-py-2 tw-rounded"
+              :href="whitelist.discord_server_url"
+              target="_blank"
+            >
+              Get Promoted
+            </a>
+          </div>
+          <div v-else>
+            <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+              >mdi-check-circle</v-icon
+            >
+          </div>
+        </div>
+        <div
+          class="tw-w-full tw-items-center tw-justify-center tw-flex tw-flex-row"
+        >
+          <button
+            class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
+            @click="sendUserDetailsToCreateWhitelistEntry"
+            :disabled="!getFulfilledConditionStatus"
+          >
+            Enter
+          </button>
+        </div>
       </div>
     </v-dialog>
   </div>
@@ -267,8 +307,12 @@ import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 import ConnectWalletModal from "@/components/ConnectWallet/ConnectWalletModal.vue";
 import SignupModal from "@/components/Signup/SignupModal.vue";
+import ButtonWithLoader from "@/components/Button/ButtonWithLoader.vue";
 
-import { getWhitelistById } from "@/services/WhitelistService";
+import {
+  getWhitelistById,
+  createWhitelistEntry,
+} from "@/services/WhitelistService";
 import { getCollection } from "@/services/CollectionService";
 import { discordRequest } from "@/services/DiscordInterceptor";
 
@@ -276,7 +320,13 @@ import moment from "moment";
 import Cookies from "js-cookie";
 
 export default {
-  components: { CountDown, Loading, ConnectWalletModal, SignupModal },
+  components: {
+    CountDown,
+    Loading,
+    ConnectWalletModal,
+    SignupModal,
+    ButtonWithLoader,
+  },
   data() {
     return {
       loading: true,
@@ -300,6 +350,9 @@ export default {
       whitelist: {
         whitelist_start: "",
         discord_roles: [{ name: "", id: "" }],
+        whitelist_spots: "",
+        discord_server_name: "",
+        discord_server_url: "",
       },
       error: {
         discord: {
@@ -314,6 +367,11 @@ export default {
       verified: false,
       discordDetails: null,
       discordStatus: false,
+      joinedDiscordServer: false,
+      promotedToRequiredRoles: false,
+      verifyingJoinedDiscordServer: false,
+      verifyingPromotedToDiscordRoles: false,
+      discordResponse: { data: "" },
     };
   },
   methods: {
@@ -347,7 +405,7 @@ export default {
         console.log(error);
       }
     },
-    async verifyAndEnter() {
+    async displayVerificationOptions() {
       this.verifying = true;
       this.disableVerifyAndEnter = true;
       this.error = {
@@ -359,92 +417,130 @@ export default {
       };
 
       this.showVerifyingDialog = true;
-
-      const checkDiscordRequirements = await this.checkJoinedDiscordServer();
-
-      if (checkDiscordRequirements === 0) {
-        this.error.discord.message = "Please join this discord Server";
-        this.error.discord.type = "server not joined";
-        this.error.discord.error = true;
-        this.enableVerifyAndEnterButton();
-        this.verifying = false;
-
-        return false;
-      } else if (checkDiscordRequirements === -1) {
-        this.error.discord.message = "Please get promoted to these roles";
-        this.error.discord.type = "roles not provided";
-        this.error.discord.error = true;
-        this.enableVerifyAndEnterButton();
-        this.verifying = false;
-
-        return false;
-      }
-
-      this.verified = true;
-
-      this.enableVerifyAndEnterButton();
-
-      this.verifying = false;
-      return true;
     },
-    async checkJoinedDiscordServer() {
+    async checkIfUserHasJoinedDiscordServer() {
       try {
+        this.verifyingJoinedDiscordServer = true;
+
         const discordDetailsRes = await discordRequest.get("users/@me");
 
         this.discordDetails = discordDetailsRes.data;
 
-        const res = await discordRequest.get(
+        this.discordResponse = await discordRequest.get(
           `users/@me/guilds/${this.whitelist.discord_server_id}/member`
         );
 
-        const roles = res.data.roles;
-
-        let checkedRoles = this.whitelist.discord_roles.length;
-        roles.map((role: any) => {
-          this.whitelist.discord_roles.map((whitelistRole: any) => {
-            if (role == whitelistRole.id) {
-              checkedRoles--;
-              return;
-            }
-          });
-        });
-
-        if (checkedRoles !== 0) {
-          return -1;
-        }
-
-        return 1;
+        this.joinedDiscordServer = true;
+        this.verifyingJoinedDiscordServer = false;
       } catch (error: any) {
         if (error.response.data.message) {
           if (error.response.data.message === "Unknown Guild") {
-            this.error.discord.error = true;
-            this.error.discord.message = "Please join guild";
-            this.error.discord.type = "server not joined";
+            this.$toast.showMessage({
+              message: "Please Join Discord Server First",
+              error: true,
+            });
+            this.joinedDiscordServer = false;
+            this.verifyingJoinedDiscordServer = false;
           }
         }
-        return 0;
       }
+    },
+    async checkIfUserIsPromotedToRequiredRoles() {
+      try {
+        this.verifyingPromotedToDiscordRoles = true;
+        if (this.discordResponse.data) {
+          const promoted = this.checkDiscordRoles(
+            this.discordResponse.data.roles
+          );
+
+          if (promoted) {
+            this.promotedToRequiredRoles = true;
+            this.verifyingPromotedToDiscordRoles = false;
+          } else {
+            this.verifyingPromotedToDiscordRoles = false;
+            this.$toast.showMessage({
+              message: "Please get promoted to required roles",
+              error: true,
+            });
+          }
+        } else {
+          const res = await discordRequest.get(
+            `users/@me/guilds/${this.whitelist.discord_server_id}/member`
+          );
+
+          const roles = res.data.roles;
+          const promoted = this.checkDiscordRoles(roles);
+
+          if (promoted) {
+            this.promotedToRequiredRoles = true;
+            this.verifyingPromotedToDiscordRoles = false;
+          } else {
+            this.verifyingPromotedToDiscordRoles = false;
+            this.$toast.showMessage({
+              message: "Please get promoted to required roles",
+              error: true,
+            });
+          }
+        }
+      } catch (error) {
+        this.$toast.showMessage({
+          message: "Please get promoted to required roles",
+          error: true,
+        });
+      }
+    },
+    checkDiscordRoles(roles: any[]) {
+      let checkedRoles = this.whitelist.discord_roles.length;
+
+      roles.map((role: any) => {
+        this.whitelist.discord_roles.map((whitelistRole: any) => {
+          if (role == whitelistRole.id) {
+            checkedRoles--;
+            return;
+          }
+        });
+      });
+
+      if (checkedRoles !== 0) {
+        return false;
+      }
+
+      return true;
     },
     enableVerifyAndEnterButton() {
       setTimeout(() => {
         this.disableVerifyAndEnter = false;
       }, 3000);
     },
-    sendUserDetailsToWhitelist() {
-      const whitelistData = {
-        wallet_address: this.$store.state.walletStore.wallet.walletAddress,
-        discord_user_id: this.discordDetails.id,
-        discord_username: this.discordDetails.username,
-        whitelist_id: this.$route.params.id,
-      };
+    async sendUserDetailsToCreateWhitelistEntry() {
+      try {
+        const discordRoles: string[] = [];
 
-      console.log(whitelistData);
+        this.whitelist.discord_roles.map((role: any) => {
+          discordRoles.push(role.name);
+        });
 
-      this.showVerifyingDialog = false;
+        const whitelistData = {
+          wallet_address: this.$store.state.walletStore.wallet.walletAddress,
+          discord: {
+            username: `${this.discordDetails.username}#${this.discordDetails.discriminator}`,
+            id: this.discordDetails.id,
+            roles: discordRoles,
+          },
+          whitelist_id: this.$route.params.id,
+          date: new Date().toISOString(),
+        };
 
-      this.$toast.showMessage({
-        message: "Whitelist Request Sent Successfully",
-      });
+        await createWhitelistEntry(whitelistData);
+
+        this.showVerifyingDialog = false;
+
+        this.$toast.showMessage({
+          message: "Whitelist Request Sent Successfully",
+        });
+      } catch (error) {
+        this.$toast.showMessage({ message: error, error: true });
+      }
     },
     watchCookies() {
       const interval = setInterval(() => {
@@ -471,6 +567,12 @@ export default {
     },
     getVerificationStatus() {
       if (!this.getWalletStatus || !this.getUserStatus || !this.discordStatus) {
+        return false;
+      }
+      return true;
+    },
+    getFulfilledConditionStatus() {
+      if (!this.joinedDiscordServer || !this.promotedToRequiredRoles) {
         return false;
       }
       return true;
