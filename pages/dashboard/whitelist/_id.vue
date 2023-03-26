@@ -36,7 +36,7 @@
       </form>
       <button
         class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2"
-        @click="sendDataToSetRoot"
+        @click="showSetWhitelistModal = true"
         :disabled="sendingDataToSetRoot"
       >
         Set Whitelist
@@ -112,6 +112,32 @@
         </div>
       </div>
     </v-dialog>
+    <v-dialog
+      v-model="showSetWhitelistModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <div
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
+      >
+        <h3 class="tw-text-lg">Are you sure you want to set Whitelist?</h3>
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
+        >
+          <button
+            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
+            @click="sendDataToSetRoot"
+          >
+            Yes
+          </button>
+          <button
+            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
+            @click="showSetWhitelistModal = false"
+          >
+            No
+          </button>
+        </div>
+      </div>
+    </v-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -177,6 +203,7 @@ export default {
       whitelist: null,
       loading: true,
       sendingDataToSetRoot: false,
+      showSetWhitelistModal: false,
     };
   },
   methods: {
@@ -195,12 +222,15 @@ export default {
 
         formData.append("collection_id", this.whitelist.collection_id);
         formData.append("user_id", this.$store.state.userStore.user.user_id);
+        formData.append("whitelist_id", this.$route.params.id);
         formData.append("csv", this.selectedCSVFile);
 
         const res = await uploadCSVInWhitelistEntry(formData);
 
         this.$toast.showMessage({ message: "CSV File Imported Successfully" });
         this.showCSVUploadModal = false;
+
+        this.fetchWhitelistEntries();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
@@ -222,6 +252,7 @@ export default {
     },
     async sendDataToSetRoot() {
       try {
+        this.showSetWhitelistModal = false;
         this.sendingDataToSetRoot = true;
         const wallet_addresses: any[] = [];
 
