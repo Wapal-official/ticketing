@@ -65,8 +65,8 @@ export const state = () => ({
     wallet: "",
     walletAddress: "",
     publicKey: "",
-    merkle_root: '',
-    proof: ''
+    merkle_root: "",
+    proof: "",
   },
 });
 
@@ -74,12 +74,12 @@ export const mutations = {
   setWallet(state: any, wallet: WalletAddress) {
     state.wallet = wallet;
   },
-  setMerkelRoot(state: any, merkle_root: any) {
+  setMerkleRoot(state: any, merkle_root: any) {
     state.merkle_root = merkle_root;
   },
   setProof(state: any, proof: any) {
     state.proof = proof;
-  }
+  },
 };
 
 export const getters = {
@@ -139,39 +139,33 @@ export const actions = {
       })
     );
   },
-  async getMerkelRoot({ commit }: { commit: any }) {
-    const { root } = await this.$axios.post('whitelist/root',
-      {
-        "whitelistAddresses": [
-          [
-            "0x349b294c8261d3255ebfae31e88558a2ce1f79b8c0ecebb7e151a3dc6a6cdafc",
-            60
-          ], [
-            "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37",
-            60
-          ]
-        ],
-        "collection_id": "63ec8ae48f6644c2145c39f6"
-
-      })
-    commit('setMerkelRoot', root)
+  async getMerkleRoot({ commit }: { commit: any }, walletAddress: string) {
+    const { data } = await this.$axios.post("/api/whitelist/root", {
+      whitelistAddresses: [[walletAddress, 1]],
+    });
+    commit("setMerkleRoot", data.root.data);
   },
   async getProof({ commit }: { commit: any }) {
-    const { proofs } = await this.$axios.post('whitelist/root',
-      {
-        "address": "0x349b294c8261d3255ebfae31e88558a2ce1f79b8c0ecebb7e151a3dc6a6cdafc",
-        "collection_id": "63ec8ae48f6644c2145c39f6"
-      })
-    commit('setProof', proofs)
+    const { proofs } = await this.$axios.post("/api/whitelist/root", {
+      address:
+        "0x349b294c8261d3255ebfae31e88558a2ce1f79b8c0ecebb7e151a3dc6a6cdafc",
+      collection_id: "63ec8ae48f6644c2145c39f6",
+    });
+    commit("setProof", proofs);
   },
   async createCandyMachine(
-    { state }: { state: any },
+    { state, dispatch }: { state: any; dispatch: any },
     candyMachineArguments: any
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
-    
+
+    await dispatch(
+      "getMerkleRoot",
+      candyMachineArguments.royalty_payee_address
+    );
+
     const create_candy_machine = {
       type: "entry_function_payload",
       function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
@@ -227,7 +221,11 @@ export const actions = {
     const balance = lamports / 100000000;
     return balance.toFixed(4);
   },
-  async mintCollection({ state }: { state: any }, resourceAccount: string, publicMint: Boolean) {
+  async mintCollection(
+    { state }: { state: any },
+    resourceAccount: string,
+    publicMint: Boolean
+  ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
@@ -241,14 +239,12 @@ export const actions = {
         arguments: [resourceAccount],
       };
     } else {
-      
       create_mint_script = {
         type: "entry_function_payload",
-        function: process.env.NEW_CANDY_MACHINE_ID + "::candymachine::mint_from_merkle",
+        function:
+          process.env.NEW_CANDY_MACHINE_ID + "::candymachine::mint_from_merkle",
         type_arguments: [],
-        arguments: [resourceAccount,
-          state.proofs,
-          BigInt(1)],
+        arguments: [resourceAccount, state.proofs, BigInt(1)],
       };
     }
 
@@ -293,7 +289,7 @@ export const actions = {
       error: false,
     };
   },
-  async signTransactionForUploadingFolder({ }, requiredBalance: any) {
+  async signTransactionForUploadingFolder({}, requiredBalance: any) {
     const transactionAmount = Math.ceil(requiredBalance * 100000000);
 
     const payload = {
@@ -323,7 +319,7 @@ export const actions = {
 
     return signMessage;
   },
-  async getSupplyAndMintedOfCollection({ }, resourcecAccountAddress: string) {
+  async getSupplyAndMintedOfCollection({}, resourcecAccountAddress: string) {
     const res = await client.getAccountResources(resourcecAccountAddress);
 
     let resource: any = null;
