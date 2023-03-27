@@ -68,7 +68,5 @@ export const setRoot = async (rootData: any) => {
     rootData
   );
 
-  console.log(res);
-
   return res;
 };
