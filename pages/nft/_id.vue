@@ -329,11 +329,11 @@ export default {
             this.minting = false;
             return;
           }
-
-          const res = await this.$store.dispatch(
-            "walletStore/mintCollection",
-            this.collection.candyMachine_id.resource_account
-          );
+          const res = await this.$store.dispatch("walletStore/mintCollection", {
+            resourceAccount: this.collection.candyMachine_id.resource_account,
+            publicMint: !this.checkPublicSaleTimer(),
+            collectionId: this.$route.params.id,
+          });
 
           if (res.success) {
             this.$toast.showMessage({

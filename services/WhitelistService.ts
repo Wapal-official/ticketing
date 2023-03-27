@@ -54,9 +54,9 @@ export const uploadCSVInWhitelistEntry = async (formData: any) => {
   return res;
 };
 
-export const getWhitelistEntryById = async (whitelist_id: string) => {
+export const getWhitelistEntryById = async (collection_id: string) => {
   const res = await axios.get(`${process.env.baseURL}/api/whitelist/entry`, {
-    params: { whitelist_id: whitelist_id },
+    params: { collection_id: collection_id },
   });
 
   return res;

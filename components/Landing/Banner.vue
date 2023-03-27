@@ -395,7 +395,7 @@ export default {
     if (!process.env.baseURL?.includes("staging")) {
       res = await getCollection("6415331e9cb214a367f1ee7a");
     } else {
-      res = await getCollection("641ff7ccc45a37b3dbfbca66");
+      res = await getCollection("642146e4054578e8bfbc053a");
     }
 
     this.collection = res.collection[0];

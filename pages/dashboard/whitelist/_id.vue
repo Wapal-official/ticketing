@@ -213,7 +213,7 @@ export default {
     async fetchWhitelistEntries() {
       this.loading = true;
 
-      const res = await getWhitelistEntryById(this.$route.params.id);
+      const res = await getWhitelistEntryById(this.whitelist.collection_id);
 
       this.whitelistEntries = res.data.whitelistEntries;
       this.paginatedWhitelistEntries = this.whitelistEntries;
@@ -231,7 +231,7 @@ export default {
 
         const rootData = {
           whitelistAddresses: wallet_addresses,
-          collection_id: this.whitelist.collection_id,
+          collection_id: this.whitelist._id,
         };
 
         await setRoot(rootData);

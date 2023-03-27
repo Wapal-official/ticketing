@@ -529,6 +529,8 @@ export default {
           },
           whitelist_id: this.$route.params.id,
           date: new Date().toISOString(),
+          collection_id: this.whitelist.collection_id,
+          mint_limit: 1,
         };
 
         await createWhitelistEntry(whitelistData);

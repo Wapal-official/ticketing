@@ -14,7 +14,7 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
-import { AptosClient } from "aptos";
+import { AptosClient, HexString } from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
 
@@ -65,7 +65,6 @@ export const state = () => ({
     wallet: "",
     walletAddress: "",
     publicKey: "",
-    merkle_root: "",
     proof: "",
   },
 });
@@ -73,9 +72,6 @@ export const state = () => ({
 export const mutations = {
   setWallet(state: any, wallet: WalletAddress) {
     state.wallet = wallet;
-  },
-  setMerkleRoot(state: any, merkle_root: any) {
-    state.merkle_root = merkle_root;
   },
   setProof(state: any, proof: any) {
     state.proof = proof;
@@ -139,19 +135,20 @@ export const actions = {
       })
     );
   },
-  async getMerkleRoot({ commit }: { commit: any }, walletAddress: string) {
-    const { data } = await this.$axios.post("/api/whitelist/root", {
-      whitelistAddresses: [[walletAddress, 1]],
-    });
-    commit("setMerkleRoot", data.root.data);
-  },
-  async getProof({ commit }: { commit: any }) {
-    const { proofs } = await this.$axios.post("/api/whitelist/root", {
-      address:
-        "0x349b294c8261d3255ebfae31e88558a2ce1f79b8c0ecebb7e151a3dc6a6cdafc",
-      collection_id: "63ec8ae48f6644c2145c39f6",
-    });
-    commit("setProof", proofs);
+  async getProof(
+    { commit }: { commit: any },
+    {
+      walletAddress,
+      collectionId,
+    }: { walletAddress: string; collectionId: string }
+  ) {
+    const { data } = await this.$axios.get(
+      `/api/whitelist/proof?wallet_address=${walletAddress}&collection_id=${collectionId}`
+    );
+
+    console.log(data);
+
+    commit("setProof", data.proofs);
   },
   async createCandyMachine(
     { state, dispatch }: { state: any; dispatch: any },
@@ -160,11 +157,6 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
-
-    await dispatch(
-      "getMerkleRoot",
-      candyMachineArguments.royalty_payee_address
-    );
 
     const create_candy_machine = {
       type: "entry_function_payload",
@@ -185,7 +177,6 @@ export const actions = {
         [false, false, false],
         [false, false, false, false, false],
         0,
-        state.merkle_root,
         "" + makeId(5),
       ],
     };
@@ -222,15 +213,18 @@ export const actions = {
     return balance.toFixed(4);
   },
   async mintCollection(
-    { state }: { state: any },
-    resourceAccount: string,
-    publicMint: Boolean
+    { state, dispatch }: { state: any; dispatch: any },
+    {
+      resourceAccount,
+      publicMint,
+      collectionId,
+    }: { resourceAccount: string; publicMint: boolean; collectionId: string }
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
-    // await state.
-    var create_mint_script;
+
+    var create_mint_script: any;
     if (publicMint) {
       create_mint_script = {
         type: "entry_function_payload",
@@ -239,18 +233,36 @@ export const actions = {
         arguments: [resourceAccount],
       };
     } else {
-      create_mint_script = {
-        type: "entry_function_payload",
-        function:
-          process.env.NEW_CANDY_MACHINE_ID + "::candymachine::mint_from_merkle",
-        type_arguments: [],
-        arguments: [resourceAccount, state.proofs, BigInt(1)],
-      };
+      await dispatch("getProof", {
+        collectionId: collectionId,
+        walletAddress: state.wallet.walletAddress,
+      });
+
+      const proofs: any[] = [];
+      state.proof.map((proof: any) => {
+        proofs.push(proof.data);
+      });
+      if (state.proof.length > 0) {
+        console.log(proofs);
+        create_mint_script = {
+          type: "entry_function_payload",
+          function:
+            process.env.CANDY_MACHINE_ID + "::candymachine::mint_from_merkle",
+          type_arguments: [],
+          arguments: [resourceAccount, proofs, 1],
+        };
+      } else {
+        throw new Error("You are not whitelisted for this collection");
+      }
     }
+
+    console.log(create_mint_script);
 
     const transaction = await wallet.signAndSubmitTransaction(
       create_mint_script
     );
+
+    console.log(transaction);
 
     const res = await client.waitForTransactionWithResult(transaction.hash);
 
