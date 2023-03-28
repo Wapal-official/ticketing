@@ -217,6 +217,38 @@
         </h2>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between"
+          v-if="whitelist.twitter"
+        >
+          <span class="tw-text-lg"
+            >Follow {{ whitelist.twitter }} on Twitter</span
+          >
+          <div
+            class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-end tw-gap-4 md:tw-w-fit"
+            v-if="!followedTwitter"
+          >
+            <button-with-loader
+              class="tw-font-semibold tw-bg-[#FF36AB] tw-px-6 tw-py-2 tw-rounded"
+              @click.native="checkIfUserHasFollowedTwitterAccount"
+              text="Verify"
+              loadingText="Verifying..."
+              :loading="verifyingFollowedOnTwitter"
+            />
+            <a
+              class="!tw-text-white tw-font-semibold tw-bg-[#FF36AB] tw-px-6 tw-py-2 tw-rounded"
+              :href="`https://twitter.com/${whitelist.twitter}`"
+              target="_blank"
+            >
+              Follow
+            </a>
+          </div>
+          <div v-else>
+            <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+              >mdi-check-circle</v-icon
+            >
+          </div>
+        </div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between"
         >
           <span class="tw-text-lg"
             >Join {{ whitelist.discord_server_name }} server</span
@@ -353,6 +385,7 @@ export default {
         whitelist_spots: "",
         discord_server_name: "",
         discord_server_url: "",
+        twitter: "",
       },
       error: {
         discord: {
@@ -372,6 +405,8 @@ export default {
       verifyingJoinedDiscordServer: false,
       verifyingPromotedToDiscordRoles: false,
       discordResponse: { data: "" },
+      followedTwitter: false,
+      verifyingFollowedOnTwitter: false,
     };
   },
   methods: {
@@ -507,6 +542,13 @@ export default {
 
       return true;
     },
+    checkIfUserHasFollowedTwitterAccount() {
+      this.verifyingFollowedOnTwitter = true;
+      setTimeout(() => {
+        this.followedTwitter = true;
+        this.verifyingFollowedOnTwitter = false;
+      }, 1500);
+    },
     enableVerifyAndEnterButton() {
       setTimeout(() => {
         this.disableVerifyAndEnter = false;
@@ -527,7 +569,6 @@ export default {
             id: this.discordDetails.id,
             roles: discordRoles,
           },
-          whitelist_id: this.$route.params.id,
           date: new Date().toISOString(),
           collection_id: this.whitelist.collection_id,
           mint_limit: 1,
@@ -540,8 +581,17 @@ export default {
         this.$toast.showMessage({
           message: "Whitelist Request Sent Successfully",
         });
-      } catch (error) {
-        this.$toast.showMessage({ message: error, error: true });
+      } catch (error: any) {
+        if (
+          error.response.data.msg &&
+          error.response.data.msg === "Duplicate entry."
+        ) {
+          this.$toast.showMessage({
+            message: "You have Already Applied For this whitelist",
+            error: true,
+          });
+        } else {
+        }
       }
     },
     watchCookies() {

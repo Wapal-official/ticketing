@@ -61,7 +61,7 @@
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
-        <!-- <ValidationProvider
+        <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="twitter_acc"
           rules="required"
@@ -83,7 +83,7 @@
             ></v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider> -->
+        </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="discord_server"
@@ -226,7 +226,7 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
             name="whitelistSaleTime"
-            rules="required|whitelistStart"
+            rules="required"
             v-slot="{ errors }"
           >
             <label

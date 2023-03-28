@@ -114,6 +114,7 @@
               class="dashboard-input"
               placeholder="Select your NFT Vault"
               item-text="folder_name"
+              @change="setSupply"
               hide-details
               clearable
             >
@@ -304,6 +305,7 @@
               clearable
               class="dashboard-input"
               inputmode="numeric"
+              disabled
             >
             </v-text-field>
           </div>
@@ -675,6 +677,18 @@ export default {
 
       this.collection.resource_account = res.resourceAccount;
       this.collection.transaction_hash = res.transactionHash;
+    },
+    setSupply() {
+      const selectedFolder = this.folders.find(
+        (folder: any) => folder.folder_name === this.baseURL
+      );
+      if (selectedFolder) {
+        this.collection.supply = selectedFolder.metadata.files.length
+          ? selectedFolder.metadata.files.length
+          : null;
+      } else {
+        this.collection.supply = null;
+      }
     },
   },
   async mounted() {

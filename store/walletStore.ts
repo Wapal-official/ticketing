@@ -146,8 +146,6 @@ export const actions = {
       `/api/whitelist/proof?wallet_address=${walletAddress}&collection_id=${collectionId}`
     );
 
-    console.log(data);
-
     commit("setProof", data.proofs);
   },
   async createCandyMachine(
@@ -207,10 +205,16 @@ export const actions = {
       state.wallet.walletAddress
     );
 
-    const lamports = res[res.length - 1].data.coin.value;
+    if (res) {
+      const lamports = res[res.length - 1].data.coin.value;
 
-    const balance = lamports / 100000000;
-    return balance.toFixed(4);
+      const balance = lamports / 100000000;
+      return balance.toFixed(4);
+    } else {
+      throw new Error(
+        "Something went wrong please reconnect your wallet and try again"
+      );
+    }
   },
   async mintCollection(
     { state, dispatch }: { state: any; dispatch: any },
@@ -243,7 +247,6 @@ export const actions = {
         proofs.push(proof.data);
       });
       if (state.proof.length > 0) {
-        console.log(proofs);
         create_mint_script = {
           type: "entry_function_payload",
           function:
@@ -252,17 +255,15 @@ export const actions = {
           arguments: [resourceAccount, proofs, 1],
         };
       } else {
-        throw new Error("You are not whitelisted for this collection");
+        throw new Error(
+          "You are not whitelisted petraAddressfor this collection"
+        );
       }
     }
-
-    console.log(create_mint_script);
 
     const transaction = await wallet.signAndSubmitTransaction(
       create_mint_script
     );
-
-    console.log(transaction);
 
     const res = await client.waitForTransactionWithResult(transaction.hash);
 
@@ -346,5 +347,32 @@ export const actions = {
     }
 
     return { total_supply: resource.total_supply, minted: resource.minted };
+  },
+  async setMerkleRoot(
+    { state }: { state: any },
+    { root, resourceAccount }: { root: any; resourceAccount: string }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    const set_root_script = {
+      function: process.env.CANDY_MACHINE_ID + "::candymachine::set_root",
+      type: "entry_function_payload",
+      arguments: [resourceAccount, root],
+      type_arguments: [],
+    };
+
+    const transaction = await wallet.signAndSubmitTransaction(set_root_script);
+
+    let transactionResult: any = await client.waitForTransactionWithResult(
+      transaction.hash
+    );
+
+    if (!transactionResult.success) {
+      throw new Error("Transaction not Successful please try again");
+    }
+
+    return transaction;
   },
 };

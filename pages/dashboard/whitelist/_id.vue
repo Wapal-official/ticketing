@@ -150,6 +150,7 @@ import {
 } from "@/services/WhitelistService";
 
 import moment from "moment";
+import { getCollection } from "@/services/CollectionService";
 export default {
   components: { Loading },
   layout: "dashboard",
@@ -254,18 +255,30 @@ export default {
       try {
         this.showSetWhitelistModal = false;
         this.sendingDataToSetRoot = true;
-        const wallet_addresses: any[] = [];
-
-        this.whitelistEntries.map((whitelist: any) => {
-          wallet_addresses.push([whitelist.wallet_address, 1]);
-        });
 
         const rootData = {
-          whitelistAddresses: wallet_addresses,
-          collection_id: this.whitelist._id,
+          collection_id: this.whitelist.collection_id,
         };
 
-        await setRoot(rootData);
+        const res = await setRoot(rootData);
+
+        console.log(res);
+
+        const root: any[] = [];
+
+        res.data.root.data.map((rootData: any) => {
+          rootData.data;
+
+          root.push(rootData);
+        });
+
+        const transactionRes = await this.$store.dispatch(
+          "walletStore/setMerkleRoot",
+          {
+            root: root,
+            resourceAccount: this.collection.candyMachine_id.resource_account,
+          }
+        );
 
         this.$toast.showMessage({
           message: "Wallet Addresses Added For Whitelist",
@@ -282,6 +295,10 @@ export default {
     const res = await getWhitelistById(this.$route.params.id);
 
     this.whitelist = res.data.whitelist;
+
+    const collectionRes = await getCollection(this.whitelist.collection_id);
+
+    this.collection = collectionRes.collection[0];
 
     await this.fetchWhitelistEntries();
   },

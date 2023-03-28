@@ -351,10 +351,22 @@ export default {
           this.showConnectWalletModal = true;
           return;
         }
-      } catch (error) {
-        this.$toast.showMessage({ message: error, error: true });
-        this.minting = false;
+      } catch (error: any) {
         console.log(error);
+        if (
+          error.response &&
+          error.response.data.msg &&
+          error.response.data.msg ===
+            "Whitelist entry associated with this wallet address not found."
+        ) {
+          this.$toast.showMessage({
+            message: "You are not listed in Whitelist for this Collection",
+            error: true,
+          });
+        } else {
+          this.$toast.showMessage({ message: error, error: true });
+        }
+        this.minting = false;
       }
     },
     displayWalletConnectedMessage() {
@@ -408,7 +420,7 @@ export default {
         return this.collection.candyMachine_id.public_sale_price;
       }
 
-      if (whiteListDate && whiteListDate > now && publicSaleDate > now) {
+      if (whiteListDate && publicSaleDate > now) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
         return this.collection.candyMachine_id.public_sale_price;
