@@ -400,11 +400,15 @@ export default {
 
       this.showVerifyingDialog = true;
 
-      const discordConditions =
-        await this.checkIfUserHasFulfilledDiscordCondition();
-
-      if (discordConditions === 1) {
+      if (!this.whitelist.discord_roles || !this.whitelist.discord_server_id) {
         this.sendUserDetailsToCreateWhitelistEntry();
+      } else {
+        const discordConditions =
+          await this.checkIfUserHasFulfilledDiscordCondition();
+
+        if (discordConditions === 1) {
+          this.sendUserDetailsToCreateWhitelistEntry();
+        }
       }
       return;
     },
@@ -490,17 +494,39 @@ export default {
           discordRoles.push(role.name);
         });
 
-        const whitelistData = {
-          wallet_address: this.$store.state.walletStore.wallet.walletAddress,
-          discord: {
-            username: `${this.discordDetails.username}#${this.discordDetails.discriminator}`,
-            id: this.discordDetails.id,
-            roles: discordRoles,
-          },
-          date: new Date().toISOString(),
-          collection_id: this.whitelist.collection_id,
-          mint_limit: 1,
-        };
+        let whitelistData;
+
+        if (
+          !this.whitelist.discord_roles ||
+          !this.whitelist.discord_server_id
+        ) {
+          const discordDetailsRes = await discordRequest.get("users/@me");
+          this.discordDetails = discordDetailsRes.data;
+
+          whitelistData = {
+            wallet_address: this.$store.state.walletStore.wallet.walletAddress,
+            discord: {
+              username: `${this.discordDetails.username}#${this.discordDetails.discriminator}`,
+              id: this.discordDetails.id,
+              roles: discordRoles,
+            },
+            date: new Date().toISOString(),
+            collection_id: this.whitelist.collection_id,
+            mint_limit: 1,
+          };
+        } else {
+          whitelistData = {
+            wallet_address: this.$store.state.walletStore.wallet.walletAddress,
+            discord: {
+              username: `${this.discordDetails.username}#${this.discordDetails.discriminator}`,
+              id: this.discordDetails.id,
+              roles: discordRoles,
+            },
+            date: new Date().toISOString(),
+            collection_id: this.whitelist.collection_id,
+            mint_limit: 1,
+          };
+        }
 
         await createWhitelistEntry(whitelistData);
 
