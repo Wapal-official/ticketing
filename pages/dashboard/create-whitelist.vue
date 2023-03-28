@@ -10,7 +10,7 @@
     <ValidationObserver v-slot="{ handleSubmit }">
       <form
         class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full lg:tw-w-[60%]"
-        @submit.prevent="submitWhitelist"
+        @submit.prevent="handleSubmit(submitWhitelist)"
       >
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -64,7 +64,6 @@
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="twitter_acc"
-          rules="required"
           v-slot="{ errors }"
         >
           <label
@@ -87,7 +86,6 @@
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="discord_server"
-          rules="required"
           v-slot="{ errors }"
         >
           <label
@@ -110,7 +108,6 @@
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="discord_id"
-          rules="required"
           v-slot="{ errors }"
         >
           <label
@@ -133,7 +130,7 @@
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="discord_url"
-          rules="required|link"
+          rules="link"
           v-slot="{ errors }"
         >
           <label
@@ -157,7 +154,6 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="discord_role_name"
-            rules="required"
             v-slot="{ errors }"
           >
             <label
@@ -180,7 +176,6 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="discord_role_id"
-            rules="required"
             v-slot="{ errors }"
           >
             <label
