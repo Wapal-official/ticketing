@@ -297,48 +297,61 @@ export default {
     },
     async mintCollection() {
       try {
-        if (!this.$store.state.walletStore.wallet.wallet) {
+        if (this.$store.state.walletStore.wallet.wallet) {
+          this.minting = true;
+          const balance = await this.$store.dispatch(
+            "walletStore/checkBalance"
+          );
+
+          const mintPrice = this.getCurrentPrice;
+
+          if (balance < mintPrice) {
+            this.$toast.showMessage({
+              message: "Your account has insufficient balance for Minting",
+              error: true,
+            });
+
+            this.minting = false;
+            return;
+          }
+          const res = await this.$store.dispatch("walletStore/mintCollection", {
+            resourceAccount: this.collection.candyMachine_id.resource_account,
+            publicMint: !this.checkPublicSaleTimer(),
+            collectionId: this.collection._id,
+          });
+
+          if (res.success) {
+            this.$toast.showMessage({
+              message: `${this.collection.name} Minted Successfully`,
+            });
+          } else {
+            this.$toast.showMessage({
+              message: "Collection Not Minted",
+              error: true,
+            });
+          }
+
+          this.minting = false;
+        } else {
           this.showConnectWalletModal = true;
           return;
         }
-
-        this.minting = true;
-        const balance = await this.$store.dispatch("walletStore/checkBalance");
-
-        const mintPrice = this.getCurrentPrice;
-
-        if (balance < mintPrice) {
+      } catch (error: any) {
+        console.log(error);
+        if (
+          error.response &&
+          error.response.data.msg &&
+          error.response.data.msg ===
+            "Whitelist entry associated with this wallet address not found."
+        ) {
           this.$toast.showMessage({
-            message: "Your account has insufficient balance for Minting",
+            message: "You are not listed in Whitelist for this Collection",
             error: true,
-          });
-
-          this.minting = false;
-          return;
-        }
-
-        const res = await this.$store.dispatch(
-          "walletStore/mintCollection",
-          this.collection.candyMachine_id.resource_account
-        );
-
-        if (res.success) {
-          this.$toast.showMessage({
-            message: `${this.collection.name} Minted Successfully`,
           });
         } else {
-          this.$toast.showMessage({
-            message: "Collection Not Minted",
-            error: true,
-          });
+          this.$toast.showMessage({ message: error, error: true });
         }
-
         this.minting = false;
-        return;
-      } catch (error) {
-        this.$toast.showMessage({ message: error, error: true });
-        this.minting = false;
-        console.log(error);
       }
     },
     displayWalletConnectedMessage() {
@@ -366,7 +379,19 @@ export default {
         this.collection.candyMachine_id.public_sale_time
       );
 
-      if (whiteListDate && whiteListDate < publicSaleDate) {
+      const now = new Date();
+      if (
+        this.collection.candyMachine_id.public_sale_price ==
+        this.collection.candyMachine_id.whitelist_price
+      ) {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+
+      if (now > publicSaleDate) {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+
+      if (whiteListDate && publicSaleDate > now) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
         return this.collection.candyMachine_id.public_sale_price;
@@ -395,7 +420,7 @@ export default {
     if (!process.env.baseURL?.includes("staging")) {
       res = await getCollection("6415331e9cb214a367f1ee7a");
     } else {
-      res = await getCollection("63edad2f8f6644c2145c3e16");
+      res = await getCollection("642146e4054578e8bfbc053a");
     }
 
     this.collection = res.collection[0];

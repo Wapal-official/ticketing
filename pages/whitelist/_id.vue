@@ -166,7 +166,7 @@
         <div class="tw-w-full tw-flex tw-flex-row tw-justify-center">
           <button
             class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded md:tw-py-3 md:tw-px-16 disabled:tw-bg-[#FF36AB]/75"
-            @click="displayVerificationOptions"
+            @click="checkUserForVerification"
             :disabled="!getVerificationStatus"
           >
             Verify and Enter
@@ -212,45 +212,48 @@
         >
           <v-icon class="!tw-text-lg !tw-text-white">mdi-close</v-icon>
         </button>
-        <h2 class="tw-text-xl tw-font-medium tw-capitalize">
-          Fulfill following conditions to enter whitelist
-        </h2>
+        <h2 class="tw-text-xl tw-font-medium tw-capitalize">Verifying</h2>
+        <loading v-if="!error.discord.error && !error.twitter.error" />
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between"
+          v-if="whitelist.twitter && error.twitter.error"
         >
           <span class="tw-text-lg"
-            >Join {{ whitelist.discord_server_name }} server</span
-          >
-          <div
-            class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-end tw-gap-4 md:tw-w-fit"
-            v-if="!joinedDiscordServer"
-          >
-            <button-with-loader
-              class="tw-font-semibold tw-bg-[#FF36AB] tw-px-6 tw-py-2 tw-rounded"
-              @click.native="checkIfUserHasJoinedDiscordServer"
-              text="Verify"
-              loadingText="Verifying..."
-              :loading="verifyingJoinedDiscordServer"
-            />
+            >You have not followed {{ whitelist.twitter }}. Please Follow
             <a
-              class="!tw-text-white tw-font-semibold tw-bg-[#FF36AB] tw-px-6 tw-py-2 tw-rounded"
-              :href="whitelist.discord_server_url"
+              :href="`https://twitter.com/${whitelist.twitter}`"
               target="_blank"
+              class="!tw-text-wapal-pink"
+              >{{ whitelist.twitter }}</a
             >
-              Join
-            </a>
-          </div>
-          <div v-else>
-            <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
-              >mdi-check-circle</v-icon
-            >
-          </div>
+            on Twitter</span
+          >
         </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between"
+          v-if="
+            whitelist.discord_server_name && error.discord.type === 'not joined'
+          "
+        >
+          <span class="tw-text-lg"
+            >Please Join
+            <a
+              :href="whitelist.discord_server_url"
+              target="_blank"
+              class="!tw-text-wapal-pink"
+              >{{ whitelist.discord_server_name }}</a
+            >
+            discord server</span
+          >
+        </div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between"
+          v-if="
+            whitelist.discord_roles && error.discord.type === 'not promoted'
+          "
         >
           <div class="tw-text-lg">
-            Get promoted to
+            Please get promoted to
             <span
               v-for="(role, index) in whitelist?.discord_roles"
               :key="role.id"
@@ -261,42 +264,8 @@
               </span>
               <span v-else>{{ role.name }}, </span>
             </span>
+            on {{ whitelist.discord_server_name }} server
           </div>
-          <div
-            class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-end tw-gap-4 md:tw-w-fit"
-            v-if="!promotedToRequiredRoles"
-          >
-            <button-with-loader
-              class="tw-font-semibold tw-bg-[#FF36AB] tw-px-6 tw-py-2 tw-rounded"
-              @click.native="checkIfUserIsPromotedToRequiredRoles"
-              text="Verify"
-              loadingText="Verifying..."
-              :loading="verifyingPromotedToDiscordRoles"
-            />
-            <a
-              class="!tw-text-white tw-font-semibold tw-bg-[#FF36AB] tw-px-6 tw-py-2 tw-rounded"
-              :href="whitelist.discord_server_url"
-              target="_blank"
-            >
-              Get Promoted
-            </a>
-          </div>
-          <div v-else>
-            <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
-              >mdi-check-circle</v-icon
-            >
-          </div>
-        </div>
-        <div
-          class="tw-w-full tw-items-center tw-justify-center tw-flex tw-flex-row"
-        >
-          <button
-            class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-            @click="sendUserDetailsToCreateWhitelistEntry"
-            :disabled="!getFulfilledConditionStatus"
-          >
-            Enter
-          </button>
         </div>
       </div>
     </v-dialog>
@@ -353,9 +322,15 @@ export default {
         whitelist_spots: "",
         discord_server_name: "",
         discord_server_url: "",
+        twitter: "",
       },
       error: {
         discord: {
+          message: "",
+          type: "",
+          error: false,
+        },
+        twitter: {
           message: "",
           type: "",
           error: false,
@@ -372,6 +347,8 @@ export default {
       verifyingJoinedDiscordServer: false,
       verifyingPromotedToDiscordRoles: false,
       discordResponse: { data: "" },
+      followedTwitter: false,
+      verifyingFollowedOnTwitter: false,
     };
   },
   methods: {
@@ -405,7 +382,7 @@ export default {
         console.log(error);
       }
     },
-    async displayVerificationOptions() {
+    async checkUserForVerification() {
       this.verifying = true;
       this.disableVerifyAndEnter = true;
       this.error = {
@@ -414,24 +391,53 @@ export default {
           type: "",
           error: false,
         },
+        twitter: {
+          message: "",
+          type: "",
+          error: false,
+        },
       };
 
       this.showVerifyingDialog = true;
+
+      if (!this.whitelist.discord_roles || !this.whitelist.discord_server_id) {
+        this.sendUserDetailsToCreateWhitelistEntry();
+      } else {
+        const discordConditions =
+          await this.checkIfUserHasFulfilledDiscordCondition();
+
+        if (discordConditions === 1) {
+          this.sendUserDetailsToCreateWhitelistEntry();
+        }
+      }
+      return;
     },
-    async checkIfUserHasJoinedDiscordServer() {
+    async checkIfUserHasFulfilledDiscordCondition() {
       try {
-        this.verifyingJoinedDiscordServer = true;
-
-        const discordDetailsRes = await discordRequest.get("users/@me");
-
-        this.discordDetails = discordDetailsRes.data;
-
-        this.discordResponse = await discordRequest.get(
+        this.discordRes = await discordRequest.get(
           `users/@me/guilds/${this.whitelist.discord_server_id}/member`
         );
 
-        this.joinedDiscordServer = true;
-        this.verifyingJoinedDiscordServer = false;
+        this.discordDetails = this.discordRes.data.user;
+
+        const roles = this.discordRes.data.roles;
+        const promoted = this.checkDiscordRoles(roles);
+
+        if (promoted) {
+          this.promotedToRequiredRoles = true;
+          this.verifyingPromotedToDiscordRoles = false;
+        } else {
+          this.error.discord.error = true;
+          this.error.discord.type = "not promoted";
+          this.$toast.showMessage({
+            message: "Please get promoted to required roles",
+            error: true,
+          });
+
+          return 0;
+        }
+
+        return 1;
       } catch (error: any) {
         if (error.response.data.message) {
           if (error.response.data.message === "Unknown Guild") {
@@ -439,50 +445,11 @@ export default {
               message: "Please Join Discord Server First",
               error: true,
             });
-            this.joinedDiscordServer = false;
-            this.verifyingJoinedDiscordServer = false;
+            this.error.discord.error = true;
+            this.error.discord.type = "not joined";
+            return -1;
           }
         }
-      }
-    },
-    async checkIfUserIsPromotedToRequiredRoles() {
-      try {
-        this.verifyingPromotedToDiscordRoles = true;
-        if (this.discordResponse.data) {
-          const promoted = this.checkDiscordRoles(
-            this.discordResponse.data.roles
-          );
-
-          if (promoted) {
-            this.promotedToRequiredRoles = true;
-            this.verifyingPromotedToDiscordRoles = false;
-          } else {
-            this.verifyingPromotedToDiscordRoles = false;
-            this.$toast.showMessage({
-              message: "Please get promoted to required roles",
-              error: true,
-            });
-          }
-        } else {
-          const res = await discordRequest.get(
-            `users/@me/guilds/${this.whitelist.discord_server_id}/member`
-          );
-
-          const roles = res.data.roles;
-          const promoted = this.checkDiscordRoles(roles);
-
-          if (promoted) {
-            this.promotedToRequiredRoles = true;
-            this.verifyingPromotedToDiscordRoles = false;
-          } else {
-            this.verifyingPromotedToDiscordRoles = false;
-            this.$toast.showMessage({
-              message: "Please get promoted to required roles",
-              error: true,
-            });
-          }
-        }
-      } catch (error) {
         this.$toast.showMessage({
           message: "Please get promoted to required roles",
           error: true,
@@ -507,6 +474,13 @@ export default {
 
       return true;
     },
+    checkIfUserHasFollowedTwitterAccount() {
+      this.verifyingFollowedOnTwitter = true;
+      setTimeout(() => {
+        this.followedTwitter = true;
+        this.verifyingFollowedOnTwitter = false;
+      }, 1500);
+    },
     enableVerifyAndEnterButton() {
       setTimeout(() => {
         this.disableVerifyAndEnter = false;
@@ -520,16 +494,39 @@ export default {
           discordRoles.push(role.name);
         });
 
-        const whitelistData = {
-          wallet_address: this.$store.state.walletStore.wallet.walletAddress,
-          discord: {
-            username: `${this.discordDetails.username}#${this.discordDetails.discriminator}`,
-            id: this.discordDetails.id,
-            roles: discordRoles,
-          },
-          whitelist_id: this.$route.params.id,
-          date: new Date().toISOString(),
-        };
+        let whitelistData;
+
+        if (
+          !this.whitelist.discord_roles ||
+          !this.whitelist.discord_server_id
+        ) {
+          const discordDetailsRes = await discordRequest.get("users/@me");
+          this.discordDetails = discordDetailsRes.data;
+
+          whitelistData = {
+            wallet_address: this.$store.state.walletStore.wallet.walletAddress,
+            discord: {
+              username: `${this.discordDetails.username}#${this.discordDetails.discriminator}`,
+              id: this.discordDetails.id,
+              roles: discordRoles,
+            },
+            date: new Date().toISOString(),
+            collection_id: this.whitelist.collection_id,
+            mint_limit: 1,
+          };
+        } else {
+          whitelistData = {
+            wallet_address: this.$store.state.walletStore.wallet.walletAddress,
+            discord: {
+              username: `${this.discordDetails.username}#${this.discordDetails.discriminator}`,
+              id: this.discordDetails.id,
+              roles: discordRoles,
+            },
+            date: new Date().toISOString(),
+            collection_id: this.whitelist.collection_id,
+            mint_limit: 1,
+          };
+        }
 
         await createWhitelistEntry(whitelistData);
 
@@ -538,8 +535,22 @@ export default {
         this.$toast.showMessage({
           message: "Whitelist Request Sent Successfully",
         });
-      } catch (error) {
-        this.$toast.showMessage({ message: error, error: true });
+      } catch (error: any) {
+        if (
+          error.response.data.msg &&
+          error.response.data.msg === "Duplicate entry."
+        ) {
+          this.$toast.showMessage({
+            message: "You have Already Applied For this whitelist",
+            error: true,
+          });
+        } else {
+          this.$toast.showMessage({
+            message: error,
+            error: true,
+          });
+        }
+        this.showVerifyingDialog = false;
       }
     },
     watchCookies() {

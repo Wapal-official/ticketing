@@ -36,7 +36,7 @@
       </form>
       <button
         class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2"
-        @click="sendDataToSetRoot"
+        @click="showSetWhitelistModal = true"
         :disabled="sendingDataToSetRoot"
       >
         Set Whitelist
@@ -112,6 +112,32 @@
         </div>
       </div>
     </v-dialog>
+    <v-dialog
+      v-model="showSetWhitelistModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <div
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
+      >
+        <h3 class="tw-text-lg">Are you sure you want to set Whitelist?</h3>
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
+        >
+          <button
+            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
+            @click="sendDataToSetRoot"
+          >
+            Yes
+          </button>
+          <button
+            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
+            @click="showSetWhitelistModal = false"
+          >
+            No
+          </button>
+        </div>
+      </div>
+    </v-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -124,6 +150,7 @@ import {
 } from "@/services/WhitelistService";
 
 import moment from "moment";
+import { getCollection } from "@/services/CollectionService";
 export default {
   components: { Loading },
   layout: "dashboard",
@@ -177,6 +204,7 @@ export default {
       whitelist: null,
       loading: true,
       sendingDataToSetRoot: false,
+      showSetWhitelistModal: false,
     };
   },
   methods: {
@@ -195,12 +223,15 @@ export default {
 
         formData.append("collection_id", this.whitelist.collection_id);
         formData.append("user_id", this.$store.state.userStore.user.user_id);
+        formData.append("whitelist_id", this.$route.params.id);
         formData.append("csv", this.selectedCSVFile);
 
         const res = await uploadCSVInWhitelistEntry(formData);
 
         this.$toast.showMessage({ message: "CSV File Imported Successfully" });
         this.showCSVUploadModal = false;
+
+        this.fetchWhitelistEntries();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
@@ -213,7 +244,7 @@ export default {
     async fetchWhitelistEntries() {
       this.loading = true;
 
-      const res = await getWhitelistEntryById(this.$route.params.id);
+      const res = await getWhitelistEntryById(this.whitelist.collection_id);
 
       this.whitelistEntries = res.data.whitelistEntries;
       this.paginatedWhitelistEntries = this.whitelistEntries;
@@ -222,19 +253,32 @@ export default {
     },
     async sendDataToSetRoot() {
       try {
+        this.showSetWhitelistModal = false;
         this.sendingDataToSetRoot = true;
-        const wallet_addresses: any[] = [];
-
-        this.whitelistEntries.map((whitelist: any) => {
-          wallet_addresses.push([whitelist.wallet_address, 1]);
-        });
 
         const rootData = {
-          whitelistAddresses: wallet_addresses,
           collection_id: this.whitelist.collection_id,
         };
 
-        await setRoot(rootData);
+        const res = await setRoot(rootData);
+
+        console.log(res);
+
+        const root: any[] = [];
+
+        res.data.root.data.map((rootData: any) => {
+          rootData.data;
+
+          root.push(rootData);
+        });
+
+        const transactionRes = await this.$store.dispatch(
+          "walletStore/setMerkleRoot",
+          {
+            root: root,
+            resourceAccount: this.collection.candyMachine_id.resource_account,
+          }
+        );
 
         this.$toast.showMessage({
           message: "Wallet Addresses Added For Whitelist",
@@ -251,6 +295,10 @@ export default {
     const res = await getWhitelistById(this.$route.params.id);
 
     this.whitelist = res.data.whitelist;
+
+    const collectionRes = await getCollection(this.whitelist.collection_id);
+
+    this.collection = collectionRes.collection[0];
 
     await this.fetchWhitelistEntries();
   },
