@@ -333,6 +333,7 @@ export default {
             resourceAccount: this.collection.candyMachine_id.resource_account,
             publicMint: !this.checkPublicSaleTimer(),
             collectionId: this.$route.params.id,
+            candyMachineId: this.collection.candyMachine_id.candy_id,
           });
 
           if (res.success) {
@@ -380,14 +381,18 @@ export default {
       this.progressInterval = setInterval(async () => {
         this.resource = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfCollection",
-          this.collection.candyMachine_id.resource_account
+          {
+            resourceAccountAddress:
+              this.collection.candyMachine_id.resource_account,
+            candyMachineId: this.collection.candyMachine_id.candy_id,
+          }
         );
 
         if (this.resource.minted == this.resource.total_supply) {
           this.soldOut = true;
         }
 
-        this.resource.mintedPercent = Math.ceil(
+        this.resource.mintedPercent = Math.floor(
           (this.resource.minted / this.resource.total_supply) * 100
         );
 
@@ -463,10 +468,14 @@ export default {
 
     this.resource = await this.$store.dispatch(
       "walletStore/getSupplyAndMintedOfCollection",
-      this.collection.candyMachine_id.resource_account
+      {
+        resourceAccountAddress:
+          this.collection.candyMachine_id.resource_account,
+        candyMachineId: this.collection.candyMachine_id.candy_id,
+      }
     );
 
-    this.resource.mintedPercent = Math.ceil(
+    this.resource.mintedPercent = Math.floor(
       (this.resource.minted / this.resource.total_supply) * 100
     );
 

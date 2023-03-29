@@ -318,6 +318,7 @@ export default {
             resourceAccount: this.collection.candyMachine_id.resource_account,
             publicMint: !this.checkPublicSaleTimer(),
             collectionId: this.collection._id,
+            candyMachineId: this.collection.candyMachine_id.candy_id,
           });
 
           if (res.success) {
@@ -365,7 +366,11 @@ export default {
       this.progressInterval = setInterval(async () => {
         this.resource = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfCollection",
-          this.collection.candyMachine_id.resource_account
+          {
+            resourceAccountAddress:
+              this.collection.candyMachine_id.resource_account,
+            candyMachineId: this.collection.candyMachine_id.candy_id,
+          }
         );
       }, 5000);
     },
@@ -420,7 +425,7 @@ export default {
     if (!process.env.baseURL?.includes("staging")) {
       res = await getCollection("6415331e9cb214a367f1ee7a");
     } else {
-      res = await getCollection("642146e4054578e8bfbc053a");
+      res = await getCollection("6411e5928d694e608061b029");
     }
 
     this.collection = res.collection[0];
@@ -440,7 +445,11 @@ export default {
 
     this.resource = await this.$store.dispatch(
       "walletStore/getSupplyAndMintedOfCollection",
-      this.collection.candyMachine_id.resource_account
+      {
+        resourceAccountAddress:
+          this.collection.candyMachine_id.resource_account,
+        candyMachineId: this.collection.candyMachine_id.candy_id,
+      }
     );
 
     if (this.resource.minted == this.resource.total_supply) {
