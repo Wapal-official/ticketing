@@ -295,10 +295,11 @@ export const actions = {
 
     const totalAR = (price / 1000000000000) * arweaveRate.data.USD;
 
-    //Upload Multiplier 1.091 9.10%
-    //Oracle Fee 1.1 10%
+    const uploadMultiplier = 1.091;
+    const oracleFee = 1.1;
 
-    const totalAPT = totalAR / aptosRate.data.USD;
+    const totalAPT =
+      (totalAR / aptosRate.data.USD) * uploadMultiplier * oracleFee;
 
     if (balance < totalAPT) {
       return {
