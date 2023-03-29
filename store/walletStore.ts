@@ -394,20 +394,4 @@ export const actions = {
 
     return transaction;
   },
-  async getSupplyAndMintedOfCollection({}, resourcecAccountAddress: string) {
-    const res = await client.getAccountResources(resourcecAccountAddress);
-
-    let resource: any = null;
-    for (let i = 0; i < res.length; i++) {
-      if (
-        res[i].type ===
-        process.env.CANDY_MACHINE_ID + "::candymachine::CandyMachine"
-      ) {
-        resource = res[i].data;
-        break;
-      }
-    }
-
-    return { total_supply: resource.total_supply, minted: resource.minted };
-  },
 };
