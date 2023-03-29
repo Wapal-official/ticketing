@@ -543,9 +543,11 @@ export default {
           return;
         }
 
-        const selectedFolder = this.folders.find(
-          (folder: any) => folder.folder_name === this.baseURL
-        );
+        console.log(this.baseURL);
+
+        const selectedFolder = this.folders.find((folder: any) => {
+          folder.folder_name === this.baseURL;
+        });
 
         this.collection.baseURL = selectedFolder.metadata.baseURI;
 
@@ -657,7 +659,7 @@ export default {
     const folderRes = await getFolderById(
       process.env.baseURL?.includes("staging")
         ? "64119a4635d5e95d27526f99"
-        : "6412e1ea50b3358d8ef7d47d"
+        : "6423ecfff511de43d18a6034"
     );
 
     this.folders.push(folderRes.data.folderInfo);
