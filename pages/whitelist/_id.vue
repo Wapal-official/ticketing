@@ -171,7 +171,7 @@
               <button
                 class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
                 @click="connectDiscord"
-                v-if="!getDiscordConnected"
+                v-if="!discordStatus"
               >
                 Connect
               </button>
@@ -718,7 +718,7 @@ export default {
       if (
         !this.getWalletStatus ||
         !this.getUserStatus ||
-        !this.getDiscordConnected ||
+        !this.discordStatus ||
         !this.joinedDiscordServer
       ) {
         return false;
