@@ -22,8 +22,12 @@
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full md:tw-items-center lg:tw-flex-row lg:tw-items-center"
           >
-            <span class="tw-pr-4 lg:tw-pr-8">Live In</span>
-            <count-down :shadow="true" :startTime="whitelist.whitelist_start" />
+            <span class="tw-pr-4 lg:tw-pr-8">{{ getWhitelistStatusText }}</span>
+            <count-down
+              :shadow="true"
+              :startTime="getWhitelistTime"
+              v-if="!getWhitelistEnded"
+            />
           </div>
         </h3>
       </div>
@@ -36,7 +40,7 @@
           <div
             class="tw-border tw-border-[#e229a0] tw-uppercase tw-text-xs tw-text-[#e229a0] tw-px-4 tw-py-2"
           >
-            Undoxxed
+            {{ collection.isVerified ? "Doxxed" : "Undoxxed" }}
           </div>
           <a :href="collection.twitter" target="_blank">
             <v-icon
@@ -71,7 +75,7 @@
           </p>
         </div>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-wapal-gray tw-px-6 tw-py-6 tw-w-full tw-rounded"
+          class="tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-wapal-gray tw-px-6 tw-py-6 tw-w-full tw-rounded md:tw-flex-row"
         >
           <div class="tw-text-lg">Mint Date</div>
           <div class="tw-text-xl">{{ getMintDate }}</div>
@@ -134,7 +138,7 @@
           class="tw-flex tw-flex-col tw-w-full tw-items-start tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-rounded"
         >
           <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-w-full"
+            class="tw-flex tw-flex-col tw-gap-4 tw-items-center tw-justify-between tw-w-full md:tw-flex-row md:tw-gap-8"
           >
             <div class="tw-text-lg">Connect to Discord</div>
             <div
@@ -159,7 +163,7 @@
             v-if="showDiscordOptions"
           >
             <div
-              class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-w-full"
+              class="tw-flex tw-flex-col tw-gap-4 tw-items-center tw-justify-between tw-w-full md:tw-flex-row md:tw-gap-8"
             >
               <div class="tw-text-lg">Connect to Discord</div>
               <button
@@ -176,7 +180,7 @@
               </div>
             </div>
             <div
-              class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-w-full"
+              class="tw-flex tw-flex-col tw-gap-4 tw-items-center tw-justify-between tw-w-full md:tw-flex-row md:tw-gap-8"
               v-if="whitelist.discord_server_url"
             >
               <div class="tw-text-lg">
@@ -236,7 +240,7 @@
             </div>
           </div>
           <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-w-full"
+            class="tw-flex tw-flex-col tw-gap-4 tw-items-center tw-justify-between tw-w-full md:tw-flex-row md:tw-gap-8"
             v-if="whitelist.twitter && showTwitterOptions"
           >
             <div class="tw-text-lg">
@@ -390,6 +394,7 @@ export default {
         image: "",
         twitter: "",
         discord: "",
+        isVerified: false,
       },
       showConnectWalletModal: false,
       showSignupDialog: false,
@@ -656,7 +661,7 @@ export default {
   },
   computed: {
     getMintDate() {
-      return moment(this.whitelist.whitelist_start).format("MMM DD, hh:mm A");
+      return moment(this.whitelist.whitelist_end).format("MMM DD, hh:mm A");
     },
     getWalletStatus() {
       return this.$store.state.walletStore.wallet.walletAddress ? true : false;
@@ -668,12 +673,20 @@ export default {
       return this.$store.state.discordStore.discord.token;
     },
     getVerificationStatus() {
+      const now = new Date();
+      const whitelistStartDate = new Date(this.whitelist.whitelist_start);
+      const whitelistEndDate = new Date(this.whitelist.whitelist_end);
+
       if (
         !this.getWalletStatus ||
         !this.getUserStatus ||
         !this.getDiscordConnected ||
         !this.joinedDiscordServer
       ) {
+        return false;
+      }
+
+      if (now < whitelistStartDate || now > whitelistEndDate) {
         return false;
       }
       return true;
@@ -683,6 +696,45 @@ export default {
         return false;
       }
       return true;
+    },
+    getWhitelistStatusText() {
+      const whitelistStartDate = new Date(this.whitelist.whitelist_start);
+      const whitelistEndDate = new Date(this.whitelist.whitelist_end);
+      const now = new Date();
+
+      if (whitelistEndDate < now) {
+        return "Whitelist Ended";
+      }
+
+      if (whitelistStartDate > now) {
+        return "Live In";
+      }
+
+      if (now < whitelistEndDate) {
+        return "End In";
+      }
+    },
+    getWhitelistTime() {
+      const whitelistStartDate = new Date(this.whitelist.whitelist_start);
+      const whitelistEndDate = new Date(this.whitelist.whitelist_end);
+      const now = new Date();
+
+      if (whitelistStartDate > now) {
+        return whitelistStartDate.toString();
+      }
+
+      if (whitelistEndDate > now) {
+        return whitelistEndDate.toString();
+      }
+    },
+    getWhitelistEnded() {
+      const whitelistEndDate = new Date(this.whitelist.whitelist_end);
+      const now = new Date();
+
+      if (now > whitelistEndDate) {
+        return true;
+      }
+      return false;
     },
   },
   async mounted() {

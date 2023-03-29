@@ -102,7 +102,7 @@ export default {
     },
   },
   created() {
-    this.setDate(this.startTime);
+    this.setDate();
     this.startCountdown(this.startTime);
   },
 };
