@@ -76,6 +76,9 @@ export const mutations = {
   setProof(state: any, proof: any) {
     state.proof = proof;
   },
+  setMintLimit(state: any, mint_limit: number) {
+    state.mint_limit = mint_limit;
+  },
 };
 
 export const getters = {
@@ -147,6 +150,7 @@ export const actions = {
     );
 
     commit("setProof", data.proofs);
+    commit("setMintLimit", data.wallet.mint_limit);
   },
   async createCandyMachine(
     { state, dispatch }: { state: any; dispatch: any },
@@ -222,7 +226,13 @@ export const actions = {
       resourceAccount,
       publicMint,
       collectionId,
-    }: { resourceAccount: string; publicMint: boolean; collectionId: string }
+      candyMachineId,
+    }: {
+      resourceAccount: string;
+      publicMint: boolean;
+      collectionId: string;
+      candyMachineId: string;
+    }
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
@@ -232,7 +242,7 @@ export const actions = {
     if (publicMint) {
       create_mint_script = {
         type: "entry_function_payload",
-        function: process.env.CANDY_MACHINE_ID + "::candymachine::mint_script",
+        function: candyMachineId + "::candymachine::mint_script",
         type_arguments: [],
         arguments: [resourceAccount],
       };
@@ -249,10 +259,9 @@ export const actions = {
       if (state.proof.length > 0) {
         create_mint_script = {
           type: "entry_function_payload",
-          function:
-            process.env.CANDY_MACHINE_ID + "::candymachine::mint_from_merkle",
+          function: candyMachineId + "::candymachine::mint_from_merkle",
           type_arguments: [],
-          arguments: [resourceAccount, proofs, 1],
+          arguments: [resourceAccount, proofs, state.mint_limit],
         };
       } else {
         throw new Error(
@@ -285,6 +294,9 @@ export const actions = {
     const price = res.data.price;
 
     const totalAR = (price / 1000000000000) * arweaveRate.data.USD;
+
+    //Upload Multiplier 1.091 9.10%
+    //Oracle Fee 1.1 10%
 
     const totalAPT = totalAR / aptosRate.data.USD;
 
@@ -332,15 +344,18 @@ export const actions = {
 
     return signMessage;
   },
-  async getSupplyAndMintedOfCollection({}, resourcecAccountAddress: string) {
-    const res = await client.getAccountResources(resourcecAccountAddress);
+  async getSupplyAndMintedOfCollection(
+    {},
+    {
+      resourceAccountAddress,
+      candyMachineId,
+    }: { resourceAccountAddress: string; candyMachineId: string }
+  ) {
+    const res = await client.getAccountResources(resourceAccountAddress);
 
     let resource: any = null;
     for (let i = 0; i < res.length; i++) {
-      if (
-        res[i].type ===
-        process.env.CANDY_MACHINE_ID + "::candymachine::CandyMachine"
-      ) {
+      if (res[i].type === candyMachineId + "::candymachine::CandyMachine") {
         resource = res[i].data;
         break;
       }
@@ -350,14 +365,18 @@ export const actions = {
   },
   async setMerkleRoot(
     { state }: { state: any },
-    { root, resourceAccount }: { root: any; resourceAccount: string }
+    {
+      root,
+      resourceAccount,
+      candyMachineId,
+    }: { root: any; resourceAccount: string; candyMachineId: string }
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
 
     const set_root_script = {
-      function: process.env.CANDY_MACHINE_ID + "::candymachine::set_root",
+      function: candyMachineId + "::candymachine::set_root",
       type: "entry_function_payload",
       arguments: [resourceAccount, root],
       type_arguments: [],

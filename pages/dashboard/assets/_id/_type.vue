@@ -218,7 +218,6 @@ import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 import {
   folderUpload,
   getFolderById,
-  singleFileUpload,
   deleteFolderOnServer,
 } from "@/services/AssetsService";
 import { defaultTheme } from "@/theme/wapaltheme";
@@ -233,6 +232,7 @@ export default {
     AssetsImageDetails,
     GradientBorderButton,
   },
+  ssr: false,
   data() {
     return {
       folderInfo: {
@@ -433,56 +433,6 @@ export default {
         return (size / 1048576).toFixed(2) + " MB";
       }
       return (size / 1024).toFixed(2) + " KB";
-    },
-    async sendDataToCreateFile() {
-      try {
-        this.uploadComplete = false;
-        this.uploadStatusClass = "tw-h-0";
-        this.uploading = true;
-        this.showUploadingDialog = true;
-        this.balanceNotEnoughError = await this.$store.dispatch(
-          "walletStore/checkBalanceForFolderUpload"
-        );
-        if (this.balanceNotEnoughError.error) {
-          this.balanceNotEnoughError.message =
-            "Your Account Does Not Have Enough Balance";
-          this.uploading = false;
-          return;
-        }
-
-        const transaction = await this.$store.dispatch(
-          "walletStore/signTransactionForUploadingFolder",
-          this.balanceNotEnoughError.requiredBalance
-        );
-
-        if (transaction) {
-          const formData = new FormData();
-
-          formData.append("user_id", this.$store.state.userStore.user.user_id);
-          formData.append("folder_name", this.folderInfo.folder_name);
-          formData.append("image", this.uploadedFile);
-
-          await singleFileUpload(formData);
-
-          this.showUploadingDialog = false;
-
-          this.showFileUploadDialog = false;
-
-          await this.fetchFiles();
-          await this.mapFiles();
-
-          this.$toast.showMessage({
-            message: "File Uploaded Successfully",
-          });
-        }
-      } catch (error) {
-        console.log(error);
-        this.$toast.showMessage({ message: error, error: true });
-        this.showUploadingDialog = false;
-        this.showFileUploadDialog = false;
-
-        await deleteFolderOnServer(this.$store.state.userStore.user.user_id);
-      }
     },
     async fetchFiles() {
       this.fileIndex = 0;
@@ -829,6 +779,7 @@ export default {
       }
     },
   },
+  cache: false,
 };
 </script>
 <style>

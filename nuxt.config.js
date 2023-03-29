@@ -38,7 +38,7 @@ export default {
       { name: "format-detection", content: "telephone=no" },
       {
         name: "keywords",
-        content: "NFT, Creator Studio, Aptos, NFT Launchpad, No Code",
+        content: "Wapal, NFT, Creator Studio, Aptos, NFT Launchpad, No Code",
       },
       {
         name: "google-site-verification",

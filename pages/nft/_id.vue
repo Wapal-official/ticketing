@@ -112,6 +112,12 @@
           v-if="showMintBox"
         >
           <div
+            class="tw-w-1/4"
+            v-if="!showWhitelistSaleTimer && !showPublicSaleTimer"
+          >
+            Public Sale
+          </div>
+          <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
           >
             <div
@@ -237,6 +243,8 @@ import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 
 export default {
+  ssr: false,
+  cache: false,
   components: { CountDown, Loading },
   data() {
     return {
@@ -333,6 +341,7 @@ export default {
             resourceAccount: this.collection.candyMachine_id.resource_account,
             publicMint: !this.checkPublicSaleTimer(),
             collectionId: this.$route.params.id,
+            candyMachineId: this.collection.candyMachine_id.candy_id,
           });
 
           if (res.success) {
@@ -380,14 +389,18 @@ export default {
       this.progressInterval = setInterval(async () => {
         this.resource = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfCollection",
-          this.collection.candyMachine_id.resource_account
+          {
+            resourceAccountAddress:
+              this.collection.candyMachine_id.resource_account,
+            candyMachineId: this.collection.candyMachine_id.candy_id,
+          }
         );
 
         if (this.resource.minted == this.resource.total_supply) {
           this.soldOut = true;
         }
 
-        this.resource.mintedPercent = Math.ceil(
+        this.resource.mintedPercent = Math.floor(
           (this.resource.minted / this.resource.total_supply) * 100
         );
 
@@ -463,10 +476,14 @@ export default {
 
     this.resource = await this.$store.dispatch(
       "walletStore/getSupplyAndMintedOfCollection",
-      this.collection.candyMachine_id.resource_account
+      {
+        resourceAccountAddress:
+          this.collection.candyMachine_id.resource_account,
+        candyMachineId: this.collection.candyMachine_id.candy_id,
+      }
     );
 
-    this.resource.mintedPercent = Math.ceil(
+    this.resource.mintedPercent = Math.floor(
       (this.resource.minted / this.resource.total_supply) * 100
     );
 
@@ -483,7 +500,6 @@ export default {
 
       resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
 
-      this.unmounted = false;
       this.showMintedProgress();
     }, 200);
   },

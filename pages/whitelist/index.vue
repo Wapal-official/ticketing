@@ -66,12 +66,16 @@
               <div
                 class="tw-w-full tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-1"
               >
-                <div class="tw-text-xs">0% (0 of {{ item.noOfSpots }} )</div>
+                <div class="tw-text-xs">
+                  {{ item.spot.spotPercent }}% ({{ item.spot.occupiedSpots }} of
+                  {{ item.spot.totalSpots }} )
+                </div>
                 <div
-                  class="tw-relative tw-w-full tw-rounded-full tw-h-2 tw-bg-[#263D68]"
+                  class="tw-relative tw-w-full tw-rounded-full tw-h-2 tw-bg-[#263D68] tw-overflow-hidden"
                 >
                   <div
-                    class="tw-absolute tw-w-1/4 tw-rounded-full tw-h-2 tw-top-0 tw-left-0 tw-bg-wapal-pink"
+                    class="tw-absolute tw-rounded-full tw-h-2 tw-top-0 tw-left-0 tw-bg-wapal-pink"
+                    :style="`width:${item.spot.spotPercent}%`"
                   ></div>
                 </div>
               </div>
@@ -88,7 +92,10 @@
 <script lang="ts">
 import Loading from "@/components/Reusable/Loading.vue";
 
-import { getAllWhitelist } from "@/services/WhitelistService";
+import {
+  getAllWhitelist,
+  getWhitelistEntryById,
+} from "@/services/WhitelistService";
 import { getCollection } from "~/services/CollectionService";
 
 import discord from "@/assets/img/footer/discord.svg";
@@ -155,6 +162,24 @@ export default {
 
             const collection = res.collection[0];
 
+            const spotRes = await getWhitelistEntryById(
+              whitelist.collection_id,
+              1,
+              1
+            );
+
+            const spots = {
+              occupiedSpots: spotRes.data.spotsCount,
+              totalSpots: whitelist.whitelist_spots,
+              spotPercent: 0,
+            };
+
+            const spotPercent = Math.floor(
+              (spots.occupiedSpots / spots.totalSpots) * 100
+            );
+
+            spots.spotPercent = spotPercent;
+
             return {
               _id: whitelist._id,
               collectionName: collection.name,
@@ -163,6 +188,7 @@ export default {
               mintDate: whitelist.whitelist_start,
               noOfSpots: whitelist.whitelist_spots,
               image: collection.image,
+              spot: spots,
             };
           } catch (error) {
             const id = Math.floor(Math.random() * 100);
@@ -174,6 +200,7 @@ export default {
               mintDate: "",
               noOfSpots: "",
               image: "",
+              spot: { occupiedSpots: 0, totalSpots: 0, spotPercent: 0 },
             };
           }
         })
