@@ -14,7 +14,7 @@
       <button
         class="tw-bg-wapal-gray tw-px-4 tw-py-2 tw-text-black tw-rounded-sm tw-flex tw-flex-row tw-items-center tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-gray-300"
         v-if="folders[0].folder_name"
-        v-for="folder in folders"
+        v-for="(folder, index) in folders"
         :key="folder.folder_name"
         @click="folderClicked(folder._id)"
       >
@@ -24,7 +24,7 @@
           <v-icon class="!tw-text-black">mdi-folder</v-icon>
           {{ folder.folder_name }}
         </div>
-        <v-menu>
+        <v-menu v-if="index !== 0">
           <template v-slot:activator="{ on, attrs }">
             <button v-bind="attrs" v-on="on">
               <v-icon class="!tw-text-black">mdi-dots-vertical</v-icon>
@@ -151,7 +151,7 @@ export default {
     getFolderId() {
       return process.env.baseURL?.includes("staging")
         ? "64119a4635d5e95d27526f99"
-        : "6412e1ea50b3358d8ef7d47d";
+        : "6423ecfff511de43d18a6034";
     },
   },
   methods: {
