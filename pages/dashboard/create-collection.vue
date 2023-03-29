@@ -543,11 +543,9 @@ export default {
           return;
         }
 
-        console.log(this.baseURL);
-
-        const selectedFolder = this.folders.find((folder: any) => {
-          folder.folder_name === this.baseURL;
-        });
+        const selectedFolder = this.folders.find(
+          (folder: any) => folder.folder_name === this.baseURL
+        );
 
         this.collection.baseURL = selectedFolder.metadata.baseURI;
 
