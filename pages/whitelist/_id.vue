@@ -131,38 +131,144 @@
           </div>
         </div>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded"
+          class="tw-flex tw-flex-col tw-w-full tw-items-start tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-rounded"
         >
-          <div class="tw-text-lg">Connect to Discord</div>
-          <button
-            class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-            @click="connectDiscord"
-            v-if="!discordStatus"
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-w-full"
           >
-            Connect
-          </button>
-          <div v-else>
-            <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
-              >mdi-check-circle</v-icon
+            <div class="tw-text-lg">Connect to Discord</div>
+            <div
+              class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-2"
             >
+              <div v-if="getDiscordConnected && joinedDiscordServer">
+                <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+                  >mdi-check-circle</v-icon
+                >
+              </div>
+              <button @click="showDiscordOptions = !showDiscordOptions">
+                <v-icon
+                  class="!tw-text-wapal-gray !tw-text-2xl !tw-font-bold tw-transition-all tw-duration-300 tw-ease-linear tw-transform"
+                  :class="{ 'tw-rotate-180': showDiscordOptions }"
+                  >mdi-chevron-down</v-icon
+                >
+              </button>
+            </div>
+          </div>
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-w-full"
+            v-if="showDiscordOptions"
+          >
+            <div
+              class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-w-full"
+            >
+              <div class="tw-text-lg">Connect to Discord</div>
+              <button
+                class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
+                @click="connectDiscord"
+                v-if="!getDiscordConnected"
+              >
+                Connect
+              </button>
+              <div v-else>
+                <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+                  >mdi-check-circle</v-icon
+                >
+              </div>
+            </div>
+            <div
+              class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-w-full"
+              v-if="whitelist.discord_server_url"
+            >
+              <div class="tw-text-lg">
+                Join
+                <a
+                  :href="whitelist.discord_server_url"
+                  target="_blank"
+                  class="!tw-text-wapal-pink"
+                  >{{ whitelist.discord_server_name }}</a
+                >
+                Discord
+              </div>
+              <div>
+                <div v-if="!joinedDiscordServer">
+                  <button-with-loader
+                    class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
+                    @click.native="checkIfUserHasJoinedDiscordServer"
+                    :loading="verifyingJoinedDiscordServer"
+                    loading-text="Verifying..."
+                    text="Verify"
+                  >
+                  </button-with-loader>
+                </div>
+
+                <div v-else>
+                  <v-icon
+                    class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+                    >mdi-check-circle</v-icon
+                  >
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <!-- <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded"
+        <div
+          class="tw-flex tw-flex-col tw-w-full tw-items-start tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-rounded"
         >
-          <div class="tw-text-lg">Connect to Twitter</div>
-          <button
-            class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-            @click="connectTwitter"
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-w-full"
           >
-            Connect
-          </button>
-          <div>
-            <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
-              >mdi-check-circle</v-icon
+            <div class="tw-text-lg">Connect to Twitter</div>
+            <div
+              class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-2"
             >
+              <div v-if="followedTwitter">
+                <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+                  >mdi-check-circle</v-icon
+                >
+              </div>
+              <button @click="showTwitterOptions = !showTwitterOptions">
+                <v-icon
+                  class="!tw-text-wapal-gray !tw-text-2xl !tw-font-bold tw-transition-all tw-duration-300 tw-ease-linear tw-transform"
+                  :class="{ 'tw-rotate-180': showTwitterOptions }"
+                  >mdi-chevron-down</v-icon
+                >
+              </button>
+            </div>
           </div>
-        </div> -->
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-w-full"
+            v-if="whitelist.twitter && showTwitterOptions"
+          >
+            <div class="tw-text-lg">
+              Follow
+              <a
+                :href="whitelist.twitter"
+                target="_blank"
+                class="!tw-text-wapal-pink"
+                >{{ whitelist.twitter }}</a
+              >
+              on Twitter
+            </div>
+            <div>
+              <div v-if="!followedTwitter">
+                <button-with-loader
+                  class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
+                  @click.native="checkIfUserHasFollowedTwitterAccount"
+                  :loading="verifyingFollowedOnTwitter"
+                  loading-text="Verifying..."
+                  text="Verify"
+                >
+                </button-with-loader>
+              </div>
+
+              <div v-else>
+                <v-icon class="!tw-text-emerald-600 !tw-text-2xl !tw-font-bold"
+                  >mdi-check-circle</v-icon
+                >
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="tw-w-full tw-flex tw-flex-row tw-justify-center">
           <button
             class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded md:tw-py-3 md:tw-px-16 disabled:tw-bg-[#FF36AB]/75"
@@ -174,6 +280,7 @@
         </div>
       </div>
     </div>
+
     <div
       class="tw-py-32 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
       v-else
@@ -216,40 +323,9 @@
         <loading v-if="!error.discord.error && !error.twitter.error" />
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between"
-          v-if="whitelist.twitter && error.twitter.error"
-        >
-          <span class="tw-text-lg"
-            >You have not followed {{ whitelist.twitter }}. Please Follow
-            <a
-              :href="`https://twitter.com/${whitelist.twitter}`"
-              target="_blank"
-              class="!tw-text-wapal-pink"
-              >{{ whitelist.twitter }}</a
-            >
-            on Twitter</span
-          >
-        </div>
-        <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between"
           v-if="
-            whitelist.discord_server_name && error.discord.type === 'not joined'
-          "
-        >
-          <span class="tw-text-lg"
-            >Please Join
-            <a
-              :href="whitelist.discord_server_url"
-              target="_blank"
-              class="!tw-text-wapal-pink"
-              >{{ whitelist.discord_server_name }}</a
-            >
-            discord server</span
-          >
-        </div>
-        <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between"
-          v-if="
-            whitelist.discord_roles && error.discord.type === 'not promoted'
+            whitelist.discord_server_name &&
+            error.discord.type === 'not promoted'
           "
         >
           <div class="tw-text-lg">
@@ -282,6 +358,7 @@ import {
   getWhitelistById,
   createWhitelistEntry,
 } from "@/services/WhitelistService";
+
 import { getCollection } from "@/services/CollectionService";
 import { discordRequest } from "@/services/DiscordInterceptor";
 
@@ -349,6 +426,8 @@ export default {
       discordResponse: { data: "" },
       followedTwitter: false,
       verifyingFollowedOnTwitter: false,
+      showDiscordOptions: false,
+      showTwitterOptions: false,
     };
   },
   methods: {
@@ -406,20 +485,41 @@ export default {
         const discordConditions =
           await this.checkIfUserHasFulfilledDiscordCondition();
 
-        if (discordConditions === 1) {
+        if (discordConditions) {
           this.sendUserDetailsToCreateWhitelistEntry();
         }
       }
       return;
     },
-    async checkIfUserHasFulfilledDiscordCondition() {
+    async checkIfUserHasJoinedDiscordServer() {
       try {
+        this.verifyingJoinedDiscordServer = true;
         this.discordRes = await discordRequest.get(
           `users/@me/guilds/${this.whitelist.discord_server_id}/member`
         );
 
         this.discordDetails = this.discordRes.data.user;
-
+        this.verifyingJoinedDiscordServer = false;
+        this.joinedDiscordServer = true;
+      } catch (error: any) {
+        if (error.response.data.message) {
+          if (error.response.data.message === "Unknown Guild") {
+            this.$toast.showMessage({
+              message: "Please Join Discord Server First",
+              error: true,
+            });
+          }
+        } else {
+          this.$toast.showMessage({
+            message: error,
+            error: true,
+          });
+        }
+        this.verifyingJoinedDiscordServer = false;
+      }
+    },
+    async checkIfUserHasFulfilledDiscordCondition() {
+      try {
         const roles = this.discordRes.data.roles;
         const promoted = this.checkDiscordRoles(roles);
 
@@ -434,26 +534,17 @@ export default {
             error: true,
           });
 
-          return 0;
+          return false;
         }
 
-        return 1;
+        return true;
       } catch (error: any) {
-        if (error.response.data.message) {
-          if (error.response.data.message === "Unknown Guild") {
-            this.$toast.showMessage({
-              message: "Please Join Discord Server First",
-              error: true,
-            });
-            this.error.discord.error = true;
-            this.error.discord.type = "not joined";
-            return -1;
-          }
-        }
         this.$toast.showMessage({
           message: "Please get promoted to required roles",
           error: true,
         });
+
+        return false;
       }
     },
     checkDiscordRoles(roles: any[]) {
@@ -573,11 +664,16 @@ export default {
     getUserStatus() {
       return this.$store.state.userStore.user.token ? true : false;
     },
-    getDiscordStatus() {
+    getDiscordConnected() {
       return this.$store.state.discordStore.discord.token;
     },
     getVerificationStatus() {
-      if (!this.getWalletStatus || !this.getUserStatus || !this.discordStatus) {
+      if (
+        !this.getWalletStatus ||
+        !this.getUserStatus ||
+        !this.getDiscordConnected ||
+        !this.joinedDiscordServer
+      ) {
         return false;
       }
       return true;
@@ -599,6 +695,14 @@ export default {
     this.collection = collectionRes.collection[0];
 
     this.showEndInTimer = true;
+
+    if (!this.whitelist.twitter) {
+      this.followedTwitter = true;
+    }
+
+    if (!this.whitelist.discord_server_id) {
+      this.joinedDiscordServer = true;
+    }
 
     this.loading = false;
 

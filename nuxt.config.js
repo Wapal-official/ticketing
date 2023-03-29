@@ -9,13 +9,13 @@ const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const APTOS_API_KEY = process.env.APTOS_API_KEY;
 
-let discordRedirectURI = "https://staging.wapal.io/discord/token";
+let discordRedirectURI = "localhost:3000/discord/token";
 
-if (API_URL.includes("staging")) {
-  discordRedirectURI = "https://staging.wapal.io/discord/token";
-} else {
-  discordRedirectURI = "https://wapal.io/discord/token";
-}
+// if (API_URL.includes("staging")) {
+//   discordRedirectURI = "https://staging.wapal.io/discord/token";
+// } else {
+//   discordRedirectURI = "https://wapal.io/discord/token";
+// }
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -38,7 +38,7 @@ export default {
       { name: "format-detection", content: "telephone=no" },
       {
         name: "keywords",
-        content: "NFT, Creator Studio, Aptos, NFT Launchpad, No Code",
+        content: "Wapal, NFT, Creator Studio, Aptos, NFT Launchpad, No Code",
       },
       {
         name: "google-site-verification",
