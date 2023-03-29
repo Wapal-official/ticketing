@@ -243,6 +243,8 @@ import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 
 export default {
+  ssr: false,
+  cache: false,
   components: { CountDown, Loading },
   data() {
     return {
