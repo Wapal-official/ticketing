@@ -244,7 +244,7 @@ export default {
     async fetchWhitelistEntries() {
       this.loading = true;
 
-      const res = await getWhitelistEntryById(this.whitelist.collection_id);
+      const res = await getWhitelistEntryById(this.whitelist.collection_id, 100,1);
 
       this.whitelistEntries = res.data.whitelistEntries;
       this.paginatedWhitelistEntries = this.whitelistEntries;

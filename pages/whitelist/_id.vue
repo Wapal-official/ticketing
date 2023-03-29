@@ -86,17 +86,19 @@
           >
             <span class="tw-capitalize tw-text-sm">No of Spots</span>
             <span class="tw-capitalize tw-text-sm"
-              >0%
+              >{{ resource.spotPercent }}%
               <span class="tw-text-[#ACACAC]"
-                >(0 out of {{ whitelist.whitelist_spots }})</span
+                >({{ resource.occupiedSpots }} out of
+                {{ whitelist.whitelist_spots }})</span
               ></span
             >
           </div>
           <div
-            class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px]"
+            class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px] tw-overflow-hidden"
           >
             <div
               class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-[#E500A4] tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
+              id="noOfSpotsPercent"
             ></div>
           </div>
         </div>
@@ -361,6 +363,7 @@ import ButtonWithLoader from "@/components/Button/ButtonWithLoader.vue";
 import {
   getWhitelistById,
   createWhitelistEntry,
+  getWhitelistEntryById,
 } from "@/services/WhitelistService";
 
 import { getCollection } from "@/services/CollectionService";
@@ -433,6 +436,13 @@ export default {
       verifyingFollowedOnTwitter: false,
       showDiscordOptions: false,
       showTwitterOptions: false,
+      resource: {
+        totalSpots: 0,
+        occupiedSpots: 0,
+        spotPercent: 0,
+      },
+      full: false,
+      interval: null,
     };
   },
   methods: {
@@ -658,6 +668,30 @@ export default {
         }
       }, 3000);
     },
+    showNoOfSpotsProgress() {
+      this.interval = setInterval(async () => {
+        const spotsRes = await getWhitelistEntryById(
+          this.whitelist.collection_id,
+          1,
+          1
+        );
+
+        this.resource.occupiedSpots = spotsRes.data.spotsCount;
+
+        if (this.resource.occupiedSpots >= this.resource.totalSpots) {
+          this.full = true;
+        }
+
+        this.resource.spotPercent = Math.floor(
+          (this.resource.occupiedSpots / this.resource.totalSpots) * 100
+        );
+
+        const noOfSpotsPercent: any =
+          document.querySelector("#noOfSpotsPercent");
+
+        noOfSpotsPercent.style.width = this.resource.spotPercent + "%";
+      }, 5000);
+    },
   },
   computed: {
     getMintDate() {
@@ -676,6 +710,10 @@ export default {
       const now = new Date();
       const whitelistStartDate = new Date(this.whitelist.whitelist_start);
       const whitelistEndDate = new Date(this.whitelist.whitelist_end);
+
+      if (this.full) {
+        return false;
+      }
 
       if (
         !this.getWalletStatus ||
@@ -756,11 +794,39 @@ export default {
       this.joinedDiscordServer = true;
     }
 
+    const spotsRes = await getWhitelistEntryById(
+      this.whitelist.collection_id,
+      1,
+      1
+    );
+
+    this.resource.totalSpots = this.whitelist.whitelist_spots;
+
+    this.resource.occupiedSpots = spotsRes.data.spotsCount;
+
+    if (this.resource.occupiedSpots >= this.resource.totalSpots) {
+      this.full = true;
+    }
+
+    this.resource.spotPercent = Math.floor(
+      (this.resource.occupiedSpots / this.resource.totalSpots) * 100
+    );
+
     this.loading = false;
 
     if (this.getDiscordStatus) {
       this.discordStatus = true;
     }
+
+    setTimeout(() => {
+      const noOfSpotsPercent: any = document.querySelector("#noOfSpotsPercent");
+
+      noOfSpotsPercent.style.width = this.resource.spotPercent + "%";
+      this.showNoOfSpotsProgress();
+    }, 200);
+  },
+  beforeDestroy() {
+    clearInterval(this.interval);
   },
 };
 </script>
