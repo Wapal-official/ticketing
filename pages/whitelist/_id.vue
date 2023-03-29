@@ -517,7 +517,7 @@ export default {
         this.verifyingJoinedDiscordServer = false;
         this.joinedDiscordServer = true;
       } catch (error: any) {
-        if (error.response.data.message) {
+        if (error.response && error.response.data.message) {
           if (error.response.data.message === "Unknown Guild") {
             this.$toast.showMessage({
               message: "Please Join Discord Server First",
@@ -526,7 +526,7 @@ export default {
           }
         } else {
           this.$toast.showMessage({
-            message: error,
+            message: "Please Connect Discord First",
             error: true,
           });
         }
