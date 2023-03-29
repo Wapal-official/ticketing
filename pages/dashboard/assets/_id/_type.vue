@@ -764,6 +764,7 @@ export default {
       }
     },
   },
+  cache: false,
 };
 </script>
 <style>
