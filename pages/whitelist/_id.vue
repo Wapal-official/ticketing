@@ -171,7 +171,7 @@
               <button
                 class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
                 @click="connectDiscord"
-                v-if="!discordStatus"
+                v-if="!getDiscordConnected"
               >
                 Connect
               </button>
@@ -704,7 +704,9 @@ export default {
       return this.$store.state.userStore.user.token ? true : false;
     },
     getDiscordConnected() {
-      return this.$store.state.discordStore.discord.token;
+      return this.$store.state.discordStore.discord.token
+        ? this.$store.state.discordStore.discord.token
+        : this.discordStatus;
     },
     getVerificationStatus() {
       const now = new Date();
@@ -718,7 +720,7 @@ export default {
       if (
         !this.getWalletStatus ||
         !this.getUserStatus ||
-        !this.discordStatus ||
+        !this.getDiscordConnected ||
         !this.joinedDiscordServer
       ) {
         return false;
