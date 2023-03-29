@@ -16,7 +16,7 @@ module.exports = {
         "wapal-secondary-blue": "#030537",
         "modal-gray": "#545454",
         error: "#D03050",
-        "wapal-pink": "#EA59BE",
+        "wapal-pink": "#FF36AB",
         "wapal-background": "#0E0D0D",
         "wapal-dashboard-active": "#48CAE4",
       },

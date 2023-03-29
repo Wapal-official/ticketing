@@ -1,29 +1,53 @@
 <template>
   <div
-    class="tw-w-[95%] tw-mx-auto tw-bg-[#001233] tw-px-8 tw-py-8 banner-shadow tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 lg:tw-flex-row lg:tw-justify-start"
+    class="tw-w-full tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-px-8 tw-pb-8 tw-pt-4 lg:tw-gap-16 lg:tw-flex-row lg:tw-justify-start xl:tw-w-4/5"
     v-if="!loading"
   >
     <div
-      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-group md:tw-max-w-[75%] lg:tw-max-w-[27%]"
+      class="tw-px-8 tw-py-8 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 tw-group md:tw-px-0 md:tw-py-8 md:tw-max-w-[60%] lg:tw-max-w-full lg:tw-w-[90%] xl:tw-w-full"
     >
       <div
-        class="tw-rounded-lg tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear"
+        class="tw-rounded-lg nft-preview-card-border tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear xl:tw-w-[60%]"
       >
         <img
           :src="collection.image"
           :alt="collection.name"
-          class="tw-w-full tw-rounded-lg"
+          class="tw-w-full tw-max-h-[500px] tw-rounded-lg tw-object-fill"
         />
       </div>
       <h3 class="tw-text-[1.75rem] tw-text-wapal-pink tw-font-normal tw-w-full">
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full"
-          v-if="showWhitelistSaleTimer && showPublicSaleTimer"
+          v-if="showLiveInTimer"
         >
           <span class="tw-pr-4 lg:tw-pr-8">Live In</span>
           <count-down
             :shadow="true"
-            :startTime="collection.candyMachine_id.whitelist_sale_time"
+            :startTime="
+              collection.candyMachine_id.whitelist_sale_time
+                ? collection.candyMachine_id.whitelist_sale_time
+                : collection.candyMachine_id.public_sale_time
+            "
+          />
+        </div>
+        <div
+          class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full tw-mx-auto lg:tw-w-[70%]"
+          v-else-if="showWhitelistSaleTimer || showPublicSaleTimer"
+        >
+          <h6
+            class="tw-uppercase tw-text-wapal-pink tw-text-xl tw-font-medium"
+            v-if="showEndInTimer"
+          >
+            End In
+          </h6>
+          <count-down
+            :vertical="true"
+            :startTime="this.collection.candyMachine_id.public_sale_time"
+            :shadow="true"
+            :textWhite="true"
+            :textSmall="true"
+            @countdownComplete="hideEndInTimer"
+            v-if="showEndInTimer"
           />
         </div>
         <span
@@ -34,7 +58,7 @@
       </h3>
     </div>
     <div
-      class="tw-rounded tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-flex-grow md:tw-px-8 md:tw-py-8 lg:tw-w-fit"
+      class="tw-rounded tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-bg-[#001233] banner-shadow tw-px-8 tw-py-8"
     >
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
@@ -74,48 +98,41 @@
       </div>
       <div
         class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-[#F0F0F0] tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
-        v-if="!showWhitelistSaleTimer || !showPublicSaleTimer"
+        v-if="showMintBox"
       >
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
         >
-          <h6 class="tw-capitalize tw-text-white" v-if="getCurrentPrice != 0">
-            price {{ getCurrentPrice }} apt
-          </h6>
-          <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+          >
+            <div v-if="!showWhitelistSaleTimer && showPublicSaleTimer">
+              Whitelist Sale
+            </div>
+            <div v-if="!showWhitelistSaleTimer && !showPublicSaleTimer">
+              Public Sale
+            </div>
+            <h6 class="tw-capitalize tw-text-white" v-if="getCurrentPrice != 0">
+              price {{ getCurrentPrice }} apt
+            </h6>
+            <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
+          </div>
           <button
             class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
             :class="{
               '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
             }"
             @click="mintCollection"
-            :disabled="minting"
+            :disabled="minting || soldOut"
           >
             <v-progress-circular indeterminate v-if="minting" color="white">
             </v-progress-circular>
-            Mint
+            {{ !soldOut ? "Mint" : "Sold Out" }}
           </button>
-        </div>
-        <div
-          class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
-          v-if="showWhitelistSaleTimer || showPublicSaleTimer"
-        >
-          <h6
-            class="tw-uppercase tw-text-wapal-pink tw-text-xl tw-font-medium"
-            v-if="showEndInTimer"
-          >
-            End In
-          </h6>
-          <count-down
-            :vertical="true"
-            :startTime="this.collection.candyMachine_id.public_sale_time"
-            @countdownComplete="hideEndInTimer"
-            v-if="showEndInTimer"
-          />
         </div>
       </div>
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-4 lg:tw-gap-2 lg:tw-flex-row 2xl:tw-gap-4"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
       >
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-2 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
@@ -175,14 +192,14 @@
     </v-dialog>
   </div>
   <div
-    class="tw-w-[95%] tw-mx-auto tw-bg-[#001233] tw-px-8 tw-py-8 banner-shadow tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-flex-row md:tw-justify-start"
+    class="tw-w-[95%] tw-mx-auto tw-px-8 tw-py-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-16 lg:tw-flex-row lg:tw-justify-start"
     v-else
   >
     <div
       class="tw-w-full lg:tw-w-[40%] tw-bg-wapal-gray tw-min-h-[400px] tw-rounded-lg tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
     ></div>
     <div
-      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 lg:tw-w-[60%]"
+      class="tw-px-8 tw-py-8 tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 lg:tw-w-[60%] tw-bg-[#001233] banner-shadow"
     >
       <div
         class="tw-py-4 tw-bg-wapal-gray tw-w-[75%] tw-rounded tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
@@ -191,7 +208,7 @@
         class="tw-py-4 tw-bg-wapal-gray tw-w-[75%] tw-rounded tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
       ></div>
       <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full lg:tw-flex-row"
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full"
       >
         <div
           class="tw-py-16 tw-bg-wapal-gray tw-w-full tw-rounded tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
@@ -236,6 +253,9 @@ export default {
       showEndInTimer: false,
       minting: false,
       showConnectWalletModal: false,
+      resource: null,
+      soldOut: false,
+      progressInterval: null,
     };
   },
   methods: {
@@ -277,48 +297,62 @@ export default {
     },
     async mintCollection() {
       try {
-        if (!this.$store.state.walletStore.wallet.wallet) {
+        if (this.$store.state.walletStore.wallet.wallet) {
+          this.minting = true;
+          const balance = await this.$store.dispatch(
+            "walletStore/checkBalance"
+          );
+
+          const mintPrice = this.getCurrentPrice;
+
+          if (balance < mintPrice) {
+            this.$toast.showMessage({
+              message: "Your account has insufficient balance for Minting",
+              error: true,
+            });
+
+            this.minting = false;
+            return;
+          }
+          const res = await this.$store.dispatch("walletStore/mintCollection", {
+            resourceAccount: this.collection.candyMachine_id.resource_account,
+            publicMint: !this.checkPublicSaleTimer(),
+            collectionId: this.collection._id,
+            candyMachineId: this.collection.candyMachine_id.candy_id,
+          });
+
+          if (res.success) {
+            this.$toast.showMessage({
+              message: `${this.collection.name} Minted Successfully`,
+            });
+          } else {
+            this.$toast.showMessage({
+              message: "Collection Not Minted",
+              error: true,
+            });
+          }
+
+          this.minting = false;
+        } else {
           this.showConnectWalletModal = true;
           return;
         }
-
-        this.minting = true;
-        const balance = await this.$store.dispatch("walletStore/checkBalance");
-
-        const mintPrice = this.getCurrentPrice;
-
-        if (balance < mintPrice) {
+      } catch (error: any) {
+        console.log(error);
+        if (
+          error.response &&
+          error.response.data.msg &&
+          error.response.data.msg ===
+            "Whitelist entry associated with this wallet address not found."
+        ) {
           this.$toast.showMessage({
-            message: "Your account has insufficient balance for Minting",
+            message: "You are not listed in Whitelist for this Collection",
             error: true,
-          });
-
-          this.minting = false;
-          return;
-        }
-
-        const res = await this.$store.dispatch(
-          "walletStore/mintCollection",
-          this.collection.candyMachine_id.resource_account
-        );
-
-        if (res.success) {
-          this.$toast.showMessage({
-            message: `${this.collection.name} Minted Successfully`,
           });
         } else {
-          this.$toast.showMessage({
-            message: "Collection Not Minted",
-            error: true,
-          });
+          this.$toast.showMessage({ message: error, error: true });
         }
-
         this.minting = false;
-        return;
-      } catch (error) {
-        this.$toast.showMessage({ message: error, error: true });
-        this.minting = false;
-        console.log(error);
       }
     },
     displayWalletConnectedMessage() {
@@ -328,64 +362,108 @@ export default {
         message: `${this.$store.state.walletStore.wallet.wallet} Wallet Connected Successfully`,
       });
     },
+    showMintedProgress() {
+      this.progressInterval = setInterval(async () => {
+        this.resource = await this.$store.dispatch(
+          "walletStore/getSupplyAndMintedOfCollection",
+          {
+            resourceAccountAddress:
+              this.collection.candyMachine_id.resource_account,
+            candyMachineId: this.collection.candyMachine_id.candy_id,
+          }
+        );
+      }, 5000);
+    },
   },
   computed: {
     getCurrentPrice() {
-      const whiteListDate = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
-      );
+      const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : "";
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
 
-      if (whiteListDate < publicSaleDate) {
+      const now = new Date();
+      if (
+        this.collection.candyMachine_id.public_sale_price ==
+        this.collection.candyMachine_id.whitelist_price
+      ) {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+
+      if (now > publicSaleDate) {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+
+      if (whiteListDate && publicSaleDate > now) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
         return this.collection.candyMachine_id.public_sale_price;
       }
     },
-  },
-  watch: {
-    async collectionId(newVal: any) {
-      if (newVal && process.env.baseURL?.includes("staging")) {
-        const res = await getCollection(this.collectionId);
-        this.collection = res.collection[0];
+    showMintBox() {
+      const publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
+      if (!this.whitelistSaleDate) {
+        return new Date() > publicSaleDate;
+      }
 
-        this.whitelistSaleDate = new Date(
-          this.collection.candyMachine_id.whitelist_sale_time
-        );
-        this.publicSaleDate = new Date(
-          this.collection.candyMachine_id.public_sale_time
-        );
-
-        this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
-        this.showPublicSaleTimer = this.checkPublicSaleTimer();
-
-        this.showEndInTimer = true;
-
-        this.loading = false;
+      return !this.showWhitelistSaleTimer || !this.showPublicSaleTimer;
+    },
+    showLiveInTimer() {
+      if (!this.whitelistSaleDate) {
+        return this.showPublicSaleTimer;
+      } else {
+        return this.showWhitelistSaleTimer && this.showPublicSaleTimer;
       }
     },
   },
   async mounted() {
+    let res = null;
     if (!process.env.baseURL?.includes("staging")) {
-      const res = await getCollection("6415331e9cb214a367f1ee7a");
-      this.collection = res.collection[0];
-
-      this.whitelistSaleDate = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
-      );
-      this.publicSaleDate = new Date(
-        this.collection.candyMachine_id.public_sale_time
-      );
-
-      this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
-      this.showPublicSaleTimer = this.checkPublicSaleTimer();
-
-      this.showEndInTimer = true;
-
-      this.loading = false;
+      res = await getCollection("6415331e9cb214a367f1ee7a");
+    } else {
+      res = await getCollection("6411e5928d694e608061b029");
     }
+
+    this.collection = res.collection[0];
+
+    this.whitelistSaleDate = this.collection.candyMachine_id.whitelist_sale_time
+      ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+      : "";
+
+    this.publicSaleDate = new Date(
+      this.collection.candyMachine_id.public_sale_time
+    );
+
+    this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
+    this.showPublicSaleTimer = this.checkPublicSaleTimer();
+
+    this.showEndInTimer = true;
+
+    this.resource = await this.$store.dispatch(
+      "walletStore/getSupplyAndMintedOfCollection",
+      {
+        resourceAccountAddress:
+          this.collection.candyMachine_id.resource_account,
+        candyMachineId: this.collection.candyMachine_id.candy_id,
+      }
+    );
+
+    if (this.resource.minted == this.resource.total_supply) {
+      this.soldOut = true;
+    }
+
+    this.loading = false;
+
+    setTimeout(() => {
+      this.showMintedProgress();
+    }, 200);
+  },
+  beforeDestroy() {
+    clearInterval(this.progressInterval);
   },
 };
 </script>

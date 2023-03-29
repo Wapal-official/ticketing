@@ -1,7 +1,12 @@
 <template>
-  <div
+  <NuxtLink
     class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
     v-if="!loading"
+    :to="
+      type === 'landing'
+        ? `/whitelist/${whitelist?._id}`
+        : `/dashboard/whitelist/${whitelist?._id}`
+    "
   >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
@@ -27,17 +32,18 @@
           >
             <span>No. Of Spots</span>
             <span class="tw-pr-1"
-              >0/{{
+              >{{ spots.occupiedSpots }}/{{
                 whitelist?.whitelist_spots ? whitelist.whitelist_spots : 0
               }}</span
             >
           </div>
           <div
-            class="tw-relative tw-w-full tw-h-2 tw-rounded-full tw-bg-wapal-gray"
+            class="tw-relative tw-w-full tw-h-2 tw-rounded-full tw-bg-wapal-gray tw-overflow-hidden"
           >
             <div
-              class="tw-absolute tw-top-0 tw-left-0 tw-h-full tw-bg-wapal-pink tw-rounded-full"
+              class="tw-absolute tw-top-0 tw-left-0 tw-h-2 tw-bg-wapal-pink tw-rounded-full"
               :class="getOccupiedWhitelistClass"
+              :style="`width:${spots.spotPercent}%`"
             ></div>
           </div>
           <div
@@ -59,7 +65,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </NuxtLink>
   <div v-else>
     <div class="tw-rounded tw-relative tw-w-full tw-h-[450px]">
       <div
@@ -72,12 +78,20 @@
   </div>
 </template>
 <script lang="ts">
-import { getCollection } from "~/services/CollectionService";
+import { getCollection } from "@/services/CollectionService";
 import moment from "moment";
+import { getWhitelistEntryById } from "@/services/WhitelistService";
 export default {
-  props: { whitelist: { type: Object } },
+  props: {
+    whitelist: { type: Object },
+    type: { type: String, default: "landing" },
+  },
   data() {
-    return { collection: { _id: "", name: "", image: "" }, loading: true };
+    return {
+      collection: { _id: "", name: "", image: "" },
+      loading: true,
+      spots: { totalSpots: 0, occupiedSpots: 0, spotPercent: 0 },
+    };
   },
   computed: {
     getMintDate() {
@@ -94,6 +108,21 @@ export default {
     if (this.whitelist.collection_id) {
       const res = await getCollection(this.whitelist.collection_id);
       this.collection = res.collection[0];
+
+      const spotRes = await getWhitelistEntryById(
+        this.whitelist.collection_id,
+        1,
+        1
+      );
+
+      this.spots = {
+        totalSpots: this.whitelist.whitelist_spots,
+        occupiedSpots: spotRes.data.spotsCount,
+      };
+
+      this.spots.spotPercent = Math.floor(
+        (this.spots.occupiedSpots / this.spots.totalSpots) * 100
+      );
     }
     this.loading = false;
   },

@@ -41,7 +41,7 @@
                     >
                     <div class="dashboard-text-field-border tw-w-full">
                       <v-text-field
-                        v-model="verification.name"
+                        v-model="verification.full_name"
                         outlined
                         single-line
                         color="#fff"
@@ -171,7 +171,7 @@
                     >
                     <div class="dashboard-text-field-border tw-w-full">
                       <v-select
-                        v-model="resSelectedCountryCode"
+                        v-model="verification.residential_address.country"
                         :items="resCountryList"
                         outlined
                         single-line
@@ -198,7 +198,7 @@
                     >
                     <div class="dashboard-text-field-border tw-w-full">
                       <v-select
-                        v-model="resSelectedStateId"
+                        v-model="verification.residential_address.state"
                         :items="resStateList"
                         outlined
                         single-line
@@ -206,7 +206,7 @@
                         hide-details
                         clearable
                         class="dashboard-input"
-                        item-value="id"
+                        item-value="name"
                         item-text="name"
                       ></v-select>
                     </div>
@@ -228,7 +228,7 @@
                       >
                       <div class="dashboard-text-field-border tw-w-full">
                         <v-text-field
-                          v-model="verification.res_city"
+                          v-model="verification.residential_address.city"
                           outlined
                           single-line
                           color="#fff"
@@ -253,7 +253,7 @@
                       >
                       <div class="dashboard-text-field-border tw-w-full">
                         <v-text-field
-                          v-model="verification.res_code"
+                          v-model="verification.residential_address.zip_code"
                           outlined
                           single-line
                           color="#fff"
@@ -289,7 +289,7 @@
                     >
                     <div class="dashboard-text-field-border tw-w-full">
                       <v-select
-                        v-model="selectedCountryCode"
+                        v-model="verification.permanent_address.country"
                         :items="countryList"
                         outlined
                         single-line
@@ -316,7 +316,7 @@
                     >
                     <div class="dashboard-text-field-border tw-w-full">
                       <v-select
-                        v-model="selectedStateId"
+                        v-model="verification.permanent_address.state"
                         :items="stateList"
                         outlined
                         single-line
@@ -324,7 +324,7 @@
                         hide-details
                         clearable
                         class="dashboard-input"
-                        item-value="id"
+                        item-value="name"
                         item-text="name"
                       ></v-select>
                     </div>
@@ -345,7 +345,7 @@
                       >
                       <div class="dashboard-text-field-border tw-w-full">
                         <v-text-field
-                          v-model="verification.per_city"
+                          v-model="verification.permanent_address.city"
                           outlined
                           single-line
                           color="#fff"
@@ -369,7 +369,7 @@
                       >
                       <div class="dashboard-text-field-border tw-w-full">
                         <v-text-field
-                          v-model="verification.per_code"
+                          v-model="verification.permanent_address.zip_code"
                           outlined
                           single-line
                           color="#fff"
@@ -467,7 +467,7 @@
                         >
                           <div
                             class="tw-bg-wapal-background tw-px-4 tw-py-2 tw-rounded-lg tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
-                            v-if="!document.name"
+                            v-if="!document[0].name"
                           >
                             Select Document
                           </div>
@@ -475,12 +475,22 @@
                             class="tw-bg-wapal-background tw-px-4 tw-py-2 tw-rounded-lg tw-max-w-4/5 tw-overflow-hidden"
                             v-else
                           >
-                            {{ document.name }}
+                            <span
+                              v-for="(singleDocument, index) in document"
+                              :key="index"
+                            >
+                              {{
+                                index === document.length - 1
+                                  ? singleDocument.name
+                                  : `${singleDocument.name},`
+                              }}</span
+                            >
                           </div>
                           <input
                             type="file"
                             class="image-collection"
                             @change="documentSelected"
+                            multiple
                           />
                         </label>
                       </div>
@@ -500,7 +510,7 @@
                       >
                       <div class="dashboard-text-field-border tw-w-full">
                         <v-select
-                          v-model="verification.document_type"
+                          v-model="verification.document.type"
                           item-value="value"
                           item-text="label"
                           :items="documentTypeOptions"
@@ -557,6 +567,9 @@
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
+
+import { requestVerification } from "@/services/VerificationService";
+
 import AWS from "aws-sdk";
 
 extend("required", {
@@ -596,18 +609,15 @@ export default {
       steps: "1",
       invalid: false,
       verification: {
-        name: null,
+        full_name: null,
         dob: null,
         gender: null,
         occupation: null,
         email: null,
-        res_city: null,
-        res_code: null,
-        per_city: null,
-        per_code: null,
-        profile_picture: null,
-        document_type: null,
-        document: null,
+        residential_address: { country: "", state: "", city: "", zip_code: "" },
+        permanent_address: { country: "", state: "", city: "", zip_code: "" },
+        image: null,
+        document: { type: "", documents: [] },
       },
       message: "",
       image: { name: null },
@@ -629,7 +639,7 @@ export default {
       countryList: [],
       stateList: [],
       profilePicture: { name: null },
-      document: { name: null },
+      document: [{ name: "" }],
       documentTypeOptions: [
         { label: "Select Document Type", value: null, disabled: true },
         { label: "Citizenship", value: "citizenship" },
@@ -641,15 +651,26 @@ export default {
   },
   methods: {
     imageSelected(event: any) {
-      this.image = event.target.files[0];
+      if (event.target.files) {
+        this.image = event.target.files[0];
+      }
     },
 
     copyAddress() {
-      this.verification.per_code = this.verification.res_code;
-      this.verification.per_city = this.verification.res_city;
-      this.selectedCountryCode = this.resSelectedCountryCode;
+      this.countryList = this.resCountryList;
       this.stateList = this.resStateList;
-      this.selectedStateId = this.resSelectedStateId;
+
+      this.verification.permanent_address.city =
+        this.verification.residential_address.city;
+
+      this.verification.permanent_address.zip_code =
+        this.verification.residential_address.zip_code;
+
+      this.verification.permanent_address.country =
+        this.verification.residential_address.country;
+
+      this.verification.permanent_address.state =
+        this.verification.residential_address.state;
     },
     async nextClick() {
       try {
@@ -686,7 +707,7 @@ export default {
     },
     fetchStates() {
       fetch(
-        `https://api.countrystatecity.in/v1/countries/${this.selectedCountryCode}/states`,
+        `https://api.countrystatecity.in/v1/countries/${this.verification.permanent_address.country}/states`,
         {
           headers: {
             "X-CSCAPI-KEY":
@@ -696,8 +717,7 @@ export default {
       )
         .then((response) => response.json())
         .then((data) => {
-          this.stateList = data.map((state: { id: any; name: any }) => ({
-            id: state.id,
+          this.stateList = data.map((state: { name: any }) => ({
             name: state.name,
           }));
         })
@@ -728,7 +748,7 @@ export default {
     },
     fetchResStates() {
       fetch(
-        `https://api.countrystatecity.in/v1/countries/${this.resSelectedCountryCode}/states`,
+        `https://api.countrystatecity.in/v1/countries/${this.verification.residential_address.country}/states`,
         {
           headers: {
             "X-CSCAPI-KEY":
@@ -738,8 +758,7 @@ export default {
       )
         .then((response) => response.json())
         .then((data) => {
-          this.resStateList = data.map((state: { id: any; name: any }) => ({
-            id: state.id,
+          this.resStateList = data.map((state: { name: any }) => ({
             name: state.name,
           }));
         })
@@ -751,7 +770,10 @@ export default {
       this.fetchResStates();
     },
     documentSelected(event: any) {
-      this.document = event.target.files[0];
+      if (!this.document[0].name) {
+        this.document = [];
+      }
+      this.document.push(event.target.files[0]);
     },
     async uploadImage() {
       this.imageError = false;
@@ -764,8 +786,8 @@ export default {
       }
 
       try {
-        const res = await this.awsUpload(0);
-        this.verification.profile_picture = res.Location;
+        const res = await this.awsUpload(this.image);
+        this.verification.image = res.Location;
         return true;
       } catch (error) {
         console.log(error);
@@ -778,16 +800,25 @@ export default {
       this.documentError = false;
       const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.pdf)$/i;
 
-      if (!allowedExtensions.exec(this.document.name.toLowerCase())) {
-        this.documentError = true;
-        this.documentErrorMessage =
-          "Please upload a jpg, jpeg, png or pdf document";
-        throw Error("Please upload a jpg, jpeg, png or pdf document");
-      }
+      this.document.map((singleDocument: any) => {
+        if (!allowedExtensions.exec(singleDocument.name.toLowerCase())) {
+          this.documentError = true;
+          this.documentErrorMessage =
+            "Please upload a jpg, jpeg, png or pdf document";
+          throw Error("Please upload a jpg, jpeg, png or pdf document");
+        }
+      });
 
       try {
-        const res = await this.awsUpload(1);
-        this.verification.document = res.Location;
+        const res: any[] = await Promise.all(
+          this.document.map(async (singleDocument: any) => {
+            const res = await this.awsUpload(singleDocument);
+            return res;
+          })
+        );
+
+        this.verification.document.documents.push(res[0].Location);
+        this.verification.document.documents.push(res[1].Location);
         return true;
       } catch (error) {
         console.log(error);
@@ -796,7 +827,7 @@ export default {
         return false;
       }
     },
-    awsUpload(type: number) {
+    awsUpload(file: any) {
       const s3 = new AWS.S3({
         accessKeyId: process.env.AWS_ACCESS_KEY,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -807,7 +838,7 @@ export default {
       const params = {
         Bucket: "wapal-images",
         Key: key,
-        Body: type === 0 ? this.image : this.document,
+        Body: file,
       };
       return new Promise((resolve, reject) => {
         s3.upload(params, (err: any, data: any) => {
@@ -820,10 +851,33 @@ export default {
       this.submitting = true;
 
       try {
-        // const imageUpload = await this.uploadImage();
-        // const documentUpload = await this.uploadDocument();
+        await this.uploadImage();
+        await this.uploadDocument();
 
-        console.log(this.verification);
+        await requestVerification(this.verification);
+
+        this.$toast.showMessage({
+          message: "Verification Request Sent Successfully",
+        });
+
+        this.verification = {
+          full_name: null,
+          dob: null,
+          gender: null,
+          occupation: null,
+          email: null,
+          residential_address: {
+            country: "",
+            state: "",
+            city: "",
+            zip_code: "",
+          },
+          permanent_address: { country: "", state: "", city: "", zip_code: "" },
+          image: null,
+          document: { type: "", documents: [] },
+        };
+
+        this.$router.push("/dashboard/");
 
         this.submitting = false;
       } catch (error) {
@@ -835,6 +889,7 @@ export default {
   },
 
   async mounted() {
+    this.e1 = 1;
     this.fetchCountries();
     this.fetchResCountries();
   },

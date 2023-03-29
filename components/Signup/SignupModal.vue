@@ -6,9 +6,6 @@
       </button>
     </div>
     <p class="tw-text-sm md:tw-text-lg tw-font-normal tw-pb-4">
-      Wallet registered successfully.
-    </p>
-    <p class="tw-text-sm md:tw-text-lg tw-font-normal tw-pb-4">
       Sign a message to log in into Wapal
     </p>
     <primary-button @click.native="signMessage">Sign Message</primary-button>
@@ -77,7 +74,7 @@ export default {
 
         const loginRes = await login(data);
 
-        this.$store.commit("walletStore/setUser", {
+        this.$store.dispatch("userStore/loginUser", {
           token: loginRes.data.token,
           user_id: loginRes.data.user._id,
         });

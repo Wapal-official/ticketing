@@ -51,28 +51,38 @@ export default {
   },
   computed: {
     getStatus() {
-      const whiteListDate = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
-      );
+      const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : "";
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
 
       const date = new Date();
 
-      if (date > whiteListDate || date > publicSaleDate) {
-        return true;
+      if (!whiteListDate) {
+        if (date > publicSaleDate) {
+          return true;
+        }
+      } else {
+        if (date > whiteListDate || date > publicSaleDate) {
+          return true;
+        }
       }
 
       return false;
     },
     getStartTime() {
-      const whiteListDate = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
-      );
+      const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : "";
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
+
+      if (!whiteListDate) {
+        return publicSaleDate.toString();
+      }
 
       if (whiteListDate > publicSaleDate) {
         return publicSaleDate.toString();
@@ -95,11 +105,11 @@ export default {
         return this.collection.candyMachine_id.public_sale_price;
       }
 
-      if (publicSaleDate > now) {
+      if (now > publicSaleDate) {
         return this.collection.candyMachine_id.public_sale_price;
       }
 
-      if (whiteListDate && whiteListDate > now) {
+      if (whiteListDate && publicSaleDate > now) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
         return this.collection.candyMachine_id.public_sale_price;

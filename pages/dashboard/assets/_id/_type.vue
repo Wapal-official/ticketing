@@ -152,16 +152,27 @@
         >
       </div>
       <h2 class="tw-text-lg tw-font-semibold">
-        {{ !uploadComplete ? "Uploading Files" : "Files Uploaded" }}
+        {{
+          !uploadComplete ? "Sending Files To Server" : "Files Sent To Server"
+        }}
       </h2>
       <div
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
         v-if="uploading"
       >
-        <v-progress-circular
-          indeterminate
-          :color="defaultTheme.wapalPink"
-        ></v-progress-circular>
+        <div
+          class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-2 tw-w-full"
+        >
+          <div
+            class="tw-relative tw-w-full tw-rounded-lg tw-py-1 tw-bg-wapal-gray"
+          >
+            <div
+              class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-wapal-pink tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
+              id="progress-bar"
+            ></div>
+          </div>
+          <span class="tw-text-sm">{{ this.serverUploadPercent }}%</span>
+        </div>
       </div>
       <div
         class="tw-text-red-600 tw-flex tw-flex-col tw-gap-2 tw-w-full"
@@ -277,11 +288,6 @@ export default {
       currentFile: { _id: "" },
       loading: true,
       fileLoading: true,
-      uploadedFiles: {
-        files: [],
-        totalFiles: 333,
-        uploadedFiles: 0,
-      },
       uploadId: 0,
       fileDetailsStart: false,
       uploadStatusClass: "tw-h-0",
@@ -291,6 +297,7 @@ export default {
       fileIndex: 0,
       mappingFiles: false,
       type: "",
+      serverUploadPercent: 0,
       UploadIcon,
       defaultTheme,
     };
@@ -577,6 +584,8 @@ export default {
         let responseCount = 0;
         let response = null;
 
+        this.serverUploadPercent = 0;
+
         for (let i = 1; i <= batchLoop; i++) {
           const endIndex = i * 50;
           const startIndex = endIndex - 50;
@@ -634,6 +643,10 @@ export default {
           if (responseCount === batchLoop) {
             response = res.data.newFolder;
           }
+
+          const progressBar: any = document.querySelector("#progress-bar");
+          this.serverUploadPercent = Math.floor((i / batchLoop) * 100);
+          progressBar.style.width = this.serverUploadPercent + "%";
         }
 
         if (responseCount === batchLoop) {
@@ -644,11 +657,13 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
 
-        await deleteFolderOnServer(this.$store.state.walletStore.user.user_id);
+        await deleteFolderOnServer(this.$store.state.userStore.user.user_id);
       }
     },
     async transferFund(newFolder: any) {
       try {
+        this.uploadComplete = true;
+
         this.balanceNotEnoughError = await this.$store.dispatch(
           "walletStore/checkBalanceForFolderUpload"
         );
@@ -694,7 +709,7 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
         const res = await deleteFolderOnServer(
-          this.$store.state.walletStore.user.user_id
+          this.$store.state.userStore.user.user_id
         );
       }
     },

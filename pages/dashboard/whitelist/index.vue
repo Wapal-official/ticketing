@@ -15,6 +15,7 @@
         v-for="whitelist in whitelists"
         :key="whitelist._id"
         :whitelist="whitelist"
+        type="dashboard"
         v-if="whitelists[0]._id"
       />
     </div>
@@ -39,7 +40,7 @@ export default {
   methods: {},
   async mounted() {
     const res = await getWhitelistOfUser(
-      this.$store.state.walletStore.user.user_id
+      this.$store.state.userStore.user.user_id
     );
     this.whitelists = res.data.whitelists;
     this.loading = false;

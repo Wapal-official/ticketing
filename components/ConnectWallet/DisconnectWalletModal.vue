@@ -37,6 +37,7 @@ export default {
     },
     disconnectWallet() {
       this.$store.dispatch("walletStore/disconnectWallet");
+      this.$store.dispatch("userStore/disconnectUser");
       this.$emit("walletDisconnected");
     },
   },

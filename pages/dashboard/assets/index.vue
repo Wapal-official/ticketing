@@ -149,9 +149,7 @@ export default {
   },
   computed: {
     getFolderId() {
-      return process.env.baseURL?.includes("staging")
-        ? "64119a4635d5e95d27526f99"
-        : "6423ecfff511de43d18a6034";
+      return "64119a4635d5e95d27526f99";
     },
   },
   methods: {
@@ -196,7 +194,7 @@ export default {
       try {
         const res = await createFolder({
           folder_name: folderName,
-          user_id: this.$store.state.walletStore.user.user_id,
+          user_id: this.$store.state.userStore.user.user_id,
         });
 
         this.pushFolder({
@@ -255,9 +253,7 @@ export default {
     async mapFolders() {
       this.folders = [];
 
-      const res = await getAllFolder(
-        this.$store.state.walletStore.user.user_id
-      );
+      const res = await getAllFolder(this.$store.state.userStore.user.user_id);
 
       this.folders.push({ _id: this.getFolderId, folder_name: "Wapal" });
 

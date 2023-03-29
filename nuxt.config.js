@@ -4,8 +4,18 @@ const API_URL = process.env.API_URL;
 const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const CANDY_MACHINE_ID = process.env.CANDY_MACHINE_ID;
-const NETWORK = "testnet";
-const APTOS_API_KEY = "81ccb0d76e66433abaf7543d0ff16688";
+const NETWORK = process.env.NETWORK;
+const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
+const APTOS_API_KEY = process.env.APTOS_API_KEY;
+
+let discordRedirectURI = "https://staging.wapal.io/discord/token";
+
+if (API_URL.includes("staging")) {
+  discordRedirectURI = "https://staging.wapal.io/discord/token";
+} else {
+  discordRedirectURI = "https://wapal.io/discord/token";
+}
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -28,7 +38,7 @@ export default {
       { name: "format-detection", content: "telephone=no" },
       {
         name: "keywords",
-        content: "NFT, Creator Studio, Aptos, NFT Launchpad, No Code",
+        content: "Wapal, NFT, Creator Studio, Aptos, NFT Launchpad, No Code",
       },
       {
         name: "google-site-verification",
@@ -42,10 +52,7 @@ export default {
   css: ["@/assets/css/index.css", "@/assets/css/style.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    { src: "~/plugins/persistedState.client.ts" },
-    "~/plugins/toast.ts",
-  ],
+  plugins: ["~/plugins/toast.ts"],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -60,7 +67,7 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["cookie-universal-nuxt", "@nuxtjs/axios", "@nuxtjs/proxy"],
+  modules: ["cookie-universal-nuxt", "@nuxtjs/axios", "@nuxtjs/auth-next"],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -119,6 +126,32 @@ export default {
     AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY,
     CANDY_MACHINE_ID: CANDY_MACHINE_ID,
     NETWORK: NETWORK,
+    DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
+    DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
     APTOS_API_KEY: APTOS_API_KEY,
+  },
+  auth: {
+    strategies: {
+      discord: {
+        scheme: "oauth2",
+        clientId: DISCORD_CLIENT_ID,
+        clientSecret: DISCORD_CLIENT_SECRET,
+        scope: [
+          "identify",
+          "email",
+          "connections",
+          "guilds",
+          "guilds.members.read",
+        ],
+        endpoints: {
+          authorization: "https://discord.com/oauth2/authorize",
+          token: "https://discord.com/api/oauth2/token",
+          userInfo: "https://discord.com/api/users/@me",
+        },
+        redirect_uri: discordRedirectURI,
+        redirectUri: discordRedirectURI,
+        fetchUser: false,
+      },
+    },
   },
 };

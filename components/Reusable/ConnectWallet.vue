@@ -40,12 +40,6 @@
         @walletDisconnected="displayWalletDisconnectedMessage"
       />
     </v-dialog>
-    <v-dialog
-      v-model="showSignupDialog"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
-    >
-      <signup-modal @close="showSignupDialog = false" />
-    </v-dialog>
     <v-snackbar
       v-model="walletConnectedSnackbar"
       :timeout="3000"
@@ -66,21 +60,18 @@
 <script lang="ts">
 import ConnectWalletModal from "@/components/ConnectWallet/ConnectWalletModal.vue";
 import DisconnectWalletModal from "@/components/ConnectWallet/DisconnectWalletModal.vue";
-import SignupModal from "@/components/Signup/SignupModal.vue";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 import { defaultTheme } from "@/theme/wapaltheme";
 export default {
   components: {
     ConnectWalletModal,
     DisconnectWalletModal,
-    SignupModal,
     GradientBorderButton,
   },
   data() {
     return {
       showConnectWalletDialog: false,
       showDisconnectWalletDialog: false,
-      showSignupDialog: false,
       walletConnectedSnackbar: false,
       defaultTheme,
       message: "Wallet Connected Successfully",

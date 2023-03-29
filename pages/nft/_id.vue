@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-pt-28 tw-pb-16 md:tw-px-16 lg:tw-flex-row lg:tw-gap-16"
+      class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-pt-16 tw-pb-16 md:tw-px-16 lg:tw-flex-row lg:tw-gap-16"
       v-if="!loading"
     >
       <div
@@ -120,12 +120,22 @@
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
           >
-            <h6 class="tw-capitalize tw-text-white" v-if="getCurrentPrice != 0">
-              price {{ getCurrentPrice }} apt
-            </h6>
-            <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+            >
+              <div v-if="!showWhitelistSaleTimer && !showPublicSaleTimer">
+                Public Sale
+              </div>
+              <h6
+                class="tw-capitalize tw-text-white"
+                v-if="getCurrentPrice != 0"
+              >
+                price {{ getCurrentPrice }} apt
+              </h6>
+              <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
+            </div>
             <button
-              class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
+              class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-px-2 tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
               :class="{
                 '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
               }"
@@ -233,6 +243,8 @@ import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 
 export default {
+  ssr: false,
+  cache: false,
   components: { CountDown, Loading },
   data() {
     return {
@@ -308,48 +320,62 @@ export default {
     },
     async mintCollection() {
       try {
-        if (!this.$store.state.walletStore.wallet.wallet) {
+        if (this.$store.state.walletStore.wallet.wallet) {
+          this.minting = true;
+          const balance = await this.$store.dispatch(
+            "walletStore/checkBalance"
+          );
+
+          const mintPrice = this.getCurrentPrice;
+
+          if (balance < mintPrice) {
+            this.$toast.showMessage({
+              message: "Your account has insufficient balance for Minting",
+              error: true,
+            });
+
+            this.minting = false;
+            return;
+          }
+          const res = await this.$store.dispatch("walletStore/mintCollection", {
+            resourceAccount: this.collection.candyMachine_id.resource_account,
+            publicMint: !this.checkPublicSaleTimer(),
+            collectionId: this.$route.params.id,
+            candyMachineId: this.collection.candyMachine_id.candy_id,
+          });
+
+          if (res.success) {
+            this.$toast.showMessage({
+              message: `${this.collection.name} Minted Successfully`,
+            });
+          } else {
+            this.$toast.showMessage({
+              message: "Collection Not Minted",
+              error: true,
+            });
+          }
+
+          this.minting = false;
+        } else {
           this.showConnectWalletModal = true;
           return;
         }
-
-        this.minting = true;
-        const balance = await this.$store.dispatch("walletStore/checkBalance");
-
-        const mintPrice = this.getCurrentPrice;
-
-        if (balance < mintPrice) {
+      } catch (error: any) {
+        console.log(error);
+        if (
+          error.response &&
+          error.response.data.msg &&
+          error.response.data.msg ===
+            "Whitelist entry associated with this wallet address not found."
+        ) {
           this.$toast.showMessage({
-            message: "Your account has insufficient balance for Minting",
+            message: "You are not listed in Whitelist for this Collection",
             error: true,
-          });
-
-          this.minting = false;
-          return;
-        }
-
-        const res = await this.$store.dispatch(
-          "walletStore/mintCollection",
-          this.collection.candyMachine_id.resource_account
-        );
-
-        if (res.success) {
-          this.$toast.showMessage({
-            message: `${this.collection.name} Minted Successfully`,
           });
         } else {
-          this.$toast.showMessage({
-            message: "Collection Not Minted",
-            error: true,
-          });
+          this.$toast.showMessage({ message: error, error: true });
         }
-
         this.minting = false;
-        return;
-      } catch (error) {
-        this.$toast.showMessage({ message: error, error: true });
-        this.minting = false;
-        console.log(error);
       }
     },
     displayWalletConnectedMessage() {
@@ -363,14 +389,18 @@ export default {
       this.progressInterval = setInterval(async () => {
         this.resource = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfCollection",
-          this.collection.candyMachine_id.resource_account
+          {
+            resourceAccountAddress:
+              this.collection.candyMachine_id.resource_account,
+            candyMachineId: this.collection.candyMachine_id.candy_id,
+          }
         );
 
         if (this.resource.minted == this.resource.total_supply) {
           this.soldOut = true;
         }
 
-        this.resource.mintedPercent = Math.ceil(
+        this.resource.mintedPercent = Math.floor(
           (this.resource.minted / this.resource.total_supply) * 100
         );
 
@@ -392,12 +422,18 @@ export default {
       );
 
       const now = new Date();
-
-      if (publicSaleDate > now) {
+      if (
+        this.collection.candyMachine_id.public_sale_price ==
+        this.collection.candyMachine_id.whitelist_price
+      ) {
         return this.collection.candyMachine_id.public_sale_price;
       }
 
-      if (whiteListDate && whiteListDate > now) {
+      if (now > publicSaleDate) {
+        return this.collection.candyMachine_id.public_sale_price;
+      }
+
+      if (whiteListDate && publicSaleDate > now) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
         return this.collection.candyMachine_id.public_sale_price;
@@ -440,10 +476,14 @@ export default {
 
     this.resource = await this.$store.dispatch(
       "walletStore/getSupplyAndMintedOfCollection",
-      this.collection.candyMachine_id.resource_account
+      {
+        resourceAccountAddress:
+          this.collection.candyMachine_id.resource_account,
+        candyMachineId: this.collection.candyMachine_id.candy_id,
+      }
     );
 
-    this.resource.mintedPercent = Math.ceil(
+    this.resource.mintedPercent = Math.floor(
       (this.resource.minted / this.resource.total_supply) * 100
     );
 

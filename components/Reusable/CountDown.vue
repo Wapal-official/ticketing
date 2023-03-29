@@ -2,25 +2,34 @@
   <div
     v-if="vertical"
     class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+    :class="{ 'tw-text-[#F0F0F0]': textWhite, 'tw-text-base': textSmall }"
   >
     <div
       class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1"
       v-if="days > 0"
     >
       <div>Days</div>
-      <span class="live-counter">{{ days }}</span>
+      <span class="live-counter" :class="{ 'live-counter-shadow': shadow }">{{
+        days
+      }}</span>
     </div>
     <div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1">
       <div>Hours</div>
-      <span class="live-counter">{{ hours }}</span>
+      <span class="live-counter" :class="{ 'live-counter-shadow': shadow }">{{
+        hours
+      }}</span>
     </div>
     <div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1">
       <div>Minutes</div>
-      <span class="live-counter">{{ minutes }}</span>
+      <span class="live-counter" :class="{ 'live-counter-shadow': shadow }">{{
+        minutes
+      }}</span>
     </div>
     <div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1">
       <div>Seconds</div>
-      <span class="live-counter">{{ seconds }}</span>
+      <span class="live-counter" :class="{ 'live-counter-shadow': shadow }">{{
+        seconds
+      }}</span>
     </div>
   </div>
   <div v-else>
@@ -44,6 +53,8 @@ export default {
     shadow: { type: Boolean },
     vertical: { type: Boolean },
     startTime: { type: String },
+    textWhite: { type: Boolean, default: false },
+    textSmall: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -91,7 +102,7 @@ export default {
     },
   },
   created() {
-    this.setDate(this.startTime);
+    this.setDate();
     this.startCountdown(this.startTime);
   },
 };

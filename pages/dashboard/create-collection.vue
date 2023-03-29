@@ -114,6 +114,7 @@
               class="dashboard-input"
               placeholder="Select your NFT Vault"
               item-text="folder_name"
+              @change="setSupply"
               hide-details
               clearable
             >
@@ -171,18 +172,22 @@
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
         <div
+          class="tw-flex tw-flex-row tw-gap-4 tw-items-center tw-w-full md:tw-w-1/2"
+        >
+          <label>Whitelist Sale</label>
+          <v-switch v-model="whitelistEnabled"></v-switch>
+        </div>
+        <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
         >
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
             name="whitelistSaleTime"
-            rules="required|saleTime"
+            rules="saleTime"
             v-slot="{ errors }"
+            v-if="whitelistEnabled"
           >
-            <label
-              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-              >Whitelist Sale Time</label
-            >
+            <label>Whitelist Sale Time</label>
             <div class="dashboard-text-field-border tw-w-full">
               <v-text-field
                 v-model="collection.whitelist_sale_time"
@@ -194,6 +199,7 @@
                 class="dashboard-input tw-w-full focus:tw-outline-none"
                 type="datetime-local"
                 ref="whitelistSaleTime"
+                :disabled="!whitelistEnabled"
               >
               </v-text-field>
             </div>
@@ -231,12 +237,10 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
             name="whitelistSalePrice"
-            rules="required|number"
+            rules="number"
             v-slot="{ errors }"
-            ><label
-              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-              >Whitelist Sale Price in Apt</label
-            >
+            v-if="whitelistEnabled"
+            ><label>Whitelist Sale Price in Apt</label>
             <div class="dashboard-text-field-border tw-w-full">
               <v-text-field
                 v-model="collection.whitelist_price"
@@ -248,6 +252,7 @@
                 clearable
                 class="dashboard-input"
                 inputmode="numeric"
+                :disabled="!whitelistEnabled"
               >
               </v-text-field>
             </div>
@@ -300,6 +305,7 @@
               clearable
               class="dashboard-input"
               inputmode="numeric"
+              disabled
             >
             </v-text-field>
           </div>
@@ -525,6 +531,7 @@ export default {
       folders: [],
       folderInfo: null,
       baseURL: null,
+      whitelistEnabled: false,
     };
   },
   methods: {
@@ -561,9 +568,10 @@ export default {
           return;
         }
 
-        tempCollection.whitelist_sale_time = new Date(
-          tempCollection.whitelist_sale_time
-        ).toISOString();
+        tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
+          ? new Date(tempCollection.whitelist_sale_time).toISOString()
+          : null;
+
         tempCollection.public_sale_time = new Date(
           tempCollection.public_sale_time
         ).toISOString();
@@ -623,12 +631,30 @@ export default {
       });
     },
     async sendDataToCandyMachineCreator() {
-      const whitelistTime = Math.floor(
-        new Date(this.collection.whitelist_sale_time).getTime() / 1000
-      );
-      const publicSaleTime = Math.floor(
-        new Date(this.collection.public_sale_time).getTime() / 1000
-      );
+      let whitelistTime = null;
+
+      let publicSaleTime = null;
+
+      if (this.whitelistEnabled) {
+        whitelistTime = Math.floor(
+          new Date(this.collection.whitelist_sale_time).getTime() / 1000
+        );
+        publicSaleTime = Math.floor(
+          new Date(this.collection.public_sale_time).getTime() / 1000
+        );
+      } else {
+        whitelistTime = Math.floor(
+          new Date(this.collection.public_sale_time).getTime() / 1000
+        );
+        publicSaleTime =
+          Math.floor(
+            new Date(this.collection.public_sale_time).getTime() / 1000
+          ) + 1;
+      }
+
+      const whitelist_price = this.collection.whitelist_price
+        ? this.collection.whitelist_price
+        : this.collection.public_sale_price;
 
       const candyMachineArguments = {
         collection_name: this.collection.name,
@@ -639,7 +665,7 @@ export default {
         royalty_points_numerator: this.collection.royalty_percentage * 10,
         presale_mint_time: whitelistTime,
         public_sale_mint_time: publicSaleTime,
-        presale_mint_price: this.collection.whitelist_price * 100000000,
+        presale_mint_price: whitelist_price * 100000000,
         public_sale_mint_price: this.collection.public_sale_price * 100000000,
         total_supply: this.collection.supply,
       };
@@ -652,6 +678,18 @@ export default {
       this.collection.resource_account = res.resourceAccount;
       this.collection.transaction_hash = res.transactionHash;
     },
+    setSupply() {
+      const selectedFolder = this.folders.find(
+        (folder: any) => folder.folder_name === this.baseURL
+      );
+      if (selectedFolder) {
+        this.collection.supply = selectedFolder.metadata.files.length
+          ? selectedFolder.metadata.files.length
+          : null;
+      } else {
+        this.collection.supply = null;
+      }
+    },
   },
   async mounted() {
     const folderRes = await getFolderById(
@@ -662,7 +700,7 @@ export default {
 
     this.folders.push(folderRes.data.folderInfo);
 
-    const res = await getAllFolder(this.$store.state.walletStore.user.user_id);
+    const res = await getAllFolder(this.$store.state.userStore.user.user_id);
 
     res.data.folderInfo.map((folder: any) => {
       if (folder.metadata.baseURI) {

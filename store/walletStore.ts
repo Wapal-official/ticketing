@@ -14,7 +14,7 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
-import { AptosClient } from "aptos";
+import { AptosClient, HexString } from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
 
@@ -65,12 +65,21 @@ export const state = () => ({
     wallet: "",
     walletAddress: "",
     publicKey: "",
-  },
-  user: {
-    user_id: "",
-    token: "",
+    proof: "",
   },
 });
+
+export const mutations = {
+  setWallet(state: any, wallet: WalletAddress) {
+    state.wallet = wallet;
+  },
+  setProof(state: any, proof: any) {
+    state.proof = proof;
+  },
+  setMintLimit(state: any, mint_limit: number) {
+    state.mint_limit = mint_limit;
+  },
+};
 
 export const getters = {
   getWalletsDetail() {
@@ -78,21 +87,9 @@ export const getters = {
   },
 };
 
-export const mutations = {
-  setWallet(state: any, wallet: WalletAddress) {
-    state.wallet = wallet;
-  },
-  setUser(state: any, user: any) {
-    state.user = user;
-  },
-};
-
 export const actions = {
   setWallet({ commit }: { commit: any }) {
     commit("setWallet");
-    Cookies.set("vuex", JSON.stringify(state), {
-      expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
-    });
   },
   async connectWallet({ commit }: { commit: any }, walletName: WalletName) {
     try {
@@ -105,6 +102,19 @@ export const actions = {
           ? wallet.account?.publicKey[0]
           : wallet.account?.publicKey,
       });
+      Cookies.set(
+        "wallet",
+        JSON.stringify({
+          wallet: wallet.wallet?.name,
+          walletAddress: wallet.account?.address,
+          publicKey: Array.isArray(wallet.account?.publicKey)
+            ? wallet.account?.publicKey[0]
+            : wallet.account?.publicKey,
+        }),
+        {
+          expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
+        }
+      );
       return true;
     } catch (error) {
       throw error;
@@ -117,14 +127,33 @@ export const actions = {
     commit("setWallet", {
       wallet: "",
       walletAddress: "",
+      publicKey: "",
     });
-    commit("setUser", {
-      user_id: "",
-      token: "",
-    });
+    Cookies.set(
+      "wallet",
+      JSON.stringify({
+        wallet: "",
+        walletAddress: "",
+        publicKey: "",
+      })
+    );
+  },
+  async getProof(
+    { commit }: { commit: any },
+    {
+      walletAddress,
+      collectionId,
+    }: { walletAddress: string; collectionId: string }
+  ) {
+    const { data } = await this.$axios.get(
+      `/api/whitelist/proof?wallet_address=${walletAddress}&collection_id=${collectionId}`
+    );
+
+    commit("setProof", data.proofs);
+    commit("setMintLimit", data.wallet.mint_limit);
   },
   async createCandyMachine(
-    { state }: { state: any },
+    { state, dispatch }: { state: any; dispatch: any },
     candyMachineArguments: any
   ) {
     if (!wallet.isConnected()) {
@@ -149,6 +178,7 @@ export const actions = {
         candyMachineArguments.total_supply,
         [false, false, false],
         [false, false, false, false, false],
+        0,
         "" + makeId(5),
       ],
     };
@@ -179,22 +209,66 @@ export const actions = {
       state.wallet.walletAddress
     );
 
-    const lamports = res[res.length - 1].data.coin.value;
+    if (res) {
+      const lamports = res[res.length - 1].data.coin.value;
 
-    const balance = lamports / 100000000;
-    return balance.toFixed(4);
+      const balance = lamports / 100000000;
+      return balance.toFixed(4);
+    } else {
+      throw new Error(
+        "Something went wrong please reconnect your wallet and try again"
+      );
+    }
   },
-  async mintCollection({ state }: { state: any }, resourceAccount: string) {
+  async mintCollection(
+    { state, dispatch }: { state: any; dispatch: any },
+    {
+      resourceAccount,
+      publicMint,
+      collectionId,
+      candyMachineId,
+    }: {
+      resourceAccount: string;
+      publicMint: boolean;
+      collectionId: string;
+      candyMachineId: string;
+    }
+  ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
 
-    const create_mint_script = {
-      type: "entry_function_payload",
-      function: process.env.CANDY_MACHINE_ID + "::candymachine::mint_script",
-      type_arguments: [],
-      arguments: [resourceAccount],
-    };
+    var create_mint_script: any;
+    if (publicMint) {
+      create_mint_script = {
+        type: "entry_function_payload",
+        function: candyMachineId + "::candymachine::mint_script",
+        type_arguments: [],
+        arguments: [resourceAccount],
+      };
+    } else {
+      await dispatch("getProof", {
+        collectionId: collectionId,
+        walletAddress: state.wallet.walletAddress,
+      });
+
+      const proofs: any[] = [];
+      state.proof.map((proof: any) => {
+        proofs.push(proof.data);
+      });
+      if (state.proof.length > 0) {
+        create_mint_script = {
+          type: "entry_function_payload",
+          function: candyMachineId + "::candymachine::mint_from_merkle",
+          type_arguments: [],
+          arguments: [resourceAccount, proofs, state.mint_limit],
+        };
+      } else {
+        throw new Error(
+          "You are not whitelisted petraAddressfor this collection"
+        );
+      }
+    }
 
     const transaction = await wallet.signAndSubmitTransaction(
       create_mint_script
@@ -221,7 +295,11 @@ export const actions = {
 
     const totalAR = (price / 1000000000000) * arweaveRate.data.USD;
 
-    const totalAPT = totalAR / aptosRate.data.USD;
+    const uploadMultiplier = 1.091;
+    const oracleFee = 1.1;
+
+    const totalAPT =
+      (totalAR / aptosRate.data.USD) * uploadMultiplier * oracleFee;
 
     if (balance < totalAPT) {
       return {
@@ -267,23 +345,54 @@ export const actions = {
 
     return signMessage;
   },
-  setUser({ commit }: { commit: any }) {
-    commit("setUser");
-  },
-  async getSupplyAndMintedOfCollection({}, resourcecAccountAddress: string) {
-    const res = await client.getAccountResources(resourcecAccountAddress);
+  async getSupplyAndMintedOfCollection(
+    {},
+    {
+      resourceAccountAddress,
+      candyMachineId,
+    }: { resourceAccountAddress: string; candyMachineId: string }
+  ) {
+    const res = await client.getAccountResources(resourceAccountAddress);
 
     let resource: any = null;
     for (let i = 0; i < res.length; i++) {
-      if (
-        res[i].type ===
-        process.env.CANDY_MACHINE_ID + "::candymachine::CandyMachine"
-      ) {
+      if (res[i].type === candyMachineId + "::candymachine::CandyMachine") {
         resource = res[i].data;
         break;
       }
     }
 
     return { total_supply: resource.total_supply, minted: resource.minted };
+  },
+  async setMerkleRoot(
+    { state }: { state: any },
+    {
+      root,
+      resourceAccount,
+      candyMachineId,
+    }: { root: any; resourceAccount: string; candyMachineId: string }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    const set_root_script = {
+      function: candyMachineId + "::candymachine::set_root",
+      type: "entry_function_payload",
+      arguments: [resourceAccount, root],
+      type_arguments: [],
+    };
+
+    const transaction = await wallet.signAndSubmitTransaction(set_root_script);
+
+    let transactionResult: any = await client.waitForTransactionWithResult(
+      transaction.hash
+    );
+
+    if (!transactionResult.success) {
+      throw new Error("Transaction not Successful please try again");
+    }
+
+    return transaction;
   },
 };
