@@ -112,12 +112,6 @@
           v-if="showMintBox"
         >
           <div
-            class="tw-w-1/4"
-            v-if="!showWhitelistSaleTimer && !showPublicSaleTimer"
-          >
-            Public Sale
-          </div>
-          <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
           >
             <div
