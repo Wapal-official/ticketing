@@ -88,7 +88,10 @@
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
           >
             <span class="tw-capitalize tw-text-sm">{{
-              showPublicSaleTimer ? "pre sale mint" : "public sale mint"
+              showPublicSaleTimer &&
+              collection.candyMachine_id.whitelist_sale_time
+                ? "whitelist mint"
+                : "public sale mint"
             }}</span>
             <span class="tw-capitalize tw-text-sm"
               >{{ resource.mintedPercent }}%
