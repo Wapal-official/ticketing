@@ -34,3 +34,12 @@ export const searchCollection = async (query: string) => {
 
   return res;
 };
+
+export const setSoldOut = async (collectionId: string) => {
+  const res = await axios.patch(
+    `${process.env.baseURL}/api/collection/setsoldout`,
+    { id: collectionId }
+  );
+
+  return res;
+};

@@ -123,11 +123,11 @@
               '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
             }"
             @click="mintCollection"
-            :disabled="minting || soldOut"
+            :disabled="minting || collection.status.sold_out"
           >
             <v-progress-circular indeterminate v-if="minting" color="white">
             </v-progress-circular>
-            {{ !soldOut ? "Mint" : "Sold Out" }}
+            {{ !collection.status.sold_out ? "Mint" : "Sold Out" }}
           </button>
         </div>
       </div>
@@ -221,7 +221,7 @@
   </div>
 </template>
 <script lang="ts">
-import { getCollection } from "@/services/CollectionService";
+import { getCollection, setSoldOut } from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 
 export default {
@@ -245,6 +245,7 @@ export default {
         twitter: "",
         discord: "",
         isVerified: false,
+        status: { sold_out: false },
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
@@ -254,7 +255,6 @@ export default {
       minting: false,
       showConnectWalletModal: false,
       resource: null,
-      soldOut: false,
       progressInterval: null,
     };
   },
@@ -372,6 +372,14 @@ export default {
             candyMachineId: this.collection.candyMachine_id.candy_id,
           }
         );
+
+        if (
+          this.resource.minted == this.resource.total_supply &&
+          !this.collection.status.sold_out
+        ) {
+          this.collection.status.sold_out = true;
+          await setSoldOut(this.collection._id);
+        }
       }, 5000);
     },
   },
@@ -452,8 +460,12 @@ export default {
       }
     );
 
-    if (this.resource.minted == this.resource.total_supply) {
-      this.soldOut = true;
+    if (
+      this.resource.minted == this.resource.total_supply &&
+      !this.collection.status.sold_out
+    ) {
+      this.collection.status.sold_out = true;
+      await setSoldOut(this.collection._id);
     }
 
     this.loading = false;
