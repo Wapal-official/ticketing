@@ -24,16 +24,24 @@
         </h5>
         <div class="tw-pr-4">
           <h6
+            v-if="collection?.status.sold_out"
             class="tw-text-xl tw-text-wapal-pink tw-font-normal"
-            v-if="status"
           >
-            Live
+            Soldout
           </h6>
-          <count-down
-            :startTime="getStartTime"
-            @countdownComplete="countdownComplete"
-            v-else
-          />
+          <div v-else>
+            <h6
+              class="tw-text-xl tw-text-wapal-pink tw-font-normal"
+              v-if="status"
+            >
+              Live
+            </h6>
+            <count-down
+              :startTime="getStartTime"
+              @countdownComplete="countdownComplete"
+              v-else
+            />
+          </div>
         </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-6 tw-capitalize tw-w-full tw-text-sm tw-pr-4"

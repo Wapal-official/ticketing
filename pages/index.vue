@@ -92,6 +92,10 @@ export default {
 
         const now = new Date();
 
+        if (collection.status.sold_out) {
+          return;
+        }
+
         if (!whitelistSaleDate) {
           if (now > publicSaleDate) {
             return collection;
