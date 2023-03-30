@@ -58,25 +58,31 @@ export default {
   },
   computed: {
     getStatus() {
-      const whiteListDate = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
-      );
+      const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : null;
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
 
       const date = new Date();
 
-      if (date > whiteListDate || date > publicSaleDate) {
-        return true;
+      if (!whiteListDate) {
+        if (date > publicSaleDate) {
+          return true;
+        }
+      } else {
+        if (date > whiteListDate || date > publicSaleDate) {
+          return true;
+        }
       }
 
       return false;
     },
     getPrice() {
-      const whiteListDate = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
-      );
+      const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : null;
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
@@ -100,12 +106,16 @@ export default {
       }
     },
     getStartTime() {
-      const whiteListDate = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
-      );
+      const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : null;
+
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
+      if (!whiteListDate) {
+        return publicSaleDate.toString();
+      }
 
       if (whiteListDate > publicSaleDate) {
         return publicSaleDate.toString();
