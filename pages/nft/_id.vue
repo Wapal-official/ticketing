@@ -231,7 +231,7 @@
     </v-dialog>
   </div>
 </template>
-<script lang="ts">
+<script>
 import { getCollection } from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
@@ -239,6 +239,25 @@ import Loading from "@/components/Reusable/Loading.vue";
 export default {
   ssr: false,
   cache: false,
+  head() {
+    return {
+      title: this.getTitle,
+      meta: [
+        { hid: "og-type", property: "og:type", content: "website" },
+        {
+          hid: "og-image",
+          property: "og:image",
+          content: this.getImage,
+        },
+        { hid: "t-type", name: "twitter:card", content: "summary_large_image" },
+        {
+          hid: "description",
+          name: "description",
+          content: this.getDescription,
+        },
+      ],
+    };
+  },
   components: { CountDown, Loading },
   data() {
     return {
@@ -354,7 +373,7 @@ export default {
           this.showConnectWalletModal = true;
           return;
         }
-      } catch (error: any) {
+      } catch (error) {
         console.log(error);
         if (
           error.response &&
@@ -398,7 +417,7 @@ export default {
           (this.resource.minted / this.resource.total_supply) * 100
         );
 
-        const resourceMintedPercent: any = document.querySelector(
+        const resourceMintedPercent = document.querySelector(
           "#resourceMintedPercent"
         );
 
@@ -450,6 +469,16 @@ export default {
         return this.showWhitelistSaleTimer && this.showPublicSaleTimer;
       }
     },
+    getTitle() {
+      return this.collection.name ? "Wapal - " + this.collection.name : "Title";
+    },
+
+    getImage() {
+      return this.collection.image ? this.collection.image : "";
+    },
+    getDescription() {
+      return this.collection.description ? this.collection.description : "";
+    },
   },
   async mounted() {
     const res = await getCollection(this.$route.params.id);
@@ -488,7 +517,7 @@ export default {
     this.loading = false;
 
     setTimeout(() => {
-      const resourceMintedPercent: any = document.querySelector(
+      const resourceMintedPercent = document.querySelector(
         "#resourceMintedPercent"
       );
 
