@@ -252,7 +252,15 @@ export default {
           property: "og:image",
           content: this.getImage,
         },
+        { hid: "og-type", property: "og:title", content: this.getTitle },
         { hid: "t-type", name: "twitter:card", content: "summary_large_image" },
+        { hid: "t-type", name: "twitter:title", content: this.getTitle },
+        { hid: "t-type", name: "twitter:image", content: this.getImage },
+        {
+          hid: "t-type",
+          name: "twitter:description",
+          content: this.getDescription,
+        },
         {
           hid: "description",
           name: "description",
