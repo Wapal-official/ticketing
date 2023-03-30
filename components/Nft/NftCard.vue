@@ -53,7 +53,7 @@ export default {
     getStatus() {
       const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
         ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
-        : "";
+        : null;
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
@@ -75,7 +75,7 @@ export default {
     getStartTime() {
       const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
         ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
-        : "";
+        : null;
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
@@ -91,9 +91,9 @@ export default {
       }
     },
     getPrice() {
-      const whiteListDate = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
-      );
+      const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : null;
       const publicSaleDate = new Date(
         this.collection.candyMachine_id.public_sale_time
       );
