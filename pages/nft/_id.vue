@@ -241,6 +241,11 @@ import Loading from "@/components/Reusable/Loading.vue";
 
 export default {
   cache: false,
+  async asyncData({ params }) {
+    const res = await getCollection(params.id);
+    const collection = res.collection[0];
+    return { collection };
+  },
   head() {
     return {
       title: this.getTitle,
@@ -249,21 +254,25 @@ export default {
         {
           hid: "og-image",
           property: "og:image",
-          content: this.getImage,
+          content: this.collection.image,
         },
         { hid: "og-type", property: "og:title", content: this.getTitle },
         { hid: "t-type", name: "twitter:card", content: "summary_large_image" },
         { hid: "t-type", name: "twitter:title", content: this.getTitle },
-        { hid: "t-type", name: "twitter:image", content: this.getImage },
+        {
+          hid: "t-type",
+          name: "twitter:image",
+          content: this.collection.image,
+        },
         {
           hid: "t-type",
           name: "twitter:description",
-          content: this.getDescription,
+          content: this.collection.description,
         },
         {
           hid: "description",
           name: "description",
-          content: this.getDescription,
+          content: this.collection.description,
         },
       ],
     };
@@ -272,23 +281,6 @@ export default {
   data() {
     return {
       loading: true,
-      collection: {
-        candyMachine_id: {
-          public_sale_price: null,
-          public_sale_time: "",
-          resource_account: null,
-          whitelist_price: null,
-          whitelist_sale_time: "",
-        },
-        _id: null,
-        name: "",
-        description: null,
-        image: "",
-        twitter: "",
-        discord: "",
-        isVerified: false,
-        status: { sold_out: false },
-      },
       whitelistSaleDate: null,
       publicSaleDate: null,
       showWhitelistSaleTimer: false,
@@ -495,9 +487,6 @@ export default {
     },
   },
   async mounted() {
-    const res = await getCollection(this.$route.params.id);
-    this.collection = res.collection[0];
-
     this.whitelistSaleDate = this.collection.candyMachine_id.whitelist_sale_time
       ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
       : null;
