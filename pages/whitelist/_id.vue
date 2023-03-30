@@ -171,7 +171,7 @@
               <div class="tw-text-lg">Connect to Discord</div>
               <button
                 class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-                @click="connectDiscord"
+                @click.stop="connectDiscord"
                 v-if="!getDiscordConnected"
               >
                 Connect
@@ -192,6 +192,7 @@
                   :href="whitelist.discord_server_url"
                   target="_blank"
                   class="!tw-text-wapal-pink"
+                  @click.stop=""
                   >{{ whitelist.discord_server_name }}</a
                 >
                 Discord
@@ -200,7 +201,7 @@
                 <div v-if="!joinedDiscordServer">
                   <button-with-loader
                     class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-                    @click.native="checkIfUserHasJoinedDiscordServer"
+                    @click.native.stop="checkIfUserHasJoinedDiscordServer"
                     :loading="verifyingJoinedDiscordServer"
                     loading-text="Verifying..."
                     text="Verify"
@@ -251,6 +252,7 @@
               Follow
               <a
                 :href="whitelist.twitter"
+                @click.stop=""
                 target="_blank"
                 class="!tw-text-wapal-pink"
                 >{{ whitelist.twitter }}</a
@@ -261,7 +263,7 @@
               <div v-if="!followedTwitter">
                 <button-with-loader
                   class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-                  @click.native="checkIfUserHasFollowedTwitterAccount"
+                  @click.native.stop="checkIfUserHasFollowedTwitterAccount"
                   :loading="verifyingFollowedOnTwitter"
                   loading-text="Verifying..."
                   text="Verify"
