@@ -43,3 +43,11 @@ export const setSoldOut = async (collectionId: string) => {
 
   return res;
 };
+
+export const getCollectionByUsername = async (username: string) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/collection/username/${username}`
+  );
+
+  return res;
+};
