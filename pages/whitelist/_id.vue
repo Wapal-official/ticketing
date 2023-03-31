@@ -252,7 +252,7 @@
             <div class="tw-text-lg">
               Follow
               <a
-                :href="whitelist.twitter"
+                :href="`https://twitter.com/${whitelist.twitter}`"
                 @click.stop=""
                 target="_blank"
                 class="!tw-text-wapal-pink"
