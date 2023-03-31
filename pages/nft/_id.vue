@@ -240,6 +240,7 @@ import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 
 export default {
+  ssr: false,
   cache: false,
   async asyncData({ params }) {
     const res = await getCollection(params.id);
@@ -343,21 +344,7 @@ export default {
       try {
         if (this.$store.state.walletStore.wallet.wallet) {
           this.minting = true;
-          const balance = await this.$store.dispatch(
-            "walletStore/checkBalance"
-          );
 
-          const mintPrice = this.getCurrentPrice;
-
-          if (balance < mintPrice) {
-            this.$toast.showMessage({
-              message: "Your account has insufficient balance for Minting",
-              error: true,
-            });
-
-            this.minting = false;
-            return;
-          }
           const res = await this.$store.dispatch("walletStore/mintCollection", {
             resourceAccount: this.collection.candyMachine_id.resource_account,
             publicMint: !this.checkPublicSaleTimer(),
