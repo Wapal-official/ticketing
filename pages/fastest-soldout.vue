@@ -144,6 +144,7 @@ export default {
             soldOutIn: soldOutIn,
             supply: collection.supply,
             price: collection.candyMachine_id.public_sale_price,
+            username: collection.username,
           });
         }
       });
