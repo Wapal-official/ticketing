@@ -2,9 +2,9 @@ import axios from "axios";
 
 import { publicRequest } from "./fetcher";
 
-export const getCollections = async () => {
+export const getCollections = async (page: number, limit: number) => {
   const res = await axios.get(
-    `${process.env.baseURL}/api/collection/all?page=1&limit=100`
+    `${process.env.baseURL}/api/collection/all?page=${page}&limit=${limit}`
   );
   return res.data.data;
 };

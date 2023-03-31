@@ -21,14 +21,19 @@
           />
           <loading v-else />
         </section>
-        <!-- <fastest-soldout-section
-          v-if="collections.length > 0"
-          :collections="collections"
-          :loading="loading"
-        /> -->
         <section class="tw-py-8 tw-container tw-mx-auto">
           <landing-section-heading heading="Whitelist Opportunities" />
           <whitelist-opportunities />
+        </section>
+
+        <section class="tw-py-8 tw-container tw-mx-auto">
+          <landing-section-heading heading="Fastest Soldout" />
+          <fastest-soldout-section
+            v-if="collections.length > 0"
+            :collections="collections"
+            :loading="loading"
+          />
+          <loading v-else />
         </section>
       </div>
     </div>
@@ -78,13 +83,13 @@ export default {
       this.upcomingCollections = [];
       this.liveCollections = [];
 
-      const res = await getCollections();
+      const res = await getCollections(1, 100);
       this.collections = res;
 
       this.liveCollections = this.collections.filter((collection) => {
         const whitelistSaleDate = collection.candyMachine_id.whitelist_sale_time
           ? new Date(collection.candyMachine_id.whitelist_sale_time)
-          : "";
+          : null;
 
         const publicSaleDate = new Date(
           collection.candyMachine_id.public_sale_time
