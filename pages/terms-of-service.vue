@@ -14,30 +14,28 @@
     </p>
     <h2 class="tw-pb-4"><strong>Platform Features </strong></h2>
     <p>
-      <strong>No Code Creator Studio</strong> - Wapal's in-built tooling allows
+      <strong>No Code Creator Studio</strong> Wapal's in-built tooling allows
       creators to convert images into meta-data and hash lists and mint on Aptos
       without any coding requirements.
     </p>
 
     <p>
-      <strong>On-Chain Randomness </strong> - What's the point of a mint if it's
+      <strong>On-Chain Randomness </strong> What's the point of a mint if it's
       not random? Wapal uses the pseudo-random generator to enable minting
       randomly and thus prevent attackers from predicting and minting all the
       rare NFTs.
     </p>
     <p>
-      <strong>Cost Effective</strong> - Wapal decreases the cost of launching
-      NFT Collection on Aptos significantly by reducing the Gas Costs. To
-      whitelist 100,000+ wallet addresses in Wapal is ~ 0.003501 APT. Right now,
-      it costs approx ~ 63 APT or more to WL 100,000+ wallet addresses.
+      <strong>Cost Effective</strong> Wapal decreases the cost of launching NFT
+      Collection on Aptos significantly by reducing the Gas Costs.
     </p>
     <p>
-      <strong>Unlimited Permanent Storage for NFTs </strong> - Wapal will
-      directly enable unlimited permanent storage of NFTs in Arweave through
-      payment in APT.
+      <strong>Unlimited Permanent Storage for NFTs </strong>Wapal will directly
+      enable unlimited permanent storage of NFTs in Arweave through payment in
+      APT.
     </p>
     <p>
-      <strong>Open-Source & Secure </strong>- Wapal is powered by Mokshya
+      <strong>Open-Source & Secure </strong>Wapal is powered by Mokshya
       "Platform"'s NFT Mint Candy Machine Smart Contract. Since it's open
       source, it's transparent and secure. The smart contract has been audited
       by Movebit.
@@ -66,22 +64,19 @@
       THE "PLATFORM" DOES NOT COLLECT ANY PERSONAL DATA, AND YOUR INTERACTION
       WITH THE "PLATFORM" WILL SOLELY BE THROUGH YOUR PUBLIC DIGITAL WALLET
       ADDRESS. ANY PERSONAL OR OTHER DATA THAT YOU MAY MAKE AVAILABLE IN
-      CONNECTION WITH THE "PLATFORM" MAY NOT BE PRIVATE OR SECURE. ARBITRATION
-      NOTICE. YOU AGREE THAT DISPUTES ARISING UNDER THESE TERMS WILL BE RESOLVED
-      BY BINDING, INDIVIDUAL ARBITRATION, AND BY ACCEPTING THESE TERMS, YOU AND
-      THE "PLATFORM" ARE EACH WAIVING THE RIGHT TO A TRIAL BY JURY OR TO
-      PARTICIPATE IN ANY CLASS ACTION OR REPRESENTATIVE PROCEEDING.
+      CONNECTION WITH THE "PLATFORM" MAY NOT BE PRIVATE OR SECURE.
     </p>
 
     <p class="tw-uppercase">
-      <strong>ARBITRATION NOTICE</strong>. YOU AGREE THAT DISPUTES ARISING UNDER
+      <strong>ARBITRATION NOTICE</strong> YOU AGREE THAT DISPUTES ARISING UNDER
       THESE TERMS WILL BE RESOLVED BY BINDING, INDIVIDUAL ARBITRATION, AND BY
       ACCEPTING THESE TERMS, YOU AND THE "PLATFORM" ARE EACH WAIVING THE RIGHT
       TO A TRIAL BY JURY OR TO PARTICIPATE IN ANY CLASS ACTION OR REPRESENTATIVE
       PROCEEDING.
     </p>
-    <h3><strong> A. Agreement to Terms </strong></h3>
+
     <p>
+      <strong> A. Agreement to Terms </strong>
       By accessing or using the Platform (even just browsing
       <a href="https://wapal.io">https://wapal.io/</a>), you agree that you have
       read and understood, and, as a condition to your use of the “platform”,
@@ -97,58 +92,59 @@
       extension.
     </p>
     <p>
-      <strong> B. Use of Platform</strong>: Wapal allows users to create and
+      <strong> B. Use of Platform</strong> Wapal allows users to create and
       launch NFT projects on the Aptos Blockchain without requiring any coding
       knowledge. You agree to use Wapal only for lawful purposes and in
       accordance with the given Terms. The “Platform” includes a website that
       serves as a launchpad for NFTs that helps users launch their NFTs
-      collection by facilitating interactions with the “Platform” and the Aptos
-      Network. Through the “Platform”, individuals, artists and brands (each, a
-      “Creator”) may present artwork and other content (collectively, “Creator
-      Content”) and offer NFTs for sale to potential buyers. Creators, potential
-      buyers, and other users of the Service are, collectively, “Users” and,
-      each, a “User” or “you”. While Wapal offers Creator Studio as a platform
-      to Launch NFTs, we do not buy, sell or take custody or possession of any
-      NFTs, nor do we act as an agent or custodian for any User of Wapal or the
-      Service. Wapal will have no insight into or control over payments or
-      transactions for NFTs made on the Aptos Network. Accordingly, Wapals will
-      not be responsible or liable to you for any losses incurred as a result of
-      your use of the Aptos Network.
+      collection by facilitating interactions with the “Platform” and the "Aptos
+      Network". Through the “Platform”, individuals, artists and brands (each, a
+      “Creator” or "Seller") may present artwork and other content
+      (collectively, “Creator Content”) and offer NFTs for sale to potential
+      "buyers". Creators, Sellers, potential buyers, and other users of the
+      Service are, collectively, “Users” and, each, a “User” or “you”. While
+      Wapal offers Creator Studio as a platform to Launch NFTs, we do not buy,
+      sell or take custody or possession of any NFTs, nor do we act as an agent
+      or custodian for any User of Wapal or the Service. Wapal will have no
+      insight into or control over payments or transactions for NFTs made on the
+      Aptos Network. Accordingly, Wapal will not be responsible or liable to you
+      for any losses incurred as a result of your use of the Aptos Network.
     </p>
     <p>
-      <strong> C. User Content</strong>: As between you and us, you will
-      continue to exclusively own all intellectual and property rights, title
-      and interest in and to the digital art embodied in the NFTs and any name,
+      <strong> C. User Content</strong> As between you and us, you will continue
+      to exclusively own all intellectual and property rights, title and
+      interest in and to the digital art embodied in the NFTs and any name,
       likeness, image, signature, voice and other identifiable characteristics
       included in the digital art embodied in the NFTs, creative assets provided
       to us, and your name, logos and trademarks, and all intellectual property
-      rights in the foregoing (collectively, the “Creator Content”).
-      Notwithstanding the foregoing, You grant to us a perpetual, irrevocable,
-      worldwide, non-exclusive, royalty-free, fully paid-up, license, with right
-      to sublicense, to use Creator Content uploaded on the Platform for the
-      purpose of performing our obligations under these Terms, including hosting
-      the NFT Content and facilitating the minting, deployment and initial sales
-      of NFTs, and marketing and promoting the Service.
+      rights in the foregoing (collectively, the “Creator Content” or "Seller
+      Content"). Notwithstanding the foregoing, You grant to us a perpetual,
+      irrevocable, worldwide, non-exclusive, royalty-free, fully paid-up,
+      license, with right to sublicense, to use Creator Content or Seller
+      Content uploaded on the Platform for the purpose of performing our
+      obligations under these Terms, including hosting the NFT Content and
+      facilitating the minting, deployment and initial sales of NFTs, and
+      marketing and promoting the Service.
     </p>
     <p>
       Wapal does not control and does not have any obligation to monitor: (a)
-      Creator Content; (b) any content made available by third parties; or (c)
-      the use of the Platform by its Users. You acknowledge and agree that Wapal
-      reserves the right to, and may from time to time, monitor any and all
-      information transmitted or received through the Platform for operational
-      and other purposes. If at any time Wapal chooses to monitor the content,
-      Wapal still assumes no responsibility or liability for content or any loss
-      or damage incurred as a result of the use of content. During monitoring,
-      information may be examined, recorded, copied, and used in accordance with
-      our Privacy Policy. Wapal reserves the right to remove any Creator Content
-      from the Platform in Wapal’ sole discretion, without notice, and with no
-      further obligation or liability to any User.
+      Creator or Seller Content; (b) any content made available by third
+      parties; or (c) the use of the Platform by its Users. You acknowledge and
+      agree that Wapal reserves the right to, and may from time to time, monitor
+      any and all information transmitted or received through the Platform for
+      operational and other purposes. If at any time Wapal chooses to monitor
+      the content, Wapal still assumes no responsibility or liability for
+      content or any loss or damage incurred as a result of the use of content.
+      During monitoring, information may be examined, recorded, copied, and used
+      in accordance with our Privacy Policy. Wapal reserves the right to remove
+      any Creator or Seller Content from the Platform in Wapal’ sole discretion,
+      without notice, and with no further obligation or liability to any User.
     </p>
     <p>
-      <strong> D. Eligibility</strong>: The Service is intended for Users who
-      are at least 18 years old. You agree that by using the Site and the
-      Platform you are at least 18 years of age, or accessing the Service under
-      the supervision of a parent or guardian, and you are legally able to enter
+      <strong> D. Eligibility</strong> The Service is intended for Users who are
+      at least 18 years old. You agree that by using the Site and the Platform
+      you are at least 18 years of age, or accessing the Service under the
+      supervision of a parent or guardian, and you are legally able to enter
       into a contract. If you are a parent or legal guardian of a User under the
       age of 18 (or the age of legal majority), you agree to be fully
       responsible for the acts or omissions of such user in relation to the
@@ -163,11 +159,11 @@
       bound by these Terms.
     </p>
     <p>
-      <strong> E. Electronic Wallet Terms</strong>: To access certain features
-      of the Platform, including, you will need to register an account with us
-      and connect a third-party supported electronic wallet (e.g., Martian,
-      Petra) (“Wallet”) (“Your Account”). Please review our Privacy Policy for
-      the terms and conditions which govern your access to and control of Your
+      <strong> E. Electronic Wallet Terms</strong> To access certain features of
+      the Platform, including, you will need to register an account with us and
+      connect a third-party supported electronic wallet (e.g., Martian, Petra)
+      (“Wallet”) (“Your Account”). Please review our Privacy Policy for the
+      terms and conditions which govern your access to and control of Your
       Account.  You are responsible for creating and maintaining the
       confidentiality of Your Account and you are also responsible for any
       activity concerning Your Account. By using your Wallet in connection with
@@ -237,15 +233,15 @@
     <h3><strong> G. Ownership; Proprietary Rights; Marks</strong></h3>
     <p>
       <strong> Ownership; Proprietary Rights</strong> The Platform is owned and
-      operated by Wapal. The visual interfaces, graphics, design, compilation,
-      information, data, computer code (including source code or object code),
-      products, software, services, and all other elements of the Platform
-      (collectively, “Materials”) are protected by intellectual property and
-      other laws. It’s important to note that all Materials included on the
-      Platform are our property or the property of other third-party licensors
-      of the Service. Except as expressly authorized by us, you may not make use
-      of the Materials. We reserve all rights to Materials not granted expressly
-      in these Terms.
+      operated by Mokshya Protocol Association. The visual interfaces, graphics,
+      design, compilation, information, data, computer code (including source
+      code or object code), products, software, services, and all other elements
+      of the Platform (collectively, “Materials”) are protected by intellectual
+      property and other laws. It’s important to note that all Materials
+      included on the Platform are our property or the property of other
+      third-party licensors of the Service. Except as expressly authorized by
+      us, you may not make use of the Materials. We reserve all rights to
+      Materials not granted expressly in these Terms.
     </p>
     <p>
       <strong> Marks </strong>Our trademarks, platform or service marks, and
@@ -276,7 +272,7 @@
     </p>
     <p>
       <strong> H. Cost and Fees</strong> Our fees for the platform “Wapal - No
-      code NFT Creator Studio” is 3%.
+      code NFT Creator Studio” is 3% defined as “Platform Fee”.
     </p>
     <p>
       If you are using the Platform to mint NFTs, you are a “Buyer,” and if you
@@ -285,22 +281,20 @@
       Platform.
     </p>
     <p>
-      (i) “Buyer” agrees to pay all other applicable fees, including Aptos
-      Network fees and wallet fees during mint.
+      (i) “Buyer” agrees to pay mint price and all other applicable fees,
+      including Aptos Network fees and wallet fees during mint.
     </p>
     <p>
-      (ii) “Seller” agrees to pay 3% of the Revenue to the Platform and
-      authorize us to automatically charge you for any such fees or deduct such
-      fees (directly from amounts paid by the Buyer).
+      (ii) “Seller” agrees to pay 3% of the Total Revenue to the “Platform” and
+      authorize us to automatically charge "Seller“ for any such fees or deduct
+      such fees (directly from amounts paid by the “Buyer”).
     </p>
     <p>
-      (iii) If you are a Seller, you will receive Revenue less the Platform Fee
-      for each sale of your NFT using the Platform.
-    </p>
-    <p>
-      For eg: Seller list 1 NFt in the platform launchpad for Buyer to mint, 1
-      APT is the mint price per NFT. Revenue is 1 APT. Therefore, Seller
-      receives 0.70 APT, the Platform receives 0.30 APT, Buyer receives 1 NFT.
+      (iii) If you are a “Seller”, you will receive “Revenue” less the “Platform
+      Fee” for each sale of your NFT using the Platform. For eg: Seller list 1
+      NFt in the platform launchpad for Buyer to mint, 1 APT is the mint price
+      per NFT. Revenue is 1 APT. Therefore, Seller receives 0.70 APT, the
+      Platform receives 0.30 APT, Buyer receives 1 NFT.
     </p>
     <p>
       All amounts payable under these Terms are non-refundable and without
@@ -311,10 +305,10 @@
 
     <h2><strong>I. Third-Party Terms</strong></h2>
     <p>
-      External Sites. The Platform may contain links to or embed content in
-      other websites, apps or other online properties that are not owned or
-      controlled by the Platform (collectively, “External Sites”). The content
-      of External Sites is not developed or provided by us. We are not
+      <strong>External Sites</strong> The Platform may contain links to or embed
+      content in other websites, apps or other online properties that are not
+      owned or controlled by the Platform (collectively, “External Sites”). The
+      content of External Sites is not developed or provided by us. We are not
       responsible for the content of any External Sites and do not make any
       representations regarding the content or accuracy of any materials on
       External Sites. You should contact the site administrator or webmaster for
@@ -327,18 +321,19 @@
       connection with your use of External Sites.
     </p>
     <p>
-      Third-Party Software. The Platform may include or incorporate third-party
-      software components that are generally available free of charge under
-      licenses granting recipients broad rights to copy, modify, and distribute
-      those components (“Third-Party Components”). Although the Platform is
-      provided to you subject to these Terms, nothing in these Terms prevents,
-      restricts, or is intended to prevent or restrict you from obtaining
-      Third-Party Components under the applicable third-party licenses or to
-      limit your use of Third-Party Components under those third-party licenses.
+      <strong>Third-Party Software</strong> The Platform may include or
+      incorporate third-party software components that are generally available
+      free of charge under licenses granting recipients broad rights to copy,
+      modify, and distribute those components (“Third-Party Components”).
+      Although the Platform is provided to you subject to these Terms, nothing
+      in these Terms prevents, restricts, or is intended to prevent or restrict
+      you from obtaining Third-Party Components under the applicable third-party
+      licenses or to limit your use of Third-Party Components under those
+      third-party licenses.
     </p>
     <h2>
       <strong>
-        J. Prohibited Conduct. BY USING THE PLATFORM, YOU AGREE NOT TO:</strong
+        J. Prohibited Conduct. BY USING THE PLATFORM, YOU AGREE NOT TO</strong
       >
     </h2>
     <p>
@@ -393,31 +388,30 @@
       inappropriate;
     </p>
     <p>
-      <strong> K. Disclaimer of Warranty:</strong> The Platform is provided on
-      an "as is" and "as available" basis without any representation or warranty
-      of any kind, whether express, implied or statutory. The Platform does not
+      <strong> K. Disclaimer of Warranty</strong> The Platform is provided on an
+      "as is" and "as available" basis without any representation or warranty of
+      any kind, whether express, implied or statutory. The Platform does not
       guarantee the accuracy, timeliness, completeness, reliability,
       suitability, or availability of the service. You use the Platform at your
       own risk.
     </p>
     <p>
-      <strong> L. Limitation of Liability:</strong> To the maximum extent
+      <strong> L. Limitation of Liability</strong> To the maximum extent
       permitted by law, the Platform and its affiliates, officers, employees,
       agents and partners shall not be liable for any indirect, incidental,
       special, consequential, or punitive damages, including without limitation,
       loss of profits, data, use, goodwill, or other intangible losses,
-      resulting from
+      resulting from To the maximum extent permitted by law, the Platform and
+      its affiliates, officers, employees, agents and partners shall not be
+      liable for any indirect, incidental, special, consequential, or punitive
+      damages, including without limitation, loss of profits, data, use,
+      goodwill, or other intangible losses, resulting from (i) your access to or
+      use of or inability to access or use the service, (ii) any conduct or
+      content of any third party on the service, or (iii) unauthorized access,
+      use or alteration of your transmissions or content.
     </p>
     <p>
-      (i) your access to or use of or inability to access or use the service,
-    </p>
-    <p>(ii) any conduct or content of any third party on the service, or</p>
-    <p>
-      (iii) unauthorized access, use or alteration of your transmissions or
-      content.
-    </p>
-    <p>
-      <strong>M. Indemnification:</strong> To the fullest extent permitted by
+      <strong>M. Indemnification</strong> To the fullest extent permitted by
       law, you are responsible for your use of the Platform, and you will defend
       and indemnify us, our affiliates and their respective shareholders,
       directors, managers, members, officers, employees, consultants, and agents
@@ -437,21 +431,21 @@
       those claims.
     </p>
     <p>
-      <strong> N. Modification of Terms:</strong> The Platform reserves the
-      right to modify these Terms at any time. You should periodically review
-      these Terms for any changes. Your continued use of the Platform after any
+      <strong> N. Modification of Terms</strong> The Platform reserves the right
+      to modify these Terms at any time. You should periodically review these
+      Terms for any changes. Your continued use of the Platform after any
       modifications to these Terms shall constitute your acceptance of such
       modifications.
     </p>
     <p>
-      <strong> O. Dispute Resolution:</strong> Any dispute arising out of or
+      <strong> O. Dispute Resolution</strong> Any dispute arising out of or
       relating to these Terms or the use of Wapal shall be resolved through
-      binding arbitration in accordance with the rules of the Singapore
-      Arbitration Association. By using Wapal, you acknowledge that you have
-      read, understood, and agree to be bound by these Terms and Disclaimer.
+      binding arbitration in accordance with the rules of the Swiss Legal
+      System. By using Wapal, you acknowledge that you have read, understood,
+      and agree to be bound by these Terms and Disclaimer.
     </p>
     <h2><strong> P. Miscellaneous</strong></h2>
-    <h3><strong> (i) General Terms.</strong></h3>
+    <h3><strong> (i) General Terms</strong></h3>
     <p>
       These Terms, together with the Privacy Policy and any other agreements
       expressly incorporated by reference into these Terms, are the entire and
@@ -471,46 +465,46 @@
       unenforceable part will be given effect to the greatest extent possible,
       and the remaining parts will remain in full force and effect.
     </p>
-    <h3><strong> (ii) Governing Law:</strong></h3>
     <p>
-      These Terms are governed by the laws of Singapore without regard to
-      conflict of law principles. You and Metaplex Studios submit to the
-      personal and exclusive jurisdiction of the state courts and federal courts
-      located within Singapore, for resolution of any lawsuit or court
-      proceeding permitted under these Terms. We operate the Service from our
-      offices in Singapore, and we make no representation that Materials
-      included in the Platform are appropriate or available for use in other
-      locations.
+      <strong> (ii) Governing Law </strong>The Platform is owned and operated by
+      Mokshya Protocol Association, Buechackerweg 2, 8234 Stetten, Switzerland.
+      You agree that these Terms and your use of the Platform are governed under
+      Swiss Legal System and any dispute related to the Platform must be brought
+      in a tribunal of competent jurisdiction located in or near Stetten. We
+      operate the Platform from our offices, and we make no representation that
+      Materials included in the Platform are appropriate or available for use in
+      other locations.
     </p>
     <p>
-      <strong>(iii) Privacy Policy</strong>: Please read the Privacy Policy
+      <strong>(iii) Privacy Policy</strong> Please read the
+      <a href="/privacy-policy">Privacy Policy</a>
       carefully for information relating to our collection, use, storage, and
       disclosure of your personal information. The Wapal Privacy Policy is
       incorporated by this reference into, and made a part of, these Terms.
     </p>
     <p>
-      <strong> (iv) Additional Terms:</strong> Your use of the Platform is
+      <strong> (iv) Additional Terms</strong> Your use of the Platform is
       subject to all additional terms, policies, rules, or guidelines applicable
       to the Platform or certain features of the Platform that we may post on or
       link to from the Platform (the “Additional Terms”). All Additional Terms
       are incorporated by this reference into, and made a part of, these Terms.
     </p>
     <p>
-      <strong> (v) Contact Information:</strong> You may contact us by emailing
-      us at info@wapal.io.
+      <strong> (v) Contact Information</strong> You may contact us by emailing
+      us at <a href="mailto:info@wapal.io">info@wapal.io</a>.
     </p>
     <p>
-      <strong>(vi) No Support:</strong> We are under no obligation to provide
+      <strong>(vi) No Support</strong> We are under no obligation to provide
       support for the Platform. In instances where we may offer support, the
       support will be subject to published policies.
     </p>
     <p>
-      <strong> (vii) International Use:</strong> We make no representation that
-      the Platform is appropriate or available for use outside of Singapore.
+      <strong> (vii) International Use</strong> We make no representation that
+      the Platform is appropriate or available for use outside of Switzerland.
       Access to the Platform from countries or territories or by individuals
       where such access is illegal is prohibited.
     </p>
-    <p>Last Updated: 3/21/2023</p>
+    <p>Last Updated: 3/31/2023</p>
   </section>
 </template>
 <script lang="ts">
