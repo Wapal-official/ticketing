@@ -14,7 +14,7 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
-import { AptosClient, HexString } from "aptos";
+import { AptosClient } from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
 
