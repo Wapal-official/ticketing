@@ -416,7 +416,7 @@ export default {
   async mounted() {
     let res = null;
     if (!process.env.baseURL?.includes("staging")) {
-      res = await getCollection("6415331e9cb214a367f1ee7a");
+      res = await getCollection("64259b2dc0273490149aab33");
     } else {
       res = await getCollection("6411e5928d694e608061b029");
     }

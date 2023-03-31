@@ -509,6 +509,7 @@ export default {
         website: null,
         resource_account: null,
         transaction_hash: null,
+        un: "",
       },
       message: "",
       image: { name: null },

@@ -235,7 +235,10 @@
   </div>
 </template>
 <script>
-import { getCollection } from "@/services/CollectionService";
+import {
+  getCollection,
+  getCollectionByUsername,
+} from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 
@@ -243,8 +246,8 @@ export default {
   ssr: false,
   cache: false,
   async asyncData({ params }) {
-    const res = await getCollection(params.id);
-    const collection = res.collection[0];
+    const res = await getCollectionByUsername(params.name);
+    const collection = res.data.collection[0];
     return { collection };
   },
   head() {
@@ -348,7 +351,7 @@ export default {
           const res = await this.$store.dispatch("walletStore/mintCollection", {
             resourceAccount: this.collection.candyMachine_id.resource_account,
             publicMint: !this.checkPublicSaleTimer(),
-            collectionId: this.$route.params.id,
+            collectionId: this.collection._id,
             candyMachineId: this.collection.candyMachine_id.candy_id,
           });
 
