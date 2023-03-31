@@ -137,7 +137,8 @@
           </div>
         </div>
         <div
-          class="tw-flex tw-flex-col tw-w-full tw-items-start tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-rounded"
+          class="tw-flex tw-flex-col tw-w-full tw-items-start tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-rounded tw-cursor-pointer"
+          @click="showDiscordOptions = !showDiscordOptions"
         >
           <div
             class="tw-flex tw-flex-col tw-gap-4 tw-items-center tw-justify-between tw-w-full md:tw-flex-row md:tw-gap-8"
@@ -151,7 +152,7 @@
                   >mdi-check-circle</v-icon
                 >
               </div>
-              <button @click="showDiscordOptions = !showDiscordOptions">
+              <button>
                 <v-icon
                   class="!tw-text-wapal-gray !tw-text-2xl !tw-font-bold tw-transition-all tw-duration-300 tw-ease-linear tw-transform"
                   :class="{ 'tw-rotate-180': showDiscordOptions }"
@@ -170,7 +171,7 @@
               <div class="tw-text-lg">Connect to Discord</div>
               <button
                 class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-                @click="connectDiscord"
+                @click.stop="connectDiscord"
                 v-if="!getDiscordConnected"
               >
                 Connect
@@ -191,6 +192,7 @@
                   :href="whitelist.discord_server_url"
                   target="_blank"
                   class="!tw-text-wapal-pink"
+                  @click.stop=""
                   >{{ whitelist.discord_server_name }}</a
                 >
                 Discord
@@ -199,7 +201,7 @@
                 <div v-if="!joinedDiscordServer">
                   <button-with-loader
                     class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-                    @click.native="checkIfUserHasJoinedDiscordServer"
+                    @click.native.stop="checkIfUserHasJoinedDiscordServer"
                     :loading="verifyingJoinedDiscordServer"
                     loading-text="Verifying..."
                     text="Verify"
@@ -218,7 +220,8 @@
           </div>
         </div>
         <div
-          class="tw-flex tw-flex-col tw-w-full tw-items-start tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-rounded"
+          class="tw-flex tw-flex-col tw-w-full tw-items-start tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-rounded tw-cursor-pointer"
+          @click="showTwitterOptions = !showTwitterOptions"
         >
           <div
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-w-full"
@@ -232,7 +235,7 @@
                   >mdi-check-circle</v-icon
                 >
               </div>
-              <button @click="showTwitterOptions = !showTwitterOptions">
+              <button>
                 <v-icon
                   class="!tw-text-wapal-gray !tw-text-2xl !tw-font-bold tw-transition-all tw-duration-300 tw-ease-linear tw-transform"
                   :class="{ 'tw-rotate-180': showTwitterOptions }"
@@ -249,6 +252,7 @@
               Follow
               <a
                 :href="whitelist.twitter"
+                @click.stop=""
                 target="_blank"
                 class="!tw-text-wapal-pink"
                 >{{ whitelist.twitter }}</a
@@ -259,7 +263,7 @@
               <div v-if="!followedTwitter">
                 <button-with-loader
                   class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-                  @click.native="checkIfUserHasFollowedTwitterAccount"
+                  @click.native.stop="checkIfUserHasFollowedTwitterAccount"
                   :loading="verifyingFollowedOnTwitter"
                   loading-text="Verifying..."
                   text="Verify"

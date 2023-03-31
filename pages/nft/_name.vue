@@ -88,7 +88,10 @@
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
           >
             <span class="tw-capitalize tw-text-sm">{{
-              showPublicSaleTimer ? "pre sale mint" : "public sale mint"
+              showPublicSaleTimer &&
+              collection.candyMachine_id.whitelist_sale_time
+                ? "whitelist mint"
+                : "public sale mint"
             }}</span>
             <span class="tw-capitalize tw-text-sm"
               >{{ resource.mintedPercent }}%
@@ -231,35 +234,63 @@
     </v-dialog>
   </div>
 </template>
-<script lang="ts">
-import { getCollection, setSoldOut } from "@/services/CollectionService";
+<script>
+import {
+  getCollection,
+  getCollectionByUsername,
+} from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 
 export default {
   ssr: false,
   cache: false,
+  async asyncData({ params }) {
+    const res = await getCollectionByUsername(params.name);
+    const collection = res.data.collection[0];
+    return { collection };
+  },
+  head() {
+    return {
+      title: this.getTitle,
+      meta: [
+        { hid: "twitter:title", name: "twitter:title", content: this.getTitle },
+        {
+          hid: "twitter:card",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        { hid: "twitter:title", name: "twitter:title", content: this.getTitle },
+        {
+          hid: "twitter:image",
+          name: "twitter:image",
+          content: this.collection.image,
+        },
+        {
+          hid: "twitter:description",
+          name: "twitter:description",
+          content: this.collection.description,
+        },
+        { hid: "og-type", property: "og:type", content: "website" },
+        {
+          hid: "og-image",
+          property: "og:image",
+          content: this.collection.image,
+        },
+        { hid: "og:title", property: "og:title", content: this.getTitle },
+
+        {
+          hid: "description",
+          name: "description",
+          content: this.collection.description,
+        },
+      ],
+    };
+  },
   components: { CountDown, Loading },
   data() {
     return {
       loading: true,
-      collection: {
-        candyMachine_id: {
-          public_sale_price: null,
-          public_sale_time: "",
-          resource_account: null,
-          whitelist_price: null,
-          whitelist_sale_time: "",
-        },
-        _id: null,
-        name: "",
-        description: null,
-        image: "",
-        twitter: "",
-        discord: "",
-        isVerified: false,
-        status: { sold_out: false },
-      },
       whitelistSaleDate: null,
       publicSaleDate: null,
       showWhitelistSaleTimer: false,
@@ -316,25 +347,11 @@ export default {
       try {
         if (this.$store.state.walletStore.wallet.wallet) {
           this.minting = true;
-          const balance = await this.$store.dispatch(
-            "walletStore/checkBalance"
-          );
 
-          const mintPrice = this.getCurrentPrice;
-
-          if (balance < mintPrice) {
-            this.$toast.showMessage({
-              message: "Your account has insufficient balance for Minting",
-              error: true,
-            });
-
-            this.minting = false;
-            return;
-          }
           const res = await this.$store.dispatch("walletStore/mintCollection", {
             resourceAccount: this.collection.candyMachine_id.resource_account,
             publicMint: !this.checkPublicSaleTimer(),
-            collectionId: this.$route.params.id,
+            collectionId: this.collection._id,
             candyMachineId: this.collection.candyMachine_id.candy_id,
           });
 
@@ -354,7 +371,7 @@ export default {
           this.showConnectWalletModal = true;
           return;
         }
-      } catch (error: any) {
+      } catch (error) {
         console.log(error);
         if (
           error.response &&
@@ -402,7 +419,7 @@ export default {
           (this.resource.minted / this.resource.total_supply) * 100
         );
 
-        const resourceMintedPercent: any = document.querySelector(
+        const resourceMintedPercent = document.querySelector(
           "#resourceMintedPercent"
         );
 
@@ -454,11 +471,18 @@ export default {
         return this.showWhitelistSaleTimer && this.showPublicSaleTimer;
       }
     },
+    getTitle() {
+      return this.collection.name ? "Wapal - " + this.collection.name : "Title";
+    },
+
+    getImage() {
+      return this.collection.image ? this.collection.image : "";
+    },
+    getDescription() {
+      return this.collection.description ? this.collection.description : "";
+    },
   },
   async mounted() {
-    const res = await getCollection(this.$route.params.id);
-    this.collection = res.collection[0];
-
     this.whitelistSaleDate = this.collection.candyMachine_id.whitelist_sale_time
       ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
       : null;
@@ -496,7 +520,7 @@ export default {
     this.loading = false;
 
     setTimeout(() => {
-      const resourceMintedPercent: any = document.querySelector(
+      const resourceMintedPercent = document.querySelector(
         "#resourceMintedPercent"
       );
 

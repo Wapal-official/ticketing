@@ -299,21 +299,6 @@ export default {
       try {
         if (this.$store.state.walletStore.wallet.wallet) {
           this.minting = true;
-          const balance = await this.$store.dispatch(
-            "walletStore/checkBalance"
-          );
-
-          const mintPrice = this.getCurrentPrice;
-
-          if (balance < mintPrice) {
-            this.$toast.showMessage({
-              message: "Your account has insufficient balance for Minting",
-              error: true,
-            });
-
-            this.minting = false;
-            return;
-          }
           const res = await this.$store.dispatch("walletStore/mintCollection", {
             resourceAccount: this.collection.candyMachine_id.resource_account,
             publicMint: !this.checkPublicSaleTimer(),
@@ -431,7 +416,7 @@ export default {
   async mounted() {
     let res = null;
     if (!process.env.baseURL?.includes("staging")) {
-      res = await getCollection("6415331e9cb214a367f1ee7a");
+      res = await getCollection("64259b2dc0273490149aab33");
     } else {
       res = await getCollection("6411e5928d694e608061b029");
     }

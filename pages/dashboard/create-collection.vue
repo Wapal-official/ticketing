@@ -419,10 +419,9 @@ extend("required", {
 
 extend("link", {
   validate(value) {
-    const pattern =
-      /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
-
-    if (!pattern.test(value)) {
+    try {
+      const givenURL = new URL(value);
+    } catch (error) {
       return false;
     }
     return true;
@@ -510,6 +509,7 @@ export default {
         website: null,
         resource_account: null,
         transaction_hash: null,
+        un: "",
       },
       message: "",
       image: { name: null },
