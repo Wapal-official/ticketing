@@ -19,7 +19,7 @@
             v-for="item in items"
             :key="item._id"
             class="tw-cursor-pointer hover:!tw-bg-black/60"
-            @click="redirectToCollection(item._id)"
+            @click="redirectToCollection(item.username)"
           >
             <td class="!tw-border-none">
               {{ item.rank }}
@@ -168,9 +168,9 @@ export default {
         i++;
       });
     },
-    redirectToCollection(id: string) {
-      if (id) {
-        this.$router.push(`/nft/${id}`);
+    redirectToCollection(username: string) {
+      if (username) {
+        this.$router.push(`/nft/${username}`);
       }
     },
     getFormattedTimeForSoldOutIn(soldOutIn: any) {

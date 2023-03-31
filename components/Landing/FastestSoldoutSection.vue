@@ -10,7 +10,7 @@
       No Soldouts
     </div>
     <div
-      class="tw-grid tw-grid-cols-1 lg:tw-grid-cols-2 xl:tw-grid-cols-3 tw-py-4 tw-gap-4"
+      class="tw-grid tw-grid-cols-1 tw-py-4 tw-gap-4 tw-w-full lg:tw-grid-cols-2 xl:tw-grid-cols-3"
       v-else
     >
       <table class="tw-w-full">
@@ -29,7 +29,7 @@
             v-for="item in fastestSoldOutCollections.slice(0, 6)"
             :key="item._id"
             class="tw-cursor-pointer hover:!tw-bg-black/60 tw-select-none"
-            @click="redirectToCollection(item._id)"
+            @click="redirectToCollection(item.username)"
           >
             <td
               class="!tw-border-none tw-flex tw-flex-row tw-items-center tw-justify-start tw-px-2 tw-py-2 tw-gap-8 2xl:tw-gap-16 2xl:tw-px-4"
@@ -51,82 +51,86 @@
           </tr>
         </tbody>
       </table>
-      <table class="tw-hidden tw-w-full lg:tw-flex">
-        <thead class="tw-select-none">
-          <th
-            class="tw-text-white tw-py-2 tw-font-normal tw-text-left tw-px-2 2xl:tw-px-4"
-          >
-            Collection
-          </th>
-          <th class="tw-text-white tw-py-2 tw-font-normal tw-text-left">
-            Soldout In
-          </th>
-        </thead>
-        <tbody>
-          <tr
-            v-for="item in fastestSoldOutCollections.slice(6, 12)"
-            :key="item._id"
-            class="tw-cursor-pointer hover:!tw-bg-black/60 tw-select-none"
-            @click="redirectToCollection(item._id)"
-          >
-            <td
-              class="!tw-border-none tw-flex tw-flex-row tw-items-center tw-justify-start tw-px-2 tw-py-2 tw-gap-8 2xl:tw-gap-16 2xl:tw-px-4"
+      <div class="tw-hidden tw-w-full lg:tw-flex">
+        <table class="tw-w-full tw-h-fit">
+          <thead class="tw-select-none">
+            <th
+              class="tw-text-white tw-py-2 tw-font-normal tw-text-left tw-px-2 2xl:tw-px-4"
             >
-              <span>{{ item.rank }}</span>
-              <div
-                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
-              >
-                <img
-                  :src="item.image"
-                  :alt="item.name"
-                  class="tw-w-[50px] tw-h-[50px] tw-object-cover"
-                />{{ item.name }}
-              </div>
-            </td>
-            <td class="!tw-border-none tw-w-[80px] tw-py-2">
-              {{ getFormattedTimeForSoldOutIn(item.soldOutIn) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <table class="tw-hidden tw-w-full xl:tw-flex">
-        <thead class="tw-select-none">
-          <th
-            class="tw-text-white tw-py-2 tw-font-normal tw-text-left tw-px-2 2xl:tw-px-4"
-          >
-            Collection
-          </th>
-          <th class="tw-text-white tw-py-2 tw-font-normal tw-text-left">
-            Soldout In
-          </th>
-        </thead>
-        <tbody>
-          <tr
-            v-for="item in fastestSoldOutCollections.slice(12, 18)"
-            :key="item._id"
-            class="tw-cursor-pointer hover:!tw-bg-black/60 tw-select-none"
-            @click="redirectToCollection(item._id)"
-          >
-            <td
-              class="!tw-border-none tw-flex tw-flex-row tw-items-center tw-justify-start tw-px-2 tw-py-2 tw-gap-8 2xl:tw-gap-16 2xl:tw-px-4"
+              Collection
+            </th>
+            <th class="tw-text-white tw-py-2 tw-font-normal tw-text-left">
+              Soldout In
+            </th>
+          </thead>
+          <tbody>
+            <tr
+              v-for="item in fastestSoldOutCollections.slice(6, 12)"
+              :key="item._id"
+              class="tw-cursor-pointer hover:!tw-bg-black/60 tw-select-none"
+              @click="redirectToCollection(item.username)"
             >
-              <span>{{ item.rank }}</span>
-              <div
-                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+              <td
+                class="!tw-border-none tw-flex tw-flex-row tw-items-center tw-justify-start tw-px-2 tw-py-2 tw-gap-8 2xl:tw-gap-16 2xl:tw-px-4"
               >
-                <img
-                  :src="item.image"
-                  :alt="item.name"
-                  class="tw-w-[50px] tw-h-[50px] tw-object-cover"
-                />{{ item.name }}
-              </div>
-            </td>
-            <td class="!tw-border-none tw-w-[80px] tw-py-2">
-              {{ getFormattedTimeForSoldOutIn(item.soldOutIn) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                <span>{{ item.rank }}</span>
+                <div
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+                >
+                  <img
+                    :src="item.image"
+                    :alt="item.name"
+                    class="tw-w-[50px] tw-h-[50px] tw-object-cover"
+                  />{{ item.name }}
+                </div>
+              </td>
+              <td class="!tw-border-none tw-w-[80px] tw-py-2">
+                {{ getFormattedTimeForSoldOutIn(item.soldOutIn) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tw-hidden tw-w-full xl:tw-flex">
+        <table class="tw-w-full tw-h-fit">
+          <thead class="tw-select-none">
+            <th
+              class="tw-text-white tw-py-2 tw-font-normal tw-text-left tw-px-2 2xl:tw-px-4"
+            >
+              Collection
+            </th>
+            <th class="tw-text-white tw-py-2 tw-font-normal tw-text-left">
+              Soldout In
+            </th>
+          </thead>
+          <tbody>
+            <tr
+              v-for="item in fastestSoldOutCollections.slice(12, 18)"
+              :key="item._id"
+              class="tw-cursor-pointer hover:!tw-bg-black/60 tw-select-none"
+              @click="redirectToCollection(item.username)"
+            >
+              <td
+                class="!tw-border-none tw-flex tw-flex-row tw-items-center tw-justify-start tw-px-2 tw-py-2 tw-gap-8 2xl:tw-gap-16 2xl:tw-px-4"
+              >
+                <span>{{ item.rank }}</span>
+                <div
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+                >
+                  <img
+                    :src="item.image"
+                    :alt="item.name"
+                    class="tw-w-[50px] tw-h-[50px] tw-object-cover"
+                  />{{ item.name }}
+                </div>
+              </td>
+              <td class="!tw-border-none tw-w-[80px] tw-py-2">
+                {{ getFormattedTimeForSoldOutIn(item.soldOutIn) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <gradient-border-button
       @click.native="goToFastestSoldOutPage"
@@ -145,14 +149,12 @@ export default {
   data() {
     return {
       fastestSoldOutCollections: [
-        { _id: "", name: "", image: "", soldOutIn: "", rank: 0 },
+        { _id: "", name: "", image: "", soldOutIn: "", rank: 0, username: "" },
       ],
     };
   },
   methods: {
     async fetchCollections() {
-      this.loading = true;
-
       this.fastestSoldOutCollections = [];
 
       let i = 1;
@@ -185,18 +187,17 @@ export default {
             soldOutIn: soldOutIn,
             supply: collection.supply,
             price: collection.candyMachine_id.public_sale_price,
+            username: collection.username,
           });
 
           i++;
         }
       });
-
-      this.loading = false;
     },
 
-    redirectToCollection(id: string) {
-      if (id) {
-        this.$router.push(`/nft/${id}`);
+    redirectToCollection(username: string) {
+      if (username) {
+        this.$router.push(`/nft/${username}`);
       }
     },
     getFormattedTimeForSoldOutIn(soldOutIn: any) {
@@ -217,7 +218,6 @@ export default {
   },
   mounted() {
     this.fetchCollections();
-    console.log(this.fastestSoldOutCollections);
   },
 };
 </script>
