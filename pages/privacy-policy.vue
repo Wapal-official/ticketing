@@ -24,22 +24,33 @@
     </p>
     <h3><strong>A. Information You Provide to Us</strong></h3>
     <p>
-      <strong>(i) Registration and Profile Information: </strong> You may need
-      to register an account with us and connect a third-party supported
-      electronic wallet (e.g., Martian, Petra) to access certain Services like
-      Creator Studio. We may also ask you for information like your email
-      address.
+      <strong>(i) Registration and Profile Information </strong>You may need to
+      register an account with us by connecting a third-party supported
+      electronic wallet of Aptos Network (e.g., Martian, Petra) to access
+      certain Services like Creator Studio. We may also ask you for information
+      like your email address and social media addresses.
     </p>
+    <p>For KYC Verification, we may also ask you for information like</p>
+    <ul>
+      <li>Personal Information such as Full name, Date of birth, Gender</li>
+      <li>Other Information such as Occupation and Email Address</li>
+      <li>
+        Residential and Permanent Address such as Country, State,
+        City/Town/Village, Zip Code
+      </li>
+      <li>Profile Picture (.png, .jpeg)</li>
+      <li>Valid ID Document Upload (Citizenship, Passport)</li>
+    </ul>
     <p>
-      <strong> (ii) NFT Content:</strong> If you launch NFTs using our Creator
+      <strong> (ii) NFT Content</strong> If you launch NFTs using our Creator
       Studio, we will receive any content you post including NFTs that you mint.
     </p>
     <p>
-      <strong>(iii) Notifications:</strong> When you sign up for notifications
-      or updates, we ask you for information such as your email address.
+      <strong>(iii) Notifications</strong> When you sign up for notifications or
+      updates, we ask you for information such as your email address.
     </p>
     <p>
-      <strong>(iv) Communications:</strong> If you contact us by email, we may
+      <strong>(iv) Communications</strong> If you contact us by email, we may
       receive additional information about you. For example, when you contact us
       via email, we will receive your name, email address, the contents of a
       message or attachments that you may send to us, and other information you
@@ -49,7 +60,7 @@
       deliver a better customer experience and improve our Services.
     </p>
     <p>
-      <strong>(v) Careers:</strong> If you decide that you wish to apply for a
+      <strong>(v) Careers</strong> If you decide that you wish to apply for a
       job with us, you may submit your contact information and your resume
       online. We will collect the information you choose to provide on your
       resume, such as your education and employment experience. You may also
@@ -61,28 +72,28 @@
     </h3>
 
     <p>
-      <strong>(i) Blockchain Payment Information:</strong> When you make a
+      <strong>(i) Blockchain Payment Information</strong> When you make a
       purchase or sell an NFT, we may receive public blockchain data related to
       that purchase or sale.
     </p>
     <p>
-      <strong>(ii) Location Information:</strong> When you use our Services, we
-      infer your more general location information (for example, your Internet
-      Protocol (IP) address may indicate your more general geographic region).
+      <strong>(ii) Location Information</strong> When you use our Services, we
+      may infer your general location information (for example, your Internet
+      Protocol (IP) address may indicate your general geographic region).
     </p>
     <p>
-      <strong>(iii) Device Information:</strong> We receive information about
-      the device and software you use to access our Services, including IP
-      address, web browser type, and operating system version.
+      <strong>(iii) Device Information</strong> We receive information about the
+      device and software you use to access our Services, including IP address,
+      web browser type, and operating system version.
     </p>
     <p>
-      <strong>(iv) Usage Information:</strong> To help us understand how you use
+      <strong>(iv) Usage Information</strong> To help us understand how you use
       our Services and to help us improve them, we automatically receive
       information about your interactions with our Services, like the pages or
       other content you view, and the dates and times of your visits.
     </p>
     <p>
-      <strong>(v) Information from Cookies and Similar Technologies:</strong> We
+      <strong>(v) Information from Cookies and Similar Technologies</strong> We
       and third-party partners collect information using cookies, pixel tags, or
       similar technologies. Our third-party partners, such as analytics
       partners, may use these technologies to collect information about your
@@ -99,16 +110,16 @@
       to accept cookies from the Service, you may not be able to utilize the
       features of the Service to their fullest potential.
     </p>
-    <h3><strong> C. Information We Receive from Third Parties: </strong></h3>
+    <h3><strong> C. Information We Receive from Third Parties</strong></h3>
     <p>
-      <strong>Third parties:</strong> We may receive information about you from
+      <strong>Third parties</strong> We may receive information about you from
       third parties such as data or marketing partners and combine it with other
       information we have about you.
     </p>
     <h4>
       <strong
         >1. How We Use the Information We Collect We use the information we
-        collect:
+        collect
       </strong>
     </h4>
     <p>(i) To provide, maintain, improve, and enhance our Services;</p>
@@ -145,17 +156,17 @@
       collection.
     </p>
     <p>
-      <strong>(i) Vendors and Service Providers:</strong> We may share any
+      <strong>(i) Vendors and Service Providers</strong> We may share any
       information we receive with vendors and service providers retained in
       connection with the provision of our Services.
     </p>
     <p>
-      <strong>(ii) Marketing:</strong> We do not rent, sell, or share
-      information about you with non-affiliated companies for their direct
-      marketing purposes, unless we have your permission.
+      <strong>(ii) Marketing</strong> We do not rent, sell, or share information
+      about you with non-affiliated companies for their direct marketing
+      purposes, unless we have your permission.
     </p>
     <p>
-      <strong>(iii) Analytics Partners:</strong> We use analytics services such
+      <strong>(iii) Analytics Partners</strong> We use analytics services such
       as Google Analytics to collect and process certain analytics data. These
       services may also collect information about your use of other websites,
       apps, and online resources. You can learn about Google’s practices by
@@ -163,14 +174,17 @@
       <a
         href="https://www.google.com/policies/privacy/partners/"
         target="_blank"
-        >https://www.google.com/policies/privacy/partners/</a
+      >
+        <strong class="tw-underline">Google Privacy Policy</strong></a
       >, and opt-out of them by downloading the Google Analytics opt-out browser
       add-on, available at
       <a href="https://tools.google.com/dlpage/gaoptout" target="_blank"
-        >https://tools.google.com/dlpage/gaoptout</a
+        ><strong class="tw-underline"
+          >Google Analytics Opt-out Browser Add-on</strong
+        ></a
       >.
     </p>
-    <h4><strong>(iv) As Required By Law and Similar Disclosures: </strong></h4>
+    <h4><strong>(iv) As Required By Law and Similar Disclosures</strong></h4>
     <p>
       We may access, preserve, and disclose your information if we believe doing
       so is required or appropriate to: (i) comply with law enforcement requests
@@ -180,7 +194,7 @@
       occur if you post any objectionable content on or through the Services.
     </p>
     <p>
-      <strong>(v) Merger, Sale, or Other Asset Transfers:</strong> We may
+      <strong>(v) Merger, Sale, or Other Asset Transfers</strong> We may
       disclose and transfer your information to service providers, advisors,
       potential transactional partners, or other third parties in connection
       with the consideration, negotiation, or completion of a corporate
@@ -189,19 +203,19 @@
       assets.
     </p>
     <p>
-      <strong>(vi) Consent:</strong>We may also disclose information from or
+      <strong>(vi) Consent</strong> We may also disclose information from or
       about you or your devices with your permission.
     </p>
-    <h3><strong> E. Your Choices </strong></h3>
+    <h3><strong> E. Your Choices</strong></h3>
 
     <p>
-      <strong>(i) Marketing Communications:</strong> You can unsubscribe from
-      our promotional emails via the link provided in the emails. Even if you
+      <strong>(i) Marketing Communications</strong> You can unsubscribe from our
+      promotional emails via the link provided in the emails. Even if you
       opt-out of receiving promotional messages from us, you will continue to
       receive administrative messages from us.
     </p>
     <p>
-      <strong>(ii) Third Parties:</strong> Our Services may contain links to
+      <strong>(ii) Third Parties</strong> Our Services may contain links to
       other websites, products, or services that we do not own or operate. We
       are not responsible for the privacy practices of these third parties.
       Please be aware that this Privacy Policy does not apply to your activities
@@ -210,21 +224,21 @@
       providing any information to them.
     </p>
     <p>
-      <strong>(iii) Security:</strong> We make reasonable efforts to protect
-      your information by using physical and electronic safeguards designed to
+      <strong>(iii) Security</strong> We make reasonable efforts to protect your
+      information by using physical and electronic safeguards designed to
       improve the security of the information we maintain. However, as our
       Services are hosted electronically, we can make no guarantees as to the
       security or privacy of your information
     </p>
     <p>
-      <strong>(iv) Children’s Privacy:</strong> We do not knowingly collect,
+      <strong>(iv) Children’s Privacy</strong> We do not knowingly collect,
       maintain, or use personal information from children under 13 years of age,
       and no part of our Services are directed to children. If you learn that a
       child has provided us with personal information in violation of this
       Privacy Policy, then you may alert us at info@wapal.io.
     </p>
     <p>
-      <strong>(v) Changes to this Privacy Policy:</strong> We will post any
+      <strong>(v) Changes to this Privacy Policy</strong> We will post any
       adjustments to the Privacy Policy on this page, and the revised version
       will be effective when it is posted. If we materially change the ways in
       which we use or share personal information previously collected from you
@@ -238,9 +252,15 @@
       activities, please email us at
       <a href="mailto:info@wapal.io"> info@wapal.io</a>.
     </p>
-    <p>Last Updated: 3/21/2023</p>
+    <p>Last Updated: 3/31/2023</p>
   </section>
 </template>
 <scripts lang="ts">
 export default {};
 </scripts>
+<style scoped>
+ul {
+  list-style-type: disc;
+  color: #fff;
+}
+</style>
