@@ -39,8 +39,9 @@
         >
           <div
             class="tw-border tw-border-[#e229a0] tw-uppercase tw-text-xs tw-text-[#e229a0] tw-px-4 tw-py-2"
+            v-if="collection.isVerified"
           >
-            {{ collection.isVerified ? "Doxxed" : "Undoxxed" }}
+            Doxxed
           </div>
           <a :href="collection.twitter" target="_blank">
             <v-icon
