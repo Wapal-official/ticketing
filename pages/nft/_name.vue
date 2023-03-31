@@ -237,8 +237,8 @@
 </template>
 <script>
 import {
-  getCollection,
   getCollectionByUsername,
+  setSoldOut,
 } from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
