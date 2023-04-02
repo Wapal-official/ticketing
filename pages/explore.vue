@@ -1,6 +1,6 @@
 <template>
   <div class="tw-pb-8 tw-w-full tw-min-h-screen tw-px-8">
-    <div class="tw-container tw-mx-auto ">
+    <div class="tw-container tw-mx-auto">
       <v-tabs
         active-class="!tw-text-wapal-pink"
         class="!tw-bg-transparent"
@@ -128,7 +128,7 @@ export default {
       });
     },
     async getAllCollections() {
-      this.collections = await getCollections();
+      this.collections = await getCollections(1, 100);
     },
     getActiveTab() {
       this.exploreTab = 1;

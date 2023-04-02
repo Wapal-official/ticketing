@@ -2,9 +2,9 @@ import axios from "axios";
 
 import { publicRequest } from "./fetcher";
 
-export const getCollections = async () => {
+export const getCollections = async (page: number, limit: number) => {
   const res = await axios.get(
-    `${process.env.baseURL}/api/collection/all?page=1&limit=100`
+    `${process.env.baseURL}/api/collection/all?page=${page}&limit=${limit}`
   );
   return res.data.data;
 };
@@ -39,6 +39,14 @@ export const setSoldOut = async (collectionId: string) => {
   const res = await axios.patch(
     `${process.env.baseURL}/api/collection/setsoldout`,
     { id: collectionId }
+  );
+
+  return res;
+};
+
+export const getCollectionByUsername = async (username: string) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/collection/username/${username}`
   );
 
   return res;

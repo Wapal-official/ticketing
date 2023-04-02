@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    :to="`/nft/${collection?._id}`"
+    :to="`/nft/${collection?.username}`"
     class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
   >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full">

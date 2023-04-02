@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    :to="`/nft/${collection?._id}`"
+    :to="`/nft/${collection?.username}`"
     class="swiper-slide tw-flex tw-flex-row tw-items-center tw-justify-center tw-transition-all tw-duration-150 tw-ease-linear tw-transform tw-cursor-pointer tw-group tw-select-none"
     :draggable="false"
   >
