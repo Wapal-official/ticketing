@@ -96,7 +96,7 @@ import {
   getAllWhitelist,
   getWhitelistEntryById,
 } from "@/services/WhitelistService";
-import { getCollection } from "~/services/CollectionService";
+import { getCollection } from "@/services/CollectionService";
 
 import discord from "@/assets/img/footer/discord.svg";
 
