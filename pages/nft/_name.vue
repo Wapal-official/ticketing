@@ -237,6 +237,7 @@
 </template>
 <script>
 import {
+  getCollection,
   getCollectionByUsername,
   setSoldOut,
 } from "@/services/CollectionService";
@@ -247,9 +248,28 @@ export default {
   ssr: false,
   cache: false,
   async asyncData({ params }) {
-    const res = await getCollectionByUsername(params.name);
-    const collection = res.data.collection[0];
-    return { collection };
+    const name = params.name;
+    let collection;
+    try {
+      const res = await getCollectionByUsername(name);
+      collection = res.data.collection[0];
+
+      if (collection) {
+        return { collection };
+      } else {
+        throw new Error("Collection Not Found by Username");
+      }
+    } catch {
+      try {
+        const res = await getCollection(name);
+        collection = res.collection[0];
+
+        return { collection };
+      } catch (error) {
+        collection = null;
+        return { collection };
+      }
+    }
   },
   head() {
     return {
@@ -360,6 +380,20 @@ export default {
             this.$toast.showMessage({
               message: `${this.collection.name} Minted Successfully`,
             });
+
+            const res = await this.$store.dispatch(
+              "walletStore/getSupplyAndMintedOfCollection",
+              {
+                resourceAccountAddress:
+                  this.collection.candyMachine_id.resource_account,
+                candyMachineId: this.collection.candyMachine_id.candy_id,
+              }
+            );
+
+            if (res.total_supply === res.minted) {
+              await setSoldOut(this.collection._id);
+              this.collection.sold_out = true;
+            }
           } else {
             this.$toast.showMessage({
               message: "Collection Not Minted",
@@ -413,7 +447,6 @@ export default {
           !this.collection.status.sold_out
         ) {
           this.collection.status.sold_out = true;
-          await setSoldOut(this.collection._id);
         }
 
         this.resource.mintedPercent = Math.floor(
@@ -430,14 +463,6 @@ export default {
   },
   computed: {
     getCurrentPrice() {
-      const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
-        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
-        : null;
-      const publicSaleDate = new Date(
-        this.collection.candyMachine_id.public_sale_time
-      );
-
-      const now = new Date();
       if (
         this.collection.candyMachine_id.public_sale_price ==
         this.collection.candyMachine_id.whitelist_price
@@ -445,22 +470,19 @@ export default {
         return this.collection.candyMachine_id.public_sale_price;
       }
 
-      if (now > publicSaleDate) {
+      if (!this.showPublicSaleTimer) {
         return this.collection.candyMachine_id.public_sale_price;
       }
 
-      if (whiteListDate && publicSaleDate > now) {
+      if (this.whitelistSaleDate && this.showPublicSaleTimer) {
         return this.collection.candyMachine_id.whitelist_price;
       } else {
         return this.collection.candyMachine_id.public_sale_price;
       }
     },
     showMintBox() {
-      const publicSaleDate = new Date(
-        this.collection.candyMachine_id.public_sale_time
-      );
       if (!this.whitelistSaleDate) {
-        return new Date() > publicSaleDate;
+        return !this.showPublicSaleTimer;
       }
 
       return !this.showWhitelistSaleTimer || !this.showPublicSaleTimer;
@@ -484,51 +506,54 @@ export default {
     },
   },
   async mounted() {
-    this.whitelistSaleDate = this.collection.candyMachine_id.whitelist_sale_time
-      ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
-      : null;
+    if (this.collection) {
+      this.whitelistSaleDate = this.collection.candyMachine_id
+        .whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : null;
 
-    this.publicSaleDate = new Date(
-      this.collection.candyMachine_id.public_sale_time
-    );
-
-    this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
-    this.showPublicSaleTimer = this.checkPublicSaleTimer();
-
-    this.showEndInTimer = true;
-
-    this.resource = await this.$store.dispatch(
-      "walletStore/getSupplyAndMintedOfCollection",
-      {
-        resourceAccountAddress:
-          this.collection.candyMachine_id.resource_account,
-        candyMachineId: this.collection.candyMachine_id.candy_id,
-      }
-    );
-
-    this.resource.mintedPercent = Math.floor(
-      (this.resource.minted / this.resource.total_supply) * 100
-    );
-
-    if (
-      this.resource.minted == this.resource.total_supply &&
-      !this.collection.status.sold_out
-    ) {
-      this.collection.status.sold_out = true;
-      await setSoldOut(this.collection._id);
-    }
-
-    this.loading = false;
-
-    setTimeout(() => {
-      const resourceMintedPercent = document.querySelector(
-        "#resourceMintedPercent"
+      this.publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
       );
 
-      resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
+      this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
+      this.showPublicSaleTimer = this.checkPublicSaleTimer();
 
-      this.showMintedProgress();
-    }, 200);
+      this.showEndInTimer = true;
+
+      this.resource = await this.$store.dispatch(
+        "walletStore/getSupplyAndMintedOfCollection",
+        {
+          resourceAccountAddress:
+            this.collection.candyMachine_id.resource_account,
+          candyMachineId: this.collection.candyMachine_id.candy_id,
+        }
+      );
+
+      this.resource.mintedPercent = Math.floor(
+        (this.resource.minted / this.resource.total_supply) * 100
+      );
+
+      if (
+        this.resource.minted == this.resource.total_supply &&
+        !this.collection.status.sold_out
+      ) {
+        this.collection.status.sold_out = true;
+        await setSoldOut(this.collection._id);
+      }
+
+      this.loading = false;
+
+      setTimeout(() => {
+        const resourceMintedPercent = document.querySelector(
+          "#resourceMintedPercent"
+        );
+
+        resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
+
+        this.showMintedProgress();
+      }, 200);
+    }
   },
   beforeDestroy() {
     clearInterval(this.progressInterval);
