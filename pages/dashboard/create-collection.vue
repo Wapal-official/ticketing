@@ -692,7 +692,11 @@ export default {
     },
   },
   async mounted() {
-    const folderRes = await getFolderById("64119a4635d5e95d27526f99");
+    const folderRes = await getFolderById(
+      process.env.API_URL?.includes("staging")
+        ? "642aeb3da50447f2631f38f3"
+        : "642aecdd6d6d89ea7763a839"
+    );
 
     this.folders.push(folderRes.data.folderInfo);
 
