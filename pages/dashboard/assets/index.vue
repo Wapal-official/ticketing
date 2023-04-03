@@ -149,7 +149,7 @@ export default {
   },
   computed: {
     getFolderId() {
-      return process.env.API_URL?.includes("staging")
+      return process.env.baseURL?.includes("staging")
         ? "642aeb3da50447f2631f38f3"
         : "642aecdd6d6d89ea7763a839";
     },
