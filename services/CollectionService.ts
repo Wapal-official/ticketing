@@ -6,7 +6,14 @@ export const getCollections = async (page: number, limit: number) => {
   const res = await axios.get(
     `${process.env.baseURL}/api/collection/all?page=${page}&limit=${limit}`
   );
-  return res.data.data;
+
+  const collections = res.data.data;
+
+  const filteredCollections = collections.filter(
+    (collection: any) => collection.isApproved
+  );
+
+  return filteredCollections;
 };
 
 export const getCollection = async (collectionId: string) => {

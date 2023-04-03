@@ -200,6 +200,19 @@ export default {
             i++;
           }
         });
+
+        if (this.fastestSoldOutCollections.length === 0) {
+          this.fastestSoldOutCollections = [
+            {
+              _id: "",
+              name: "",
+              image: "",
+              soldOutIn: "",
+              rank: 0,
+              username: "",
+            },
+          ];
+        }
       }
     },
 
