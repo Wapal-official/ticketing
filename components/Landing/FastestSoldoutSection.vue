@@ -51,7 +51,10 @@
           </tr>
         </tbody>
       </table>
-      <div class="tw-hidden tw-w-full lg:tw-flex">
+      <div
+        class="tw-hidden tw-w-full lg:tw-flex"
+        v-if="fastestSoldOutCollections.length > 6"
+      >
         <table class="tw-w-full tw-h-fit">
           <thead class="tw-select-none">
             <th
@@ -91,7 +94,10 @@
           </tbody>
         </table>
       </div>
-      <div class="tw-hidden tw-w-full xl:tw-flex">
+      <div
+        class="tw-hidden tw-w-full xl:tw-flex"
+        v-if="fastestSoldOutCollections.length > 12"
+      >
         <table class="tw-w-full tw-h-fit">
           <thead class="tw-select-none">
             <th
