@@ -98,32 +98,47 @@ export default {
     },
     getLiveCollection() {
       this.liveCollections = this.collections.filter((collection: any) => {
-        const whitelistSaleDate = new Date(
-          collection.candyMachine_id.whitelist_sale_time
-        );
+        const whitelistSaleDate = collection.candyMachine_id.whitelist_sale_time
+          ? new Date(collection.candyMachine_id.whitelist_sale_time)
+          : null;
+
         const publicSaleDate = new Date(
           collection.candyMachine_id.public_sale_time
         );
 
         const now = new Date();
 
-        if (now > whitelistSaleDate || now > publicSaleDate) {
-          return collection;
+        if (!whitelistSaleDate) {
+          if (publicSaleDate < now) {
+            return collection;
+          }
+        } else {
+          if (whitelistSaleDate < now && publicSaleDate < now) {
+            return collection;
+          }
         }
       });
     },
     getUpcomingCollection() {
       this.upcomingCollections = this.collections.filter((collection: any) => {
-        const whitelistSaleDate = new Date(
-          collection.candyMachine_id.whitelist_sale_time
-        );
+        const whitelistSaleDate = collection.candyMachine_id.whitelist_sale_time
+          ? new Date(collection.candyMachine_id.whitelist_sale_time)
+          : null;
+
         const publicSaleDate = new Date(
           collection.candyMachine_id.public_sale_time
         );
+
         const now = new Date();
 
-        if (whitelistSaleDate > now && publicSaleDate > now) {
-          return collection;
+        if (!whitelistSaleDate) {
+          if (publicSaleDate > now) {
+            return collection;
+          }
+        } else {
+          if (whitelistSaleDate > now && publicSaleDate > now) {
+            return collection;
+          }
         }
       });
     },

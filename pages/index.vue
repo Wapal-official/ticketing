@@ -26,7 +26,7 @@
           <whitelist-opportunities />
         </section>
 
-        <!-- <section class="tw-py-8 tw-container tw-mx-auto">
+        <section class="tw-py-8 tw-container tw-mx-auto">
           <landing-section-heading heading="Fastest Soldout" />
           <fastest-soldout-section
             v-if="collections.length > 0"
@@ -34,7 +34,7 @@
             :loading="loading"
           />
           <loading v-else />
-        </section> -->
+        </section>
       </div>
     </div>
   </div>
@@ -115,7 +115,7 @@ export default {
       this.upcomingCollections = this.collections.filter((collection) => {
         const whitelistSaleDate = collection.candyMachine_id.whitelist_sale_time
           ? new Date(collection.candyMachine_id.whitelist_sale_time)
-          : "";
+          : null;
         const publicSaleDate = new Date(
           collection.candyMachine_id.public_sale_time
         );

@@ -421,50 +421,55 @@ export default {
     },
   },
   async mounted() {
-    let res = null;
-    if (!process.env.baseURL?.includes("staging")) {
-      res = await getCollection("6415331e9cb214a367f1ee7a");
-    } else {
-      res = await getCollection("6411e5928d694e608061b029");
-    }
-
-    this.collection = res.collection[0];
-
-    this.whitelistSaleDate = this.collection.candyMachine_id.whitelist_sale_time
-      ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
-      : null;
-
-    this.publicSaleDate = new Date(
-      this.collection.candyMachine_id.public_sale_time
-    );
-
-    this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
-    this.showPublicSaleTimer = this.checkPublicSaleTimer();
-
-    this.showEndInTimer = true;
-
-    this.resource = await this.$store.dispatch(
-      "walletStore/getSupplyAndMintedOfCollection",
-      {
-        resourceAccountAddress:
-          this.collection.candyMachine_id.resource_account,
-        candyMachineId: this.collection.candyMachine_id.candy_id,
+    try {
+      let res = null;
+      if (!process.env.baseURL?.includes("staging")) {
+        res = await getCollection("6415331e9cb214a367f1ee7a");
+      } else {
+        res = await getCollection("6411e5928d694e608061b029");
       }
-    );
 
-    if (
-      this.resource.minted == this.resource.total_supply &&
-      !this.collection.status.sold_out
-    ) {
-      this.collection.status.sold_out = true;
-      await setSoldOut(this.collection._id);
+      this.collection = res.collection[0];
+
+      this.whitelistSaleDate = this.collection.candyMachine_id
+        .whitelist_sale_time
+        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        : null;
+
+      this.publicSaleDate = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      );
+
+      this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
+      this.showPublicSaleTimer = this.checkPublicSaleTimer();
+
+      this.showEndInTimer = true;
+
+      this.loading = false;
+
+      this.resource = await this.$store.dispatch(
+        "walletStore/getSupplyAndMintedOfCollection",
+        {
+          resourceAccountAddress:
+            this.collection.candyMachine_id.resource_account,
+          candyMachineId: this.collection.candyMachine_id.candy_id,
+        }
+      );
+
+      if (
+        this.resource.minted == this.resource.total_supply &&
+        !this.collection.status.sold_out
+      ) {
+        this.collection.status.sold_out = true;
+        await setSoldOut(this.collection._id);
+      }
+
+      setTimeout(() => {
+        this.showMintedProgress();
+      }, 200);
+    } catch (error) {
+      this.loading = true;
     }
-
-    this.loading = false;
-
-    setTimeout(() => {
-      this.showMintedProgress();
-    }, 200);
   },
   beforeDestroy() {
     clearInterval(this.progressInterval);

@@ -22,6 +22,14 @@ const NODE_URL = `https://aptos-${process.env.NETWORK}.nodereal.io/v1/${process.
 
 const client = new AptosClient(NODE_URL);
 
+let network = NetworkName.Testnet;
+
+if (process.env.NETWORK === "testnet") {
+  network = NetworkName.Testnet;
+} else {
+  network = NetworkName.Mainnet;
+}
+
 const wallets = [
   new PetraWallet(),
   new MartianWallet(),
@@ -32,7 +40,7 @@ const wallets = [
   new TrustWallet(),
   new MSafeWalletAdapter(),
   new BloctoWallet({
-    network: NetworkName.Testnet,
+    network: network,
     bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
   }),
 ];
@@ -52,11 +60,9 @@ const makeId = (length: number) => {
 const connectWallet = async (walletName: WalletName) => {
   await wallet.connect(walletName);
 
-  if (
-    wallet.network?.name.toLowerCase() !== NetworkName.Testnet.toLowerCase()
-  ) {
+  if (wallet.network?.name.toLowerCase() !== network.toLowerCase()) {
     await wallet.disconnect();
-    throw new Error("Please Change your network to Testnet");
+    throw new Error(`Please Change your network to ${network}`);
   }
 };
 
@@ -320,7 +326,7 @@ export const actions = {
 
     const payload = {
       arguments: [
-        "0xca717d6cc82ec8f6146423e90b0fb79a753a9d5efb8e2c4f89772c3cd78cf8a0",
+        "0x59e129c0275f5289f58b85f75090921b50d1745e0ba54197ac0586676b0a64b8",
         transactionAmount,
       ],
       function: "0x1::coin::transfer",
