@@ -150,7 +150,7 @@
 <script lang="ts">
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 export default {
-  props: { loading: { type: Boolean }, collections: { type: Array } },
+  props: { collections: { type: Array } },
   components: { GradientBorderButton },
   data() {
     return {
@@ -161,44 +161,46 @@ export default {
   },
   methods: {
     async fetchCollections() {
-      this.fastestSoldOutCollections = [];
-
       let i = 1;
 
-      this.collections.map((collection: any) => {
-        const whitelistSaleTime = collection.candyMachine_id.whitelist_sale_time
-          ? new Date(collection.candyMachine_id.whitelist_sale_time).getTime()
-          : null;
+      if (this.collections.length > 0) {
+        this.fastestSoldOutCollections = [];
+        this.collections.map((collection: any) => {
+          const whitelistSaleTime = collection.candyMachine_id
+            .whitelist_sale_time
+            ? new Date(collection.candyMachine_id.whitelist_sale_time).getTime()
+            : null;
 
-        const publicSaleTime = new Date(
-          collection.candyMachine_id.public_sale_time
-        ).getTime();
+          const publicSaleTime = new Date(
+            collection.candyMachine_id.public_sale_time
+          ).getTime();
 
-        let soldOutIn: any = 0;
+          let soldOutIn: any = 0;
 
-        if (collection.status.sold_out) {
-          const soldOutTime = new Date(collection.status.time).getTime();
+          if (collection.status.sold_out) {
+            const soldOutTime = new Date(collection.status.time).getTime();
 
-          if (whitelistSaleTime) {
-            soldOutIn = Math.floor((soldOutTime - whitelistSaleTime) / 1000);
-          } else {
-            soldOutIn = Math.floor((soldOutTime - publicSaleTime) / 1000);
+            if (whitelistSaleTime) {
+              soldOutIn = Math.floor((soldOutTime - whitelistSaleTime) / 1000);
+            } else {
+              soldOutIn = Math.floor((soldOutTime - publicSaleTime) / 1000);
+            }
+
+            this.fastestSoldOutCollections.push({
+              _id: collection._id,
+              rank: i,
+              name: collection.name,
+              image: collection.image,
+              soldOutIn: soldOutIn,
+              supply: collection.supply,
+              price: collection.candyMachine_id.public_sale_price,
+              username: collection.username,
+            });
+
+            i++;
           }
-
-          this.fastestSoldOutCollections.push({
-            _id: collection._id,
-            rank: i,
-            name: collection.name,
-            image: collection.image,
-            soldOutIn: soldOutIn,
-            supply: collection.supply,
-            price: collection.candyMachine_id.public_sale_price,
-            username: collection.username,
-          });
-
-          i++;
-        }
-      });
+        });
+      }
     },
 
     redirectToCollection(username: string) {

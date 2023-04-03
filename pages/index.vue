@@ -28,11 +28,7 @@
 
         <section class="tw-py-8 tw-container tw-mx-auto">
           <landing-section-heading heading="Fastest Soldout" />
-          <fastest-soldout-section
-            v-if="collections.length > 0"
-            :collections="collections"
-            :loading="loading"
-          />
+          <fastest-soldout-section v-if="!loading" :collections="collections" />
           <loading v-else />
         </section>
       </div>
