@@ -159,12 +159,21 @@ export default {
       ],
     };
   },
+  computed: {
+    getCollections() {
+      console.log([...this.collections]);
+      return this.collections;
+    },
+  },
   methods: {
     async fetchCollections() {
       let i = 1;
 
       if (this.collections.length > 0) {
         this.fastestSoldOutCollections = [];
+
+        const collections = this.getCollections;
+
         this.collections.map((collection: any) => {
           const whitelistSaleTime = collection.candyMachine_id
             .whitelist_sale_time

@@ -28,7 +28,10 @@
 
         <section class="tw-py-8 tw-container tw-mx-auto">
           <landing-section-heading heading="Fastest Soldout" />
-          <fastest-soldout-section v-if="!loading" :collections="collections" />
+          <fastest-soldout-section
+            v-if="!loading"
+            :collections="fastestSoldoutCollections"
+          />
           <loading v-else />
         </section>
       </div>
@@ -47,7 +50,7 @@ import Loading from "@/components/Reusable/Loading.vue";
 import Banner from "@/components/Landing/Banner.vue";
 import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.vue";
 
-import { getCollections } from "@/services/CollectionService.ts";
+import { getCollections } from "@/services/CollectionService";
 
 export default {
   name: "IndexPage",
@@ -70,7 +73,7 @@ export default {
       liveCollections: [],
       upcomingCollections: [{ _id: "" }],
       loading: true,
-      sliderCollections: [],
+      fastestSoldoutCollections: [],
     };
   },
   methods: {
@@ -80,6 +83,7 @@ export default {
       this.liveCollections = [];
 
       const res = await getCollections(1, 100);
+
       this.collections = res;
 
       this.liveCollections = this.collections.filter((collection) => {
@@ -131,6 +135,8 @@ export default {
       this.liveCollections = this.liveCollections.slice(0, 4);
 
       this.upcomingCollections = this.upcomingCollections.slice(0, 4);
+
+      this.fastestSoldoutCollections = [...this.collections];
     },
   },
   async created() {
