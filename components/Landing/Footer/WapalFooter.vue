@@ -60,7 +60,7 @@
         <h5 class="tw-text-base tw-font-medium md:tw-py-4">Resources</h5>
         <footer-link
           name="Blog"
-          to="https://medium.com/@wapal"
+          to="https://medium.com/wapal-studio"
           target="_blank"
           :external="true"
         />
