@@ -508,7 +508,7 @@ export default {
         discord: null,
         website: null,
         resource_account: null,
-        transaction_hash: null,
+        txnhash: null,
         un: "",
       },
       message: "",
@@ -676,7 +676,7 @@ export default {
       );
 
       this.collection.resource_account = res.resourceAccount;
-      this.collection.transaction_hash = res.transactionHash;
+      this.collection.txnhash = res.transactionHash;
     },
     setSupply() {
       const selectedFolder = this.folders.find(

@@ -2,6 +2,14 @@ import axios from "axios";
 
 import { publicRequest } from "./fetcher";
 
+const filterApprovedCollections = (collections: any[]) => {
+  const tempCollections = collections.filter((collection: any) => {
+    return collection.isApproved;
+  });
+
+  return tempCollections;
+};
+
 export const getCollections = async (page: number, limit: number) => {
   const res = await axios.get(
     `${process.env.baseURL}/api/collection/all?page=${page}&limit=${limit}`
@@ -9,11 +17,9 @@ export const getCollections = async (page: number, limit: number) => {
 
   const collections = res.data.data;
 
-  const filteredCollections = collections.filter(
-    (collection: any) => collection.isApproved
-  );
+  const filteredCollections = filterApprovedCollections(collections);
 
-  return filteredCollections;
+  return [...filteredCollections];
 };
 
 export const getCollection = async (collectionId: string) => {
@@ -55,6 +61,12 @@ export const getCollectionByUsername = async (username: string) => {
   const res = await axios.get(
     `${process.env.baseURL}/api/collection/username/${username}`
   );
+
+  return res;
+};
+
+export const getFeaturedCollection = async () => {
+  const res = await axios.get(`${process.env.baseURL}/api/collection/featured`);
 
   return res;
 };

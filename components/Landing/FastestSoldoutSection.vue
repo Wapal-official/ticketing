@@ -165,6 +165,7 @@ export default {
 
       if (this.collections.length > 0) {
         this.fastestSoldOutCollections = [];
+
         this.collections.map((collection: any) => {
           const whitelistSaleTime = collection.candyMachine_id
             .whitelist_sale_time

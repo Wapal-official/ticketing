@@ -185,7 +185,7 @@ export default {
               collectionName: collection.name,
               twitter: collection.twitter,
               discord: collection.discord,
-              mintDate: whitelist.whitelist_start,
+              mintDate: whitelist.whitelist_end,
               noOfSpots: whitelist.whitelist_spots,
               image: collection.image,
               spot: spots,

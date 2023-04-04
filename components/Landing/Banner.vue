@@ -222,11 +222,13 @@
   </div>
 </template>
 <script lang="ts">
-import { getCollection, setSoldOut } from "@/services/CollectionService";
+import {
+  getFeaturedCollection,
+  setSoldOut,
+} from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 
 export default {
-  props: { collectionId: { type: String } },
   components: { CountDown },
   data() {
     return {
@@ -422,14 +424,9 @@ export default {
   },
   async mounted() {
     try {
-      let res = null;
-      if (!process.env.baseURL?.includes("staging")) {
-        res = await getCollection("642bf277c10560ca41e179fa");
-      } else {
-        res = await getCollection("6411e5928d694e608061b029");
-      }
+      const res = await getFeaturedCollection();
 
-      this.collection = res.collection[0];
+      this.collection = res.data.collection;
 
       this.whitelistSaleDate = this.collection.candyMachine_id
         .whitelist_sale_time
