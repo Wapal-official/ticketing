@@ -64,3 +64,9 @@ export const getCollectionByUsername = async (username: string) => {
 
   return res;
 };
+
+export const getFeaturedCollection = async () => {
+  const res = await axios.get(`${process.env.baseURL}/api/collection/featured`);
+
+  return res;
+};

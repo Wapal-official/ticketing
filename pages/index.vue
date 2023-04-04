@@ -1,9 +1,7 @@
 <template>
   <div class="">
     <section class="tw-py-4 2xl:tw-container tw-mx-auto">
-      <banner
-        :collectionId="upcomingCollections[0] ? upcomingCollections[0]._id : ''"
-      />
+      <banner />
     </section>
     <div>
       <landing-slider :collections="collections" :loading="loading" />
