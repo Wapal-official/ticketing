@@ -6,7 +6,7 @@
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 lg:tw-w-[20%]"
       >
-        <NuxtLink to="/" class="tw-min-w-[120px] tw-max-w-[120px]">
+        <NuxtLink to="/" class="tw-min-w-[140px] tw-max-w-[140px]">
           <img :src="logo" alt="logo" />
         </NuxtLink>
         <div class="tw-hidden lg:tw-flex">
@@ -32,7 +32,9 @@
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full tw-gap-8 lg:tw-w-[80%]"
       >
-        <div class="tw-hidden  tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[60%]">
+        <div
+          class="tw-hidden tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[60%]"
+        >
           <search-bar />
         </div>
         <div class="tw-hidden lg:tw-flex tw-w-full lg:tw-w-[40%]">
@@ -67,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import logo from "@/assets/img/logo/logo-horizontal-white.png";
+import logo from "@/assets/img/logo/mainnet-beta.png";
 import LandingMenu from "@/components/Landing/Navbar/LandingMenu.vue";
 import SearchBar from "@/components/Landing/Navbar/SearchBar.vue";
 import ExploreListItem from "@/components/Landing/Navbar/ExploreListItem.vue";
