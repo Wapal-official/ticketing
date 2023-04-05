@@ -266,8 +266,6 @@ export default {
 
         const res = await setRoot(rootData);
 
-        console.log(res);
-
         const root: any[] = [];
 
         res.data.root.data.map((rootData: any) => {
