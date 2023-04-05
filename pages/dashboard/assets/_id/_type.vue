@@ -168,7 +168,7 @@
           >
             <div
               class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-wapal-pink tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
-              id="progress-bar"
+              :style="`width:${serverUploadPercent}%`"
             ></div>
           </div>
           <span class="tw-text-sm">{{ this.serverUploadPercent }}%</span>
@@ -528,6 +528,7 @@ export default {
       this.mappingFiles = false;
     },
     async sendDataToUploadFolder() {
+      this.serverUploadPercent = 0;
       let files = [];
       if (Array.isArray(this.uploadedFile)) {
         files = this.uploadedFile;
@@ -644,9 +645,7 @@ export default {
             response = res.data.newFolder;
           }
 
-          const progressBar: any = document.querySelector("#progress-bar");
           this.serverUploadPercent = Math.floor((i / batchLoop) * 100);
-          progressBar.style.width = this.serverUploadPercent + "%";
         }
 
         if (responseCount === batchLoop) {
@@ -667,12 +666,6 @@ export default {
         this.balanceNotEnoughError = await this.$store.dispatch(
           "walletStore/checkBalanceForFolderUpload"
         );
-        if (this.balanceNotEnoughError.error) {
-          this.balanceNotEnoughError.message =
-            "Your Account Does Not Have Enough Balance";
-          this.uploading = false;
-          return;
-        }
 
         const transaction = await this.$store.dispatch(
           "walletStore/signTransactionForUploadingFolder",
