@@ -2,7 +2,7 @@
   <div class="tw-w-screen tw-h-screen">
     <div class="tw-px-8 !lg:px-24 tw-pt-6">
       <NuxtLink to="/">
-        <img :src="logoHorizontal" alt="logo" width="120px" />
+        <img :src="logoHorizontal" alt="logo" width="140px" />
       </NuxtLink>
     </div>
     <div
@@ -48,8 +48,8 @@ import { required } from "vee-validate/dist/rules";
 
 import { submitVerificationCode } from "@/services/VerificationService";
 
-import logoHorizontal from "@/assets/img/logo/logo-horizontal-white.png";
-import logo from "@/assets/img/logo/logo-vertical.png";
+import logoHorizontal from "@/assets/img/logo/mainnet-beta.png";
+import logo from "@/assets/img/logo/mainnet-beta-vertical.png";
 
 extend("required", {
   ...required,
