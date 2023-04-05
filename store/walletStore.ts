@@ -293,8 +293,6 @@ export const actions = {
       "https://api.coinconvert.net/convert/apt/usd?amount=1"
     );
 
-    const balance = await dispatch("checkBalance");
-
     const res = await getPrice();
 
     const price = res.data.price;
@@ -307,21 +305,18 @@ export const actions = {
     const totalAPT =
       (totalAR / aptosRate.data.USD) * uploadMultiplier * oracleFee;
 
-    if (balance < totalAPT) {
-      return {
-        requiredBalance: totalAPT.toFixed(6),
-        yourBalance: balance,
-        error: true,
-      };
-    }
-
     return {
       requiredBalance: totalAPT.toFixed(6),
-      yourBalance: balance,
-      error: false,
     };
   },
-  async signTransactionForUploadingFolder({}, requiredBalance: any) {
+  async signTransactionForUploadingFolder(
+    { state }: { state: any },
+    requiredBalance: any
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
     const transactionAmount = Math.ceil(requiredBalance * 100000000);
 
     const payload = {
