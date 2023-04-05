@@ -241,7 +241,8 @@
       maintain, or use personal information from children under 13 years of age,
       and no part of our Services are directed to children. If you learn that a
       child has provided us with personal information in violation of this
-      Privacy Policy, then you may alert us at info@wapal.io.
+      Privacy Policy, then you may alert us at
+      <a href="mailto:info@wapal.io"> info@wapal.io</a>.
     </p>
     <p>
       <strong>(v) Changes to this Privacy Policy</strong> We will post any
