@@ -15,14 +15,14 @@
       procedures this Privacy Policy describes. Beyond the Privacy Policy, your
       use of our Services is also subject to our Terms of Service.
     </p>
-    <h2>
+    <h2 class="tw-pb-4">
       <strong>Information We Collect </strong>
     </h2>
     <p>
       We may collect a variety of information from or about you or your devices
       from various sources, as described below.
     </p>
-    <h3><strong>A. Information You Provide to Us</strong></h3>
+    <h3 class="tw-pb-4"><strong>A. Information You Provide to Us</strong></h3>
     <p>
       <strong>(i) Registration and Profile Information </strong>You may need to
       register an account with us by connecting a third-party supported
@@ -31,7 +31,7 @@
       like your email address and social media addresses.
     </p>
     <p>For KYC Verification, we may also ask you for information like</p>
-    <ul>
+    <ul class="tw-pb-4">
       <li>Personal Information such as Full name, Date of birth, Gender</li>
       <li>Other Information such as Occupation and Email Address</li>
       <li>
@@ -67,7 +67,7 @@
       apply through LinkedIn. If you do so, we will collect the information you
       make available to us on LinkedIn.
     </p>
-    <h3>
+    <h3 class="tw-pb-4">
       <strong> B. Information We Collect When You Use Our Services</strong>
     </h3>
 
@@ -110,18 +110,18 @@
       to accept cookies from the Service, you may not be able to utilize the
       features of the Service to their fullest potential.
     </p>
-    <h3><strong> C. Information We Receive from Third Parties</strong></h3>
+    <h3 class="tw-pb-4">
+      <strong> C. Information We Receive from Third Parties</strong>
+    </h3>
     <p>
       <strong>Third parties</strong> We may receive information about you from
       third parties such as data or marketing partners and combine it with other
       information we have about you.
     </p>
-    <h4>
-      <strong
-        >1. How We Use the Information We Collect We use the information we
-        collect
-      </strong>
+    <h4 class="tw-pb-4">
+      <strong>1. How We Use the Information We Collect </strong>
     </h4>
+    <p>We use the information we collect</p>
     <p>(i) To provide, maintain, improve, and enhance our Services;</p>
     <p>
       (ii) To communicate with you, provide you with updates and other
@@ -148,8 +148,9 @@
       (vi) For other purposes for which we provide specific notice at the time
       the information is collected.
     </p>
-    <h3><strong>D. How We Share the Information We Collect</strong></h3>
-
+    <h3 class="tw-pb-4">
+      <strong>D. How We Share the Information We Collect</strong>
+    </h3>
     <p>
       We may share or otherwise disclose information we collect from or about
       you as described below or otherwise disclosed to you at the time of the
@@ -174,17 +175,22 @@
       <a
         href="https://www.google.com/policies/privacy/partners/"
         target="_blank"
+        class="tw-underline"
       >
-        <strong class="tw-underline">Google Privacy Policy</strong></a
+        Google Privacy Policy</a
       >, and opt-out of them by downloading the Google Analytics opt-out browser
       add-on, available at
-      <a href="https://tools.google.com/dlpage/gaoptout" target="_blank"
-        ><strong class="tw-underline"
-          >Google Analytics Opt-out Browser Add-on</strong
-        ></a
+      <a
+        href="https://tools.google.com/dlpage/gaoptout"
+        target="_blank"
+        class="tw-underline"
+      >
+        Google Analytics Opt-out Browser Add-on</a
       >.
     </p>
-    <h4><strong>(iv) As Required By Law and Similar Disclosures</strong></h4>
+    <h4 class="tw-pb-4">
+      <strong>(iv) As Required By Law and Similar Disclosures</strong>
+    </h4>
     <p>
       We may access, preserve, and disclose your information if we believe doing
       so is required or appropriate to: (i) comply with law enforcement requests
@@ -206,7 +212,7 @@
       <strong>(vi) Consent</strong> We may also disclose information from or
       about you or your devices with your permission.
     </p>
-    <h3><strong> E. Your Choices</strong></h3>
+    <h3 class="tw-pb-4"><strong> E. Your Choices</strong></h3>
 
     <p>
       <strong>(i) Marketing Communications</strong> You can unsubscribe from our
@@ -245,7 +251,7 @@
       through the Services, we will notify you through the Services, by email,
       or other communication.
     </p>
-    <h3><strong>F. Contact Information </strong></h3>
+    <h3 class="tw-pb-4"><strong>F. Contact Information </strong></h3>
 
     <p>
       If you have any questions, comments, or concerns about our processing

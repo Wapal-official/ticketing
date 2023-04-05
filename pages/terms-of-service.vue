@@ -230,7 +230,9 @@
       appropriate legal action, including without limitation pursuing civil,
       criminal, and injunctive redress.
     </p>
-    <h3><strong> G. Ownership; Proprietary Rights; Marks</strong></h3>
+    <h3 class="tw-pb-4">
+      <strong> G. Ownership; Proprietary Rights; Marks</strong>
+    </h3>
     <p>
       <strong> Ownership; Proprietary Rights</strong> The Platform is owned and
       operated by Mokshya Protocol Association. The visual interfaces, graphics,
@@ -293,8 +295,8 @@
       (iii) If you are a “Seller”, you will receive “Revenue” less the “Platform
       Fee” for each sale of your NFT using the Platform. For eg: Seller list 1
       NFt in the platform launchpad for Buyer to mint, 1 APT is the mint price
-      per NFT. Revenue is 1 APT. Therefore, Seller receives 0.70 APT, the
-      Platform receives 0.30 APT, Buyer receives 1 NFT.
+      per NFT. Revenue is 1 APT. Therefore, Seller receives 0.97 APT, the
+      Platform receives 0.03 APT, Buyer receives 1 NFT.
     </p>
     <p>
       All amounts payable under these Terms are non-refundable and without
@@ -303,7 +305,7 @@
       these Terms or your licensing or use of the Service.
     </p>
 
-    <h2><strong>I. Third-Party Terms</strong></h2>
+    <h2 class="tw-pb-4"><strong>I. Third-Party Terms</strong></h2>
     <p>
       <strong>External Sites</strong> The Platform may contain links to or embed
       content in other websites, apps or other online properties that are not
@@ -331,7 +333,7 @@
       licenses or to limit your use of Third-Party Components under those
       third-party licenses.
     </p>
-    <h2>
+    <h2 class="tw-pb-4">
       <strong>
         J. Prohibited Conduct. BY USING THE PLATFORM, YOU AGREE NOT TO</strong
       >
@@ -444,7 +446,7 @@
       System. By using Wapal, you acknowledge that you have read, understood,
       and agree to be bound by these Terms and Disclaimer.
     </p>
-    <h2><strong> P. Miscellaneous</strong></h2>
+    <h2 class="tw-pb-4"><strong> P. Miscellaneous</strong></h2>
     <h3><strong> (i) General Terms</strong></h3>
     <p>
       These Terms, together with the Privacy Policy and any other agreements
