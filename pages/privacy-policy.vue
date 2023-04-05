@@ -185,7 +185,7 @@
         target="_blank"
         class="tw-underline"
       >
-        >Google Analytics Opt-out Browser Add-on</a
+        Google Analytics Opt-out Browser Add-on</a
       >.
     </p>
     <h4 class="tw-pb-4">
