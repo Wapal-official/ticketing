@@ -124,7 +124,7 @@ export default {
     async copyFileLink() {
       if (process.client) {
         let textArea = document.createElement("textarea");
-        textArea.value = `https://arweave.net/${this.file._id}`;
+        textArea.value = this.file.src;
         textArea.style.position = "fixed";
         document.body.appendChild(textArea);
         textArea.focus();
@@ -142,21 +142,13 @@ export default {
       return "json";
     },
     getImageSrc() {
-      return this.linkedAsset.image ? this.linkedAsset.image : this.file?.src;
+      return this.file.image ? this.file.image : this.file?.src;
     },
     getImageName() {
-      return this.linkedAsset.name ? this.linkedAsset.name : this.file?.name;
+      return this.file.image ? this.file.name : this.file?.name;
     },
   },
   async mounted() {
-    const res = await this.$axios.get(`https://arweave.net/${this.file._id}`);
-    if (
-      this.type === "assets" &&
-      res.headers["content-type"] === "application/json; charset=utf-8"
-    ) {
-      this.linkedAsset = res.data;
-    }
-
     this.loading = false;
   },
 };
