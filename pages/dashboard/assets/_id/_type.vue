@@ -478,13 +478,14 @@ export default {
         );
       }
 
-      tempFiles.map(async (file: string) => {
+      for (const file of tempFiles) {
         try {
           const res = await this.$axios.get(`https://arweave.net/${file}`);
 
           const tempFile = res.data;
 
           let fileType = "image";
+          let generatedFile = null;
 
           if (
             res.headers["content-type"] === "application/json; charset=utf-8"
@@ -497,7 +498,7 @@ export default {
               tempFile.date ? tempFile.date : ""
             ).format("DD/MM/YYYY");
 
-            this.paginatedFiles.push({
+            generatedFile = {
               _id: file,
               name: tempFile.name,
               src: `https://arweave.net/${file}`,
@@ -505,26 +506,26 @@ export default {
               createdDate: createdDate,
               size: res.headers["content-length"],
               image: tempFile.image,
-            });
+            };
           } else {
             const createdDate = moment().format("DD/MM/YYYY");
 
-            this.paginatedFiles.push({
+            generatedFile = {
               _id: file,
               name: this.fileIndex.toString(),
               src: `https://arweave.net/${file}`,
               type: res.headers["content-type"],
               createdDate: createdDate,
               size: res.headers["content-length"],
-            });
+            };
           }
 
           this.fileIndex++;
+          this.paginatedFiles.push(generatedFile);
         } catch (error) {
           console.log(error);
         }
-      });
-
+      }
       this.mappingFiles = false;
     },
     async sendDataToUploadFolder() {
