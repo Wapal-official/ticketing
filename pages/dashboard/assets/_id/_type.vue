@@ -480,7 +480,15 @@ export default {
 
       for (const file of tempFiles) {
         try {
-          const res = await this.$axios.get(`https://arweave.net/${file}`);
+          let src = null;
+
+          if (this.folderInfo.metadata.baseURI) {
+            src = `${this.folderInfo.metadata.baseURI}${this.fileIndex}.json`;
+          } else {
+            src = `${this.folderInfo.assets.baseURI}${this.fileIndex}${this.folderInfo.assets.ext}`;
+          }
+
+          const res = await this.$axios.get(src);
 
           const tempFile = res.data;
 
@@ -499,9 +507,9 @@ export default {
             ).format("DD/MM/YYYY");
 
             generatedFile = {
-              _id: file,
+              _id: src,
               name: tempFile.name,
-              src: `https://arweave.net/${file}`,
+              src: src,
               type: res.headers["content-type"],
               createdDate: createdDate,
               size: res.headers["content-length"],
@@ -511,21 +519,23 @@ export default {
             const createdDate = moment().format("DD/MM/YYYY");
 
             generatedFile = {
-              _id: file,
+              _id: src,
               name: this.fileIndex.toString(),
-              src: `https://arweave.net/${file}`,
+              src: src,
               type: res.headers["content-type"],
               createdDate: createdDate,
               size: res.headers["content-length"],
             };
           }
 
-          this.fileIndex++;
+          this.fileIndex = this.fileIndex + 1;
+
           this.paginatedFiles.push(generatedFile);
         } catch (error) {
           console.log(error);
         }
       }
+
       this.mappingFiles = false;
     },
     async sendDataToUploadFolder() {
@@ -745,12 +755,12 @@ export default {
 
     await this.fetchFiles();
     await this.mapFiles();
-
     if (process.client) {
       window.addEventListener("scroll", async () => {
         if (
           window.scrollY + window.innerHeight >=
-          document.documentElement.scrollHeight
+            document.documentElement.scrollHeight &&
+          !this.mappingFiles
         ) {
           this.scrolledNumber++;
 
@@ -766,9 +776,6 @@ export default {
         setTimeout(async () => {
           await this.fetchFiles();
           await this.mapFiles();
-
-          this.uploadedFiles.uploadedFiles = 0;
-          this.uploadedFiles.files = [];
         }, 2000);
       }
     },
