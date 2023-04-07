@@ -510,6 +510,7 @@ export default {
         resource_account: null,
         txnhash: null,
         un: "",
+        candy_id:process.env.CANDY_MACHINE_ID,
       },
       message: "",
       image: { name: null },
