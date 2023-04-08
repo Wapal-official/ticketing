@@ -298,6 +298,7 @@ export default {
       mappingFiles: false,
       type: "",
       serverUploadPercent: 0,
+      assetLimit: 0,
       UploadIcon,
       defaultTheme,
     };
@@ -470,71 +471,81 @@ export default {
     async mapFiles(scrollNumber: number) {
       let tempFiles = [];
       if (!scrollNumber) {
-        tempFiles = this.folderInfo.files.slice(0, 20);
+        tempFiles = this.folderInfo.files.slice(0, this.assetLimit);
       } else {
         tempFiles = this.folderInfo.files.slice(
-          scrollNumber - 20,
+          scrollNumber - this.assetLimit,
           scrollNumber
         );
       }
 
-      for (const file of tempFiles) {
-        try {
-          let src = null;
+      const mappedFiles = await Promise.all(
+        tempFiles.map(async (file: any, index: number) => {
+          try {
+            let src = null;
 
-          if (this.folderInfo.metadata.baseURI) {
-            src = `${this.folderInfo.metadata.baseURI}${this.fileIndex}.json`;
-          } else {
-            src = `${this.folderInfo.assets.baseURI}${this.fileIndex}${this.folderInfo.assets.ext}`;
+            const fileIndex = scrollNumber
+              ? scrollNumber - this.assetLimit + index
+              : index;
+
+            if (this.folderInfo.metadata.baseURI) {
+              src = `${this.folderInfo.metadata.baseURI}${fileIndex}.json`;
+            } else {
+              src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+            }
+
+            const res = await this.$axios.get(src);
+
+            const tempFile = res.data;
+
+            let fileType = "image";
+            let generatedFile = null;
+
+            if (
+              res.headers["content-type"] === "application/json; charset=utf-8"
+            ) {
+              fileType = "json";
+            }
+
+            if (fileType === "json" && this.type === "assets") {
+              const createdDate = moment(
+                tempFile.date ? tempFile.date : ""
+              ).format("DD/MM/YYYY");
+
+              generatedFile = {
+                _id: fileIndex,
+                name: tempFile.name,
+                src: src,
+                type: res.headers["content-type"],
+                createdDate: createdDate,
+                size: res.headers["content-length"],
+                image: tempFile.image,
+              };
+            } else {
+              const createdDate = moment().format("DD/MM/YYYY");
+
+              generatedFile = {
+                _id: fileIndex,
+                name: fileIndex.toString(),
+                src: src,
+                type: res.headers["content-type"],
+                createdDate: createdDate,
+                size: res.headers["content-length"],
+              };
+            }
+
+            return generatedFile;
+          } catch (error) {
+            console.log(error);
           }
+        })
+      );
 
-          const res = await this.$axios.get(src);
+      mappedFiles.sort((a: any, b: any) => {
+        return a._id - b._id;
+      });
 
-          const tempFile = res.data;
-
-          let fileType = "image";
-          let generatedFile = null;
-
-          if (
-            res.headers["content-type"] === "application/json; charset=utf-8"
-          ) {
-            fileType = "json";
-          }
-
-          if (fileType === "json" && this.type === "assets") {
-            const createdDate = moment(
-              tempFile.date ? tempFile.date : ""
-            ).format("DD/MM/YYYY");
-
-            generatedFile = {
-              _id: src,
-              name: tempFile.name,
-              src: src,
-              type: res.headers["content-type"],
-              createdDate: createdDate,
-              size: res.headers["content-length"],
-              image: tempFile.image,
-            };
-          } else {
-            const createdDate = moment().format("DD/MM/YYYY");
-
-            generatedFile = {
-              _id: src,
-              name: this.fileIndex.toString(),
-              src: src,
-              type: res.headers["content-type"],
-              createdDate: createdDate,
-              size: res.headers["content-length"],
-            };
-          }
-
-          this.fileIndex = this.fileIndex + 1;
-
-          this.paginatedFiles.push(generatedFile);
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      this.paginatedFiles.push(...mappedFiles);
 
       this.mappingFiles = false;
     },
@@ -754,7 +765,11 @@ export default {
     }
 
     await this.fetchFiles();
-    await this.mapFiles();
+
+    this.assetLimit = this.type === "assets" ? 10 : 50;
+
+    await this.mapFiles(undefined);
+
     if (process.client) {
       window.addEventListener("scroll", async () => {
         if (
@@ -765,7 +780,8 @@ export default {
           this.scrolledNumber++;
 
           this.mappingFiles = true;
-          await this.mapFiles(20 * this.scrolledNumber);
+
+          await this.mapFiles(this.assetLimit * this.scrolledNumber);
         }
       });
     }
