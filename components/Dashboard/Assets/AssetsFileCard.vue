@@ -136,7 +136,7 @@ export default {
   },
   computed: {
     checkFileType() {
-      if (this.file.type.includes("image/") || this.type === "assets") {
+      if (this.type === "assets") {
         return "image";
       }
       return "json";
