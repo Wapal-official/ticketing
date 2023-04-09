@@ -229,17 +229,11 @@
               >Whitelist Start Time</label
             >
             <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field
+              <date-picker
                 v-model="whitelist.whitelist_start"
-                outlined
-                single-line
-                color="#fff"
-                hide-details
-                clearable
-                type="datetime-local"
-                class="dashboard-input"
-                ref="whitelistSaleTime"
-              ></v-text-field>
+                type="datetime"
+                placeholder="Select Whitelist Start time"
+              ></date-picker>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
@@ -254,16 +248,11 @@
               >Whitelist End Time</label
             >
             <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field
+              <date-picker
                 v-model="whitelist.whitelist_end"
-                outlined
-                single-line
-                color="#fff"
-                hide-details
-                clearable
-                type="datetime-local"
-                class="dashboard-input"
-              ></v-text-field>
+                type="datetime"
+                placeholder="Select Whitelist End time"
+              ></date-picker>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
@@ -291,6 +280,9 @@ import { required } from "vee-validate/dist/rules";
 import { getCollection } from "@/services/CollectionService";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 import { createWhitelist } from "@/services/WhitelistService";
+
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 
 extend("required", {
   ...required,
@@ -344,7 +336,12 @@ extend("number", {
 
 export default {
   layout: "dashboard",
-  components: { ValidationProvider, ValidationObserver, GradientBorderButton },
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+    GradientBorderButton,
+    DatePicker,
+  },
   data() {
     return {
       whitelist: {
@@ -429,3 +426,25 @@ export default {
   },
 };
 </script>
+<style>
+.mx-input-wrapper,
+.mx-datepicker {
+  width: 100% !important;
+}
+
+.mx-input {
+  width: 100% !important;
+  background: #0e0d0d !important;
+  border: none !important;
+  height: 50px !important;
+  color: #d9d9d9 !important;
+  font-size: 1em;
+  border-radius: 7px !important;
+}
+
+.mx-icon-calendar,
+.mx-icon-clear,
+.mx-input::placeholder {
+  color: #d9d9d9 !important;
+}
+</style>
