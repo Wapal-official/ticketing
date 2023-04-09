@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    :to="`/nft/${collection?.username}`"
+    :to="getRedirectLink"
     class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
   >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full">
@@ -43,6 +43,7 @@ export default {
   components: { CountDown },
   props: {
     collection: { type: Object },
+    redirectTo: { type: String, default: "nft" },
   },
   data() {
     return {
@@ -114,6 +115,13 @@ export default {
       } else {
         return this.collection.candyMachine_id.public_sale_price;
       }
+    },
+    getRedirectLink() {
+      if (this.redirectTo === "whitelist") {
+        return `/dashboard/whitelist/${this.collection._id}`;
+      }
+
+      return `/nft/${this.collection.username}`;
     },
   },
   methods: {

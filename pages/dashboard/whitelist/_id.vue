@@ -20,6 +20,13 @@
     <div
       class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center"
     >
+      <button
+        @click="gotoSetupWhitelistPage"
+        class="!tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
+        :disabled="!setupWhitelistStatus"
+      >
+        Setup Whitelist
+      </button>
       <form @submit.prevent="">
         <label
           class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
@@ -201,10 +208,11 @@ export default {
       paginatedWhitelistEntries: [],
       selectedCSVFile: null,
       showCSVUploadModal: false,
-      whitelist: null,
+      collection: { _id: null },
       loading: true,
       sendingDataToSetRoot: false,
       showSetWhitelistModal: false,
+      setupWhitelistStatus: true,
     };
   },
   methods: {
@@ -221,9 +229,8 @@ export default {
       try {
         const formData = new FormData();
 
-        formData.append("collection_id", this.whitelist.collection_id);
+        formData.append("collection_id", this.collection._id);
         formData.append("user_id", this.$store.state.userStore.user.user_id);
-        formData.append("whitelist_id", this.$route.params.id);
         formData.append("csv", this.selectedCSVFile);
 
         const res = await uploadCSVInWhitelistEntry(formData);
@@ -244,11 +251,7 @@ export default {
     async fetchWhitelistEntries() {
       this.loading = true;
 
-      const res = await getWhitelistEntryById(
-        this.whitelist.collection_id,
-        100,
-        1
-      );
+      const res = await getWhitelistEntryById(this.collection._id, 100, 1);
 
       this.whitelistEntries = res.data.whitelistEntries;
       this.paginatedWhitelistEntries = this.whitelistEntries;
@@ -261,7 +264,7 @@ export default {
         this.sendingDataToSetRoot = true;
 
         const rootData = {
-          collection_id: this.whitelist.collection_id,
+          collection_id: this.collection._id,
         };
 
         const res = await setRoot(rootData);
@@ -293,13 +296,24 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
       }
     },
+    gotoSetupWhitelistPage() {
+      this.$router.push(
+        `/dashboard/whitelist/setup-whitelist/${this.collection._id}`
+      );
+    },
   },
   async mounted() {
+    let id = this.$route.params.id;
     const res = await getWhitelistById(this.$route.params.id);
 
-    this.whitelist = res.data.whitelist;
+    const whitelist = res.data.whitelist;
 
-    const collectionRes = await getCollection(this.whitelist.collection_id);
+    if (whitelist) {
+      this.setupWhitelistStatus = false;
+      id = whitelist.collection_id;
+    }
+
+    const collectionRes = await getCollection(id);
 
     this.collection = collectionRes.collection[0];
 
