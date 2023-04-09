@@ -26,10 +26,10 @@
         to="/dashboard/whitelist"
         @click.native="close"
       >
-        WhiteList
+        Whitelist
       </NuxtLink>
     </div>
-    <div class="tw-px-4 min-h-48 tw-d-block tw-my-3">
+    <!-- <div class="tw-px-4 min-h-48 tw-d-block tw-my-3">
       <NuxtLink
         class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-dashboard-active"
         to="/dashboard/verification"
@@ -37,7 +37,7 @@
       >
         Verification
       </NuxtLink>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts">
