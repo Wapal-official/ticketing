@@ -1,11 +1,11 @@
 <template>
   <div>
     <div
-      class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-pt-28 tw-pb-16 md:tw-px-16 lg:tw-flex-row lg:tw-gap-16"
+      class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-px-4 tw-py-8 md:tw-px-16 md:tw-items-center lg:tw-items-start lg:tw-flex-row lg:tw-gap-16"
       v-if="!loading"
     >
       <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full tw-group md:tw-w-[60%] lg:tw-w-[40%]"
+        class="tw-py-8 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full tw-group md:tw-w-[60%] lg:tw-w-[40%]"
       >
         <div
           class="tw-rounded-lg nft-preview-card-border tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear"
@@ -199,7 +199,17 @@
                 Discord
               </div>
               <div>
-                <div v-if="!joinedDiscordServer">
+                <div
+                  v-if="!joinedDiscordServer"
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+                >
+                  <a
+                    :href="`${whitelist.discord_server_url}`"
+                    target="_blank"
+                    class="tw-px-8 tw-py-2 !tw-text-white tw-bg-wapal-pink tw-rounded tw-font-semibold"
+                  >
+                    Join
+                  </a>
                   <button-with-loader
                     class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
                     @click.native.stop="checkIfUserHasJoinedDiscordServer"
@@ -261,7 +271,17 @@
               on Twitter
             </div>
             <div>
-              <div v-if="!followedTwitter">
+              <div
+                v-if="!followedTwitter"
+                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+              >
+                <a
+                  :href="`https://twitter.com/${whitelist.twitter}`"
+                  target="_blank"
+                  class="tw-px-8 tw-py-2 !tw-text-white tw-bg-wapal-pink tw-rounded tw-font-semibold"
+                >
+                  Follow
+                </a>
                 <button-with-loader
                   class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
                   @click.native.stop="checkIfUserHasFollowedTwitterAccount"
