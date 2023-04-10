@@ -53,13 +53,12 @@
             class="tw-w-full tw-rounded-md !tw-border-solid !tw-border !tw-border-wapal-gray tw-py-2 tw-px-8 tw-text-wapal-gray placeholder:tw-text-wapal-gray focus:tw-outline-none focus:!tw-border-wapal-gray"
             placeholder="Search Domain Names"
             v-model="domainName"
-            @focusout="showDomainName = true"
-            @focus="showDomainName = false"
-            @keyup.enter="showDomainName = true"
+            @focusout="findDomainName"
+            @keyup.enter="findDomainName"
           />
           <button
             class="tw-absolute tw-right-3 tw-top-[15%]"
-            @click="showDomainName = true"
+            @click="findDomainName"
             v-if="!showDomainName || !domainName"
           >
             <v-icon class="!tw-text-wapal-gray !tw-text-2xl"
@@ -82,22 +81,40 @@
             class="tw-w-full md:tw-w-[90%] tw-bg-wapal-gray tw-flex tw-flex-row tw-items-center tw-justify-between tw-py-4 tw-px-4 tw-rounded-md"
           >
             <div>
-              <div class="tw-text-lg">{{ domainName }}.Apt</div>
-              <div class="tw-text-green-800 tw-text-sm">Available</div>
+              <div class="tw-text-lg">{{ domainStatus.domainName }}.Apt</div>
+              <div
+                class="tw-text-green-800 tw-text-sm"
+                v-if="domainStatus.available"
+              >
+                Available
+              </div>
+              <div class="tw-text-red-800 tw-text-sm" v-else>Unavailable</div>
             </div>
-            <div>
-              <div class="tw-text-lg">5 APT</div>
+            <div v-if="domainStatus.available">
+              <div class="tw-text-lg">{{ domainStatus.price }} APT</div>
               <div class="tw-text-sm">Domain Cost</div>
             </div>
           </div>
           <button
             class="tw-full tw-rounded tw-text-white tw-bg-wapal-pink tw-py-4 tw-px-6"
+            v-if="domainStatus.available"
+            @click="buyDomainName"
           >
             BUY
           </button>
         </div>
       </div>
     </div>
+    <v-dialog
+      v-model="showConnectWalletModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <connect-wallet-modal
+        message="Please Connect your wallet to Mint"
+        @closeModal="showConnectWalletModal = false"
+        @walletConnected="displayWalletConnectedMessage"
+      />
+    </v-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -107,8 +124,79 @@ export default {
     return {
       domainName: null,
       showDomainName: false,
+      domainStatus: {
+        domainName: "",
+        available: true,
+        price: 0,
+      },
+      showConnectWalletModal: false,
       domain,
     };
+  },
+  methods: {
+    async findDomainName() {
+      if (this.domainName) {
+        const res = await this.$axios.post(
+          `https://indexer.mainnet.aptoslabs.com/v1/graphql`,
+          {
+            operationName: "current_ans_lookup",
+            variables: {
+              domain: this.domainName,
+              creator_address:
+                this.$store.state.walletStore.wallet.walletAddress,
+            },
+            query:
+              'query current_ans_lookup($domain: String, $creator_address: String) {\n  current_ans_lookup(where: {domain: {_eq: $domain}, subdomain: {_eq: ""}}) {\n    registered_address\n    expiration_timestamp\n    domain\n    all_token_ownerships(\n      where: {amount: {_gt: "0"}, creator_address: {_eq: $creator_address}}\n    ) {\n      owner_address\n      __typename\n    }\n    __typename\n  }\n}',
+          }
+        );
+
+        if (res.data.data.current_ans_lookup.length === 0) {
+          this.domainStatus.available = true;
+          this.domainStatus.price = 1;
+        } else {
+          this.domainStatus.available = false;
+          this.domainStatus.price = 0;
+        }
+
+        this.domainStatus.domainName = this.domainName;
+
+        this.showDomainName = true;
+      }
+    },
+    async buyDomainName() {
+      try {
+        if (!this.$store.state.walletStore.wallet.wallet) {
+          this.showConnectWalletModal = true;
+          return;
+        }
+        const res = await this.$store.dispatch(
+          "walletStore/buyDomainName",
+          this.domainStatus.domainName
+        );
+
+        if (res.success) {
+          this.$toast.showMessage({
+            message: `Domain Name Registered Successfully`,
+          });
+        } else {
+          this.$toast.showMessage({
+            message: "Domain Name Not Registerd",
+            error: true,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+      }
+    },
+
+    displayWalletConnectedMessage() {
+      this.showConnectWalletModal = false;
+
+      this.$toast.showMessage({
+        message: `${this.$store.state.walletStore.wallet.wallet} Wallet Connected Successfully`,
+      });
+    },
   },
 };
 </script>
