@@ -405,6 +405,21 @@ export default {
     SignupModal,
     ButtonWithLoader,
   },
+  async asyncData({ redirect, params }) {
+    try {
+      const res = await getWhitelistById(params.id);
+
+      const whitelist = res.data.whitelist;
+
+      const collectionRes = await getCollection(whitelist.collection_id);
+
+      const collection = collectionRes.collection[0];
+
+      return { collection, whitelist };
+    } catch {
+      redirect("/");
+    }
+  },
   head() {
     return {
       title: this.getTitle,
@@ -852,14 +867,6 @@ export default {
     },
   },
   async mounted() {
-    const res = await getWhitelistById(this.$route.params.id);
-
-    this.whitelist = res.data.whitelist;
-
-    const collectionRes = await getCollection(this.whitelist.collection_id);
-
-    this.collection = collectionRes.collection[0];
-
     this.showEndInTimer = true;
 
     if (!this.whitelist.twitter) {
