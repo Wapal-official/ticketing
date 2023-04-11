@@ -20,7 +20,12 @@
         <explore-list-item name="All NFT" @close="close" />
         <explore-list-item name="Live" @close="close" />
         <explore-list-item name="Upcoming" @close="close" />
-        <explore-list-item name="Domain Name" :last="true" @close="close" />
+        <explore-list-item
+          name="Domain Name"
+          link="/domain-name"
+          :last="true"
+          @close="close"
+        />
       </v-list-group>
     </div>
     <connect-wallet @close="close" class="tw-mt-8 lg:tw-mt-0" />
