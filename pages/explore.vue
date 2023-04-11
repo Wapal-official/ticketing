@@ -57,14 +57,6 @@
           />
         </div>
       </v-tab-item>
-      <v-tabs-items
-        v-model="exploreTab"
-        id="explore-tab-items"
-        class="tw-py-8"
-        v-if="!loading && collections[0]._id !== null"
-        @change="tabChanged(exploreTab)"
-      >
-      </v-tabs-items>
     </v-tabs-items>
     <div class="py-16" v-else>
       <loading />
@@ -84,7 +76,6 @@ export default {
         { id: 0, title: "All NFT" },
         { id: 1, title: "Live" },
         { id: 2, title: "Upcoming" },
-        { id: 3, title: "Domain Name" },
       ],
       collections: [{ _id: null }],
       liveCollections: [{ _id: null }],

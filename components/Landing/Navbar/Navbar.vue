@@ -27,6 +27,7 @@
               <explore-list-item name="Upcoming" @close="close" />
               <explore-list-item
                 name="Domain Name"
+                link="/domain-name"
                 :last="true"
                 @close="close"
               />
