@@ -4,7 +4,7 @@
     v-if="!loading"
     :to="
       type === 'landing'
-        ? `/whitelist/${whitelist?._id}`
+        ? `/whitelist/${whitelist?._id}/${collection.username}`
         : `/dashboard/whitelist/${whitelist?._id}`
     "
   >
@@ -88,7 +88,7 @@ export default {
   },
   data() {
     return {
-      collection: { _id: "", name: "", image: "" },
+      collection: { _id: "", name: "", image: "", username: "" },
       loading: true,
       spots: { totalSpots: 0, occupiedSpots: 0, spotPercent: 0 },
     };
