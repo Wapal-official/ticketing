@@ -391,7 +391,7 @@ import {
   getWhitelistEntryById,
 } from "@/services/WhitelistService";
 
-import { getCollection } from "@/services/CollectionService";
+import { getCollectionByUsername } from "@/services/CollectionService";
 import { discordRequest } from "@/services/DiscordInterceptor";
 
 import moment from "moment";
@@ -405,17 +405,13 @@ export default {
     SignupModal,
     ButtonWithLoader,
   },
-  async asyncData({ redirect, params }) {
+  async asyncData({ redirect, params }: { redirect: any; params: any }) {
     try {
-      const res = await getWhitelistById(params.id);
+      const res = await getCollectionByUsername(params.name);
 
-      const whitelist = res.data.whitelist;
+      const collection = res.data.collection[0];
 
-      const collectionRes = await getCollection(whitelist.collection_id);
-
-      const collection = collectionRes.collection[0];
-
-      return { collection, whitelist };
+      return { collection };
     } catch {
       redirect("/");
     }
@@ -867,6 +863,10 @@ export default {
     },
   },
   async mounted() {
+    const res = await getWhitelistById(this.$route.params.id);
+
+    this.whitelist = res.data.whitelist;
+
     this.showEndInTimer = true;
 
     if (!this.whitelist.twitter) {
