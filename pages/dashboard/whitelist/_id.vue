@@ -150,14 +150,14 @@
 <script lang="ts">
 import Loading from "@/components/Reusable/Loading.vue";
 import {
-  getWhitelistById,
+  getWhitelistByUsername,
   getWhitelistEntryById,
   setRoot,
   uploadCSVInWhitelistEntry,
 } from "@/services/WhitelistService";
 
 import moment from "moment";
-import { getCollection } from "@/services/CollectionService";
+import { getCollectionByUsername } from "@/services/CollectionService";
 export default {
   components: { Loading },
   layout: "dashboard",
@@ -303,19 +303,17 @@ export default {
     },
   },
   async mounted() {
-    let id = this.$route.params.id;
-    const res = await getWhitelistById(this.$route.params.id);
+    const res = await getWhitelistByUsername(this.$route.params.id);
 
     const whitelist = res.data.whitelist;
 
     if (whitelist) {
       this.setupWhitelistStatus = false;
-      id = whitelist.collection_id;
     }
 
-    const collectionRes = await getCollection(id);
+    const collectionRes = await getCollectionByUsername(this.$route.params.id);
 
-    this.collection = collectionRes.collection[0];
+    this.collection = collectionRes.data.collection[0];
 
     await this.fetchWhitelistEntries();
   },
