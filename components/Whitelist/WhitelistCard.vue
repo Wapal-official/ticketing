@@ -5,7 +5,7 @@
     :to="
       type === 'landing'
         ? `/whitelist/${collection.username}`
-        : `/dashboard/whitelist/${whitelist?._id}`
+        : `/dashboard/whitelist/${collection?.username}`
     "
   >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full">
