@@ -396,4 +396,24 @@ export const actions = {
 
     return transaction;
   },
+
+  async buyDomainName({ state }: { state: any }, domainName: string) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    const buyDomainScript = {
+      function:
+        "0x867ed1f6bf916171b1de3ee92849b8978b7d1b9e0a8cc982a3d19d535dfd9c0c::domains::register_domain",
+      type_arguments: [],
+      arguments: [domainName, 1],
+      type: "entry_function_payload",
+    };
+
+    const transaction = await wallet.signAndSubmitTransaction(buyDomainScript);
+
+    const res = await client.waitForTransactionWithResult(transaction.hash);
+
+    return res;
+  },
 };
