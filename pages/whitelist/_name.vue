@@ -386,7 +386,7 @@ import SignupModal from "@/components/Signup/SignupModal.vue";
 import ButtonWithLoader from "@/components/Button/ButtonWithLoader.vue";
 
 import {
-  getWhitelistById,
+  getWhitelistByUsername,
   createWhitelistEntry,
   getWhitelistEntryById,
 } from "@/services/WhitelistService";
@@ -863,7 +863,7 @@ export default {
     },
   },
   async mounted() {
-    const res = await getWhitelistById(this.$route.params.id);
+    const res = await getWhitelistByUsername(this.$route.params.name);
 
     this.whitelist = res.data.whitelist;
 

@@ -19,7 +19,7 @@
             v-for="item in items"
             :key="item._id"
             class="tw-cursor-pointer hover:!tw-bg-black/60"
-            @click="redirectToWhitelist(item._id)"
+            @click="redirectToWhitelist(item.username)"
           >
             <td
               class="!tw-border-none tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-8"
@@ -182,6 +182,7 @@ export default {
 
             return {
               _id: whitelist._id,
+              username: collection.username,
               collectionName: collection.name,
               twitter: collection.twitter,
               discord: collection.discord,
@@ -194,6 +195,7 @@ export default {
             const id = Math.floor(Math.random() * 100);
             return {
               _id: id,
+              username: "",
               collectionName: "",
               twitter: "",
               discord: "",

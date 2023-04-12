@@ -87,3 +87,11 @@ export const setRoot = async (rootData: any) => {
 
   return res;
 };
+
+export const getWhitelistByUsername = async (username: string) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/whitelist/${username}`
+  );
+
+  return res;
+};
