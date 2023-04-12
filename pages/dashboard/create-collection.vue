@@ -189,19 +189,11 @@
           >
             <label>Whitelist Sale Time</label>
             <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field
+              <date-picker
                 v-model="collection.whitelist_sale_time"
-                outlined
-                single-line
-                color="#fff"
-                hide-details
-                clearable
-                class="dashboard-input tw-w-full focus:tw-outline-none"
-                type="datetime-local"
-                ref="whitelistSaleTime"
-                :disabled="!whitelistEnabled"
-              >
-              </v-text-field>
+                type="datetime"
+                placeholder="Select Whitelist Sale time"
+              ></date-picker>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
@@ -216,17 +208,11 @@
               >Public Sale Time</label
             >
             <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field
+              <date-picker
                 v-model="collection.public_sale_time"
-                outlined
-                single-line
-                color="#fff"
-                hide-details
-                clearable
-                class="dashboard-input focus:tw-outline-none"
-                type="datetime-local"
-              >
-              </v-text-field>
+                type="datetime"
+                placeholder="Select Public Sale time"
+              ></date-picker>
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
@@ -410,6 +396,9 @@ import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 import { createCollection } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
+
 import AWS from "aws-sdk";
 
 extend("required", {
@@ -488,7 +477,12 @@ extend("descriptionLength", {
 
 export default {
   layout: "dashboard",
-  components: { ValidationProvider, ValidationObserver, GradientBorderButton },
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+    GradientBorderButton,
+    DatePicker,
+  },
   data() {
     return {
       collection: {
@@ -510,7 +504,7 @@ export default {
         resource_account: null,
         txnhash: null,
         un: "",
-        candy_id:process.env.CANDY_MACHINE_ID,
+        candy_id: process.env.CANDY_MACHINE_ID,
       },
       message: "",
       image: { name: null },
@@ -715,5 +709,26 @@ export default {
 .image-collection {
   display: none;
   background-color: #878787;
+}
+
+.mx-input-wrapper,
+.mx-datepicker {
+  width: 100% !important;
+}
+
+.mx-input {
+  width: 100% !important;
+  background: #0e0d0d !important;
+  border: none !important;
+  height: 50px !important;
+  color: #d9d9d9 !important;
+  font-size: 1em;
+  border-radius: 7px !important;
+}
+
+.mx-icon-calendar,
+.mx-icon-clear,
+.mx-input::placeholder {
+  color: #d9d9d9 !important;
 }
 </style>

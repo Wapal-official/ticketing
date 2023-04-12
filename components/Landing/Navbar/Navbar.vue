@@ -24,7 +24,13 @@
             <v-list class="!tw-bg-modal-gray !tw-min-w-[200px]">
               <explore-list-item name="All NFT" @close="close" />
               <explore-list-item name="Live" @close="close" />
-              <explore-list-item name="Upcoming" :last="true" @close="close" />
+              <explore-list-item name="Upcoming" @close="close" />
+              <explore-list-item
+                name="Domain Name"
+                link="/domain-name"
+                :last="true"
+                @close="close"
+              />
             </v-list>
           </v-menu>
         </div>

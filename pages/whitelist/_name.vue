@@ -386,12 +386,12 @@ import SignupModal from "@/components/Signup/SignupModal.vue";
 import ButtonWithLoader from "@/components/Button/ButtonWithLoader.vue";
 
 import {
-  getWhitelistById,
+  getWhitelistByUsername,
   createWhitelistEntry,
   getWhitelistEntryById,
 } from "@/services/WhitelistService";
 
-import { getCollection } from "@/services/CollectionService";
+import { getCollectionByUsername } from "@/services/CollectionService";
 import { discordRequest } from "@/services/DiscordInterceptor";
 
 import moment from "moment";
@@ -404,6 +404,54 @@ export default {
     ConnectWalletModal,
     SignupModal,
     ButtonWithLoader,
+  },
+  async asyncData({ redirect, params }: { redirect: any; params: any }) {
+    try {
+      const res = await getCollectionByUsername(params.name);
+
+      const collection = res.data.collection[0];
+
+      return { collection };
+    } catch {
+      redirect("/");
+    }
+  },
+  head() {
+    return {
+      title: this.getTitle,
+      meta: [
+        { hid: "twitter:title", name: "twitter:title", content: this.getTitle },
+        {
+          hid: "twitter:card",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        { hid: "twitter:title", name: "twitter:title", content: this.getTitle },
+        {
+          hid: "twitter:image",
+          name: "twitter:image",
+          content: this.collection.image,
+        },
+        {
+          hid: "twitter:description",
+          name: "twitter:description",
+          content: this.collection.description,
+        },
+        { hid: "og-type", property: "og:type", content: "website" },
+        {
+          hid: "og-image",
+          property: "og:image",
+          content: this.collection.image,
+        },
+        { hid: "og:title", property: "og:title", content: this.getTitle },
+
+        {
+          hid: "description",
+          name: "description",
+          content: this.collection.description,
+        },
+      ],
+    };
   },
   data() {
     return {
@@ -850,15 +898,23 @@ export default {
       }
       return false;
     },
+    getTitle() {
+      return this.collection.name
+        ? "Whitelist - " + this.collection.name
+        : "Title";
+    },
+
+    getImage() {
+      return this.collection.image ? this.collection.image : "";
+    },
+    getDescription() {
+      return this.collection.description ? this.collection.description : "";
+    },
   },
   async mounted() {
-    const res = await getWhitelistById(this.$route.params.id);
+    const res = await getWhitelistByUsername(this.$route.params.name);
 
     this.whitelist = res.data.whitelist;
-
-    const collectionRes = await getCollection(this.whitelist.collection_id);
-
-    this.collection = collectionRes.collection[0];
 
     this.showEndInTimer = true;
 
