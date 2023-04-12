@@ -9,13 +9,13 @@ const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const APTOS_API_KEY = process.env.APTOS_API_KEY;
 
-let discordRedirectURI = "http://localhost:3000/discord/token";
+let discordRedirectURI = "https://staging.wapal.io/discord/token";
 
-// if (API_URL.includes("staging")) {
-//   discordRedirectURI = "https://staging.wapal.io/discord/token";
-// } else {
-//   discordRedirectURI = "https://wapal.io/discord/token";
-// }
+if (API_URL.includes("staging")) {
+  discordRedirectURI = "https://staging.wapal.io/discord/token";
+} else {
+  discordRedirectURI = "https://wapal.io/discord/token";
+}
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
