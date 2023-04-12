@@ -4,7 +4,7 @@
     v-if="!loading"
     :to="
       type === 'landing'
-        ? `/whitelist/${whitelist?._id}/${collection.username}`
+        ? `/whitelist/${collection.username}`
         : `/dashboard/whitelist/${whitelist?._id}`
     "
   >
