@@ -118,7 +118,7 @@ export default {
     },
     getRedirectLink() {
       if (this.redirectTo === "whitelist") {
-        return `/dashboard/whitelist/${this.collection._id}`;
+        return `/dashboard/whitelist/${this.collection.username}`;
       }
 
       return `/nft/${this.collection.username}`;
