@@ -119,31 +119,69 @@
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
           >
             <div
-              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
-            >
-              <div v-if="!showWhitelistSaleTimer && !showPublicSaleTimer">
-                Public Sale
-              </div>
-              <h6
-                class="tw-capitalize tw-text-white"
-                v-if="getCurrentPrice != 0"
-              >
-                price {{ getCurrentPrice }} apt
-              </h6>
-              <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
-            </div>
-            <button
-              class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-px-2 tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
+              class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6"
               :class="{
-                '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
+                'md:tw-flex-row md:tw-items-end md:tw-justify-between':
+                  !showWhitelistSaleTimer && !showPublicSaleTimer,
+                'md:tw-flex-col md:tw-items-start md:tw-justify-start tw-gap-6':
+                  showPublicSaleTimer,
               }"
-              @click="mintCollection"
-              :disabled="minting || collection.status.sold_out"
             >
-              <v-progress-circular indeterminate v-if="minting" color="white">
-              </v-progress-circular>
-              {{ !collection.status.sold_out ? "Mint" : "Sold Out" }}
-            </button>
+              <div
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+              >
+                <h6
+                  class="tw-capitalize tw-text-white"
+                  v-if="getCurrentPrice != 0"
+                >
+                  price {{ getCurrentPrice }} apt
+                </h6>
+                <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
+                <div
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white"
+                >
+                  <button
+                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold"
+                    @click="decreaseNumberOfNft"
+                  >
+                    -
+                  </button>
+                  <div
+                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold"
+                  >
+                    {{ numberOfNft }}
+                  </div>
+                  <button
+                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold"
+                    @click="increaseNumberOfNft"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+              <button
+                class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-px-2 tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
+                :class="{
+                  '!tw-w-[30%]':
+                    !showWhitelistSaleTimer && !showPublicSaleTimer,
+                }"
+                @click="mintCollection"
+                :disabled="minting || collection.status.sold_out"
+              >
+                <v-progress-circular indeterminate v-if="minting" color="white">
+                </v-progress-circular>
+                {{ !collection.status.sold_out ? "Mint" : "Sold Out" }}
+              </button>
+              <div
+                class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-6"
+                v-if="!showWhitelistSaleTimer && !showPublicSaleTimer"
+              >
+                <div>Public Sale</div>
+                <div v-if="checkWhitelistSale">
+                  No of Whitelisted Users: {{ whitelistNumber }}
+                </div>
+              </div>
+            </div>
           </div>
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
@@ -241,6 +279,7 @@ import {
   getCollectionByUsername,
   setSoldOut,
 } from "@/services/CollectionService";
+import { getWhitelistEntryById } from "@/services/WhitelistService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 
@@ -325,6 +364,8 @@ export default {
         mintedPercent: 0,
       },
       progressInterval: null,
+      whitelistNumber: 0,
+      numberOfNft: 1,
     };
   },
   methods: {
@@ -460,6 +501,23 @@ export default {
         resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
       }, 5000);
     },
+    increaseNumberOfNft() {
+      if (
+        this.numberOfNft >=
+        this.resource.total_supply - this.resource.minted
+      ) {
+        return;
+      } else {
+        this.numberOfNft++;
+      }
+    },
+    decreaseNumberOfNft() {
+      if (this.numberOfNft === 1) {
+        return;
+      } else {
+        this.numberOfNft--;
+      }
+    },
   },
   computed: {
     getCurrentPrice() {
@@ -504,11 +562,24 @@ export default {
     getDescription() {
       return this.collection.description ? this.collection.description : "";
     },
+    checkWhitelistSale() {
+      const whitelistTime = new Date(
+        this.collection.candyMachine_id.whitelist_sale_time
+      ).getTime();
+      const publicSaleTime = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      ).getTime();
+
+      if (publicSaleTime - whitelistTime === 1000) {
+        return false;
+      } else {
+        return true;
+      }
+    },
   },
   async mounted() {
     if (this.collection) {
-      this.whitelistSaleDate = this.collection.candyMachine_id
-        .whitelist_sale_time
+      this.whitelistSaleDate = this.checkWhitelistSale
         ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
         : null;
 
@@ -540,6 +611,12 @@ export default {
       ) {
         this.collection.status.sold_out = true;
         await setSoldOut(this.collection._id);
+      }
+
+      if (this.checkWhitelistSale) {
+        const whitelistRes = await getWhitelistEntryById(this.collection._id);
+
+        this.whitelistNumber = whitelistRes.data.whitelistEntries.length;
       }
 
       this.loading = false;
