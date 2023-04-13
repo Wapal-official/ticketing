@@ -20,6 +20,7 @@
           class="tw-hidden tw-w-0 tw-h-0"
           type="file"
           accept=".csv"
+          disabled
         />
       </label>
     </form>

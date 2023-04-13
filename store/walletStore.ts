@@ -443,27 +443,32 @@ export const actions = {
       throw new Error("Please Change Wallet To Petra for Bulk Mint");
     }
 
+    if (!publicMint && mintNumber !== 1) {
+      throw new Error("Bulk mint does not current support Whitelist mint");
+    }
+
     try {
       if (mintNumber === 1) {
-        await dispatch("mintCollection", {
+        const res = await dispatch("mintCollection", {
           resourceAccount,
           publicMint,
           collectionId,
           candyMachineId,
         });
-      } else {
-        // const sendToSelfBytecode =
-        //   "a11ceb0b060000000501000203020505070c071319082c200000000103020003060c030501030002060c050c63616e64796d616368696e650b6d696e745f73637269707425d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0000001120600000000000000000c030a030a0123040f05070a000a0211000b03060100000000000000160c0305020b000102";
 
+        return res;
+      } else {
         const sendToSelfBytecode =
-          "a11ceb0b060000000601000203020505070b071219082b20064b220000000103020002060c0301030002060c050c63616e64796d616368696e650b6d696e745f73637269707425d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f005201de3ea8298bc4952cbdc11548d9903bbc79f40bd406b0854eeffad1c337e0da9000001120600000000000000000c020a020a0123040f05070a00070011000b02060100000000000000160c0205020b000102";
+          "a11ceb0b060000000501000203020505070c071319082c200000000103020003060c030501030002060c050c63616e64796d616368696e650b6d696e745f73637269707425d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0000001120600000000000000000c030a030a0123040f05070a000a0211000b03060100000000000000160c0305020b000102";
 
         function buildSendToSelfScriptPayload() {
           const bytecode = new HexString(sendToSelfBytecode).toUint8Array();
 
           const args: any = [
-            new TxnBuilderTypes.TransactionArgumentU64(BigInt(1000)),
-            // TxnBuilderTypes.AccountAddress.fromHex(resourceAccount),
+            new TxnBuilderTypes.TransactionArgumentU64(BigInt(mintNumber)),
+            new TxnBuilderTypes.TransactionArgumentAddress(
+              TxnBuilderTypes.AccountAddress.fromHex(resourceAccount)
+            ),
           ];
           const script = new TxnBuilderTypes.Script(bytecode, [], args);
           return new TxnBuilderTypes.TransactionPayloadScript(script);
@@ -471,11 +476,11 @@ export const actions = {
 
         const payload: any = buildSendToSelfScriptPayload();
 
-        const pendingTransaction = await wallet.signAndSubmitTransaction(
-          payload
-        );
+        const transaction = await wallet.signAndSubmitTransaction(payload);
 
-        console.log(pendingTransaction);
+        const res = await client.waitForTransactionWithResult(transaction.hash);
+
+        return res;
       }
     } catch (error) {
       throw error;
