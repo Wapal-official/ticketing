@@ -10,17 +10,19 @@
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4"
       v-else
     >
-      <div
-        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:grid-rows-1 lg:tw-grid-cols-3 lg:tw-grid-rows-1 2xl:tw-grid-cols-4"
-      >
-        <nft-card
-          v-for="(collection, index) in upcomingCollection"
-          :key="collection._id"
-          :collection="collection"
-          :class="{
-            'lg:tw-hidden 2xl:tw-flex': index === 3,
-          }"
-        />
+      <div class="tw-flex tw-flex-row tw-flex-wrap tw-w-full">
+        <div
+          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:grid-rows-1 lg:tw-grid-cols-3 lg:tw-grid-rows-1 2xl:tw-grid-cols-4"
+        >
+          <nft-card
+            v-for="(collection, index) in upcomingCollection"
+            :key="collection._id"
+            :collection="collection"
+            :class="{
+              'lg:tw-hidden 2xl:tw-flex': index === 3,
+            }"
+          />
+        </div>
       </div>
       <gradient-border-button
         @click.native="goToExplorePage"
