@@ -596,7 +596,7 @@ export default {
             this.collection.sold_out = true;
           }
 
-          this.numberOfNft = 0;
+          this.numberOfNft = 1;
         } else {
           this.$toast.showMessage({
             message: "Collection Not Minted",
