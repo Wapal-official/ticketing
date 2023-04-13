@@ -141,19 +141,22 @@
                   class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white"
                 >
                   <button
-                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold"
+                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold disabled:tw-cursor-not-allowed"
                     @click="decreaseNumberOfNft"
+                    :disabled="showPublicSaleTimer"
                   >
                     -
                   </button>
-                  <div
-                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold"
-                  >
-                    {{ numberOfNft }}
-                  </div>
+                  <input
+                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-24 tw-max-w-32 disabled:tw-cursor-not-allowed"
+                    v-model="numberOfNft"
+                    @input="checkNumberOfNft"
+                    :disabled="showPublicSaleTimer"
+                  />
                   <button
-                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold"
+                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold disabled:tw-cursor-not-allowed"
                     @click="increaseNumberOfNft"
+                    :disabled="showPublicSaleTimer"
                   >
                     +
                   </button>
@@ -165,7 +168,7 @@
                   '!tw-w-[30%]':
                     !showWhitelistSaleTimer && !showPublicSaleTimer,
                 }"
-                @click="mintCollection"
+                @click="mintBulkCollection"
                 :disabled="minting || collection.status.sold_out"
               >
                 <v-progress-circular indeterminate v-if="minting" color="white">
@@ -271,6 +274,16 @@
         @walletConnected="displayWalletConnectedMessage"
       />
     </v-dialog>
+    <v-dialog
+      v-model="showErrorPopup"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <div
+        class="tw-w-full tw-bg-modal-gray tw-text-white tw-px-4 tw-py-4 tw-rounded"
+      >
+        {{ errorMessage }}
+      </div>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -366,6 +379,8 @@ export default {
       progressInterval: null,
       whitelistNumber: 0,
       numberOfNft: 1,
+      showErrorPopup: false,
+      errorMessage: null,
     };
   },
   methods: {
@@ -508,6 +523,10 @@ export default {
       ) {
         return;
       } else {
+        if (this.numberOfNft >= 500) {
+          this.numberOfNft = 500;
+          return;
+        }
         this.numberOfNft++;
       }
     },
@@ -516,6 +535,80 @@ export default {
         return;
       } else {
         this.numberOfNft--;
+      }
+    },
+    checkNumberOfNft() {
+      if (isNaN(this.numberOfNft)) {
+        this.$toast.showMessage({
+          message: "Please Enter a number",
+          error: true,
+        });
+        this.numberOfNft = 1;
+        return;
+      }
+
+      if (this.numberOfNft < 1 && this.numberOfNft !== "") {
+        this.numberOfNft = 1;
+        return;
+      }
+
+      if (
+        this.numberOfNft > 500 ||
+        this.numberOfNft >= this.resource.total_supply - this.resource.minted
+      ) {
+        this.numberOfNft = 500;
+        return;
+      }
+    },
+    async mintBulkCollection() {
+      try {
+        if (!this.$store.state.walletStore.wallet.wallet) {
+          this.showConnectWalletModal = true;
+          return;
+        }
+
+        this.minting = true;
+
+        const res = await this.$store.dispatch("walletStore/mintBulk", {
+          resourceAccount: this.collection.candyMachine_id.resource_account,
+          publicMint: !this.checkPublicSaleTimer(),
+          collectionId: this.collection._id,
+          candyMachineId: this.collection.candyMachine_id.candy_id,
+          mintNumber: this.numberOfNft,
+        });
+
+        if (res.success) {
+          this.$toast.showMessage({
+            message: `${this.collection.name} Minted Successfully`,
+          });
+
+          const res = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfCollection",
+            {
+              resourceAccountAddress:
+                this.collection.candyMachine_id.resource_account,
+              candyMachineId: this.collection.candyMachine_id.candy_id,
+            }
+          );
+
+          if (res.total_supply === res.minted) {
+            await setSoldOut(this.collection._id);
+            this.collection.sold_out = true;
+          }
+
+          this.numberOfNft = 0;
+        } else {
+          this.$toast.showMessage({
+            message: "Collection Not Minted",
+            error: true,
+          });
+        }
+
+        this.minting = false;
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+        this.minting = false;
       }
     },
   },

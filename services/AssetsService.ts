@@ -75,3 +75,17 @@ export const deleteFolderOnServer = async (userId: string) => {
 
   return res;
 };
+
+export const uploadMetadataCSV = async (formData: any) => {
+  const config = {
+    headers: { "content-type": "multipart/form-data" },
+  };
+
+  const res = await publicRequest.post(
+    `/api/uploader/metadata`,
+    formData,
+    config
+  );
+
+  return res;
+};
