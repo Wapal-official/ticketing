@@ -27,8 +27,17 @@ export const getCollection = async (collectionId: string) => {
   return res.data;
 };
 
-export const createCollection = async (collection: any) => {
-  const res = await publicRequest.post(`/api/collection/create/`, collection);
+export const createCollection = async (formData: any) => {
+  const config = {
+    headers: { "content-type": "multipart/form-data" },
+  };
+
+  const res = await publicRequest.post(
+    `/api/collection/create/`,
+    formData,
+    config
+  );
+
   return res;
 };
 
