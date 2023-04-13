@@ -39,6 +39,7 @@
     "vue-country-region-select": "^2.0.16",
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10",
+    "vue-tour": "^2.0.0",
     "vue2-datepicker": "^3.11.1",
     "vuetify": "^2.6.10",
     "vuex-module-decorators": "^2.0.0",
