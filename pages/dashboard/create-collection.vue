@@ -555,14 +555,6 @@ export default {
 
         const tempCollection = this.collection;
 
-        const imageUploaded = await this.uploadImage();
-
-        if (!imageUploaded) {
-          this.$refs["imageSelect"].scrollIntoView({ behavior: "smooth" });
-          this.submitting = false;
-          return;
-        }
-
         tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
           ? new Date(tempCollection.whitelist_sale_time).toISOString()
           : null;
@@ -571,7 +563,35 @@ export default {
           tempCollection.public_sale_time
         ).toISOString();
 
-        await createCollection(tempCollection);
+        const formData = new FormData();
+
+        formData.append("name", tempCollection.name);
+        formData.append("description", tempCollection.description);
+        formData.append(
+          "royalty_percentage",
+          tempCollection.royalty_percentage
+        );
+        formData.append(
+          "royalty_payee_address",
+          tempCollection.royalty_payee_address
+        );
+        formData.append(
+          "whitelist_sale_time",
+          tempCollection.whitelist_sale_time
+        );
+        formData.append("public_sale_time", tempCollection.public_sale_time);
+        formData.append("public_sale_price", tempCollection.public_sale_price);
+        formData.append("whitelist_price", tempCollection.whitelist_price);
+        formData.append("supply", tempCollection.supply);
+        formData.append("twitter", tempCollection.twitter);
+        formData.append("discord", tempCollection.discord);
+        formData.append("website", tempCollection.website);
+        formData.append("resource_account", tempCollection.resource_account);
+        formData.append("txnhash", tempCollection.txnhash);
+        formData.append("candy_id", tempCollection.candy_id);
+        formData.append("image", this.image);
+
+        await createCollection(formData);
 
         this.submitting = false;
 
