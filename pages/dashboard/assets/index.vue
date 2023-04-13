@@ -128,18 +128,13 @@ export default {
           params: {
             placement: 'right',
             highlight: true,
-            clickable: false
           },
         },
         {
           target: '.asset1',
           content: 'Upload your images and metadata under "Assets"',
           params: {
-            offset: 10,
             highlight: true,
-            disableInteraction: false,
-            backdrop: true,
-            backdropClass: 'tour-backdrop'
           }
         },
         {
@@ -295,13 +290,11 @@ export default {
   },
   mounted() {
     this.mapFolders();
-    this.$tours['myTour'].start();
 
-    // if (localStorage.getItem('seen_tour') === null) {
-    //   this.$tours['myTour'].start();
-    //   localStorage.setItem('seen_tour', 'true');
-    // }
-
+    if (localStorage.getItem('seen_asset_tour') === null) {
+      this.$tours['myTour'].start();
+      localStorage.setItem('seen_asset_tour', 'true');
+    }
   },
 };
 </script>

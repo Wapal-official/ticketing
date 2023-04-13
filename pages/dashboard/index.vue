@@ -13,7 +13,7 @@
         :collection="collection" />
     </div>
     <loading v-else />
-    <v-tour name="myTour" :steps="steps"></v-tour>
+    <v-tour name="myTour2" :steps="steps"></v-tour>
   </div>
 </template>
 
@@ -46,9 +46,6 @@ export default {
           content: ' Create your own launchpad on “Create your collection',
           params: {
             highlight: true,
-            disableInteraction: false,
-            backdrop: true,
-            backdropClass: 'tour-backdrop'
           },
         },
         {
@@ -63,9 +60,6 @@ export default {
           params: {
             placement: 'right',
             highlight: true,
-            disableInteraction: false,
-            backdrop: true,
-            backdropClass: 'tour-backdrop'
           },
         },
       ],
@@ -82,7 +76,11 @@ export default {
 
     this.loading = false;
 
-    this.$tours['myTour'].start();
+    if (localStorage.getItem('seen_collection_tour') === null) {
+      this.$tours['myTour2'].start();
+      localStorage.setItem('seen_collection_tour', 'true');
+    }
+
 
   },
 };
