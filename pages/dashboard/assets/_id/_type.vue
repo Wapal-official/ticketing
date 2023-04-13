@@ -661,7 +661,7 @@ export default {
           );
         }
 
-        const batchLoop = Math.ceil(files.length / 50);
+        const batchLoop = Math.ceil(files.length / 20);
 
         let responseCount = 0;
         let response = null;
@@ -669,8 +669,8 @@ export default {
         this.serverUploadPercent = 0;
 
         for (let i = 1; i <= batchLoop; i++) {
-          const endIndex = i * 50;
-          const startIndex = endIndex - 50;
+          const endIndex = i * 20;
+          const startIndex = endIndex - 20;
 
           const formData = new FormData();
 

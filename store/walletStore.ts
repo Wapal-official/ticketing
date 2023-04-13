@@ -14,7 +14,7 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
-import { AptosClient } from "aptos";
+import { AptosClient, BCS, HexString, TxnBuilderTypes } from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
 
@@ -244,45 +244,47 @@ export const actions = {
       await connectWallet(state.wallet.wallet);
     }
 
-    var create_mint_script: any;
-    if (publicMint) {
-      create_mint_script = {
-        type: "entry_function_payload",
-        function: candyMachineId + "::candymachine::mint_script",
-        type_arguments: [],
-        arguments: [resourceAccount],
-      };
-    } else {
-      await dispatch("getProof", {
-        collectionId: collectionId,
-        walletAddress: state.wallet.walletAddress,
-      });
-
-      const proofs: any[] = [];
-      state.proof.map((proof: any) => {
-        proofs.push(proof.data);
-      });
-      if (state.proof.length > 0) {
+    try {
+      var create_mint_script: any;
+      if (publicMint) {
         create_mint_script = {
           type: "entry_function_payload",
-          function: candyMachineId + "::candymachine::mint_from_merkle",
+          function: candyMachineId + "::candymachine::mint_script",
           type_arguments: [],
-          arguments: [resourceAccount, proofs, state.mint_limit],
+          arguments: [resourceAccount],
         };
       } else {
-        throw new Error(
-          "You are not whitelisted petraAddressfor this collection"
-        );
+        await dispatch("getProof", {
+          collectionId: collectionId,
+          walletAddress: state.wallet.walletAddress,
+        });
+
+        const proofs: any[] = [];
+        state.proof.map((proof: any) => {
+          proofs.push(proof.data);
+        });
+        if (state.proof.length > 0) {
+          create_mint_script = {
+            type: "entry_function_payload",
+            function: candyMachineId + "::candymachine::mint_from_merkle",
+            type_arguments: [],
+            arguments: [resourceAccount, proofs, state.mint_limit],
+          };
+        } else {
+          throw new Error("You are not whitelisted for this collection");
+        }
       }
+
+      const transaction = await wallet.signAndSubmitTransaction(
+        create_mint_script
+      );
+
+      const res = await client.waitForTransactionWithResult(transaction.hash);
+
+      return res;
+    } catch (error) {
+      throw error;
     }
-
-    const transaction = await wallet.signAndSubmitTransaction(
-      create_mint_script
-    );
-
-    const res = await client.waitForTransactionWithResult(transaction.hash);
-
-    return res;
   },
 
   async checkBalanceForFolderUpload({ dispatch }: { dispatch: any }) {
@@ -415,5 +417,68 @@ export const actions = {
     const res = await client.waitForTransactionWithResult(transaction.hash);
 
     return res;
+  },
+
+  async mintBulk(
+    { state, dispatch }: { state: any; dispatch: any },
+    {
+      resourceAccount,
+      publicMint,
+      collectionId,
+      candyMachineId,
+      mintNumber,
+    }: {
+      resourceAccount: string;
+      publicMint: boolean;
+      collectionId: string;
+      candyMachineId: string;
+      mintNumber: number;
+    }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    if (state.wallet.wallet !== "Petra" && mintNumber > 1) {
+      throw new Error("Please Change Wallet To Petra for Bulk Mint");
+    }
+
+    try {
+      if (mintNumber === 1) {
+        await dispatch("mintCollection", {
+          resourceAccount,
+          publicMint,
+          collectionId,
+          candyMachineId,
+        });
+      } else {
+        // const sendToSelfBytecode =
+        //   "a11ceb0b060000000501000203020505070c071319082c200000000103020003060c030501030002060c050c63616e64796d616368696e650b6d696e745f73637269707425d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0000001120600000000000000000c030a030a0123040f05070a000a0211000b03060100000000000000160c0305020b000102";
+
+        const sendToSelfBytecode =
+          "a11ceb0b060000000601000203020505070b071219082b20064b220000000103020002060c0301030002060c050c63616e64796d616368696e650b6d696e745f73637269707425d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f005201de3ea8298bc4952cbdc11548d9903bbc79f40bd406b0854eeffad1c337e0da9000001120600000000000000000c020a020a0123040f05070a00070011000b02060100000000000000160c0205020b000102";
+
+        function buildSendToSelfScriptPayload() {
+          const bytecode = new HexString(sendToSelfBytecode).toUint8Array();
+
+          const args: any = [
+            new TxnBuilderTypes.TransactionArgumentU64(BigInt(1000)),
+            // TxnBuilderTypes.AccountAddress.fromHex(resourceAccount),
+          ];
+          const script = new TxnBuilderTypes.Script(bytecode, [], args);
+          return new TxnBuilderTypes.TransactionPayloadScript(script);
+        }
+
+        const payload: any = buildSendToSelfScriptPayload();
+
+        const pendingTransaction = await wallet.signAndSubmitTransaction(
+          payload
+        );
+
+        console.log(pendingTransaction);
+      }
+    } catch (error) {
+      throw error;
+    }
   },
 };

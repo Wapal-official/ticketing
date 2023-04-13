@@ -165,7 +165,7 @@
                   '!tw-w-[30%]':
                     !showWhitelistSaleTimer && !showPublicSaleTimer,
                 }"
-                @click="mintCollection"
+                @click="mintBulkCollection"
                 :disabled="minting || collection.status.sold_out"
               >
                 <v-progress-circular indeterminate v-if="minting" color="white">
@@ -271,6 +271,16 @@
         @walletConnected="displayWalletConnectedMessage"
       />
     </v-dialog>
+    <v-dialog
+      v-model="showErrorPopup"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <div
+        class="tw-w-full tw-bg-modal-gray tw-text-white tw-px-4 tw-py-4 tw-rounded"
+      >
+        {{ errorMessage }}
+      </div>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -366,6 +376,8 @@ export default {
       progressInterval: null,
       whitelistNumber: 0,
       numberOfNft: 1,
+      showErrorPopup: false,
+      errorMessage: null,
     };
   },
   methods: {
@@ -516,6 +528,20 @@ export default {
         return;
       } else {
         this.numberOfNft--;
+      }
+    },
+    async mintBulkCollection() {
+      try {
+        const res = await this.$store.dispatch("walletStore/mintBulk", {
+          resourceAccount: this.collection.candyMachine_id.resource_account,
+          publicMint: !this.checkPublicSaleTimer(),
+          collectionId: this.collection._id,
+          candyMachineId: this.collection.candyMachine_id.candy_id,
+          mintNumber: this.numberOfNft,
+        });
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
       }
     },
   },
