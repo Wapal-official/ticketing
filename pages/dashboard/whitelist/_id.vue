@@ -33,18 +33,22 @@
         >
           <input
             type="file"
-            class="tw-invisible tw-w-0 tw-h-0"
+            class="tw-invisible tw-w-0 tw-h-0 disabled:tw-cursor-not-allowed"
             @change="setCSVFile"
+            :disabled="setupWhitelistStatus"
           />
-          <div class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2">
+          <div
+            class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
+            :disabled="setupWhitelistStatus"
+          >
             Import CSV
           </div>
         </label>
       </form>
       <button
-        class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2"
+        class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
         @click="showSetWhitelistModal = true"
-        :disabled="sendingDataToSetRoot"
+        :disabled="sendingDataToSetRoot || setupWhitelistStatus"
       >
         Set Whitelist
       </button>
@@ -150,14 +154,14 @@
 <script lang="ts">
 import Loading from "@/components/Reusable/Loading.vue";
 import {
-  getWhitelistById,
+  getWhitelistByUsername,
   getWhitelistEntryById,
   setRoot,
   uploadCSVInWhitelistEntry,
 } from "@/services/WhitelistService";
 
 import moment from "moment";
-import { getCollection } from "@/services/CollectionService";
+import { getCollectionByUsername } from "@/services/CollectionService";
 export default {
   components: { Loading },
   layout: "dashboard",
@@ -303,19 +307,17 @@ export default {
     },
   },
   async mounted() {
-    let id = this.$route.params.id;
-    const res = await getWhitelistById(this.$route.params.id);
+    const res = await getWhitelistByUsername(this.$route.params.id);
 
     const whitelist = res.data.whitelist;
 
     if (whitelist) {
       this.setupWhitelistStatus = false;
-      id = whitelist.collection_id;
     }
 
-    const collectionRes = await getCollection(id);
+    const collectionRes = await getCollectionByUsername(this.$route.params.id);
 
-    this.collection = collectionRes.collection[0];
+    this.collection = collectionRes.data.collection[0];
 
     await this.fetchWhitelistEntries();
   },
