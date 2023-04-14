@@ -80,8 +80,6 @@ export default {
       this.$tours['myTour2'].start();
       localStorage.setItem('seen_collection_tour', 'true');
     }
-
-
   },
 };
 </script>
