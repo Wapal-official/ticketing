@@ -52,13 +52,13 @@
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
             >
-              <div class="tw-text-xl">Mint Date</div>
+              <div class="tw-text-lg">Whitelist Starts</div>
               <div class="tw-text-xs">{{ getMintDate }}</div>
             </div>
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
             >
-              <div class="tw-text-xl">End Time</div>
+              <div class="tw-text-lg">Whitelist Ends</div>
               <div class="tw-text-xs">{{ getEndDate }}</div>
             </div>
           </div>
