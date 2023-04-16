@@ -42,7 +42,8 @@
     "vue2-datepicker": "^3.11.1",
     "vuetify": "^2.6.10",
     "vuex-module-decorators": "^2.0.0",
-    "vuex-persistedstate": "^4.1.0"
+    "vuex-persistedstate": "^4.1.0",
+    "web3": "^1.9.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.20.7",

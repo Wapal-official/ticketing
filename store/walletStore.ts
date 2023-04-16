@@ -14,13 +14,14 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
-import { AptosClient } from "aptos";
+import { AptosClient, TokenClient, CoinClient } from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
 
 const NODE_URL = `https://aptos-${process.env.NETWORK}.nodereal.io/v1/${process.env.APTOS_API_KEY}/v1`;
 
 const client = new AptosClient(NODE_URL);
+const token = new TokenClient(client);
 
 let network = NetworkName.Testnet;
 
@@ -347,7 +348,7 @@ export const actions = {
     return signMessage;
   },
   async getSupplyAndMintedOfCollection(
-    {},
+    { },
     {
       resourceAccountAddress,
       candyMachineId,
