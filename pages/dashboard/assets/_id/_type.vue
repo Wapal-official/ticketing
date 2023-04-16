@@ -53,10 +53,10 @@
             <v-icon
               class="!tw-text-white"
               v-if="!listView"
-              @click="listView = true"
+              @click="showListView"
               >mdi-view-list</v-icon
             >
-            <v-icon class="!tw-text-white" v-else @click="listView = false"
+            <v-icon class="!tw-text-white" v-else @click="showGridView"
               >mdi-view-grid</v-icon
             >
           </button>
@@ -73,38 +73,7 @@
             :type="$route.params.type"
             @displayFileDetails="displayFileDetails"
           />
-          <v-data-table
-            :headers="headers"
-            :items="paginatedFiles"
-            :items-per-page="5"
-            class="assets-data-table"
-            mobile-breakpoint="0"
-            :hide-default-footer="true"
-            disable-pagination
-            v-else
-          >
-            <template v-slot:body="{ items }">
-              <tbody>
-                <tr
-                  v-for="item in items"
-                  :key="item.name"
-                  class="tw-cursor-pointer hover:!tw-bg-black/60"
-                >
-                  <td
-                    class="!tw-border-none tw-uppercase tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-8"
-                  >
-                    <img
-                      :src="item.image ? item.image : item.src"
-                      :alt="item.name"
-                      class="tw-w-[45px] tw-h-[45px] tw-object-cover"
-                    />{{ item.name }}
-                  </td>
-                  <td class="!tw-border-none">{{ item.createdDate }}</td>
-                  <td class="!tw-border-none">{{ getFileSize(item.size) }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-data-table>
+          <dashboard-assets-table :paginatedFiles="paginatedFiles" v-else />
         </div>
       </div>
       <v-dialog
@@ -295,32 +264,6 @@ export default {
       ],
       showFileDetails: false,
       listView: false,
-      headers: [
-        {
-          text: "Name",
-          align: "start",
-          sortable: true,
-          value: "name",
-          width: "700px",
-          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
-        },
-        {
-          text: "Date Created",
-          align: "start",
-          sortable: true,
-          value: "createdDate",
-          width: "200px",
-          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
-        },
-        {
-          text: "Size",
-          align: "start",
-          sortable: true,
-          value: "size",
-          width: "200px",
-          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
-        },
-      ],
       image: false,
       dropZoneClass: "tw-border-wapal-gray",
       uploadedFile: null,
@@ -481,12 +424,7 @@ export default {
       }
       return false;
     },
-    getFileSize(size: number) {
-      if (size / 1048576 > 1) {
-        return (size / 1048576).toFixed(2) + " MB";
-      }
-      return (size / 1024).toFixed(2) + " KB";
-    },
+
     async fetchFiles() {
       this.fileIndex = 0;
       this.loading = true;
@@ -821,6 +759,20 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
       }
     },
+    showListView() {
+      this.listView = true;
+
+      this.fileIndex = 0;
+      this.scrolledNumber = 1;
+      this.mapFiles(0);
+    },
+    showGridView() {
+      this.listView = false;
+
+      this.fileIndex = 0;
+      this.scrolledNumber = 1;
+      this.mapFiles(0);
+    },
   },
   computed: {
     breadcrumbs() {
@@ -892,11 +844,3 @@ export default {
   cache: false,
 };
 </script>
-<style>
-.assets-data-table {
-  min-width: 100% !important;
-  max-width: 100% !important;
-  overflow-x: auto !important;
-  background: transparent !important;
-}
-</style>
