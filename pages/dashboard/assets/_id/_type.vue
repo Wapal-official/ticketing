@@ -1,29 +1,17 @@
 <template>
   <div>
-    <form
+    <button
       v-if="
         type === 'metadata' &&
         folderInfo.metadata.files.length === 0 &&
         !loading &&
         checkImageUploaded
       "
-      @submit.prevent=""
+      class="tw-rounded tw-px-6 tw-py-2 tw-text-white tw-bg-wapal-pink"
+      @click="showCSVUploadModal = true"
     >
-      <label>
-        <div
-          class="tw-rounded tw-px-6 tw-py-2 tw-text-white tw-bg-wapal-pink tw-cursor-pointer tw-w-fit"
-        >
-          Import CSV
-        </div>
-        <input
-          @change="CSVFileSelected"
-          class="tw-hidden tw-w-0 tw-h-0"
-          type="file"
-          accept=".csv"
-          disabled
-        />
-      </label>
-    </form>
+      Import CSV
+    </button>
     <div
       class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-relative"
       v-if="!loading"
@@ -190,29 +178,11 @@
         v-model="showCSVUploadModal"
         content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
       >
-        <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-text-white"
-        >
-          <h3 class="tw-text-white">
-            Are you sure you want to upload this CSV?
-          </h3>
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
-          >
-            <button
-              class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
-              @click="sendCSVForMetadataUpload"
-            >
-              Yes
-            </button>
-            <button
-              class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
-              @click="clearSelectedCSV"
-            >
-              No
-            </button>
-          </div>
-        </div>
+        <dashboard-assets-import-CSV-modal
+          :assetLength="folderInfo.assets.files.length"
+          @csvUploaded="completeTransactionForMetadataUpload"
+          @closeImportCSVModal="showCSVUploadModal = false"
+        />
       </v-dialog>
     </div>
 
@@ -236,7 +206,6 @@ import {
   folderUpload,
   getFolderById,
   deleteFolderOnServer,
-  uploadMetadataCSV,
 } from "@/services/AssetsService";
 import { defaultTheme } from "@/theme/wapaltheme";
 import moment from "moment";
@@ -258,6 +227,7 @@ export default {
         folder_name: "",
         files: [{ createdDate: null, type: "", name: "", src: "", _id: null }],
         metadata: { files: [] },
+        assets: { files: [] },
       },
       paginatedFiles: [
         { createdDate: null, type: "", name: "", src: "", _id: null },
@@ -292,7 +262,6 @@ export default {
       serverUploadPercent: 0,
       assetLimit: 0,
       showCSVUploadModal: false,
-      metadataCSV: null,
       CSVLength: 0,
       UploadIcon,
       defaultTheme,
@@ -722,42 +691,12 @@ export default {
         );
       }
     },
-    CSVFileSelected(event: any) {
-      this.metadataCSV = event.target.files[0];
-
-      this.showCSVUploadModal = true;
-    },
-    clearSelectedCSV() {
-      this.metadataCSV = null;
-
+    completeTransactionForMetadataUpload(csvLength: number) {
       this.showCSVUploadModal = false;
-    },
-    async sendCSVForMetadataUpload() {
-      try {
-        const formData = new FormData();
 
-        formData.append("user_id", this.$store.state.userStore.user.user_id);
-        formData.append("csv", this.metadataCSV);
+      this.CSVLength = csvLength;
 
-        const res = await uploadMetadataCSV(formData);
-
-        if (res.data.success) {
-          this.$toast.showMessage({
-            message: "Metadata Generated Successfully",
-          });
-
-          this.showCSVUploadModal = false;
-
-          this.CSVLength = res.data.msg.split(" ")[0];
-
-          this.transferFund(
-            `uploads/${this.$store.state.userStore.user.user_id}`
-          );
-        }
-      } catch (error) {
-        console.log(error);
-        this.$toast.showMessage({ message: error, error: true });
-      }
+      this.transferFund(`uploads/${this.$store.state.userStore.user.user_id}`);
     },
     showListView() {
       this.listView = true;
