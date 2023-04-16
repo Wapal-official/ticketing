@@ -10,13 +10,13 @@
       class="tw-w-full tw-min-h-full tw-border tw-border-transparent tw-px-4 tw-py-16 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-border-wapal-dashboard-active md:tw-py-8"
     >
       <img
-        :src="file?.image"
-        :alt="file?.name"
+        :src="this.fileData?.image"
+        :alt="this.fileData?.name"
         class="tw-max-w-[300px] tw-max-h-[300px]"
         draggable="false"
       />
       <h3 class="tw-text-white tw-font-medium tw-uppercase tw-text-sm">
-        {{ file?.name }}
+        {{ this.fileData?.name }}
       </h3>
       <div class="tw-h-[2px] tw-w-full tw-bg-wapal-dashboard-active"></div>
       <h4 class="tw-text-xl tw-text-wapal-dashboard-active tw-font-normal">
@@ -44,6 +44,7 @@ export default {
     return {
       loading: false,
       attributes: [{ trait_type: "", value: "" }],
+      fileData: null,
     };
   },
   methods: {
@@ -51,9 +52,11 @@ export default {
       this.$emit("close");
     },
   },
-  mounted() {
-    if (this.file.attributes) {
-      this.attributes = this.file.attributes;
+  async mounted() {
+    const res = await this.$axios.get(this.file.name);
+    this.fileData = res.data;
+    if (this.fileData.attributes) {
+      this.attributes = this.fileData.attributes;
     }
   },
 };

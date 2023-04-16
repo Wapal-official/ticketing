@@ -67,18 +67,12 @@
         v-if="folderInfo.files[0]"
       >
         <div class="tw-w-full">
-          <div
-            class="tw-grid tw-container tw-mx-auto tw-grid-cols-1 tw-gap-4 md:tw-grid-cols-3 2xl:tw-grid-cols-4"
+          <dashboard-assets-image-gallery
             v-if="!listView"
-          >
-            <assets-file-card
-              @displayFileDetails="displayFileDetails"
-              v-for="file in paginatedFiles"
-              :key="file._id"
-              :file="file"
-              :type="type"
-            />
-          </div>
+            :paginatedFiles="paginatedFiles"
+            :type="$route.params.type"
+            @displayFileDetails="displayFileDetails"
+          />
           <v-data-table
             :headers="headers"
             :items="paginatedFiles"
@@ -266,7 +260,6 @@
 </template>
 <script lang="ts">
 import AssetsBreadCrumbs from "@/components/Dashboard/Assets/AssetsBreadCrumbs.vue";
-import AssetsFileCard from "@/components/Dashboard/Assets/AssetsFileCard.vue";
 import AssetsImageDetails from "@/components/Dashboard/Assets/AssetsImageDetails.vue";
 import UploadIcon from "@/assets/img/upload-icon.svg";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
@@ -284,7 +277,6 @@ export default {
   layout: "dashboard",
   components: {
     AssetsBreadCrumbs,
-    AssetsFileCard,
     AssetsImageDetails,
     GradientBorderButton,
   },
@@ -530,6 +522,8 @@ export default {
     },
     async mapFiles(scrollNumber: number) {
       let tempFiles = [];
+
+      this.paginatedFiles = [];
       if (!scrollNumber) {
         tempFiles = this.folderInfo.files.slice(0, this.assetLimit);
       } else {
