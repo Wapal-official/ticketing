@@ -180,6 +180,7 @@
       >
         <dashboard-assets-import-CSV-modal
           :assetLength="folderInfo.assets.files.length"
+          :folderName="folderInfo.folder_name"
           @csvUploaded="completeTransactionForMetadataUpload"
           @closeImportCSVModal="showCSVUploadModal = false"
         />

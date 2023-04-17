@@ -112,7 +112,7 @@ extend("required", {
   message: "This field is required",
 });
 export default {
-  props: { assetLength: { type: Number } },
+  props: { assetLength: { type: Number }, folderName: { type: String } },
   components: { DatePicker, ValidationObserver, ValidationProvider },
   data() {
     return {
@@ -147,6 +147,7 @@ export default {
           const formData = new FormData();
 
           formData.append("user_id", this.$store.state.userStore.user.user_id);
+          formData.append("folder_name", this.folderName);
           formData.append("name", this.name);
           formData.append("description", this.description);
           formData.append("created_date", this.createdDate);
