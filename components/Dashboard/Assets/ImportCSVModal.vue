@@ -155,7 +155,7 @@ export default {
 
           const res = await uploadMetadataCSV(formData);
 
-          if (res.data.success) {
+          if (res.data.files) {
             this.$toast.showMessage({
               message: "Metadata Generated Successfully",
             });
