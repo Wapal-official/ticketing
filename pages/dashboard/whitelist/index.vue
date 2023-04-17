@@ -1,8 +1,6 @@
 <template>
   <div class="tw-w-full">
-    <div
-      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
-    >
+    <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full">
       <h1 class="tw-text-lg tw-text-wapal-dashboard-active">All Collections</h1>
       <div
         class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 3xl:tw-grid-cols-4"
@@ -19,16 +17,11 @@
       </div>
       <loading v-else />
 
-      <div
-        class="tw-w-full tw-text-center tw-py-4 tw-text-wapal-dashboard-active"
-        v-if="this.collections.length === 0"
-      >
+      <div class="tw-w-full tw-text-center tw-py-4 tw-text-wapal-dashboard-active" v-if="this.collections.length === 0">
         No Collections
       </div>
     </div>
-    <div
-      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-py-8 tw-w-full"
-    >
+    <div class="whitelist1 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-py-8 tw-w-full">
       <h1 class="tw-text-lg tw-text-wapal-dashboard-active">
         Whitelisted Collections
       </h1>
@@ -38,18 +31,10 @@
       >
         <whitelist-card
           v-for="whitelist in whitelists"
-          :key="whitelist._id"
           :whitelist="whitelist"
           type="dashboard"
           v-if="whitelists[0]._id"
         />
-      </div>
-      <loading v-else />
-      <div
-        class="tw-w-full tw-text-center tw-py-4 tw-text-wapal-dashboard-active"
-        v-if="this.whitelists.length === 0"
-      >
-        No Whitelisted Collections
       </div>
     </div>
   </div>
@@ -69,6 +54,30 @@ export default {
       collections: [{ _id: null }],
       whitelists: [{ _id: null }],
       loading: true,
+      steps: [
+        {
+          target: '.dashboard3',
+          content: `To run WL campaign`,
+          header: {
+            title: 'Whitelist Page',
+          },
+          params: {
+            placement: 'right',
+            highlight: true
+          }
+        },
+        // {
+        //   target: '.whitelist1',
+        //   content: 'Run a WL campaign with “Create Whitelist',
+        //   params: {
+        //     placement: 'right',
+        //     hightlight: 'true',
+        //     disableInteraction: false,
+        //     backdrop: true,
+        //     backdropClass: 'tour-backdrop'
+        //   }
+        // }
+      ],
     };
   },
   computed: {},
@@ -106,10 +115,15 @@ export default {
           }
         });
         return collection;
-      } catch (error) {}
+      } catch (error) { }
     });
 
     this.loading = false;
+    if (localStorage.getItem('seen_whitelist_tour') === null) {
+      this.$tours['myTour3'].start();
+      localStorage.setItem('seen_whitelist_tour', 'true');
+    }
+
   },
 };
 </script>
