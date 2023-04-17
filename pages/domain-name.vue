@@ -18,6 +18,10 @@
         >
           Domain Name
         </h1>
+        <div class="tw-text-lg">
+          Secure your <strong>.apt</strong> domain for your journey through the
+          Aptos ecosystem.
+        </div>
       </div>
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8"
@@ -83,7 +87,7 @@
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
     >
       <connect-wallet-modal
-        message="Please Connect your wallet to Mint"
+        message="Please Connect your wallet to Buy Domain Name"
         @closeModal="showConnectWalletModal = false"
         @walletConnected="displayWalletConnectedMessage"
       />
@@ -108,6 +112,10 @@ export default {
   },
   methods: {
     async findDomainName() {
+      if (!this.$store.state.walletStore.wallet.walletAddress) {
+        this.showConnectWalletModal = true;
+        return;
+      }
       try {
         if (this.domainName.length < 3) {
           throw new Error("Please enter at least 3 characters");
