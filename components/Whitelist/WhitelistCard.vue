@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
+    class="tw-group tw-max-h-[450px]"
     v-if="!loading"
     :to="
       type === 'landing'
@@ -13,7 +13,7 @@
         <img
           :src="collection.image"
           :alt="collection.name"
-          class="tw-w-full tw-h-full tw-min-h-[370px] tw-object-fill tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
+          class="tw-w-full tw-h-full tw-min-h-[450px] tw-object-fill tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
         />
       </div>
       <div

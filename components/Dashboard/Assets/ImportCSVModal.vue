@@ -184,13 +184,13 @@ export default {
   },
 };
 </script>
-<style>
-.mx-input-wrapper,
-.mx-datepicker {
+<style scoped>
+::v-deep .mx-input-wrapper,
+::v-deep .mx-datepicker {
   width: 100% !important;
 }
 
-.mx-input {
+::v-deep .mx-input {
   width: 100% !important;
   background: #d9d9d9 !important;
   border: none !important;
@@ -200,9 +200,9 @@ export default {
   border-radius: 7px !important;
 }
 
-.mx-icon-calendar,
-.mx-icon-clear,
-.mx-input::placeholder {
+::v-deep .mx-icon-calendar,
+::v-deep .mx-icon-clear,
+::v-deep .mx-input::placeholder {
   color: #000 !important;
 }
 </style>

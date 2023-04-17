@@ -5,7 +5,7 @@
     >
       <h1 class="tw-text-lg tw-text-wapal-dashboard-active">All Collections</h1>
       <div
-        class="tw-container tw-mx-auto tw-grid tw-grid-cols-1 tw-gap-6 md:tw-grid-cols-2 lg:tw-grid-cols-3"
+        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 3xl:tw-grid-cols-4"
         v-if="!loading"
       >
         <nft-card
@@ -33,7 +33,7 @@
         Whitelisted Collections
       </h1>
       <div
-        class="tw-container tw-mx-auto tw-grid tw-grid-cols-1 tw-gap-6 md:tw-grid-cols-2 lg:tw-grid-cols-3"
+        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 3xl:tw-grid-cols-4"
         v-if="!loading"
       >
         <whitelist-card
