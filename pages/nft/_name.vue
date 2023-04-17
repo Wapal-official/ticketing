@@ -531,7 +531,7 @@ export default {
       }
     },
     decreaseNumberOfNft() {
-      if (this.numberOfNft === 1) {
+      if (this.numberOfNft <= 1) {
         return;
       } else {
         this.numberOfNft--;
@@ -556,7 +556,11 @@ export default {
         this.numberOfNft > 500 ||
         this.numberOfNft >= this.resource.total_supply - this.resource.minted
       ) {
-        this.numberOfNft = 500;
+        if (this.resource.total_supply - this.resource.minted >= 500) {
+          this.numberOfNft = 500;
+        } else {
+          this.numberOfNft = this.resource.total_supply - this.resource.minted;
+        }
         return;
       }
     },
@@ -707,7 +711,10 @@ export default {
       }
 
       if (this.checkWhitelistSale) {
-        const whitelistRes = await getWhitelistEntryById(this.collection._id);
+        const whitelistRes = await getWhitelistEntryById(
+          this.collection._id,
+          10000
+        );
 
         this.whitelistNumber = whitelistRes.data.whitelistEntries.length;
       }

@@ -2,10 +2,18 @@
   <div class="tw-w-full">
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full">
       <h1 class="tw-text-lg tw-text-wapal-dashboard-active">All Collections</h1>
-      <div class="tw-container tw-mx-auto tw-grid tw-grid-cols-1 tw-gap-6 md:tw-grid-cols-2 lg:tw-grid-cols-3"
-        v-if="!loading">
-        <nft-card v-for="collection in collections" :key="collection._id" :collection="collection" redirectTo="whitelist"
-          type="dashboard" v-if="collections[0]._id" />
+      <div
+        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 3xl:tw-grid-cols-4"
+        v-if="!loading"
+      >
+        <nft-card
+          v-for="collection in collections"
+          :key="collection._id"
+          :collection="collection"
+          redirectTo="whitelist"
+          type="dashboard"
+          v-if="collections[0]._id"
+        />
       </div>
       <loading v-else />
 
@@ -17,17 +25,18 @@
       <h1 class="tw-text-lg tw-text-wapal-dashboard-active">
         Whitelisted Collections
       </h1>
-      <div class="tw-container tw-mx-auto tw-grid tw-grid-cols-1 tw-gap-6 md:tw-grid-cols-2 lg:tw-grid-cols-3"
-        v-if="!loading">
-        <whitelist-card v-for="whitelist in whitelists" :key="whitelist._id" :whitelist="whitelist" type="dashboard"
-          v-if="whitelists[0]._id" />
-      </div>
-      <loading v-else />
-      <div class="tw-w-full tw-text-center tw-py-4 tw-text-wapal-dashboard-active" v-if="this.whitelists.length === 0">
-        No Whitelisted Collections
+      <div
+        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 3xl:tw-grid-cols-4"
+        v-if="!loading"
+      >
+        <whitelist-card
+          v-for="whitelist in whitelists"
+          :whitelist="whitelist"
+          type="dashboard"
+          v-if="whitelists[0]._id"
+        />
       </div>
     </div>
-    <v-tour name="myTour3" :steps="steps"></v-tour>
   </div>
 </template>
 <script lang="ts">

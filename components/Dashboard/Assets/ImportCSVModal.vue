@@ -112,7 +112,7 @@ extend("required", {
   message: "This field is required",
 });
 export default {
-  props: { assetLength: { type: Number } },
+  props: { assetLength: { type: Number }, folderName: { type: String } },
   components: { DatePicker, ValidationObserver, ValidationProvider },
   data() {
     return {
@@ -147,6 +147,7 @@ export default {
           const formData = new FormData();
 
           formData.append("user_id", this.$store.state.userStore.user.user_id);
+          formData.append("folder_name", this.folderName);
           formData.append("name", this.name);
           formData.append("description", this.description);
           formData.append("created_date", this.createdDate);
@@ -154,7 +155,7 @@ export default {
 
           const res = await uploadMetadataCSV(formData);
 
-          if (res.data.success) {
+          if (res.data.files) {
             this.$toast.showMessage({
               message: "Metadata Generated Successfully",
             });
@@ -183,13 +184,13 @@ export default {
   },
 };
 </script>
-<style>
-.mx-input-wrapper,
-.mx-datepicker {
+<style scoped>
+::v-deep .mx-input-wrapper,
+::v-deep .mx-datepicker {
   width: 100% !important;
 }
 
-.mx-input {
+::v-deep .mx-input {
   width: 100% !important;
   background: #d9d9d9 !important;
   border: none !important;
@@ -199,9 +200,9 @@ export default {
   border-radius: 7px !important;
 }
 
-.mx-icon-calendar,
-.mx-icon-clear,
-.mx-input::placeholder {
+::v-deep .mx-icon-calendar,
+::v-deep .mx-icon-clear,
+::v-deep .mx-input::placeholder {
   color: #000 !important;
 }
 </style>

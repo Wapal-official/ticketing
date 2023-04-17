@@ -64,7 +64,6 @@
         mobile-breakpoint="0"
         :hide-default-footer="true"
         disable-pagination
-        v-if="!loading"
       >
         <template v-slot:body="{ items }">
           <tbody>
@@ -93,7 +92,7 @@
           </tbody>
         </template>
       </v-data-table>
-      <loading v-else />
+      <loading v-if="loading" />
     </div>
     <v-dialog
       v-model="showCSVUploadModal"
@@ -217,6 +216,8 @@ export default {
       sendingDataToSetRoot: false,
       showSetWhitelistModal: false,
       setupWhitelistStatus: true,
+      scrolledNumber: 1,
+      mappingData: false,
     };
   },
   methods: {
@@ -252,15 +253,23 @@ export default {
       this.showCSVUploadModal = false;
       this.selectedCSVFile = false;
     },
-    async fetchWhitelistEntries() {
+    async mapWhitelistEntries(page: number) {
       this.loading = true;
 
-      const res = await getWhitelistEntryById(this.collection._id, 100, 1);
+      const res = await getWhitelistEntryById(this.collection._id, 100, page);
+
+      if (res.data.whitelistEntries.length === 0) {
+        this.loading = false;
+        this.mappingData = true;
+        return;
+      }
 
       this.whitelistEntries = res.data.whitelistEntries;
-      this.paginatedWhitelistEntries = this.whitelistEntries;
+
+      this.paginatedWhitelistEntries.push(...this.whitelistEntries);
 
       this.loading = false;
+      this.mappingData = false;
     },
     async sendDataToSetRoot() {
       try {
@@ -319,7 +328,23 @@ export default {
 
     this.collection = collectionRes.data.collection[0];
 
-    await this.fetchWhitelistEntries();
+    await this.mapWhitelistEntries(1);
+
+    if (process.client) {
+      window.addEventListener("scroll", async () => {
+        if (
+          window.scrollY + window.innerHeight >=
+            document.documentElement.scrollHeight &&
+          !this.mappingData
+        ) {
+          this.scrolledNumber++;
+
+          this.mappingData = true;
+
+          await this.mapWhitelistEntries(this.scrolledNumber);
+        }
+      });
+    }
   },
 };
 </script>
