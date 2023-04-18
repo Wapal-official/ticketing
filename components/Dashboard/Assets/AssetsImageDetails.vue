@@ -42,7 +42,7 @@ export default {
   props: { file: { type: Object } },
   data() {
     return {
-      loading: false,
+      loading: true,
       attributes: [{ trait_type: "", value: "" }],
       fileData: null,
     };
@@ -58,6 +58,18 @@ export default {
     if (this.fileData.attributes) {
       this.attributes = this.fileData.attributes;
     }
+    this.loading = false;
+  },
+  watch: {
+    async file(newFile: any) {
+      this.loading = true;
+      const res = await this.$axios.get(newFile.name);
+      this.fileData = res.data;
+      if (this.fileData.attributes) {
+        this.attributes = this.fileData.attributes;
+      }
+      this.loading = false;
+    },
   },
 };
 </script>

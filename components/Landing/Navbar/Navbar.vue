@@ -1,7 +1,7 @@
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
     <nav
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-8 tw-py-6 xl:!tw-px-24"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-8 tw-py-6 lg:tw-px-4 xl:!tw-px-24"
     >
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 lg:tw-w-[20%]"
@@ -36,7 +36,7 @@
         </div>
       </div>
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full tw-gap-8 lg:tw-w-[80%]"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full lg:tw-w-[80%]"
       >
         <div
           class="tw-hidden tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[60%]"
