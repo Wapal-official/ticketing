@@ -1,9 +1,11 @@
 <template>
   <div class="tw-w-full">
-    <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full">
+    <div
+      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+    >
       <h1 class="tw-text-lg tw-text-wapal-dashboard-active">All Collections</h1>
       <div
-        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 3xl:tw-grid-cols-4"
+        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 2xl:tw-gap-12 3xl:tw-grid-cols-4 3xl:tw-gap-4"
         v-if="!loading"
       >
         <nft-card
@@ -17,16 +19,21 @@
       </div>
       <loading v-else />
 
-      <div class="tw-w-full tw-text-center tw-py-4 tw-text-wapal-dashboard-active" v-if="this.collections.length === 0">
+      <div
+        class="tw-w-full tw-text-center tw-py-4 tw-text-wapal-dashboard-active"
+        v-if="this.collections.length === 0"
+      >
         No Collections
       </div>
     </div>
-    <div class="whitelist1 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-py-8 tw-w-full">
+    <div
+      class="whitelist1 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-py-8 tw-w-full"
+    >
       <h1 class="tw-text-lg tw-text-wapal-dashboard-active">
         Whitelisted Collections
       </h1>
       <div
-        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 3xl:tw-grid-cols-4"
+        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 2xl:tw-gap-12 3xl:tw-grid-cols-4 3xl:tw-gap-4"
         v-if="!loading"
       >
         <whitelist-card
@@ -57,15 +64,15 @@ export default {
       loading: true,
       steps: [
         {
-          target: '.dashboard3',
+          target: ".dashboard3",
           content: `To run WL campaign`,
           header: {
-            title: 'Whitelist Page',
+            title: "Whitelist Page",
           },
           params: {
-            placement: 'right',
-            highlight: true
-          }
+            placement: "right",
+            highlight: true,
+          },
         },
         // {
         //   target: '.whitelist1',
@@ -116,15 +123,14 @@ export default {
           }
         });
         return collection;
-      } catch (error) { }
+      } catch (error) {}
     });
 
     this.loading = false;
-    if (localStorage.getItem('seen_whitelist_tour') === null) {
-      this.$tours['myTour3'].start();
-      localStorage.setItem('seen_whitelist_tour', 'true');
+    if (localStorage.getItem("seen_whitelist_tour") === null) {
+      this.$tours["myTour3"].start();
+      localStorage.setItem("seen_whitelist_tour", "true");
     }
-
   },
 };
 </script>
