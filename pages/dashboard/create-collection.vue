@@ -6,7 +6,7 @@
     <h1 class="tw-text-xl tw-font-bold">Create NFT Collection</h1>
     <ValidationObserver v-slot="{ handleSubmit }">
       <form
-        class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full lg:tw-w-[60%]"
+        class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[60%]"
         @submit.prevent="handleSubmit(submitCollection)"
         novalidate
       >
