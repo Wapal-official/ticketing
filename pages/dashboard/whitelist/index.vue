@@ -32,6 +32,7 @@
         <whitelist-card
           v-for="whitelist in whitelists"
           :whitelist="whitelist"
+          :key="whitelist._id"
           type="dashboard"
           v-if="whitelists[0]._id"
         />
