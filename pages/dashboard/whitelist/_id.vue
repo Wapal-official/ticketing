@@ -243,7 +243,8 @@ export default {
         this.$toast.showMessage({ message: "CSV File Imported Successfully" });
         this.showCSVUploadModal = false;
 
-        this.fetchWhitelistEntries();
+        this.scrolledNumber = 1;
+        this.mapWhitelistEntries(1);
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
