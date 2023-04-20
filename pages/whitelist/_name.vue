@@ -104,7 +104,7 @@
           </div>
         </div>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded"
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row md:tw-items-center md:tw-justify-between"
         >
           <div class="tw-text-lg">Connect Wallet</div>
           <button
@@ -121,7 +121,7 @@
           </div>
         </div>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded"
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row md:tw-items-center md:tw-justify-between"
         >
           <div class="tw-text-lg">Login to your Wapal Account</div>
           <button
@@ -142,7 +142,7 @@
           @click="showDiscordOptions = !showDiscordOptions"
         >
           <div
-            class="tw-flex tw-flex-col tw-gap-4 tw-items-center tw-justify-between tw-w-full md:tw-flex-row md:tw-gap-8"
+            class="tw-flex tw-flex-col tw-gap-2 tw-items-center tw-justify-between tw-w-full md:tw-flex-row md:tw-gap-8"
           >
             <div class="tw-text-lg">Connect to Discord</div>
             <div

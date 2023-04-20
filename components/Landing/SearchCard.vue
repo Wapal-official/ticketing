@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    :to="`/nft/${collection?._id}`"
+    :to="`/nft/${collection?.username}`"
     class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-px-4 tw-py-2 tw-w-full tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-[#454545]"
     @click.native="close"
   >

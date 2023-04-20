@@ -1,29 +1,17 @@
 <template>
   <div>
-    <form
+    <button
       v-if="
         type === 'metadata' &&
         folderInfo.metadata.files.length === 0 &&
         !loading &&
         checkImageUploaded
       "
-      @submit.prevent=""
+      class="tw-rounded tw-px-6 tw-py-2 tw-text-white tw-bg-wapal-pink"
+      @click="showCSVUploadModal = true"
     >
-      <label>
-        <div
-          class="tw-rounded tw-px-6 tw-py-2 tw-text-white tw-bg-wapal-pink tw-cursor-pointer tw-w-fit"
-        >
-          Import CSV
-        </div>
-        <input
-          @change="CSVFileSelected"
-          class="tw-hidden tw-w-0 tw-h-0"
-          type="file"
-          accept=".csv"
-          disabled
-        />
-      </label>
-    </form>
+      Import CSV
+    </button>
     <div
       class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-relative"
       v-if="!loading"
@@ -53,10 +41,10 @@
             <v-icon
               class="!tw-text-white"
               v-if="!listView"
-              @click="listView = true"
+              @click="showListView"
               >mdi-view-list</v-icon
             >
-            <v-icon class="!tw-text-white" v-else @click="listView = false"
+            <v-icon class="!tw-text-white" v-else @click="showGridView"
               >mdi-view-grid</v-icon
             >
           </button>
@@ -67,50 +55,13 @@
         v-if="folderInfo.files[0]"
       >
         <div class="tw-w-full">
-          <div
-            class="tw-grid tw-container tw-mx-auto tw-grid-cols-1 tw-gap-4 md:tw-grid-cols-3 2xl:tw-grid-cols-4"
+          <dashboard-assets-image-gallery
             v-if="!listView"
-          >
-            <assets-file-card
-              @displayFileDetails="displayFileDetails"
-              v-for="file in paginatedFiles"
-              :key="file._id"
-              :file="file"
-              :type="type"
-            />
-          </div>
-          <v-data-table
-            :headers="headers"
-            :items="paginatedFiles"
-            :items-per-page="5"
-            class="assets-data-table"
-            mobile-breakpoint="0"
-            :hide-default-footer="true"
-            disable-pagination
-            v-else
-          >
-            <template v-slot:body="{ items }">
-              <tbody>
-                <tr
-                  v-for="item in items"
-                  :key="item.name"
-                  class="tw-cursor-pointer hover:!tw-bg-black/60"
-                >
-                  <td
-                    class="!tw-border-none tw-uppercase tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-8"
-                  >
-                    <img
-                      :src="item.image ? item.image : item.src"
-                      :alt="item.name"
-                      class="tw-w-[45px] tw-h-[45px] tw-object-cover"
-                    />{{ item.name }}
-                  </td>
-                  <td class="!tw-border-none">{{ item.createdDate }}</td>
-                  <td class="!tw-border-none">{{ getFileSize(item.size) }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-data-table>
+            :paginatedFiles="paginatedFiles"
+            :type="$route.params.type"
+            @displayFileDetails="displayFileDetails"
+          />
+          <dashboard-assets-table :paginatedFiles="paginatedFiles" v-else />
         </div>
       </div>
       <v-dialog
@@ -227,29 +178,12 @@
         v-model="showCSVUploadModal"
         content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
       >
-        <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-text-white"
-        >
-          <h3 class="tw-text-white">
-            Are you sure you want to upload this CSV?
-          </h3>
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
-          >
-            <button
-              class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
-              @click="sendCSVForMetadataUpload"
-            >
-              Yes
-            </button>
-            <button
-              class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
-              @click="clearSelectedCSV"
-            >
-              No
-            </button>
-          </div>
-        </div>
+        <dashboard-assets-import-CSV-modal
+          :assetLength="folderInfo.assets.files.length"
+          :folderName="folderInfo.folder_name"
+          @csvUploaded="completeTransactionForMetadataUpload"
+          @closeImportCSVModal="showCSVUploadModal = false"
+        />
       </v-dialog>
     </div>
 
@@ -266,7 +200,6 @@
 </template>
 <script lang="ts">
 import AssetsBreadCrumbs from "@/components/Dashboard/Assets/AssetsBreadCrumbs.vue";
-import AssetsFileCard from "@/components/Dashboard/Assets/AssetsFileCard.vue";
 import AssetsImageDetails from "@/components/Dashboard/Assets/AssetsImageDetails.vue";
 import UploadIcon from "@/assets/img/upload-icon.svg";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
@@ -274,7 +207,6 @@ import {
   folderUpload,
   getFolderById,
   deleteFolderOnServer,
-  uploadMetadataCSV,
 } from "@/services/AssetsService";
 import { defaultTheme } from "@/theme/wapaltheme";
 import moment from "moment";
@@ -284,7 +216,6 @@ export default {
   layout: "dashboard",
   components: {
     AssetsBreadCrumbs,
-    AssetsFileCard,
     AssetsImageDetails,
     GradientBorderButton,
   },
@@ -297,38 +228,13 @@ export default {
         folder_name: "",
         files: [{ createdDate: null, type: "", name: "", src: "", _id: null }],
         metadata: { files: [] },
+        assets: { files: [] },
       },
       paginatedFiles: [
         { createdDate: null, type: "", name: "", src: "", _id: null },
       ],
       showFileDetails: false,
       listView: false,
-      headers: [
-        {
-          text: "Name",
-          align: "start",
-          sortable: true,
-          value: "name",
-          width: "700px",
-          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
-        },
-        {
-          text: "Date Created",
-          align: "start",
-          sortable: true,
-          value: "createdDate",
-          width: "200px",
-          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
-        },
-        {
-          text: "Size",
-          align: "start",
-          sortable: true,
-          value: "size",
-          width: "200px",
-          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
-        },
-      ],
       image: false,
       dropZoneClass: "tw-border-wapal-gray",
       uploadedFile: null,
@@ -357,7 +263,6 @@ export default {
       serverUploadPercent: 0,
       assetLimit: 0,
       showCSVUploadModal: false,
-      metadataCSV: null,
       CSVLength: 0,
       UploadIcon,
       defaultTheme,
@@ -489,12 +394,7 @@ export default {
       }
       return false;
     },
-    getFileSize(size: number) {
-      if (size / 1048576 > 1) {
-        return (size / 1048576).toFixed(2) + " MB";
-      }
-      return (size / 1024).toFixed(2) + " KB";
-    },
+
     async fetchFiles() {
       this.fileIndex = 0;
       this.loading = true;
@@ -530,6 +430,8 @@ export default {
     },
     async mapFiles(scrollNumber: number) {
       let tempFiles = [];
+
+      this.paginatedFiles = [];
       if (!scrollNumber) {
         tempFiles = this.folderInfo.files.slice(0, this.assetLimit);
       } else {
@@ -568,9 +470,15 @@ export default {
             }
 
             if (fileType === "json" && this.type === "assets") {
-              const createdDate = moment(
-                tempFile.date ? tempFile.date : ""
-              ).format("DD/MM/YYYY");
+              let createdDate;
+
+              if (tempFile.date) {
+                createdDate = moment(tempFile.date).format("DD/MM/YYYY");
+              } else if (tempFile.createdAt) {
+                createdDate = moment(tempFile.createdAt).format("DD/MM/YYYY");
+              } else {
+                createdDate = moment("").format("DD/MM/YYYY");
+              }
 
               generatedFile = {
                 _id: fileIndex,
@@ -790,42 +698,26 @@ export default {
         );
       }
     },
-    CSVFileSelected(event: any) {
-      this.metadataCSV = event.target.files[0];
-
-      this.showCSVUploadModal = true;
-    },
-    clearSelectedCSV() {
-      this.metadataCSV = null;
-
+    completeTransactionForMetadataUpload(csvLength: number) {
       this.showCSVUploadModal = false;
+
+      this.CSVLength = csvLength;
+
+      this.transferFund(`uploads/${this.$store.state.userStore.user.user_id}`);
     },
-    async sendCSVForMetadataUpload() {
-      try {
-        const formData = new FormData();
+    showListView() {
+      this.listView = true;
 
-        formData.append("user_id", this.$store.state.userStore.user.user_id);
-        formData.append("csv", this.metadataCSV);
+      this.fileIndex = 0;
+      this.scrolledNumber = 1;
+      this.mapFiles(0);
+    },
+    showGridView() {
+      this.listView = false;
 
-        const res = await uploadMetadataCSV(formData);
-
-        if (res.data.success) {
-          this.$toast.showMessage({
-            message: "Metadata Generated Successfully",
-          });
-
-          this.showCSVUploadModal = false;
-
-          this.CSVLength = res.data.msg.split(" ")[0];
-
-          this.transferFund(
-            `uploads/${this.$store.state.userStore.user.user_id}`
-          );
-        }
-      } catch (error) {
-        console.log(error);
-        this.$toast.showMessage({ message: error, error: true });
-      }
+      this.fileIndex = 0;
+      this.scrolledNumber = 1;
+      this.mapFiles(0);
     },
   },
   computed: {
@@ -898,11 +790,3 @@ export default {
   cache: false,
 };
 </script>
-<style>
-.assets-data-table {
-  min-width: 100% !important;
-  max-width: 100% !important;
-  overflow-x: auto !important;
-  background: transparent !important;
-}
-</style>

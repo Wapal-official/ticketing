@@ -9,7 +9,7 @@
       class="tw-w-full tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-px-4 md:tw-px-0"
     >
       <div
-        class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-py-8 tw-bg-[#001233] tw-rounded tw-w-full md:tw-w-1/2 lg:tw-w-1/4"
+        class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-py-8 tw-bg-[#001233] tw-rounded tw-w-full md:tw-w-1/2 lg:tw-w-1/3 xl:tw-w-1/4"
       >
         <img :src="logo" alt="logo" width="165px" height="165px" />
         <ValidationObserver ref="inviteCode" class="tw-w-full">

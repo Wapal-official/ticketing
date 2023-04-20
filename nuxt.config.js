@@ -52,7 +52,7 @@ export default {
   css: ["@/assets/css/index.css", "@/assets/css/style.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ["~/plugins/toast.ts"],
+  plugins: [{ src: "~/plugins/vue-tour.js", ssr: false }, "~/plugins/toast.ts"],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,

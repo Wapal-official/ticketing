@@ -6,7 +6,7 @@
     <h1 class="tw-text-xl tw-font-bold">Create NFT Collection</h1>
     <ValidationObserver v-slot="{ handleSubmit }">
       <form
-        class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full lg:tw-w-[60%]"
+        class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[60%]"
         @submit.prevent="handleSubmit(submitCollection)"
         novalidate
       >
@@ -604,47 +604,11 @@ export default {
         this.submitting = false;
       }
     },
-    async uploadImage() {
-      this.imageError = false;
-
-      try {
-        const res = await this.awsUpload();
-        this.collection.image = res.Location;
-        return true;
-      } catch (error) {
-        this.message = "Something Went Wrong Please try again";
-        this.$toast.showMessage({ message: this.message, error: true });
-        return false;
-      }
-    },
 
     imageSelected(event: any) {
       this.image = event.target.files[0];
     },
-    setImage(image: string) {
-      this.collection.image = image;
-    },
 
-    awsUpload() {
-      const s3 = new AWS.S3({
-        accessKeyId: process.env.AWS_ACCESS_KEY,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      });
-
-      const key = Date.now() + this.image.name;
-
-      const params = {
-        Bucket: "wapal-images",
-        Key: key,
-        Body: this.image,
-      };
-      return new Promise((resolve, reject) => {
-        s3.upload(params, (err: any, data: any) => {
-          if (err) reject(err);
-          else resolve(data);
-        });
-      });
-    },
     async sendDataToCandyMachineCreator() {
       let whitelistTime = null;
 
