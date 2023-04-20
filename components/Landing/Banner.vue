@@ -421,6 +421,20 @@ export default {
         return this.showWhitelistSaleTimer && this.showPublicSaleTimer;
       }
     },
+    checkWhitelistSale() {
+      const whitelistTime = new Date(
+        this.collection.candyMachine_id.whitelist_sale_time
+      ).getTime();
+      const publicSaleTime = new Date(
+        this.collection.candyMachine_id.public_sale_time
+      ).getTime();
+
+      if (publicSaleTime - whitelistTime === 1000) {
+        return false;
+      } else {
+        return true;
+      }
+    },
   },
   async mounted() {
     try {
@@ -428,8 +442,7 @@ export default {
 
       this.collection = res.data.collection;
 
-      this.whitelistSaleDate = this.collection.candyMachine_id
-        .whitelist_sale_time
+      this.whitelistSaleDate = this.checkWhitelistSale
         ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
         : null;
 

@@ -628,14 +628,25 @@ export default {
           this.promotedToRequiredRoles = true;
           this.verifyingPromotedToDiscordRoles = false;
         } else {
-          this.error.discord.error = true;
-          this.error.discord.type = "not promoted";
-          this.$toast.showMessage({
-            message: "Please get promoted to required roles",
-            error: true,
-          });
+          this.discordRes = await discordRequest.get(
+            `users/@me/guilds/${this.whitelist.discord_server_id}/member`
+          );
 
-          return false;
+          const roles = this.discordRes.data.roles;
+          const newPromoted = this.checkDiscordRoles(roles);
+
+          if (newPromoted) {
+            this.promotedToRequiredRoles = true;
+          } else {
+            this.error.discord.error = true;
+            this.error.discord.type = "not promoted";
+            this.$toast.showMessage({
+              message: "Please get promoted to required roles",
+              error: true,
+            });
+
+            return false;
+          }
         }
 
         return true;
