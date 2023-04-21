@@ -26,7 +26,7 @@ if (process.env.NETWORK === "testnet") {
   network = NetworkName.Testnet;
 } else {
   network = NetworkName.Mainnet;
-  NODE_URL = "http://fullnode.mainnet.wapal.io/v1";
+  NODE_URL = "https://fullnode.mainnet.wapal.io/v1";
 }
 
 const client = new AptosClient(NODE_URL);
