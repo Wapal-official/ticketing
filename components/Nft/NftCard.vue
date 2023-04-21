@@ -3,7 +3,7 @@
     :to="getRedirectLink"
     class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
   >
-    <div class="tw-rounded tw-relative tw-w-full tw-h-full">
+    <div class="tw-rounded tw-relative tw-w-full tw-h-full" v-if="!domainName">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
         <img
           :src="collection?.image"
@@ -34,24 +34,49 @@
         </div>
       </div>
     </div>
+    <div class="tw-rounded tw-relative tw-w-full tw-h-full" v-else>
+      <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
+        <img
+          :src="domainImage"
+          alt="Domain Name"
+          class="tw-w-full tw-h-full tw-object-fill tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
+        />
+      </div>
+      <div
+        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-6 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
+      >
+        <h5 class="tw-text-lg tw-uppercase tw-font-medium collection-name">
+          Domain Name
+        </h5>
+        <h6 class="tw-text-xl tw-text-wapal-pink tw-font-normal">Live</h6>
+      </div>
+    </div>
   </NuxtLink>
 </template>
 <script lang="ts">
 import CountDown from "@/components/Reusable/CountDown.vue";
+
+import domainImage from "@/assets/img/domain-name.png";
 
 export default {
   components: { CountDown },
   props: {
     collection: { type: Object },
     redirectTo: { type: String, default: "nft" },
+    domainName: { type: Boolean, default: false },
   },
   data() {
     return {
       status: false,
+      domainImage,
     };
   },
   computed: {
     getStatus() {
+      if (this.domainName) {
+        return true;
+      }
+
       const whiteListDate = this.collection.candyMachine_id.whitelist_sale_time
         ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
         : null;
@@ -119,6 +144,10 @@ export default {
     getRedirectLink() {
       if (this.redirectTo === "whitelist") {
         return `/dashboard/whitelist/${this.collection.username}`;
+      }
+
+      if (this.redirectTo === "domainName") {
+        return `/domain-name`;
       }
 
       return `/nft/${this.collection.username}`;

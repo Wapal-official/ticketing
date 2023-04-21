@@ -14,12 +14,13 @@
         <div
           class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:grid-rows-1 lg:tw-grid-cols-3 lg:tw-grid-rows-1 lg:tw-gap-12 2xl:tw-grid-cols-4"
         >
+          <nft-card :domainName="true" redirectTo="domainName" />
           <nft-card
             v-for="(collection, index) in liveCollection"
             :key="collection._id"
             :collection="collection"
             :class="{
-              'lg:tw-hidden 2xl:tw-flex': index === 3,
+              'lg:tw-hidden 2xl:tw-flex': index === 2,
             }"
           />
         </div>
