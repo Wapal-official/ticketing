@@ -397,4 +397,49 @@ export const actions = {
 
     return transaction;
   },
+  async createAuction({rootState}:{rootState:any},detail:object){
+    if (!wallet.isConnected()) {
+      await connectWallet(rootState.walletStore.wallet.wallet);
+    }
+    let start=new Date(detail.start_date)
+    let startSec=Math.floor(start.getTime() / 1000)
+    let end=new Date(detail.end_date)
+    let endSec=Math.floor(end.getTime() / 1000)
+    let min_bid=detail.min_bid* 100000000
+    let nft=rootState.auction.selectedNft
+    console.log(startSec,endSec)
+    const create_auction = {
+      type: "entry_function_payload",
+      function: process.env.PID+"::auction::create_auction",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: [
+        nft.nft.current_token_data.creator_address,
+        nft.nft.current_token_data.collection_name,
+        nft.nft.current_token_data.name,
+        nft.nft.property_version,
+        nft.nft.amount,
+        min_bid,//price
+        startSec,//start sec 
+        endSec,//end
+        endSec+86400 //withdraw
+      ],
+    }
+
+    let transactionRes = await wallet.signAndSubmitTransaction(
+      create_auction
+    );
+
+    let getResource= await client.waitForTransactionWithResult(
+      transactionRes.hash
+    );
+    console.log(getResource)
+    if(getResource){
+      for(var x=0;x<getResource.changes.length;x++){
+        if(getResource.changes[x].data.type == process.env.PID+'::auction::Auctions<0x1::aptos_coin::AptosCoin>'){
+          console.log('check:',getResource.changes[x].data.data)
+          return getResource.changes[x].data.data
+        }
+      }
+    }
+  }
 };

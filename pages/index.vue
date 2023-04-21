@@ -32,6 +32,12 @@
           />
           <loading v-else />
         </section>
+
+        <section class="tw-py-8 tw-container tw-mx-auto">
+          <landing-section-heading heading="Auctions" />
+          <LandingAuctions v-if="!loading" :auctions="auctions" />
+          <loading v-else />
+        </section>
       </div>
     </div>
   </div>
@@ -49,7 +55,7 @@ import Banner from "@/components/Landing/Banner.vue";
 import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.vue";
 
 import { getCollections } from "@/services/CollectionService";
-
+import { publicRequest } from "../services/fetcher";
 export default {
   name: "IndexPage",
   components: {
@@ -72,6 +78,7 @@ export default {
       upcomingCollections: [{ _id: "" }],
       loading: true,
       fastestSoldoutCollections: [],
+      auctions: [],
     };
   },
   methods: {
@@ -136,9 +143,24 @@ export default {
 
       this.fastestSoldoutCollections = [...this.collections];
     },
+    getAuctions() {
+      publicRequest
+        .get("/api/auction",{
+          params:{
+            page:1,
+            perPage:4
+          }
+        })
+        .then((res) => {
+          this.auctions = res.data.auctions;
+          console.log(this.auctions)
+        })
+        .catch((err) => console.log(err.response));
+    },
   },
   async created() {
     await this.getCollections();
+    this.getAuctions();
     this.loading = false;
   },
 };

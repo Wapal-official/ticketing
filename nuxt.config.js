@@ -8,6 +8,7 @@ const NETWORK = process.env.NETWORK;
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const APTOS_API_KEY = process.env.APTOS_API_KEY;
+const PID=process.env.PID
 
 let discordRedirectURI = "https://staging.wapal.io/discord/token";
 
@@ -67,7 +68,7 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["cookie-universal-nuxt", "@nuxtjs/axios", "@nuxtjs/auth-next"],
+  modules: ["cookie-universal-nuxt", "@nuxtjs/axios", "@nuxtjs/auth-next","@nuxtjs/moment"],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -129,6 +130,7 @@ export default {
     DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
     DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
     APTOS_API_KEY: APTOS_API_KEY,
+    PID:PID
   },
   auth: {
     strategies: {
