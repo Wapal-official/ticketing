@@ -1,8 +1,8 @@
 <template>
-  <ValidationObserver v-slot="{ handleSubmit }" ref="form">
+  <ValidationObserver ref="form">
     <form
       class="tw-w-full tw-bg-modal-gray tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-text-white"
-      @submit.prevent="handleSubmit(sendCSVForMetadataUpload)"
+      @submit.prevent="sendCSVForMetadataUpload"
     >
       <h2 class="tw-text-lg tw-font-medium">Import CSV</h2>
       <ValidationProvider
@@ -38,23 +38,6 @@
           rows="4"
         >
         </textarea>
-        <div class="tw-text-[#FF322C]">{{ errors[0] }}</div>
-      </ValidationProvider>
-      <ValidationProvider
-        name="createdDate"
-        rules="required"
-        v-slot="{ errors }"
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-      >
-        <label
-          class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-          >Created Date
-        </label>
-        <date-picker
-          v-model="createdDate"
-          type="datetime"
-          placeholder="Select Created Date"
-        />
         <div class="tw-text-[#FF322C]">{{ errors[0] }}</div>
       </ValidationProvider>
       <div
@@ -99,9 +82,6 @@
 <script lang="ts">
 import { uploadMetadataCSV } from "@/services/AssetsService";
 
-import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/index.css";
-
 import papa from "papaparse";
 
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
@@ -113,12 +93,11 @@ extend("required", {
 });
 export default {
   props: { assetLength: { type: Number }, folderName: { type: String } },
-  components: { DatePicker, ValidationObserver, ValidationProvider },
+  components: { ValidationObserver, ValidationProvider },
   data() {
     return {
       name: null,
       description: "",
-      createdDate: null,
       metadataCSV: { name: "" },
       metadataError: false,
       metadataLength: 0,
@@ -142,6 +121,12 @@ export default {
       });
     },
     async sendCSVForMetadataUpload() {
+      const validate = this.$refs.form.validate();
+
+      if (!validate) {
+        return;
+      }
+
       if (!this.metadataError && this.metadataCSV.name) {
         try {
           const formData = new FormData();
@@ -150,7 +135,6 @@ export default {
           formData.append("folder_name", this.folderName);
           formData.append("name", this.name);
           formData.append("description", this.description);
-          formData.append("created_date", this.createdDate);
           formData.append("csv", this.metadataCSV);
 
           const res = await uploadMetadataCSV(formData);
@@ -176,7 +160,6 @@ export default {
     clearCSVForm() {
       this.name = null;
       this.description = null;
-      this.createdDate = null;
       this.metadataCSV = { name: "" };
 
       this.$refs.form.reset();
@@ -184,25 +167,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-::v-deep .mx-input-wrapper,
-::v-deep .mx-datepicker {
-  width: 100% !important;
-}
-
-::v-deep .mx-input {
-  width: 100% !important;
-  background: #d9d9d9 !important;
-  border: none !important;
-  height: 50px !important;
-  color: #000 !important;
-  font-size: 1em;
-  border-radius: 7px !important;
-}
-
-::v-deep .mx-icon-calendar,
-::v-deep .mx-icon-clear,
-::v-deep .mx-input::placeholder {
-  color: #000 !important;
-}
-</style>
