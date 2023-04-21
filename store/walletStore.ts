@@ -14,11 +14,13 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
-import { AptosClient, HexString, TxnBuilderTypes } from "aptos";
+import { AptosClient, BCS, HexString, TxnBuilderTypes } from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
 
-let NODE_URL = `https://aptos-${process.env.NETWORK}.nodereal.io/v1/${process.env.APTOS_API_KEY}/v1`;
+const NODE_URL = `https://aptos-${process.env.NETWORK}.nodereal.io/v1/${process.env.APTOS_API_KEY}/v1`;
+
+const client = new AptosClient(NODE_URL);
 
 let network = NetworkName.Testnet;
 
@@ -26,10 +28,7 @@ if (process.env.NETWORK === "testnet") {
   network = NetworkName.Testnet;
 } else {
   network = NetworkName.Mainnet;
-  NODE_URL = "http://fullnode.mainnet.wapal.io/v1";
 }
-
-const client = new AptosClient(NODE_URL);
 
 const wallets = [
   new PetraWallet(),
