@@ -470,15 +470,9 @@ export default {
             }
 
             if (fileType === "json" && this.type === "assets") {
-              let createdDate;
-
-              if (tempFile.date) {
-                createdDate = moment(tempFile.date).format("DD/MM/YYYY");
-              } else if (tempFile.createdAt) {
-                createdDate = moment(tempFile.createdAt).format("DD/MM/YYYY");
-              } else {
-                createdDate = moment("").format("DD/MM/YYYY");
-              }
+              const createdDate = this.folderInfo.createdDate
+                ? this.folderInfo.createdDate
+                : moment("").format("DD/MM/YYYY");
 
               generatedFile = {
                 _id: fileIndex,

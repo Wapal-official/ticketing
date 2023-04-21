@@ -22,6 +22,7 @@
               :src="item.image ? item.image : item.src"
               :alt="item.name"
               class="tw-w-[45px] tw-h-[45px] tw-object-cover"
+              v-if="$route.params.type === 'assets'"
             />{{ item.name }}
           </td>
           <td class="!tw-border-none">{{ item.createdDate }}</td>

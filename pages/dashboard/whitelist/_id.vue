@@ -215,7 +215,7 @@ export default {
       loading: true,
       sendingDataToSetRoot: false,
       showSetWhitelistModal: false,
-      setupWhitelistStatus: true,
+      setupWhitelistStatus: false,
       scrolledNumber: 1,
       mappingData: false,
     };
@@ -321,15 +321,17 @@ export default {
 
     const whitelist = res.data.whitelist;
 
-    if (whitelist) {
-      this.setupWhitelistStatus = false;
-    }
-
     const collectionRes = await getCollectionByUsername(this.$route.params.id);
 
     this.collection = collectionRes.data.collection[0];
 
     await this.mapWhitelistEntries(1);
+
+    if (whitelist) {
+      this.setupWhitelistStatus = false;
+    } else {
+      this.setupWhitelistStatus = true;
+    }
 
     if (process.client) {
       window.addEventListener("scroll", async () => {
