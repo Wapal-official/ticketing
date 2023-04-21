@@ -24,14 +24,17 @@
           <whitelist-opportunities />
         </section>
 
-        <!-- <section class="tw-py-8 tw-container tw-mx-auto">
+        <section
+          class="tw-py-8 tw-container tw-mx-auto"
+          v-if="fastestSoldoutCollections.length >= 10"
+        >
           <landing-section-heading heading="Fastest Soldout" />
           <fastest-soldout-section
             v-if="!loading"
             :collections="fastestSoldoutCollections"
           />
           <loading v-else />
-        </section> -->
+        </section>
       </div>
     </div>
   </div>
@@ -130,7 +133,7 @@ export default {
         }
       });
 
-      this.liveCollections = this.liveCollections.slice(0, 4);
+      this.liveCollections = this.liveCollections.slice(0, 3);
 
       this.upcomingCollections = this.upcomingCollections.slice(0, 4);
 
