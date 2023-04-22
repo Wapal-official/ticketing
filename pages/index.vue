@@ -53,9 +53,8 @@ import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vu
 import Loading from "@/components/Reusable/Loading.vue";
 import Banner from "@/components/Landing/Banner.vue";
 import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.vue";
-
+import { getAuctions } from "@/services/AuctionService";
 import { getCollections } from "@/services/CollectionService";
-import { publicRequest } from "../services/fetcher";
 export default {
   name: "IndexPage",
   components: {
@@ -142,25 +141,11 @@ export default {
       this.upcomingCollections = this.upcomingCollections.slice(0, 4);
 
       this.fastestSoldoutCollections = [...this.collections];
-    },
-    getAuctions() {
-      publicRequest
-        .get("/api/auction",{
-          params:{
-            page:1,
-            perPage:4
-          }
-        })
-        .then((res) => {
-          this.auctions = res.data.auctions;
-          console.log(this.auctions)
-        })
-        .catch((err) => console.log(err.response));
-    },
+    }
   },
   async created() {
     await this.getCollections();
-    this.getAuctions();
+    this.auctions=await getAuctions({page:1,perPage:4}).then(res=>{return res})
     this.loading = false;
   },
 };

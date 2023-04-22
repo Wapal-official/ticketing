@@ -2,7 +2,7 @@
   <div>
     <v-container>
       <v-row>
-        <v-col cols="5">
+        <v-col cols="12" lg="5">
           <v-img
             :src="selectedNft.meta.image"
             max-width="400"
@@ -10,7 +10,7 @@
             class="theme-border"
           ></v-img>
         </v-col>
-        <v-col cols="7">
+        <v-col cols="12" lg="7">
           <v-card color="#001233" class="pa-5">
             <v-container>
               <v-col>
@@ -22,14 +22,16 @@
                   {{ selectedNft.meta.description }}
                 </p>
                 <v-card color="#0C224B" class="mb-2 pa-4">
-                  <h3 class="theme-text" style="margin:5px">Create Auction</h3>
+                  <h3 class="theme-text" style="margin: 5px">Create Auction</h3>
 
                   <v-container class="pa-3">
                     <v-form v-model="valid" ref="form" class="pa-0">
                       <v-row no-gutters>
                         <v-col>
-                          <label for="startTime">Start Time</label>
+                          <label for="startTime">Start Time</label><br />
+
                           <date-picker
+                            style="background-color: 'black'"
                             v-model="start_date"
                             type="datetime"
                             placeholder="Select Whitelist Sale time"
@@ -38,7 +40,7 @@
                         </v-col>
 
                         <v-col>
-                          <label for="startTime">End Time</label>
+                          <label for="startTime">End Time</label><br />
                           <date-picker
                             v-model="end_date"
                             type="datetime"
@@ -46,21 +48,25 @@
                           ></date-picker>
                         </v-col>
                       </v-row>
-                      <v-row no-gutters style="margin-top: 10px;">
+                      <v-row no-gutters style="margin-top: 10px">
                         <v-col cols="6">
-                        <label for="startTime">Min Bid Amount</label>
-                        <v-text-field
-                          v-model="apt"
-                          outlined
-                          placeholder="eg: 1.5 APT"
-                          dense
-                          type="number"
-                          :rules="[validRules.required, validRules.positive]"
-                        ></v-text-field>
-                      </v-col>
+                          <label for="startTime">Min Bid Amount</label>
+                          <v-text-field
+                            v-model="apt"
+                            outlined
+                            placeholder="eg: 1.5 APT"
+                            dense
+                            type="number"
+                            :rules="[validRules.required, validRules.positive]"
+                          ></v-text-field>
+                        </v-col>
                       </v-row>
                       <v-row no-gutters>
-                        <ReusableThemeButton title="Add to auction" @click="startAuction" :loading="loading" />
+                        <ReusableThemeButton
+                          title="Add to auction"
+                          @click="startAuction"
+                          :loading="loading"
+                        />
                       </v-row>
                     </v-form>
                   </v-container>
@@ -88,7 +94,7 @@ export default {
       end_date: null,
       apt: "",
       valid: true,
-      loading:false,
+      loading: false,
       validRules: {
         required: (value) => !!value || "Required.",
         positive: (v) => (v && v > 0) || "Should be more than zero.",
@@ -108,13 +114,13 @@ export default {
   methods: {
     async startAuction() {
       if (this.$refs.form.validate()) {
-        this.loading=true
+        this.loading = true;
         let auction = await this.$store.dispatch("walletStore/createAuction", {
           start_date: this.start_date,
           end_date: this.end_date,
           min_bid: this.apt,
         });
-        console.log("auc:", auction.cur_auction_id);
+
         publicRequest
           .post("/api/auction", {
             nft: this.selectedNft,
@@ -128,7 +134,7 @@ export default {
               message: "Auction Created Successfully",
               error: false,
             });
-            this.loading=false
+            this.loading = false;
             this.$router.push("/dashboard/auction/list");
           })
           .catch((err) => console.log(err.response));

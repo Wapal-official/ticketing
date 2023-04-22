@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container>
-      <v-row v-if="nfts.length > 0" justify="center">
+      <v-row v-if="metadata.length > 0" justify="center">
         <v-col
           v-for="(item, i) in metadata"
           :key="i"
@@ -16,7 +16,7 @@
             style="border: 1px solid rgba(255, 54, 171, 0.5)"
             @click="
               $router.push('/dashboard/auction/start'),
-                $store.commit('auction/selectNft', {'nft':nfts[i],'meta':item})
+                $store.commit('auction/selectNft', { nft: nfts[i], meta: item })
             "
           >
             <v-img :src="item.image"></v-img>
@@ -30,7 +30,7 @@
       </v-row>
     </v-container>
     <v-card
-    color="transparent"
+      color="transparent"
       v-if="!end"
       v-intersect="{
         handler: fetchNfts,
@@ -43,6 +43,7 @@
   </div>
 </template>
     <script>
+import { fetchWalletNfts } from "@/services/AuctionService";
 export default {
   data() {
     return {
@@ -51,11 +52,11 @@ export default {
       metadata: [],
       offset: 0,
       page: 0,
-      limit:20
+      limit: 20,
     };
   },
   mounted() {
-      this.fetchNfts();
+    this.fetchNfts();
   },
   computed: {
     walletAddress() {
@@ -64,41 +65,15 @@ export default {
   },
   methods: {
     async fetchNfts() {
-    this.offset = this.page * this.limit;
+      this.offset = this.page * this.limit;
       this.page++;
-      let data = await this.$axios.post(
-        "https://indexer-testnet.staging.gcp.aptosdev.com/v1/graphql",
-        {
-          operationName: "AccountTokensData",
-          query:
-            `query AccountTokensData {
-          current_token_ownerships(
-            limit: `+this.limit+`
-            offset:` +
-            this.offset +
-            `
-            where: {owner_address: {_eq: "` +
-            this.walletAddress +
-            `"}}
-            ) {
-              owner_address
-              property_version
-              amount
-            current_token_data {
-              name
-              metadata_uri
-              description
-              collection_name
-              creator_address
-              token_data_id_hash
-            }
-          }
-        }`,
-          variables: null,
-        }
-      );
-      if (data.data.data.current_token_ownerships.length > 0) {
-        this.nfts = data.data.data.current_token_ownerships;
+      let data = await fetchWalletNfts({
+        limit: this.limit,
+        offset: this.offset,
+        walletAddress: this.walletAddress,
+      });
+      if (data.data.current_token_ownerships.length > 0) {
+        this.nfts = data.data.current_token_ownerships;
         for (var x = 0; x < this.nfts.length; x++) {
           try {
             let meta = await this.$axios.get(
@@ -107,9 +82,8 @@ export default {
             this.metadata.push(meta.data);
           } catch (e) {}
         }
-      }
-      else{
-        this.end=true
+      } else {
+        this.end = true;
       }
     },
   },

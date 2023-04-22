@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <AuctionDetail />
-  </div>
+    <div>
+        <AuctionDetail />
+    </div>
 </template>
 <script>
 export default {

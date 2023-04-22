@@ -14,9 +14,6 @@
       return {
         tab: null,
       };
-    },
-    mounted(){
-      this.$router.push('/dashboard/auction/nfts')
     }
   };
   </script>
