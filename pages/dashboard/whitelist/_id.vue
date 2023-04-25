@@ -295,8 +295,8 @@ export default {
           "walletStore/setMerkleRoot",
           {
             root: root,
-            resourceAccount: this.collection.candyMachine_id.resource_account,
-            candyMachineId: this.collection.candyMachine_id.candy_id,
+            resourceAccount: this.collection.candyMachine.resource_account,
+            candyMachineId: this.collection.candyMachine.candy_id,
           }
         );
 

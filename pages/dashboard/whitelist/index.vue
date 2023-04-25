@@ -101,11 +101,11 @@ export default {
 
     this.collections = collectionRes.data.data.filter((collection: any) => {
       const whitelistSaleDate = new Date(
-        collection.candyMachine_id.whitelist_sale_time
+        collection.candyMachine.whitelist_sale_time
       ).getTime();
 
       const publicSaleDate = new Date(
-        collection.candyMachine_id.public_sale_time
+        collection.candyMachine.public_sale_time
       ).getTime();
 
       if (publicSaleDate - whitelistSaleDate !== 1000) {
