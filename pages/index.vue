@@ -88,12 +88,12 @@ export default {
       this.collections = res;
 
       this.liveCollections = this.collections.filter((collection) => {
-        const whitelistSaleDate = collection.candyMachine_id.whitelist_sale_time
-          ? new Date(collection.candyMachine_id.whitelist_sale_time)
+        const whitelistSaleDate = collection.candyMachine.whitelist_sale_time
+          ? new Date(collection.candyMachine.whitelist_sale_time)
           : null;
 
         const publicSaleDate = new Date(
-          collection.candyMachine_id.public_sale_time
+          collection.candyMachine.public_sale_time
         );
 
         const now = new Date();
@@ -114,11 +114,11 @@ export default {
       });
 
       this.upcomingCollections = this.collections.filter((collection) => {
-        const whitelistSaleDate = collection.candyMachine_id.whitelist_sale_time
-          ? new Date(collection.candyMachine_id.whitelist_sale_time)
+        const whitelistSaleDate = collection.candyMachine.whitelist_sale_time
+          ? new Date(collection.candyMachine.whitelist_sale_time)
           : null;
         const publicSaleDate = new Date(
-          collection.candyMachine_id.public_sale_time
+          collection.candyMachine.public_sale_time
         );
         const now = new Date();
 
