@@ -457,7 +457,7 @@ export default {
     return {
       loading: true,
       collection: {
-        candyMachine_id: {
+        candyMachine: {
           public_sale_price: null,
           public_sale_time: "",
           resource_account: null,
