@@ -45,7 +45,7 @@ export const uploadCSVInWhitelistEntry = async (formData: any) => {
     headers: { "content-type": "multipart/form-data" },
   };
 
-  const res = await axios.post(
+  const res = await publicRequest.post(
     `${process.env.baseURL}/api/uploader/csv`,
     formData,
     config

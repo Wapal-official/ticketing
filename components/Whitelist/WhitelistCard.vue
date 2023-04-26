@@ -13,7 +13,7 @@
         <img
           :src="collection.image"
           :alt="collection.name"
-          class="tw-w-full tw-h-full tw-min-h-[370px] tw-object-fill tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
+          class="tw-w-full tw-h-full tw-object-fill tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
         />
       </div>
       <div
@@ -52,13 +52,17 @@
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
             >
-              <div class="tw-text-lg">Whitelist Starts</div>
+              <div class="tw-text-lg lg:tw-text-base xl:tw-text-lg">
+                Whitelist Starts
+              </div>
               <div class="tw-text-xs">{{ getMintDate }}</div>
             </div>
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
             >
-              <div class="tw-text-lg">Whitelist Ends</div>
+              <div class="tw-text-lg lg:tw-text-base xl:tw-text-lg">
+                Whitelist Ends
+              </div>
               <div class="tw-text-xs">{{ getEndDate }}</div>
             </div>
           </div>

@@ -3,14 +3,16 @@
     <div
       class="tw-flex tw-w-full tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
     >
-      <NuxtLink to="/dashboard/create-collection"
-        ><gradient-border-button
-          >Create New Collection</gradient-border-button
-        ></NuxtLink
-      >
+      <div class="collection1">
+        <NuxtLink to="/dashboard/create-collection"
+          ><gradient-border-button
+            >Create New Collection</gradient-border-button
+          >
+        </NuxtLink>
+      </div>
     </div>
     <div
-      class="tw-container tw-mx-auto tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-3"
+      class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 2xl:tw-gap-12 3xl:tw-grid-cols-4 3xl:tw-gap-4"
       v-if="!loading"
     >
       <nft-card
@@ -21,6 +23,7 @@
       />
     </div>
     <loading v-else />
+    <v-tour name="myTour2" :steps="steps"></v-tour>
   </div>
 </template>
 
@@ -36,6 +39,40 @@ export default {
     return {
       collections: [{ _id: "" }],
       loading: true,
+      steps: [
+        {
+          target: ".dashboard2",
+          content: `Create your launchpad`,
+          header: {
+            title: "Lauchpad Page",
+          },
+          params: {
+            placement: "right",
+            highlight: true,
+          },
+        },
+        {
+          target: ".collection1",
+          content: " Create your own launchpad on “Create your collection",
+          params: {
+            highlight: true,
+          },
+        },
+        {
+          target: ".dashboard3",
+          content: `To run WL campaign`,
+          before: (_type: any) => {
+            return new Promise<void>((resolve, _reject) => {
+              this.$router.push("/dashboard/whitelist");
+              resolve();
+            });
+          },
+          params: {
+            placement: "right",
+            highlight: true,
+          },
+        },
+      ],
     };
   },
   methods: {},
@@ -47,6 +84,11 @@ export default {
     this.collections = res.data.data;
 
     this.loading = false;
+
+    if (localStorage.getItem("seen_collection_tour") === null) {
+      this.$tours["myTour2"].start();
+      localStorage.setItem("seen_collection_tour", "true");
+    }
   },
 };
 </script>

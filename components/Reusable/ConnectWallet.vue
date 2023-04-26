@@ -24,7 +24,7 @@
     </gradient-border-button>
     <v-dialog
       v-model="showConnectWalletDialog"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-1/4"
+      content-class="!tw-w-full md:!tw-w-1/2 xl:!tw-w-1/3"
     >
       <connect-wallet-modal
         @closeModal="showConnectWalletDialog = false"
@@ -33,7 +33,7 @@
     </v-dialog>
     <v-dialog
       v-model="showDisconnectWalletDialog"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-1/4"
+      content-class="!tw-w-full md:!tw-w-1/2 xl:!tw-w-1/3"
     >
       <disconnect-wallet-modal
         @closeModal="showDisconnectWalletDialog = false"

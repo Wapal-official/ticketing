@@ -9,7 +9,7 @@
     <h1 class="tw-text-xl tw-font-bold">Create Whitelist</h1>
     <ValidationObserver v-slot="{ handleSubmit }">
       <form
-        class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full lg:tw-w-[60%]"
+        class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[60%]"
         @submit.prevent="handleSubmit(submitWhitelist)"
       >
         <ValidationProvider
@@ -66,13 +66,11 @@
           name="twitter_acc"
           v-slot="{ errors }"
         >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Twitter Account To Follow:</label
-          >
+          <label>Twitter Account To Follow (Twitter Username)</label>
           <div class="dashboard-text-field-border tw-w-full">
             <v-text-field
               v-model="whitelist.twitter"
+              placeholder="Eg: wapal_official"
               outlined
               single-line
               color="#fff"
@@ -88,10 +86,7 @@
           name="discord_server"
           v-slot="{ errors }"
         >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Discord Server Name:</label
-          >
+          <label>Discord Server Name:</label>
           <div class="dashboard-text-field-border tw-w-full">
             <v-text-field
               v-model="whitelist.discord_server_name"
@@ -110,10 +105,7 @@
           name="discord_id"
           v-slot="{ errors }"
         >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Discord server ID:</label
-          >
+          <label>Discord server ID:</label>
           <div class="dashboard-text-field-border tw-w-full">
             <v-text-field
               v-model="whitelist.discord_server_id"
@@ -133,10 +125,7 @@
           rules="link"
           v-slot="{ errors }"
         >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Discord server URL:</label
-          >
+          <label>Discord server URL:</label>
           <div class="dashboard-text-field-border tw-w-full">
             <v-text-field
               v-model="whitelist.discord_server_url"
@@ -156,10 +145,7 @@
             name="discord_role_name"
             v-slot="{ errors }"
           >
-            <label
-              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-              >Discord role name {{ `role ${index + 1}` }}:</label
-            >
+            <label>Discord role name {{ `role ${index + 1}` }}:</label>
             <div class="dashboard-text-field-border tw-w-full">
               <v-text-field
                 v-model="role.name"
@@ -178,10 +164,7 @@
             name="discord_role_id"
             v-slot="{ errors }"
           >
-            <label
-              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-              >Discord role id {{ `role ${index + 1}` }}:</label
-            >
+            <label>Discord role id {{ `role ${index + 1}` }}:</label>
             <div class="dashboard-text-field-border tw-w-full">
               <v-text-field
                 v-model="role.id"
