@@ -497,6 +497,13 @@ export default {
           }
         );
 
+        if (this.collection._id === "642bf277c10560ca41e179fa") {
+          this.resource = {
+            minted: this.resource.minted,
+            total_supply: 777,
+          };
+        }
+
         if (
           this.resource.minted == this.resource.total_supply &&
           !this.collection.status.sold_out
@@ -585,7 +592,7 @@ export default {
             message: `${this.collection.name} Minted Successfully`,
           });
 
-          const res = await this.$store.dispatch(
+          let res = await this.$store.dispatch(
             "walletStore/getSupplyAndMintedOfCollection",
             {
               resourceAccountAddress:
@@ -593,6 +600,13 @@ export default {
               candyMachineId: this.collection.candyMachine.candy_id,
             }
           );
+
+          if (this.collection._id === "642bf277c10560ca41e179fa") {
+            res = {
+              minted: res.minted,
+              total_supply: 777,
+            };
+          }
 
           if (res.total_supply === res.minted) {
             await setSoldOut(this.collection._id);
@@ -695,6 +709,13 @@ export default {
           candyMachineId: this.collection.candyMachine.candy_id,
         }
       );
+
+      if (this.collection._id === "642bf277c10560ca41e179fa") {
+        this.resource = {
+          minted: this.resource.minted,
+          total_supply: 777,
+        };
+      }
 
       this.resource.mintedPercent = Math.floor(
         (this.resource.minted / this.resource.total_supply) * 100
