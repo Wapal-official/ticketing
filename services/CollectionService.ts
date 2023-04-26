@@ -79,3 +79,17 @@ export const getFeaturedCollection = async () => {
 
   return res;
 };
+
+export const createDraft = async (formData: any) => {
+  const config = {
+    headers: { "content-type": "multipart/form-data" },
+  };
+
+  const res = await publicRequest.post(
+    `/api/collection/draft/`,
+    formData,
+    config
+  );
+
+  return res;
+};

@@ -11,6 +11,23 @@
         </NuxtLink>
       </div>
     </div>
+    <div class="tw-w-full">
+      <v-tabs
+        active-class="!tw-text-wapal-pink"
+        class="!tw-bg-transparent"
+        id="explore-tab"
+        v-model="launchpadTab"
+        @change="tabChanged(launchpadTabs)"
+      >
+        <v-tab
+          :ripple="false"
+          class="!tw-capitalize !tw-text-white"
+          v-for="tab in launchpadTabs"
+          :key="tab.id"
+          >{{ tab.title }}</v-tab
+        >
+      </v-tabs>
+    </div>
     <div
       class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 2xl:tw-gap-12 3xl:tw-grid-cols-4 3xl:tw-gap-4"
       v-if="!loading"
@@ -73,9 +90,27 @@ export default {
           },
         },
       ],
+      launchpadTabs: [
+        { id: 0, title: "Live" },
+        { id: 1, title: "Under Review" },
+        { id: 2, title: "Draft" },
+      ],
+      launchpadTab:null
     };
   },
-  methods: {},
+  methods: {
+    tabChanged(tab: any) {
+      this.loading = true;
+
+      // if (tab === 1) {
+      //   this.getLiveCollection();
+      // } else if (tab === 2) {
+      //   this.getUpcomingCollection();
+      // }
+
+      this.loading = false;
+    },
+  },
   async mounted() {
     const res = await getCollectionsOfUser(
       this.$store.state.userStore.user.user_id

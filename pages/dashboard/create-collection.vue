@@ -4,7 +4,7 @@
       <DashboardBreadcrumb class="tw-mb-1" :breadcrumbs="breadcrumb" />
     </div>
     <h1 class="tw-text-xl tw-font-bold">Create NFT Collection</h1>
-    <ValidationObserver v-slot="{ handleSubmit }">
+    <ValidationObserver ref="form" v-slot="{ handleSubmit }">
       <form
         class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[60%]"
         @submit.prevent="handleSubmit(submitCollection)"
@@ -97,33 +97,6 @@
         </div>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="baseurl"
-          rules="required"
-          v-slot="{ errors }"
-        >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Assets</label
-          >
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-autocomplete
-              v-model="baseURL"
-              :items="folders"
-              outlined
-              color="#fff"
-              class="dashboard-input"
-              placeholder="Select your NFT Vault"
-              item-text="folder_name"
-              @change="setSupply"
-              hide-details
-              clearable
-            >
-            </v-autocomplete>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="royaltyPayeeAddress"
           rules="required"
           v-slot="{ errors }"
@@ -171,6 +144,124 @@
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
+        <ValidationProvider
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="twitter"
+          rules="link"
+          v-slot="{ errors }"
+        >
+          <label>Twitter Link</label>
+          <div class="dashboard-text-field-border tw-w-full">
+            <v-text-field
+              v-model="collection.twitter"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
+            </v-text-field>
+          </div>
+          <div class="tw-text-red-600">{{ errors[0] }}</div>
+        </ValidationProvider>
+        <ValidationProvider
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="discord"
+          rules="link"
+          v-slot="{ errors }"
+        >
+          <label>Discord Link</label>
+          <div class="dashboard-text-field-border tw-w-full">
+            <v-text-field
+              v-model="collection.discord"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
+            </v-text-field>
+          </div>
+          <div class="tw-text-red-600">{{ errors[0] }}</div>
+        </ValidationProvider>
+        <ValidationProvider
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="website"
+          rules="link"
+          v-slot="{ errors }"
+        >
+          <label ref="social">Website</label>
+          <div class="dashboard-text-field-border tw-w-full">
+            <v-text-field
+              v-model="collection.website"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
+            </v-text-field>
+          </div>
+          <div class="tw-text-red-600">{{ errors[0] }}</div>
+          <div class="tw-text-red-600" v-if="socialError">
+            {{ socialErrorMessage }}
+          </div>
+        </ValidationProvider>
+        <ValidationProvider
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="baseurl"
+          :rules="!tbd ? 'required' : ''"
+          v-slot="{ errors }"
+        >
+          <label>Assets</label>
+          <div class="dashboard-text-field-border tw-w-full">
+            <v-autocomplete
+              v-model="baseURL"
+              :items="folders"
+              outlined
+              color="#fff"
+              class="dashboard-input"
+              placeholder="Select your NFT Vault"
+              item-text="folder_name"
+              @change="setSupply"
+              hide-details
+              clearable
+            >
+            </v-autocomplete>
+          </div>
+          <div class="tw-text-red-600">{{ errors[0] }}</div>
+        </ValidationProvider>
+        <ValidationProvider
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="supply"
+          v-slot="{ errors }"
+        >
+          <label>Supply</label>
+          <div class="dashboard-text-field-border tw-w-full">
+            <v-text-field
+              v-model="collection.supply"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              inputmode="numeric"
+              disabled
+            >
+            </v-text-field>
+          </div>
+          <div class="tw-text-red-600">{{ errors[0] }}</div>
+        </ValidationProvider>
+        <div>
+          <v-checkbox v-model="tbd" label="TBD"></v-checkbox>
+        </div>
         <div
           class="tw-flex tw-flex-row tw-gap-4 tw-items-center tw-w-full md:tw-w-1/2"
         >
@@ -179,6 +270,7 @@
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
+          v-if="!tbd"
         >
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
@@ -200,13 +292,14 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
             name="publicSaleTime"
-            rules="required|saleTime|public_sale_time:@whitelistSaleTime"
+            :rules="
+              !tbd
+                ? 'required|saleTime|public_sale_time:@whitelistSaleTime'
+                : 'saleTime|public_sale_time:@whitelistSaleTime'
+            "
             v-slot="{ errors }"
           >
-            <label
-              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-              >Public Sale Time</label
-            >
+            <label>Public Sale Time</label>
             <div class="dashboard-text-field-border tw-w-full">
               <date-picker
                 v-model="collection.public_sale_time"
@@ -247,13 +340,10 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
             name="publicSalePrice"
-            rules="required|number"
+            :rules="!tbd ? 'required|number' : 'number'"
             v-slot="{ errors }"
           >
-            <label
-              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-              >Public Sale Price in Apt</label
-            >
+            <label>Public Sale Price in Apt</label>
             <div class="dashboard-text-field-border tw-w-full">
               <v-text-field
                 v-model="collection.public_sale_price"
@@ -271,107 +361,6 @@
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
         </div>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="supply"
-          rules="required|number"
-          v-slot="{ errors }"
-        >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Supply</label
-          >
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.supply"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              inputmode="numeric"
-              disabled
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="twitter"
-          rules="required|link"
-          v-slot="{ errors }"
-        >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Twitter Link</label
-          >
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.twitter"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              type="url"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="discord"
-          rules="required|link"
-          v-slot="{ errors }"
-        >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Discord Link</label
-          >
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.discord"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              type="url"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="website"
-          rules="required|link"
-          v-slot="{ errors }"
-        >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Website</label
-          >
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.website"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              type="url"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4"
         >
@@ -393,13 +382,11 @@ import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 
-import { createCollection } from "@/services/CollectionService";
+import { createCollection, createDraft } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-
-import AWS from "aws-sdk";
 
 extend("required", {
   ...required,
@@ -475,6 +462,17 @@ extend("descriptionLength", {
   message: "This field must not exceed 200 characters",
 });
 
+extend("social", {
+  params: ["twitter", "discord"],
+  validate(value, target: any) {
+    if (!value && !target.twitter && !target.discord) {
+      return false;
+    }
+    return true;
+  },
+  message: "Twitter URL, Discord URL or Website is required",
+});
+
 export default {
   layout: "dashboard",
   components: {
@@ -527,11 +525,29 @@ export default {
       folderInfo: null,
       baseURL: null,
       whitelistEnabled: false,
+      socialErrorMessage: "",
+      socialError: false,
+      tbd: false,
     };
   },
   methods: {
     async submitCollection() {
       this.imageError = false;
+      this.socialError = true;
+
+      if (
+        !this.collection.twitter &&
+        !this.collection.discord &&
+        !this.collection.website
+      ) {
+        this.socialError = true;
+        this.socialErrorMessage =
+          "Please Enter Twitter URL, Discord URL or Website";
+
+        this.$refs["social"].scrollIntoView({ behavior: "smooth" });
+
+        return;
+      }
       if (!this.image.name) {
         this.imageError = true;
         this.imageErrorMessage = "Please select an image for collection";
@@ -545,14 +561,6 @@ export default {
           return;
         }
 
-        const selectedFolder = this.folders.find(
-          (folder: any) => folder.folder_name === this.baseURL
-        );
-
-        this.collection.baseURL = selectedFolder.metadata.baseURI;
-
-        await this.sendDataToCandyMachineCreator();
-
         const tempCollection = this.collection;
 
         tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
@@ -562,6 +570,53 @@ export default {
         tempCollection.public_sale_time = new Date(
           tempCollection.public_sale_time
         ).toISOString();
+
+        if (this.tbd) {
+          const formData = new FormData();
+
+          formData.append("name", tempCollection.name);
+          formData.append("description", tempCollection.description);
+          formData.append(
+            "royalty_percentage",
+            tempCollection.royalty_percentage
+          );
+
+          formData.append(
+            "royalty_payee_address",
+            tempCollection.royalty_payee_address
+          );
+          formData.append("baseURL", tempCollection.baseURL);
+
+          formData.append("supply", tempCollection.supply);
+
+          formData.append(
+            "public_sale_price",
+            tempCollection.public_sale_price
+          );
+          formData.append("whitelist_price", tempCollection.whitelist_price);
+          formData.append("twitter", tempCollection.twitter);
+          formData.append("discord", tempCollection.discord);
+          formData.append("website", tempCollection.website);
+          formData.append("candy_id", tempCollection.candy_id);
+          formData.append("image", this.image);
+
+          await createDraft(formData);
+
+          this.submitting = false;
+
+          this.message = "Collection Created Successfully";
+          this.$toast.showMessage({ message: this.message, error: false });
+          this.$router.push("/dashboard");
+          return;
+        }
+
+        const selectedFolder = this.folders.find(
+          (folder: any) => folder.folder_name === this.baseURL
+        );
+
+        this.collection.baseURL = selectedFolder.metadata.baseURI;
+
+        await this.sendDataToCandyMachineCreator();
 
         const formData = new FormData();
 
@@ -713,6 +768,10 @@ export default {
 .mx-icon-calendar,
 .mx-icon-clear,
 .mx-input::placeholder {
+  color: #d9d9d9 !important;
+}
+
+.mdi-checkbox-blank-outline {
   color: #d9d9d9 !important;
 }
 </style>
