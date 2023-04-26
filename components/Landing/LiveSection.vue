@@ -47,7 +47,7 @@ export default {
           name: "",
           image: "",
           supply: "",
-          candyMachine_id: {
+          candyMachine: {
             whitelist_sale_time: null,
             public_sale_time: null,
             whitelist_sale_price: null,

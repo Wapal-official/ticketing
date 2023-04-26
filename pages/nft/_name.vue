@@ -27,9 +27,9 @@
             <count-down
               :shadow="true"
               :startTime="
-                collection.candyMachine_id.whitelist_sale_time
-                  ? collection.candyMachine_id.whitelist_sale_time
-                  : collection.candyMachine_id.public_sale_time
+                collection.candyMachine.whitelist_sale_time
+                  ? collection.candyMachine.whitelist_sale_time
+                  : collection.candyMachine.public_sale_time
               "
             />
           </div>
@@ -89,8 +89,7 @@
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
           >
             <span class="tw-capitalize tw-text-sm">{{
-              showPublicSaleTimer &&
-              collection.candyMachine_id.whitelist_sale_time
+              showPublicSaleTimer && collection.candyMachine.whitelist_sale_time
                 ? "whitelist mint"
                 : "public sale mint"
             }}</span>
@@ -198,7 +197,7 @@
             </h6>
             <count-down
               :vertical="true"
-              :startTime="this.collection.candyMachine_id.public_sale_time"
+              :startTime="this.collection.candyMachine.public_sale_time"
               @countdownComplete="hideEndInTimer"
               v-if="showEndInTimer"
             />
@@ -214,9 +213,9 @@
             <div>Whitelist Sale</div>
             <div
               class="tw-capitalize"
-              v-if="collection.candyMachine_id.whitelist_price != 0"
+              v-if="collection.candyMachine.whitelist_price != 0"
             >
-              price {{ collection.candyMachine_id.whitelist_price }} apt
+              price {{ collection.candyMachine.whitelist_price }} apt
             </div>
             <div class="tw-capitalize" v-else>Free Mint</div>
           </div>
@@ -225,7 +224,7 @@
           >
             Starts In
             <count-down
-              :startTime="collection.candyMachine_id.whitelist_sale_time"
+              :startTime="collection.candyMachine.whitelist_sale_time"
               @countdownComplete="whitelistCountdownComplete"
             />
           </div>
@@ -240,9 +239,9 @@
             <div>Public Sale</div>
             <div
               class="tw-capitalize"
-              v-if="collection.candyMachine_id.public_sale_price != 0"
+              v-if="collection.candyMachine.public_sale_price != 0"
             >
-              price {{ collection.candyMachine_id.public_sale_price }} apt
+              price {{ collection.candyMachine.public_sale_price }} apt
             </div>
             <div class="tw-capitalize" v-else>Free Mint</div>
           </div>
@@ -251,7 +250,7 @@
           >
             Starts In
             <count-down
-              :startTime="collection.candyMachine_id.public_sale_time"
+              :startTime="collection.candyMachine.public_sale_time"
               @countdownComplete="publicSaleCountdownComplete"
             />
           </div>
@@ -426,10 +425,10 @@ export default {
           this.minting = true;
 
           const res = await this.$store.dispatch("walletStore/mintCollection", {
-            resourceAccount: this.collection.candyMachine_id.resource_account,
+            resourceAccount: this.collection.candyMachine.resource_account,
             publicMint: !this.checkPublicSaleTimer(),
             collectionId: this.collection._id,
-            candyMachineId: this.collection.candyMachine_id.candy_id,
+            candyMachineId: this.collection.candyMachine.candy_id,
           });
 
           if (res.success) {
@@ -441,8 +440,8 @@ export default {
               "walletStore/getSupplyAndMintedOfCollection",
               {
                 resourceAccountAddress:
-                  this.collection.candyMachine_id.resource_account,
-                candyMachineId: this.collection.candyMachine_id.candy_id,
+                  this.collection.candyMachine.resource_account,
+                candyMachineId: this.collection.candyMachine.candy_id,
               }
             );
 
@@ -493,10 +492,17 @@ export default {
           "walletStore/getSupplyAndMintedOfCollection",
           {
             resourceAccountAddress:
-              this.collection.candyMachine_id.resource_account,
-            candyMachineId: this.collection.candyMachine_id.candy_id,
+              this.collection.candyMachine.resource_account,
+            candyMachineId: this.collection.candyMachine.candy_id,
           }
         );
+
+        if (this.collection._id === "642bf277c10560ca41e179fa") {
+          this.resource = {
+            minted: this.resource.minted,
+            total_supply: 777,
+          };
+        }
 
         if (
           this.resource.minted == this.resource.total_supply &&
@@ -574,10 +580,10 @@ export default {
         this.minting = true;
 
         const res = await this.$store.dispatch("walletStore/mintBulk", {
-          resourceAccount: this.collection.candyMachine_id.resource_account,
+          resourceAccount: this.collection.candyMachine.resource_account,
           publicMint: !this.checkPublicSaleTimer(),
           collectionId: this.collection._id,
-          candyMachineId: this.collection.candyMachine_id.candy_id,
+          candyMachineId: this.collection.candyMachine.candy_id,
           mintNumber: this.numberOfNft,
         });
 
@@ -586,14 +592,21 @@ export default {
             message: `${this.collection.name} Minted Successfully`,
           });
 
-          const res = await this.$store.dispatch(
+          let res = await this.$store.dispatch(
             "walletStore/getSupplyAndMintedOfCollection",
             {
               resourceAccountAddress:
-                this.collection.candyMachine_id.resource_account,
-              candyMachineId: this.collection.candyMachine_id.candy_id,
+                this.collection.candyMachine.resource_account,
+              candyMachineId: this.collection.candyMachine.candy_id,
             }
           );
+
+          if (this.collection._id === "642bf277c10560ca41e179fa") {
+            res = {
+              minted: res.minted,
+              total_supply: 777,
+            };
+          }
 
           if (res.total_supply === res.minted) {
             await setSoldOut(this.collection._id);
@@ -619,20 +632,20 @@ export default {
   computed: {
     getCurrentPrice() {
       if (
-        this.collection.candyMachine_id.public_sale_price ==
-        this.collection.candyMachine_id.whitelist_price
+        this.collection.candyMachine.public_sale_price ==
+        this.collection.candyMachine.whitelist_price
       ) {
-        return this.collection.candyMachine_id.public_sale_price;
+        return this.collection.candyMachine.public_sale_price;
       }
 
       if (!this.showPublicSaleTimer) {
-        return this.collection.candyMachine_id.public_sale_price;
+        return this.collection.candyMachine.public_sale_price;
       }
 
       if (this.whitelistSaleDate && this.showPublicSaleTimer) {
-        return this.collection.candyMachine_id.whitelist_price;
+        return this.collection.candyMachine.whitelist_price;
       } else {
-        return this.collection.candyMachine_id.public_sale_price;
+        return this.collection.candyMachine.public_sale_price;
       }
     },
     showMintBox() {
@@ -661,10 +674,10 @@ export default {
     },
     checkWhitelistSale() {
       const whitelistTime = new Date(
-        this.collection.candyMachine_id.whitelist_sale_time
+        this.collection.candyMachine.whitelist_sale_time
       ).getTime();
       const publicSaleTime = new Date(
-        this.collection.candyMachine_id.public_sale_time
+        this.collection.candyMachine.public_sale_time
       ).getTime();
 
       if (publicSaleTime - whitelistTime === 1000) {
@@ -677,11 +690,11 @@ export default {
   async mounted() {
     if (this.collection) {
       this.whitelistSaleDate = this.checkWhitelistSale
-        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+        ? new Date(this.collection.candyMachine.whitelist_sale_time)
         : null;
 
       this.publicSaleDate = new Date(
-        this.collection.candyMachine_id.public_sale_time
+        this.collection.candyMachine.public_sale_time
       );
 
       this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
@@ -692,11 +705,17 @@ export default {
       this.resource = await this.$store.dispatch(
         "walletStore/getSupplyAndMintedOfCollection",
         {
-          resourceAccountAddress:
-            this.collection.candyMachine_id.resource_account,
-          candyMachineId: this.collection.candyMachine_id.candy_id,
+          resourceAccountAddress: this.collection.candyMachine.resource_account,
+          candyMachineId: this.collection.candyMachine.candy_id,
         }
       );
+
+      if (this.collection._id === "642bf277c10560ca41e179fa") {
+        this.resource = {
+          minted: this.resource.minted,
+          total_supply: 777,
+        };
+      }
 
       this.resource.mintedPercent = Math.floor(
         (this.resource.minted / this.resource.total_supply) * 100

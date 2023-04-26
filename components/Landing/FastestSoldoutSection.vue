@@ -167,13 +167,12 @@ export default {
         this.fastestSoldOutCollections = [];
 
         this.collections.map((collection: any) => {
-          const whitelistSaleTime = collection.candyMachine_id
-            .whitelist_sale_time
-            ? new Date(collection.candyMachine_id.whitelist_sale_time).getTime()
+          const whitelistSaleTime = collection.candyMachine.whitelist_sale_time
+            ? new Date(collection.candyMachine.whitelist_sale_time).getTime()
             : null;
 
           const publicSaleTime = new Date(
-            collection.candyMachine_id.public_sale_time
+            collection.candyMachine.public_sale_time
           ).getTime();
 
           let soldOutIn: any = 0;
@@ -194,7 +193,7 @@ export default {
               image: collection.image,
               soldOutIn: soldOutIn,
               supply: collection.supply,
-              price: collection.candyMachine_id.public_sale_price,
+              price: collection.candyMachine.public_sale_price,
               username: collection.username,
             });
 

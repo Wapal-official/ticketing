@@ -472,7 +472,7 @@ export default {
             if (fileType === "json" && this.type === "assets") {
               const createdDate = this.folderInfo.createdDate
                 ? this.folderInfo.createdDate
-                : moment("").format("DD/MM/YYYY");
+                : moment().format("DD/MM/YYYY");
 
               generatedFile = {
                 _id: fileIndex,
