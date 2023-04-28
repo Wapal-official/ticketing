@@ -11,7 +11,7 @@
         </NuxtLink>
       </div>
     </div>
-    <div class="tw-w-full">
+    <div class="tw-w-full tw-py-2">
       <v-tabs
         active-class="!tw-text-wapal-pink"
         class="!tw-bg-transparent"
@@ -95,7 +95,7 @@ export default {
         { id: 1, title: "Under Review" },
         { id: 2, title: "Draft" },
       ],
-      launchpadTab:null
+      launchpadTab: null,
     };
   },
   methods: {

@@ -80,6 +80,22 @@ export const getFeaturedCollection = async () => {
   return res;
 };
 
+export const getLiveCollections = async (page: number, limit: number) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/collection/live?page=${page}&limit=${limit}`
+  );
+
+  return res;
+};
+
+export const getUpcomingCollections = async (page: number, limit: number) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/collection/upcoming?page=${page}&limit=${limit}`
+  );
+
+  return res;
+};
+
 export const createDraft = async (formData: any) => {
   const config = {
     headers: { "content-type": "multipart/form-data" },
@@ -94,18 +110,8 @@ export const createDraft = async (formData: any) => {
   return res;
 };
 
-export const getLiveCollections = async (page: number, limit: number) => {
-  const res = await axios.get(
-    `${process.env.baseURL}/api/collection/live?page=${page}&limit=${limit}`
-  );
-
-  return res;
-};
-
-export const getUpcomingCollections = async (page: number, limit: number) => {
-  const res = await axios.get(
-    `${process.env.baseURL}/api/collection/upcoming?page=${page}&limit=${limit}`
-  );
+export const getDraftById = async (draftId: any) => {
+  const res = await publicRequest.get(`/api/collection/draft/${draftId}`);
 
   return res;
 };
