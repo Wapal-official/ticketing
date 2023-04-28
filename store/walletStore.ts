@@ -166,7 +166,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
-
+    console.log('args:',candyMachineArguments)
     const create_candy_machine = {
       type: "entry_function_payload",
       function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",

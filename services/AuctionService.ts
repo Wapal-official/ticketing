@@ -65,3 +65,12 @@ export const fetchWalletNfts = async (params: any) => {
     )
     return resp.data
 }
+
+export const uploadAndCreateFile = async (file: File,params:any) => {
+    const formData = new FormData()
+    formData.append('image', file)
+    const upload=await publicRequest.post("/api/uploader/singleupload", formData,{
+       params:{'name':params.name,'description':params.description,'attributes':params.attributes}
+    })
+    return upload.data.metadata
+}
