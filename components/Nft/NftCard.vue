@@ -18,7 +18,7 @@
           {{ collection?.name }}
         </h5>
         <h6 class="tw-text-xl tw-text-wapal-pink tw-font-normal" v-if="status">
-          Live
+          {{ collection?.candyMachine ? "Live" : "TBD" }}
         </h6>
         <count-down
           :startTime="getStartTime"
@@ -34,9 +34,11 @@
               collection?._id === "642bf277c10560ca41e179fa"
                 ? 777
                 : collection?.supply
+                ? collection?.supply
+                : "TBD"
             }}
           </div>
-          <div v-if="getPrice != 0">price {{ getPrice }} apt</div>
+          <div v-if="getPrice != 0">price {{ getPrice }}</div>
           <div v-else>Free Mint</div>
         </div>
       </div>
@@ -83,6 +85,9 @@ export default {
       if (this.domainName) {
         return true;
       }
+      if (!this.collection.candyMachine) {
+        return true;
+      }
 
       const whiteListDate = this.collection.candyMachine.whitelist_sale_time
         ? new Date(this.collection.candyMachine.whitelist_sale_time)
@@ -106,6 +111,10 @@ export default {
       return false;
     },
     getStartTime() {
+      if (!this.collection.candyMachine) {
+        return;
+      }
+
       const whiteListDate = this.collection.candyMachine.whitelist_sale_time
         ? new Date(this.collection.candyMachine.whitelist_sale_time)
         : null;
@@ -124,6 +133,17 @@ export default {
       }
     },
     getPrice() {
+      if (!this.collection.candyMachine) {
+        if (this.collection.whitelist_price) {
+          return this.collection.whitelist_price;
+        }
+        if (this.collection.public_sale_price) {
+          return this.collection.public_sale_price;
+        }
+
+        return "TBD";
+      }
+
       const whiteListDate = this.collection.candyMachine.whitelist_sale_time
         ? new Date(this.collection.candyMachine.whitelist_sale_time)
         : null;
@@ -135,17 +155,17 @@ export default {
         this.collection.candyMachine.public_sale_price ==
         this.collection.candyMachine.whitelist_price
       ) {
-        return this.collection.candyMachine.public_sale_price;
+        return this.collection.candyMachine.public_sale_price + " apt";
       }
 
       if (now > publicSaleDate) {
-        return this.collection.candyMachine.public_sale_price;
+        return this.collection.candyMachine.public_sale_price + " apt";
       }
 
       if (whiteListDate && publicSaleDate > now) {
         return this.collection.candyMachine.whitelist_price;
       } else {
-        return this.collection.candyMachine.public_sale_price;
+        return this.collection.candyMachine.public_sale_price + " apt";
       }
     },
     getRedirectLink() {
@@ -155,6 +175,10 @@ export default {
 
       if (this.redirectTo === "domainName") {
         return `/domain-name`;
+      }
+
+      if (this.redirectTo === "draft") {
+        return `/dashboard/draft/${this.collection._id}`;
       }
 
       return `/nft/${this.collection.username}`;

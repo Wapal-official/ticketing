@@ -146,75 +146,6 @@
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="twitter"
-          rules="link"
-          v-slot="{ errors }"
-        >
-          <label>Twitter Link</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.twitter"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              type="url"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="discord"
-          rules="link"
-          v-slot="{ errors }"
-        >
-          <label>Discord Link</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.discord"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              type="url"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="website"
-          rules="link"
-          v-slot="{ errors }"
-        >
-          <label ref="social">Website</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.website"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              type="url"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-          <div class="tw-text-red-600" v-if="socialError">
-            {{ socialErrorMessage }}
-          </div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="baseurl"
           :rules="!tbd ? 'required' : ''"
           v-slot="{ errors }"
@@ -259,9 +190,6 @@
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
-        <div>
-          <v-checkbox v-model="tbd" label="TBD"></v-checkbox>
-        </div>
         <div
           class="tw-flex tw-flex-row tw-gap-4 tw-items-center tw-w-full md:tw-w-1/2"
         >
@@ -270,45 +198,57 @@
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
-          v-if="!tbd"
         >
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="whitelistSaleTime"
-            rules="saleTime"
-            v-slot="{ errors }"
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
             v-if="whitelistEnabled"
           >
-            <label>Whitelist Sale Time</label>
-            <div class="dashboard-text-field-border tw-w-full">
-              <date-picker
-                v-model="collection.whitelist_sale_time"
-                type="datetime"
-                placeholder="Select Whitelist Sale time"
-              ></date-picker>
-            </div>
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
-          </ValidationProvider>
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="publicSaleTime"
-            :rules="
-              !tbd
-                ? 'required|saleTime|public_sale_time:@whitelistSaleTime'
-                : 'saleTime|public_sale_time:@whitelistSaleTime'
-            "
-            v-slot="{ errors }"
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group"
+              name="whitelistSaleTime"
+              rules="saleTime"
+              v-slot="{ errors }"
+              v-if="whitelistEnabled"
+            >
+              <label>Whitelist Sale Time</label>
+              <div class="dashboard-text-field-border tw-w-full">
+                <date-picker
+                  v-model="collection.whitelist_sale_time"
+                  type="datetime"
+                  placeholder="Select Whitelist Sale time"
+                  :disabled="whitelistTBD"
+                ></date-picker>
+              </div>
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <v-checkbox v-model="whitelistTBD" label="TBD"></v-checkbox>
+          </div>
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
           >
-            <label>Public Sale Time</label>
-            <div class="dashboard-text-field-border tw-w-full">
-              <date-picker
-                v-model="collection.public_sale_time"
-                type="datetime"
-                placeholder="Select Public Sale time"
-              ></date-picker>
-            </div>
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
-          </ValidationProvider>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group"
+              name="publicSaleTime"
+              :rules="
+                !tbd
+                  ? 'required|saleTime|public_sale_time:@whitelistSaleTime'
+                  : 'saleTime|public_sale_time:@whitelistSaleTime'
+              "
+              v-slot="{ errors }"
+            >
+              <label>Public Sale Time</label>
+              <div class="dashboard-text-field-border tw-w-full">
+                <date-picker
+                  v-model="collection.public_sale_time"
+                  type="datetime"
+                  placeholder="Select Public Sale time"
+                  :disabled="publicSaleTBD"
+                ></date-picker>
+              </div>
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <v-checkbox v-model="publicSaleTBD" label="TBD"></v-checkbox>
+          </div>
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
@@ -404,12 +344,14 @@
                 <div class="tw-text-red-600">{{ errors[0] }}</div>
               </ValidationProvider>
             </div>
-            <button
-              class="tw-bg-[#A0A0A0] tw-rounded tw-py-2 tw-px-6 tw-text-white tw-my-2"
-              @click.prevent="removeMintPhase(index)"
-            >
-              Remove Phase
-            </button>
+            <div class="tw-flex tw-flex-row tw-w-full tw-justify-end">
+              <button
+                class="tw-bg-[#A0A0A0] tw-rounded tw-py-2 tw-px-6 tw-text-white tw-my-2"
+                @click.prevent="removeMintPhase(index)"
+              >
+                Remove Phase
+              </button>
+            </div>
           </div>
           <button
             class="tw-bg-[#A0A0A0] tw-rounded tw-py-2 tw-px-6 tw-text-white"
@@ -418,6 +360,97 @@
             Add Phase
           </button>
         </div>
+        <ValidationProvider
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="twitter"
+          rules="link"
+          v-slot="{ errors }"
+        >
+          <label>Twitter Link</label>
+          <div class="dashboard-text-field-border tw-w-full">
+            <v-text-field
+              v-model="collection.twitter"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
+            </v-text-field>
+          </div>
+          <div class="tw-text-red-600">{{ errors[0] }}</div>
+        </ValidationProvider>
+        <ValidationProvider
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="discord"
+          rules="link"
+          v-slot="{ errors }"
+        >
+          <label>Discord Link</label>
+          <div class="dashboard-text-field-border tw-w-full">
+            <v-text-field
+              v-model="collection.discord"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
+            </v-text-field>
+          </div>
+          <div class="tw-text-red-600">{{ errors[0] }}</div>
+        </ValidationProvider>
+        <ValidationProvider
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="instagram"
+          rules="link"
+          v-slot="{ errors }"
+        >
+          <label>Instagram Link</label>
+          <div class="dashboard-text-field-border tw-w-full">
+            <v-text-field
+              v-model="collection.instagram"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
+            </v-text-field>
+          </div>
+          <div class="tw-text-red-600">{{ errors[0] }}</div>
+        </ValidationProvider>
+        <ValidationProvider
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="website"
+          rules="link"
+          v-slot="{ errors }"
+        >
+          <label ref="social">Website</label>
+          <div class="dashboard-text-field-border tw-w-full">
+            <v-text-field
+              v-model="collection.website"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
+            </v-text-field>
+          </div>
+          <div class="tw-text-red-600">{{ errors[0] }}</div>
+          <div class="tw-text-red-600" v-if="socialError">
+            {{ socialErrorMessage }}
+          </div>
+        </ValidationProvider>
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4"
         >
@@ -556,6 +589,7 @@ export default {
         twitter: "",
         discord: "",
         website: "",
+        instagram: "",
         resource_account: "",
         txnhash: "",
         un: "",
@@ -585,7 +619,8 @@ export default {
       whitelistEnabled: false,
       socialErrorMessage: "",
       socialError: false,
-      tbd: false,
+      whitelistTBD: false,
+      publicSaleTBD: false,
     };
   },
   methods: {
@@ -596,11 +631,12 @@ export default {
       if (
         !this.collection.twitter &&
         !this.collection.discord &&
-        !this.collection.website
+        !this.collection.website &&
+        !this.collection.instagram
       ) {
         this.socialError = true;
         this.socialErrorMessage =
-          "Please Enter Twitter URL, Discord URL or Website";
+          "Please Enter Twitter URL, Discord URL, Instagram URL or Website";
 
         this.$refs["social"].scrollIntoView({ behavior: "smooth" });
 
@@ -655,6 +691,7 @@ export default {
           formData.append("twitter", tempCollection.twitter);
           formData.append("discord", tempCollection.discord);
           formData.append("website", tempCollection.website);
+          formData.append("instagram", tempCollection.instagram);
           formData.append("candy_id", tempCollection.candy_id);
           formData.append("phases", JSON.stringify(tempCollection.phases));
           formData.append("image", this.image);
@@ -700,6 +737,7 @@ export default {
         formData.append("twitter", tempCollection.twitter);
         formData.append("discord", tempCollection.discord);
         formData.append("website", tempCollection.website);
+        formData.append("instagram", tempCollection.instagram);
         formData.append("resource_account", tempCollection.resource_account);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
@@ -788,6 +826,11 @@ export default {
     },
     removeMintPhase(index: number) {
       this.collection.phases.splice(index, 1);
+    },
+  },
+  computed: {
+    tbd() {
+      return this.whitelistTBD || this.publicSaleTBD;
     },
   },
   async mounted() {

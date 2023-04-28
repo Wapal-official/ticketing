@@ -397,6 +397,28 @@
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          name="instagram"
+          rules="link"
+          v-slot="{ errors }"
+        >
+          <label>Instagram Link</label>
+          <div class="dashboard-text-field-border tw-w-full">
+            <v-text-field
+              v-model="collection.instagram"
+              outlined
+              single-line
+              color="#fff"
+              hide-details
+              clearable
+              class="dashboard-input"
+              type="url"
+            >
+            </v-text-field>
+          </div>
+          <div class="tw-text-red-600">{{ errors[0] }}</div>
+        </ValidationProvider>
+        <ValidationProvider
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="website"
           rules="link"
           v-slot="{ errors }"
@@ -558,6 +580,7 @@ export default {
         twitter: null,
         discord: null,
         website: null,
+        instagram: null,
         resource_account: null,
         txnhash: null,
         un: "",
@@ -598,16 +621,18 @@ export default {
       if (
         !this.collection.twitter &&
         !this.collection.discord &&
-        !this.collection.website
+        !this.collection.website &&
+        !this.collection.instagram
       ) {
         this.socialError = true;
         this.socialErrorMessage =
-          "Please Enter Twitter URL, Discord URL or Website";
+          "Please Enter Twitter URL, Discord URL, Instagram URL or Website";
 
         this.$refs["social"].scrollIntoView({ behavior: "smooth" });
 
         return;
       }
+
       if (!this.collection.image) {
         this.imageError = true;
         this.imageErrorMessage = "Please select an image for collection";
@@ -665,10 +690,11 @@ export default {
         formData.append("resource_account", tempCollection.resource_account);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
-        formData.append("image", tempCollection.image);
         formData.append("phases", JSON.stringify(tempCollection.phases));
         if (this.image.name) {
           formData.append("image", this.image);
+        } else {
+          formData.append("image", tempCollection.image);
         }
 
         await createCollection(formData);
@@ -761,13 +787,19 @@ export default {
 
     const draftRes = await getDraftById(this.$route.params.id);
 
-    console.log(draftRes);
-
     this.collection = draftRes.data.draft.data;
 
     this.collection.phases = this.collection.phases
       ? JSON.parse(this.collection.phases)
       : [];
+
+    this.collection.phases.map((phase: any) => {
+      phase.mintTime = new Date(phase.mintTime);
+    });
+
+    if (this.collection.whitelist_price) {
+      this.whitelistEnabled = true;
+    }
 
     const folderRes = await getFolderById(
       process.env.baseURL?.includes("staging")

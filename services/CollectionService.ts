@@ -115,3 +115,33 @@ export const getDraftById = async (draftId: any) => {
 
   return res;
 };
+
+export const getApprovedCollectionsOfUser = async (
+  userId: string,
+  page: number
+) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/collection/live?user_id=${userId}&limit=10&page=${page}`
+  );
+
+  return res;
+};
+
+export const getUnderReviewCollectionsOfUser = async (
+  userId: string,
+  page: number
+) => {
+  const res = await publicRequest.get(
+    `/api/collection/under-review?user_id=${userId}&limit=10&page=${page}`
+  );
+
+  return res;
+};
+
+export const getDraftsOfUser = async (page: number) => {
+  const res = await publicRequest.get(
+    `/api/collection/draft?limit=10&page=${page}`
+  );
+
+  return res;
+};
