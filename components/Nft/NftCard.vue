@@ -38,7 +38,7 @@
                 : "TBD"
             }}
           </div>
-          <div v-if="getPrice != 0">price {{ getPrice }}</div>
+          <div v-if="getPrice != '0 apt'">price {{ getPrice }}</div>
           <div v-else>Free Mint</div>
         </div>
       </div>
