@@ -40,7 +40,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 import LandingSlider from "@/components/Landing/LandingSlider.vue";
 import LiveSection from "@/components/Landing/LiveSection.vue";
@@ -51,7 +51,11 @@ import Loading from "@/components/Reusable/Loading.vue";
 import Banner from "@/components/Landing/Banner.vue";
 import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.vue";
 
-import { getCollections } from "@/services/CollectionService";
+import {
+  getCollections,
+  getLiveCollections,
+  getUpcomingCollections,
+} from "@/services/CollectionService";
 
 export default {
   name: "IndexPage",
@@ -83,61 +87,20 @@ export default {
       this.upcomingCollections = [];
       this.liveCollections = [];
 
+      const liveCollectionsRes = await getLiveCollections(1, 4);
+      const upcomingCollectionsRes = await getUpcomingCollections(1, 4);
+
+      this.liveCollections = liveCollectionsRes.data.data;
+
+      this.upcomingCollections = upcomingCollectionsRes.data.data;
+
       const res = await getCollections(1, 100);
 
+      res.map((collection) => {
+        this.fastestSoldoutCollections.push(collection);
+      });
+
       this.collections = res;
-
-      this.liveCollections = this.collections.filter((collection) => {
-        const whitelistSaleDate = collection.candyMachine.whitelist_sale_time
-          ? new Date(collection.candyMachine.whitelist_sale_time)
-          : null;
-
-        const publicSaleDate = new Date(
-          collection.candyMachine.public_sale_time
-        );
-
-        const now = new Date();
-
-        if (collection.status.sold_out) {
-          return;
-        }
-
-        if (!whitelistSaleDate) {
-          if (now > publicSaleDate) {
-            return collection;
-          }
-        } else {
-          if (now > whitelistSaleDate || now > publicSaleDate) {
-            return collection;
-          }
-        }
-      });
-
-      this.upcomingCollections = this.collections.filter((collection) => {
-        const whitelistSaleDate = collection.candyMachine.whitelist_sale_time
-          ? new Date(collection.candyMachine.whitelist_sale_time)
-          : null;
-        const publicSaleDate = new Date(
-          collection.candyMachine.public_sale_time
-        );
-        const now = new Date();
-
-        if (!whitelistSaleDate) {
-          if (publicSaleDate > now) {
-            return collection;
-          }
-        } else {
-          if (whitelistSaleDate > now && publicSaleDate > now) {
-            return collection;
-          }
-        }
-      });
-
-      this.liveCollections = this.liveCollections.slice(0, 3);
-
-      this.upcomingCollections = this.upcomingCollections.slice(0, 4);
-
-      this.fastestSoldoutCollections = [...this.collections];
     },
   },
   async created() {

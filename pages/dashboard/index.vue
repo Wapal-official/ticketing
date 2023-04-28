@@ -11,18 +11,92 @@
         </NuxtLink>
       </div>
     </div>
-    <div
-      class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 2xl:tw-gap-12 3xl:tw-grid-cols-4 3xl:tw-gap-4"
-      v-if="!loading"
-    >
-      <nft-card
-        v-for="collection in collections"
-        :key="collection._id"
-        v-if="collections[0]._id"
-        :collection="collection"
-      />
+    <div class="tw-w-full tw-py-2">
+      <v-tabs
+        active-class="!tw-text-wapal-pink"
+        class="!tw-bg-transparent"
+        id="explore-tab"
+        v-model="launchpadTab"
+        @change="tabChanged(launchpadTab)"
+      >
+        <v-tab
+          :ripple="false"
+          class="!tw-capitalize !tw-text-white"
+          v-for="tab in launchpadTabs"
+          :key="tab.id"
+          >{{ tab.title }}</v-tab
+        >
+      </v-tabs>
     </div>
-    <loading v-else />
+    <v-tabs-items
+      v-model="launchpadTab"
+      id="explore-tab-items"
+      class="tw-py-8 tw-w-full"
+      v-if="!loading"
+      @change="tabChanged(launchpadTab)"
+    >
+      <v-tab-item>
+        <div
+          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 2xl:tw-gap-12 3xl:tw-grid-cols-4 3xl:tw-gap-4"
+        >
+          <nft-card
+            v-for="collection in liveCollections"
+            :key="collection._id"
+            v-if="liveCollections[0]._id"
+            :collection="collection"
+          />
+        </div>
+        <h2
+          class="tw-text-wapal-dashboard-active tw-text-xl tw-text-center tw-w-full"
+          v-if="liveCollections.length === 0"
+        >
+          No Live Collections
+        </h2>
+      </v-tab-item>
+      <v-tab-item>
+        <div
+          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 2xl:tw-gap-12 3xl:tw-grid-cols-4 3xl:tw-gap-4"
+        >
+          <nft-card
+            v-for="collection in underReviewCollections"
+            :key="collection._id"
+            v-if="underReviewCollections[0]._id"
+            :collection="collection"
+          />
+        </div>
+        <h2
+          class="tw-text-wapal-dashboard-active tw-text-xl tw-text-center tw-w-full"
+          v-if="underReviewCollections.length === 0"
+        >
+          No Under Review Collections
+        </h2>
+      </v-tab-item>
+      <v-tab-item>
+        <div
+          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-2 xl:tw-grid-cols-3 2xl:tw-gap-12 3xl:tw-grid-cols-4 3xl:tw-gap-4"
+        >
+          <nft-card
+            v-for="collection in drafts"
+            :key="collection._id"
+            v-if="drafts[0]._id"
+            :collection="collection"
+            redirectTo="draft"
+          />
+        </div>
+        <h2
+          class="tw-text-wapal-dashboard-active tw-text-xl tw-text-center tw-w-full"
+          v-if="drafts.length === 0"
+        >
+          No Drafts
+        </h2>
+      </v-tab-item>
+    </v-tabs-items>
+    <div
+      class="tw-py-16 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
+      v-else
+    >
+      <loading />
+    </div>
     <v-tour name="myTour2" :steps="steps"></v-tour>
   </div>
 </template>
@@ -31,13 +105,19 @@
 import NftCard from "@/components/Nft/NftCard.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
-import { getCollectionsOfUser } from "@/services/CollectionService";
+import {
+  getApprovedCollectionsOfUser,
+  getUnderReviewCollectionsOfUser,
+  getDraftsOfUser,
+} from "@/services/CollectionService";
 export default {
   layout: "dashboard",
   components: { NftCard, Loading, GradientBorderButton },
   data() {
     return {
-      collections: [{ _id: "" }],
+      liveCollections: [{ _id: "" }],
+      underReviewCollections: [{ _id: "" }],
+      drafts: [{ _id: "" }],
       loading: true,
       steps: [
         {
@@ -73,18 +153,62 @@ export default {
           },
         },
       ],
+      launchpadTabs: [
+        { id: 0, title: "Live" },
+        { id: 1, title: "Under Review" },
+        { id: 2, title: "Draft" },
+      ],
+      launchpadTab: null,
     };
   },
-  methods: {},
+  methods: {
+    async tabChanged(tab: any) {
+      this.liveCollections = [];
+      this.underReviewCollections = [];
+      this.drafts = [];
+
+      if (tab === 0) {
+        await this.mapLiveCollections(1);
+      } else if (tab === 1) {
+        await this.mapUnderReviewCollections(1);
+      } else if (tab === 2) {
+        await this.mapDrafts(1);
+      }
+    },
+    async mapLiveCollections(page: number) {
+      this.loading = true;
+
+      const res = await getApprovedCollectionsOfUser(
+        this.$store.state.userStore.user.user_id,
+        page
+      );
+
+      this.liveCollections.push(...res.data.data);
+
+      this.loading = false;
+    },
+    async mapUnderReviewCollections(page: number) {
+      this.loading = true;
+      const res = await getUnderReviewCollectionsOfUser(
+        this.$store.state.userStore.user.user_id,
+        page
+      );
+
+      this.underReviewCollections.push(...res.data.data);
+      this.loading = false;
+    },
+    async mapDrafts(page: number) {
+      this.loading = true;
+      const res = await getDraftsOfUser(page);
+
+      res.data.data.map((draft: any) => {
+        this.drafts.push({ ...draft.data, _id: draft._id });
+      });
+
+      this.loading = false;
+    },
+  },
   async mounted() {
-    const res = await getCollectionsOfUser(
-      this.$store.state.userStore.user.user_id
-    );
-
-    this.collections = res.data.data;
-
-    this.loading = false;
-
     if (localStorage.getItem("seen_collection_tour") === null) {
       this.$tours["myTour2"].start();
       localStorage.setItem("seen_collection_tour", "true");
@@ -92,3 +216,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.v-window {
+  overflow: visible !important;
+}
+</style>
