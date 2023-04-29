@@ -45,6 +45,7 @@
         />
       </div>
     </div>
+    <v-tour name="myTour3" :steps="steps"></v-tour>
   </div>
 </template>
 <script lang="ts">
@@ -127,6 +128,7 @@ export default {
     });
 
     this.loading = false;
+
     if (localStorage.getItem("seen_whitelist_tour") === null) {
       this.$tours["myTour3"].start();
       localStorage.setItem("seen_whitelist_tour", "true");
