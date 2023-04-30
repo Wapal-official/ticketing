@@ -1,7 +1,7 @@
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
     <nav
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-8 tw-py-6 lg:!tw-px-24"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-8 tw-py-6 lg:tw-px-4 xl:!tw-px-24"
     >
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 lg:tw-w-[20%]"
@@ -27,6 +27,7 @@
               <explore-list-item name="Upcoming" @close="close" />
               <explore-list-item
                 name="Domain Name"
+                link="/domain-name"
                 :last="true"
                 @close="close"
               />
@@ -35,7 +36,7 @@
         </div>
       </div>
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full tw-gap-8 lg:tw-w-[80%]"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full lg:tw-w-[80%]"
       >
         <div
           class="tw-hidden tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[60%]"
@@ -65,7 +66,7 @@
       </div>
     </nav>
     <div
-      class="tw-overflow-auto tw-px-4 tw-transition-all tw-duration-500 tw-ease-linear tw-bg-modal-gray tw-text-white tw-absolute tw-z-40 tw-top-[95px] tw-left-0 tw-w-screen tw-transform lg:tw-hidden mobile-menu"
+      class="tw-overflow-auto tw-px-4 tw-transition-all tw-duration-500 tw-ease-linear tw-bg-wapal-background tw-text-white tw-absolute tw-z-40 tw-top-[95px] tw-left-0 tw-w-screen tw-transform lg:tw-hidden mobile-menu"
       :class="landingMenuClass"
     >
       <landing-menu class="tw-py-4" @close="close" />

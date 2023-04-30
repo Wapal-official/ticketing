@@ -19,6 +19,8 @@ module.exports = {
         "wapal-pink": "#FF36AB",
         "wapal-background": "#0E0D0D",
         "wapal-dashboard-active": "#48CAE4",
+        "wapal-success": "#1C452C",
+        "wapal-danger": "#7B0707",
       },
       screens: {
         "3xl": "1920px",

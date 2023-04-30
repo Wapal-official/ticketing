@@ -104,7 +104,7 @@
           </div>
         </div>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded"
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row md:tw-items-center md:tw-justify-between"
         >
           <div class="tw-text-lg">Connect Wallet</div>
           <button
@@ -121,7 +121,7 @@
           </div>
         </div>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded"
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row md:tw-items-center md:tw-justify-between"
         >
           <div class="tw-text-lg">Login to your Wapal Account</div>
           <button
@@ -142,7 +142,7 @@
           @click="showDiscordOptions = !showDiscordOptions"
         >
           <div
-            class="tw-flex tw-flex-col tw-gap-4 tw-items-center tw-justify-between tw-w-full md:tw-flex-row md:tw-gap-8"
+            class="tw-flex tw-flex-col tw-gap-2 tw-items-center tw-justify-between tw-w-full md:tw-flex-row md:tw-gap-8"
           >
             <div class="tw-text-lg">Connect to Discord</div>
             <div
@@ -203,16 +203,17 @@
                   v-if="!joinedDiscordServer"
                   class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
                 >
-                  <a
-                    :href="`${whitelist.discord_server_url}`"
-                    target="_blank"
+                  <button
+                    @click.stop="showDiscordPopup"
                     class="tw-px-8 tw-py-2 !tw-text-white tw-bg-wapal-pink tw-rounded tw-font-semibold"
                   >
                     Join
-                  </a>
+                  </button>
                   <button-with-loader
                     class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
-                    @click.native.stop="checkIfUserHasJoinedDiscordServer"
+                    @click.native.stop="
+                      checkIfUserHasJoinedDiscordServer(false)
+                    "
                     :loading="verifyingJoinedDiscordServer"
                     loading-text="Verifying..."
                     text="Verify"
@@ -275,13 +276,12 @@
                 v-if="!followedTwitter"
                 class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
               >
-                <a
-                  :href="`https://twitter.com/${whitelist.twitter}`"
-                  target="_blank"
+                <button
                   class="tw-px-8 tw-py-2 !tw-text-white tw-bg-wapal-pink tw-rounded tw-font-semibold"
+                  @click.stop="showTwitterPopupWindow"
                 >
                   Follow
-                </a>
+                </button>
                 <button-with-loader
                   class="tw-font-semibold tw-bg-[#FF36AB] tw-px-8 tw-py-2 tw-rounded"
                   @click.native.stop="checkIfUserHasFollowedTwitterAccount"
@@ -386,12 +386,12 @@ import SignupModal from "@/components/Signup/SignupModal.vue";
 import ButtonWithLoader from "@/components/Button/ButtonWithLoader.vue";
 
 import {
-  getWhitelistById,
+  getWhitelistByUsername,
   createWhitelistEntry,
   getWhitelistEntryById,
 } from "@/services/WhitelistService";
 
-import { getCollection } from "@/services/CollectionService";
+import { getCollectionByUsername } from "@/services/CollectionService";
 import { discordRequest } from "@/services/DiscordInterceptor";
 
 import moment from "moment";
@@ -405,11 +405,59 @@ export default {
     SignupModal,
     ButtonWithLoader,
   },
+  async asyncData({ redirect, params }: { redirect: any; params: any }) {
+    try {
+      const res = await getCollectionByUsername(params.name);
+
+      const collection = res.data.collection[0];
+
+      return { collection };
+    } catch {
+      redirect("/");
+    }
+  },
+  head() {
+    return {
+      title: this.getTitle,
+      meta: [
+        { hid: "twitter:title", name: "twitter:title", content: this.getTitle },
+        {
+          hid: "twitter:card",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        { hid: "twitter:title", name: "twitter:title", content: this.getTitle },
+        {
+          hid: "twitter:image",
+          name: "twitter:image",
+          content: this.collection.image,
+        },
+        {
+          hid: "twitter:description",
+          name: "twitter:description",
+          content: this.collection.description,
+        },
+        { hid: "og-type", property: "og:type", content: "website" },
+        {
+          hid: "og-image",
+          property: "og:image",
+          content: this.collection.image,
+        },
+        { hid: "og:title", property: "og:title", content: this.getTitle },
+
+        {
+          hid: "description",
+          name: "description",
+          content: this.collection.description,
+        },
+      ],
+    };
+  },
   data() {
     return {
       loading: true,
       collection: {
-        candyMachine_id: {
+        candyMachine: {
           public_sale_price: null,
           public_sale_time: "",
           resource_account: null,
@@ -459,8 +507,8 @@ export default {
       discordResponse: { data: "" },
       followedTwitter: false,
       verifyingFollowedOnTwitter: false,
-      showDiscordOptions: false,
-      showTwitterOptions: false,
+      showDiscordOptions: true,
+      showTwitterOptions: true,
       resource: {
         totalSpots: 0,
         occupiedSpots: 0,
@@ -494,7 +542,18 @@ export default {
 
         const discordConnectionURL = `${discordOptions.endpoints.authorization}?client_id=${discordOptions.clientId}&redirect_uri=${discordOptions.redirectUri}&response_type=code&scope=${scopes}`;
 
-        window.open(discordConnectionURL, "_blank");
+        const windowWidth = 500;
+        const windowHeight = 600;
+
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height;
+
+        const windowLeft = (screenWidth - windowWidth) / 2;
+        const windowTop = (screenHeight - windowHeight) / 2;
+
+        const windowFeatures = `width=${windowWidth},height=${windowHeight},left=${windowLeft},top=${windowTop}`;
+
+        window.open(discordConnectionURL, "discord", windowFeatures);
 
         this.watchCookies();
       } catch (error) {
@@ -531,7 +590,7 @@ export default {
       }
       return;
     },
-    async checkIfUserHasJoinedDiscordServer() {
+    async checkIfUserHasJoinedDiscordServer(isMounted: boolean) {
       try {
         this.verifyingJoinedDiscordServer = true;
         this.discordRes = await discordRequest.get(
@@ -542,18 +601,20 @@ export default {
         this.verifyingJoinedDiscordServer = false;
         this.joinedDiscordServer = true;
       } catch (error: any) {
-        if (error.response && error.response.data.message) {
-          if (error.response.data.message === "Unknown Guild") {
+        if (!isMounted) {
+          if (error.response && error.response.data.message) {
+            if (error.response.data.message === "Unknown Guild") {
+              this.$toast.showMessage({
+                message: "Please Join Discord Server First",
+                error: true,
+              });
+            }
+          } else {
             this.$toast.showMessage({
-              message: "Please Join Discord Server First",
+              message: "Please Connect Discord First",
               error: true,
             });
           }
-        } else {
-          this.$toast.showMessage({
-            message: "Please Connect Discord First",
-            error: true,
-          });
         }
         this.verifyingJoinedDiscordServer = false;
       }
@@ -567,14 +628,25 @@ export default {
           this.promotedToRequiredRoles = true;
           this.verifyingPromotedToDiscordRoles = false;
         } else {
-          this.error.discord.error = true;
-          this.error.discord.type = "not promoted";
-          this.$toast.showMessage({
-            message: "Please get promoted to required roles",
-            error: true,
-          });
+          this.discordRes = await discordRequest.get(
+            `users/@me/guilds/${this.whitelist.discord_server_id}/member`
+          );
 
-          return false;
+          const roles = this.discordRes.data.roles;
+          const newPromoted = this.checkDiscordRoles(roles);
+
+          if (newPromoted) {
+            this.promotedToRequiredRoles = true;
+          } else {
+            this.error.discord.error = true;
+            this.error.discord.type = "not promoted";
+            this.$toast.showMessage({
+              message: "Please get promoted to required roles",
+              error: true,
+            });
+
+            return false;
+          }
         }
 
         return true;
@@ -717,6 +789,42 @@ export default {
         noOfSpotsPercent.style.width = this.resource.spotPercent + "%";
       }, 5000);
     },
+    showTwitterPopupWindow() {
+      const windowWidth = 500;
+      const windowHeight = 600;
+
+      const screenWidth = window.screen.width;
+      const screenHeight = window.screen.height;
+
+      const windowLeft = (screenWidth - windowWidth) / 2;
+      const windowTop = (screenHeight - windowHeight) / 2;
+
+      const windowFeatures = `width=${windowWidth},height=${windowHeight},left=${windowLeft},top=${windowTop}`;
+
+      window.open(
+        `https://twitter.com/${this.whitelist.twitter}`,
+        "twitter",
+        windowFeatures
+      );
+    },
+    showDiscordPopup() {
+      const windowWidth = 500;
+      const windowHeight = 600;
+
+      const screenWidth = window.screen.width;
+      const screenHeight = window.screen.height;
+
+      const windowLeft = (screenWidth - windowWidth) / 2;
+      const windowTop = (screenHeight - windowHeight) / 2;
+
+      const windowFeatures = `width=${windowWidth},height=${windowHeight},left=${windowLeft},top=${windowTop}`;
+
+      window.open(
+        `${this.whitelist.discord_server_url}`,
+        "discord",
+        windowFeatures
+      );
+    },
   },
   computed: {
     getMintDate() {
@@ -801,15 +909,23 @@ export default {
       }
       return false;
     },
+    getTitle() {
+      return this.collection.name
+        ? "Whitelist - " + this.collection.name
+        : "Title";
+    },
+
+    getImage() {
+      return this.collection.image ? this.collection.image : "";
+    },
+    getDescription() {
+      return this.collection.description ? this.collection.description : "";
+    },
   },
   async mounted() {
-    const res = await getWhitelistById(this.$route.params.id);
+    const res = await getWhitelistByUsername(this.$route.params.name);
 
     this.whitelist = res.data.whitelist;
-
-    const collectionRes = await getCollection(this.whitelist.collection_id);
-
-    this.collection = collectionRes.collection[0];
 
     this.showEndInTimer = true;
 
@@ -843,6 +959,12 @@ export default {
 
     if (this.getDiscordStatus) {
       this.discordStatus = true;
+    }
+
+    await this.checkIfUserHasJoinedDiscordServer(true);
+
+    if (this.joinedDiscordServer) {
+      this.showDiscordOptions = false;
     }
 
     setTimeout(() => {

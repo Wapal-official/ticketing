@@ -27,9 +27,9 @@
             <count-down
               :shadow="true"
               :startTime="
-                collection.candyMachine_id.whitelist_sale_time
-                  ? collection.candyMachine_id.whitelist_sale_time
-                  : collection.candyMachine_id.public_sale_time
+                collection.candyMachine.whitelist_sale_time
+                  ? collection.candyMachine.whitelist_sale_time
+                  : collection.candyMachine.public_sale_time
               "
             />
           </div>
@@ -89,8 +89,7 @@
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
           >
             <span class="tw-capitalize tw-text-sm">{{
-              showPublicSaleTimer &&
-              collection.candyMachine_id.whitelist_sale_time
+              showPublicSaleTimer && collection.candyMachine.whitelist_sale_time
                 ? "whitelist mint"
                 : "public sale mint"
             }}</span>
@@ -119,31 +118,72 @@
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
           >
             <div
-              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
-            >
-              <div v-if="!showWhitelistSaleTimer && !showPublicSaleTimer">
-                Public Sale
-              </div>
-              <h6
-                class="tw-capitalize tw-text-white"
-                v-if="getCurrentPrice != 0"
-              >
-                price {{ getCurrentPrice }} apt
-              </h6>
-              <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
-            </div>
-            <button
-              class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-px-2 tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
+              class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6"
               :class="{
-                '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
+                'md:tw-flex-row md:tw-items-end md:tw-justify-between':
+                  !showWhitelistSaleTimer && !showPublicSaleTimer,
+                'md:tw-flex-col md:tw-items-start md:tw-justify-start tw-gap-6':
+                  showPublicSaleTimer,
               }"
-              @click="mintCollection"
-              :disabled="minting || collection.status.sold_out"
             >
-              <v-progress-circular indeterminate v-if="minting" color="white">
-              </v-progress-circular>
-              {{ !collection.status.sold_out ? "Mint" : "Sold Out" }}
-            </button>
+              <div
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+              >
+                <h6
+                  class="tw-capitalize tw-text-white"
+                  v-if="getCurrentPrice != 0"
+                >
+                  price {{ getCurrentPrice }} apt
+                </h6>
+                <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
+                <div
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white"
+                >
+                  <button
+                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold disabled:tw-cursor-not-allowed"
+                    @click="decreaseNumberOfNft"
+                    :disabled="showPublicSaleTimer"
+                  >
+                    -
+                  </button>
+                  <input
+                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-24 tw-max-w-32 disabled:tw-cursor-not-allowed"
+                    v-model="numberOfNft"
+                    @input="checkNumberOfNft"
+                    :disabled="showPublicSaleTimer"
+                  />
+                  <button
+                    class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold disabled:tw-cursor-not-allowed"
+                    @click="increaseNumberOfNft"
+                    :disabled="showPublicSaleTimer"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+              <button
+                class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-px-2 tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
+                :class="{
+                  '!tw-w-[30%]':
+                    !showWhitelistSaleTimer && !showPublicSaleTimer,
+                }"
+                @click="mintBulkCollection"
+                :disabled="minting || collection.status.sold_out"
+              >
+                <v-progress-circular indeterminate v-if="minting" color="white">
+                </v-progress-circular>
+                {{ !collection.status.sold_out ? "Mint" : "Sold Out" }}
+              </button>
+              <div
+                class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-6"
+                v-if="!showWhitelistSaleTimer && !showPublicSaleTimer"
+              >
+                <div>Public Sale</div>
+                <div v-if="checkWhitelistSale">
+                  No of Whitelisted Users: {{ whitelistNumber }}
+                </div>
+              </div>
+            </div>
           </div>
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
@@ -157,7 +197,7 @@
             </h6>
             <count-down
               :vertical="true"
-              :startTime="this.collection.candyMachine_id.public_sale_time"
+              :startTime="this.collection.candyMachine.public_sale_time"
               @countdownComplete="hideEndInTimer"
               v-if="showEndInTimer"
             />
@@ -173,9 +213,9 @@
             <div>Whitelist Sale</div>
             <div
               class="tw-capitalize"
-              v-if="collection.candyMachine_id.whitelist_price != 0"
+              v-if="collection.candyMachine.whitelist_price != 0"
             >
-              price {{ collection.candyMachine_id.whitelist_price }} apt
+              price {{ collection.candyMachine.whitelist_price }} apt
             </div>
             <div class="tw-capitalize" v-else>Free Mint</div>
           </div>
@@ -184,7 +224,7 @@
           >
             Starts In
             <count-down
-              :startTime="collection.candyMachine_id.whitelist_sale_time"
+              :startTime="collection.candyMachine.whitelist_sale_time"
               @countdownComplete="whitelistCountdownComplete"
             />
           </div>
@@ -199,9 +239,9 @@
             <div>Public Sale</div>
             <div
               class="tw-capitalize"
-              v-if="collection.candyMachine_id.public_sale_price != 0"
+              v-if="collection.candyMachine.public_sale_price != 0"
             >
-              price {{ collection.candyMachine_id.public_sale_price }} apt
+              price {{ collection.candyMachine.public_sale_price }} apt
             </div>
             <div class="tw-capitalize" v-else>Free Mint</div>
           </div>
@@ -210,7 +250,7 @@
           >
             Starts In
             <count-down
-              :startTime="collection.candyMachine_id.public_sale_time"
+              :startTime="collection.candyMachine.public_sale_time"
               @countdownComplete="publicSaleCountdownComplete"
             />
           </div>
@@ -233,6 +273,16 @@
         @walletConnected="displayWalletConnectedMessage"
       />
     </v-dialog>
+    <v-dialog
+      v-model="showErrorPopup"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <div
+        class="tw-w-full tw-bg-modal-gray tw-text-white tw-px-4 tw-py-4 tw-rounded"
+      >
+        {{ errorMessage }}
+      </div>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -241,6 +291,7 @@ import {
   getCollectionByUsername,
   setSoldOut,
 } from "@/services/CollectionService";
+import { getWhitelistEntryById } from "@/services/WhitelistService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 
@@ -325,6 +376,10 @@ export default {
         mintedPercent: 0,
       },
       progressInterval: null,
+      whitelistNumber: 0,
+      numberOfNft: 1,
+      showErrorPopup: false,
+      errorMessage: null,
     };
   },
   methods: {
@@ -370,10 +425,10 @@ export default {
           this.minting = true;
 
           const res = await this.$store.dispatch("walletStore/mintCollection", {
-            resourceAccount: this.collection.candyMachine_id.resource_account,
+            resourceAccount: this.collection.candyMachine.resource_account,
             publicMint: !this.checkPublicSaleTimer(),
             collectionId: this.collection._id,
-            candyMachineId: this.collection.candyMachine_id.candy_id,
+            candyMachineId: this.collection.candyMachine.candy_id,
           });
 
           if (res.success) {
@@ -385,8 +440,8 @@ export default {
               "walletStore/getSupplyAndMintedOfCollection",
               {
                 resourceAccountAddress:
-                  this.collection.candyMachine_id.resource_account,
-                candyMachineId: this.collection.candyMachine_id.candy_id,
+                  this.collection.candyMachine.resource_account,
+                candyMachineId: this.collection.candyMachine.candy_id,
               }
             );
 
@@ -437,10 +492,17 @@ export default {
           "walletStore/getSupplyAndMintedOfCollection",
           {
             resourceAccountAddress:
-              this.collection.candyMachine_id.resource_account,
-            candyMachineId: this.collection.candyMachine_id.candy_id,
+              this.collection.candyMachine.resource_account,
+            candyMachineId: this.collection.candyMachine.candy_id,
           }
         );
+
+        if (this.collection._id === "642bf277c10560ca41e179fa") {
+          this.resource = {
+            minted: this.resource.minted,
+            total_supply: 777,
+          };
+        }
 
         if (
           this.resource.minted == this.resource.total_supply &&
@@ -460,24 +522,130 @@ export default {
         resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
       }, 5000);
     },
+    increaseNumberOfNft() {
+      if (
+        this.numberOfNft >=
+        this.resource.total_supply - this.resource.minted
+      ) {
+        return;
+      } else {
+        if (this.numberOfNft >= 500) {
+          this.numberOfNft = 500;
+          return;
+        }
+        this.numberOfNft++;
+      }
+    },
+    decreaseNumberOfNft() {
+      if (this.numberOfNft <= 1) {
+        return;
+      } else {
+        this.numberOfNft--;
+      }
+    },
+    checkNumberOfNft() {
+      if (isNaN(this.numberOfNft)) {
+        this.$toast.showMessage({
+          message: "Please Enter a number",
+          error: true,
+        });
+        this.numberOfNft = 1;
+        return;
+      }
+
+      if (this.numberOfNft < 1 && this.numberOfNft !== "") {
+        this.numberOfNft = 1;
+        return;
+      }
+
+      if (
+        this.numberOfNft > 500 ||
+        this.numberOfNft >= this.resource.total_supply - this.resource.minted
+      ) {
+        if (this.resource.total_supply - this.resource.minted >= 500) {
+          this.numberOfNft = 500;
+        } else {
+          this.numberOfNft = this.resource.total_supply - this.resource.minted;
+        }
+        return;
+      }
+    },
+    async mintBulkCollection() {
+      try {
+        if (!this.$store.state.walletStore.wallet.wallet) {
+          this.showConnectWalletModal = true;
+          return;
+        }
+
+        this.minting = true;
+
+        const res = await this.$store.dispatch("walletStore/mintBulk", {
+          resourceAccount: this.collection.candyMachine.resource_account,
+          publicMint: !this.checkPublicSaleTimer(),
+          collectionId: this.collection._id,
+          candyMachineId: this.collection.candyMachine.candy_id,
+          mintNumber: this.numberOfNft,
+        });
+
+        if (res.success) {
+          this.$toast.showMessage({
+            message: `${this.collection.name} Minted Successfully`,
+          });
+
+          let res = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfCollection",
+            {
+              resourceAccountAddress:
+                this.collection.candyMachine.resource_account,
+              candyMachineId: this.collection.candyMachine.candy_id,
+            }
+          );
+
+          if (this.collection._id === "642bf277c10560ca41e179fa") {
+            res = {
+              minted: res.minted,
+              total_supply: 777,
+            };
+          }
+
+          if (res.total_supply === res.minted) {
+            await setSoldOut(this.collection._id);
+            this.collection.sold_out = true;
+          }
+
+          this.numberOfNft = 1;
+        } else {
+          this.$toast.showMessage({
+            message: "Collection Not Minted",
+            error: true,
+          });
+        }
+
+        this.minting = false;
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+        this.minting = false;
+      }
+    },
   },
   computed: {
     getCurrentPrice() {
       if (
-        this.collection.candyMachine_id.public_sale_price ==
-        this.collection.candyMachine_id.whitelist_price
+        this.collection.candyMachine.public_sale_price ==
+        this.collection.candyMachine.whitelist_price
       ) {
-        return this.collection.candyMachine_id.public_sale_price;
+        return this.collection.candyMachine.public_sale_price;
       }
 
       if (!this.showPublicSaleTimer) {
-        return this.collection.candyMachine_id.public_sale_price;
+        return this.collection.candyMachine.public_sale_price;
       }
 
       if (this.whitelistSaleDate && this.showPublicSaleTimer) {
-        return this.collection.candyMachine_id.whitelist_price;
+        return this.collection.candyMachine.whitelist_price;
       } else {
-        return this.collection.candyMachine_id.public_sale_price;
+        return this.collection.candyMachine.public_sale_price;
       }
     },
     showMintBox() {
@@ -504,16 +672,29 @@ export default {
     getDescription() {
       return this.collection.description ? this.collection.description : "";
     },
+    checkWhitelistSale() {
+      const whitelistTime = new Date(
+        this.collection.candyMachine.whitelist_sale_time
+      ).getTime();
+      const publicSaleTime = new Date(
+        this.collection.candyMachine.public_sale_time
+      ).getTime();
+
+      if (publicSaleTime - whitelistTime === 1000) {
+        return false;
+      } else {
+        return true;
+      }
+    },
   },
   async mounted() {
     if (this.collection) {
-      this.whitelistSaleDate = this.collection.candyMachine_id
-        .whitelist_sale_time
-        ? new Date(this.collection.candyMachine_id.whitelist_sale_time)
+      this.whitelistSaleDate = this.checkWhitelistSale
+        ? new Date(this.collection.candyMachine.whitelist_sale_time)
         : null;
 
       this.publicSaleDate = new Date(
-        this.collection.candyMachine_id.public_sale_time
+        this.collection.candyMachine.public_sale_time
       );
 
       this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
@@ -524,11 +705,17 @@ export default {
       this.resource = await this.$store.dispatch(
         "walletStore/getSupplyAndMintedOfCollection",
         {
-          resourceAccountAddress:
-            this.collection.candyMachine_id.resource_account,
-          candyMachineId: this.collection.candyMachine_id.candy_id,
+          resourceAccountAddress: this.collection.candyMachine.resource_account,
+          candyMachineId: this.collection.candyMachine.candy_id,
         }
       );
+
+      if (this.collection._id === "642bf277c10560ca41e179fa") {
+        this.resource = {
+          minted: this.resource.minted,
+          total_supply: 777,
+        };
+      }
 
       this.resource.mintedPercent = Math.floor(
         (this.resource.minted / this.resource.total_supply) * 100
@@ -540,6 +727,15 @@ export default {
       ) {
         this.collection.status.sold_out = true;
         await setSoldOut(this.collection._id);
+      }
+
+      if (this.checkWhitelistSale) {
+        const whitelistRes = await getWhitelistEntryById(
+          this.collection._id,
+          10000
+        );
+
+        this.whitelistNumber = whitelistRes.data.whitelistEntries.length;
       }
 
       this.loading = false;

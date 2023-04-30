@@ -1,17 +1,15 @@
 <template>
   <div v-if="!loading">
     <div
-      class="tw-w-full tw-h-full tw-group tw-cursor-pointer xl:tw-min-h-[400px] 2xl:tw-min-h-[300px] 3xl:tw-min-h-[400px]"
+      class="tw-w-full tw-h-full tw-group tw-cursor-pointer"
       @click="displayFileDetails"
       v-if="checkFileType === 'image'"
     >
-      <div
-        class="tw-relative tw-max-h-[250px] xl:tw-max-h-[400px] tw-w-full tw-overflow-hidden 2xl:tw-min-h-[300px] 2xl:tw-max-h-[300px] 3xl:min-h-[400px] 3xl:tw-max-h-[400px]"
-      >
+      <div class="tw-relative tw-w-full tw-overflow-hidden">
         <img
           :src="getImageSrc"
           :alt="getImageName"
-          class="tw-min-h-[250px] xl:tw-min-h-[400px] tw-w-full tw-object-cover 2xl:tw-min-h-[300px] 3xl:tw-min-h-[400px]"
+          class="tw-w-full tw-h-full tw-object-cover"
         />
         <div
           class="tw-w-full tw-h-full tw-px-4 tw-absolute tw-top-0 tw-left-0 tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-start tw-justify-end tw-gap-4 group-hover:tw-bg-black/25 group-hover:tw-opacity-100"
@@ -95,13 +93,14 @@ export default {
   },
   data() {
     return {
-      fileData: null,
       loading: true,
       linkedAsset: { name: "", image: "" },
     };
   },
   methods: {
     displayFileDetails() {
+      this.linkedAsset.name = this.file.src;
+      this.linkedAsset.image = this.file.image;
       this.$emit("displayFileDetails", this.linkedAsset);
     },
     async downloadFile() {

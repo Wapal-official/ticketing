@@ -1,197 +1,195 @@
 <template>
-  <div
-    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-relative"
-    v-if="!loading"
-  >
-    <div
-      class="tw-flex tw-flex-col-reverse tw-items-start tw-justify-start tw-gap-4 tw-rounded tw-px-4 tw-py-4 md:tw-flex-row md:tw-items-center md:tw-justify-between tw-w-full"
+  <div>
+    <button
+      v-if="
+        type === 'metadata' &&
+        folderInfo.metadata.files.length === 0 &&
+        !loading &&
+        checkImageUploaded
+      "
+      class="tw-rounded tw-px-6 tw-py-2 tw-text-white tw-bg-wapal-pink"
+      @click="showCSVUploadModal = true"
     >
-      <v-breadcrumbs :items="breadcrumbs" class="breadcrumb !tw-text-base">
-        <template v-slot:divider>
-          <v-icon>mdi-chevron-right</v-icon>
-        </template>
-        <template v-slot:item="{ item }">
-          <v-breadcrumbs-item :disabled="item.disabled">
-            <NuxtLink
-              class="!tw-text-white"
-              :to="item.href ? item.href : $route.fullPath"
-            >
-              {{ item.text }}
-            </NuxtLink>
-          </v-breadcrumbs-item>
-        </template>
-      </v-breadcrumbs>
+      Import CSV
+    </button>
+    <div
+      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-relative"
+      v-if="!loading"
+    >
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 tw-w-full md:tw-w-fit md:tw-justify-end"
+        class="tw-flex tw-flex-col-reverse tw-items-start tw-justify-start tw-gap-4 tw-rounded tw-px-4 tw-py-4 md:tw-flex-row md:tw-items-center md:tw-justify-between tw-w-full lg:tw-px-0"
       >
-        <button>
-          <v-icon
-            class="!tw-text-white"
-            v-if="!listView"
-            @click="listView = true"
-            >mdi-view-list</v-icon
-          >
-          <v-icon class="!tw-text-white" v-else @click="listView = false"
-            >mdi-view-grid</v-icon
-          >
-        </button>
-      </div>
-    </div>
-    <div
-      class="tw-flex tw-flex-row tw-w-full tw-gap-4"
-      v-if="folderInfo.files[0]"
-    >
-      <div class="tw-w-full">
-        <div
-          class="tw-grid tw-container tw-mx-auto tw-grid-cols-1 tw-gap-4 md:tw-grid-cols-3 2xl:tw-grid-cols-4"
-          v-if="!listView"
-        >
-          <assets-file-card
-            @displayFileDetails="displayFileDetails"
-            v-for="file in paginatedFiles"
-            :key="file._id"
-            :file="file"
-            :type="type"
-          />
-        </div>
-        <v-data-table
-          :headers="headers"
-          :items="paginatedFiles"
-          :items-per-page="5"
-          class="assets-data-table"
-          mobile-breakpoint="0"
-          :hide-default-footer="true"
-          disable-pagination
-          v-else
-        >
-          <template v-slot:body="{ items }">
-            <tbody>
-              <tr
-                v-for="item in items"
-                :key="item.name"
-                class="tw-cursor-pointer hover:!tw-bg-black/60"
-              >
-                <td
-                  class="!tw-border-none tw-uppercase tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-8"
-                >
-                  <img
-                    :src="item.image ? item.image : item.src"
-                    :alt="item.name"
-                    class="tw-w-[45px] tw-h-[45px] tw-object-cover"
-                  />{{ item.name }}
-                </td>
-                <td class="!tw-border-none">{{ item.createdDate }}</td>
-                <td class="!tw-border-none">{{ getFileSize(item.size) }}</td>
-              </tr>
-            </tbody>
+        <v-breadcrumbs :items="breadcrumbs" class="breadcrumb !tw-text-base">
+          <template v-slot:divider>
+            <v-icon>mdi-chevron-right</v-icon>
           </template>
-        </v-data-table>
-      </div>
-    </div>
-    <v-dialog
-      v-model="showFileDetails"
-      content-class="!tw-w-full !tw-mx-2 !tw-rounded-none md:!tw-mx-auto md:!tw-w-1/2 md:!tw-border-t-wapal-dashboard-active md:!tw-border-b-wapal-dashboard-active lg:!tw-w-[40%]"
-    >
-      <assets-image-details
-        :file="currentFile"
-        @close="showFileDetails = false"
-      />
-    </v-dialog>
-
-    <form
-      class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
-      v-if="!fileLoading && !folderInfo.files[0] && checkImageUploaded"
-    >
-      <label
-        class="tw-w-full tw-h-full tw-px-8 tw-py-8 tw-border-2 tw-border-dashed tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-cursor-pointer md:tw-w-1/2"
-        :class="dropZoneClass"
-        id="drop-zone"
-        @dragover.prevent="dragover"
-        @dragleave.prevent="dragleave"
-        @drop.prevent="drop"
-      >
-        <img :src="UploadIcon" alt="upload" id="drop-zone" />
-        <div id="drop-zone">Drag and Drop Your Files Here</div>
-        <div id="drop-zone">OR</div>
+          <template v-slot:item="{ item }">
+            <v-breadcrumbs-item :disabled="item.disabled">
+              <NuxtLink
+                class="!tw-text-white"
+                :to="item.href ? item.href : $route.fullPath"
+              >
+                {{ item.text }}
+              </NuxtLink>
+            </v-breadcrumbs-item>
+          </template>
+        </v-breadcrumbs>
         <div
-          id="drop-zone"
-          class="tw-bg-wapal-gray tw-text-white tw-px-8 tw-py-2 tw-rounded tw-cursor-pointer"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 tw-w-full md:tw-w-fit md:tw-justify-end"
         >
-          Browse
+          <button>
+            <v-icon
+              class="!tw-text-white"
+              v-if="!listView"
+              @click="showListView"
+              >mdi-view-list</v-icon
+            >
+            <v-icon class="!tw-text-white" v-else @click="showGridView"
+              >mdi-view-grid</v-icon
+            >
+          </button>
         </div>
-        <input
-          type="file"
-          class="!tw-hidden"
-          @change="fileChanged"
-          webkitdirectory
-          mozdirectory
-          msdirectory
-          odirectory
-          directory
-          multiple
-          name="file"
-      /></label>
-    </form>
-    <div
-      class="tw-text-white tw-text-center tw-text-lg tw-w-full"
-      v-if="!checkImageUploaded"
-    >
-      Please Upload Images in image folder first
-    </div>
-    <v-dialog
-      v-model="showUploadingDialog"
-      content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
-      :persistent="!uploadComplete"
-    >
-      <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-end"
-        v-if="uploadComplete || balanceNotEnoughError.error"
-      >
-        <v-icon class="!tw-text-white" @click="showUploadingDialog = false"
-          >mdi-close</v-icon
-        >
       </div>
-      <h2 class="tw-text-lg tw-font-semibold">
-        {{
-          !uploadComplete ? "Sending Files To Server" : "Files Sent To Server"
-        }}
-      </h2>
       <div
-        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-        v-if="uploading"
+        class="tw-flex tw-flex-row tw-w-full tw-gap-4"
+        v-if="folderInfo.files[0]"
+      >
+        <div class="tw-w-full">
+          <dashboard-assets-image-gallery
+            v-if="!listView"
+            :paginatedFiles="paginatedFiles"
+            :type="$route.params.type"
+            @displayFileDetails="displayFileDetails"
+          />
+          <dashboard-assets-table :paginatedFiles="paginatedFiles" v-else />
+        </div>
+      </div>
+      <v-dialog
+        v-model="showFileDetails"
+        content-class="!tw-w-full !tw-mx-2 !tw-rounded-none md:!tw-mx-auto md:!tw-w-1/2 md:!tw-border-t-wapal-dashboard-active md:!tw-border-b-wapal-dashboard-active lg:!tw-w-[40%]"
+      >
+        <assets-image-details
+          :file="currentFile"
+          @close="showFileDetails = false"
+        />
+      </v-dialog>
+
+      <form
+        class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
+        v-if="!fileLoading && !folderInfo.files[0] && checkImageUploaded"
+      >
+        <label
+          class="tw-w-full tw-h-full tw-px-8 tw-py-8 tw-border-2 tw-border-dashed tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-cursor-pointer md:tw-w-1/2"
+          :class="dropZoneClass"
+          id="drop-zone"
+          @dragover.prevent="dragover"
+          @dragleave.prevent="dragleave"
+          @drop.prevent="drop"
+        >
+          <img :src="UploadIcon" alt="upload" id="drop-zone" />
+          <div id="drop-zone">Drag and Drop Your Files Here</div>
+          <div id="drop-zone">OR</div>
+          <div
+            id="drop-zone"
+            class="tw-bg-wapal-gray tw-text-white tw-px-8 tw-py-2 tw-rounded tw-cursor-pointer"
+          >
+            Browse
+          </div>
+          <input
+            type="file"
+            class="!tw-hidden"
+            @change="fileChanged"
+            webkitdirectory
+            mozdirectory
+            msdirectory
+            odirectory
+            directory
+            multiple
+            name="file"
+        /></label>
+      </form>
+      <div
+        class="tw-text-white tw-text-center tw-text-lg tw-w-full"
+        v-if="!checkImageUploaded"
+      >
+        Please Upload Images in image folder first
+      </div>
+      <v-dialog
+        v-model="showUploadingDialog"
+        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
+        :persistent="!uploadComplete"
       >
         <div
-          class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-2 tw-w-full"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-end"
+          v-if="uploadComplete || balanceNotEnoughError.error"
+        >
+          <v-icon class="!tw-text-white" @click="showUploadingDialog = false"
+            >mdi-close</v-icon
+          >
+        </div>
+        <h2 class="tw-text-lg tw-font-semibold">
+          {{
+            !uploadComplete ? "Sending Files To Server" : "Files Sent To Server"
+          }}
+        </h2>
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
+          v-if="uploading"
         >
           <div
-            class="tw-relative tw-w-full tw-rounded-lg tw-py-1 tw-bg-wapal-gray"
+            class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-2 tw-w-full"
           >
             <div
-              class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-wapal-pink tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
-              :style="`width:${serverUploadPercent}%`"
-            ></div>
+              class="tw-relative tw-w-full tw-rounded-lg tw-py-1 tw-bg-wapal-gray"
+            >
+              <div
+                class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-wapal-pink tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
+                :style="`width:${serverUploadPercent}%`"
+              ></div>
+            </div>
+            <span class="tw-text-sm">{{ this.serverUploadPercent }}%</span>
           </div>
-          <span class="tw-text-sm">{{ this.serverUploadPercent }}%</span>
         </div>
-      </div>
-      <div
-        class="tw-text-red-600 tw-flex tw-flex-col tw-gap-2 tw-w-full"
-        v-if="balanceNotEnoughError.error"
-      >
-        {{ balanceNotEnoughError.message }}
         <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+          class="tw-text-red-600 tw-flex tw-flex-col tw-gap-2 tw-w-full"
+          v-if="balanceNotEnoughError.error"
         >
-          <div>
-            Required Balance: {{ balanceNotEnoughError.requiredBalance }}
+          {{ balanceNotEnoughError.message }}
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+          >
+            <div>
+              Required Balance: {{ balanceNotEnoughError.requiredBalance }}
+            </div>
+            <div>Your Balance: {{ balanceNotEnoughError.yourBalance }}</div>
           </div>
-          <div>Your Balance: {{ balanceNotEnoughError.yourBalance }}</div>
         </div>
+      </v-dialog>
+      <div
+        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
+        v-if="mappingFiles"
+      >
+        <v-progress-circular
+          indeterminate
+          :color="defaultTheme.wapalPink"
+        ></v-progress-circular>
       </div>
-    </v-dialog>
+      <v-dialog
+        v-model="showCSVUploadModal"
+        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
+      >
+        <dashboard-assets-import-CSV-modal
+          :assetLength="folderInfo.assets.files.length"
+          :folderName="folderInfo.folder_name"
+          @csvUploaded="completeTransactionForMetadataUpload"
+          @closeImportCSVModal="showCSVUploadModal = false"
+        />
+      </v-dialog>
+    </div>
+
     <div
-      class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-      v-if="mappingFiles"
+      class="tw-py-16 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
+      v-else
     >
       <v-progress-circular
         indeterminate
@@ -199,19 +197,9 @@
       ></v-progress-circular>
     </div>
   </div>
-  <div
-    class="tw-py-16 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-    v-else
-  >
-    <v-progress-circular
-      indeterminate
-      :color="defaultTheme.wapalPink"
-    ></v-progress-circular>
-  </div>
 </template>
 <script lang="ts">
 import AssetsBreadCrumbs from "@/components/Dashboard/Assets/AssetsBreadCrumbs.vue";
-import AssetsFileCard from "@/components/Dashboard/Assets/AssetsFileCard.vue";
 import AssetsImageDetails from "@/components/Dashboard/Assets/AssetsImageDetails.vue";
 import UploadIcon from "@/assets/img/upload-icon.svg";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
@@ -228,7 +216,6 @@ export default {
   layout: "dashboard",
   components: {
     AssetsBreadCrumbs,
-    AssetsFileCard,
     AssetsImageDetails,
     GradientBorderButton,
   },
@@ -240,38 +227,14 @@ export default {
         user_id: null,
         folder_name: "",
         files: [{ createdDate: null, type: "", name: "", src: "", _id: null }],
+        metadata: { files: [] },
+        assets: { files: [] },
       },
       paginatedFiles: [
         { createdDate: null, type: "", name: "", src: "", _id: null },
       ],
       showFileDetails: false,
       listView: false,
-      headers: [
-        {
-          text: "Name",
-          align: "start",
-          sortable: true,
-          value: "name",
-          width: "700px",
-          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
-        },
-        {
-          text: "Date Created",
-          align: "start",
-          sortable: true,
-          value: "createdDate",
-          width: "200px",
-          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
-        },
-        {
-          text: "Size",
-          align: "start",
-          sortable: true,
-          value: "size",
-          width: "200px",
-          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
-        },
-      ],
       image: false,
       dropZoneClass: "tw-border-wapal-gray",
       uploadedFile: null,
@@ -299,6 +262,8 @@ export default {
       type: "",
       serverUploadPercent: 0,
       assetLimit: 0,
+      showCSVUploadModal: false,
+      CSVLength: 0,
       UploadIcon,
       defaultTheme,
     };
@@ -429,12 +394,7 @@ export default {
       }
       return false;
     },
-    getFileSize(size: number) {
-      if (size / 1048576 > 1) {
-        return (size / 1048576).toFixed(2) + " MB";
-      }
-      return (size / 1024).toFixed(2) + " KB";
-    },
+
     async fetchFiles() {
       this.fileIndex = 0;
       this.loading = true;
@@ -470,6 +430,8 @@ export default {
     },
     async mapFiles(scrollNumber: number) {
       let tempFiles = [];
+
+      this.paginatedFiles = [];
       if (!scrollNumber) {
         tempFiles = this.folderInfo.files.slice(0, this.assetLimit);
       } else {
@@ -508,9 +470,9 @@ export default {
             }
 
             if (fileType === "json" && this.type === "assets") {
-              const createdDate = moment(
-                tempFile.date ? tempFile.date : ""
-              ).format("DD/MM/YYYY");
+              const createdDate = this.folderInfo.createdDate
+                ? this.folderInfo.createdDate
+                : moment().format("DD/MM/YYYY");
 
               generatedFile = {
                 _id: fileIndex,
@@ -602,7 +564,7 @@ export default {
           );
         }
 
-        const batchLoop = Math.ceil(files.length / 50);
+        const batchLoop = Math.ceil(files.length / 20);
 
         let responseCount = 0;
         let response = null;
@@ -610,8 +572,8 @@ export default {
         this.serverUploadPercent = 0;
 
         for (let i = 1; i <= batchLoop; i++) {
-          const endIndex = i * 50;
-          const startIndex = endIndex - 50;
+          const endIndex = i * 20;
+          const startIndex = endIndex - 20;
 
           const formData = new FormData();
 
@@ -713,7 +675,9 @@ export default {
             this.type
           );
 
-          uploadSocketState.totalFiles = this.uploadedFile.length;
+          uploadSocketState.totalFiles = this.uploadedFile
+            ? this.uploadedFile.length
+            : this.CSVLength;
 
           uploadSocketState.uploading = true;
 
@@ -727,6 +691,27 @@ export default {
           this.$store.state.userStore.user.user_id
         );
       }
+    },
+    completeTransactionForMetadataUpload(csvLength: number) {
+      this.showCSVUploadModal = false;
+
+      this.CSVLength = csvLength;
+
+      this.transferFund(`uploads/${this.$store.state.userStore.user.user_id}`);
+    },
+    showListView() {
+      this.listView = true;
+
+      this.fileIndex = 0;
+      this.scrolledNumber = 1;
+      this.mapFiles(0);
+    },
+    showGridView() {
+      this.listView = false;
+
+      this.fileIndex = 0;
+      this.scrolledNumber = 1;
+      this.mapFiles(0);
     },
   },
   computed: {
@@ -799,11 +784,3 @@ export default {
   cache: false,
 };
 </script>
-<style>
-.assets-data-table {
-  min-width: 100% !important;
-  max-width: 100% !important;
-  overflow-x: auto !important;
-  background: transparent !important;
-}
-</style>

@@ -45,7 +45,7 @@ export const uploadCSVInWhitelistEntry = async (formData: any) => {
     headers: { "content-type": "multipart/form-data" },
   };
 
-  const res = await axios.post(
+  const res = await publicRequest.post(
     `${process.env.baseURL}/api/uploader/csv`,
     formData,
     config
@@ -83,6 +83,14 @@ export const setRoot = async (rootData: any) => {
   const res = await axios.post(
     `${process.env.baseURL}/api/whitelist/root`,
     rootData
+  );
+
+  return res;
+};
+
+export const getWhitelistByUsername = async (username: string) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/whitelist/${username}`
   );
 
   return res;

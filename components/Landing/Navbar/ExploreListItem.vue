@@ -22,9 +22,14 @@ export default {
   },
   methods: {
     goToExplorePage() {
-      this.$store.commit("exploreStore/setExploreTab", this.name);
-      this.$router.push("/explore");
-      this.$emit("close");
+      if (this.link === "/") {
+        this.$store.commit("exploreStore/setExploreTab", this.name);
+        this.$router.push("/explore");
+        this.$emit("close");
+      } else {
+        this.$router.push(this.link);
+        this.$emit("close");
+      }
     },
   },
 };

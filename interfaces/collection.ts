@@ -7,5 +7,5 @@ export default interface Collection {
   baseURL: string;
   whitelist_sale_time: string;
   public_sale_time: string;
-  candyMachine_id: CandyMachine;
+  candyMachine: CandyMachine;
 }

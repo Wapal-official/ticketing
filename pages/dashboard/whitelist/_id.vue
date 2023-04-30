@@ -33,18 +33,22 @@
         >
           <input
             type="file"
-            class="tw-invisible tw-w-0 tw-h-0"
+            class="tw-invisible tw-w-0 tw-h-0 disabled:tw-cursor-not-allowed"
             @change="setCSVFile"
+            :disabled="setupWhitelistStatus"
           />
-          <div class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2">
+          <div
+            class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
+            :disabled="setupWhitelistStatus"
+          >
             Import CSV
           </div>
         </label>
       </form>
       <button
-        class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2"
+        class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
         @click="showSetWhitelistModal = true"
-        :disabled="sendingDataToSetRoot"
+        :disabled="sendingDataToSetRoot || setupWhitelistStatus"
       >
         Set Whitelist
       </button>
@@ -60,7 +64,6 @@
         mobile-breakpoint="0"
         :hide-default-footer="true"
         disable-pagination
-        v-if="!loading"
       >
         <template v-slot:body="{ items }">
           <tbody>
@@ -89,7 +92,7 @@
           </tbody>
         </template>
       </v-data-table>
-      <loading v-else />
+      <loading v-if="loading" />
     </div>
     <v-dialog
       v-model="showCSVUploadModal"
@@ -150,14 +153,14 @@
 <script lang="ts">
 import Loading from "@/components/Reusable/Loading.vue";
 import {
-  getWhitelistById,
+  getWhitelistByUsername,
   getWhitelistEntryById,
   setRoot,
   uploadCSVInWhitelistEntry,
 } from "@/services/WhitelistService";
 
 import moment from "moment";
-import { getCollection } from "@/services/CollectionService";
+import { getCollectionByUsername } from "@/services/CollectionService";
 export default {
   components: { Loading },
   layout: "dashboard",
@@ -212,7 +215,9 @@ export default {
       loading: true,
       sendingDataToSetRoot: false,
       showSetWhitelistModal: false,
-      setupWhitelistStatus: true,
+      setupWhitelistStatus: false,
+      scrolledNumber: 1,
+      mappingData: false,
     };
   },
   methods: {
@@ -238,7 +243,8 @@ export default {
         this.$toast.showMessage({ message: "CSV File Imported Successfully" });
         this.showCSVUploadModal = false;
 
-        this.fetchWhitelistEntries();
+        this.scrolledNumber = 1;
+        this.mapWhitelistEntries(1);
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
@@ -248,15 +254,23 @@ export default {
       this.showCSVUploadModal = false;
       this.selectedCSVFile = false;
     },
-    async fetchWhitelistEntries() {
+    async mapWhitelistEntries(page: number) {
       this.loading = true;
 
-      const res = await getWhitelistEntryById(this.collection._id, 100, 1);
+      const res = await getWhitelistEntryById(this.collection._id, 100, page);
+
+      if (res.data.whitelistEntries.length === 0) {
+        this.loading = false;
+        this.mappingData = true;
+        return;
+      }
 
       this.whitelistEntries = res.data.whitelistEntries;
-      this.paginatedWhitelistEntries = this.whitelistEntries;
+
+      this.paginatedWhitelistEntries.push(...this.whitelistEntries);
 
       this.loading = false;
+      this.mappingData = false;
     },
     async sendDataToSetRoot() {
       try {
@@ -281,8 +295,8 @@ export default {
           "walletStore/setMerkleRoot",
           {
             root: root,
-            resourceAccount: this.collection.candyMachine_id.resource_account,
-            candyMachineId: this.collection.candyMachine_id.candy_id,
+            resourceAccount: this.collection.candyMachine.resource_account,
+            candyMachineId: this.collection.candyMachine.candy_id,
           }
         );
 
@@ -303,21 +317,37 @@ export default {
     },
   },
   async mounted() {
-    let id = this.$route.params.id;
-    const res = await getWhitelistById(this.$route.params.id);
+    const res = await getWhitelistByUsername(this.$route.params.id);
 
     const whitelist = res.data.whitelist;
 
+    const collectionRes = await getCollectionByUsername(this.$route.params.id);
+
+    this.collection = collectionRes.data.collection[0];
+
+    await this.mapWhitelistEntries(1);
+
     if (whitelist) {
       this.setupWhitelistStatus = false;
-      id = whitelist.collection_id;
+    } else {
+      this.setupWhitelistStatus = true;
     }
 
-    const collectionRes = await getCollection(id);
+    if (process.client) {
+      window.addEventListener("scroll", async () => {
+        if (
+          window.scrollY + window.innerHeight >=
+            document.documentElement.scrollHeight &&
+          !this.mappingData
+        ) {
+          this.scrolledNumber++;
 
-    this.collection = collectionRes.collection[0];
+          this.mappingData = true;
 
-    await this.fetchWhitelistEntries();
+          await this.mapWhitelistEntries(this.scrolledNumber);
+        }
+      });
+    }
   },
 };
 </script>

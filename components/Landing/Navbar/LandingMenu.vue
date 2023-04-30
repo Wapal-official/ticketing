@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-text-base tw-gap-4 lg:tw-flex-row lg:!tw-justify-end lg:tw-items-center lg:tw-gap-8"
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-text-base tw-gap-4 lg:tw-flex-row lg:!tw-justify-end lg:tw-items-center xl:tw-gap-8"
   >
     <div class="tw-flex tw-w-full lg:tw-hidden">
       <v-list-group
@@ -20,7 +20,12 @@
         <explore-list-item name="All NFT" @close="close" />
         <explore-list-item name="Live" @close="close" />
         <explore-list-item name="Upcoming" @close="close" />
-        <explore-list-item name="Domain Name" :last="true" @close="close" />
+        <explore-list-item
+          name="Domain Name"
+          link="/domain-name"
+          :last="true"
+          @close="close"
+        />
       </v-list-group>
     </div>
     <connect-wallet @close="close" class="tw-mt-8 lg:tw-mt-0" />

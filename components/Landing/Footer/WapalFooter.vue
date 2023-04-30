@@ -66,7 +66,7 @@
         />
         <footer-link
           name="Docs"
-          to="https://docs.mokshya.io/aptos/aptos-candymachine"
+          to="https://docs.wapal.io/"
           target="_blank"
           :external="true"
         />
