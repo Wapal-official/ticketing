@@ -813,7 +813,7 @@ export default {
 
     res.data.folderInfo.map((folder: any) => {
       if (folder.metadata.baseURI) {
-        if (folder.metadata.baseURI === this.collection.baseURI) {
+        if (folder.metadata.baseURI === this.collection.baseURL) {
           this.baseURL = folder.folder_name;
         }
         this.folders.push(folder);

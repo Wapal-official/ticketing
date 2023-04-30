@@ -655,6 +655,12 @@ export default {
           return;
         }
 
+        const selectedFolder = this.folders.find(
+          (folder: any) => folder.folder_name === this.baseURL
+        );
+
+        this.collection.baseURL = selectedFolder.metadata.baseURI;
+
         const tempCollection = this.collection;
 
         tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
@@ -705,12 +711,6 @@ export default {
           this.$router.push("/dashboard");
           return;
         }
-
-        const selectedFolder = this.folders.find(
-          (folder: any) => folder.folder_name === this.baseURL
-        );
-
-        this.collection.baseURL = selectedFolder.metadata.baseURI;
 
         await this.sendDataToCandyMachineCreator();
 
