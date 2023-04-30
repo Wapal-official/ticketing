@@ -616,17 +616,25 @@ export default {
   methods: {
     async submitCollection() {
       this.imageError = false;
-      this.socialError = true;
+      this.socialError = false;
 
-      if (
-        !this.collection.twitter &&
-        !this.collection.discord &&
-        !this.collection.website &&
-        !this.collection.instagram
-      ) {
+      const socials = [
+        this.collection.twitter,
+        this.collection.discord,
+        this.collection.website,
+        this.collection.instagram,
+      ];
+      let counter = 0;
+
+      socials.map((social) => {
+        if (social) {
+          counter++;
+        }
+      });
+
+      if (counter <= 1) {
         this.socialError = true;
-        this.socialErrorMessage =
-          "Please Enter Twitter URL, Discord URL, Instagram URL or Website";
+        this.socialErrorMessage = "Please Fill up at least 2 social links";
 
         this.$refs["social"].scrollIntoView({ behavior: "smooth" });
 
@@ -813,7 +821,7 @@ export default {
 
     res.data.folderInfo.map((folder: any) => {
       if (folder.metadata.baseURI) {
-        if (folder.metadata.baseURI === this.collection.baseURI) {
+        if (folder.metadata.baseURI === this.collection.baseURL) {
           this.baseURL = folder.folder_name;
         }
         this.folders.push(folder);

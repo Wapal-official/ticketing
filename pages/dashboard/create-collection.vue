@@ -626,22 +626,31 @@ export default {
   methods: {
     async submitCollection() {
       this.imageError = false;
-      this.socialError = true;
+      this.socialError = false;
 
-      if (
-        !this.collection.twitter &&
-        !this.collection.discord &&
-        !this.collection.website &&
-        !this.collection.instagram
-      ) {
+      const socials = [
+        this.collection.twitter,
+        this.collection.discord,
+        this.collection.website,
+        this.collection.instagram,
+      ];
+      let counter = 0;
+
+      socials.map((social) => {
+        if (social) {
+          counter++;
+        }
+      });
+
+      if (counter <= 1) {
         this.socialError = true;
-        this.socialErrorMessage =
-          "Please Enter Twitter URL, Discord URL, Instagram URL or Website";
+        this.socialErrorMessage = "Please Fill up at least 2 social links";
 
         this.$refs["social"].scrollIntoView({ behavior: "smooth" });
 
         return;
       }
+
       if (!this.image.name) {
         this.imageError = true;
         this.imageErrorMessage = "Please select an image for collection";
@@ -654,6 +663,12 @@ export default {
         if (this.imageError) {
           return;
         }
+
+        const selectedFolder = this.folders.find(
+          (folder: any) => folder.folder_name === this.baseURL
+        );
+
+        this.collection.baseURL = selectedFolder.metadata.baseURI;
 
         const tempCollection = this.collection;
 
@@ -705,12 +720,6 @@ export default {
           this.$router.push("/dashboard");
           return;
         }
-
-        const selectedFolder = this.folders.find(
-          (folder: any) => folder.folder_name === this.baseURL
-        );
-
-        this.collection.baseURL = selectedFolder.metadata.baseURI;
 
         await this.sendDataToCandyMachineCreator();
 
