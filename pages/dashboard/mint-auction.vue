@@ -364,18 +364,10 @@ export default {
 
             formData.append("name", this.mint.colName);
             formData.append("description", this.mint.colDesc);
-            formData.append(
-              "royalty_percentage",
-              this.mint.royalty
-            );
-            formData.append(
-              "royalty_payee_address",
-              this.walletAddress
-            );
-            formData.append(
-              "whitelist_sale_time",
-              this.mint.
-            );
+            formData.append("royalty_percentage", this.mint.royalty);
+            formData.append("royalty_payee_address", this.walletAddress);
+            formData.append("whitelist_sale_time", this.mint.startDate);
+
             formData.append(
               "public_sale_time",
               tempCollection.public_sale_time

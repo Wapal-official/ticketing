@@ -79,7 +79,7 @@
     </v-container>
   </div>
 </template>
-  <script>
+<script>
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import { publicRequest } from "../../../services/fetcher";
@@ -107,6 +107,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.selectedNft);
     if (!this.selectedNft) {
       this.$router.push("/dashboard/auction");
     }
@@ -143,7 +144,7 @@ export default {
   },
 };
 </script>
-  <style>
+<style>
 .theme-border {
   border: 2px solid rgb(250, 8, 222);
 }

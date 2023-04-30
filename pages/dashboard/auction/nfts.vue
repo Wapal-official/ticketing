@@ -42,7 +42,7 @@
     </v-card>
   </div>
 </template>
-    <script>
+<script>
 import { fetchWalletNfts } from "@/services/AuctionService";
 export default {
   data() {

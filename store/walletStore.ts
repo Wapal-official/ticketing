@@ -166,7 +166,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
-    console.log('args:',candyMachineArguments)
+    console.log("args:", candyMachineArguments);
     const create_candy_machine = {
       type: "entry_function_payload",
       function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
@@ -348,7 +348,7 @@ export const actions = {
     return signMessage;
   },
   async getSupplyAndMintedOfCollection(
-    { },
+    {},
     {
       resourceAccountAddress,
       candyMachineId,
@@ -397,16 +397,16 @@ export const actions = {
 
     return transaction;
   },
-  async createAuction({ rootState }: { rootState: any }, detail: object) {
+  async createAuction({ rootState }: { rootState: any }, detail: any) {
     if (!wallet.isConnected()) {
       await connectWallet(rootState.walletStore.wallet.wallet);
     }
-    let start = new Date(detail.start_date)
-    let startSec = Math.floor(start.getTime() / 1000)
-    let end = new Date(detail.end_date)
-    let endSec = Math.floor(end.getTime() / 1000)
-    let min_bid = detail.min_bid * 100000000
-    let nft = rootState.auction.selectedNft
+    let start = new Date(detail.start_date);
+    let startSec = Math.floor(start.getTime() / 1000);
+    let end = new Date(detail.end_date);
+    let endSec = Math.floor(end.getTime() / 1000);
+    let min_bid = detail.min_bid * 100000000;
+    let nft = rootState.auction.selectedNft;
 
     const create_auction = {
       type: "entry_function_payload",
@@ -418,60 +418,66 @@ export const actions = {
         nft.nft.current_token_data.name,
         nft.nft.property_version,
         nft.nft.amount,
-        min_bid,//price
-        startSec,//start sec 
-        endSec,//end
-        endSec + 86400 //withdraw
+        min_bid, //price
+        startSec, //start sec
+        endSec, //end
+        endSec + 86400, //withdraw
       ],
-    }
+    };
 
-    let transactionRes = await wallet.signAndSubmitTransaction(
-      create_auction
-    );
+    let transactionRes = await wallet.signAndSubmitTransaction(create_auction);
 
-    let getResource = await client.waitForTransactionWithResult(
+    let getResource: any = await client.waitForTransactionWithResult(
       transactionRes.hash
     );
     if (getResource) {
       for (var x = 0; x < getResource.changes.length; x++) {
-        if (getResource.changes[x].data.type == process.env.PID + '::auction::Auctions<0x1::aptos_coin::AptosCoin>') {
-          return getResource.changes[x].data.data
+        if (
+          getResource.changes[x].data.type ==
+          process.env.PID + "::auction::Auctions<0x1::aptos_coin::AptosCoin>"
+        ) {
+          return getResource.changes[x].data.data;
         }
       }
     }
   },
-  async placeBid({ rootState }: { rootState: any }, auction: object) {
-    try{
-    if (!wallet.isConnected()) {
-      await connectWallet(rootState.walletStore.wallet.wallet);
-    }
-    let withdraw = new Date(auction.detail.endAt)
-    let withdrawSec = Math.floor(withdraw.getTime() / 1000)
-    const place_bid = {
-      type: "entry_function_payload",
-      function: process.env.PID + "::auction::bid",
-      type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [
+  async placeBid({ rootState }: { rootState: any }, auction: any) {
+    try {
+      if (!wallet.isConnected()) {
+        await connectWallet(rootState.walletStore.wallet.wallet);
+      }
+      let withdraw = new Date(auction.detail.endAt);
+      let withdrawSec = Math.floor(withdraw.getTime() / 1000);
+
+      console.log(
         auction.detail.nft.nft.current_token_data.creator_address,
         auction.detail.nft.nft.current_token_data.collection_name,
-        auction.detail.nft.meta.name,
-        auction.detail.nft.nft.property_version,
-        auction.detail.nft.nft.amount,
-        auction.offer_price * 100000000,
-        auction.detail.id,
-        withdrawSec+100
-      ],
-    }
-    let transactionRes = await wallet.signAndSubmitTransaction(
-      place_bid
-    );
+        auction.detail.nft.nft.current_token_data.name
+      );
 
-    let getResource= await client.waitForTransactionWithResult(
-      transactionRes.hash
-    );
-    return getResource;
-    }catch{
-      return false
+      const place_bid = {
+        type: "entry_function_payload",
+        function: process.env.PID + "::auction::bid",
+        type_arguments: ["0x1::aptos_coin::AptosCoin"],
+        arguments: [
+          auction.detail.nft.nft.current_token_data.creator_address,
+          auction.detail.nft.nft.current_token_data.collection_name,
+          auction.detail.nft.nft.current_token_data.name,
+          auction.detail.nft.nft.property_version,
+          auction.detail.nft.nft.amount,
+          auction.offer_price * 100000000,
+          auction.detail.id,
+          withdrawSec + 100,
+        ],
+      };
+      let transactionRes = await wallet.signAndSubmitTransaction(place_bid);
+
+      let getResource = await client.waitForTransactionWithResult(
+        transactionRes.hash
+      );
+      return getResource;
+    } catch {
+      return false;
     }
-  }
+  },
 };

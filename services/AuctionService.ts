@@ -1,51 +1,54 @@
 import { publicRequest } from "./fetcher";
 
-export const getCurrentBid = (auction: object) => {
-    let bid = 0;
-    console.log('auc:', auction)
-    if (auction.biddings.length > 0) {
-        bid = auction.biddings[0].bid;
-    } else {
-        bid = auction.min_bid;
-    }
-    return bid;
+export const getCurrentBid = (auction: any) => {
+  let bid = 0;
+  console.log("auc:", auction);
+  if (auction.biddings.length > 0) {
+    bid = auction.biddings[0].bid;
+  } else {
+    bid = auction.min_bid;
+  }
+  return bid;
 };
 
 export const getHms = (seconds: any) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    return `${hours}H ${minutes}M ${remainingSeconds}S`;
-}
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${hours}H ${minutes}M ${remainingSeconds}S`;
+};
 
 export const getAuctions = async (params: any) => {
-    const auctions = await publicRequest
-        .get("/api/auction", {
-            params: {
-                page: params.page,
-                perPage: params.perPage
-            }
-        }).then(res => {
-            return res.data.auctions
-        })
-    return auctions
-}
+  const auctions = await publicRequest
+    .get("/api/auction", {
+      params: {
+        page: params.page,
+        perPage: params.perPage,
+      },
+    })
+    .then((res) => {
+      return res.data.auctions;
+    });
+  return auctions;
+};
 
 export const fetchWalletNfts = async (params: any) => {
-    let resp = await publicRequest.post(
-        "https://indexer-testnet.staging.gcp.aptosdev.com/v1/graphql",
-        {
-            operationName: "AccountTokensData",
-            query:
-                `query AccountTokensData {
+  let resp = await publicRequest.post(
+    "https://indexer-testnet.staging.gcp.aptosdev.com/v1/graphql",
+    {
+      operationName: "AccountTokensData",
+      query:
+        `query AccountTokensData {
           current_token_ownerships(
-            limit: `+ params.limit + `
+            limit: ` +
+        params.limit +
+        `
             offset:` +
-                params.offset +
-                `
+        params.offset +
+        `
             where: {owner_address: {_eq: "` +
-                params.walletAddress +
-                `"}}
+        params.walletAddress +
+        `"}}
             ) {
               owner_address
               property_version
@@ -60,17 +63,25 @@ export const fetchWalletNfts = async (params: any) => {
             }
           }
         }`,
-            variables: null,
-        }
-    )
-    return resp.data
-}
+      variables: null,
+    }
+  );
+  return resp.data;
+};
 
-export const uploadAndCreateFile = async (file: File,params:any) => {
-    const formData = new FormData()
-    formData.append('image', file)
-    const upload=await publicRequest.post("/api/uploader/singleupload", formData,{
-       params:{'name':params.name,'description':params.description,'attributes':params.attributes}
-    })
-    return upload.data.metadata
-}
+export const uploadAndCreateFile = async (file: File, params: any) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  const upload = await publicRequest.post(
+    "/api/uploader/singleupload",
+    formData,
+    {
+      params: {
+        name: params.name,
+        description: params.description,
+        attributes: params.attributes,
+      },
+    }
+  );
+  return upload.data.metadata;
+};

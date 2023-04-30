@@ -1,9 +1,9 @@
 export const state = () => ({
-  selectedNft:''
-})
+  selectedNft: "",
+});
 
 export const mutations = {
- selectNft(state,payload){
-    state.selectedNft=payload
- }
-}
+  selectNft(state, payload) {
+    state.selectedNft = payload;
+  },
+};
