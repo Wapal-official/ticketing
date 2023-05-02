@@ -73,14 +73,15 @@ export default {
         walletAddress: this.walletAddress,
       });
       if (data.data.current_token_ownerships.length > 0) {
-        this.nfts = data.data.current_token_ownerships;
-        for (var x = 0; x < this.nfts.length; x++) {
+        const nfts = data.data.current_token_ownerships;
+        for (var x = 0; x < nfts.length; x++) {
           try {
             let meta = await this.$axios.get(
-              this.nfts[x].current_token_data.metadata_uri
+              nfts[x].current_token_data.metadata_uri
             );
             this.metadata.push(meta.data);
-          } catch (e) {}
+            this.nfts.push(nfts[x]);
+          } catch {}
         }
       } else {
         this.end = true;

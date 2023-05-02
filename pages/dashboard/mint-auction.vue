@@ -30,7 +30,7 @@
 
           <label for="">Description</label>
           <ReusableTextArea
-            v-model="mint.colDesc"
+            v-model="mint.tokenDesc"
             :rules="[validRules.required]"
             placeholder="My token description"
           />
@@ -38,64 +38,23 @@
           <v-row>
             <v-col>
               <label for="">Start Date</label>
-
-              <v-menu
-                ref="startmenu"
-                v-model="startMenu"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                min-width="auto"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    outlined
-                    v-model="mint.startDate"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    dense
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  color="#FF36AB"
+              <v-row>
+                <date-picker
                   v-model="mint.startDate"
-                  :active-picker.sync="activePicker"
-                  max="2030-01-01"
-                  min="2020-01-01"
-                  @change="saveStart"
-                ></v-date-picker>
-              </v-menu>
+                  type="datetime"
+                  placeholder="Select Auction Start Time"
+                ></date-picker>
+              </v-row>
             </v-col>
             <v-col>
               <label for="">End Date</label>
-              <v-menu
-                ref="endmenu"
-                v-model="endMenu"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                min-width="auto"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    outlined
-                    v-model="mint.endDate"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    dense
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  color="#FF36AB"
+              <v-row>
+                <date-picker
                   v-model="mint.endDate"
-                  :active-picker.sync="activePicker"
-                  max="2030-01-01"
-                  min="2020-01-01"
-                  @change="saveEnd"
-                ></v-date-picker>
-              </v-menu>
+                  type="datetime"
+                  placeholder="Select Auction End Time"
+                ></date-picker>
+              </v-row>
             </v-col>
           </v-row>
 
@@ -165,7 +124,7 @@
                   <small>Attributes Type</small>
                   <v-text-field
                     readonly
-                    v-model="mint.attributes[i].attribute"
+                    v-model="mint.attributes[i].trait_type"
                     placeholder="Background"
                     hide-details=""
                   />
@@ -223,8 +182,16 @@
 
 <script>
 import { uploadAndCreateFile } from "../../services/AuctionService";
+import { createCollection } from "@/services/CollectionService";
+import { getWalletNFT } from "@/services/AuctionService";
+import { publicRequest } from "@/services/fetcher";
+
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
+
 export default {
   layout: "dashboard",
+  components: { DatePicker },
   data() {
     return {
       step: 1,
@@ -268,8 +235,11 @@ export default {
     walletAddress() {
       return this.$store.state.walletStore.wallet.walletAddress;
     },
+    selectedNft() {
+      return this.$store.state.auction.selectedNft;
+    },
   },
-  mounted() {
+  async mounted() {
     const dropContainer = document.getElementById("drop-container");
 
     dropContainer.addEventListener("dragenter", (e) => {
@@ -297,6 +267,20 @@ export default {
       this.file = files[0];
       this.displayImage();
     });
+
+    const nftRes = await getWalletNFT({
+      creatorAddress: this.walletAddress,
+      collectionName: "Martian NFT",
+      tokenName: "Martian NFT #0",
+    });
+
+    console.log(nftRes);
+
+    const res = await this.$axios.get(
+      "https://arweave.net/s8tjxeEQdtF7fJhQMVanIzCrtyNZlNTSXc59SRigfiU/0.json"
+    );
+
+    console.log(res);
   },
   methods: {
     saveStart(date) {
@@ -312,7 +296,7 @@ export default {
     },
     addAttribute() {
       this.mint.attributes.push({
-        attribute: this.attribute,
+        trait_type: this.attribute,
         value: this.value,
       });
       this.attribute = "";
@@ -329,95 +313,149 @@ export default {
       this.displayImage();
     },
     async submit() {
-      if (this.$refs.colRef.validate()) {
-        if (this.file != null) {
-          if (this.mint.attributes.length > 0) {
-            this.loading = true;
-            //uploading and creating metadata file
-            const metaUri = await uploadAndCreateFile(this.file, {
-              name: this.mint.tokenName,
-              description: this.mint.tokenDesc,
-              attributes: this.mint.attributes,
-            });
-            console.log("meta:", metaUri);
-            //creating collection
-            const candymachine = await this.$store.dispatch(
-              "walletStore/createCandyMachine",
-              {
-                collection_name: this.mint.colName,
-                collection_description: this.mint.colDesc,
-                baseuri: metaUri,
-                royalty_payee_address: this.walletAddress,
-                royalty_points_denominator: 1000,
-                royalty_points_numerator: this.mint.royalty * 10,
-                presale_mint_time: Math.floor(new Date().getTime() / 1000) + 30,
-                public_sale_mint_time:
-                  Math.floor(new Date().getTime() / 1000) + 50,
-                presale_mint_price: this.mint.minBid * 100000000,
-                public_sale_mint_price: this.mint.minBid * 100000000,
-                total_supply: 1,
-              }
-            );
+      try {
+        if (this.$refs.colRef.validate()) {
+          if (this.file != null) {
+            if (this.mint.attributes.length > 0) {
+              this.loading = true;
+              //uploading and creating metadata file
+              const metaUri =
+                (await uploadAndCreateFile(this.file, {
+                  name: this.mint.tokenName,
+                  description: this.mint.tokenDesc,
+                  attributes: this.mint.attributes,
+                })) + "/";
+              console.log("meta:", metaUri);
+              //creating collection
+              const candymachine = await this.$store.dispatch(
+                "walletStore/createCandyMachine",
+                {
+                  collection_name: this.mint.colName,
+                  collection_description: this.mint.colDesc,
+                  baseuri: metaUri,
+                  royalty_payee_address: this.walletAddress,
+                  royalty_points_denominator: 1000,
+                  royalty_points_numerator: this.mint.royalty * 10,
+                  presale_mint_time:
+                    Math.floor(new Date().getTime() / 1000) + 20,
+                  public_sale_mint_time:
+                    Math.floor(new Date().getTime() / 1000) + 21,
+                  presale_mint_price: this.mint.minBid * 100000000,
+                  public_sale_mint_price: this.mint.minBid * 100000000,
+                  total_supply: 1,
+                }
+              );
 
-            //saving collection to db
-            const formData = new FormData();
+              const resource_account = candymachine.resourceAccount;
+              const txnhash = candymachine.transactionHash;
 
-            formData.append("name", this.mint.colName);
-            formData.append("description", this.mint.colDesc);
-            formData.append("royalty_percentage", this.mint.royalty);
-            formData.append("royalty_payee_address", this.walletAddress);
-            formData.append("whitelist_sale_time", this.mint.startDate);
+              //saving collection to db
+              const formData = new FormData();
 
-            formData.append(
-              "public_sale_time",
-              tempCollection.public_sale_time
-            );
-            formData.append(
-              "public_sale_price",
-              tempCollection.public_sale_price
-            );
-            formData.append("whitelist_price", tempCollection.whitelist_price);
-            formData.append("supply", tempCollection.supply);
-            formData.append("twitter", tempCollection.twitter);
-            formData.append("discord", tempCollection.discord);
-            formData.append("website", tempCollection.website);
-            formData.append(
-              "resource_account",
-              tempCollection.resource_account
-            );
-            formData.append("txnhash", tempCollection.txnhash);
-            formData.append("candy_id", tempCollection.candy_id);
-            formData.append("image", this.image);
+              formData.append("name", this.mint.colName);
+              formData.append("description", this.mint.colDesc);
+              formData.append("royalty_percentage", this.mint.royalty);
+              formData.append("royalty_payee_address", this.walletAddress);
+              formData.append(
+                "whitelist_sale_time",
+                Math.floor(new Date().getTime() / 1000) + 10
+              );
+              formData.append(
+                "public_sale_time",
+                Math.floor(new Date().getTime() / 1000) + 10
+              );
 
-            await createCollection(formData);
-            //mint
-            console.log("candy:", candymachine);
+              formData.append(
+                "public_sale_price",
+                this.mint.minBid * 100000000
+              );
+              formData.append("whitelist_price", this.mint.minBid * 100000000);
+              formData.append("supply", 1);
+              formData.append("twitter", "");
+              formData.append("discord", "");
+              formData.append("website", "");
+              formData.append("resource_account", resource_account);
+              formData.append("txnhash", txnhash);
+              formData.append("candy_id", process.env.CANDY_MACHINE_ID);
+              formData.append("image", this.file);
 
-            const mint = await this.$store.dispatch(
-              "walletStore/mintCollection",
-              {
-                resourceAccount: candymachine.resourceAccount,
-                publicMint: true,
-                collectionId: "",
-                candyMachineId: process.env.cn,
-              }
-            );
+              await createCollection(formData);
 
-            //auction
+              //mint
+              setTimeout(async () => {
+                const mint = await this.$store.dispatch(
+                  "walletStore/mintCollection",
+                  {
+                    resourceAccount: resource_account,
+                    publicMint: true,
+                    collectionId: "",
+                    candyMachineId: process.env.CANDY_MACHINE_ID,
+                  }
+                );
 
-            this.loading = false;
+                if (mint.success) {
+                  //auction
+                  const nftRes = await getWalletNFT({
+                    creatorAddress: this.walletAddress,
+                    collectionName: this.mint.colName,
+                    tokenName: this.mint.colName + " #0",
+                  });
+
+                  const nft = nftRes.data.current_token_ownerships[0];
+
+                  const meta = await this.$axios.get(
+                    nft.current_token_data.metadata_uri
+                  );
+
+                  this.$store.commit("auction/selectNft", {
+                    nft: nft,
+                    meta: meta.data,
+                  });
+
+                  const auction = await this.$store.dispatch(
+                    "walletStore/createAuction",
+                    {
+                      start_date: this.mint.startDate,
+                      end_date: this.mint.endDate,
+                      min_bid: this.mint.minBid,
+                    }
+                  );
+
+                  await publicRequest.post("/api/auction", {
+                    nft: this.selectedNft,
+                    startAt: this.mint.startDate,
+                    endAt: this.mint.endDate,
+                    min_bid: this.mint.minBid,
+                    id: auction.cur_auction_id,
+                  });
+
+                  this.$toast.showMessage({
+                    message: "Auction Created Successfully",
+                    error: false,
+                  });
+                  this.loading = false;
+                  this.$router.push("/dashboard/auction/list");
+                }
+
+                this.loading = false;
+              }, 5000);
+            } else {
+              this.$toast.showMessage({
+                message: "Provide at least one attribute",
+                error: true,
+              });
+            }
           } else {
             this.$toast.showMessage({
-              message: "Provide at least one attribute",
+              message: "Please select image",
               error: true,
             });
           }
-        } else {
-          this.$toast.showMessage({
-            message: "Please select image",
-            error: true,
-          });
         }
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+        this.loading = false;
       }
     },
   },

@@ -72,16 +72,49 @@ export const fetchWalletNfts = async (params: any) => {
 export const uploadAndCreateFile = async (file: File, params: any) => {
   const formData = new FormData();
   formData.append("image", file);
+  formData.append("name", params.name);
+  formData.append("description", params.description);
+  formData.append("attributes", JSON.stringify(params.attributes));
+
   const upload = await publicRequest.post(
     "/api/uploader/singleupload",
-    formData,
-    {
-      params: {
-        name: params.name,
-        description: params.description,
-        attributes: params.attributes,
-      },
-    }
+    formData
   );
   return upload.data.metadata;
+};
+
+export const getWalletNFT = async (params: any) => {
+  let resp = await publicRequest.post(
+    "https://indexer-testnet.staging.gcp.aptosdev.com/v1/graphql",
+    {
+      operationName: "AccountTokensData",
+      query:
+        `query AccountTokensData {
+          current_token_ownerships(
+            where: {owner_address: {_eq: "` +
+        params.creatorAddress +
+        `"}, collection_name: {_eq: "` +
+        params.collectionName +
+        `"},
+        name: {_eq: "` +
+        params.tokenName +
+        `"}}
+            ) {
+              owner_address
+              property_version
+              amount
+            current_token_data {
+              name
+              metadata_uri
+              description
+              collection_name
+              creator_address
+              token_data_id_hash
+            }
+          }
+        }`,
+      variables: null,
+    }
+  );
+  return resp.data;
 };
