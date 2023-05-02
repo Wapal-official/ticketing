@@ -490,6 +490,27 @@ export const actions = {
       return false;
     }
   },
+  async increaseAuctionBid(
+    { state }: { state: any },
+    { price, auction_id }: { price: number; auction_id: number }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    const increase_bid = {
+      type: "entry_function_payload",
+      function: process.env.PID + "::auction::increase_bid",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: [price * Math.pow(10, 8), auction_id],
+    };
+
+    const res = await wallet.signAndSubmitTransaction(increase_bid);
+
+    const txhRes = await client.getTransactionByHash(res.hash);
+
+    return txhRes;
+  },
   async buyDomainName({ state }: { state: any }, domainName: string) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);

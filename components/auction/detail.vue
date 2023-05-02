@@ -48,6 +48,11 @@
                       @click="placeBid"
                       :loading="loading"
                     />
+                    <ReusableThemeButton
+                      title="Increase your bid"
+                      @click="increaseBid"
+                      :loading="loading"
+                    />
                   </v-row>
                 </v-card>
                 <p class="mb-0 mt-5 theme-text">Last Bid</p>
@@ -85,10 +90,18 @@
         </v-row>
       </v-container>
     </v-card>
+    <v-dialog
+      v-model="showSignupDialog"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
+    >
+      <signup-modal
+        message="Login into your wapal account to place a bid"
+        @close="showSignupDialog = false"
+      />
+    </v-dialog>
   </div>
 </template>
 
-    
 <script>
 import { publicRequest } from "../../services/fetcher";
 import { getCurrentBid, getHms } from "../../services/AuctionService";
@@ -106,6 +119,7 @@ export default {
       },
       bid: 0,
       endInterval: 0,
+      showSignupDialog: false,
     };
   },
   watch: {
@@ -119,6 +133,9 @@ export default {
       if (process.client) {
         return window.innerHeight;
       }
+    },
+    getLoggedInStatus() {
+      return this.$store.state.userStore.user.token;
     },
   },
   mounted() {
@@ -147,6 +164,10 @@ export default {
       }, 1000);
     },
     async placeBid() {
+      if (!this.getLoggedInStatus) {
+        this.showSignupDialog = true;
+        return;
+      }
       if (this.$refs.form.validate()) {
         this.loading = true;
         let cur_bid = getCurrentBid(this.auction);
@@ -170,17 +191,59 @@ export default {
             auction_id: this.auction._id,
           })
           .then((res) => {
-            this.auction.biddings=res.data.newBid.biddings
+            this.auction.biddings.unshift(...res.data.newBid.biddings);
             this.loading = false;
             this.$refs.form.reset();
           });
+      }
+    },
+    async increaseBid() {
+      if (!this.getLoggedInStatus) {
+        this.showSignupDialog = true;
+        return;
+      }
+      try {
+        this.loading = true;
+
+        let cur_bid = getCurrentBid(this.auction);
+
+        if (this.bid <= cur_bid) {
+          this.error = true;
+          this.errMsg = "Should be more than current bid";
+          this.loading = false;
+          return;
+        }
+
+        const increaseBidRes = await this.$store.dispatch(
+          "walletStore/increaseAuctionBid",
+          { price: this.bid, auction_id: this.auction.id }
+        );
+
+        if (increaseBidRes.success) {
+          const res = await publicRequest.post("/api/auction/bid", {
+            bid: this.bid,
+            auction_id: this.auction._id,
+          });
+
+          this.auction.biddings.unshift(...res.data.newBid.biddings);
+
+          this.$toast.showMessage({ message: "Bid Increased Successfully" });
+          this.loading = false;
+          this.$refs.form.reset();
+        }
+
+        this.loading = false;
+      } catch (error) {
+        console.log(error);
+
+        this.$toast.showMessage({ message: error, error: true });
+        this.loading = false;
       }
     },
   },
 };
 </script>
 
-    
 <style>
 .theme-border {
   border: 2px solid rgb(250, 8, 222);
