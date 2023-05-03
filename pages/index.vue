@@ -35,6 +35,12 @@
           />
           <loading v-else />
         </section>
+
+        <section class="tw-py-8 tw-container tw-mx-auto">
+          <landing-section-heading heading="Auctions" />
+          <LandingAuctions v-if="!loading" :auctions="auctions" />
+          <loading v-else />
+        </section>
       </div>
     </div>
   </div>
@@ -50,7 +56,7 @@ import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vu
 import Loading from "@/components/Reusable/Loading.vue";
 import Banner from "@/components/Landing/Banner.vue";
 import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.vue";
-
+import { getAuctions } from "@/services/AuctionService";
 import {
   getCollections,
   getLiveCollections,
@@ -79,6 +85,7 @@ export default {
       upcomingCollections: [{ _id: "" }],
       loading: true,
       fastestSoldoutCollections: [],
+      auctions: [],
     };
   },
   methods: {
@@ -105,6 +112,9 @@ export default {
   },
   async created() {
     await this.getCollections();
+    this.auctions = await getAuctions({ page: 1, perPage: 4 }).then((res) => {
+      return res;
+    });
     this.loading = false;
   },
 };

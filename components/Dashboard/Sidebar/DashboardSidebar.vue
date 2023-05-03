@@ -21,6 +21,15 @@
         Whitelist
       </NuxtLink>
     </div>
+    <div class="tw-px-4 min-h-48 tw-d-block tw-my-3">
+      <NuxtLink
+        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-dashboard-active"
+        to="/dashboard/auction"
+        @click.native="close"
+      >
+      Auction
+      </NuxtLink>
+    </div>
     <!-- <div class="tw-px-4 min-h-48 tw-d-block tw-my-3">
       <NuxtLink
         class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-dashboard-active"
