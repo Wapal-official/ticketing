@@ -120,8 +120,8 @@ export const getApprovedCollectionsOfUser = async (
   userId: string,
   page: number
 ) => {
-  const res = await axios.get(
-    `${process.env.baseURL}/api/collection/live?user_id=${userId}&limit=10&page=${page}`
+  const res = await publicRequest.get(
+    `/api/collection/approved?user_id=${userId}&limit=10&page=${page}`
   );
 
   return res;
