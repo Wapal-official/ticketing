@@ -89,7 +89,7 @@
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
           >
             <span class="tw-capitalize tw-text-sm">{{
-              showPublicSaleTimer && collection.candyMachine.whitelist_sale_time
+              showPublicSaleTimer && checkWhitelistSale
                 ? "whitelist mint"
                 : "public sale mint"
             }}</span>
