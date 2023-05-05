@@ -14,8 +14,6 @@ services:
     restart: always
     user: root:root
     environment:
-      - NODE_ENV=${NODE_ENV}
-      - COMPOSE_PROJECT_NAME=production-wapal
       - PORT=${PORT}
       - API_URL=${API_URL}
       - CANDY_MACHINE_ID=${CANDY_MACHINE_ID}
@@ -23,5 +21,7 @@ services:
       - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
       - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
       - APTOS_API_KEY=${APTOS_API_KEY}
+      - NODE_ENV=${NODE_ENV}
+      - COMPOSE_PROJECT_NAME=production-wapal
     ports:
       - ${PORT}:${PORT}
