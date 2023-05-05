@@ -1,22 +1,27 @@
 version: '3.1'
 
 services:
-  staging-wapal:
-    container_name: staging-wapal
-    hostname: staging-wapal
+  production-wapal:
+    container_name: production-wapal
+    hostname: production-wapal
     build:
       context: ./
       dockerfile: Dockerfile
       args:
         - NODE_ENV=development
         - IMG=16.17-alpine3.15
-        - LOCATION=staging-wapal
+        - LOCATION=production-wapal
     restart: always
     user: root:root
-    env_file:
-      - ./.env
     environment:
       - NODE_ENV=${NODE_ENV}
-      - COMPOSE_PROJECT_NAME=staging-wapal
+      - COMPOSE_PROJECT_NAME=production-wapal
+      - PORT=${PORT}
+      - API_URL=${API_URL}
+      - CANDY_MACHINE_ID=${CANDY_MACHINE_ID}
+      - NETWORK=${NETWORK}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
+      - APTOS_API_KEY=${APTOS_API_KEY}
     ports:
       - ${PORT}:${PORT}
