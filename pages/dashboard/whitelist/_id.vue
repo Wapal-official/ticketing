@@ -38,7 +38,6 @@
           />
           <div
             class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
-            :disabled="setupWhitelistStatus"
           >
             Import CSV
           </div>
