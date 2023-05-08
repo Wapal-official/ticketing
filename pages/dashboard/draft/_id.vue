@@ -821,10 +821,13 @@ export default {
 
     res.data.folderInfo.map((folder: any) => {
       if (folder.metadata.baseURI) {
-        if (folder.metadata.baseURI === this.collection.baseURL) {
-          this.baseURL = folder.folder_name;
-        }
         this.folders.push(folder);
+      }
+    });
+
+    this.folders.map((folder: any) => {
+      if (folder.metadata.baseURI === this.collection.baseURL) {
+        this.baseURL = folder.folder_name;
       }
     });
   },
@@ -834,5 +837,9 @@ export default {
 .image-collection {
   display: none;
   background-color: #878787;
+}
+
+.mx-input {
+  background: #0e0d0d !important;
 }
 </style>
