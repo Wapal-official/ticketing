@@ -58,7 +58,7 @@
             </ValidationProvider>
             <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-              rules="required|auctionTime|endTime:@auction_start"
+              rules="required|endTime:@auction_start"
               v-slot="{ errors }"
             >
               <label for="endTime">End Time</label>
@@ -125,7 +125,7 @@ extend("auctionTime", {
 
     return true;
   },
-  message: "Auction Time should be greater than current time",
+  message: "Auction Start Time should be greater than current time",
 });
 
 extend("endTime", {
@@ -185,6 +185,8 @@ export default {
               min_bid: this.apt,
             }
           );
+
+          console.log(auction);
 
           publicRequest
             .post("/api/auction", {

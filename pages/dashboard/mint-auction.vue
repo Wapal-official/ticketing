@@ -81,7 +81,8 @@
               >
                 <ValidationProvider
                   class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required"
+                  rules="required|auctionTime"
+                  name="auction_start"
                   v-slot="{ errors }"
                 >
                   <label
@@ -97,7 +98,7 @@
                 </ValidationProvider>
                 <ValidationProvider
                   class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required"
+                  rules="required|endTime:@auction_start"
                   v-slot="{ errors }"
                 >
                   <label
@@ -117,12 +118,12 @@
               >
                 <ValidationProvider
                   class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required"
+                  rules="required|bidAmount"
                   v-slot="{ errors }"
                 >
                   <label
                     class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                    >Min. Bid</label
+                    >Min. Bid in Apt</label
                   >
                   <reusable-text-field
                     v-model="mint.minBid"
@@ -133,12 +134,12 @@
                 </ValidationProvider>
                 <ValidationProvider
                   class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required"
+                  rules="required|percentage"
                   v-slot="{ errors }"
                 >
                   <label
                     class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                    >Royalties Fees</label
+                    >Royalties Fees in Percent</label
                   >
                   <reusable-text-field
                     v-model="mint.royalty"
@@ -278,6 +279,54 @@ import "vue2-datepicker/index.css";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import uploadIcon from "@/assets/img/upload-icon.svg";
 
+extend("bidAmount", {
+  validate(value) {
+    if (value <= 0) {
+      return false;
+    }
+    return true;
+  },
+  message: "Minimum bid amount should be greater than zero",
+});
+
+extend("auctionTime", {
+  validate(value) {
+    if (new Date().getTime() > value.getTime()) {
+      return false;
+    }
+
+    return true;
+  },
+  message: "Auction Start Time should be greater than current time",
+});
+
+extend("endTime", {
+  params: ["target"],
+  validate(value, target) {
+    if (new Date(target.target).getTime() > value.getTime()) {
+      return false;
+    }
+
+    return true;
+  },
+  message: "Auction End Time should be greater than Auction Start Time",
+});
+
+extend("percentage", {
+  validate(value) {
+    const getDecimalVal = value.toString().indexOf(".");
+    if (getDecimalVal < 1) {
+      return true;
+    }
+    const decimalPart = value.toString().substring(getDecimalVal + 1);
+    if (decimalPart.length > 1) {
+      return false;
+    }
+    return true;
+  },
+  message: "Please enter only one decimal point in percentage",
+});
+
 export default {
   layout: "dashboard",
   components: { DatePicker, ValidationObserver, ValidationProvider },
@@ -401,8 +450,14 @@ export default {
     },
     displayImage() {
       const imgElement = document.createElement("img");
+
       imgElement.src = URL.createObjectURL(this.file);
       const previewElement = document.getElementById("image-preview");
+
+      if (previewElement.firstChild) {
+        previewElement.removeChild(previewElement.firstChild);
+      }
+
       previewElement.prepend(imgElement);
     },
     selectImage(e) {

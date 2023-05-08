@@ -431,7 +431,7 @@ export const actions = {
         min_bid, //price
         startSec, //start sec
         endSec, //end
-        endSec + 86400, //withdraw
+        endSec + 1, //withdraw
       ],
     };
 
@@ -440,6 +440,8 @@ export const actions = {
     let getResource: any = await client.waitForTransactionWithResult(
       transactionRes.hash
     );
+
+    console.log(getResource);
     if (getResource) {
       for (var x = 0; x < getResource.changes.length; x++) {
         if (
@@ -506,6 +508,56 @@ export const actions = {
     };
 
     const res = await wallet.signAndSubmitTransaction(increase_bid);
+
+    const txhRes = await client.getTransactionByHash(res.hash);
+
+    return txhRes;
+  },
+  async getAuctionListingId(
+    { state }: { state: any },
+    { auction_id }: { auction_id: Number }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    const get_auction_listing_id = {
+      type: "entry_function_payload",
+      function: process.env.PID + "::auction::get_auction_listing_id",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: [auction_id],
+    };
+
+    const res = await wallet.signAndSubmitTransaction(get_auction_listing_id);
+
+    const txhRes = await client.getTransactionByHash(res.hash);
+
+    return txhRes;
+  },
+  async withdrawBid(
+    { state }: { state: any },
+    {
+      lister_address,
+      auction_id,
+    }: { lister_address: String; auction_id: Number }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    const withdraw_coin_from_bid = {
+      type: "entry_function_payload",
+      function: process.env.PID + "::auction::withdraw_coin_from_bid",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: [
+        "0xe743f11e73711a90bc76d5ed3df5a6d979a06b2fce194d8b0ca8faf697f4f5f4",
+        8,
+      ],
+    };
+
+    console.log(withdraw_coin_from_bid);
+
+    const res = await wallet.signAndSubmitTransaction(withdraw_coin_from_bid);
 
     const txhRes = await client.getTransactionByHash(res.hash);
 

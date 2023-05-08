@@ -12,7 +12,7 @@
       :counter="counter"
       :type="type"
       class="dashboard-input"
-      :style="`background:${this.background}`"
+      :style="`background:${background}`"
     >
     </v-text-field>
   </div>
@@ -22,7 +22,7 @@
 export default {
   props: {
     value: {
-      type: String,
+      type: [String, Number],
       required: true,
     },
     placeholder: {

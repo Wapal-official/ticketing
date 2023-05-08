@@ -309,6 +309,7 @@
 
 .dashboard-input {
   border-radius: 7px !important;
+  background: #0e0d0d;
 }
 .dashboard-input.v-text-field--outlined > .v-input__control > .v-input__slot {
   min-height: 50px !important;

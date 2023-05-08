@@ -17,6 +17,7 @@
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full lg:tw-flex-row xl:tw-flex-col 2xl:tw-flex-row tw-gap-4"
+          v-if="!auctionEnded"
         >
           <span
             class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
@@ -28,6 +29,11 @@
             @countdownComplete="endAuction"
           />
         </div>
+        <span
+          class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
+          v-else
+          >Auction Ended</span
+        >
       </div>
       <div
         class="tw-rounded tw-w-full tw-bg-[#001233] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-px-4 tw-py-8 md:tw-px-8 xl:tw-w-[60%] preview-shadow"
@@ -66,17 +72,24 @@
             ></reusable-text-field>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
-          <ReusableThemeButton
-            title="Place Your Bid"
-            @click="placeBid"
+          <div v-if="!auctionEnded">
+            <ReusableThemeButton
+              title="Place Your Bid"
+              @click="placeBid"
+              :loading="loading"
+              v-if="showPlaceBidButton"
+            />
+            <ReusableThemeButton
+              title="Increase Your Bid"
+              @click="increaseBid"
+              :loading="loading"
+              v-else
+            />
+          </div>
+          <reusable-theme-button
             :loading="loading"
-            v-if="showPlaceBidButton"
-          />
-          <ReusableThemeButton
-            title="Increase Your Bid"
-            @click="increaseBid"
-            :loading="loading"
-            v-else
+            title="Withdraw Bid"
+            @click="withdrawBid"
           />
         </ValidationObserver>
         <div
@@ -144,7 +157,7 @@
 
 <script>
 import { publicRequest } from "@/services/fetcher";
-import { getCurrentBid, getHms } from "@/services/AuctionService";
+import { getCurrentBid } from "@/services/AuctionService";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 
 extend("bidAmount", {
@@ -170,7 +183,7 @@ export default {
       validRules: {
         required: (value) => !!value || "Required.",
       },
-      bid: "0",
+      bid: 0,
       endInterval: 0,
       showSignupDialog: false,
       showConnectWalletDialog: false,
@@ -178,6 +191,8 @@ export default {
       loadingAuction: true,
       showIncreaseBidButton: false,
       showPlaceBidButton: true,
+      auctionEnded: false,
+      previousBid: 0,
     };
   },
   watch: {
@@ -187,52 +202,62 @@ export default {
     },
   },
   computed: {
-    getHeight() {
-      if (process.client) {
-        return window.innerHeight;
-      }
-    },
     getWalletConnectedStatus() {
       return this.$store.state.walletStore.wallet.walletAddress;
     },
     getLoggedInStatus() {
       return this.$store.state.userStore.user.token;
     },
+    getAuctionStatus() {
+      if (this.auction) {
+        if (this.auction.endAt > new Date()) {
+          return true;
+        }
+
+        return false;
+      }
+      return false;
+    },
   },
-  mounted() {
-    this.getAuctionDetails();
+  async mounted() {
+    await this.getAuctionDetails();
+
+    this.auctionEnded = this.getAuctionStatus;
+
+    if (this.checkAuctionStatus) {
+    }
   },
   methods: {
     async getAuctionDetails() {
-      // const res = await publicRequest.get(
-      //   `/api/auction/bid?auction_id=${this.$route.params.id}`
-      // );
-
-      // console.log(res);
       publicRequest
         .get(`/api/auction/${this.$route.params.id}`)
-        .then((res) => {
+        .then(async (res) => {
           let response = res.data.auction[0];
           let rev = response.biddings.reverse();
           response.biddings = rev;
           this.auction = response;
           this.current_bid = getCurrentBid(this.auction);
-          this.getInterval();
 
-          console.log(this.auction);
+          if (this.getLoggedInStatus) {
+            const bidRes = await publicRequest.get(
+              `/api/auction/bid?auction_id=${this.$route.params.id}`
+            );
+
+            const biddings = bidRes.data.bids.biddings;
+
+            if (biddings.length > 0) {
+              this.bid = this.previousBid = biddings[biddings.length - 1].bid;
+            } else {
+              this.bid = this.current_bid;
+            }
+          } else {
+            this.bid = this.current_bid;
+          }
 
           this.loadingAuction = false;
           this.checkWalletInBiddings();
         })
-        .catch((err) => console.log(err.response));
-    },
-    getInterval() {
-      setInterval(() => {
-        let seconds =
-          new Date(this.auction.endAt).getTime() / 1000 -
-          new Date().getTime() / 1000;
-        this.endInterval = getHms(seconds);
-      }, 1000);
+        .catch((err) => console.log(err));
     },
     async placeBid() {
       if (!this.getWalletConnectedStatus) {
@@ -243,35 +268,45 @@ export default {
         this.showSignupDialog = true;
         return;
       }
-      if (await this.$refs.form.validate()) {
-        this.loading = true;
-        let cur_bid = getCurrentBid(this.auction);
-        if (this.bid <= cur_bid) {
-          this.error = true;
-          this.errMsg = "Should be more than current bid";
-          this.loading = false;
-          return;
-        }
-        let resource = await this.$store.dispatch("walletStore/placeBid", {
-          detail: this.auction,
-          offer_price: this.bid,
+
+      this.loading = true;
+
+      let cur_bid = getCurrentBid(this.auction);
+      console.log(cur_bid);
+
+      if (this.bid <= cur_bid) {
+        this.loading = false;
+        this.$toast.showMessage({
+          message: "Bid Should be greater than current bid",
+          error: true,
         });
-        if (!resource) {
-          this.loading = false;
-          return;
-        }
-        publicRequest
-          .post("/api/auction/bid", {
-            bid: this.bid,
-            auction_id: this.auction._id,
-          })
-          .then((res) => {
-            this.auction.biddings.unshift(...res.data.newBid.biddings);
-            this.loading = false;
-            this.bid = "0";
-            this.current_bid = getCurrentBid(this.auction);
-          });
+        return;
       }
+
+      let resource = await this.$store.dispatch("walletStore/placeBid", {
+        detail: this.auction,
+        offer_price: this.bid,
+      });
+
+      console.log(resource);
+
+      if (!resource) {
+        this.loading = false;
+        return;
+      }
+      publicRequest
+        .post("/api/auction/bid", {
+          bid: this.bid,
+          auction_id: this.auction._id,
+        })
+        .then((res) => {
+          this.auction.biddings.unshift(...res.data.newBid.biddings);
+          this.loading = false;
+          this.current_bid = getCurrentBid(this.auction);
+          this.bid = this.current_bid;
+          this.showPlaceBidButton = false;
+          this.$refs.form.reset();
+        });
     },
     async increaseBid() {
       if (!this.getLoggedInStatus) {
@@ -280,8 +315,11 @@ export default {
       }
       try {
         let cur_bid = getCurrentBid(this.auction);
+        const bid = Number(this.bid) + Number(this.previousBid);
 
-        if (this.bid <= cur_bid) {
+        console.log(bid);
+
+        if (bid <= cur_bid) {
           this.loading = false;
           this.$toast.showMessage({
             message: "Bid Should be greater than current bid",
@@ -295,12 +333,14 @@ export default {
           this.loading = true;
           const increaseBidRes = await this.$store.dispatch(
             "walletStore/increaseAuctionBid",
-            { price: this.bid, auction_id: this.auction.id }
+            { price: bid, auction_id: this.auction.id }
           );
+
+          console.log(increaseBidRes);
 
           if (increaseBidRes.success) {
             const res = await publicRequest.post("/api/auction/bid", {
-              bid: this.bid,
+              bid: bid,
               auction_id: this.auction._id,
             });
 
@@ -308,9 +348,10 @@ export default {
 
             this.$toast.showMessage({ message: "Bid Increased Successfully" });
             this.loading = false;
-            this.bid = "0";
+            this.bid = bid;
             this.current_bid = getCurrentBid(this.auction);
             this.checkWalletInBiddings();
+            this.$refs.form.reset();
           }
 
           this.loading = false;
@@ -322,7 +363,9 @@ export default {
         this.loading = false;
       }
     },
-    endAuction() {},
+    endAuction() {
+      this.auctionEnded = true;
+    },
     checkWalletInBiddings() {
       if (this.getWalletConnectedStatus) {
         const alreadyBided = this.auction.biddings.some((bid) => {
@@ -336,6 +379,23 @@ export default {
           this.showPlaceBidButton = true;
           this.showIncreaseBidButton = false;
         }
+      }
+    },
+    async withdrawBid() {
+      if (!this.getWalletConnectedStatus) {
+        this.showConnectWalletDialog = true;
+        return;
+      }
+
+      try {
+        const res = await this.$store.dispatch("walletStore/withdrawBid", {
+          lister_address: this.auction.nft.nft.owner_address,
+          auction_id: 8,
+        });
+
+        console.log(res);
+      } catch (error) {
+        console.log(error);
       }
     },
   },
