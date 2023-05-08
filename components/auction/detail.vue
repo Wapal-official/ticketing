@@ -1,95 +1,145 @@
 <template>
-  <div>
-    <v-card :height="getHeight" color="transparent">
-      <v-container>
-        <v-row v-if="auction">
-          <v-col cols="12" lg="5">
-            <v-img
-              :src="auction.nft.meta.image"
-              max-width="400"
-              height="400"
-              class="theme-border"
-            ></v-img>
-            <p class="text-h6 theme-text">Auction end in {{ endInterval }}</p>
-          </v-col>
-          <v-col cols="12" lg="7">
-            <v-card color="#001233">
-              <v-col>
-                <v-row no-gutters>
-                  <v-btn outlined x-small color="#EA59BE" tile>Doxxed</v-btn>
-                </v-row>
-                <p class="text-h4 mt-2">{{ auction.nft.name }}</p>
-                <p>
-                  {{ auction.nft.description }}
-                </p>
-                <v-card color="#0C224B">
-                  <v-row no-gutters style="padding: 15px 10px">
-                    <div>
-                      <v-list-item-subtitle
-                        ><small>Current Bid</small></v-list-item-subtitle
-                      >
-                      <p>{{ current_bid }} APT</p>
-                    </div>
-                    <v-spacer></v-spacer>
-                    <v-form v-model="valid" ref="form">
-                      <v-text-field
-                        v-model="bid"
-                        :rules="[validRules.required]"
-                        :error="error"
-                        :error-messages="errMsg"
-                        dense
-                        type="number"
-                        outlined
-                      ></v-text-field>
-                    </v-form>
-                    <v-spacer></v-spacer>
-                    <ReusableThemeButton
-                      title="Place your bid"
-                      @click="placeBid"
-                      :loading="loading"
-                    />
-                    <ReusableThemeButton
-                      title="Increase your bid"
-                      @click="increaseBid"
-                      :loading="loading"
-                    />
-                  </v-row>
-                </v-card>
-                <p class="mb-0 mt-5 theme-text">Last Bid</p>
-                <v-list
-                  v-if="auction.biddings.length > 0"
-                  dense
-                  style="background-color: transparent"
-                >
-                  <v-list-item v-for="(item, i) in auction.biddings" :key="i">
-                    <v-list-item-content>
-                      <v-list-item-subtitle
-                        >{{
-                          item.user_id.wallet_address.slice(0, 5) +
-                          "..." +
-                          item.user_id.wallet_address.slice(-5, -1)
-                        }}
-                        bid for {{ item.bid }} APT</v-list-item-subtitle
-                      >
-                      <v-list-item-subtitle
-                        ><small>{{
-                          $moment(item.time).fromNow()
-                        }}</small></v-list-item-subtitle
-                      >
-                    </v-list-item-content>
-                    <hr v-if="i < auction.biddings.length - 1" />
-                  </v-list-item>
-                </v-list>
-                <p v-else class="text-center">No biddings yet</p>
-              </v-col>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row v-else>
-          <ReusableLoading />
-        </v-row>
-      </v-container>
-    </v-card>
+  <div v-if="!loadingAuction">
+    <div
+      class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-pt-16 tw-pb-16 md:tw-px-16 xl:tw-flex-row xl:tw-gap-16 xl:tw-items-start"
+    >
+      <div
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full tw-group md:tw-w-[60%] xl:tw-w-[40%]"
+      >
+        <div
+          class="tw-rounded-lg nft-preview-card-border tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear"
+        >
+          <img
+            :src="auction.nft.meta.image"
+            :alt="auction.nft.meta.name"
+            class="tw-w-full tw-rounded-lg tw-max-h-[550px] tw-object-fill"
+          />
+        </div>
+        <div
+          class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full lg:tw-flex-row xl:tw-flex-col 2xl:tw-flex-row tw-gap-4"
+          v-if="!auctionEnded"
+        >
+          <span
+            class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
+            >Auction Ends In</span
+          >
+          <reusable-count-down
+            :startTime="auction.endAt"
+            :shadow="true"
+            @countdownComplete="endAuction"
+          />
+        </div>
+        <span
+          class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
+          v-else
+          >Auction Ended</span
+        >
+      </div>
+      <div
+        class="tw-rounded tw-w-full tw-bg-[#001233] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-px-4 tw-py-8 md:tw-px-8 xl:tw-w-[60%] preview-shadow"
+      >
+        <div class="tw-text-wapal-gray tw-pb-8">
+          <h1
+            class="tw-text-2xl tw-pb-4 tw-font-semibold tw-capitalize md:tw-text-4xl"
+          >
+            {{ auction.nft.meta.name }}
+          </h1>
+          <p class="tw-font-light">
+            {{ auction.nft.meta.description }}
+          </p>
+        </div>
+        <ValidationObserver
+          ref="form"
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-p-4 tw-bg-[#0C224B] tw-rounded tw-w-full lg:tw-flex-row lg:tw-items-center lg:tw-justify-between"
+        >
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-w-fit"
+          >
+            <div class="tw-text-xs">Current Bid</div>
+            <div class="tw-text-3xl xl:tw-text-xl 2xl:tw-text-3xl">
+              {{ current_bid }} APT
+            </div>
+          </div>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-max-w-[300px]"
+            rules="required|bidAmount"
+            v-slot="{ errors }"
+          >
+            <reusable-text-field
+              v-model="bid"
+              background="#0C224B"
+              type="number"
+            ></reusable-text-field>
+            <div class="tw-text-red-600">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <div v-if="!auctionEnded">
+            <ReusableThemeButton
+              title="Place Your Bid"
+              @click="placeBid"
+              :loading="loading"
+              v-if="showPlaceBidButton"
+            />
+            <ReusableThemeButton
+              title="Increase Your Bid"
+              @click="increaseBid"
+              :loading="loading"
+              v-else
+            />
+          </div>
+          <reusable-theme-button
+            :loading="loading"
+            title="Withdraw Bid"
+            @click="withdrawBid"
+          />
+        </ValidationObserver>
+        <div
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+        >
+          <h4 class="tw-text-xl tw-font-semibold tw-text-wapal-gray">
+            Last Bid
+          </h4>
+          <div
+            v-if="auction.biddings.length > 0"
+            class="tw-w-full tw-h-[375px] tw-overflow-auto tw-pr-4 bid-list"
+          >
+            <div
+              v-for="(item, i) in auction.biddings"
+              :key="i"
+              class="tw-w-full"
+            >
+              <div
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-py-2"
+              >
+                <div class="!tw-text-white">
+                  {{
+                    item.user_id.wallet_address.slice(0, 5) +
+                    "..." +
+                    item.user_id.wallet_address.slice(-5, -1)
+                  }}
+                  bid for {{ item.bid }} APT
+                </div>
+                <div>
+                  <small class="tw-text-sm">{{
+                    $moment(item.time).fromNow()
+                  }}</small>
+                </div>
+              </div>
+              <div
+                v-if="i < auction.biddings.length - 1"
+                class="tw-w-full tw-h-[1px] tw-bg-wapal-gray"
+              ></div>
+            </div>
+          </div>
+          <p v-else class="text-center">No biddings yet</p>
+        </div>
+      </div>
+    </div>
+    <v-dialog
+      v-model="showConnectWalletDialog"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
+    >
+      <connect-wallet-modal @closeModal="showConnectWalletDialog = false" />
+    </v-dialog>
     <v-dialog
       v-model="showSignupDialog"
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
@@ -100,16 +150,32 @@
       />
     </v-dialog>
   </div>
+  <div class="tw-py-32 tw-w-full" v-else>
+    <reusable-loading />
+  </div>
 </template>
 
 <script>
-import { publicRequest } from "../../services/fetcher";
-import { getCurrentBid, getHms } from "../../services/AuctionService";
+import { publicRequest } from "@/services/fetcher";
+import { getCurrentBid } from "@/services/AuctionService";
+import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+
+extend("bidAmount", {
+  validate(value) {
+    if (value <= 0) {
+      return false;
+    }
+    return true;
+  },
+  message: "Bid amount should be greater than 0",
+});
+
 export default {
+  components: { ValidationObserver, ValidationProvider },
   data() {
     return {
       valid: true,
-      auction: "",
+      auction: null,
       errMsg: "",
       current_bid: "",
       error: false,
@@ -120,6 +186,13 @@ export default {
       bid: 0,
       endInterval: 0,
       showSignupDialog: false,
+      showConnectWalletDialog: false,
+      loading: false,
+      loadingAuction: true,
+      showIncreaseBidButton: false,
+      showPlaceBidButton: true,
+      auctionEnded: false,
+      previousBid: 0,
     };
   },
   watch: {
@@ -129,73 +202,111 @@ export default {
     },
   },
   computed: {
-    getHeight() {
-      if (process.client) {
-        return window.innerHeight;
-      }
+    getWalletConnectedStatus() {
+      return this.$store.state.walletStore.wallet.walletAddress;
     },
     getLoggedInStatus() {
       return this.$store.state.userStore.user.token;
     },
+    getAuctionStatus() {
+      if (this.auction) {
+        if (this.auction.endAt > new Date()) {
+          return true;
+        }
+
+        return false;
+      }
+      return false;
+    },
   },
-  mounted() {
-    this.getAuctionDetails();
+  async mounted() {
+    await this.getAuctionDetails();
+
+    this.auctionEnded = this.getAuctionStatus;
+
+    if (this.checkAuctionStatus) {
+    }
   },
   methods: {
-    getAuctionDetails() {
+    async getAuctionDetails() {
       publicRequest
         .get(`/api/auction/${this.$route.params.id}`)
-        .then((res) => {
+        .then(async (res) => {
           let response = res.data.auction[0];
           let rev = response.biddings.reverse();
           response.biddings = rev;
           this.auction = response;
           this.current_bid = getCurrentBid(this.auction);
-          this.getInterval();
+
+          if (this.getLoggedInStatus) {
+            const bidRes = await publicRequest.get(
+              `/api/auction/bid?auction_id=${this.$route.params.id}`
+            );
+
+            const biddings = bidRes.data.bids.biddings;
+
+            if (biddings.length > 0) {
+              this.bid = this.previousBid = biddings[biddings.length - 1].bid;
+            } else {
+              this.bid = this.current_bid;
+            }
+          } else {
+            this.bid = this.current_bid;
+          }
+
+          this.loadingAuction = false;
+          this.checkWalletInBiddings();
         })
-        .catch((err) => console.log(err.response));
-    },
-    getInterval() {
-      setInterval(() => {
-        let seconds =
-          new Date(this.auction.endAt).getTime() / 1000 -
-          new Date().getTime() / 1000;
-        this.endInterval = getHms(seconds);
-      }, 1000);
+        .catch((err) => console.log(err));
     },
     async placeBid() {
+      if (!this.getWalletConnectedStatus) {
+        this.showConnectWalletDialog = true;
+        return;
+      }
       if (!this.getLoggedInStatus) {
         this.showSignupDialog = true;
         return;
       }
-      if (this.$refs.form.validate()) {
-        this.loading = true;
-        let cur_bid = getCurrentBid(this.auction);
-        if (this.bid <= cur_bid) {
-          this.error = true;
-          this.errMsg = "Should be more than current bid";
-          this.loading = false;
-          return;
-        }
-        let resource = await this.$store.dispatch("walletStore/placeBid", {
-          detail: this.auction,
-          offer_price: this.bid,
+
+      this.loading = true;
+
+      let cur_bid = getCurrentBid(this.auction);
+      console.log(cur_bid);
+
+      if (this.bid <= cur_bid) {
+        this.loading = false;
+        this.$toast.showMessage({
+          message: "Bid Should be greater than current bid",
+          error: true,
         });
-        if (!resource) {
-          this.loading = false;
-          return;
-        }
-        publicRequest
-          .post("/api/auction/bid", {
-            bid: this.bid,
-            auction_id: this.auction._id,
-          })
-          .then((res) => {
-            this.auction.biddings.unshift(...res.data.newBid.biddings);
-            this.loading = false;
-            this.$refs.form.reset();
-          });
+        return;
       }
+
+      let resource = await this.$store.dispatch("walletStore/placeBid", {
+        detail: this.auction,
+        offer_price: this.bid,
+      });
+
+      console.log(resource);
+
+      if (!resource) {
+        this.loading = false;
+        return;
+      }
+      publicRequest
+        .post("/api/auction/bid", {
+          bid: this.bid,
+          auction_id: this.auction._id,
+        })
+        .then((res) => {
+          this.auction.biddings.unshift(...res.data.newBid.biddings);
+          this.loading = false;
+          this.current_bid = getCurrentBid(this.auction);
+          this.bid = this.current_bid;
+          this.showPlaceBidButton = false;
+          this.$refs.form.reset();
+        });
     },
     async increaseBid() {
       if (!this.getLoggedInStatus) {
@@ -203,36 +314,48 @@ export default {
         return;
       }
       try {
-        this.loading = true;
-
         let cur_bid = getCurrentBid(this.auction);
+        const bid = Number(this.bid) + Number(this.previousBid);
 
-        if (this.bid <= cur_bid) {
-          this.error = true;
-          this.errMsg = "Should be more than current bid";
+        console.log(bid);
+
+        if (bid <= cur_bid) {
           this.loading = false;
+          this.$toast.showMessage({
+            message: "Bid Should be greater than current bid",
+            error: true,
+          });
           return;
         }
 
-        const increaseBidRes = await this.$store.dispatch(
-          "walletStore/increaseAuctionBid",
-          { price: this.bid, auction_id: this.auction.id }
-        );
+        const validated = await this.$refs.form.validate();
+        if (validated) {
+          this.loading = true;
+          const increaseBidRes = await this.$store.dispatch(
+            "walletStore/increaseAuctionBid",
+            { price: bid, auction_id: this.auction.id }
+          );
 
-        if (increaseBidRes.success) {
-          const res = await publicRequest.post("/api/auction/bid", {
-            bid: this.bid,
-            auction_id: this.auction._id,
-          });
+          console.log(increaseBidRes);
 
-          this.auction.biddings.unshift(...res.data.newBid.biddings);
+          if (increaseBidRes.success) {
+            const res = await publicRequest.post("/api/auction/bid", {
+              bid: bid,
+              auction_id: this.auction._id,
+            });
 
-          this.$toast.showMessage({ message: "Bid Increased Successfully" });
+            this.auction.biddings.unshift(...res.data.newBid.biddings);
+
+            this.$toast.showMessage({ message: "Bid Increased Successfully" });
+            this.loading = false;
+            this.bid = bid;
+            this.current_bid = getCurrentBid(this.auction);
+            this.checkWalletInBiddings();
+            this.$refs.form.reset();
+          }
+
           this.loading = false;
-          this.$refs.form.reset();
         }
-
-        this.loading = false;
       } catch (error) {
         console.log(error);
 
@@ -240,16 +363,68 @@ export default {
         this.loading = false;
       }
     },
+    endAuction() {
+      this.auctionEnded = true;
+    },
+    checkWalletInBiddings() {
+      if (this.getWalletConnectedStatus) {
+        const alreadyBided = this.auction.biddings.some((bid) => {
+          return bid.user_id.wallet_address === this.getWalletConnectedStatus;
+        });
+
+        if (alreadyBided) {
+          this.showPlaceBidButton = false;
+          this.showIncreaseBidButton = true;
+        } else {
+          this.showPlaceBidButton = true;
+          this.showIncreaseBidButton = false;
+        }
+      }
+    },
+    async withdrawBid() {
+      if (!this.getWalletConnectedStatus) {
+        this.showConnectWalletDialog = true;
+        return;
+      }
+
+      try {
+        const res = await this.$store.dispatch("walletStore/withdrawBid", {
+          lister_address: this.auction.nft.nft.owner_address,
+          auction_id: 8,
+        });
+
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+  watch: {
+    getWalletConnectedStatus() {
+      this.checkWalletInBiddings();
+    },
   },
 };
 </script>
 
-<style>
+<style scoped>
 .theme-border {
   border: 2px solid rgb(250, 8, 222);
 }
 
 .theme-text {
   color: #ff36ab;
+}
+
+.bid-list::-webkit-scrollbar {
+  width: 3px;
+}
+
+.bid-list::-webkit-scrollbar-track {
+  background: #d9d9d9;
+}
+
+.bid-list::-webkit-scrollbar-thumb {
+  background-color: #ff36ab;
 }
 </style>

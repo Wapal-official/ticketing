@@ -1,34 +1,35 @@
 <template>
-  <div>
-    <v-container>
-      <v-row v-if="metadata.length > 0" justify="center">
-        <v-col
-          v-for="(item, i) in metadata"
-          :key="i"
-          cols="12"
-          lg="3"
-          md="6"
-          align="center"
+  <div class="tw-py-4">
+    <v-row v-if="metadata.length > 0" justify="center">
+      <v-col
+        v-for="(item, i) in metadata"
+        :key="i"
+        cols="12"
+        lg="3"
+        md="6"
+        align="center"
+      >
+        <v-card
+          tile
+          @click="
+            $router.push('/dashboard/auction/start'),
+              $store.commit('auction/selectNft', { nft: nfts[i], meta: item })
+          "
+          color="transparent"
         >
-          <v-card
-            max-width="300"
-            tile
-            style="border: 1px solid rgba(255, 54, 171, 0.5)"
-            @click="
-              $router.push('/dashboard/auction/start'),
-                $store.commit('auction/selectNft', { nft: nfts[i], meta: item })
-            "
+          <v-img :src="item.image" class="tw-h-[350px]"></v-img>
+          <div
+            class="tw-w-full tw-py-4 tw-text-center tw-border-l tw-border-r tw-border-b tw-border-wapal-pink"
           >
-            <v-img :src="item.image"></v-img>
-            <h4 class="ma-2">{{ item.name }}</h4>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row no-gutters v-else class="py-10" justify="center">
-        <p v-if="end">No nfts</p>
-        <ReusableLoading v-else />
-      </v-row>
-    </v-container>
+            <h4>{{ item.name }}</h4>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row no-gutters v-else class="py-10" justify="center">
+      <p v-if="end">No nfts</p>
+      <ReusableLoading v-else />
+    </v-row>
     <v-card
       color="transparent"
       v-if="!end"

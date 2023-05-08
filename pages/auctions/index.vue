@@ -1,19 +1,14 @@
 <template>
-  <div class="tw-w-full tw-h-full">
-    <v-container fluid>
-      <v-row justify="center">
-        <h1>Auctions</h1>
-      </v-row>
-      <v-row v-if="auctions.length > 0">
-        <v-col v-for="(item, i) in auctions" :key="i" cols="12" lg="3" md="6">
-          <AuctionCard :auction="item" />
-        </v-col>
-      </v-row>
-      <v-row no-gutters v-else justify="center">
-        <p v-if="end" style="margin: 20px 0px">No nfts</p>
-        <ReusableLoading v-else />
-      </v-row>
-    </v-container>
+  <div class="tw-w-full tw-container tw-mx-auto tw-px-4">
+    <h1 class="tw-text-xl tw-font-semibold tw-py-4">Auctions</h1>
+    <div
+      class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 2xl:tw-grid-cols-4"
+      v-if="auctions.length > 0"
+    >
+      <AuctionCard v-for="(item, i) in auctions" :key="i" :auction="item" />
+    </div>
+    <p v-else class="tw-py-4 tw-text-lg">No nfts in auction</p>
+    <ReusableLoading v-if="!end" />
     <v-card
       color="transparent"
       v-if="!end"

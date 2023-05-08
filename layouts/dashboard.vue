@@ -6,7 +6,7 @@
       <div class="tw-flex tw-flex-row tw-items-start relative">
         <dashboard-sidebar class="tw-hidden lg:tw-flex" />
         <div class="dashboard-container">
-          <Nuxt class="!tw-px-8 !tw-py-4" />
+          <Nuxt class="!tw-px-4 !tw-py-4 md:!tw-px-8" />
         </div>
       </div>
       <div

@@ -1,23 +1,25 @@
 <template>
-  <div>
-    <v-container>
-      <v-row v-if="auctions.length > 0">
-        <v-col v-for="(item, i) in auctions" :key="i" cols="12" lg="3" md="6">
-          <v-card
-            tile
-            style="border: 1px solid rgba(255, 54, 171, 0.5)"
-            @click="$router.push('/dashboard/auction/'+item._id)"
+  <div class="tw-py-4">
+    <v-row v-if="auctions.length > 0">
+      <v-col v-for="(item, i) in auctions" :key="i" cols="12" lg="3" md="6">
+        <v-card
+          tile
+          @click="$router.push('/auctions/' + item._id)"
+          color="transparent"
+        >
+          <v-img :src="item.nft.meta.image" class="tw-h-[350px]"></v-img>
+          <div
+            class="tw-w-full tw-py-4 tw-text-center tw-border-l tw-border-r tw-border-b tw-border-wapal-pink"
           >
-            <v-img :src="item.nft.meta.image"></v-img>
-            <h4 class="ma-2">{{ item.nft.meta.name }}</h4>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row no-gutters v-else class="py-10" justify="center">
-        <p v-if="end">No auctions</p>
-        <ReusableLoading v-else />
-      </v-row>
-    </v-container>
+            <h4>{{ item.nft.meta.name }}</h4>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row no-gutters v-else class="py-10" justify="center">
+      <p v-if="end">No auctions</p>
+      <ReusableLoading v-else />
+    </v-row>
     <v-card
       color="transparent"
       v-if="!end"
@@ -31,7 +33,7 @@
     </v-card>
   </div>
 </template>
-  <script>
+<script>
 import { publicRequest } from "../../../services/fetcher";
 export default {
   data() {
@@ -56,7 +58,7 @@ export default {
           },
         })
         .then((res) => {
-          let resp=res.data.auctions
+          let resp = res.data.auctions;
           if (resp.length > 0) {
             for (var i = 0; i < resp.length; i++) {
               this.auctions.push(resp[i]);

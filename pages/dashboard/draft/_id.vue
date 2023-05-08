@@ -821,10 +821,13 @@ export default {
 
     res.data.folderInfo.map((folder: any) => {
       if (folder.metadata.baseURI) {
-        if (folder.metadata.baseURI === this.collection.baseURL) {
-          this.baseURL = folder.folder_name;
-        }
         this.folders.push(folder);
+      }
+    });
+
+    this.folders.map((folder: any) => {
+      if (folder.metadata.baseURI === this.collection.baseURL) {
+        this.baseURL = folder.folder_name;
       }
     });
   },
@@ -836,28 +839,7 @@ export default {
   background-color: #878787;
 }
 
-.mx-input-wrapper,
-.mx-datepicker {
-  width: 100% !important;
-}
-
 .mx-input {
-  width: 100% !important;
   background: #0e0d0d !important;
-  border: none !important;
-  height: 50px !important;
-  color: #d9d9d9 !important;
-  font-size: 1em;
-  border-radius: 7px !important;
-}
-
-.mx-icon-calendar,
-.mx-icon-clear,
-.mx-input::placeholder {
-  color: #d9d9d9 !important;
-}
-
-.mdi-checkbox-blank-outline {
-  color: #d9d9d9 !important;
 }
 </style>
