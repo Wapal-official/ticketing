@@ -447,7 +447,7 @@ export default {
 
             if (res.total_supply === res.minted) {
               await setSoldOut(this.collection._id);
-              this.collection.sold_out = true;
+              this.collection.status.sold_out = true;
             }
           } else {
             this.$toast.showMessage({
@@ -501,6 +501,11 @@ export default {
           this.resource = {
             minted: this.resource.minted,
             total_supply: 777,
+          };
+        } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
+          this.resource = {
+            minted: this.resource.minted,
+            total_supply: 222,
           };
         }
 
@@ -605,6 +610,11 @@ export default {
             res = {
               minted: res.minted,
               total_supply: 777,
+            };
+          } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
+            res = {
+              minted: res.minted,
+              total_supply: 222,
             };
           }
 
@@ -714,6 +724,11 @@ export default {
         this.resource = {
           minted: this.resource.minted,
           total_supply: 777,
+        };
+      } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
+        this.resource = {
+          minted: this.resource.minted,
+          total_supply: 222,
         };
       }
 

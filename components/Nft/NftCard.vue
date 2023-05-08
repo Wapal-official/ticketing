@@ -30,11 +30,7 @@
         >
           <div>
             items
-            {{
-              collection?._id === "642bf277c10560ca41e179fa"
-                ? 777
-                : collection?.supply
-            }}
+            {{ getSupply }}
           </div>
           <div v-if="getPrice != 0">price {{ getPrice }} apt</div>
           <div v-else>Free Mint</div>
@@ -158,6 +154,15 @@ export default {
       }
 
       return `/nft/${this.collection.username}`;
+    },
+    getSupply() {
+      if (this.collection._id === "642bf277c10560ca41e179fa") {
+        return 777;
+      } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
+        return 222;
+      }
+
+      return this.collection.supply;
     },
   },
   methods: {
