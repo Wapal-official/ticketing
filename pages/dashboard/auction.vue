@@ -7,11 +7,20 @@
         title="Mint And Add To Auction"
       />
     </v-row>
-    <v-tabs background-color="transparent" v-model="tab">
-      <v-tab @click="$router.push('/dashboard/auction/nfts'), (tab = 0)"
+    <v-tabs
+      background-color="transparent"
+      v-model="tab"
+      id="explore-tab"
+      active-class="!tw-text-wapal-pink"
+    >
+      <v-tab
+        @click="$router.push('/dashboard/auction/nfts'), (tab = 0)"
+        :ripple="false"
         >My Nfts</v-tab
       >
-      <v-tab @click="$router.push('/dashboard/auction/list'), (tab = 1)"
+      <v-tab
+        @click="$router.push('/dashboard/auction/list'), (tab = 1)"
+        :ripple="false"
         >My Auctions</v-tab
       >
     </v-tabs>

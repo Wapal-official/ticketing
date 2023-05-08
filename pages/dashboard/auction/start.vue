@@ -1,97 +1,155 @@
 <template>
-  <div>
-    <v-container>
-      <v-row>
-        <v-col cols="12" lg="5">
-          <v-img
-            :src="selectedNft.meta.image"
-            max-width="400"
-            height="400"
-            class="theme-border"
-          ></v-img>
-        </v-col>
-        <v-col cols="12" lg="7">
-          <v-card color="#001233" class="pa-5">
-            <v-container>
-              <v-col>
-                <v-row no-gutters>
-                  <v-btn outlined x-small color="#EA59BE" tile>Doxxed</v-btn>
-                </v-row>
-                <p class="text-h4 mt-2">{{ selectedNft.meta.name }}</p>
-                <p>
-                  {{ selectedNft.meta.description }}
-                </p>
-                <v-card color="#0C224B" class="mb-2 pa-4">
-                  <h3 class="theme-text" style="margin: 5px">Create Auction</h3>
-
-                  <v-container class="pa-3">
-                    <v-form v-model="valid" ref="form" class="pa-0">
-                      <v-row no-gutters>
-                        <v-col>
-                          <label for="startTime">Start Time</label><br />
-
-                          <date-picker
-                            style="background-color: 'black'"
-                            v-model="start_date"
-                            type="datetime"
-                            placeholder="Select Whitelist Sale time"
-                            :rules="[validRules.required]"
-                          ></date-picker>
-                        </v-col>
-
-                        <v-col>
-                          <label for="startTime">End Time</label><br />
-                          <date-picker
-                            v-model="end_date"
-                            type="datetime"
-                            placeholder="Select Whitelist Sale time"
-                          ></date-picker>
-                        </v-col>
-                      </v-row>
-                      <v-row no-gutters style="margin-top: 10px">
-                        <v-col cols="6">
-                          <label for="startTime">Min Bid Amount</label>
-                          <v-text-field
-                            v-model="apt"
-                            outlined
-                            placeholder="eg: 1.5 APT"
-                            dense
-                            type="number"
-                            :rules="[validRules.required, validRules.positive]"
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row no-gutters>
-                        <ReusableThemeButton
-                          title="Add to auction"
-                          @click="startAuction"
-                          :loading="loading"
-                        />
-                      </v-row>
-                    </v-form>
-                  </v-container>
-                </v-card>
-              </v-col>
-            </v-container>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+  <div
+    class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-pt-16 tw-pb-16 3xl:tw-px-16 xl:tw-flex-row xl:tw-gap-16 xl:tw-items-start"
+  >
+    <div
+      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full tw-group md:tw-w-[60%] xl:tw-w-[40%]"
+    >
+      <div
+        class="tw-rounded-lg nft-preview-card-border tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear"
+      >
+        <img
+          :src="selectedNft.meta.image"
+          :alt="selectedNft.meta.name"
+          class="tw-w-full tw-rounded-lg tw-max-h-[550px] tw-object-fill"
+        />
+      </div>
+    </div>
+    <div
+      class="tw-rounded tw-w-full tw-bg-[#001233] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-px-4 tw-py-8 md:tw-px-8 xl:tw-w-[60%] preview-shadow"
+    >
+      <div class="tw-text-wapal-gray tw-pb-8">
+        <h1
+          class="tw-text-2xl tw-pb-4 tw-font-medium tw-uppercase md:tw-text-[2rem]"
+        >
+          {{ selectedNft.meta.name }}
+        </h1>
+        <p class="tw-font-light">
+          {{ selectedNft.meta.description }}
+        </p>
+      </div>
+      <div
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-p-4 tw-bg-[#0C224B] tw-rounded tw-w-full"
+      >
+        <h3 class="tw-text-wapal-pink tw-text-2xl tw-font-medium">
+          Create Auction
+        </h3>
+        <ValidationObserver
+          ref="form"
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+        >
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-flex-row lg:tw-items-center lg:tw-justify-between tw-w-full"
+          >
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+              rules="required|auctionTime"
+              name="auction_start"
+              v-slot="{ errors }"
+            >
+              <label for="startTime">Start Time</label>
+              <reusable-date-picker
+                v-model="start_date"
+                type="datetime"
+                placeholder="Select Auction Start Time"
+                background="#0C224B"
+              />
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+              rules="required|auctionTime|endTime:@auction_start"
+              v-slot="{ errors }"
+            >
+              <label for="endTime">End Time</label>
+              <reusable-date-picker
+                v-model="end_date"
+                type="datetime"
+                placeholder="Select Auction End Time"
+                background="#0C224B"
+              />
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group"
+            rules="required|bidAmount"
+            v-slot="{ errors }"
+          >
+            <label for="startTime">Min Bid Amount</label>
+            <reusable-text-field
+              v-model="apt"
+              placeholder="eg: 1.5 APT"
+              type="number"
+              background="#0C224B"
+            ></reusable-text-field>
+            <div class="tw-text-red-600">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ReusableThemeButton
+            title="Add to auction"
+            @click="startAuction"
+            :loading="loading"
+          />
+        </ValidationObserver>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import { publicRequest } from "../../../services/fetcher";
+import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
+import { required } from "vee-validate/dist/rules";
+
+extend("required", {
+  ...required,
+  message: "This field is required",
+});
+
+extend("bidAmount", {
+  validate(value) {
+    if (value <= 0) {
+      return false;
+    }
+    return true;
+  },
+  message: "Minimum bid amount should be greater than zero",
+});
+
+extend("auctionTime", {
+  validate(value) {
+    if (new Date().getTime() > value.getTime()) {
+      return false;
+    }
+
+    return true;
+  },
+  message: "Auction Time should be greater than current time",
+});
+
+extend("endTime", {
+  params: ["target"],
+  validate(value, target) {
+    if (new Date(target.target).getTime() > value.getTime()) {
+      return false;
+    }
+
+    return true;
+  },
+  message: "Auction End Time should be greater than Auction Start Time",
+});
 
 export default {
   components: {
     DatePicker,
+    ValidationProvider,
+    ValidationObserver,
   },
   data() {
     return {
-      start_date: null,
-      end_date: null,
+      start_date: "",
+      end_date: "",
       apt: "",
       valid: true,
       loading: false,
@@ -114,31 +172,44 @@ export default {
   },
   methods: {
     async startAuction() {
-      if (this.$refs.form.validate()) {
-        this.loading = true;
-        let auction = await this.$store.dispatch("walletStore/createAuction", {
-          start_date: this.start_date,
-          end_date: this.end_date,
-          min_bid: this.apt,
-        });
+      try {
+        const validated = await this.$refs.form.validate();
 
-        publicRequest
-          .post("/api/auction", {
-            nft: this.selectedNft,
-            startAt: this.start_date,
-            endAt: this.end_date,
-            min_bid: this.apt,
-            id: auction.cur_auction_id,
-          })
-          .then((res) => {
-            this.$toast.showMessage({
-              message: "Auction Created Successfully",
-              error: false,
+        if (validated) {
+          this.loading = true;
+          let auction = await this.$store.dispatch(
+            "walletStore/createAuction",
+            {
+              start_date: this.start_date,
+              end_date: this.end_date,
+              min_bid: this.apt,
+            }
+          );
+
+          publicRequest
+            .post("/api/auction", {
+              nft: this.selectedNft,
+              startAt: this.start_date,
+              endAt: this.end_date,
+              min_bid: this.apt,
+              id: auction.cur_auction_id,
+            })
+            .then((res) => {
+              this.$toast.showMessage({
+                message: "Auction Created Successfully",
+                error: false,
+              });
+              this.loading = false;
+              this.$router.push("/dashboard/auction/list");
+            })
+            .catch((err) => {
+              console.log(err.response);
+              this.$toast.showMessage({ message: err, error: true });
             });
-            this.loading = false;
-            this.$router.push("/dashboard/auction/list");
-          })
-          .catch((err) => console.log(err.response));
+        }
+      } catch (error) {
+        this.$toast.showMessage({ message: error, error: true });
+        this.loading = false;
       }
     },
   },

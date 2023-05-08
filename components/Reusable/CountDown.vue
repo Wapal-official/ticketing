@@ -41,7 +41,7 @@
       <span class="live-counter live-counter-shadow">{{ minutes }} M</span>
       <span class="live-counter live-counter-shadow">{{ seconds }} S</span>
     </span>
-    <span class="tw-text-wapal-pink tw-pl-2" v-else>
+    <span class="tw-text-wapal-pink" v-else>
       <span v-if="days > 0">{{ days }}d </span>
       {{ hours }}h {{ minutes }}m {{ seconds }}s
     </span>

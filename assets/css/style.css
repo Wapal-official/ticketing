@@ -309,7 +309,6 @@
 
 .dashboard-input {
   border-radius: 7px !important;
-  @apply !tw-bg-wapal-background;
 }
 .dashboard-input.v-text-field--outlined > .v-input__control > .v-input__slot {
   min-height: 50px !important;
@@ -336,4 +335,31 @@
 .border-bar {
   border-left: 4px solid #48cae4;
   border-radius: 0;
+}
+
+/* Date Picker*/
+
+.mx-input-wrapper,
+.mx-datepicker {
+  width: 100% !important;
+}
+
+.mx-input {
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  height: 50px !important;
+  color: #d9d9d9 !important;
+  font-size: 1em;
+  border-radius: 7px !important;
+}
+
+.mx-icon-calendar,
+.mx-icon-clear,
+.mx-input::placeholder {
+  color: #d9d9d9 !important;
+}
+
+.mdi-checkbox-blank-outline {
+  color: #d9d9d9 !important;
 }

@@ -1,114 +1,175 @@
 <template>
   <div>
-    <p class="text-h5">NFT Details</p>
+    <p class="tw-text-3xl tw-text-wapal-gray !tw-font-medium">NFT Details</p>
 
-    <p class="text-h6">Collection</p>
-    <v-row>
-      <v-col cols="12" lg="4" md="6">
-        <v-form v-model="valid" ref="colRef">
-          <label for="">Collection Name</label>
-          <ReusableTextField
-            v-model="mint.colName"
-            :rules="[validRules.required]"
-            placeholder="My nft"
-          />
-
-          <label for="">Collection Description</label>
-          <ReusableTextArea
-            v-model="mint.colDesc"
-            :rules="[validRules.required]"
-            placeholder="My nft description"
-          />
-
-          <p class="text-h6">Token Details</p>
-          <label for="">Token Name</label>
-          <ReusableTextField
-            v-model="mint.tokenName"
-            :rules="[validRules.required]"
-            placeholder="My Token"
-          />
-
-          <label for="">Description</label>
-          <ReusableTextArea
-            v-model="mint.tokenDesc"
-            :rules="[validRules.required]"
-            placeholder="My token description"
-          />
-
-          <v-row>
-            <v-col>
-              <label for="">Start Date</label>
-              <v-row>
-                <date-picker
-                  v-model="mint.startDate"
-                  type="datetime"
-                  placeholder="Select Auction Start Time"
-                ></date-picker>
-              </v-row>
-            </v-col>
-            <v-col>
-              <label for="">End Date</label>
-              <v-row>
-                <date-picker
-                  v-model="mint.endDate"
-                  type="datetime"
-                  placeholder="Select Auction End Time"
-                ></date-picker>
-              </v-row>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col>
-              <label for="">Min. Bid</label>
-              <ReusableTextField
-                v-model="mint.minBid"
-                type="number"
-                :rules="[validRules.required, validRules.positive]"
-                placeholder="1.5 APT"
-              />
-            </v-col>
-            <v-col>
-              <label for="">Royalties Fees</label>
-              <ReusableTextField
-                v-model="mint.royalty"
-                type="number"
-                :rules="[validRules.required, validRules.positive]"
-                placeholder="1.25%"
-              />
-            </v-col>
-          </v-row>
-        </v-form>
-      </v-col>
-      <v-col cols="1"></v-col>
-      <v-col cols="12" lg="4" md="6">
-        <v-row no-gutters>
-          <p class="text-h6">NFT</p>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-form v-model="valid" ref="">
-              <div class="upload-bar" id="drop-container">
-                <!-- <v-col align="center" style="padding:0px">
-              <v-btn
-                style="margin:10px"
-                light
-                @click="$refs.imageUploader.click()"
-                :uploading="uploading"
-                >Change</v-btn
+    <v-stepper v-model="step" class="!tw-bg-transparent">
+      <v-stepper-items>
+        <v-stepper-content step="1">
+          <p class="text-h6">Collection</p>
+          <ValidationObserver ref="collectionForm" v-slot="{ handleSubmit }">
+            <form
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 xl:tw-w-1/2"
+              @submit.prevent="handleSubmit(nextStep)"
+            >
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
               >
-            </v-col> -->
-                <v-col
-                  v-if="this.file == null"
-                  style="padding: 30px"
-                  align="center"
+                <label
+                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                  >Collection Name</label
                 >
-                  <v-icon large>mdi-upload</v-icon><br />
+                <reusable-text-field
+                  v-model="mint.colName"
+                  type="text"
+                  placeholder="Collection Name"
+                ></reusable-text-field>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <label
+                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                  >Collection Description</label
+                >
+                <reusable-text-area
+                  v-model="mint.colDesc"
+                  placeholder="Collection Description"
+                  type="text"
+                ></reusable-text-area>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <p class="text-h6">Token Details</p>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <label
+                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                  >Token Name</label
+                >
+                <reusable-text-field
+                  v-model="mint.tokenName"
+                  placeholder="Token Name"
+                  type="text"
+                ></reusable-text-field>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <label
+                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                  >Token Description</label
+                >
+                <reusable-text-area
+                  v-model="mint.tokenDesc"
+                  placeholder="Token Description"
+                  type="text"
+                ></reusable-text-area>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <div
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+              >
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <label
+                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                    >Start Date</label
+                  >
+                  <reusable-date-picker
+                    v-model="mint.startDate"
+                    placeholder="Select Auction Start Time"
+                    type="datetime"
+                  />
+                  <div class="tw-text-red-600">{{ errors[0] }}</div>
+                </ValidationProvider>
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <label
+                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                    >End Date</label
+                  >
+                  <reusable-date-picker
+                    v-model="mint.endDate"
+                    placeholder="Select Auction End Time"
+                    type="datetime"
+                  />
+                  <div class="tw-text-red-600">{{ errors[0] }}</div>
+                </ValidationProvider>
+              </div>
+              <div
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+              >
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <label
+                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                    >Min. Bid</label
+                  >
+                  <reusable-text-field
+                    v-model="mint.minBid"
+                    placeholder="Eg. 1"
+                    type="text"
+                  ></reusable-text-field>
+                  <div class="tw-text-red-600">{{ errors[0] }}</div>
+                </ValidationProvider>
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <label
+                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                    >Royalties Fees</label
+                  >
+                  <reusable-text-field
+                    v-model="mint.royalty"
+                    type="text"
+                    placeholder="Eg. 2"
+                  ></reusable-text-field>
+                  <div class="tw-text-red-600">{{ errors[0] }}</div>
+                </ValidationProvider>
+              </div>
+              <div class="upload-bar tw-w-full" id="drop-container">
+                <v-col style="padding: 30px" align="center">
+                  <img :src="uploadIcon" alt="upload" /><br />
                   <small>Drag And Drop Your Files Here</small><br />
                   <small>OR</small><br />
-                  <v-btn light @click="$refs.imageUploader.click()"
-                    >Browse</v-btn
+                  <button
+                    class="tw-px-6 tw-py-2 tw-rounded tw-bg-wapal-gray tw-text-black"
+                    @click.prevent="$refs.imageUploader.click()"
+                    v-if="file == null"
                   >
+                    Browse
+                  </button>
+                  <button
+                    class="tw-px-6 tw-py-2 tw-rounded tw-bg-wapal-gray tw-text-black"
+                    @click.prevent="$refs.imageUploader.click()"
+                    v-else
+                  >
+                    {{ file.name }}
+                  </button>
+                  <div v-if="imageError" class="tw-text-red-600">
+                    {{ imageErrorMessage }}
+                  </div>
                 </v-col>
               </div>
               <input
@@ -118,65 +179,91 @@
                 accept="image/*"
                 @change="selectImage"
               />
-              <label for="">Atrributes</label>
-              <v-row v-for="(item, i) in mint.attributes" :key="i">
-                <v-col>
-                  <small>Attributes Type</small>
-                  <v-text-field
-                    readonly
-                    v-model="mint.attributes[i].trait_type"
-                    placeholder="Background"
-                    hide-details=""
+              <reusable-theme-button title="Next" />
+            </form>
+          </ValidationObserver>
+        </v-stepper-content>
+        <v-stepper-content step="2">
+          <div class="text-h6 tw-py-2">NFT</div>
+          <div
+            class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2"
+          >
+            <div class="tw-w-full" id="image-preview"></div>
+            <ValidationObserver v-slot="{ handleSubmit }">
+              <form @submit.prevent="handleSubmit()">
+                <div class="tw-pb-2">Attributes</div>
+                <div
+                  class="tw-w-full"
+                  v-for="(attribute, index) in mint.attributes"
+                  :key="index"
+                >
+                  <div
+                    class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between md:tw-gap-4"
+                  >
+                    <ValidationProvider
+                      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <label
+                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                        >Attribute Type</label
+                      >
+                      <reusable-text-field
+                        v-model="attribute.trait_type"
+                        type="text"
+                        placeholder="Background"
+                      ></reusable-text-field>
+                      <div class="tw-text-red-600">{{ errors[0] }}</div>
+                    </ValidationProvider>
+                    <ValidationProvider
+                      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <label
+                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                        >Value</label
+                      >
+                      <reusable-text-field
+                        v-model="attribute.value"
+                        type="text"
+                        placeholder="Blue"
+                      ></reusable-text-field>
+                      <div class="tw-text-red-600">{{ errors[0] }}</div>
+                    </ValidationProvider>
+                  </div>
+                  <div class="tw-flex tw-flex-row tw-w-full tw-justify-end">
+                    <button
+                      class="tw-bg-[#A0A0A0] tw-text-white tw-px-6 tw-py-2 tw-mb-4 tw-rounded"
+                      @click="removeAttribute(index)"
+                    >
+                      Remove Attribute
+                    </button>
+                  </div>
+                </div>
+                <button
+                  class="tw-bg-[#A0A0A0] tw-text-white tw-px-6 tw-py-2 tw-mb-4 tw-rounded"
+                  @click.prevent="addAttribute"
+                >
+                  Add Attribute
+                </button>
+                <div
+                  class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+                >
+                  <reusable-theme-button title="Back" @click="step = 1" />
+                  <reusable-theme-button
+                    title="Submit"
+                    @click="submit"
+                    :loading="loading"
                   />
-                </v-col>
-                <v-col>
-                  <small>Value</small>
-                  <v-text-field
-                    readonly
-                    v-model="mint.attributes[i].value"
-                    placeholder="Blue"
-                    hide-details=""
-                  />
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col>
-                  <small>Attributes Type</small>
-                  <ReusableTextField
-                    v-model="attribute"
-                    :rules="[validRules.required]"
-                    placeholder="Background"
-                  />
-                </v-col>
-                <v-col>
-                  <small>Value</small>
-                  <ReusableTextField
-                    v-model="value"
-                    :rules="[validRules.required]"
-                    placeholder="Blue"
-                  />
-                </v-col>
-              </v-row>
-              <v-btn outlined color="red" small @click="addAttribute()"
-                >Add</v-btn
-              >
-              <v-divider style="margin: 20px 0px"></v-divider>
-              <v-btn outlined color="red" @click="mint.attributes.pop()" small
-                >Delete</v-btn
-              >
-            </v-form>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <ReusableThemeButton
-        title="Submit"
-        :loading="loading"
-        @click="submit()"
-      />
-    </v-row>
+                </div>
+              </form>
+            </ValidationObserver>
+          </div>
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
   </div>
 </template>
 
@@ -188,10 +275,12 @@ import { publicRequest } from "@/services/fetcher";
 
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
+import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+import uploadIcon from "@/assets/img/upload-icon.svg";
 
 export default {
   layout: "dashboard",
-  components: { DatePicker },
+  components: { DatePicker, ValidationObserver, ValidationProvider },
   data() {
     return {
       step: 1,
@@ -211,7 +300,7 @@ export default {
         colImage: "",
         nftName: "",
         nftDesc: "",
-        attributes: [],
+        attributes: [{ trait_type: "", value: "" }],
       },
       attribute: "",
       value: "",
@@ -221,6 +310,9 @@ export default {
       startMenu: false,
       endMenu: false,
       file: null,
+      imageError: false,
+      imageErrorMessage: "",
+      uploadIcon,
     };
   },
   watch: {
@@ -289,23 +381,28 @@ export default {
     saveEnd(date) {
       this.$refs.endmenu.save(date);
     },
-    nextStep() {
-      if (this.$refs.colRef.validate()) {
-        this.step == 2;
+    async nextStep() {
+      this.imageError = false;
+      if (!this.file) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Select an Image";
+        return;
       }
+      this.step = 2;
     },
     addAttribute() {
       this.mint.attributes.push({
-        trait_type: this.attribute,
-        value: this.value,
+        trait_type: "",
+        value: "",
       });
-      this.attribute = "";
-      this.value = "";
+    },
+    removeAttribute(index) {
+      this.mint.attributes.splice(index, 1);
     },
     displayImage() {
       const imgElement = document.createElement("img");
       imgElement.src = URL.createObjectURL(this.file);
-      const previewElement = document.getElementById("drop-container");
+      const previewElement = document.getElementById("image-preview");
       previewElement.prepend(imgElement);
     },
     selectImage(e) {
@@ -314,143 +411,137 @@ export default {
     },
     async submit() {
       try {
-        if (this.$refs.colRef.validate()) {
-          if (this.file != null) {
-            if (this.mint.attributes.length > 0) {
-              this.loading = true;
-              //uploading and creating metadata file
-              const metaUri =
-                (await uploadAndCreateFile(this.file, {
-                  name: this.mint.tokenName,
-                  description: this.mint.tokenDesc,
-                  attributes: this.mint.attributes,
-                })) + "/";
-              console.log("meta:", metaUri);
-              //creating collection
-              const candymachine = await this.$store.dispatch(
-                "walletStore/createCandyMachine",
+        if (this.file != null) {
+          if (this.mint.attributes.length > 0) {
+            this.loading = true;
+            //uploading and creating metadata file
+            const metaUri =
+              (await uploadAndCreateFile(this.file, {
+                name: this.mint.tokenName,
+                description: this.mint.tokenDesc,
+                attributes: this.mint.attributes,
+              })) + "/";
+            console.log("meta:", metaUri);
+            //creating collection
+            const candymachine = await this.$store.dispatch(
+              "walletStore/createCandyMachine",
+              {
+                collection_name: this.mint.colName,
+                collection_description: this.mint.colDesc,
+                baseuri: metaUri,
+                royalty_payee_address: this.walletAddress,
+                royalty_points_denominator: 1000,
+                royalty_points_numerator: this.mint.royalty * 10,
+                presale_mint_time: Math.floor(new Date().getTime() / 1000) + 20,
+                public_sale_mint_time:
+                  Math.floor(new Date().getTime() / 1000) + 21,
+                presale_mint_price: this.mint.minBid * 100000000,
+                public_sale_mint_price: this.mint.minBid * 100000000,
+                total_supply: 1,
+              }
+            );
+
+            const resource_account = candymachine.resourceAccount;
+            const txnhash = candymachine.transactionHash;
+
+            //saving collection to db
+            const formData = new FormData();
+
+            formData.append("name", this.mint.colName);
+            formData.append("description", this.mint.colDesc);
+            formData.append("royalty_percentage", this.mint.royalty);
+            formData.append("royalty_payee_address", this.walletAddress);
+            formData.append(
+              "whitelist_sale_time",
+              Math.floor(new Date().getTime() / 1000) + 10
+            );
+            formData.append(
+              "public_sale_time",
+              Math.floor(new Date().getTime() / 1000) + 10
+            );
+
+            formData.append("public_sale_price", this.mint.minBid * 100000000);
+            formData.append("whitelist_price", this.mint.minBid * 100000000);
+            formData.append("supply", 1);
+            formData.append("twitter", "");
+            formData.append("discord", "");
+            formData.append("website", "");
+            formData.append("resource_account", resource_account);
+            formData.append("txnhash", txnhash);
+            formData.append("candy_id", process.env.CANDY_MACHINE_ID);
+            formData.append("image", this.file);
+
+            await createCollection(formData);
+
+            //mint
+            setTimeout(async () => {
+              const mint = await this.$store.dispatch(
+                "walletStore/mintCollection",
                 {
-                  collection_name: this.mint.colName,
-                  collection_description: this.mint.colDesc,
-                  baseuri: metaUri,
-                  royalty_payee_address: this.walletAddress,
-                  royalty_points_denominator: 1000,
-                  royalty_points_numerator: this.mint.royalty * 10,
-                  presale_mint_time:
-                    Math.floor(new Date().getTime() / 1000) + 20,
-                  public_sale_mint_time:
-                    Math.floor(new Date().getTime() / 1000) + 21,
-                  presale_mint_price: this.mint.minBid * 100000000,
-                  public_sale_mint_price: this.mint.minBid * 100000000,
-                  total_supply: 1,
+                  resourceAccount: resource_account,
+                  publicMint: true,
+                  collectionId: "",
+                  candyMachineId: process.env.CANDY_MACHINE_ID,
                 }
               );
 
-              const resource_account = candymachine.resourceAccount;
-              const txnhash = candymachine.transactionHash;
+              if (mint.success) {
+                //auction
+                const nftRes = await getWalletNFT({
+                  creatorAddress: this.walletAddress,
+                  collectionName: this.mint.colName,
+                  tokenName: this.mint.colName + " #0",
+                });
 
-              //saving collection to db
-              const formData = new FormData();
+                const nft = nftRes.data.current_token_ownerships[0];
 
-              formData.append("name", this.mint.colName);
-              formData.append("description", this.mint.colDesc);
-              formData.append("royalty_percentage", this.mint.royalty);
-              formData.append("royalty_payee_address", this.walletAddress);
-              formData.append(
-                "whitelist_sale_time",
-                Math.floor(new Date().getTime() / 1000) + 10
-              );
-              formData.append(
-                "public_sale_time",
-                Math.floor(new Date().getTime() / 1000) + 10
-              );
+                const meta = await this.$axios.get(
+                  nft.current_token_data.metadata_uri
+                );
 
-              formData.append(
-                "public_sale_price",
-                this.mint.minBid * 100000000
-              );
-              formData.append("whitelist_price", this.mint.minBid * 100000000);
-              formData.append("supply", 1);
-              formData.append("twitter", "");
-              formData.append("discord", "");
-              formData.append("website", "");
-              formData.append("resource_account", resource_account);
-              formData.append("txnhash", txnhash);
-              formData.append("candy_id", process.env.CANDY_MACHINE_ID);
-              formData.append("image", this.file);
+                this.$store.commit("auction/selectNft", {
+                  nft: nft,
+                  meta: meta.data,
+                });
 
-              await createCollection(formData);
-
-              //mint
-              setTimeout(async () => {
-                const mint = await this.$store.dispatch(
-                  "walletStore/mintCollection",
+                const auction = await this.$store.dispatch(
+                  "walletStore/createAuction",
                   {
-                    resourceAccount: resource_account,
-                    publicMint: true,
-                    collectionId: "",
-                    candyMachineId: process.env.CANDY_MACHINE_ID,
+                    start_date: this.mint.startDate,
+                    end_date: this.mint.endDate,
+                    min_bid: this.mint.minBid,
                   }
                 );
 
-                if (mint.success) {
-                  //auction
-                  const nftRes = await getWalletNFT({
-                    creatorAddress: this.walletAddress,
-                    collectionName: this.mint.colName,
-                    tokenName: this.mint.colName + " #0",
-                  });
+                await publicRequest.post("/api/auction", {
+                  nft: this.selectedNft,
+                  startAt: this.mint.startDate,
+                  endAt: this.mint.endDate,
+                  min_bid: this.mint.minBid,
+                  id: auction.cur_auction_id,
+                });
 
-                  const nft = nftRes.data.current_token_ownerships[0];
-
-                  const meta = await this.$axios.get(
-                    nft.current_token_data.metadata_uri
-                  );
-
-                  this.$store.commit("auction/selectNft", {
-                    nft: nft,
-                    meta: meta.data,
-                  });
-
-                  const auction = await this.$store.dispatch(
-                    "walletStore/createAuction",
-                    {
-                      start_date: this.mint.startDate,
-                      end_date: this.mint.endDate,
-                      min_bid: this.mint.minBid,
-                    }
-                  );
-
-                  await publicRequest.post("/api/auction", {
-                    nft: this.selectedNft,
-                    startAt: this.mint.startDate,
-                    endAt: this.mint.endDate,
-                    min_bid: this.mint.minBid,
-                    id: auction.cur_auction_id,
-                  });
-
-                  this.$toast.showMessage({
-                    message: "Auction Created Successfully",
-                    error: false,
-                  });
-                  this.loading = false;
-                  this.$router.push("/dashboard/auction/list");
-                }
-
+                this.$toast.showMessage({
+                  message: "Auction Created Successfully",
+                  error: false,
+                });
                 this.loading = false;
-              }, 5000);
-            } else {
-              this.$toast.showMessage({
-                message: "Provide at least one attribute",
-                error: true,
-              });
-            }
+                this.$router.push("/dashboard/auction/list");
+              }
+
+              this.loading = false;
+            }, 5000);
           } else {
             this.$toast.showMessage({
-              message: "Please select image",
+              message: "Provide at least one attribute",
               error: true,
             });
           }
+        } else {
+          this.$toast.showMessage({
+            message: "Please select image",
+            error: true,
+          });
         }
       } catch (error) {
         console.log(error);
@@ -462,10 +553,18 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .upload-bar {
   margin: 0px 0px 30px 0px;
   width: 100%;
-  border: 1px dashed white;
+  border: 2px dashed #d9d9d9;
+}
+
+.v-stepper__content {
+  padding: 0px !important;
+}
+
+.v-sheet.v-stepper:not(.v-sheet--outlined) {
+  box-shadow: none !important;
 }
 </style>

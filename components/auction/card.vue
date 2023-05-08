@@ -1,36 +1,40 @@
 <template>
   <div>
-    <v-card max-width="350" color="transaparent">
-      <div style="border: 1px solid #ff36ab">
-        <v-img :src="auction.nft.meta.image"></v-img>
-        <v-card-title style="padding-bottom: 0px">{{
-          auction.nft.meta.name
-        }}</v-card-title>
-        <v-container>
-          <v-row no-gutters class="px-5">
-            <v-col cols="7">
-              <small>Ends In</small><br />
-              <small class="theme-color">{{ endInterval }}</small>
-            </v-col>
-            <v-col>
-              <small>Current Bid</small><br />
-              <small class="theme-color">{{ auction.min_bid }}</small>
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-row justify="center" no-gutters>
-          <ReusableThemeButton
-            style="margin: 10px"
-            title="Place You bid"
-            @click="$router.push('/auctions/' + auction._id)"
-          />
-        </v-row>
+    <div
+      class="tw-border tw-border-wapal-pink tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-h-full"
+    >
+      <img
+        :src="auction.nft.meta.image"
+        :alt="auction.nft.meta.name"
+        class="tw-rounded-t tw-max-h-[350px] tw-min-h-[350px] tw-w-full tw-object-fill"
+      />
+      <div class="tw-px-8 tw-w-full tw-py-8 tw-h-full">
+        <h3 class="tw-text-uppercase tw-text-2xl tw-font-medium tw-pb-4">
+          {{ auction.nft.meta.name }}
+        </h3>
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+        >
+          <div v-if="getLiveStatus">
+            <div>Ends In</div>
+            <reusable-count-down :startTime="auction.endAt" :textSmall="true" />
+          </div>
+          <div class="tw-text-wapal-pink" v-else>Ended</div>
+          <div>
+            <div>Current Bid</div>
+            <div class="tw-text-wapal-pink">{{ auction.min_bid }} APT</div>
+          </div>
+        </div>
+        <ReusableThemeButton
+          title="Place You bid"
+          @click="$router.push('/auctions/' + auction._id)"
+          class="tw-w-full tw-my-5 !tw-py-3"
+        />
       </div>
-    </v-card>
+    </div>
   </div>
 </template>
 <script>
-import { getHms } from "../../services/AuctionService";
 export default {
   props: {
     auction: {
@@ -43,18 +47,13 @@ export default {
       endInterval: "",
     };
   },
-  mounted() {
-    setInterval(() => {
-      let seconds =
-        new Date(this.auction.endAt).getTime() / 1000 -
-        new Date().getTime() / 1000;
-      this.endInterval = getHms(seconds);
-    }, 1000);
+  computed: {
+    getLiveStatus() {
+      if (new Date(this.auction.endAt) > new Date()) {
+        return true;
+      }
+      return false;
+    },
   },
 };
 </script>
-<style>
-.theme-color {
-  color: #ff36ab;
-}
-</style>

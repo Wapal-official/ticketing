@@ -1,16 +1,20 @@
 <template>
-  <div>
+  <div class="dashboard-text-field-border tw-w-full">
     <v-text-field
       v-model="internalValue"
       :readonly="readOnly"
       outlined
-      dense
-      :rules="rules"
+      single-line
+      color="#fff"
+      hide-details
+      clearable
       :placeholder="placeholder"
       :counter="counter"
       :type="type"
-      :error-messages="error_messages"
-    ></v-text-field>
+      class="dashboard-input"
+      :style="`background:${this.background}`"
+    >
+    </v-text-field>
   </div>
 </template>
 
@@ -21,13 +25,8 @@ export default {
       type: String,
       required: true,
     },
-    rules: {
-      type: Array,
-      default: [],
-    },
     placeholder: {
       type: String,
-      required: true,
     },
     type: {
       type: String,
@@ -45,6 +44,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    background: {
+      type: String,
+      default: "#0E0D0D",
+    },
   },
   computed: {
     internalValue: {
@@ -54,22 +57,7 @@ export default {
       set(newValue) {
         this.$emit("input", newValue);
       },
-    }
+    },
   },
 };
 </script>
-
-<style>
-.v-input__slot {
-  border: 1px solid;
-  border-image: linear-gradient(
-    264.44deg,
-    #fe87ff 2.87%,
-    #c202d3 34.05%,
-    #5e0fff 67.82%,
-    #1905da 99.15%
-  );
-  border-image-slice: 1;
-  border-radius: 0px !important;
-}
-</style>

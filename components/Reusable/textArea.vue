@@ -1,40 +1,55 @@
 <template>
-    <div>
-        <v-textarea @input="handleInput" rows="3" auto-grow outlined dense :rules="rules" :placeholder="placeholder" :counter="counter" :type="type" :error-messages="error_messages"></v-textarea>
-    </div>
-    </template>
-    
-    <script>
-    export default {
-        props: {
-            rules: {
-                type: Array,
-                default: [],
-            },
-            placeholder: {
-                type: String,
-                required: true,
-            },
-            type: {
-                type: String,
-                default: null,
-            },
-            counter: {
-                type: Number,
-                default: null,
-            },
-            error_messages: {
-                type: String,
-                default: null,
-            },
-        },
-        methods: {
-            handleInput(e) {
-                this.$emit("input", e);
-            },
-        },
-    };
-    </script>
+  <div class="dashboard-text-field-border tw-w-full">
+    <v-textarea
+      @input="handleInput"
+      rows="3"
+      auto-grow
+      outlined
+      color="#fff"
+      hide-details
+      clearable
+      single-line
+      dense
+      :placeholder="placeholder"
+      :counter="counter"
+      :type="type"
+      :error-messages="error_messages"
+      class="dashboard-input"
+      :style="`background:${this.background}`"
+    ></v-textarea>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    placeholder: {
+      type: String,
+    },
+    type: {
+      type: String,
+      default: null,
+    },
+    counter: {
+      type: Number,
+      default: null,
+    },
+    error_messages: {
+      type: String,
+      default: null,
+    },
+    background: {
+      type: String,
+      default: "#0E0D0D",
+    },
+  },
+  methods: {
+    handleInput(e) {
+      this.$emit("input", e);
+    },
+  },
+};
+</script>
 <!--     
     <style>
     .v-input__slot {
@@ -44,4 +59,3 @@
         border-radius:0px !important;
     }
     </style> -->
-    
