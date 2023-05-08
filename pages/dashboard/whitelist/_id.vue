@@ -35,11 +35,9 @@
             type="file"
             class="tw-invisible tw-w-0 tw-h-0 disabled:tw-cursor-not-allowed"
             @change="setCSVFile"
-            :disabled="setupWhitelistStatus"
           />
           <div
             class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
-            :disabled="setupWhitelistStatus"
           >
             Import CSV
           </div>
@@ -48,7 +46,7 @@
       <button
         class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
         @click="showSetWhitelistModal = true"
-        :disabled="sendingDataToSetRoot || setupWhitelistStatus"
+        :disabled="sendingDataToSetRoot"
       >
         Set Whitelist
       </button>
