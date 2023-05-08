@@ -90,6 +90,7 @@
             :loading="loading"
             title="Withdraw Bid"
             @click="withdrawBid"
+            v-else
           />
         </ValidationObserver>
         <div
