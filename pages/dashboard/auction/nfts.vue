@@ -17,7 +17,7 @@
           "
           color="transparent"
         >
-          <v-img :src="item.image"></v-img>
+          <v-img :src="item.image" class="tw-h-[350px]"></v-img>
           <div
             class="tw-w-full tw-py-4 tw-text-center tw-border-l tw-border-r tw-border-b tw-border-wapal-pink"
           >

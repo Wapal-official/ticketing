@@ -7,7 +7,7 @@
           @click="$router.push('/dashboard/auction/' + item._id)"
           color="transparent"
         >
-          <v-img :src="item.nft.meta.image"></v-img>
+          <v-img :src="item.nft.meta.image" class="tw-h-[350px]"></v-img>
           <div
             class="tw-w-full tw-py-4 tw-text-center tw-border-l tw-border-r tw-border-b tw-border-wapal-pink"
           >
