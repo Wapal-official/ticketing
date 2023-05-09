@@ -479,7 +479,7 @@ export const actions = {
           auction.detail.nft.nft.amount,
           auction.offer_price * 100000000,
           auction.detail.id,
-          withdrawSec + 100,
+          withdrawSec + 1,
         ],
       };
       let transactionRes = await wallet.signAndSubmitTransaction(place_bid);
@@ -488,7 +488,8 @@ export const actions = {
         transactionRes.hash
       );
       return getResource;
-    } catch {
+    } catch (error) {
+      console.log(error);
       return false;
     }
   },
@@ -538,8 +539,8 @@ export const actions = {
     { state }: { state: any },
     {
       lister_address,
-      auction_id,
-    }: { lister_address: String; auction_id: Number }
+      creation_number,
+    }: { lister_address: String; creation_number: Number }
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
@@ -549,10 +550,7 @@ export const actions = {
       type: "entry_function_payload",
       function: process.env.PID + "::auction::withdraw_coin_from_bid",
       type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [
-        "0xe743f11e73711a90bc76d5ed3df5a6d979a06b2fce194d8b0ca8faf697f4f5f4",
-        8,
-      ],
+      arguments: [lister_address, creation_number],
     };
 
     console.log(withdraw_coin_from_bid);

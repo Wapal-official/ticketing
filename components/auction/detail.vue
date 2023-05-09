@@ -391,7 +391,7 @@ export default {
       try {
         const res = await this.$store.dispatch("walletStore/withdrawBid", {
           lister_address: this.auction.nft.nft.owner_address,
-          auction_id: 8,
+          creation_number: 29,
         });
 
         console.log(res);
