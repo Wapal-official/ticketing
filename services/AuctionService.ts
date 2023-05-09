@@ -118,3 +118,55 @@ export const getWalletNFT = async (params: any) => {
   );
   return resp.data;
 };
+
+export const placeBid = async (
+  bid: number,
+  auction_id: number,
+  creation_number: number
+) => {
+  const res = await publicRequest.post(`/api/auction/bid`, {
+    bid: bid,
+    auction_id: auction_id,
+    creation_number: creation_number,
+  });
+
+  setCreationNumberInLocalStorage(auction_id, creation_number);
+
+  return res;
+};
+
+export const setCreationNumberInLocalStorage = (
+  auction_id: number,
+  creation_number: number
+) => {
+  if (process.client) {
+    const creation_numbers = JSON.parse(
+      localStorage.getItem("creation_numbers") || "[]"
+    );
+
+    creation_numbers.push({
+      auction_id: auction_id,
+      creation_number: creation_number,
+    });
+
+    localStorage.setItem("creation_numbers", JSON.stringify(creation_numbers));
+  }
+};
+
+export const getCreationNumberFromLocalStorage = (auction_id: string) => {
+  if (process.client) {
+    const creation_numbers = JSON.parse(
+      localStorage.getItem("creation_numbers") || "[]"
+    );
+
+    let res_creation_number = 0;
+
+    creation_numbers.map((creation_number: any) => {
+      if (creation_number.auction_id === auction_id) {
+        res_creation_number = creation_number.creation_number;
+      }
+    });
+
+    return res_creation_number;
+  }
+};

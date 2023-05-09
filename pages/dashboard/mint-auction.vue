@@ -291,13 +291,18 @@ extend("bidAmount", {
 
 extend("auctionTime", {
   validate(value) {
-    if (new Date().getTime() > value.getTime()) {
+    const difference = Math.floor(
+      value.getTime() / (1000 * 60) - new Date().getTime() / (1000 * 60)
+    );
+
+    if (difference < 3) {
       return false;
     }
 
     return true;
   },
-  message: "Auction Start Time should be greater than current time",
+  message:
+    "Auction Start Time should be at least 3 minutes greater than current time",
 });
 
 extend("endTime", {
@@ -490,8 +495,8 @@ export default {
                 presale_mint_time: Math.floor(new Date().getTime() / 1000) + 20,
                 public_sale_mint_time:
                   Math.floor(new Date().getTime() / 1000) + 21,
-                presale_mint_price: this.mint.minBid * 100000000,
-                public_sale_mint_price: this.mint.minBid * 100000000,
+                presale_mint_price: 0,
+                public_sale_mint_price: 0,
                 total_supply: 1,
               }
             );
@@ -525,66 +530,73 @@ export default {
             formData.append("txnhash", txnhash);
             formData.append("candy_id", process.env.CANDY_MACHINE_ID);
             formData.append("image", this.file);
+            formData.append("phases", JSON.stringify([]));
 
             await createCollection(formData);
 
             //mint
             setTimeout(async () => {
-              const mint = await this.$store.dispatch(
-                "walletStore/mintCollection",
-                {
-                  resourceAccount: resource_account,
-                  publicMint: true,
-                  collectionId: "",
-                  candyMachineId: process.env.CANDY_MACHINE_ID,
-                }
-              );
-
-              if (mint.success) {
-                //auction
-                const nftRes = await getWalletNFT({
-                  creatorAddress: this.walletAddress,
-                  collectionName: this.mint.colName,
-                  tokenName: this.mint.colName + " #0",
-                });
-
-                const nft = nftRes.data.current_token_ownerships[0];
-
-                const meta = await this.$axios.get(
-                  nft.current_token_data.metadata_uri
-                );
-
-                this.$store.commit("auction/selectNft", {
-                  nft: nft,
-                  meta: meta.data,
-                });
-
-                const auction = await this.$store.dispatch(
-                  "walletStore/createAuction",
+              try {
+                const mint = await this.$store.dispatch(
+                  "walletStore/mintCollection",
                   {
-                    start_date: this.mint.startDate,
-                    end_date: this.mint.endDate,
-                    min_bid: this.mint.minBid,
+                    resourceAccount: resource_account,
+                    publicMint: true,
+                    collectionId: "",
+                    candyMachineId: process.env.CANDY_MACHINE_ID,
                   }
                 );
 
-                await publicRequest.post("/api/auction", {
-                  nft: this.selectedNft,
-                  startAt: this.mint.startDate,
-                  endAt: this.mint.endDate,
-                  min_bid: this.mint.minBid,
-                  id: auction.cur_auction_id,
-                });
+                if (mint.success) {
+                  //auction
+                  const nftRes = await getWalletNFT({
+                    creatorAddress: this.walletAddress,
+                    collectionName: this.mint.colName,
+                    tokenName: this.mint.colName + " #0",
+                  });
 
-                this.$toast.showMessage({
-                  message: "Auction Created Successfully",
-                  error: false,
-                });
+                  const nft = nftRes.data.current_token_ownerships[0];
+
+                  const meta = await this.$axios.get(
+                    nft.current_token_data.metadata_uri
+                  );
+
+                  this.$store.commit("auction/selectNft", {
+                    nft: nft,
+                    meta: meta.data,
+                  });
+
+                  const auction = await this.$store.dispatch(
+                    "walletStore/createAuction",
+                    {
+                      start_date: this.mint.startDate,
+                      end_date: this.mint.endDate,
+                      min_bid: this.mint.minBid,
+                    }
+                  );
+
+                  await publicRequest.post("/api/auction", {
+                    nft: this.selectedNft,
+                    startAt: this.mint.startDate,
+                    endAt: this.mint.endDate,
+                    min_bid: this.mint.minBid,
+                    id: auction.cur_auction_id,
+                  });
+
+                  this.$toast.showMessage({
+                    message: "Auction Created Successfully",
+                    error: false,
+                  });
+                  this.loading = false;
+                  this.$router.push("/dashboard/auction/list");
+                }
+
                 this.loading = false;
-                this.$router.push("/dashboard/auction/list");
+              } catch (error) {
+                console.log(error);
+                this.$toast.showMessage({ message: error, error: true });
+                this.loading = false;
               }
-
-              this.loading = false;
             }, 5000);
           } else {
             this.$toast.showMessage({
