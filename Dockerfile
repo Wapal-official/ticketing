@@ -11,7 +11,6 @@ ARG NODE_ENV
 CMD export NODE_ENV=${NODE_ENV}
 
 #check node and npm version
-RUN echo "test commit"
 RUN node -v
 RUN npm -v
 
