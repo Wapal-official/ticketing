@@ -13,8 +13,7 @@ CMD export NODE_ENV=${NODE_ENV}
 # check node and npm version
 RUN node -v
 RUN npm -v
-RUN echo "Hello, I am running in Docker Compose"
-
+RUN echo "Hello"
 
 RUN npm install --legacy-peer-deps
 RUN npm run build
