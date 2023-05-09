@@ -10,7 +10,7 @@ COPY . /usr/src/${LOCATION}
 ARG NODE_ENV
 CMD export NODE_ENV=${NODE_ENV}
 
-# check node and npm version
+#check node and npm version
 RUN echo "Hello this world"
 RUN node -v
 RUN npm -v
