@@ -514,27 +514,6 @@ export const actions = {
 
     return txhRes;
   },
-  async getAuctionListingId(
-    { state }: { state: any },
-    { auction_id }: { auction_id: Number }
-  ) {
-    if (!wallet.isConnected()) {
-      await connectWallet(state.wallet.wallet);
-    }
-
-    const get_auction_listing_id = {
-      type: "entry_function_payload",
-      function: process.env.PID + "::auction::get_auction_listing_id",
-      type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [auction_id],
-    };
-
-    const res = await wallet.signAndSubmitTransaction(get_auction_listing_id);
-
-    const txhRes = await client.getTransactionByHash(res.hash);
-
-    return txhRes;
-  },
   async withdrawBid(
     { state }: { state: any },
     {
@@ -556,6 +535,29 @@ export const actions = {
     console.log(withdraw_coin_from_bid);
 
     const res = await wallet.signAndSubmitTransaction(withdraw_coin_from_bid);
+
+    const txhRes = await client.getTransactionByHash(res.hash);
+
+    return txhRes;
+  },
+  async completeAuction(
+    { state }: { state: any },
+    { auction_id }: { auction_id: Number }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    const complete_auction = {
+      type: "entry_function_payload",
+      function: process.env.PID + "::auction::complete_auction",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: [auction_id],
+    };
+
+    console.log(complete_auction);
+
+    const res = await wallet.signAndSubmitTransaction(complete_auction);
 
     const txhRes = await client.getTransactionByHash(res.hash);
 
