@@ -29,6 +29,7 @@
           threshold: [0, 0.5, 1.0],
         },
       }"
+      class="!tw-shadow-none"
     >
     </v-card>
   </div>

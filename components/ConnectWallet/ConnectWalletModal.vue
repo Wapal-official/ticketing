@@ -22,7 +22,7 @@
         class="tw-w-full tw-rounded tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-pl-4 tw-pr-4 tw-py-4 tw-bg-gray-900 md:tw-pl-20"
       >
         <img
-          :src="bloctoIcon"
+          :src="preferredWallet.icon"
           :alt="preferredWallet.name"
           class="tw-w-12 tw-h-12"
         />
@@ -41,7 +41,11 @@
         v-for="wallet in installedWallets"
         class="tw-w-full tw-rounded tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-pl-4 tw-pr-4 tw-py-4 tw-bg-gray-900 md:tw-pl-20"
       >
-        <img :src="wallet.icon" :alt="wallet.name" class="tw-w-12 tw-h-12" />
+        <img
+          :src="wallet.name !== 'Blocto' ? wallet.icon : bloctoIcon"
+          :alt="wallet.name"
+          class="tw-w-12 tw-h-12"
+        />
         <span class="tw-text-lg tw-text-wapal-gray">{{ wallet.name }}</span>
       </button>
     </div>
@@ -77,17 +81,17 @@ export default {
   },
   methods: {
     async connectWallet(wallet: string) {
-      try{
+      try {
         const res = await this.$store.dispatch(
-        "walletStore/connectWallet",
-        wallet
-      );
-      if (res) {
-        this.$emit("walletConnected");
-      }
-      this.close();
-      }catch(error){
-        this.$toast.showMessage({message:error, error:true})
+          "walletStore/connectWallet",
+          wallet
+        );
+        if (res) {
+          this.$emit("walletConnected");
+        }
+        this.close();
+      } catch (error) {
+        this.$toast.showMessage({ message: error, error: true });
       }
     },
     close() {
@@ -95,16 +99,21 @@ export default {
     },
     separateWallets() {
       this.installedWallets = this.wallets.filter(
-        (wallet: any) => wallet.readyState === "Installed"
+        (wallet: any) =>
+          (wallet.readyState === "Installed" ||
+            wallet.readyState === "Loadable") &&
+          wallet.name !== "Petra"
       );
+
       this.availableWallets = this.wallets.filter(
-        (wallet: any) => wallet.readyState === "NotDetected"
+        (wallet: any) =>
+          wallet.readyState === "NotDetected" && wallet.name !== "Petra"
       );
     },
   },
   computed: {
     preferredWallet() {
-      return this.wallets.find((wallet: any) => wallet.name === "Blocto");
+      return this.wallets.find((wallet: any) => wallet.name === "Petra");
     },
   },
   mounted() {

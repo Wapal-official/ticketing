@@ -2,7 +2,6 @@ import { publicRequest } from "./fetcher";
 
 export const getCurrentBid = (auction: any) => {
   let bid = 0;
-  console.log("auc:", auction);
   if (auction.biddings.length > 0) {
     bid = auction.biddings[0].bid;
   } else {
@@ -33,22 +32,20 @@ export const getAuctions = async (params: any) => {
 };
 
 export const fetchWalletNfts = async (params: any) => {
-  let resp = await publicRequest.post(
-    "https://indexer-testnet.staging.gcp.aptosdev.com/v1/graphql",
-    {
-      operationName: "AccountTokensData",
-      query:
-        `query AccountTokensData {
+  let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+    operationName: "AccountTokensData",
+    query:
+      `query AccountTokensData {
           current_token_ownerships(
             limit: ` +
-        params.limit +
-        `
+      params.limit +
+      `
             offset:` +
-        params.offset +
-        `
+      params.offset +
+      `
             where: {owner_address: {_eq: "` +
-        params.walletAddress +
-        `"}}
+      params.walletAddress +
+      `"}}
             ) {
               owner_address
               property_version
@@ -63,9 +60,8 @@ export const fetchWalletNfts = async (params: any) => {
             }
           }
         }`,
-      variables: null,
-    }
-  );
+    variables: null,
+  });
   return resp.data;
 };
 
@@ -84,21 +80,19 @@ export const uploadAndCreateFile = async (file: File, params: any) => {
 };
 
 export const getWalletNFT = async (params: any) => {
-  let resp = await publicRequest.post(
-    "https://indexer-testnet.staging.gcp.aptosdev.com/v1/graphql",
-    {
-      operationName: "AccountTokensData",
-      query:
-        `query AccountTokensData {
+  let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+    operationName: "AccountTokensData",
+    query:
+      `query AccountTokensData {
           current_token_ownerships(
             where: {owner_address: {_eq: "` +
-        params.creatorAddress +
-        `"}, collection_name: {_eq: "` +
-        params.collectionName +
-        `"},
+      params.creatorAddress +
+      `"}, collection_name: {_eq: "` +
+      params.collectionName +
+      `"},
         name: {_eq: "` +
-        params.tokenName +
-        `"}}
+      params.tokenName +
+      `"}}
             ) {
               owner_address
               property_version
@@ -113,9 +107,8 @@ export const getWalletNFT = async (params: any) => {
             }
           }
         }`,
-      variables: null,
-    }
-  );
+    variables: null,
+  });
   return resp.data;
 };
 

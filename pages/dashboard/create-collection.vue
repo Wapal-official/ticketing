@@ -680,6 +680,21 @@ export default {
           tempCollection.public_sale_time
         ).toISOString();
 
+        const phases: any[] = [];
+
+        tempCollection.phases.map((phase: any) => {
+          const id = phase.name.replaceAll(" ", "-").toLowerCase();
+
+          phases.push({
+            id: id,
+            name: phase.name,
+            mint_time: phase.mint_time,
+            mint_price: phase.mint_price,
+          });
+        });
+
+        tempCollection.phases = phases;
+
         if (this.tbd) {
           const formData = new FormData();
 
@@ -750,6 +765,7 @@ export default {
         formData.append("resource_account", tempCollection.resource_account);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
+        formData.append("phases", JSON.stringify(tempCollection.phases));
         formData.append("image", this.image);
 
         await createCollection(formData);

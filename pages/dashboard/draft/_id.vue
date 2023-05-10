@@ -654,6 +654,12 @@ export default {
           return;
         }
 
+        const selectedFolder = this.folders.find(
+          (folder: any) => folder.folder_name === this.baseURL
+        );
+
+        this.collection.baseURL = selectedFolder.metadata.baseURI;
+
         const tempCollection = this.collection;
 
         tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
@@ -664,11 +670,20 @@ export default {
           tempCollection.public_sale_time
         ).toISOString();
 
-        const selectedFolder = this.folders.find(
-          (folder: any) => folder.folder_name === this.baseURL
-        );
+        const phases: any[] = [];
 
-        this.collection.baseURL = selectedFolder.metadata.baseURI;
+        tempCollection.phases.map((phase: any) => {
+          const id = phase.name.replaceAll(" ", "-").toLowerCase();
+
+          phases.push({
+            id: id,
+            name: phase.name,
+            mint_time: phase.mint_time,
+            mint_price: phase.mint_price,
+          });
+        });
+
+        tempCollection.phases = phases;
 
         await this.sendDataToCandyMachineCreator();
 

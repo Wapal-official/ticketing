@@ -413,20 +413,6 @@ export default {
       this.file = files[0];
       this.displayImage();
     });
-
-    const nftRes = await getWalletNFT({
-      creatorAddress: this.walletAddress,
-      collectionName: "Martian NFT",
-      tokenName: "Martian NFT #0",
-    });
-
-    console.log(nftRes);
-
-    const res = await this.$axios.get(
-      "https://arweave.net/s8tjxeEQdtF7fJhQMVanIzCrtyNZlNTSXc59SRigfiU/0.json"
-    );
-
-    console.log(res);
   },
   methods: {
     saveStart(date) {
@@ -473,6 +459,12 @@ export default {
       try {
         if (this.file != null) {
           if (this.mint.attributes.length > 0) {
+            let mintTime = Math.floor(new Date().getTime() / 1000) + 25;
+
+            if (this.$store.state.walletStore.wallet.wallet === "Martian") {
+              mintTime += 10;
+            }
+
             this.loading = true;
             //uploading and creating metadata file
             const metaUri =
@@ -482,6 +474,7 @@ export default {
                 attributes: this.mint.attributes,
               })) + "/";
             console.log("meta:", metaUri);
+
             //creating collection
             const candymachine = await this.$store.dispatch(
               "walletStore/createCandyMachine",
@@ -492,9 +485,8 @@ export default {
                 royalty_payee_address: this.walletAddress,
                 royalty_points_denominator: 1000,
                 royalty_points_numerator: this.mint.royalty * 10,
-                presale_mint_time: Math.floor(new Date().getTime() / 1000) + 20,
-                public_sale_mint_time:
-                  Math.floor(new Date().getTime() / 1000) + 21,
+                presale_mint_time: mintTime,
+                public_sale_mint_time: mintTime + 1,
                 presale_mint_price: 0,
                 public_sale_mint_price: 0,
                 total_supply: 1,
