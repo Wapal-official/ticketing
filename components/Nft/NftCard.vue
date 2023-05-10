@@ -157,7 +157,7 @@ export default {
       }
 
       if (whiteListDate && publicSaleDate > now) {
-        return this.collection.candyMachine.whitelist_price;
+        return this.collection.candyMachine.whitelist_price + " apt";
       } else {
         return this.collection.candyMachine.public_sale_price + " apt";
       }

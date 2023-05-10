@@ -322,12 +322,34 @@
               </ValidationProvider>
               <ValidationProvider
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
+                name="publicSalePrice"
+                :rules="'required|number'"
+                v-slot="{ errors }"
+              >
+                <div class="dashboard-text-field-border tw-w-full">
+                  <v-text-field
+                    v-model="phase.mint_price"
+                    placeholder="Mint Price"
+                    outlined
+                    single-line
+                    color="#fff"
+                    hide-details
+                    clearable
+                    class="dashboard-input"
+                    inputmode="numeric"
+                  >
+                  </v-text-field>
+                </div>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
                 rules="required|saleTime"
                 v-slot="{ errors }"
               >
                 <div class="dashboard-text-field-border tw-w-full">
                   <date-picker
-                    v-model="phase.mintTime"
+                    v-model="phase.mint_time"
                     type="datetime"
                     placeholder="Select Mint Time"
                   ></date-picker>
@@ -585,7 +607,7 @@ export default {
         txnhash: null,
         un: "",
         candy_id: process.env.CANDY_MACHINE_ID,
-        phases: [{ name: null, mintTime: null }],
+        phases: [{ name: "", mint_time: null, mint_price: null }],
       },
       message: "",
       image: { name: null },
@@ -802,7 +824,7 @@ export default {
       : [];
 
     this.collection.phases.map((phase: any) => {
-      phase.mintTime = new Date(phase.mintTime);
+      phase.mint_time = new Date(phase.mint_time);
     });
 
     if (this.collection.whitelist_price) {
