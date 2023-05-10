@@ -9,7 +9,7 @@
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item :disabled="item.disabled">
           <NuxtLink
-            class="!tw-text-white"
+            class="!tw-text-white !tw-capitalize"
             :to="item.href ? item.href : $route.fullPath"
           >
             {{ item.text }}
@@ -166,7 +166,11 @@ export default {
     return {
       breadcrumbs: [
         { text: "Whitelist", href: "/dashboard/whitelist" },
-        { text: "Whitelist Entries" },
+        {
+          text: "Phase",
+          href: `/dashboard/whitelist/${this.$route.params.id}`,
+        },
+        { text: this.$route.params.phase },
       ],
       headers: [
         {
@@ -209,7 +213,10 @@ export default {
       paginatedWhitelistEntries: [],
       selectedCSVFile: null,
       showCSVUploadModal: false,
-      collection: { _id: null },
+      collection: {
+        _id: null,
+        phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
+      },
       loading: true,
       sendingDataToSetRoot: false,
       showSetWhitelistModal: false,
@@ -314,6 +321,22 @@ export default {
       );
     },
   },
+  computed: {
+    checkWhitelistSale() {
+      const whitelistTime = new Date(
+        this.collection.candyMachine.whitelist_sale_time
+      ).getTime();
+      const publicSaleTime = new Date(
+        this.collection.candyMachine.public_sale_time
+      ).getTime();
+
+      if (publicSaleTime - whitelistTime === 1000) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+  },
   async mounted() {
     const res = await getWhitelistByUsername(this.$route.params.id);
 
@@ -349,7 +372,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .whitelist-data-table {
   min-width: 100% !important;
   max-width: 100% !important;
