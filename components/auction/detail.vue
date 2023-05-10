@@ -31,25 +31,25 @@
         </div>
         <div class="tw-w-full" v-if="auctionStarted">
           <div
-          class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full lg:tw-flex-row xl:tw-flex-col 2xl:tw-flex-row tw-gap-4"
-          v-if="!auctionEnded"
-        >
+            class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full lg:tw-flex-row xl:tw-flex-col 2xl:tw-flex-row tw-gap-4"
+            v-if="!auctionEnded"
+          >
+            <span
+              class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
+              >Auction Ends In</span
+            >
+            <reusable-count-down
+              :startTime="auction.endAt"
+              :shadow="true"
+              @countdownComplete="endAuction"
+            />
+          </div>
           <span
             class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
-            >Auction Ends In</span
+            v-else
+            >Auction Ended</span
           >
-          <reusable-count-down
-            :startTime="auction.endAt"
-            :shadow="true"
-            @countdownComplete="endAuction"
-          />
         </div>
-        <span
-          class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
-          v-else
-          >Auction Ended</span
-        >
-          </div>
       </div>
       <div
         class="tw-rounded tw-w-full tw-bg-[#001233] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-px-4 tw-py-8 md:tw-px-8 xl:tw-w-[60%] preview-shadow"
@@ -183,7 +183,6 @@ import {
   getCurrentBid,
   placeBid,
   getCreationNumberFromLocalStorage,
-  setCreationNumberInLocalStorage,
 } from "@/services/AuctionService";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 
@@ -221,6 +220,7 @@ export default {
       auctionEnded: false,
       auctionStarted: false,
       previousBid: 0,
+      bidInterval: null,
     };
   },
   watch: {
@@ -242,6 +242,10 @@ export default {
     console.log(this.auction);
     this.auctionStarted = this.checkAuctionStarted();
     this.auctionEnded = this.checkAuctionEnded();
+
+    this.bidInterval = setInterval(async () => {
+      await this.getAuctionDetails();
+    }, 5000);
   },
   methods: {
     checkAuctionStarted() {
@@ -481,6 +485,9 @@ export default {
     getWalletConnectedStatus() {
       this.checkWalletInBiddings();
     },
+  },
+  beforeDestroy() {
+    clearInterval(this.bidInterval);
   },
 };
 </script>
