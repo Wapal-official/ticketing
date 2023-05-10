@@ -770,7 +770,8 @@ export default {
         const spotsRes = await getWhitelistEntryById(
           this.whitelist.collection_id,
           1,
-          1
+          1,
+          "whitelist"
         );
 
         this.resource.occupiedSpots = spotsRes.data.spotsCount;
@@ -940,7 +941,8 @@ export default {
     const spotsRes = await getWhitelistEntryById(
       this.whitelist.collection_id,
       1,
-      1
+      1,
+      "whitelist"
     );
 
     this.resource.totalSpots = this.whitelist.whitelist_spots;
