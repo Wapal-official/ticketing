@@ -2,7 +2,6 @@ import { publicRequest } from "./fetcher";
 
 export const getCurrentBid = (auction: any) => {
   let bid = 0;
-  console.log("auc:", auction);
   if (auction.biddings.length > 0) {
     bid = auction.biddings[0].bid;
   } else {
