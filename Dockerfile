@@ -11,6 +11,7 @@ ARG NODE_ENV
 CMD export NODE_ENV=${NODE_ENV}
 
 #check node and npm version
+RUN echo "final test"
 RUN node -v
 RUN npm -v
 
