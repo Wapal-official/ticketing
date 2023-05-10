@@ -243,6 +243,8 @@ export default {
     this.auctionStarted = this.checkAuctionStarted();
     this.auctionEnded = this.checkAuctionEnded();
 
+    await this.setBid();
+
     this.bidInterval = setInterval(async () => {
       await this.getAuctionDetails();
     }, 5000);
@@ -271,8 +273,6 @@ export default {
       response.biddings = rev;
       this.auction = response;
       this.current_bid = getCurrentBid(this.auction);
-
-      await this.setBid();
 
       this.loadingAuction = false;
       this.checkWalletInBiddings();
