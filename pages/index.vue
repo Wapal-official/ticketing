@@ -24,7 +24,7 @@
           <whitelist-opportunities />
         </section>
 
-        <section
+        <!-- <section
           class="tw-py-8 tw-container tw-mx-auto"
           v-if="fastestSoldoutCollections.length >= 10"
         >
@@ -34,7 +34,7 @@
             :collections="fastestSoldoutCollections"
           />
           <loading v-else />
-        </section>
+        </section> -->
       </div>
     </div>
   </div>
