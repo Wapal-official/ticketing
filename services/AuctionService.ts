@@ -22,7 +22,7 @@ export const getAuctions = async (params: any) => {
     .get("/api/auction", {
       params: {
         page: params.page,
-        perPage: params.perPage,
+        limit: params.perPage,
       },
     })
     .then((res) => {
