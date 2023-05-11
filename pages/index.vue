@@ -24,14 +24,17 @@
           <whitelist-opportunities />
         </section>
 
-        <section class="tw-py-8 tw-container tw-mx-auto">
+        <!-- <section
+          class="tw-py-8 tw-container tw-mx-auto"
+          v-if="fastestSoldoutCollections.length >= 10"
+        >
           <landing-section-heading heading="Fastest Soldout" />
           <fastest-soldout-section
             v-if="!loading"
             :collections="fastestSoldoutCollections"
           />
           <loading v-else />
-        </section>
+        </section> -->
         <section class="tw-py-8 tw-container tw-mx-auto">
           <landing-section-heading heading="Auctions" />
           <LandingAuctions v-if="!loading" :auctions="auctions" />
