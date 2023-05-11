@@ -224,6 +224,7 @@
           >
             Starts In
             <count-down
+              class="tw-pl-2"
               :startTime="collection.candyMachine.whitelist_sale_time"
               @countdownComplete="whitelistCountdownComplete"
             />
@@ -250,6 +251,7 @@
           >
             Starts In
             <count-down
+              class="tw-pl-2"
               :startTime="collection.candyMachine.public_sale_time"
               @countdownComplete="publicSaleCountdownComplete"
             />

@@ -431,7 +431,7 @@ export const actions = {
         min_bid, //price
         startSec, //start sec
         endSec, //end
-        endSec + 1, //withdraw
+        endSec + 3600 * 24, //withdraw
       ],
     };
 
@@ -479,7 +479,7 @@ export const actions = {
           auction.detail.nft.nft.amount,
           auction.offer_price * 100000000,
           auction.detail.id,
-          withdrawSec + 1,
+          withdrawSec,
         ],
       };
       let transactionRes = await wallet.signAndSubmitTransaction(place_bid);
@@ -490,7 +490,7 @@ export const actions = {
       return getResource;
     } catch (error) {
       console.log(error);
-      return false;
+      throw error;
     }
   },
   async increaseAuctionBid(

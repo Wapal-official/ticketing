@@ -102,7 +102,7 @@ export default {
 
       const res = await getCollections(1, 100);
 
-      res.map((collection) => {
+      res.map((collection: any) => {
         this.fastestSoldoutCollections.push(collection);
       });
 
@@ -111,7 +111,7 @@ export default {
   },
   async created() {
     await this.getCollections();
-    this.auctions = await getAuctions({ page: 1, perPage: 4 }).then((res) => {
+    this.auctions = await getAuctions({ page: 4, perPage: 4 }).then((res) => {
       return res;
     });
     this.loading = false;

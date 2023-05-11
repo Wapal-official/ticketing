@@ -462,7 +462,7 @@ export default {
             let mintTime = Math.floor(new Date().getTime() / 1000) + 25;
 
             if (this.$store.state.walletStore.wallet.wallet === "Martian") {
-              mintTime += 10;
+              mintTime += 20;
             }
 
             this.loading = true;
