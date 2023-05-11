@@ -15,11 +15,24 @@
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
         >
-          <div v-if="getLiveStatus">
-            <div>Ends In</div>
-            <reusable-count-down :startTime="auction.endAt" :textSmall="true" />
+          <div v-if="!auctionStarted">
+            <div>Starts In</div>
+            <reusable-count-down
+              :startTime="auction.startAt"
+              :textSmall="true"
+            />
           </div>
-          <div class="tw-text-wapal-pink" v-else>Ended</div>
+          <div v-if="auctionStarted">
+            <div v-if="!auctionEnded">
+              <div>Ends In</div>
+              <reusable-count-down
+                :startTime="auction.endAt"
+                :textSmall="true"
+              />
+            </div>
+
+            <div class="tw-text-wapal-pink" v-else>Ended</div>
+          </div>
           <div>
             <div>Current Bid</div>
             <div class="tw-text-wapal-pink">{{ auction.min_bid }} APT</div>
@@ -45,6 +58,8 @@ export default {
   data() {
     return {
       endInterval: "",
+      auctionStarted: false,
+      auctionEnded: false,
     };
   },
   computed: {
@@ -54,6 +69,25 @@ export default {
       }
       return false;
     },
+  },
+  methods: {
+    checkAuctionStarted() {
+      if (new Date(this.auction.startAt) > new Date()) {
+        return false;
+      }
+      return true;
+    },
+    checkAuctionEnded() {
+      if (new Date(this.auction.endAt) > new Date()) {
+        return false;
+      }
+
+      return true;
+    },
+  },
+  mounted() {
+    this.auctionStarted = this.checkAuctionStarted();
+    this.auctionEnded = this.checkAuctionEnded();
   },
 };
 </script>

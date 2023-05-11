@@ -102,17 +102,22 @@
               v-else
             />
           </div>
-          <reusable-theme-button
-            :loading="loading"
-            title="Withdraw Bid"
-            @click="withdrawBid"
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
             v-else
-          />
-          <!-- <reusable-theme-button
-            :loading="loading"
-            title="Complete Auction"
-            @click="completeAuction"
-          /> -->
+          >
+            <reusable-theme-button
+              :loading="loading"
+              title="Withdraw Bid"
+              @click="withdrawBid"
+            />
+            <reusable-theme-button
+              :loading="loading"
+              title="Complete Auction"
+              @click="completeAuction"
+              v-if="checkOwner"
+            />
+          </div>
         </ValidationObserver>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
@@ -197,11 +202,56 @@ extend("bidAmount", {
 });
 
 export default {
+  async asyncData({ params }) {
+    const res = await publicRequest.get(`/api/auction/${params.id}`);
+    const auction = res.data.auction[0];
+
+    return auction;
+  },
+  head() {
+    return {
+      title: this.getTitle,
+      meta: [
+        { hid: "twitter:title", name: "twitter:title", content: this.getTitle },
+        {
+          hid: "twitter:card",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        { hid: "twitter:title", name: "twitter:title", content: this.getTitle },
+        {
+          hid: "twitter:image",
+          name: "twitter:image",
+          content: this.getImage,
+        },
+        {
+          hid: "twitter:description",
+          name: "twitter:description",
+          content: this.getDescription,
+        },
+        { hid: "og-type", property: "og:type", content: "website" },
+        {
+          hid: "og-image",
+          property: "og:image",
+          content: this.getImage,
+        },
+        { hid: "og:title", property: "og:title", content: this.getTitle },
+
+        {
+          hid: "description",
+          name: "description",
+          content: this.getDescription,
+        },
+      ],
+    };
+  },
   components: { ValidationObserver, ValidationProvider },
   data() {
     return {
       valid: true,
-      auction: null,
+      auction: {
+        nft: { meta: { name: null, description: null, image: null } },
+      },
       errMsg: "",
       current_bid: "",
       error: false,
@@ -236,6 +286,28 @@ export default {
     getLoggedInStatus() {
       return this.$store.state.userStore.user.token;
     },
+    checkOwner() {
+      if (
+        this.getWalletConnectedStatus === this.auction.nft.nft.owner_address
+      ) {
+        return true;
+      }
+      return false;
+    },
+    getTitle() {
+      return this.auction.nft.meta.name
+        ? "Auction - " + this.auction.nft.meta.name
+        : "Wapal";
+    },
+
+    getImage() {
+      return this.auction.nft.meta.image ? this.auction.nft.meta.image : "";
+    },
+    getDescription() {
+      return this.auction.nft.meta.description
+        ? this.auction.nft.meta.description
+        : "";
+    },
   },
   async mounted() {
     await this.getAuctionDetails();
@@ -244,10 +316,11 @@ export default {
     this.auctionEnded = this.checkAuctionEnded();
 
     await this.setBid();
-
-    this.bidInterval = setInterval(async () => {
-      await this.getAuctionDetails();
-    }, 5000);
+    if (!this.auctionEnded) {
+      this.bidInterval = setInterval(async () => {
+        await this.getAuctionDetails();
+      }, 5000);
+    }
   },
   methods: {
     checkAuctionStarted() {
@@ -357,6 +430,7 @@ export default {
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
+        this.loading = false;
       }
     },
     async increaseBid() {
@@ -448,11 +522,9 @@ export default {
         this.showConnectWalletDialog = true;
         return;
       }
-
+      this.loading = true;
       try {
-        const creation_number = getCreationNumberFromLocalStorage(
-          this.auction._id
-        );
+        const creation_number = this.auction.biddings[0].creation_number;
 
         const res = await this.$store.dispatch("walletStore/withdrawBid", {
           lister_address: this.auction.nft.nft.owner_address,
@@ -460,8 +532,16 @@ export default {
         });
 
         console.log(res);
+
+        if (res.success) {
+          this.$toast.showMessage({ message: "Bid Withdrawn Successfully" });
+        }
+
+        this.loading = false;
       } catch (error) {
         console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+        this.loading = false;
       }
     },
     async completeAuction() {
@@ -471,13 +551,24 @@ export default {
       }
 
       try {
+        this.loading = true;
         const res = await this.$store.dispatch("walletStore/completeAuction", {
           auction_id: Number(this.auction.id),
         });
 
         console.log(res);
+
+        if (res.success) {
+          this.$toast.showMessage({
+            message: "Auction Completed Successfully",
+          });
+        }
+
+        this.loading = false;
       } catch (error) {
         console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+        this.loading = false;
       }
     },
   },

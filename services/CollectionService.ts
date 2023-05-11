@@ -12,14 +12,12 @@ const filterApprovedCollections = (collections: any[]) => {
 
 export const getCollections = async (page: number, limit: number) => {
   const res = await axios.get(
-    `${process.env.baseURL}/api/collection/all?page=${page}&limit=${limit}`
+    `${process.env.baseURL}/api/collection/approved?page=${page}&limit=${limit}`
   );
 
   const collections = res.data.data;
 
-  const filteredCollections = filterApprovedCollections(collections);
-
-  return [...filteredCollections];
+  return collections;
 };
 
 export const getCollection = async (collectionId: string) => {

@@ -102,7 +102,7 @@ export default {
 
       const res = await getCollections(1, 100);
 
-      res.map((collection) => {
+      res.map((collection: any) => {
         this.fastestSoldoutCollections.push(collection);
       });
 

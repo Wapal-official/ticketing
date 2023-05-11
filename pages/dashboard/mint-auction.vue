@@ -462,7 +462,7 @@ export default {
             let mintTime = Math.floor(new Date().getTime() / 1000) + 25;
 
             if (this.$store.state.walletStore.wallet.wallet === "Martian") {
-              mintTime += 10;
+              mintTime += 20;
             }
 
             this.loading = true;
@@ -573,6 +573,7 @@ export default {
                     endAt: this.mint.endDate,
                     min_bid: this.mint.minBid,
                     id: auction.cur_auction_id,
+                    auction_name: this.selectedNft.meta.name,
                   });
 
                   this.$toast.showMessage({
