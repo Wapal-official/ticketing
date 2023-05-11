@@ -111,7 +111,7 @@ export default {
   },
   async created() {
     await this.getCollections();
-    this.auctions = await getAuctions({ page: 4, perPage: 4 }).then((res) => {
+    this.auctions = await getAuctions({ page: 1, perPage: 4 }).then((res) => {
       return res;
     });
     this.loading = false;
