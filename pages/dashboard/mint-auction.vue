@@ -573,6 +573,7 @@ export default {
                     endAt: this.mint.endDate,
                     min_bid: this.mint.minBid,
                     id: auction.cur_auction_id,
+                    auction_name: this.selectedNft.meta.name,
                   });
 
                   this.$toast.showMessage({

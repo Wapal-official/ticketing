@@ -186,8 +186,6 @@ export default {
             }
           );
 
-          console.log(auction);
-
           publicRequest
             .post("/api/auction", {
               nft: this.selectedNft,
@@ -195,6 +193,7 @@ export default {
               endAt: this.end_date,
               min_bid: this.apt,
               id: auction.cur_auction_id,
+              auction_name: this.selectedNft.meta.name,
             })
             .then((res) => {
               this.$toast.showMessage({
