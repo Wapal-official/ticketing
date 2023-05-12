@@ -202,56 +202,10 @@ extend("bidAmount", {
 });
 
 export default {
-  async asyncData({ params }) {
-    const res = await publicRequest.get(`/api/auction/${params.id}`);
-    const auction = res.data.auction[0];
-
-    return auction;
-  },
-  head() {
-    return {
-      title: this.getTitle,
-      meta: [
-        { hid: "twitter:title", name: "twitter:title", content: this.getTitle },
-        {
-          hid: "twitter:card",
-          name: "twitter:card",
-          content: "summary_large_image",
-        },
-        { hid: "twitter:title", name: "twitter:title", content: this.getTitle },
-        {
-          hid: "twitter:image",
-          name: "twitter:image",
-          content: this.getImage,
-        },
-        {
-          hid: "twitter:description",
-          name: "twitter:description",
-          content: this.getDescription,
-        },
-        { hid: "og-type", property: "og:type", content: "website" },
-        {
-          hid: "og-image",
-          property: "og:image",
-          content: this.getImage,
-        },
-        { hid: "og:title", property: "og:title", content: this.getTitle },
-
-        {
-          hid: "description",
-          name: "description",
-          content: this.getDescription,
-        },
-      ],
-    };
-  },
   components: { ValidationObserver, ValidationProvider },
   data() {
     return {
       valid: true,
-      auction: {
-        nft: { meta: { name: null, description: null, image: null } },
-      },
       errMsg: "",
       current_bid: "",
       error: false,
@@ -294,27 +248,12 @@ export default {
       }
       return false;
     },
-    getTitle() {
-      return this.auction.nft.meta.name
-        ? "Auction - " + this.auction.nft.meta.name
-        : "Wapal";
-    },
-
-    getImage() {
-      return this.auction.nft.meta.image ? this.auction.nft.meta.image : "";
-    },
-    getDescription() {
-      return this.auction.nft.meta.description
-        ? this.auction.nft.meta.description
-        : "";
-    },
   },
   async mounted() {
     await this.getAuctionDetails();
     console.log(this.auction);
     this.auctionStarted = this.checkAuctionStarted();
     this.auctionEnded = this.checkAuctionEnded();
-
     await this.setBid();
     if (!this.auctionEnded) {
       this.bidInterval = setInterval(async () => {
