@@ -77,7 +77,7 @@
                 <div class="tw-text-red-600">{{ errors[0] }}</div>
               </ValidationProvider>
               <div
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
               >
                 <ValidationProvider
                   class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
@@ -114,7 +114,7 @@
                 </ValidationProvider>
               </div>
               <div
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
               >
                 <ValidationProvider
                   class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
@@ -199,7 +199,7 @@
                   :key="index"
                 >
                   <div
-                    class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between md:tw-gap-4"
+                    class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-start md:tw-justify-between md:tw-gap-4"
                   >
                     <ValidationProvider
                       class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
@@ -265,6 +265,47 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog
+      content-class="!tw-w-full md:!tw-w-1/2"
+      v-model="createAuctionModal"
+      persistent
+    >
+      <div class="tw-w-full tw-bg-modal-gray tw-py-6 tw-px-4">
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+        >
+          <button
+            @click="createAuctionModal = false"
+            v-if="showCloseAuctionModal"
+          >
+            <v-icon class="!tw-text-white">mdi-close</v-icon>
+          </button>
+        </div>
+        <v-stepper
+          class="tw-w-full mint-auction-stepper !tw-bg-modal-gray"
+          color="transparent"
+          v-model="auctionProgress"
+        >
+          <v-stepper-header>
+            <v-stepper-step step="1" :color="defaultTheme.wapalPink"
+              >Creating Collection</v-stepper-step
+            >
+
+            <v-divider></v-divider>
+
+            <v-stepper-step step="2" :color="defaultTheme.wapalPink"
+              >Minting Collection</v-stepper-step
+            >
+
+            <v-divider></v-divider>
+
+            <v-stepper-step step="3" :color="defaultTheme.wapalPink"
+              >Creating Auction</v-stepper-step
+            >
+          </v-stepper-header>
+        </v-stepper>
+      </div>
+    </v-dialog>
   </div>
 </template>
 
@@ -278,6 +319,7 @@ import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import uploadIcon from "@/assets/img/upload-icon.svg";
+import { defaultTheme } from "@/theme/wapaltheme";
 
 extend("bidAmount", {
   validate(value) {
@@ -366,6 +408,10 @@ export default {
       file: null,
       imageError: false,
       imageErrorMessage: "",
+      createAuctionModal: false,
+      auctionProgress: 1,
+      showCloseAuctionModal: false,
+      defaultTheme,
       uploadIcon,
     };
   },
@@ -466,6 +512,8 @@ export default {
             }
 
             this.loading = true;
+            this.createAuctionModal = true;
+
             //uploading and creating metadata file
             const metaUri =
               (await uploadAndCreateFile(this.file, {
@@ -529,6 +577,8 @@ export default {
             //mint
             setTimeout(async () => {
               try {
+                this.auctionProgress = 2;
+
                 const mint = await this.$store.dispatch(
                   "walletStore/mintCollection",
                   {
@@ -541,6 +591,8 @@ export default {
 
                 if (mint.success) {
                   //auction
+                  this.auctionProgress = 3;
+
                   const nftRes = await getWalletNFT({
                     creatorAddress: this.walletAddress,
                     collectionName: this.mint.colName,
@@ -581,6 +633,8 @@ export default {
                     error: false,
                   });
                   this.loading = false;
+                  this.createAuctionModal = false;
+
                   this.$router.push("/dashboard/auction/list");
                 }
 
@@ -589,6 +643,7 @@ export default {
                 console.log(error);
                 this.$toast.showMessage({ message: error, error: true });
                 this.loading = false;
+                this.showCloseAuctionModal = true;
               }
             }, 5000);
           } else {
@@ -607,6 +662,7 @@ export default {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.loading = false;
+        this.showCloseAuctionModal = true;
       }
     },
   },
@@ -626,5 +682,9 @@ export default {
 
 .v-sheet.v-stepper:not(.v-sheet--outlined) {
   box-shadow: none !important;
+}
+
+.mint-auction-stepper .v-stepper__step__step {
+  background: black !important;
 }
 </style>
