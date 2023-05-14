@@ -36,7 +36,7 @@ export const actions = {
       }
     );
   },
-  disconnectUser({ commit }: { commit: any }, user: any) {
+  disconnectUser({ commit }: { commit: any }) {
     commit("setUser", {
       user_id: "",
 

@@ -69,6 +69,9 @@ export default {
     },
   },
   computed: {
+    userId() {
+      return this.$store.state.userStore.user.user_id;
+    },
     walletAddress() {
       return this.$store.state.walletStore.wallet.walletAddress;
     },
@@ -86,6 +89,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch("walletStore/initializeWallet");
     if (process.client) {
       window.addEventListener("dragenter", (e) => e.preventDefault());
       window.addEventListener("dragover", (e) => {
@@ -118,6 +122,11 @@ export default {
   },
   watch: {
     walletAddress(newVal: any) {
+      if (!newVal) {
+        this.$router.push("/");
+      }
+    },
+    userId(newVal: any) {
       if (!newVal) {
         this.$router.push("/");
       }
