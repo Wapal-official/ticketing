@@ -20,6 +20,7 @@
             <reusable-count-down
               :startTime="auction.startAt"
               :textSmall="true"
+              @countdownComplete="startAuction"
             />
           </div>
           <div v-if="auctionStarted">
@@ -28,6 +29,7 @@
               <reusable-count-down
                 :startTime="auction.endAt"
                 :textSmall="true"
+                @countdownComplete="endAuction"
               />
             </div>
 
@@ -83,6 +85,12 @@ export default {
       }
 
       return true;
+    },
+    endAuction() {
+      this.auctionEnded = true;
+    },
+    startAuction() {
+      this.auctionStarted = true;
     },
   },
   mounted() {

@@ -78,7 +78,7 @@
           </div>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-max-w-[300px]"
-            rules="required|bidAmount"
+            rules="required|bidAmount|lamport"
             v-slot="{ errors }"
           >
             <reusable-text-field
@@ -93,6 +93,7 @@
               title="Place Your Bid"
               @click="placeBid"
               :loading="loading"
+              :disabled="!auctionStarted"
               v-if="showPlaceBidButton"
             />
             <ReusableThemeButton
@@ -184,11 +185,7 @@
 
 <script>
 import { publicRequest } from "@/services/fetcher";
-import {
-  getCurrentBid,
-  placeBid,
-  getCreationNumberFromLocalStorage,
-} from "@/services/AuctionService";
+import { getCurrentBid, placeBid } from "@/services/AuctionService";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 
 extend("bidAmount", {
@@ -199,6 +196,16 @@ extend("bidAmount", {
     return true;
   },
   message: "Bid amount should be greater than 0",
+});
+
+extend("lamport", {
+  validate(value) {
+    if (value * Math.pow(10, 8) < 1) {
+      return false;
+    }
+    return true;
+  },
+  message: "Please Enter value with only 8 decimal places",
 });
 
 export default {
@@ -319,7 +326,6 @@ export default {
         this.loading = true;
 
         let cur_bid = getCurrentBid(this.auction);
-        console.log(cur_bid);
 
         if (this.bid <= cur_bid) {
           this.loading = false;
@@ -332,7 +338,7 @@ export default {
 
         let resource = await this.$store.dispatch("walletStore/placeBid", {
           detail: this.auction,
-          offer_price: this.bid,
+          offer_price: Number(this.bid).toFixed(8),
         });
 
         console.log(resource);
@@ -379,7 +385,9 @@ export default {
       }
       try {
         let cur_bid = getCurrentBid(this.auction);
-        const bid = Number(this.bid) + Number(this.previousBid);
+
+        let bid = Number(this.bid) + Number(this.previousBid);
+        bid = bid.toFixed(8);
 
         console.log(bid);
 

@@ -39,7 +39,7 @@
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
         >
           <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-flex-row lg:tw-items-center lg:tw-justify-between tw-w-full"
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-flex-row lg:tw-items-start lg:tw-justify-between tw-w-full"
           >
             <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
