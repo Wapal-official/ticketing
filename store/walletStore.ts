@@ -103,6 +103,21 @@ export const getters = {
 };
 
 export const actions = {
+  async initializeWallet({ state, dispatch }: { state: any; dispatch: any }) {
+    await wallet.connect(state.wallet.wallet);
+
+    if (wallet.isConnected()) {
+      wallet.onAccountChange();
+    }
+
+    wallet.addListener("accountChange", async () => {
+      await dispatch("connectWallet", {
+        walletName: state.wallet.wallet,
+      });
+
+      dispatch("userStore/disconnectUser", null, { root: true });
+    });
+  },
   setWallet({ commit }: { commit: any }) {
     commit("setWallet");
   },
@@ -168,7 +183,7 @@ export const actions = {
     commit("setMintLimit", data.wallet.mint_limit);
   },
   async createCandyMachine(
-    { state, dispatch }: { state: any; dispatch: any },
+    { state }: { state: any },
     candyMachineArguments: any
   ) {
     if (!wallet.isConnected()) {
