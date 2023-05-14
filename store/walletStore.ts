@@ -446,7 +446,7 @@ export const actions = {
         min_bid, //price
         startSec, //start sec
         endSec, //end
-        endSec + 3600 * 24, //withdraw
+        endSec + 3600 * 24 * 30, //withdraw
       ],
     };
 
