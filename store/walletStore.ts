@@ -357,9 +357,7 @@ export const actions = {
 
     const transaction = await wallet.signAndSubmitTransaction(payload);
 
-    const res = await client.waitForTransactionWithResult(transaction.hash);
-
-    return res;
+    return transaction;
   },
   async signLoginMessage({ state }: { state: any }) {
     if (!wallet.isConnected()) {
