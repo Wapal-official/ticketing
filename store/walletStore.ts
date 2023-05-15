@@ -104,11 +104,11 @@ export const getters = {
 
 export const actions = {
   async initializeWallet({ state, dispatch }: { state: any; dispatch: any }) {
-    await wallet.connect(state.wallet.wallet);
-
-    if (wallet.isConnected()) {
-      wallet.onAccountChange();
+    if (!wallet.isConnected()) {
+      await wallet.connect(state.wallet.wallet);
     }
+
+    wallet.onAccountChange();
 
     wallet.addListener("accountChange", async () => {
       await dispatch("connectWallet", {
@@ -116,6 +116,9 @@ export const actions = {
       });
 
       dispatch("userStore/disconnectUser", null, { root: true });
+      if (!wallet.isConnected()) {
+        await wallet.connect(state.wallet.wallet);
+      }
     });
   },
   setWallet({ commit }: { commit: any }) {
@@ -145,6 +148,8 @@ export const actions = {
           expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
         }
       );
+
+      wallet.onAccountChange();
       return true;
     } catch (error) {
       throw error;
@@ -357,9 +362,7 @@ export const actions = {
 
     const transaction = await wallet.signAndSubmitTransaction(payload);
 
-    const res = await client.waitForTransactionWithResult(transaction.hash);
-
-    return res;
+    return transaction;
   },
   async signLoginMessage({ state }: { state: any }) {
     if (!wallet.isConnected()) {
