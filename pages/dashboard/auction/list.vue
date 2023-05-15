@@ -1,6 +1,6 @@
 <template>
   <div class="tw-py-4">
-    <v-row v-if="auctions.length > 0">
+    <v-row v-if="auctions.length > 0" justify="start">
       <v-col v-for="(item, i) in auctions" :key="i" cols="12" lg="3" md="6">
         <v-card
           tile

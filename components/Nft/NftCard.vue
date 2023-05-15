@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     :to="getRedirectLink"
-    class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
+    class="tw-group tw-h-[450px] lg:tw-w-[400px] xl:tw-w-[350px] 1xl:tw-w-[400px]"
   >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full" v-if="!domainName">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
@@ -12,7 +12,7 @@
         />
       </div>
       <div
-        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-2 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
+        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-4 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
       >
         <h5 class="tw-text-lg tw-uppercase tw-font-medium collection-name">
           {{ collection?.name }}
@@ -46,7 +46,7 @@
         />
       </div>
       <div
-        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-6 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
+        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-8 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
       >
         <h5 class="tw-text-lg tw-uppercase tw-font-medium collection-name">
           Domain Name
