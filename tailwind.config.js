@@ -23,6 +23,7 @@ module.exports = {
         "wapal-danger": "#7B0707",
       },
       screens: {
+        "1xl": "1440px",
         "3xl": "1920px",
       },
     },
