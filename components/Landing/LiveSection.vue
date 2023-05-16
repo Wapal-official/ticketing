@@ -20,8 +20,8 @@
             :key="collection._id"
             :collection="collection"
             :class="{
-              'lg:tw-hidden xl:tw-flex': index === 2,
-              'lg:tw-hidden 3xl:tw-flex': index === 3,
+              'lg:tw-hidden xl:tw-flex': index === 1,
+              'lg:tw-hidden 3xl:tw-flex': index === 2,
             }"
           />
         </div>

@@ -1,12 +1,12 @@
 <template>
   <div>
     <div
-      class="tw-border tw-border-wapal-pink tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-h-full lg:tw-w-[400px] xl:tw-w-[350px] 1xl:tw-w-[400px]"
+      class="tw-border tw-border-wapal-pink tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-h-full tw-w-full lg:tw-w-[400px] xl:tw-w-[350px] 1xl:tw-w-[400px]"
     >
       <img
         :src="auction.nft.meta.image"
         :alt="auction.nft.meta.name"
-        class="tw-rounded-t tw-h-[350px] lg:tw-w-[400px] xl:tw-w-[350px] 1xl:tw-w-[400px]"
+        class="tw-rounded-t tw-w-full tw-h-[350px] lg:tw-w-[400px] xl:tw-w-[350px] 1xl:tw-w-[400px] tw-object-cover"
       />
       <div class="tw-px-8 tw-w-full tw-py-8 tw-h-full">
         <h3 class="tw-text-uppercase tw-text-2xl tw-font-medium tw-pb-4">
