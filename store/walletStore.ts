@@ -81,6 +81,7 @@ export const state = () => ({
     walletAddress: "",
     publicKey: "",
     proof: "",
+    initializedAccountChange: false,
   },
 });
 
@@ -94,6 +95,9 @@ export const mutations = {
   setMintLimit(state: any, mint_limit: number) {
     state.mint_limit = mint_limit;
   },
+  setInitializeAccountChange(state: any, accountChange: boolean) {
+    state.wallet.initializedAccountChange = accountChange;
+  },
 };
 
 export const getters = {
@@ -103,12 +107,26 @@ export const getters = {
 };
 
 export const actions = {
-  async initializeWallet({ state, dispatch }: { state: any; dispatch: any }) {
+  async initializeWallet({
+    state,
+    dispatch,
+    commit,
+  }: {
+    state: any;
+    dispatch: any;
+    commit: any;
+  }) {
     if (!wallet.isConnected()) {
       await wallet.connect(state.wallet.wallet);
     }
 
-    wallet.onAccountChange();
+    try {
+      await wallet.onAccountChange();
+
+      commit("setInitializeAccountChange", true);
+    } catch (error) {
+      commit("setInitializeAccountChange", false);
+    }
 
     wallet.addListener("accountChange", async () => {
       await dispatch("connectWallet", {
@@ -124,9 +142,20 @@ export const actions = {
   setWallet({ commit }: { commit: any }) {
     commit("setWallet");
   },
-  async connectWallet({ commit }: { commit: any }, walletName: WalletName) {
+  async connectWallet(
+    { state, commit }: { state: any; commit: any },
+    walletName: WalletName
+  ) {
     try {
       await connectWallet(walletName);
+
+      if (
+        (await wallet.isConnected()) &&
+        !state.wallet.initializedAccountChange
+      ) {
+        wallet.onAccountChange();
+        commit("setInitializeAccountChange", true);
+      }
 
       commit("setWallet", {
         wallet: wallet.wallet?.name,
@@ -134,7 +163,9 @@ export const actions = {
         publicKey: Array.isArray(wallet.account?.publicKey)
           ? wallet.account?.publicKey[0]
           : wallet.account?.publicKey,
+        initializedAccountChange: true,
       });
+
       Cookies.set(
         "wallet",
         JSON.stringify({
@@ -149,13 +180,12 @@ export const actions = {
         }
       );
 
-      wallet.onAccountChange();
       return true;
     } catch (error) {
       throw error;
     }
   },
-  async disconnectWallet({ commit }: { commit: any }) {
+  async disconnectWallet({ commit, state }: { commit: any; state: any }) {
     if (wallet.account) {
       await wallet.disconnect();
     }
@@ -163,6 +193,9 @@ export const actions = {
       wallet: "",
       walletAddress: "",
       publicKey: "",
+      initializedAccountChange: state.wallet.initializedAccountChange
+        ? state.wallet.initializedAccountChange
+        : false,
     });
     Cookies.set(
       "wallet",

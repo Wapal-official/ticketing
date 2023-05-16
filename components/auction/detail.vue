@@ -109,14 +109,15 @@
           >
             <reusable-theme-button
               :loading="loading"
-              title="Withdraw Bid"
-              @click="withdrawBid"
-            />
-            <reusable-theme-button
-              :loading="loading"
               title="Complete Auction"
               @click="completeAuction"
               v-if="checkOwner"
+            />
+            <reusable-theme-button
+              :loading="loading"
+              title="Withdraw Bid"
+              @click="withdrawBid"
+              v-else
             />
           </div>
         </ValidationObserver>
@@ -142,7 +143,10 @@
                   {{
                     item.user_id.wallet_address.slice(0, 5) +
                     "..." +
-                    item.user_id.wallet_address.slice(-5, -1)
+                    item.user_id.wallet_address.slice(
+                      -5,
+                      item.user_id.wallet_address.length
+                    )
                   }}
                   bid for {{ item.bid }} APT
                 </div>
@@ -249,7 +253,9 @@ export default {
     },
     checkOwner() {
       if (
-        this.getWalletConnectedStatus === this.auction.nft.nft.owner_address
+        this.getWalletConnectedStatus === this.auction.nft.nft.owner_address ||
+        this.getWalletConnectedStatus ===
+          this.auction.biddings[0].user_id.wallet_address
       ) {
         return true;
       }
@@ -371,7 +377,14 @@ export default {
           this.$refs.form.reset();
 
           await this.setBid();
+        } else {
+          this.$toast.showMessage({
+            message: resource.vm_status,
+            error: true,
+          });
         }
+
+        this.loading = false;
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
@@ -432,6 +445,11 @@ export default {
             this.$refs.form.reset();
 
             await this.setBid();
+          } else {
+            this.$toast.showMessage({
+              message: increaseBidRes.vm_status,
+              error: true,
+            });
           }
 
           this.loading = false;
