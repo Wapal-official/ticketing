@@ -257,6 +257,7 @@ export default {
     },
   },
   async mounted() {
+    console.log("test");
     await this.getAuctionDetails();
     console.log(this.auction);
     this.auctionStarted = this.checkAuctionStarted();
