@@ -13,7 +13,6 @@ CMD export NODE_ENV=${NODE_ENV}
 # check node and npm version
 RUN node -v
 RUN npm -v
-RUN echo "hello world!"
 
 
 RUN npm install --legacy-peer-deps
