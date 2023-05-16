@@ -37,7 +37,7 @@
     >
       <v-tab-item>
         <div
-          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-1 xl:tw-grid-cols-2 2xl:tw-gap-12 3xl:tw-grid-cols-3"
+          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
         >
           <nft-card
             v-for="collection in liveCollections"
@@ -55,7 +55,7 @@
       </v-tab-item>
       <v-tab-item>
         <div
-          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-1 xl:tw-grid-cols-2 2xl:tw-gap-12 3xl:tw-grid-cols-3"
+          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
         >
           <nft-card
             v-for="collection in underReviewCollections"
@@ -73,7 +73,7 @@
       </v-tab-item>
       <v-tab-item>
         <div
-          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 lg:tw-grid-cols-1 xl:tw-grid-cols-2 2xl:tw-gap-12 3xl:tw-grid-cols-3"
+          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
         >
           <nft-card
             v-for="collection in drafts"

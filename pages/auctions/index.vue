@@ -5,7 +5,7 @@
       No nfts in auction
     </p>
     <div
-      class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 xl:tw-grid-cols-3 lg:tw-gap-12 3xl:tw-grid-cols-4"
+      class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
       v-else
     >
       <AuctionCard v-for="(item, i) in auctions" :key="i" :auction="item" />

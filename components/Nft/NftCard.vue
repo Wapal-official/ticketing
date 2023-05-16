@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     :to="getRedirectLink"
-    class="tw-group tw-h-[450px] lg:tw-w-[400px] xl:tw-w-[350px] 1xl:tw-w-[400px]"
+    class="tw-group tw-w-full tw-h-[450px] lg:tw-w-[320px] lg:tw-h-[360px] 3xl:tw-h-[450px] 3xl:tw-w-[400px]"
   >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full" v-if="!domainName">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">

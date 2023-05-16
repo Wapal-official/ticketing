@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-  class="tw-group tw-h-[450px] lg:tw-w-[400px] xl:tw-w-[350px] 1xl:tw-w-[400px]"
+    class="tw-group tw-w-full tw-h-[450px] lg:tw-w-[320px] lg:tw-h-[360px] 3xl:tw-h-[450px] 3xl:tw-w-[400px]"
     v-if="!loading"
     :to="
       type === 'landing'
@@ -71,7 +71,9 @@
     </div>
   </NuxtLink>
   <div v-else>
-    <div class="tw-rounded tw-relative tw-w-full tw-h-[450px] lg:tw-w-[400px] xl:tw-w-[350px] 1xl:tw-w-[400px]">
+    <div
+      class="tw-rounded tw-relative tw-w-full tw-h-[450px] lg:tw-w-[320px] lg:tw-h-[360px] 3xl:tw-h-[450px] 3xl:tw-w-[400px]"
+    >
       <div
         class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md tw-bg-gray-500 tw-transition-all tw-duration-300 tw-ease-linear tw-animate-pulse"
       ></div>
