@@ -521,7 +521,6 @@ export default {
                 description: this.mint.tokenDesc,
                 attributes: this.mint.attributes,
               })) + "/";
-            console.log("meta:", metaUri);
 
             //creating collection
             const candymachine = await this.$store.dispatch(
@@ -619,13 +618,18 @@ export default {
                     }
                   );
 
+                  const auction_name = this.selectedNft.meta.name.replaceAll(
+                    "#",
+                    ""
+                  );
+
                   await publicRequest.post("/api/auction", {
                     nft: this.selectedNft,
                     startAt: this.mint.startDate,
                     endAt: this.mint.endDate,
                     min_bid: this.mint.minBid,
                     id: auction.cur_auction_id,
-                    auction_name: this.selectedNft.meta.name,
+                    auction_name: auction_name,
                   });
 
                   this.$toast.showMessage({

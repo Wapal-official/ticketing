@@ -44,7 +44,7 @@
         </div>
         <ReusableThemeButton
           title="Place You bid"
-          @click="$router.push('/auctions/' + auction._id)"
+          @click="$router.push('/auctions/' + auction.auction_name)"
           class="tw-w-full tw-my-5 !tw-py-3"
         />
       </div>

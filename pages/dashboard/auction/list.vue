@@ -4,7 +4,7 @@
       <v-col v-for="(item, i) in auctions" :key="i" cols="12" lg="3" md="6">
         <v-card
           tile
-          @click="$router.push('/auctions/' + item._id)"
+          @click="$router.push('/auctions/' + item.auction_name)"
           color="transparent"
         >
           <v-img :src="item.nft.meta.image" class="tw-h-[350px]"></v-img>

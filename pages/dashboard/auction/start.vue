@@ -165,7 +165,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.selectedNft);
     if (!this.selectedNft) {
       this.$router.push("/dashboard/auction");
     }
@@ -186,6 +185,8 @@ export default {
             }
           );
 
+          const auction_name = this.selectedNft.meta.name.replaceAll("#", "");
+
           publicRequest
             .post("/api/auction", {
               nft: this.selectedNft,
@@ -193,7 +194,7 @@ export default {
               endAt: this.end_date,
               min_bid: this.apt,
               id: auction.cur_auction_id,
-              auction_name: this.selectedNft.meta.name,
+              auction_name: auction_name,
             })
             .then((res) => {
               this.$toast.showMessage({
