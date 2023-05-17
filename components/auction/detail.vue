@@ -109,7 +109,11 @@
           >
             <reusable-theme-button
               :loading="loading"
-              title="Complete Auction"
+              :title="
+                auction.nft.nft.owner_address === getWalletConnectedStatus
+                  ? 'Complete Auction'
+                  : 'Claim NFT'
+              "
               @click="completeAuction"
               v-if="checkOwner"
             />
@@ -141,12 +145,9 @@
               >
                 <div class="!tw-text-white">
                   {{
-                    item.user_id.wallet_address.slice(0, 5) +
+                    item.wallet_address.slice(0, 5) +
                     "..." +
-                    item.user_id.wallet_address.slice(
-                      -5,
-                      item.user_id.wallet_address.length
-                    )
+                    item.wallet_address.slice(-5, item.wallet_address.length)
                   }}
                   bid for {{ item.bid }} APT
                 </div>
@@ -248,14 +249,11 @@ export default {
     getWalletConnectedStatus() {
       return this.$store.state.walletStore.wallet.walletAddress;
     },
-    getLoggedInStatus() {
-      return this.$store.state.userStore.user.token;
-    },
     checkOwner() {
       if (
         this.getWalletConnectedStatus === this.auction.nft.nft.owner_address ||
         this.getWalletConnectedStatus ===
-          this.auction.biddings[0].user_id.wallet_address
+          this.auction.biddings[0].wallet_address
       ) {
         return true;
       }
@@ -303,9 +301,9 @@ export default {
       this.checkWalletInBiddings();
     },
     async setBid() {
-      if (this.getLoggedInStatus) {
+      if (this.getWalletConnectedStatus) {
         const bidRes = await publicRequest.get(
-          `/api/auction/bid?auction_id=${this.$route.params.id}`
+          `/api/auction/bid?auction_id=${this.$route.params.id}&wallet_address=${this.getWalletConnectedStatus}`
         );
 
         const biddings = bidRes.data.bids.biddings;
@@ -322,10 +320,6 @@ export default {
     async placeBid() {
       if (!this.getWalletConnectedStatus) {
         this.showConnectWalletDialog = true;
-        return;
-      }
-      if (!this.getLoggedInStatus) {
-        this.showSignupDialog = true;
         return;
       }
       try {
@@ -362,6 +356,7 @@ export default {
           });
 
           const res = await placeBid(
+            this.getWalletConnectedStatus,
             this.bid,
             this.auction._id,
             creation_number
@@ -392,8 +387,8 @@ export default {
       }
     },
     async increaseBid() {
-      if (!this.getLoggedInStatus) {
-        this.showSignupDialog = true;
+      if (!this.getWalletConnectedStatus) {
+        this.showConnectWalletDialog = true;
         return;
       }
       try {
@@ -433,7 +428,12 @@ export default {
               }
             });
 
-            const res = await placeBid(bid, this.auction._id, creation_number);
+            const res = await placeBid(
+              this.getWalletConnectedStatus,
+              bid,
+              this.auction._id,
+              creation_number
+            );
 
             this.auction.biddings.unshift(...res.data.newBid.biddings);
 
@@ -470,7 +470,7 @@ export default {
     checkWalletInBiddings() {
       if (this.getWalletConnectedStatus) {
         const alreadyBided = this.auction.biddings.some((bid) => {
-          return bid.user_id.wallet_address === this.getWalletConnectedStatus;
+          return bid.wallet_address === this.getWalletConnectedStatus;
         });
 
         if (alreadyBided) {

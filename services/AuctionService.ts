@@ -113,11 +113,13 @@ export const getWalletNFT = async (params: any) => {
 };
 
 export const placeBid = async (
+  wallet_address:string,
   bid: number,
   auction_id: number,
   creation_number: number
 ) => {
   const res = await publicRequest.post(`/api/auction/bid`, {
+    wallet_address:wallet_address,
     bid: bid,
     auction_id: auction_id,
     creation_number: creation_number,
