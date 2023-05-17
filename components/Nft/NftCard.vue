@@ -182,7 +182,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.collection);
     this.status = this.getStatus;
   },
 };
