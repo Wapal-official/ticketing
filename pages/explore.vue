@@ -108,13 +108,15 @@ export default {
 
         const now = new Date();
 
-        if (!whitelistSaleDate) {
-          if (publicSaleDate < now) {
-            return collection;
-          }
-        } else {
-          if (whitelistSaleDate < now && publicSaleDate < now) {
-            return collection;
+        if (!collection.status.sold_out) {
+          if (!whitelistSaleDate) {
+            if (publicSaleDate < now) {
+              return collection;
+            }
+          } else {
+            if (whitelistSaleDate < now && publicSaleDate < now) {
+              return collection;
+            }
           }
         }
       });
