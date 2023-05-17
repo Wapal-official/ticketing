@@ -251,11 +251,18 @@ export default {
     },
     checkOwner() {
       if (
-        this.getWalletConnectedStatus === this.auction.nft.nft.owner_address ||
-        this.getWalletConnectedStatus ===
-          this.auction.biddings[0].wallet_address
+        this.getWalletConnectedStatus === this.auction.nft.nft.owner_address
       ) {
         return true;
+      }
+
+      if (this.auction.biddings.length > 0) {
+        if (
+          this.getWalletConnectedStatus ===
+          this.auction.biddings[0].wallet_address
+        ) {
+          return true;
+        }
       }
       return false;
     },
@@ -303,7 +310,7 @@ export default {
     async setBid() {
       if (this.getWalletConnectedStatus) {
         const bidRes = await publicRequest.get(
-          `/api/auction/bid?auction_id=${this.$route.params.id}&wallet_address=${this.getWalletConnectedStatus}`
+          `/api/auction/bid?auction_id=${this.auction._id}&wallet_address=${this.getWalletConnectedStatus}`
         );
 
         const biddings = bidRes.data.bids.biddings;

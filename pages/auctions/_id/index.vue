@@ -6,11 +6,12 @@
 <script>
 import { publicRequest } from "@/services/fetcher";
 export default {
-  async asyncData({ params }) {
+  async asyncData({ params, error }) {
     const res = await publicRequest.get(`/api/auction/${params.id}`);
-
     const auction = res.data.auction[0];
-
+    if (res.data.auction.length === 0) {
+      error({ statusCode: 404, message: "Auction not found" });
+    }
     return { auction };
   },
   head() {
@@ -41,7 +42,6 @@ export default {
           content: this.auction.nft.meta.image,
         },
         { hid: "og:title", property: "og:title", content: this.getTitle },
-
         {
           hid: "description",
           name: "description",
