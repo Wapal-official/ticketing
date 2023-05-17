@@ -521,7 +521,6 @@ export default {
                 description: this.mint.tokenDesc,
                 attributes: this.mint.attributes,
               })) + "/";
-            console.log("meta:", metaUri);
 
             //creating collection
             const candymachine = await this.$store.dispatch(

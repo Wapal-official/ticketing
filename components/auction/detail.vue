@@ -262,7 +262,7 @@ export default {
   },
   async mounted() {
     await this.getAuctionDetails();
-    console.log(this.auction);
+
     this.auctionStarted = this.checkAuctionStarted();
     this.auctionEnded = this.checkAuctionEnded();
     await this.setBid();
@@ -341,8 +341,6 @@ export default {
           offer_price: Number(this.bid).toFixed(8),
         });
 
-        console.log(resource);
-
         if (!resource) {
           this.loading = false;
           return;
@@ -397,8 +395,6 @@ export default {
         let bid = Number(this.bid) + Number(this.previousBid);
         bid = bid.toFixed(8);
 
-        console.log(bid);
-
         if (bid <= cur_bid) {
           this.loading = false;
           this.$toast.showMessage({
@@ -416,7 +412,6 @@ export default {
             { price: this.bid, auction_id: this.auction.id }
           );
 
-          console.log(increaseBidRes);
           let creation_number = 0;
           if (increaseBidRes.success) {
             increaseBidRes.events.map((event) => {
@@ -496,8 +491,6 @@ export default {
           creation_number: creation_number,
         });
 
-        console.log(res);
-
         if (res.success) {
           this.$toast.showMessage({ message: "Bid Withdrawn Successfully" });
         }
@@ -520,8 +513,6 @@ export default {
         const res = await this.$store.dispatch("walletStore/completeAuction", {
           auction_id: Number(this.auction.id),
         });
-
-        console.log(res);
 
         if (res.success) {
           this.$toast.showMessage({

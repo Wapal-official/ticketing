@@ -165,7 +165,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.selectedNft);
     if (!this.selectedNft) {
       this.$router.push("/dashboard/auction");
     }

@@ -227,7 +227,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
-    console.log("args:", candyMachineArguments);
+
     const create_candy_machine = {
       type: "entry_function_payload",
       function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
@@ -492,7 +492,6 @@ export const actions = {
       transactionRes.hash
     );
 
-    console.log(getResource);
     if (getResource) {
       for (var x = 0; x < getResource.changes.length; x++) {
         if (
@@ -511,12 +510,6 @@ export const actions = {
       }
       let withdraw = new Date(auction.detail.endAt);
       let withdrawSec = Math.floor(withdraw.getTime() / 1000);
-
-      console.log(
-        auction.detail.nft.nft.current_token_data.creator_address,
-        auction.detail.nft.nft.current_token_data.collection_name,
-        auction.detail.nft.nft.current_token_data.name
-      );
 
       const place_bid = {
         type: "entry_function_payload",
@@ -583,8 +576,6 @@ export const actions = {
       arguments: [lister_address, creation_number],
     };
 
-    console.log(withdraw_coin_from_bid);
-
     const res = await wallet.signAndSubmitTransaction(withdraw_coin_from_bid);
 
     const txhRes = await client.getTransactionByHash(res.hash);
@@ -605,8 +596,6 @@ export const actions = {
       type_arguments: ["0x1::aptos_coin::AptosCoin"],
       arguments: [auction_id],
     };
-
-    console.log(complete_auction);
 
     const res = await wallet.signAndSubmitTransaction(complete_auction);
 
