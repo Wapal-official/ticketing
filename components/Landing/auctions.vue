@@ -19,8 +19,7 @@
             :key="auction._id"
             :auction="auction"
             :class="{
-              'lg:tw-hidden xl:tw-flex': index === 2,
-              'lg:tw-hidden 1xl:tw-flex': index === 3,
+              'lg:tw-hidden xl:tw-flex': index === 3,
             }"
           />
         </div>
