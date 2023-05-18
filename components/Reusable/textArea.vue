@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-text-field-border tw-w-full">
     <v-textarea
-      @input="handleInput"
+      v-model="internalValue"
       rows="3"
       auto-grow
       outlined
@@ -16,7 +16,9 @@
       :error-messages="error_messages"
       class="dashboard-input"
       :style="`background:${this.background}`"
-    ></v-textarea>
+      :disabled="readOnly"
+      >{{ internalValue }}</v-textarea
+    >
   </div>
 </template>
 
@@ -42,10 +44,27 @@ export default {
       type: String,
       default: "#0E0D0D",
     },
+    readOnly: {
+      type: Boolean,
+    },
+    value: {
+      type: [String, Number],
+      required: true,
+    },
   },
   methods: {
     handleInput(e) {
       this.$emit("input", e);
+    },
+  },
+  computed: {
+    internalValue: {
+      get() {
+        return this.value;
+      },
+      set(newValue) {
+        this.$emit("input", newValue);
+      },
     },
   },
 };

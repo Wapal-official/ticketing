@@ -39,7 +39,12 @@
           </div>
           <div>
             <div>Current Bid</div>
-            <div class="tw-text-wapal-pink">{{ auction.min_bid }} APT</div>
+            <div class="tw-text-wapal-pink">
+              {{
+                auction.biddings[0] ? auction.biddings[0].bid : auction.min_bid
+              }}
+              APT
+            </div>
           </div>
         </div>
         <ReusableThemeButton
