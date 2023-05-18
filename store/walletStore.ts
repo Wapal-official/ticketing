@@ -334,6 +334,13 @@ export const actions = {
 
     const transaction = await wallet.signAndSubmitTransaction(payload);
 
+    if (!transaction.success) {
+      const transactionResult = await client.waitForTransactionWithResult(
+        transaction.hash
+      );
+      return transactionResult;
+    }
+
     return transaction;
   },
   async signLoginMessage({ state }: { state: any }) {

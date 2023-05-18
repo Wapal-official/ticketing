@@ -682,6 +682,8 @@ export default {
           uploadSocketState.uploading = true;
 
           this.showUploadingDialog = false;
+        } else {
+          throw new Error("Transaction Not Successful");
         }
       } catch (error) {
         console.log(error);
