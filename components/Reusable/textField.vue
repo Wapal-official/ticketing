@@ -13,6 +13,7 @@
       :type="type"
       class="dashboard-input"
       :style="`background:${background}`"
+      :disabled="disabled"
     >
     </v-text-field>
   </div>
@@ -47,6 +48,10 @@ export default {
     background: {
       type: String,
       default: "#0E0D0D",
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

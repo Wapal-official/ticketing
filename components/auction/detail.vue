@@ -298,7 +298,7 @@ export default {
         `/api/auction/${this.$route.params.id}`
       );
 
-      let response = res.data.auction[0];
+      let response = res.data.auction;
       let rev = response.biddings.reverse();
       response.biddings = rev;
       this.auction = response;

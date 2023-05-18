@@ -190,9 +190,35 @@
             class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2"
           >
             <div class="tw-w-full" id="image-preview"></div>
-            <ValidationObserver v-slot="{ handleSubmit }">
+            <ValidationObserver v-slot="{ handleSubmit }" ref="attributeForm">
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <label>Name</label>
+                <reusable-text-field
+                  v-model="mint.tokenName"
+                  type="text"
+                  :disabled="true"
+                ></reusable-text-field>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <label>Description</label>
+                <reusable-text-area
+                  v-model="mint.tokenDesc"
+                  type="text"
+                  :readOnly="true"
+                ></reusable-text-area>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
               <form @submit.prevent="handleSubmit()">
-                <div class="tw-pb-2">Attributes</div>
+                <div class="tw-pb-2">Add Attributes</div>
                 <div
                   class="tw-w-full"
                   v-for="(attribute, index) in mint.attributes"
@@ -207,7 +233,7 @@
                       v-slot="{ errors }"
                     >
                       <label
-                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2 tw-text-sm"
                         >Attribute Type</label
                       >
                       <reusable-text-field
@@ -223,31 +249,34 @@
                       v-slot="{ errors }"
                     >
                       <label
-                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2 tw-text-sm"
                         >Value</label
                       >
-                      <reusable-text-field
-                        v-model="attribute.value"
-                        type="text"
-                        placeholder="Blue"
-                      ></reusable-text-field>
+                      <div
+                        class="tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-2"
+                      >
+                        <reusable-text-field
+                          v-model="attribute.value"
+                          type="text"
+                          placeholder="Blue"
+                        ></reusable-text-field>
+                        <button
+                          class="tw-bg-transparent !tw-border !tw-border-solid !tw-border-wapal-pink tw-text-white tw-px-4 tw-py-2 tw-mb-4 tw-rounded-lg"
+                          @click.prevent="removeAttribute(index)"
+                        >
+                          <v-icon>mdi-trash-can</v-icon>
+                        </button>
+                      </div>
                       <div class="tw-text-red-600">{{ errors[0] }}</div>
                     </ValidationProvider>
                   </div>
-                  <div class="tw-flex tw-flex-row tw-w-full tw-justify-end">
-                    <button
-                      class="tw-bg-[#A0A0A0] tw-text-white tw-px-6 tw-py-2 tw-mb-4 tw-rounded"
-                      @click="removeAttribute(index)"
-                    >
-                      Remove Attribute
-                    </button>
-                  </div>
                 </div>
                 <button
-                  class="tw-bg-[#A0A0A0] tw-text-white tw-px-6 tw-py-2 tw-mb-4 tw-rounded"
+                  class="tw-bg-transparent !tw-border !tw-border-solid !tw-border-wapal-pink tw-text-white tw-px-6 tw-py-2 tw-mb-4 tw-rounded-lg"
                   @click.prevent="addAttribute"
                 >
-                  Add Attribute
+                  <v-icon class="!tw-text-white !tw-pr-2">mdi-plus</v-icon
+                  ><span>Add</span>
                 </button>
                 <div
                   class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
@@ -266,11 +295,13 @@
       </v-stepper-items>
     </v-stepper>
     <v-dialog
-      content-class="!tw-w-full md:!tw-w-1/2"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-1/3 3xl:!tw-w-1/4"
       v-model="createAuctionModal"
       persistent
     >
-      <div class="tw-w-full tw-bg-modal-gray tw-py-6 tw-px-4">
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-[#141414] tw-rounded tw-px-8 tw-py-4"
+      >
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
         >
@@ -281,29 +312,121 @@
             <v-icon class="!tw-text-white">mdi-close</v-icon>
           </button>
         </div>
-        <v-stepper
-          class="tw-w-full mint-auction-stepper !tw-bg-modal-gray"
-          color="transparent"
-          v-model="auctionProgress"
+        <h3 class="tw-text-2xl tw-font-semibold">Wallet Approval</h3>
+        <div class="tw-h-[1px] tw-bg-[#ffffff4d] tw-w-full"></div>
+        <h4 class="tw-text-lg tw-font-semibold">Create Auction</h4>
+        <p>
+          Please review and approve up to three transactions in your wallet
+          window to create your NFT.
+        </p>
+        <div
+          class="tw-rounded tw-bg-[#262525] tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-py-4 tw-px-4"
         >
-          <v-stepper-header>
-            <v-stepper-step step="1" :color="defaultTheme.wapalPink"
-              >Creating Collection</v-stepper-step
-            >
-
-            <v-divider></v-divider>
-
-            <v-stepper-step step="2" :color="defaultTheme.wapalPink"
-              >Minting Collection</v-stepper-step
-            >
-
-            <v-divider></v-divider>
-
-            <v-stepper-step step="3" :color="defaultTheme.wapalPink"
-              >Creating Auction</v-stepper-step
-            >
-          </v-stepper-header>
-        </v-stepper>
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+          >
+            <span>1. Uploading Image and Metadata</span>
+            <div v-if="auctionProgress < 1">-</div>
+            <div v-else>
+              <div v-if="auctionProgress === 1 && !createError">
+                <v-progress-circular
+                  width="4"
+                  size="24"
+                  :color="defaultTheme.wapalPink"
+                  indeterminate
+                ></v-progress-circular>
+              </div>
+              <div v-else>
+                <v-icon
+                  class="!tw-font-light !tw-text-wapal-pink"
+                  v-if="auctionProgress > 1"
+                  >mdi-check-circle-outline</v-icon
+                >
+                <v-icon class="!tw-font-light !tw-text-red-600" v-else
+                  >mdi-close-circle-outline</v-icon
+                >
+              </div>
+            </div>
+          </div>
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+          >
+            <span>2. Creating Collection</span>
+            <div v-if="auctionProgress < 2">-</div>
+            <div v-else>
+              <div v-if="auctionProgress === 2 && !createError">
+                <v-progress-circular
+                  width="4"
+                  size="24"
+                  :color="defaultTheme.wapalPink"
+                  indeterminate
+                ></v-progress-circular>
+              </div>
+              <div v-else>
+                <v-icon
+                  class="!tw-font-light !tw-text-wapal-pink"
+                  v-if="auctionProgress > 2"
+                  >mdi-check-circle-outline</v-icon
+                >
+                <v-icon class="!tw-font-light !tw-text-red-600" v-else
+                  >mdi-close-circle-outline</v-icon
+                >
+              </div>
+            </div>
+          </div>
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+          >
+            <span>3. Minting Collection</span>
+            <div v-if="auctionProgress < 3">-</div>
+            <div v-else>
+              <div v-if="auctionProgress === 3 && !createError">
+                <v-progress-circular
+                  width="4"
+                  size="24"
+                  :color="defaultTheme.wapalPink"
+                  indeterminate
+                ></v-progress-circular>
+              </div>
+              <div v-else>
+                <v-icon
+                  class="!tw-font-light !tw-text-wapal-pink"
+                  v-if="auctionProgress > 3"
+                  >mdi-check-circle-outline</v-icon
+                >
+                <v-icon class="!tw-font-light !tw-text-red-600" v-else
+                  >mdi-close-circle-outline</v-icon
+                >
+              </div>
+            </div>
+          </div>
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+          >
+            <span>4. Adding Collection To Auction</span>
+            <div v-if="auctionProgress < 4">-</div>
+            <div v-else>
+              <div v-if="auctionProgress === 4 && !createError">
+                <v-progress-circular
+                  width="4"
+                  size="24"
+                  :color="defaultTheme.wapalPink"
+                  indeterminate
+                ></v-progress-circular>
+              </div>
+              <div v-else>
+                <v-icon
+                  class="!tw-font-light !tw-text-wapal-pink"
+                  v-if="auctionProgress > 4"
+                  >mdi-check-circle-outline</v-icon
+                >
+                <v-icon class="!tw-font-light !tw-text-red-600" v-else
+                  >mdi-close-circle-outline</v-icon
+                >
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </v-dialog>
   </div>
@@ -409,8 +532,9 @@ export default {
       imageError: false,
       imageErrorMessage: "",
       createAuctionModal: false,
-      auctionProgress: 1,
+      auctionProgress: 0,
       showCloseAuctionModal: false,
+      createError: false,
       defaultTheme,
       uploadIcon,
     };
@@ -489,6 +613,11 @@ export default {
       const imgElement = document.createElement("img");
 
       imgElement.src = URL.createObjectURL(this.file);
+      imgElement.classList.add("tw-w-full");
+      imgElement.classList.add("tw-h-full");
+      imgElement.classList.add("tw-object-fill");
+      imgElement.classList.add("tw-max-h-[580px]");
+
       const previewElement = document.getElementById("image-preview");
 
       if (previewElement.firstChild) {
@@ -502,17 +631,20 @@ export default {
       this.displayImage();
     },
     async submit() {
+      const validate = this.$refs.attributeForm.validate();
+
+      if (!validate) {
+        return;
+      }
+
       try {
         if (this.file != null) {
           if (this.mint.attributes.length > 0) {
-            let mintTime = Math.floor(new Date().getTime() / 1000) + 25;
-
-            if (this.$store.state.walletStore.wallet.wallet === "Martian") {
-              mintTime += 20;
-            }
-
+            this.createError = false;
             this.loading = true;
             this.createAuctionModal = true;
+
+            this.auctionProgress = 1;
 
             //uploading and creating metadata file
             const metaUri =
@@ -521,6 +653,14 @@ export default {
                 description: this.mint.tokenDesc,
                 attributes: this.mint.attributes,
               })) + "/";
+
+            let mintTime = Math.floor(new Date().getTime() / 1000) + 10;
+
+            if (this.$store.state.walletStore.wallet.wallet === "Martian") {
+              mintTime += 20;
+            }
+
+            this.auctionProgress = 2;
 
             //creating collection
             const candymachine = await this.$store.dispatch(
@@ -576,7 +716,7 @@ export default {
             //mint
             setTimeout(async () => {
               try {
-                this.auctionProgress = 2;
+                this.auctionProgress = 3;
 
                 const mint = await this.$store.dispatch(
                   "walletStore/mintCollection",
@@ -590,7 +730,7 @@ export default {
 
                 if (mint.success) {
                   //auction
-                  this.auctionProgress = 3;
+                  this.auctionProgress = 4;
 
                   const nftRes = await getWalletNFT({
                     creatorAddress: this.walletAddress,
@@ -639,6 +779,8 @@ export default {
                   this.loading = false;
                   this.createAuctionModal = false;
 
+                  this.auctionProgress = 5;
+
                   this.$router.push("/dashboard/auction/list");
                 }
 
@@ -647,6 +789,7 @@ export default {
                 console.log(error);
                 this.$toast.showMessage({ message: error, error: true });
                 this.loading = false;
+                this.createError = true;
                 this.showCloseAuctionModal = true;
               }
             }, 5000);
@@ -654,6 +797,7 @@ export default {
             this.$toast.showMessage({
               message: "Provide at least one attribute",
               error: true,
+              c,
             });
           }
         } else {
@@ -666,6 +810,8 @@ export default {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.loading = false;
+
+        this.createError = true;
         this.showCloseAuctionModal = true;
       }
     },

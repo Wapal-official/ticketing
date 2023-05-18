@@ -8,7 +8,7 @@ import { publicRequest } from "@/services/fetcher";
 export default {
   async asyncData({ params, error }) {
     const res = await publicRequest.get(`/api/auction/${params.id}`);
-    const auction = res.data.auction[0];
+    const auction = res.data.auction;
     if (res.data.auction.length === 0) {
       error({ statusCode: 404, message: "Auction not found" });
     }
