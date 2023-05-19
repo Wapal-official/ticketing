@@ -316,13 +316,11 @@ export default {
         const biddings = bidRes.data.bids.biddings;
 
         if (biddings.length > 0) {
-          this.bid = this.previousBid = biddings[biddings.length - 1].bid;
-        } else {
-          this.bid = this.current_bid;
+          this.previousBid = biddings[biddings.length - 1].bid;
         }
-      } else {
-        this.bid = this.current_bid;
       }
+      this.bid = 0;
+      this.$refs.form.reset();
     },
     async placeBid() {
       if (!this.getWalletConnectedStatus) {
@@ -441,7 +439,7 @@ export default {
 
             this.$toast.showMessage({ message: "Bid Increased Successfully" });
             this.loading = false;
-            this.bid = bid;
+            this.bid = 0;
             this.current_bid = getCurrentBid(this.auction);
             this.checkWalletInBiddings();
             this.$refs.form.reset();
@@ -536,8 +534,10 @@ export default {
     },
   },
   watch: {
-    getWalletConnectedStatus() {
-      this.checkWalletInBiddings();
+    async getWalletConnectedStatus() {
+      await this.checkWalletInBiddings();
+      await this.setBid();
+      console.log(this.previousBid);
     },
   },
   beforeDestroy() {

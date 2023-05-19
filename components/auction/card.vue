@@ -6,9 +6,9 @@
       <img
         :src="auction.nft.meta.image"
         :alt="auction.nft.meta.name"
-        class="tw-rounded-t tw-w-full tw-h-[450px] md:tw-min-h-[450px] lg:tw-min-h-[360px] md:tw-max-h-[450px] lg:tw-max-h-[360px] 3xl:tw-min-h-[450px] 3xl:tw-max-h-[450px] tw-object-cover"
+        class="tw-rounded-t tw-w-full tw-min-h-[260px] tw-max-h-[260px] 3xl:tw-min-h-[450px] 3xl:tw-max-h-[450px] tw-object-cover"
       />
-      <div class="tw-px-8 tw-w-full tw-py-8 tw-h-full">
+      <div class="tw-px-8 tw-w-full tw-pt-6 tw-pb-8 tw-h-full">
         <h3
           class="tw-text-uppercase tw-text-xl tw-font-medium tw-pb-4 3xl:tw-text-2xl"
         >
