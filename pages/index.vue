@@ -35,11 +35,13 @@
           />
           <loading v-else />
         </section> -->
-        <section class="tw-py-8 tw-container tw-mx-auto">
+        <!-- <section
+          class="tw-py-8 tw-container tw-mx-auto"
+        >
           <landing-section-heading heading="Auctions" />
           <LandingAuctions v-if="!loading" :auctions="auctions" />
           <loading v-else />
-        </section>
+        </section> -->
       </div>
     </div>
   </div>
