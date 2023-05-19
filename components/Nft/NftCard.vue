@@ -140,10 +140,10 @@ export default {
     getPrice() {
       if (!this.collection.candyMachine) {
         if (this.collection.whitelist_price) {
-          return this.collection.whitelist_price;
+          return this.collection.whitelist_price + " apt";
         }
         if (this.collection.public_sale_price) {
-          return this.collection.public_sale_price;
+          return this.collection.public_sale_price + " apt";
         }
 
         return "TBD";
@@ -168,7 +168,7 @@ export default {
       }
 
       if (whiteListDate && publicSaleDate > now) {
-        return this.collection.candyMachine.whitelist_price;
+        return this.collection.candyMachine.whitelist_price + " apt";
       } else {
         return this.collection.candyMachine.public_sale_price + " apt";
       }

@@ -121,7 +121,7 @@
           <button
             class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
             :class="{
-              '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
+              'md:!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
             }"
             @click="mintCollection"
             :disabled="minting || collection.status.sold_out"
@@ -152,6 +152,7 @@
           >
             Starts In
             <count-down
+              class="tw-pl-2"
               :startTime="collection.candyMachine.whitelist_sale_time"
               @countdownComplete="whitelistCountdownComplete"
             />
@@ -174,6 +175,7 @@
           >
             Starts In
             <count-down
+              class="tw-pl-2"
               :startTime="collection.candyMachine.public_sale_time"
               @countdownComplete="publicSaleCountdownComplete"
             />

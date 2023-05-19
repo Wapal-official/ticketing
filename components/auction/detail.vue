@@ -537,7 +537,6 @@ export default {
     async getWalletConnectedStatus() {
       await this.checkWalletInBiddings();
       await this.setBid();
-      console.log(this.previousBid);
     },
   },
   beforeDestroy() {

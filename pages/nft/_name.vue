@@ -164,8 +164,7 @@
               <button
                 class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-px-2 tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
                 :class="{
-                  '!tw-w-[30%]':
-                    !showWhitelistSaleTimer && !showPublicSaleTimer,
+                  'md:!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
                 }"
                 @click="mintBulkCollection"
                 :disabled="minting || collection.status.sold_out"

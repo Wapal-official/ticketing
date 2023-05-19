@@ -300,7 +300,7 @@
       persistent
     >
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-[#141414] tw-rounded tw-px-8 tw-py-4"
+        class="tw-w-full tw-h-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-[#141414] tw-rounded tw-px-8 tw-pt-4 tw-pb-8"
       >
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
@@ -326,7 +326,11 @@
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
           >
             <span>1. Uploading Image and Metadata</span>
-            <div v-if="auctionProgress < 1">-</div>
+            <div v-if="auctionProgress < 1">
+              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
+                >mdi-check-circle-outline</v-icon
+              >
+            </div>
             <div v-else>
               <div v-if="auctionProgress === 1 && !createError">
                 <v-progress-circular
@@ -352,7 +356,11 @@
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
           >
             <span>2. Creating Collection</span>
-            <div v-if="auctionProgress < 2">-</div>
+            <div v-if="auctionProgress < 2">
+              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
+                >mdi-check-circle-outline</v-icon
+              >
+            </div>
             <div v-else>
               <div v-if="auctionProgress === 2 && !createError">
                 <v-progress-circular
@@ -378,7 +386,11 @@
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
           >
             <span>3. Minting Collection</span>
-            <div v-if="auctionProgress < 3">-</div>
+            <div v-if="auctionProgress < 3">
+              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
+                >mdi-check-circle-outline</v-icon
+              >
+            </div>
             <div v-else>
               <div v-if="auctionProgress === 3 && !createError">
                 <v-progress-circular
@@ -404,7 +416,11 @@
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
           >
             <span>4. Adding Collection To Auction</span>
-            <div v-if="auctionProgress < 4">-</div>
+            <div v-if="auctionProgress < 4">
+              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
+                >mdi-check-circle-outline</v-icon
+              >
+            </div>
             <div v-else>
               <div v-if="auctionProgress === 4 && !createError">
                 <v-progress-circular

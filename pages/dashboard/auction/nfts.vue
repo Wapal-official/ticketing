@@ -27,7 +27,7 @@
       </v-col>
     </v-row>
     <v-row no-gutters v-else class="py-10" justify="center">
-      <p v-if="end">No nfts</p>
+      <p v-if="end && !loading">No nfts</p>
       <ReusableLoading v-else />
     </v-row>
     <v-card
@@ -55,6 +55,7 @@ export default {
       offset: 0,
       page: 0,
       limit: 20,
+      loading: true,
     };
   },
   mounted() {
@@ -67,6 +68,7 @@ export default {
   },
   methods: {
     async fetchNfts() {
+      this.loading = true;
       this.offset = this.page * this.limit;
       this.page++;
       let data = await fetchWalletNfts({
@@ -85,8 +87,10 @@ export default {
             this.nfts.push(nfts[x]);
           } catch {}
         }
+        this.loading = false;
       } else {
         this.end = true;
+        this.loading = false;
       }
     },
   },
