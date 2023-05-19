@@ -6,7 +6,7 @@
       <div class="tw-flex tw-flex-row tw-items-start relative">
         <dashboard-sidebar class="tw-hidden lg:tw-flex" />
         <div class="dashboard-container">
-          <Nuxt class="!tw-px-8 !tw-py-4" />
+          <Nuxt class="!tw-px-4 !tw-py-4 md:!tw-px-8" />
         </div>
       </div>
       <div
@@ -69,6 +69,9 @@ export default {
     },
   },
   computed: {
+    userId() {
+      return this.$store.state.userStore.user.user_id;
+    },
     walletAddress() {
       return this.$store.state.walletStore.wallet.walletAddress;
     },
@@ -86,6 +89,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch("walletStore/initializeWallet");
     if (process.client) {
       window.addEventListener("dragenter", (e) => e.preventDefault());
       window.addEventListener("dragover", (e) => {
@@ -118,6 +122,11 @@ export default {
   },
   watch: {
     walletAddress(newVal: any) {
+      if (!newVal) {
+        this.$router.push("/");
+      }
+    },
+    userId(newVal: any) {
       if (!newVal) {
         this.$router.push("/");
       }

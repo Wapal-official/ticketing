@@ -15,14 +15,14 @@
     >
       <div class="tw-flex tw-flex-row tw-flex-wrap tw-w-full">
         <div
-          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:grid-rows-1 lg:tw-grid-cols-3 lg:tw-grid-rows-1 2xl:tw-gap-12 2xl:tw-grid-cols-4"
+          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
         >
           <whitelist-card
             v-for="(whitelist, index) in whitelists"
             :key="whitelist._id"
             :whitelist="whitelist"
             :class="{
-              'lg:tw-hidden 2xl:tw-flex': index === 3,
+              'lg:tw-hidden 1xl:tw-flex': index === 3,
             }"
           />
         </div>

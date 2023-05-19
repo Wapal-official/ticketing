@@ -14,7 +14,13 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
-import { AptosClient, HexString, TxnBuilderTypes } from "aptos";
+import {
+  AptosClient,
+  TokenClient,
+  CoinClient,
+  HexString,
+  TxnBuilderTypes,
+} from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
 
@@ -30,6 +36,8 @@ if (process.env.NETWORK === "testnet") {
 }
 
 const client = new AptosClient(NODE_URL);
+
+const token = new TokenClient(client);
 
 const wallets = [
   new PetraWallet(),
@@ -60,9 +68,10 @@ const makeId = (length: number) => {
 
 const connectWallet = async (walletName: WalletName) => {
   await wallet.connect(walletName);
+};
 
+const checkNetwork = () => {
   if (wallet.network?.name.toLowerCase() !== network.toLowerCase()) {
-    await wallet.disconnect();
     throw new Error(`Please Change your network to ${network}`);
   }
 };
@@ -73,6 +82,7 @@ export const state = () => ({
     walletAddress: "",
     publicKey: "",
     proof: "",
+    initializedAccountChange: false,
   },
 });
 
@@ -86,6 +96,9 @@ export const mutations = {
   setMintLimit(state: any, mint_limit: number) {
     state.mint_limit = mint_limit;
   },
+  setInitializeAccountChange(state: any, accountChange: boolean) {
+    state.wallet.initializedAccountChange = accountChange;
+  },
 };
 
 export const getters = {
@@ -95,12 +108,56 @@ export const getters = {
 };
 
 export const actions = {
+  async initializeWallet({
+    state,
+    dispatch,
+    commit,
+  }: {
+    state: any;
+    dispatch: any;
+    commit: any;
+  }) {
+    if (!wallet.isConnected()) {
+      await wallet.connect(state.wallet.wallet);
+    }
+
+    if (!state.wallet.initializedAccountChange) {
+      try {
+        await wallet.onAccountChange();
+        commit("setInitializeAccountChange", true);
+      } catch (error) {
+        commit("setInitializeAccountChange", false);
+      }
+
+      wallet.onNetworkChange();
+
+      wallet.addListener("networkChange", async () => {
+        await wallet.disconnect();
+      });
+
+      wallet.addListener("accountChange", async () => {
+        await dispatch("connectWallet", {
+          walletName: state.wallet.wallet,
+        });
+
+        dispatch("userStore/disconnectUser", null, { root: true });
+      });
+    }
+  },
   setWallet({ commit }: { commit: any }) {
     commit("setWallet");
   },
-  async connectWallet({ commit }: { commit: any }, walletName: WalletName) {
+  async connectWallet(
+    { state, commit }: { state: any; commit: any },
+    walletName: WalletName
+  ) {
     try {
       await connectWallet(walletName);
+
+      if (wallet.isConnected() && !state.wallet.initializedAccountChange) {
+        wallet.onAccountChange();
+        commit("setInitializeAccountChange", true);
+      }
 
       commit("setWallet", {
         wallet: wallet.wallet?.name,
@@ -108,7 +165,9 @@ export const actions = {
         publicKey: Array.isArray(wallet.account?.publicKey)
           ? wallet.account?.publicKey[0]
           : wallet.account?.publicKey,
+        initializedAccountChange: true,
       });
+
       Cookies.set(
         "wallet",
         JSON.stringify({
@@ -122,12 +181,13 @@ export const actions = {
           expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
         }
       );
+
       return true;
     } catch (error) {
       throw error;
     }
   },
-  async disconnectWallet({ commit }: { commit: any }) {
+  async disconnectWallet({ commit, state }: { commit: any; state: any }) {
     if (wallet.account) {
       await wallet.disconnect();
     }
@@ -135,6 +195,9 @@ export const actions = {
       wallet: "",
       walletAddress: "",
       publicKey: "",
+      initializedAccountChange: state.wallet.initializedAccountChange
+        ? state.wallet.initializedAccountChange
+        : false,
     });
     Cookies.set(
       "wallet",
@@ -160,12 +223,14 @@ export const actions = {
     commit("setMintLimit", data.wallet.mint_limit);
   },
   async createCandyMachine(
-    { state, dispatch }: { state: any; dispatch: any },
+    { state }: { state: any },
     candyMachineArguments: any
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+
+    checkNetwork();
 
     const create_candy_machine = {
       type: "entry_function_payload",
@@ -211,6 +276,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+    checkNetwork();
 
     const res: any = await client.getAccountResources(
       state.wallet.walletAddress
@@ -244,6 +310,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+    checkNetwork();
 
     try {
       var create_mint_script: any;
@@ -320,6 +387,8 @@ export const actions = {
       await connectWallet(state.wallet.wallet);
     }
 
+    checkNetwork();
+
     const transactionAmount = Math.ceil(requiredBalance * 100000000);
 
     const payload = {
@@ -347,6 +416,8 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+
+    checkNetwork();
 
     const message = "Login into Wapal";
     const nonce = makeId(16);
@@ -381,9 +452,9 @@ export const actions = {
       candyMachineId,
     }: { root: any; resourceAccount: string; candyMachineId: string }
   ) {
-    if (!wallet.isConnected()) {
-      await connectWallet(state.wallet.wallet);
-    }
+    await connectWallet(state.wallet.wallet);
+
+    checkNetwork();
 
     const set_root_script = {
       function: candyMachineId + "::candymachine::set_root",
@@ -404,11 +475,163 @@ export const actions = {
 
     return transaction;
   },
+  async createAuction({ rootState }: { rootState: any }, detail: any) {
+    if (!wallet.isConnected()) {
+      await connectWallet(rootState.walletStore.wallet.wallet);
+    }
+    checkNetwork();
 
+    let start = new Date(detail.start_date);
+    let startSec = Math.floor(start.getTime() / 1000);
+    let end = new Date(detail.end_date);
+    let endSec = Math.floor(end.getTime() / 1000);
+    let min_bid = detail.min_bid * 100000000;
+    let nft = rootState.auction.selectedNft;
+
+    const create_auction = {
+      type: "entry_function_payload",
+      function: process.env.PID + "::auction::create_auction",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: [
+        nft.nft.current_token_data.creator_address,
+        nft.nft.current_token_data.collection_name,
+        nft.nft.current_token_data.name,
+        nft.nft.property_version,
+        nft.nft.amount,
+        min_bid, //price
+        startSec, //start sec
+        endSec, //end
+        endSec + 3600 * 24 * 30, //withdraw
+      ],
+    };
+
+    let transactionRes = await wallet.signAndSubmitTransaction(create_auction);
+
+    let getResource: any = await client.waitForTransactionWithResult(
+      transactionRes.hash
+    );
+
+    if (getResource) {
+      for (var x = 0; x < getResource.changes.length; x++) {
+        if (
+          getResource.changes[x].data.type ==
+          process.env.PID + "::auction::Auctions<0x1::aptos_coin::AptosCoin>"
+        ) {
+          return getResource.changes[x].data.data;
+        }
+      }
+    }
+  },
+  async placeBid({ rootState }: { rootState: any }, auction: any) {
+    try {
+      if (!wallet.isConnected()) {
+        await connectWallet(rootState.walletStore.wallet.wallet);
+      }
+      checkNetwork();
+
+      let withdraw = new Date(auction.detail.endAt);
+      let withdrawSec = Math.floor(withdraw.getTime() / 1000);
+
+      const place_bid = {
+        type: "entry_function_payload",
+        function: process.env.PID + "::auction::bid",
+        type_arguments: ["0x1::aptos_coin::AptosCoin"],
+        arguments: [
+          auction.detail.nft.nft.current_token_data.creator_address,
+          auction.detail.nft.nft.current_token_data.collection_name,
+          auction.detail.nft.nft.current_token_data.name,
+          auction.detail.nft.nft.property_version,
+          auction.detail.nft.nft.amount,
+          auction.offer_price * 100000000,
+          auction.detail.id,
+          withdrawSec,
+        ],
+      };
+      let transactionRes = await wallet.signAndSubmitTransaction(place_bid);
+
+      let getResource = await client.waitForTransactionWithResult(
+        transactionRes.hash
+      );
+      return getResource;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
+  async increaseAuctionBid(
+    { state }: { state: any },
+    { price, auction_id }: { price: number; auction_id: number }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+    checkNetwork();
+
+    const increase_bid = {
+      type: "entry_function_payload",
+      function: process.env.PID + "::auction::increase_bid",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: [price * Math.pow(10, 8), auction_id],
+    };
+
+    const res = await wallet.signAndSubmitTransaction(increase_bid);
+
+    const txhRes = await client.getTransactionByHash(res.hash);
+
+    return txhRes;
+  },
+  async withdrawBid(
+    { state }: { state: any },
+    {
+      lister_address,
+      creation_number,
+    }: { lister_address: String; creation_number: Number }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+    checkNetwork();
+
+    const withdraw_coin_from_bid = {
+      type: "entry_function_payload",
+      function: process.env.PID + "::auction::withdraw_coin_from_bid",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: [lister_address, creation_number],
+    };
+
+    const res = await wallet.signAndSubmitTransaction(withdraw_coin_from_bid);
+
+    const txhRes = await client.getTransactionByHash(res.hash);
+
+    return txhRes;
+  },
+  async completeAuction(
+    { state }: { state: any },
+    { auction_id }: { auction_id: Number }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+    checkNetwork();
+
+    const complete_auction = {
+      type: "entry_function_payload",
+      function: process.env.PID + "::auction::complete_auction",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: [auction_id],
+    };
+
+    const res = await wallet.signAndSubmitTransaction(complete_auction);
+
+    const txhRes = await client.getTransactionByHash(res.hash);
+
+    return txhRes;
+  },
   async buyDomainName({ state }: { state: any }, domainName: string) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+    checkNetwork();
 
     const buyDomainScript = {
       function:
@@ -444,6 +667,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+    checkNetwork();
 
     if (state.wallet.wallet !== "Petra" && mintNumber > 1) {
       throw new Error("Please Change Wallet To Petra for Bulk Mint");

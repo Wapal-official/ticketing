@@ -12,14 +12,12 @@ const filterApprovedCollections = (collections: any[]) => {
 
 export const getCollections = async (page: number, limit: number) => {
   const res = await axios.get(
-    `${process.env.baseURL}/api/collection/all?page=${page}&limit=${limit}`
+    `${process.env.baseURL}/api/collection/approved?page=${page}&limit=${limit}`
   );
 
   const collections = res.data.data;
 
-  const filteredCollections = filterApprovedCollections(collections);
-
-  return [...filteredCollections];
+  return collections;
 };
 
 export const getCollection = async (collectionId: string) => {
@@ -76,6 +74,72 @@ export const getCollectionByUsername = async (username: string) => {
 
 export const getFeaturedCollection = async () => {
   const res = await axios.get(`${process.env.baseURL}/api/collection/featured`);
+
+  return res;
+};
+
+export const getLiveCollections = async (page: number, limit: number) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/collection/live?page=${page}&limit=${limit}`
+  );
+
+  return res;
+};
+
+export const getUpcomingCollections = async (page: number, limit: number) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/collection/upcoming?page=${page}&limit=${limit}`
+  );
+
+  return res;
+};
+
+export const createDraft = async (formData: any) => {
+  const config = {
+    headers: { "content-type": "multipart/form-data" },
+  };
+
+  const res = await publicRequest.post(
+    `/api/collection/draft/`,
+    formData,
+    config
+  );
+
+  return res;
+};
+
+export const getDraftById = async (draftId: any) => {
+  const res = await publicRequest.get(`/api/collection/draft/${draftId}`);
+
+  return res;
+};
+
+export const getApprovedCollectionsOfUser = async (
+  userId: string,
+  page: number
+) => {
+  const res = await publicRequest.get(
+    `/api/collection/approved?user_id=${userId}&limit=10&page=${page}`
+  );
+
+  return res;
+};
+
+export const getUnderReviewCollectionsOfUser = async (
+  userId: string,
+  page: number
+) => {
+  const res = await publicRequest.get(
+    `/api/collection/under-review?user_id=${userId}&limit=10&page=${page}`
+  );
+
+  return res;
+};
+
+export const getDraftsOfUser = async (page: number) => {
+  const res = await publicRequest.get(
+    `/api/collection/draft?limit=10&page=${page}`
+  );
 
   return res;
 };

@@ -6,7 +6,7 @@
       </button>
     </div>
     <p class="tw-text-sm md:tw-text-lg tw-font-normal tw-pb-4">
-      Sign a message to log in into Wapal
+      {{ message }}
     </p>
     <primary-button @click.native="signMessage">Sign Message</primary-button>
   </div>
@@ -18,6 +18,9 @@ import nacl from "tweetnacl";
 import { encodeBase64 } from "tweetnacl-util";
 
 export default {
+  props: {
+    message: { type: String, default: "Sign a message to log in into Wapal" },
+  },
   components: { PrimaryButton },
   data() {
     return {};

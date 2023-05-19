@@ -1,8 +1,5 @@
 <template>
   <div class="tw-w-full md:tw-px-8 lg:tw-px-0">
-    <div>
-      <DashboardBreadcrumb class="tw-mb-1" :breadcrumbs="breadcrumb" />
-    </div>
     <h1 class="tw-text-xl tw-font-bold">Create NFT Collection</h1>
     <ValidationObserver ref="form" v-slot="{ handleSubmit }">
       <form
@@ -59,10 +56,7 @@
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
         >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Image Collection</label
-          >
+          <label>Image Collection</label>
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full md:tw-flex-row md:tw-justify-start dashboard-text-field-group"
             ref="imageSelect"
@@ -75,7 +69,7 @@
                 v-if="!image.name"
               >
                 <v-icon class="!tw-text-wapal-gray">mdi-image</v-icon>
-                Select Image
+                Change Image
               </div>
               <div
                 class="tw-bg-wapal-background tw-px-4 tw-py-2 tw-rounded-lg tw-max-w-4/5 tw-overflow-hidden"
@@ -147,10 +141,13 @@
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="baseurl"
-          :rules="!tbd ? 'required' : ''"
+          rules="required"
           v-slot="{ errors }"
         >
-          <label>Assets</label>
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Assets</label
+          >
           <div class="dashboard-text-field-border tw-w-full">
             <v-autocomplete
               v-model="baseURL"
@@ -171,9 +168,13 @@
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="supply"
+          rules="required"
           v-slot="{ errors }"
         >
-          <label>Supply</label>
+          <label
+            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+            >Supply</label
+          >
           <div class="dashboard-text-field-border tw-w-full">
             <v-text-field
               v-model="collection.supply"
@@ -199,56 +200,43 @@
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
         >
-          <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
+            name="whitelistSaleTime"
+            rules="saleTime"
+            v-slot="{ errors }"
             v-if="whitelistEnabled"
           >
-            <ValidationProvider
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group"
-              name="whitelistSaleTime"
-              rules="saleTime"
-              v-slot="{ errors }"
-              v-if="whitelistEnabled"
-            >
-              <label>Whitelist Sale Time</label>
-              <div class="dashboard-text-field-border tw-w-full">
-                <date-picker
-                  v-model="collection.whitelist_sale_time"
-                  type="datetime"
-                  placeholder="Select Whitelist Sale time"
-                  :disabled="whitelistTBD"
-                ></date-picker>
-              </div>
-              <div class="tw-text-red-600">{{ errors[0] }}</div>
-            </ValidationProvider>
-            <v-checkbox v-model="whitelistTBD" label="TBD"></v-checkbox>
-          </div>
-          <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
-          >
-            <ValidationProvider
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group"
-              name="publicSaleTime"
-              :rules="
-                !tbd
-                  ? 'required|saleTime|public_sale_time:@whitelistSaleTime'
-                  : 'saleTime|public_sale_time:@whitelistSaleTime'
+            <label>Whitelist Sale Time</label>
+            <div class="dashboard-text-field-border tw-w-full">
+              <date-picker
+                v-model="collection.whitelist_sale_time"
+                type="datetime"
+                placeholder="Select Whitelist Sale time"
+              ></date-picker>
+            </div>
+            <div class="tw-text-red-600">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
+            name="publicSaleTime"
+            rules="required|saleTime|public_sale_time:@whitelistSaleTime
               "
-              v-slot="{ errors }"
+            v-slot="{ errors }"
+          >
+            <label
+              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+              >Public Sale Time</label
             >
-              <label>Public Sale Time</label>
-              <div class="dashboard-text-field-border tw-w-full">
-                <date-picker
-                  v-model="collection.public_sale_time"
-                  type="datetime"
-                  placeholder="Select Public Sale time"
-                  :disabled="publicSaleTBD"
-                ></date-picker>
-              </div>
-              <div class="tw-text-red-600">{{ errors[0] }}</div>
-            </ValidationProvider>
-            <v-checkbox v-model="publicSaleTBD" label="TBD"></v-checkbox>
-          </div>
+            <div class="dashboard-text-field-border tw-w-full">
+              <date-picker
+                v-model="collection.public_sale_time"
+                type="datetime"
+                placeholder="Select Public Sale time"
+              ></date-picker>
+            </div>
+            <div class="tw-text-red-600">{{ errors[0] }}</div>
+          </ValidationProvider>
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
@@ -280,10 +268,13 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
             name="publicSalePrice"
-            :rules="!tbd ? 'required|number' : 'number'"
+            rules="required|number"
             v-slot="{ errors }"
           >
-            <label>Public Sale Price in Apt</label>
+            <label
+              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+              >Public Sale Price in Apt</label
+            >
             <div class="dashboard-text-field-border tw-w-full">
               <v-text-field
                 v-model="collection.public_sale_price"
@@ -472,7 +463,7 @@ import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 
-import { createCollection, createDraft } from "@/services/CollectionService";
+import { createCollection, getDraftById } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 
 import DatePicker from "vue2-datepicker";
@@ -574,27 +565,27 @@ export default {
   data() {
     return {
       collection: {
-        name: "",
-        description: "",
-        image: "",
-        baseURL: "",
+        name: null,
+        description: null,
+        image: null,
+        baseURL: null,
         royalty_payee_address:
           this.$store.state.walletStore.wallet.walletAddress,
-        royalty_percentage: "",
+        royalty_percentage: null,
         whitelist_sale_time: null,
         public_sale_time: null,
-        public_sale_price: "",
-        whitelist_price: "",
-        supply: "",
-        twitter: "",
-        discord: "",
-        website: "",
-        instagram: "",
-        resource_account: "",
-        txnhash: "",
+        public_sale_price: null,
+        whitelist_price: null,
+        supply: null,
+        twitter: null,
+        discord: null,
+        website: null,
+        instagram: null,
+        resource_account: null,
+        txnhash: null,
         un: "",
         candy_id: process.env.CANDY_MACHINE_ID,
-        phases: [{ name: "", mintTime: null }],
+        phases: [{ name: null, mintTime: null }],
       },
       message: "",
       image: { name: null },
@@ -619,8 +610,7 @@ export default {
       whitelistEnabled: false,
       socialErrorMessage: "",
       socialError: false,
-      whitelistTBD: false,
-      publicSaleTBD: false,
+      tbd: false,
     };
   },
   methods: {
@@ -651,7 +641,7 @@ export default {
         return;
       }
 
-      if (!this.image.name) {
+      if (!this.collection.image) {
         this.imageError = true;
         this.imageErrorMessage = "Please select an image for collection";
         this.$refs["imageSelect"].scrollIntoView({ behavior: "smooth" });
@@ -695,47 +685,6 @@ export default {
 
         tempCollection.phases = phases;
 
-        if (this.tbd) {
-          const formData = new FormData();
-
-          formData.append("name", tempCollection.name);
-          formData.append("description", tempCollection.description);
-          formData.append(
-            "royalty_percentage",
-            tempCollection.royalty_percentage
-          );
-
-          formData.append(
-            "royalty_payee_address",
-            tempCollection.royalty_payee_address
-          );
-          formData.append("baseURL", tempCollection.baseURL);
-
-          formData.append("supply", tempCollection.supply);
-
-          formData.append(
-            "public_sale_price",
-            tempCollection.public_sale_price
-          );
-          formData.append("whitelist_price", tempCollection.whitelist_price);
-          formData.append("twitter", tempCollection.twitter);
-          formData.append("discord", tempCollection.discord);
-          formData.append("website", tempCollection.website);
-          formData.append("instagram", tempCollection.instagram);
-          formData.append("candy_id", tempCollection.candy_id);
-          formData.append("phases", JSON.stringify(tempCollection.phases));
-          formData.append("image", this.image);
-
-          await createDraft(formData);
-
-          this.submitting = false;
-
-          this.message = "Draft Created Successfully";
-          this.$toast.showMessage({ message: this.message, error: false });
-          this.$router.push("/dashboard");
-          return;
-        }
-
         await this.sendDataToCandyMachineCreator();
 
         const formData = new FormData();
@@ -761,12 +710,15 @@ export default {
         formData.append("twitter", tempCollection.twitter);
         formData.append("discord", tempCollection.discord);
         formData.append("website", tempCollection.website);
-        formData.append("instagram", tempCollection.instagram);
         formData.append("resource_account", tempCollection.resource_account);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify(tempCollection.phases));
-        formData.append("image", this.image);
+        if (this.image.name) {
+          formData.append("image", this.image);
+        } else {
+          formData.append("image", tempCollection.image);
+        }
 
         await createCollection(formData);
 
@@ -853,13 +805,24 @@ export default {
       this.collection.phases.splice(index, 1);
     },
   },
-  computed: {
-    tbd() {
-      return this.whitelistTBD || this.publicSaleTBD;
-    },
-  },
-  async mounted() {
+  async created() {
     this.collection.phases = [];
+
+    const draftRes = await getDraftById(this.$route.params.id);
+
+    this.collection = draftRes.data.draft.data;
+
+    this.collection.phases = this.collection.phases
+      ? JSON.parse(this.collection.phases)
+      : [];
+
+    this.collection.phases.map((phase: any) => {
+      phase.mintTime = new Date(phase.mintTime);
+    });
+
+    if (this.collection.whitelist_price) {
+      this.whitelistEnabled = true;
+    }
 
     const folderRes = await getFolderById(
       process.env.baseURL?.includes("staging")
@@ -876,6 +839,12 @@ export default {
         this.folders.push(folder);
       }
     });
+
+    this.folders.map((folder: any) => {
+      if (folder.metadata.baseURI === this.collection.baseURL) {
+        this.baseURL = folder.folder_name;
+      }
+    });
   },
 };
 </script>
@@ -885,28 +854,7 @@ export default {
   background-color: #878787;
 }
 
-::v-deep .mx-input-wrapper,
-::v-deep .mx-datepicker {
-  width: 100% !important;
-}
-
 ::v-deep .mx-input {
-  width: 100% !important;
   background: #0e0d0d !important;
-  border: none !important;
-  height: 50px !important;
-  color: #d9d9d9 !important;
-  font-size: 1em;
-  border-radius: 7px !important;
-}
-
-.mx-icon-calendar,
-.mx-icon-clear,
-.mx-input::placeholder {
-  color: #d9d9d9 !important;
-}
-
-.mdi-checkbox-blank-outline {
-  color: #d9d9d9 !important;
 }
 </style>

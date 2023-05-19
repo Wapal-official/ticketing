@@ -21,12 +21,12 @@
       v-model="exploreTab"
       id="explore-tab-items"
       class="tw-py-8"
-      v-if="!loading && collections[0]._id !== null"
+      v-if="!loading"
       @change="tabChanged(exploreTab)"
     >
       <v-tab-item class="tw-container tw-mx-auto">
         <div
-          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 lg:tw-grid-rows-1 lg:tw-gap-12 2xl:tw-grid-cols-4"
+          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
         >
           <nft-card
             v-for="collection in collections"
@@ -37,7 +37,7 @@
       </v-tab-item>
       <v-tab-item class="tw-container tw-mx-auto">
         <div
-          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 lg:tw-grid-rows-1 lg:tw-gap-12 2xl:tw-grid-cols-4"
+          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
         >
           <nft-card
             v-for="collection in liveCollections"
@@ -48,7 +48,7 @@
       </v-tab-item>
       <v-tab-item class="tw-container tw-mx-auto">
         <div
-          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 lg:tw-grid-rows-1 lg:tw-gap-12 2xl:tw-grid-cols-4"
+          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
         >
           <nft-card
             v-for="collection in upcomingCollections"
@@ -66,7 +66,11 @@
 <script lang="ts">
 import NftCard from "@/components/Nft/NftCard.vue";
 import Loading from "@/components/Reusable/Loading.vue";
-import { getCollections } from "@/services/CollectionService";
+import {
+  getCollections,
+  getLiveCollections,
+  getUpcomingCollections,
+} from "@/services/CollectionService";
 export default {
   components: { NftCard, Loading },
   data() {
@@ -85,69 +89,49 @@ export default {
   },
   computed: {},
   methods: {
-    tabChanged(tab: any) {
+    async tabChanged(tab: any) {
+      this.collections = [];
+      this.liveCollections = [];
+      this.upcomingCollections = [];
+
+      if (tab === 0) {
+        await this.mapAllCollections(1);
+      } else if (tab === 1) {
+        await this.mapLiveCollections(1);
+      } else if (tab === 2) {
+        await this.mapUpcomingCollections(1);
+      }
+    },
+    async mapLiveCollections(page: any) {
       this.loading = true;
 
-      if (tab === 1) {
-        this.getLiveCollection();
-      } else if (tab === 2) {
-        this.getUpcomingCollection();
-      }
+      const res = await getLiveCollections(page, 10);
+
+      this.liveCollections.push(...res.data.data);
 
       this.loading = false;
     },
-    getLiveCollection() {
-      this.liveCollections = this.collections.filter((collection: any) => {
-        const whitelistSaleDate = collection.candyMachine.whitelist_sale_time
-          ? new Date(collection.candyMachine.whitelist_sale_time)
-          : null;
+    async mapUpcomingCollections(page: any) {
+      this.loading = true;
 
-        const publicSaleDate = new Date(
-          collection.candyMachine.public_sale_time
-        );
+      const res = await getUpcomingCollections(page, 10);
 
-        const now = new Date();
+      this.upcomingCollections.push(...res.data.data);
 
-        if (!collection.status.sold_out) {
-          if (!whitelistSaleDate) {
-            if (publicSaleDate < now) {
-              return collection;
-            }
-          } else {
-            if (whitelistSaleDate < now && publicSaleDate < now) {
-              return collection;
-            }
-          }
-        }
-      });
+      this.loading = false;
     },
-    getUpcomingCollection() {
-      this.upcomingCollections = this.collections.filter((collection: any) => {
-        const whitelistSaleDate = collection.candyMachine.whitelist_sale_time
-          ? new Date(collection.candyMachine.whitelist_sale_time)
-          : null;
+    async mapAllCollections(page: any) {
+      this.loading = true;
 
-        const publicSaleDate = new Date(
-          collection.candyMachine.public_sale_time
-        );
+      this.collections = await getCollections(page, 10);
 
-        const now = new Date();
-
-        if (!whitelistSaleDate) {
-          if (publicSaleDate > now) {
-            return collection;
-          }
-        } else {
-          if (whitelistSaleDate > now && publicSaleDate > now) {
-            return collection;
-          }
-        }
-      });
+      this.loading = false;
     },
-    async getAllCollections() {
-      this.collections = await getCollections(1, 100);
-    },
-    getActiveTab() {
+    async getActiveTab() {
+      this.collections = [];
+      this.liveCollections = [];
+      this.upcomingCollections = [];
+
       this.exploreTab = 1;
 
       const activeTabTitle = this.$store.state.exploreStore.tab;
@@ -157,20 +141,18 @@ export default {
       );
 
       if (activeTab.id === 0) {
-        this.getAllCollections();
+        await this.mapAllCollections(1);
       } else if (activeTab.id === 1) {
-        this.getLiveCollection();
+        await this.mapLiveCollections(1);
       } else {
-        this.getUpcomingCollection();
+        await this.mapUpcomingCollections(1);
       }
 
       this.exploreTab = activeTab.id;
     },
   },
   async mounted() {
-    await this.getAllCollections();
-
-    this.getActiveTab();
+    await this.getActiveTab();
 
     this.loading = false;
   },

@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     :to="getRedirectLink"
-    class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
+    class="tw-group tw-w-full tw-h-[360px] lg:tw-w-[320px] lg:tw-h-[360px] 3xl:tw-h-[450px] 3xl:tw-w-[400px]"
   >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full" v-if="!domainName">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
@@ -12,7 +12,7 @@
         />
       </div>
       <div
-        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-2 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
+        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-4 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
       >
         <h5 class="tw-text-lg tw-uppercase tw-font-medium collection-name">
           {{ collection?.name }}
@@ -28,7 +28,7 @@
             class="tw-text-xl tw-text-wapal-pink tw-font-normal"
             v-if="status"
           >
-            Live
+            {{ collection?.candyMachine ? "Live" : "TBD" }}
           </h6>
           <count-down
             :startTime="getStartTime"
@@ -43,7 +43,7 @@
             items
             {{ getSupply }}
           </div>
-          <div v-if="getPrice != 0">price {{ getPrice }} apt</div>
+          <div v-if="getPrice != '0 apt'">price {{ getPrice }}</div>
           <div v-else>Free Mint</div>
         </div>
       </div>
@@ -57,7 +57,7 @@
         />
       </div>
       <div
-        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-6 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
+        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-8 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
       >
         <h5 class="tw-text-lg tw-uppercase tw-font-medium collection-name">
           Domain Name
@@ -90,6 +90,9 @@ export default {
       if (this.domainName) {
         return true;
       }
+      if (!this.collection.candyMachine) {
+        return true;
+      }
 
       const whiteListDate = this.collection.candyMachine.whitelist_sale_time
         ? new Date(this.collection.candyMachine.whitelist_sale_time)
@@ -113,6 +116,10 @@ export default {
       return false;
     },
     getStartTime() {
+      if (!this.collection.candyMachine) {
+        return;
+      }
+
       const whiteListDate = this.collection.candyMachine.whitelist_sale_time
         ? new Date(this.collection.candyMachine.whitelist_sale_time)
         : null;
@@ -131,6 +138,17 @@ export default {
       }
     },
     getPrice() {
+      if (!this.collection.candyMachine) {
+        if (this.collection.whitelist_price) {
+          return this.collection.whitelist_price + " apt";
+        }
+        if (this.collection.public_sale_price) {
+          return this.collection.public_sale_price + " apt";
+        }
+
+        return "TBD";
+      }
+
       const whiteListDate = this.collection.candyMachine.whitelist_sale_time
         ? new Date(this.collection.candyMachine.whitelist_sale_time)
         : null;
@@ -142,17 +160,17 @@ export default {
         this.collection.candyMachine.public_sale_price ==
         this.collection.candyMachine.whitelist_price
       ) {
-        return this.collection.candyMachine.public_sale_price;
+        return this.collection.candyMachine.public_sale_price + " apt";
       }
 
       if (now > publicSaleDate) {
-        return this.collection.candyMachine.public_sale_price;
+        return this.collection.candyMachine.public_sale_price + " apt";
       }
 
       if (whiteListDate && publicSaleDate > now) {
-        return this.collection.candyMachine.whitelist_price;
+        return this.collection.candyMachine.whitelist_price + " apt";
       } else {
-        return this.collection.candyMachine.public_sale_price;
+        return this.collection.candyMachine.public_sale_price + " apt";
       }
     },
     getRedirectLink() {
@@ -164,9 +182,16 @@ export default {
         return `/domain-name`;
       }
 
+      if (this.redirectTo === "draft") {
+        return `/dashboard/draft/${this.collection._id}`;
+      }
+
       return `/nft/${this.collection.username}`;
     },
     getSupply() {
+      if (!this.collection.supply) {
+        return "TBD";
+      }
       if (this.collection._id === "642bf277c10560ca41e179fa") {
         return 777;
       } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
