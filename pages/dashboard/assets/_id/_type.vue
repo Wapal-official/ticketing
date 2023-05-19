@@ -600,10 +600,6 @@ export default {
               }
             }
 
-            if (file.name !== file.name.trim()) {
-              throw new Error("Please Name your files without white spaces");
-            }
-
             const filename = file.name;
             const extensionIndex = filename.lastIndexOf(".");
             const nameWithoutExtension = filename.substring(0, extensionIndex);
