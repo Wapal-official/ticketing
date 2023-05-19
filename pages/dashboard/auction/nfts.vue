@@ -1,6 +1,6 @@
 <template>
   <div class="tw-py-4">
-    <v-row v-if="metadata.length > 0" justify="start">
+    <v-row v-if="nfts.length > 0" justify="start">
       <v-col
         v-for="(item, i) in metadata"
         :key="i"
@@ -55,7 +55,6 @@ export default {
       offset: 0,
       page: 0,
       limit: 20,
-      loading: true,
     };
   },
   mounted() {
@@ -87,10 +86,8 @@ export default {
             this.nfts.push(nfts[x]);
           } catch {}
         }
-        this.loading = false;
       } else {
         this.end = true;
-        this.loading = false;
       }
     },
   },
