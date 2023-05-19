@@ -53,6 +53,9 @@ export default {
             whitelist_sale_price: null,
             public_sale_price: null,
           },
+          status: {
+            sold_out: false,
+          },
         },
       ],
     };

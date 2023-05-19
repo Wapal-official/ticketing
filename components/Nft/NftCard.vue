@@ -17,14 +17,25 @@
         <h5 class="tw-text-lg tw-uppercase tw-font-medium collection-name">
           {{ collection?.name }}
         </h5>
-        <h6 class="tw-text-xl tw-text-wapal-pink tw-font-normal" v-if="status">
-          {{ collection?.candyMachine ? "Live" : "TBD" }}
+        <h6
+          v-if="collection?.status.sold_out && !domainName"
+          class="tw-text-xl tw-text-wapal-pink tw-font-normal"
+        >
+          Soldout
         </h6>
-        <count-down
-          :startTime="getStartTime"
-          @countdownComplete="countdownComplete"
-          v-else
-        />
+        <div v-else>
+          <h6
+            class="tw-text-xl tw-text-wapal-pink tw-font-normal"
+            v-if="status"
+          >
+            {{ collection?.candyMachine ? "Live" : "TBD" }}
+          </h6>
+          <count-down
+            :startTime="getStartTime"
+            @countdownComplete="countdownComplete"
+            v-else
+          />
+        </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-8 tw-capitalize tw-w-full"
         >
