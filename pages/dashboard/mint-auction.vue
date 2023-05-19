@@ -631,7 +631,7 @@ export default {
       this.displayImage();
     },
     async submit() {
-      const validate = this.$refs.attributeForm.validate();
+      const validate = await this.$refs.attributeForm.validate();
 
       if (!validate) {
         return;

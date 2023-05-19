@@ -27,7 +27,12 @@ export const actions = {
 
       const discordToken = JSON.parse(cookies.discord || "false");
 
-      commit("walletStore/setWallet", wallet ? wallet : {});
+      commit(
+        "walletStore/setWallet",
+        wallet
+          ? { ...wallet, initializedAccountChange: false }
+          : { initializedAccountChange: false }
+      );
       commit("userStore/setUser", user ? user : {});
       commit("discordStore/setDiscordToken", discordToken ? discordToken : {});
     }

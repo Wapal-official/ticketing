@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    class="tw-group tw-w-full tw-h-[450px] lg:tw-w-[320px] lg:tw-h-[360px] 3xl:tw-h-[450px] 3xl:tw-w-[400px]"
+    class="tw-group tw-w-full tw-h-[360px] lg:tw-w-[320px] lg:tw-h-[360px] 3xl:tw-h-[450px] 3xl:tw-w-[400px]"
     v-if="!loading"
     :to="
       type === 'landing'

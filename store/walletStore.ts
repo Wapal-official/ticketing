@@ -68,9 +68,10 @@ const makeId = (length: number) => {
 
 const connectWallet = async (walletName: WalletName) => {
   await wallet.connect(walletName);
+};
 
+const checkNetwork = () => {
   if (wallet.network?.name.toLowerCase() !== network.toLowerCase()) {
-    await wallet.disconnect();
     throw new Error(`Please Change your network to ${network}`);
   }
 };
@@ -120,24 +121,28 @@ export const actions = {
       await wallet.connect(state.wallet.wallet);
     }
 
-    try {
-      await wallet.onAccountChange();
+    if (!state.wallet.initializedAccountChange) {
+      try {
+        await wallet.onAccountChange();
+        commit("setInitializeAccountChange", true);
+      } catch (error) {
+        commit("setInitializeAccountChange", false);
+      }
 
-      commit("setInitializeAccountChange", true);
-    } catch (error) {
-      commit("setInitializeAccountChange", false);
-    }
+      wallet.onNetworkChange();
 
-    wallet.addListener("accountChange", async () => {
-      await dispatch("connectWallet", {
-        walletName: state.wallet.wallet,
+      wallet.addListener("networkChange", async () => {
+        await wallet.disconnect();
       });
 
-      dispatch("userStore/disconnectUser", null, { root: true });
-      if (!wallet.isConnected()) {
-        await wallet.connect(state.wallet.wallet);
-      }
-    });
+      wallet.addListener("accountChange", async () => {
+        await dispatch("connectWallet", {
+          walletName: state.wallet.wallet,
+        });
+
+        dispatch("userStore/disconnectUser", null, { root: true });
+      });
+    }
   },
   setWallet({ commit }: { commit: any }) {
     commit("setWallet");
@@ -149,10 +154,7 @@ export const actions = {
     try {
       await connectWallet(walletName);
 
-      if (
-        (await wallet.isConnected()) &&
-        !state.wallet.initializedAccountChange
-      ) {
+      if (wallet.isConnected() && !state.wallet.initializedAccountChange) {
         wallet.onAccountChange();
         commit("setInitializeAccountChange", true);
       }
@@ -228,6 +230,8 @@ export const actions = {
       await connectWallet(state.wallet.wallet);
     }
 
+    checkNetwork();
+
     const create_candy_machine = {
       type: "entry_function_payload",
       function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
@@ -272,6 +276,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+    checkNetwork();
 
     const res: any = await client.getAccountResources(
       state.wallet.walletAddress
@@ -305,6 +310,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+    checkNetwork();
 
     try {
       var create_mint_script: any;
@@ -381,6 +387,8 @@ export const actions = {
       await connectWallet(state.wallet.wallet);
     }
 
+    checkNetwork();
+
     const transactionAmount = Math.ceil(requiredBalance * 100000000);
 
     const payload = {
@@ -408,6 +416,8 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+
+    checkNetwork();
 
     const message = "Login into Wapal";
     const nonce = makeId(16);
@@ -442,9 +452,9 @@ export const actions = {
       candyMachineId,
     }: { root: any; resourceAccount: string; candyMachineId: string }
   ) {
-    if (!wallet.isConnected()) {
-      await connectWallet(state.wallet.wallet);
-    }
+    await connectWallet(state.wallet.wallet);
+
+    checkNetwork();
 
     const set_root_script = {
       function: candyMachineId + "::candymachine::set_root",
@@ -469,6 +479,8 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(rootState.walletStore.wallet.wallet);
     }
+    checkNetwork();
+
     let start = new Date(detail.start_date);
     let startSec = Math.floor(start.getTime() / 1000);
     let end = new Date(detail.end_date);
@@ -515,6 +527,8 @@ export const actions = {
       if (!wallet.isConnected()) {
         await connectWallet(rootState.walletStore.wallet.wallet);
       }
+      checkNetwork();
+
       let withdraw = new Date(auction.detail.endAt);
       let withdrawSec = Math.floor(withdraw.getTime() / 1000);
 
@@ -551,6 +565,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+    checkNetwork();
 
     const increase_bid = {
       type: "entry_function_payload",
@@ -575,6 +590,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+    checkNetwork();
 
     const withdraw_coin_from_bid = {
       type: "entry_function_payload",
@@ -596,6 +612,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+    checkNetwork();
 
     const complete_auction = {
       type: "entry_function_payload",
@@ -614,6 +631,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+    checkNetwork();
 
     const buyDomainScript = {
       function:
@@ -649,6 +667,7 @@ export const actions = {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
+    checkNetwork();
 
     if (state.wallet.wallet !== "Petra" && mintNumber > 1) {
       throw new Error("Please Change Wallet To Petra for Bulk Mint");
