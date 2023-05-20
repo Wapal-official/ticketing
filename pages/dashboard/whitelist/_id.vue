@@ -306,6 +306,7 @@ export default {
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
+        this.sendingDataToSetRoot = false;
       }
     },
     gotoSetupWhitelistPage() {
