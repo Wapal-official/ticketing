@@ -18,7 +18,7 @@
           {{ collection?.name }}
         </h5>
         <h6
-          v-if="collection?.status.sold_out && !domainName"
+          v-if="collection?.status && collection.status.sold_out && !domainName"
           class="tw-text-xl tw-text-wapal-pink tw-font-normal"
         >
           Soldout
