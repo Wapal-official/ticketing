@@ -870,13 +870,13 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .image-collection {
   display: none;
   background-color: #878787;
 }
 
-.mx-input {
+::v-deep .mx-input {
   background: #0e0d0d !important;
 }
 </style>

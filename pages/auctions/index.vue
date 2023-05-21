@@ -1,13 +1,15 @@
 <template>
   <div class="tw-w-full tw-container tw-mx-auto tw-px-4">
     <h1 class="tw-text-xl tw-font-semibold tw-py-4">Auctions</h1>
+    <p v-if="auctions.length === 0 && !loading" class="tw-py-4 tw-text-lg">
+      No nfts in auction
+    </p>
     <div
-      class="tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 2xl:tw-grid-cols-4"
-      v-if="auctions.length > 0"
+      class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
+      v-else
     >
       <AuctionCard v-for="(item, i) in auctions" :key="i" :auction="item" />
     </div>
-    <p v-else class="tw-py-4 tw-text-lg">No nfts in auction</p>
     <ReusableLoading v-if="!end" />
     <v-card
       color="transparent"
@@ -31,6 +33,7 @@ export default {
       auctions: [],
       page: 0,
       perPage: 20,
+      loading: true,
     };
   },
   computed: {
@@ -40,8 +43,9 @@ export default {
       }
     },
   },
-  created() {
-    this.fetchAuctions();
+  async created() {
+    await this.fetchAuctions();
+    this.loading = false;
   },
   methods: {
     async fetchAuctions() {

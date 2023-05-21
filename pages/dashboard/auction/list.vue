@@ -1,10 +1,10 @@
 <template>
   <div class="tw-py-4">
-    <v-row v-if="auctions.length > 0">
+    <v-row v-if="auctions.length > 0" justify="start">
       <v-col v-for="(item, i) in auctions" :key="i" cols="12" lg="3" md="6">
         <v-card
           tile
-          @click="$router.push('/auctions/' + item._id)"
+          @click="$router.push('/auctions/' + item.auction_name)"
           color="transparent"
         >
           <v-img :src="item.nft.meta.image" class="tw-h-[350px]"></v-img>
@@ -29,6 +29,7 @@
           threshold: [0, 0.5, 1.0],
         },
       }"
+      class="!tw-shadow-none"
     >
     </v-card>
   </div>

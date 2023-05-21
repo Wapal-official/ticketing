@@ -35,11 +35,13 @@
           />
           <loading v-else />
         </section> -->
-        <section class="tw-py-8 tw-container tw-mx-auto">
+        <!-- <section
+          class="tw-py-8 tw-container tw-mx-auto"
+        >
           <landing-section-heading heading="Auctions" />
           <LandingAuctions v-if="!loading" :auctions="auctions" />
           <loading v-else />
-        </section>
+        </section> -->
       </div>
     </div>
   </div>
@@ -93,7 +95,7 @@ export default {
       this.upcomingCollections = [];
       this.liveCollections = [];
 
-      const liveCollectionsRes = await getLiveCollections(1, 4);
+      const liveCollectionsRes = await getLiveCollections(1, 3);
       const upcomingCollectionsRes = await getUpcomingCollections(1, 4);
 
       this.liveCollections = liveCollectionsRes.data.data;
@@ -102,7 +104,7 @@ export default {
 
       const res = await getCollections(1, 100);
 
-      res.map((collection) => {
+      res.map((collection: any) => {
         this.fastestSoldoutCollections.push(collection);
       });
 

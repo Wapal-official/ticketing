@@ -900,18 +900,18 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .image-collection {
   display: none;
   background-color: #878787;
 }
 
-.mx-input-wrapper,
-.mx-datepicker {
+::v-deep .mx-input-wrapper,
+::v-deep .mx-datepicker {
   width: 100% !important;
 }
 
-.mx-input {
+::v-deep .mx-input {
   width: 100% !important;
   background: #0e0d0d !important;
   border: none !important;

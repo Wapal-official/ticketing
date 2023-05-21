@@ -26,7 +26,7 @@
     >
       <v-tab-item class="tw-container tw-mx-auto">
         <div
-          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 lg:tw-grid-rows-1 lg:tw-gap-12 2xl:tw-grid-cols-4"
+          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
         >
           <nft-card
             v-for="collection in collections"
@@ -37,7 +37,7 @@
       </v-tab-item>
       <v-tab-item class="tw-container tw-mx-auto">
         <div
-          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 lg:tw-grid-rows-1 lg:tw-gap-12 2xl:tw-grid-cols-4"
+          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
         >
           <nft-card
             v-for="collection in liveCollections"
@@ -48,7 +48,7 @@
       </v-tab-item>
       <v-tab-item class="tw-container tw-mx-auto">
         <div
-          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 lg:tw-grid-rows-1 lg:tw-gap-12 2xl:tw-grid-cols-4"
+          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
         >
           <nft-card
             v-for="collection in upcomingCollections"

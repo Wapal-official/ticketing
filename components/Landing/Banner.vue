@@ -121,7 +121,7 @@
           <button
             class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
             :class="{
-              '!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
+              'md:!tw-w-[30%]': !showWhitelistSaleTimer && !showPublicSaleTimer,
             }"
             @click="mintCollection"
             :disabled="minting || collection.status.sold_out"
@@ -143,15 +143,19 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 md:tw-gap-2"
           >
             <div>Whitelist Sale</div>
-            <div class="tw-capitalize">
+            <div class="tw-capitalize" v-if="collection.candyMachine.whitelist_price != 0">
               price {{ collection.candyMachine.whitelist_price }} apt
             </div>
+            <div v-else>
+              Free Mint
+              </div>
           </div>
           <div
             class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start tw-w-fit"
           >
             Starts In
             <count-down
+              class="tw-pl-2"
               :startTime="collection.candyMachine.whitelist_sale_time"
               @countdownComplete="whitelistCountdownComplete"
             />
@@ -165,15 +169,19 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 tw-w-fit md:tw-gap-2"
           >
             <div>Public Sale</div>
-            <div class="tw-capitalize">
+            <div class="tw-capitalize" v-if="collection.candyMachine.public_sale_price !=0">
               price {{ collection.candyMachine.public_sale_price }} apt
             </div>
+            <div v-else>
+              Free Mint
+              </div>
           </div>
           <div
             class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start tw-w-fit"
           >
             Starts In
             <count-down
+              class="tw-pl-2"
               :startTime="collection.candyMachine.public_sale_time"
               @countdownComplete="publicSaleCountdownComplete"
             />

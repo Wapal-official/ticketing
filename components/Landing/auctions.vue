@@ -12,14 +12,14 @@
     >
       <div class="tw-flex tw-flex-row tw-flex-wrap tw-w-full">
         <div
-          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:grid-rows-1 lg:tw-grid-cols-3 lg:tw-grid-rows-1 lg:tw-gap-12 2xl:tw-grid-cols-4"
+          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
         >
           <auction-card
             v-for="(auction, index) in auctions"
             :key="auction._id"
             :auction="auction"
             :class="{
-              'lg:tw-hidden 2xl:tw-flex': index === 3,
+              'lg:tw-hidden 1xl:tw-flex': index === 3,
             }"
           />
         </div>

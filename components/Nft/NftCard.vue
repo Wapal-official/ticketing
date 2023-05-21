@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     :to="getRedirectLink"
-    class="tw-group tw-max-h-[380px] xl:tw-max-h-[450px] 2xl:tw-max-h-[380px] 3xl:tw-max-h-[450px]"
+    class="tw-group tw-w-full tw-h-[360px] lg:tw-w-[320px] lg:tw-h-[360px] 3xl:tw-h-[450px] 3xl:tw-w-[400px]"
   >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full" v-if="!domainName">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
@@ -12,19 +12,30 @@
         />
       </div>
       <div
-        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-2 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
+        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-4 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
       >
         <h5 class="tw-text-lg tw-uppercase tw-font-medium collection-name">
           {{ collection?.name }}
         </h5>
-        <h6 class="tw-text-xl tw-text-wapal-pink tw-font-normal" v-if="status">
-          {{ collection?.candyMachine ? "Live" : "TBD" }}
+        <h6
+          v-if="collection?.status && collection.status.sold_out && !domainName"
+          class="tw-text-xl tw-text-wapal-pink tw-font-normal"
+        >
+          Soldout
         </h6>
-        <count-down
-          :startTime="getStartTime"
-          @countdownComplete="countdownComplete"
-          v-else
-        />
+        <div v-else>
+          <h6
+            class="tw-text-xl tw-text-wapal-pink tw-font-normal"
+            v-if="status"
+          >
+            {{ collection?.candyMachine ? "Live" : "TBD" }}
+          </h6>
+          <count-down
+            :startTime="getStartTime"
+            @countdownComplete="countdownComplete"
+            v-else
+          />
+        </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-8 tw-capitalize tw-w-full"
         >
@@ -46,7 +57,7 @@
         />
       </div>
       <div
-        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-6 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
+        class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-px-8 tw-py-8 tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 nft-card"
       >
         <h5 class="tw-text-lg tw-uppercase tw-font-medium collection-name">
           Domain Name
@@ -129,10 +140,10 @@ export default {
     getPrice() {
       if (!this.collection.candyMachine) {
         if (this.collection.whitelist_price) {
-          return this.collection.whitelist_price;
+          return this.collection.whitelist_price + " apt";
         }
         if (this.collection.public_sale_price) {
-          return this.collection.public_sale_price;
+          return this.collection.public_sale_price + " apt";
         }
 
         return "TBD";

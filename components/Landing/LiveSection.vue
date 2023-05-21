@@ -12,7 +12,7 @@
     >
       <div class="tw-flex tw-flex-row tw-flex-wrap tw-w-full">
         <div
-          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:grid-rows-1 lg:tw-grid-cols-3 lg:tw-grid-rows-1 lg:tw-gap-12 2xl:tw-grid-cols-4"
+          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
         >
           <nft-card :domainName="true" redirectTo="domainName" />
           <nft-card
@@ -20,7 +20,7 @@
             :key="collection._id"
             :collection="collection"
             :class="{
-              'lg:tw-hidden 2xl:tw-flex': index === 2,
+              'lg:tw-hidden 1xl:tw-flex': index === 2,
             }"
           />
         </div>
@@ -52,6 +52,9 @@ export default {
             public_sale_time: null,
             whitelist_sale_price: null,
             public_sale_price: null,
+          },
+          status: {
+            sold_out: false,
           },
         },
       ],

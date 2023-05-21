@@ -1,6 +1,6 @@
 <template>
   <div class="tw-py-4">
-    <v-row v-if="metadata.length > 0" justify="center">
+    <v-row v-if="nfts.length > 0" justify="start">
       <v-col
         v-for="(item, i) in metadata"
         :key="i"
@@ -39,6 +39,7 @@
           threshold: [0, 0.5, 1.0],
         },
       }"
+      class="!tw-shadow-none"
     >
     </v-card>
   </div>
@@ -66,6 +67,7 @@ export default {
   },
   methods: {
     async fetchNfts() {
+      this.loading = true;
       this.offset = this.page * this.limit;
       this.page++;
       let data = await fetchWalletNfts({
