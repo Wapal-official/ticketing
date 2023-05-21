@@ -47,7 +47,7 @@
           />
         </div>
         <h2
-          class="tw-text-wapal-dashboard-active tw-text-xl tw-text-center tw-w-full"
+          class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full"
           v-if="liveCollections.length === 0"
         >
           No Live Collections
@@ -65,7 +65,7 @@
           />
         </div>
         <h2
-          class="tw-text-wapal-dashboard-active tw-text-xl tw-text-center tw-w-full"
+          class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full"
           v-if="underReviewCollections.length === 0"
         >
           No Under Review Collections
@@ -84,7 +84,7 @@
           />
         </div>
         <h2
-          class="tw-text-wapal-dashboard-active tw-text-xl tw-text-center tw-w-full"
+          class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full"
           v-if="drafts.length === 0"
         >
           No Drafts

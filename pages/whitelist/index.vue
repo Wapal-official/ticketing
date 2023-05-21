@@ -114,14 +114,14 @@ export default {
           value: "collectionName",
           width: "300px",
           class:
-            "!tw-text-white !tw-border-b-wapal-dashboard-active !tw-text-base tw-font-normal",
+            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
         },
         {
           text: "Social Link",
           align: "start",
           width: "150px",
           class:
-            "!tw-text-white !tw-border-b-wapal-dashboard-active !tw-text-base tw-font-normal",
+            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
         },
         {
           text: "Mint Date",
@@ -130,7 +130,7 @@ export default {
           value: "mintDate",
           width: "150px",
           class:
-            "!tw-text-white !tw-border-b-wapal-dashboard-active !tw-text-base tw-font-normal",
+            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
         },
         {
           text: "No. Of Spots",
@@ -139,7 +139,7 @@ export default {
           value: "noOfSpots",
           width: "200px",
           class:
-            "!tw-text-white !tw-border-b-wapal-dashboard-active !tw-text-base tw-font-normal",
+            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
         },
       ],
       whitelists: [],
