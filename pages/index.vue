@@ -95,7 +95,7 @@ export default {
       this.upcomingCollections = [];
       this.liveCollections = [];
 
-      const liveCollectionsRes = await getLiveCollections(1, 4);
+      const liveCollectionsRes = await getLiveCollections(1, 3);
       const upcomingCollectionsRes = await getUpcomingCollections(1, 4);
 
       this.liveCollections = liveCollectionsRes.data.data;
