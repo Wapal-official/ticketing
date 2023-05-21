@@ -99,11 +99,13 @@
       <div
         class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
       >
-        <h3 class="tw-text-lg">
+        <h3 class="tw-text-lg" v-if="!uploading">
           Are you sure you want to import this CSV file?
         </h3>
+        <h3 v-else>Uploading CSV File</h3>
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
+          v-if="!uploading"
         >
           <button
             class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
@@ -117,6 +119,12 @@
           >
             No
           </button>
+        </div>
+        <div
+          class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-center"
+          v-else
+        >
+          <loading />
         </div>
       </div>
     </v-dialog>
@@ -143,6 +151,21 @@
           >
             No
           </button>
+        </div>
+      </div>
+    </v-dialog>
+    <v-dialog
+      v-model="sendingDataToSetRoot"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <div
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
+      >
+        <h2>Setting Root</h2>
+        <div
+          class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-center"
+        >
+          <loading />
         </div>
       </div>
     </v-dialog>
@@ -216,6 +239,7 @@ export default {
       setupWhitelistStatus: false,
       scrolledNumber: 1,
       mappingData: false,
+      uploading: false,
     };
   },
   methods: {
@@ -230,6 +254,7 @@ export default {
     },
     async uploadCSV() {
       try {
+        this.uploading = true;
         const formData = new FormData();
 
         formData.append("collection_id", this.collection._id);
@@ -243,9 +268,11 @@ export default {
 
         this.scrolledNumber = 1;
         this.mapWhitelistEntries(1);
+        this.uploading = false;
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
+        this.uploading = false;
       }
     },
     resetCSV() {

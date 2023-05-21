@@ -294,17 +294,19 @@ export const actions = {
     }
   },
   async mintCollection(
-    { state, dispatch }: { state: any; dispatch: any },
+    { state }: { state: any },
     {
       resourceAccount,
       publicMint,
-      collectionId,
       candyMachineId,
+      proof,
+      mintLimit,
     }: {
       resourceAccount: string;
       publicMint: boolean;
-      collectionId: string;
       candyMachineId: string;
+      proof: any[];
+      mintLimit: number;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -322,21 +324,12 @@ export const actions = {
           arguments: [resourceAccount],
         };
       } else {
-        await dispatch("getProof", {
-          collectionId: collectionId,
-          walletAddress: state.wallet.walletAddress,
-        });
-
-        const proofs: any[] = [];
-        state.proof.map((proof: any) => {
-          proofs.push(proof.data);
-        });
-        if (state.proof.length > 0) {
+        if (proof.length > 0) {
           create_mint_script = {
             type: "entry_function_payload",
             function: candyMachineId + "::candymachine::mint_from_merkle",
             type_arguments: [],
-            arguments: [resourceAccount, proofs, state.mint_limit],
+            arguments: [resourceAccount, proof, mintLimit],
           };
         } else {
           throw new Error("You are not whitelisted for this collection");
@@ -653,15 +646,17 @@ export const actions = {
     {
       resourceAccount,
       publicMint,
-      collectionId,
       candyMachineId,
       mintNumber,
+      proof,
+      mintLimit,
     }: {
       resourceAccount: string;
       publicMint: boolean;
-      collectionId: string;
       candyMachineId: string;
       mintNumber: number;
+      proof: any[];
+      mintLimit: number;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -682,8 +677,9 @@ export const actions = {
         const res = await dispatch("mintCollection", {
           resourceAccount,
           publicMint,
-          collectionId,
           candyMachineId,
+          proof,
+          mintLimit,
         });
 
         return res;

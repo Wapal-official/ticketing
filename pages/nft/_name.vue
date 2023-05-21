@@ -84,6 +84,12 @@
             {{ collection.description }}
           </p>
         </div>
+        <div class="tw-text-red-600" v-if="gettingProof">
+          Getting Proof for Whitelist Mint
+        </div>
+        <div class="tw-text-red-600" v-if="!gettingProof && notWhitelisted">
+          You are not whitelisted for this collection
+        </div>
         <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
           <div
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
@@ -168,7 +174,12 @@
                     !showWhitelistSaleTimer && !showPublicSaleTimer,
                 }"
                 @click="mintBulkCollection"
-                :disabled="minting || collection.status.sold_out"
+                :disabled="
+                  minting ||
+                  collection.status.sold_out ||
+                  !generatedProof ||
+                  notWhitelisted
+                "
               >
                 <v-progress-circular indeterminate v-if="minting" color="white">
                 </v-progress-circular>
@@ -291,8 +302,10 @@
 import {
   getCollection,
   getCollectionByUsername,
+  getOwnedCollectionOfUser,
   setSoldOut,
 } from "@/services/CollectionService";
+import { getProof } from "@/services/WhitelistService";
 import { getWhitelistEntryById } from "@/services/WhitelistService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
@@ -380,6 +393,11 @@ export default {
       numberOfNft: 1,
       showErrorPopup: false,
       errorMessage: null,
+      proof: [],
+      mintLimit: 1,
+      currentlyOwned: 0,
+      gettingProof: true,
+      notWhitelisted: false,
     };
   },
   methods: {
@@ -419,66 +437,6 @@ export default {
         this.showEndInTimer = true;
       }, 1);
     },
-    async mintCollection() {
-      try {
-        if (this.$store.state.walletStore.wallet.wallet) {
-          this.minting = true;
-
-          const res = await this.$store.dispatch("walletStore/mintCollection", {
-            resourceAccount: this.collection.candyMachine.resource_account,
-            publicMint: !this.checkPublicSaleTimer(),
-            collectionId: this.collection._id,
-            candyMachineId: this.collection.candyMachine.candy_id,
-          });
-
-          if (res.success) {
-            this.$toast.showMessage({
-              message: `${this.collection.name} Minted Successfully`,
-            });
-
-            const res = await this.$store.dispatch(
-              "walletStore/getSupplyAndMintedOfCollection",
-              {
-                resourceAccountAddress:
-                  this.collection.candyMachine.resource_account,
-                candyMachineId: this.collection.candyMachine.candy_id,
-              }
-            );
-
-            if (res.total_supply === res.minted) {
-              await setSoldOut(this.collection._id);
-              this.collection.status.sold_out = true;
-            }
-          } else {
-            this.$toast.showMessage({
-              message: "Collection Not Minted",
-              error: true,
-            });
-          }
-
-          this.minting = false;
-        } else {
-          this.showConnectWalletModal = true;
-          return;
-        }
-      } catch (error) {
-        console.log(error);
-        if (
-          error.response &&
-          error.response.data.msg &&
-          error.response.data.msg ===
-            "Whitelist entry associated with this wallet address not found."
-        ) {
-          this.$toast.showMessage({
-            message: "You are not listed in Whitelist for this Collection",
-            error: true,
-          });
-        } else {
-          this.$toast.showMessage({ message: error, error: true });
-        }
-        this.minting = false;
-      }
-    },
     displayWalletConnectedMessage() {
       this.showConnectWalletModal = false;
 
@@ -496,6 +454,10 @@ export default {
             candyMachineId: this.collection.candyMachine.candy_id,
           }
         );
+
+        if (this.collection.status.sold_out) {
+          clearInterval(this.progressInterval);
+        }
 
         if (this.collection._id === "642bf277c10560ca41e179fa") {
           this.resource = {
@@ -584,12 +546,18 @@ export default {
 
         this.minting = true;
 
+        if (this.checkPublicSaleTimer() && this.proof.length === 0) {
+          await this.setProof();
+        }
+
         const res = await this.$store.dispatch("walletStore/mintBulk", {
           resourceAccount: this.collection.candyMachine.resource_account,
           publicMint: !this.checkPublicSaleTimer(),
           collectionId: this.collection._id,
           candyMachineId: this.collection.candyMachine.candy_id,
           mintNumber: this.numberOfNft,
+          proof: this.proof,
+          mintLimit: this.mintLimit,
         });
 
         if (res.success) {
@@ -634,9 +602,63 @@ export default {
         this.minting = false;
       } catch (error) {
         console.log(error);
-        this.$toast.showMessage({ message: error, error: true });
+        if (
+          error.response &&
+          error.response.data.msg &&
+          error.response.data.msg ===
+            "Whitelist entry associated with this wallet address not found."
+        ) {
+          this.$toast.showMessage({
+            message: "You are not listed in Whitelist for this Collection",
+            error: true,
+          });
+        } else {
+          this.$toast.showMessage({ message: error, error: true });
+        }
         this.minting = false;
       }
+    },
+    async setProof() {
+      try {
+        this.gettingProof = true;
+
+        console.log("settingProof");
+        const res = await getProof({
+          walletAddress: this.$store.state.walletStore.wallet.walletAddress,
+          collectionId: this.collection._id,
+        });
+
+        const proofs = res.data.proofs;
+
+        console.log(proofs);
+
+        proofs.map((proof) => {
+          this.proof.push(proof.data);
+        });
+
+        this.mintLimit = res.data.wallet.mint_limit;
+
+        this.gettingProof = false;
+        this.notWhitelisted = false;
+      } catch (error) {
+        console.log(error);
+
+        if (error.response.status === 400) {
+          this.notWhitelisted = true;
+        }
+
+        this.gettingProof = false;
+      }
+    },
+    async getOwnedCollectionOfUser() {
+      const res = await getOwnedCollectionOfUser(
+        this.getWalletAddress,
+        this.collection.name
+      );
+
+      this.currentlyOwned = res.data.data.current_token_ownerships[0]
+        ? res.data.data.current_token_ownerships[0].amount
+        : 0;
     },
   },
   computed: {
@@ -696,6 +718,20 @@ export default {
         return true;
       }
     },
+    getWalletAddress() {
+      return this.$store.state.walletStore.wallet.walletAddress;
+    },
+    generatedProof() {
+      if (!this.checkPublicSaleTimer()) {
+        return true;
+      }
+
+      if (!this.gettingProof) {
+        return true;
+      }
+
+      return false;
+    },
   },
   async mounted() {
     if (this.collection) {
@@ -753,7 +789,15 @@ export default {
         this.whitelistNumber = whitelistRes.data.spotsCount;
       }
 
+      await this.getOwnedCollectionOfUser();
+
       this.loading = false;
+
+      if (this.checkPublicSaleTimer()) {
+        await this.setProof();
+      } else {
+        this.gettingProof = false;
+      }
 
       setTimeout(() => {
         const resourceMintedPercent = document.querySelector(
@@ -762,12 +806,20 @@ export default {
 
         resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
 
-        this.showMintedProgress();
+        if (!this.collection.status.sold_out) {
+          this.showMintedProgress();
+        }
       }, 200);
     }
   },
   beforeDestroy() {
     clearInterval(this.progressInterval);
+  },
+  watch: {
+    async getWalletAddress() {
+      await this.setProof();
+      await this.getOwnedCollectionOfUser();
+    },
   },
 };
 </script>

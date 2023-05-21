@@ -739,7 +739,6 @@ export default {
                   {
                     resourceAccount: resource_account,
                     publicMint: true,
-                    collectionId: "",
                     candyMachineId: process.env.CANDY_MACHINE_ID,
                   }
                 );
