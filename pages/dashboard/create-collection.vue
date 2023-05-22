@@ -301,7 +301,7 @@
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
         </div>
-        <!-- <label>Mint Phases</label>
+        <label>Mint Phases</label>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
         >
@@ -359,7 +359,7 @@
           >
             Add Phase
           </button>
-        </div> -->
+        </div>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="twitter"
