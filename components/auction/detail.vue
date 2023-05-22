@@ -461,7 +461,8 @@ export default {
         this.loading = false;
       }
     },
-    endAuction() {
+    async endAuction() {
+      await this.getAuctionDetails();
       this.auctionEnded = true;
     },
     startAuction() {

@@ -123,13 +123,12 @@ export const actions = {
 
     if (!state.wallet.initializedAccountChange) {
       try {
+        await wallet.onNetworkChange();
         await wallet.onAccountChange();
         commit("setInitializeAccountChange", true);
       } catch (error) {
         commit("setInitializeAccountChange", false);
       }
-
-      wallet.onNetworkChange();
 
       wallet.addListener("networkChange", async () => {
         await wallet.disconnect();
@@ -155,7 +154,8 @@ export const actions = {
       await connectWallet(walletName);
 
       if (wallet.isConnected() && !state.wallet.initializedAccountChange) {
-        wallet.onAccountChange();
+        await wallet.onAccountChange();
+        await wallet.onNetworkChange();
         commit("setInitializeAccountChange", true);
       }
 
@@ -542,7 +542,7 @@ export const actions = {
           auction.detail.nft.nft.current_token_data.name,
           auction.detail.nft.nft.property_version,
           auction.detail.nft.nft.amount,
-          auction.offer_price * 100000000,
+          (auction.offer_price * Math.pow(10, 8)).toFixed(0),
           auction.detail.id,
           withdrawSec,
         ],
@@ -571,7 +571,7 @@ export const actions = {
       type: "entry_function_payload",
       function: process.env.PID + "::auction::increase_bid",
       type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [price * Math.pow(10, 8), auction_id],
+      arguments: [(price * Math.pow(10, 8)).toFixed(0), auction_id],
     };
 
     const res = await wallet.signAndSubmitTransaction(increase_bid);
