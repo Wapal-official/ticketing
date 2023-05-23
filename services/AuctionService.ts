@@ -92,7 +92,9 @@ export const getWalletNFT = async (params: any) => {
       `"},
         name: {_eq: "` +
       params.tokenName +
-      `"}}
+      `"},
+        current_token_data:{metadata_uri:{_eq:"${params.metadata_uri}"}}
+      }
             ) {
               owner_address
               property_version
@@ -113,17 +115,23 @@ export const getWalletNFT = async (params: any) => {
 };
 
 export const placeBid = async (
-  wallet_address:string,
+  wallet_address: string,
   bid: number,
   auction_id: number,
   creation_number: number
 ) => {
   const res = await publicRequest.post(`/api/auction/bid`, {
-    wallet_address:wallet_address,
+    wallet_address: wallet_address,
     bid: bid,
     auction_id: auction_id,
     creation_number: creation_number,
   });
+
+  return res;
+};
+
+export const getAuctionByName = async (name: string) => {
+  const res = await publicRequest.get(`/api/auction/${name}`);
 
   return res;
 };

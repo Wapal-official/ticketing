@@ -751,6 +751,7 @@ export default {
                     creatorAddress: this.walletAddress,
                     collectionName: this.mint.colName,
                     tokenName: this.mint.colName + " #0",
+                    metadata_uri: metaUri + "0.json",
                   });
 
                   const nft = nftRes.data.current_token_ownerships[0];
