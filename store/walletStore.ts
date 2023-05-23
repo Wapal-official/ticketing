@@ -511,7 +511,7 @@ export const actions = {
       transactionRes.hash
     );
 
-    if (getResource) {
+    if (getResource.success) {
       for (var x = 0; x < getResource.changes.length; x++) {
         if (
           getResource.changes[x].data.type ==
@@ -520,6 +520,8 @@ export const actions = {
           return getResource.changes[x].data.data;
         }
       }
+    } else {
+      throw new Error("Transaction Failed Please Try Again");
     }
   },
   async placeBid({ rootState }: { rootState: any }, auction: any) {

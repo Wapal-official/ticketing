@@ -92,7 +92,9 @@ export const getWalletNFT = async (params: any) => {
       `"},
         name: {_eq: "` +
       params.tokenName +
-      `"}}
+      `"},
+        current_token_data:{metadata_uri:{_eq:"${params.metadata_uri}"}}
+      }
             ) {
               owner_address
               property_version

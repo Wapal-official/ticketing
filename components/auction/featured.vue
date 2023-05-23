@@ -134,7 +134,11 @@ export default {
   },
   async mounted() {
     this.loading = true;
-    const res = await getAuctionByName("lost-in-my-thoughts");
+    const res = await getAuctionByName(
+      process.env.baseURL?.includes("staging")
+        ? "all-is-lost"
+        : "lost-in-my-thoughts"
+    );
     this.auction = res.data.auction;
 
     const now = new Date();
