@@ -747,7 +747,9 @@ export default {
       if (this.checkWhitelistSale) {
         const whitelistRes = await getWhitelistEntryById(
           this.collection._id,
-          1
+          1,
+          1,
+          "whitelist"
         );
 
         this.whitelistNumber = whitelistRes.data.spotsCount;

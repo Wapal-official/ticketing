@@ -57,7 +57,8 @@ export const uploadCSVInWhitelistEntry = async (formData: any) => {
 export const getWhitelistEntryById = async (
   collection_id: string,
   limit: number,
-  page: number
+  page: number,
+  phaseName: string
 ) => {
   let entryLimit = limit;
   let entryPage = page;
@@ -70,7 +71,7 @@ export const getWhitelistEntryById = async (
   }
 
   const res = await axios.get(
-    `${process.env.baseURL}/api/whitelist/entry?limit=${entryLimit}&page=${entryPage}`,
+    `${process.env.baseURL}/api/whitelist/entry?phase=${phaseName}&limit=${entryLimit}&page=${entryPage}`,
     {
       params: { collection_id: collection_id },
     }
@@ -92,6 +93,12 @@ export const getWhitelistByUsername = async (username: string) => {
   const res = await axios.get(
     `${process.env.baseURL}/api/whitelist/${username}`
   );
+
+  return res;
+};
+
+export const getPhases = async (collectionId: string) => {
+  const res = await publicRequest.get(`/api/collection/phases?${collectionId}`);
 
   return res;
 };
