@@ -4,7 +4,7 @@
     class="!tw-text-white tw-border tw-border-wapal-pink tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-h-full tw-w-full tw-group lg:tw-w-[320px] 3xl:tw-w-[400px]"
   >
     <div
-      class="tw-overflow-hidden tw-w-full tw-min-h-[260px] tw-max-h-[260px] 3xl:tw-min-h-[450px] 3xl:tw-max-h-[450px]"
+      class="tw-overflow-hidden tw-rounded-t tw-w-full tw-min-h-[260px] tw-max-h-[260px] 3xl:tw-min-h-[450px] 3xl:tw-max-h-[450px]"
     >
       <img
         :src="auction.nft.meta.image"
@@ -52,7 +52,7 @@
         </div>
       </div>
       <ReusableThemeButton
-        title="Place You bid"
+        title="Place Your bid"
         class="tw-w-full tw-my-5 !tw-py-3"
       />
     </div>
