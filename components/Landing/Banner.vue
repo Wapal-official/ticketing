@@ -143,12 +143,13 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 md:tw-gap-2"
           >
             <div>Whitelist Sale</div>
-            <div class="tw-capitalize" v-if="collection.candyMachine.whitelist_price != 0">
+            <div
+              class="tw-capitalize"
+              v-if="collection.candyMachine.whitelist_price != 0"
+            >
               price {{ collection.candyMachine.whitelist_price }} apt
             </div>
-            <div v-else>
-              Free Mint
-              </div>
+            <div v-else>Free Mint</div>
           </div>
           <div
             class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start tw-w-fit"
@@ -169,12 +170,13 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 tw-w-fit md:tw-gap-2"
           >
             <div>Public Sale</div>
-            <div class="tw-capitalize" v-if="collection.candyMachine.public_sale_price !=0">
+            <div
+              class="tw-capitalize"
+              v-if="collection.candyMachine.public_sale_price != 0"
+            >
               price {{ collection.candyMachine.public_sale_price }} apt
             </div>
-            <div v-else>
-              Free Mint
-              </div>
+            <div v-else>Free Mint</div>
           </div>
           <div
             class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start tw-w-fit"

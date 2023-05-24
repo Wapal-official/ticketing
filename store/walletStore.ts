@@ -123,13 +123,12 @@ export const actions = {
 
     if (!state.wallet.initializedAccountChange) {
       try {
+        await wallet.onNetworkChange();
         await wallet.onAccountChange();
         commit("setInitializeAccountChange", true);
       } catch (error) {
         commit("setInitializeAccountChange", false);
       }
-
-      wallet.onNetworkChange();
 
       wallet.addListener("networkChange", async () => {
         await wallet.disconnect();
@@ -155,7 +154,8 @@ export const actions = {
       await connectWallet(walletName);
 
       if (wallet.isConnected() && !state.wallet.initializedAccountChange) {
-        wallet.onAccountChange();
+        await wallet.onAccountChange();
+        await wallet.onNetworkChange();
         commit("setInitializeAccountChange", true);
       }
 
@@ -294,17 +294,19 @@ export const actions = {
     }
   },
   async mintCollection(
-    { state, dispatch }: { state: any; dispatch: any },
+    { state }: { state: any },
     {
       resourceAccount,
       publicMint,
-      collectionId,
       candyMachineId,
+      proof,
+      mintLimit,
     }: {
       resourceAccount: string;
       publicMint: boolean;
-      collectionId: string;
       candyMachineId: string;
+      proof: any[];
+      mintLimit: number;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -322,21 +324,12 @@ export const actions = {
           arguments: [resourceAccount],
         };
       } else {
-        await dispatch("getProof", {
-          collectionId: collectionId,
-          walletAddress: state.wallet.walletAddress,
-        });
-
-        const proofs: any[] = [];
-        state.proof.map((proof: any) => {
-          proofs.push(proof.data);
-        });
-        if (state.proof.length > 0) {
+        if (proof.length > 0) {
           create_mint_script = {
             type: "entry_function_payload",
             function: candyMachineId + "::candymachine::mint_from_merkle",
             type_arguments: [],
-            arguments: [resourceAccount, proofs, state.mint_limit],
+            arguments: [resourceAccount, proof, mintLimit],
           };
         } else {
           throw new Error("You are not whitelisted for this collection");
@@ -511,7 +504,7 @@ export const actions = {
       transactionRes.hash
     );
 
-    if (getResource) {
+    if (getResource.success) {
       for (var x = 0; x < getResource.changes.length; x++) {
         if (
           getResource.changes[x].data.type ==
@@ -520,6 +513,8 @@ export const actions = {
           return getResource.changes[x].data.data;
         }
       }
+    } else {
+      throw new Error("Transaction Failed Please Try Again");
     }
   },
   async placeBid({ rootState }: { rootState: any }, auction: any) {
@@ -542,7 +537,7 @@ export const actions = {
           auction.detail.nft.nft.current_token_data.name,
           auction.detail.nft.nft.property_version,
           auction.detail.nft.nft.amount,
-          auction.offer_price * 100000000,
+          (auction.offer_price * Math.pow(10, 8)).toFixed(0),
           auction.detail.id,
           withdrawSec,
         ],
@@ -571,7 +566,7 @@ export const actions = {
       type: "entry_function_payload",
       function: process.env.PID + "::auction::increase_bid",
       type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [price * Math.pow(10, 8), auction_id],
+      arguments: [(price * Math.pow(10, 8)).toFixed(0), auction_id],
     };
 
     const res = await wallet.signAndSubmitTransaction(increase_bid);
@@ -653,15 +648,17 @@ export const actions = {
     {
       resourceAccount,
       publicMint,
-      collectionId,
       candyMachineId,
       mintNumber,
+      proof,
+      mintLimit,
     }: {
       resourceAccount: string;
       publicMint: boolean;
-      collectionId: string;
       candyMachineId: string;
       mintNumber: number;
+      proof: any[];
+      mintLimit: number;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -682,8 +679,9 @@ export const actions = {
         const res = await dispatch("mintCollection", {
           resourceAccount,
           publicMint,
-          collectionId,
           candyMachineId,
+          proof,
+          mintLimit,
         });
 
         return res;

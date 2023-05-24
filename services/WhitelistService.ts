@@ -97,8 +97,16 @@ export const getWhitelistByUsername = async (username: string) => {
   return res;
 };
 
-export const getPhases = async (collectionId: string) => {
-  const res = await publicRequest.get(`/api/collection/phases?${collectionId}`);
+export const getProof = async ({
+  walletAddress,
+  collectionId,
+}: {
+  walletAddress: string;
+  collectionId: string;
+}) => {
+  const res = await publicRequest.get(
+    `/api/whitelist/proof?wallet_address=${walletAddress}&collection_id=${collectionId}`
+  );
 
   return res;
 };
