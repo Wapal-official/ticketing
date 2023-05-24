@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     :to="`/auctions/${auction.auction_name}`"
-    class="tw-border tw-border-wapal-pink tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-h-full tw-w-full tw-group lg:tw-w-[320px] 3xl:tw-w-[400px]"
+    class="!tw-text-white tw-border tw-border-wapal-pink tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-h-full tw-w-full tw-group lg:tw-w-[320px] 3xl:tw-w-[400px]"
   >
     <div
       class="tw-overflow-hidden tw-w-full tw-min-h-[260px] tw-max-h-[260px] 3xl:tw-min-h-[450px] 3xl:tw-max-h-[450px]"
