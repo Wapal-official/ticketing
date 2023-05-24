@@ -54,7 +54,6 @@
       <ReusableThemeButton
         title="Place Your bid"
         class="tw-w-full tw-my-5 !tw-py-3"
-        v-if="auctionStarted"
       />
     </div>
   </NuxtLink>
