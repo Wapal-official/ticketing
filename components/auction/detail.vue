@@ -15,20 +15,6 @@
             class="tw-w-full tw-rounded-lg tw-max-h-[550px] tw-object-fill"
           />
         </div>
-        <div
-          class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full lg:tw-flex-row xl:tw-flex-col 2xl:tw-flex-row tw-gap-4"
-          v-if="!auctionStarted"
-        >
-          <span
-            class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
-            >Auction Starts In</span
-          >
-          <reusable-count-down
-            :startTime="auction.startAt"
-            :shadow="true"
-            @countdownComplete="startAuction"
-          />
-        </div>
         <div class="tw-w-full" v-if="auctionStarted">
           <div
             class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full lg:tw-flex-row xl:tw-flex-col 2xl:tw-flex-row tw-gap-4"
@@ -64,9 +50,28 @@
             {{ auction.nft.meta.description }}
           </p>
         </div>
+        <div
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-p-4 tw-bg-[#0C224B] tw-rounded tw-w-full lg:tw-flex-row lg:tw-items-center lg:tw-justify-between"
+          v-if="!auctionStarted"
+        >
+          <div
+            class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full lg:tw-flex-row 2xl:tw-flex-row tw-gap-4"
+          >
+            <span
+              class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
+              >Auction Starts In</span
+            >
+            <reusable-count-down
+              :startTime="auction.startAt"
+              :shadow="true"
+              @countdownComplete="startAuction"
+            />
+          </div>
+        </div>
         <ValidationObserver
           ref="form"
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-p-4 tw-bg-[#0C224B] tw-rounded tw-w-full lg:tw-flex-row lg:tw-items-center lg:tw-justify-between"
+          v-else
         >
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-w-fit"
@@ -127,6 +132,7 @@
         </ValidationObserver>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+          v-if="auctionStarted"
         >
           <h4 class="tw-text-xl tw-font-semibold tw-text-wapal-gray">
             Last Bid
@@ -273,6 +279,7 @@ export default {
     this.auctionStarted = this.checkAuctionStarted();
     this.auctionEnded = this.checkAuctionEnded();
     await this.setBid();
+
     if (!this.auctionEnded) {
       this.bidInterval = setInterval(async () => {
         await this.getAuctionDetails();
@@ -320,7 +327,10 @@ export default {
         }
       }
       this.bid = 0;
-      this.$refs.form.reset();
+
+      if (this.$refs.form) {
+        this.$refs.form.reset();
+      }
     },
     async placeBid() {
       if (!this.getWalletConnectedStatus) {
