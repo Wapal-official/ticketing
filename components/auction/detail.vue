@@ -40,6 +40,16 @@
       <div
         class="tw-rounded tw-w-full tw-bg-[#001233] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-px-4 tw-py-8 md:tw-px-8 xl:tw-w-[60%] preview-shadow"
       >
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+        >
+          <a :href="auction.twitter" target="_blank" v-if="auction.twitter">
+            <v-icon
+              class="!tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink"
+              >mdi-twitter</v-icon
+            >
+          </a>
+        </div>
         <div class="tw-text-wapal-gray tw-pb-8">
           <h1
             class="tw-text-2xl tw-pb-4 tw-font-semibold tw-capitalize md:tw-text-4xl"
