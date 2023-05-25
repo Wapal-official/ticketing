@@ -228,7 +228,6 @@ import {
   getWhitelistEntryById,
   setRoot,
   uploadCSVInWhitelistEntry,
-  getPhases,
 } from "@/services/WhitelistService";
 
 import moment from "moment";
@@ -371,6 +370,7 @@ export default {
 
         const rootData = {
           collection_id: this.collection._id,
+          phase: this.$route.params.phase,
         };
 
         const res = await setRoot(rootData);

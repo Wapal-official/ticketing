@@ -305,7 +305,7 @@ import {
   getOwnedCollectionOfUser,
   setSoldOut,
 } from "@/services/CollectionService";
-import { getProof } from "@/services/WhitelistService";
+import { getProof, getMintLimit } from "@/services/WhitelistService";
 import { getWhitelistEntryById } from "@/services/WhitelistService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
@@ -622,21 +622,25 @@ export default {
       try {
         this.gettingProof = true;
 
-        console.log("settingProof");
-        const res = await getProof({
-          walletAddress: this.$store.state.walletStore.wallet.walletAddress,
+        const mintLimitRes = await getMintLimit({
+          walletAddress: this.getWalletAddress,
           collectionId: this.collection._id,
+          phase: "whitelist",
+        });
+
+        const res = await getProof({
+          walletAddress: this.getWalletAddress,
+          collectionId: this.collection._id,
+          phase: "whitelist",
         });
 
         const proofs = res.data.proofs;
-
-        console.log(proofs);
 
         proofs.map((proof) => {
           this.proof.push(proof.data);
         });
 
-        this.mintLimit = res.data.wallet.mint_limit;
+        this.mintLimit = res.data.mint_limit;
 
         this.gettingProof = false;
         this.notWhitelisted = false;
