@@ -43,6 +43,19 @@
                 ></reusable-text-area>
                 <div class="tw-text-red-600">{{ errors[0] }}</div>
               </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="link"
+                v-slot="{ errors }"
+              >
+                <label>Twitter Link</label>
+                <reusable-text-field
+                  v-model="mint.twitter"
+                  type="text"
+                  placeholder="Twitter Link"
+                ></reusable-text-field>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
               <p class="text-h6">Token Details</p>
               <ValidationProvider
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
@@ -513,6 +526,18 @@ extend("percentage", {
   message: "Please enter only one decimal point in percentage",
 });
 
+extend("link", {
+  validate(value) {
+    try {
+      const givenURL = new URL(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  },
+  message: "Please enter a valid link",
+});
+
 export default {
   layout: "dashboard",
   components: { DatePicker, ValidationObserver, ValidationProvider },
@@ -536,6 +561,7 @@ export default {
         nftName: "",
         nftDesc: "",
         attributes: [{ trait_type: "", value: "" }],
+        twitter: "",
       },
       attribute: "",
       value: "",
@@ -787,6 +813,7 @@ export default {
                     min_bid: this.mint.minBid,
                     id: auction.cur_auction_id,
                     auction_name: auction_name,
+                    twitter: this.mint.twitter,
                   });
 
                   this.$toast.showMessage({
