@@ -160,3 +160,11 @@ export const getOwnedCollectionOfUser = async (
   });
   return res;
 };
+
+export const sortPhases = (phases: any[]) => {
+  const sortedPhases = phases.sort((firstPhase: any, secondPhase: any): any => {
+    return firstPhase.mint_time.getTime() - secondPhase.mint_time.getTime();
+  });
+
+  return sortedPhases;
+};

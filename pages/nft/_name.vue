@@ -664,6 +664,11 @@ export default {
         ? res.data.data.current_token_ownerships[0].amount
         : 0;
     },
+    getCurrentSale() {
+      const phases = this.collection.phases;
+
+      console.log(phases);
+    },
   },
   computed: {
     getCurrentPrice() {
@@ -739,6 +744,8 @@ export default {
   },
   async mounted() {
     if (this.collection) {
+      this.getCurrentSale();
+
       this.whitelistSaleDate = this.checkWhitelistSale
         ? new Date(this.collection.candyMachine.whitelist_sale_time)
         : null;
