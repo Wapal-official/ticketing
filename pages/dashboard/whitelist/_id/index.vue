@@ -24,22 +24,6 @@
       </thead>
       <tbody>
         <tr
-          v-if="checkWhitelistSale"
-          class="tw-border-b tw-border-[#ff36ab33] tw-transition tw-duration-200 tw-ease-linear tw-cursor-pointer hover:tw-bg-black/80"
-          @click="
-            $router.push(
-              `/dashboard/whitelist/${$route.params.id}/phases/whitelist`
-            )
-          "
-        >
-          <td class="tw-py-8 tw-px-4">Whitelist Sale</td>
-          <td class="tw-py-8 tw-px-4">
-            {{
-              getFormattedDate(this.collection.candyMachine.whitelist_sale_time)
-            }}
-          </td>
-        </tr>
-        <tr
           class="tw-border-b tw-border-[#ff36ab33] tw-transition tw-duration-200 tw-ease-linear tw-cursor-pointer hover:tw-bg-black/80"
           v-for="(phase, index) in collection.phases"
           :key="index"
@@ -49,7 +33,7 @@
             )
           "
         >
-          <td class="tw-py-8 tw-px-4">{{ phase.name }}</td>
+          <td class="tw-py-8 tw-px-4 tw-capitalize">{{ phase.name }}</td>
           <td class="tw-py-8 tw-px-4">
             {{ getFormattedDate(phase.mint_time) }}
           </td>

@@ -719,6 +719,15 @@ export default {
           });
         });
 
+        if (this.whitelistEnabled) {
+          phases.push({
+            id: "whitelist",
+            name: "whitelist sale",
+            mint_time: this.collection.whitelist_sale_time,
+            mint_price: this.collection.whitelist_price,
+          });
+        }
+
         const sortedPhases = sortPhases(phases);
 
         this.collection.phases = tempCollection.phases = sortedPhases;
@@ -816,43 +825,28 @@ export default {
 
     async sendDataToCandyMachineCreator() {
       let whitelistTime = null;
+      let whitelist_price = 0;
 
       let publicSaleTime = Math.floor(
         new Date(this.collection.public_sale_time).getTime() / 1000
       );
 
-      if (this.whitelistEnabled) {
+      whitelistTime = Math.floor(
+        new Date(this.collection.public_sale_time).getTime() / 1000
+      );
+
+      whitelist_price = this.collection.public_sale_price;
+
+      if (this.collection.phases[0]) {
         whitelistTime = Math.floor(
-          new Date(this.collection.whitelist_sale_time).getTime() / 1000
+          new Date(this.collection.phases[0].mint_time).getTime() / 1000
         );
-
-        if (this.collection.phases[0]) {
-          if (
-            new Date(this.collection.whitelist_sale_time).getTime() >
-            this.collection.phases[0].mint_time.getTime()
-          ) {
-            whitelistTime = Math.floor(
-              this.collection.phases[0].mint_time.getTime() / 1000
-            );
-          }
-        }
-      } else {
-        whitelistTime = Math.floor(
-          new Date(this.collection.public_sale_time).getTime() / 1000
-        );
-
-        if (this.collection.phases[0]) {
-          whitelistTime = Math.floor(
-            this.collection.phases[0].mint_time.getTime() / 1000
-          );
-        }
-
-        publicSaleTime += 1;
+        whitelist_price = this.collection.phases[0].mint_price;
       }
 
-      const whitelist_price = this.collection.whitelist_price
-        ? this.collection.whitelist_price
-        : this.collection.public_sale_price;
+      if (!this.whitelistEnabled) {
+        publicSaleTime += 1;
+      }
 
       const candyMachineArguments = {
         collection_name: this.collection.name,
