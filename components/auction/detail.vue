@@ -61,21 +61,25 @@
           </p>
         </div>
         <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-p-4 tw-bg-[#0C224B] tw-rounded tw-w-full lg:tw-flex-row lg:tw-items-center lg:tw-justify-between"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-w-full"
           v-if="!auctionStarted"
         >
           <div
-            class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full lg:tw-flex-row 2xl:tw-flex-row tw-gap-4"
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-py-4 tw-px-4 tw-bg-[#0C224B] tw-rounded tw-w-fit lg:tw-flex-row lg:tw-items-center lg:tw-justify-between lg:tw-px-8"
           >
-            <span
-              class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
-              >Auction Starts In</span
+            <div
+              class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-gap-4"
             >
-            <reusable-count-down
-              :startTime="auction.startAt"
-              :shadow="true"
-              @countdownComplete="startAuction"
-            />
+              <span
+                class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
+                >Auction Starts In</span
+              >
+              <reusable-count-down
+                :startTime="auction.startAt"
+                :shadow="true"
+                @countdownComplete="startAuction"
+              />
+            </div>
           </div>
         </div>
         <ValidationObserver
