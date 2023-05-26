@@ -18,15 +18,15 @@
     <div
       class="tw-rounded tw-w-full tw-bg-[#001233] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-px-4 tw-py-8 md:tw-px-8 xl:tw-w-[60%] preview-shadow"
     >
-      <div class="tw-text-wapal-gray tw-pb-8">
+      <div class="tw-text-wapal-gray tw-pb-4">
         <h1
           class="tw-text-2xl tw-pb-4 tw-font-medium tw-uppercase md:tw-text-[2rem]"
         >
           {{ selectedNft.meta.name }}
         </h1>
-        <p class="tw-font-light">
+        <div class="tw-font-light">
           {{ selectedNft.meta.description }}
-        </p>
+        </div>
       </div>
       <div
         class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-p-4 tw-bg-[#0C224B] tw-rounded tw-w-full"
@@ -71,6 +71,18 @@
               <div class="tw-text-red-600">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <label for="twitter">Collection/Artist Twitter Profile</label>
+            <reusable-text-field
+              v-model="twitter"
+              background="#0C224B"
+            ></reusable-text-field>
+            <div class="tw-text-red-600">{{ errors[0] }}</div>
+          </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group"
             rules="required|bidAmount"
@@ -140,6 +152,18 @@ extend("endTime", {
   message: "Auction End Time should be greater than Auction Start Time",
 });
 
+extend("link", {
+  validate(value) {
+    try {
+      const givenURL = new URL(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  },
+  message: "Please enter a valid link",
+});
+
 export default {
   components: {
     DatePicker,
@@ -157,6 +181,7 @@ export default {
         required: (value) => !!value || "Required.",
         positive: (v) => (v && v > 0) || "Should be more than zero.",
       },
+      twitter: null,
     };
   },
   computed: {
@@ -195,6 +220,7 @@ export default {
               min_bid: this.apt,
               id: auction.cur_auction_id,
               auction_name: auction_name,
+              twitter: this.twitter,
             })
             .then((res) => {
               this.$toast.showMessage({

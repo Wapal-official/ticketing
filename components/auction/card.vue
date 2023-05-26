@@ -52,7 +52,7 @@
         </div>
       </div>
       <ReusableThemeButton
-        title="Place Your bid"
+        :title="!auctionEnded ? 'Place Your bid' : 'Auction Ended'"
         class="tw-w-full tw-my-5 !tw-py-3"
       />
     </div>
