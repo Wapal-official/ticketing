@@ -72,7 +72,7 @@
       >
         <div class="tw-text-lg">Current Bid: {{ getBid }} APT</div>
         <reusable-theme-button
-          title="Place Your Bid"
+          :title="!auctionEnded ? 'Place Your bid' : 'Auction Ended'"
           @click="$router.push('/auctions/lost-in-my-thoughts')"
         />
       </div>
