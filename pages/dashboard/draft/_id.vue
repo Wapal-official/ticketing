@@ -198,7 +198,7 @@
           <v-switch v-model="whitelistEnabled"></v-switch>
         </div>
         <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-start"
         >
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
@@ -239,7 +239,7 @@
           </ValidationProvider>
         </div>
         <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-start"
         >
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
@@ -298,7 +298,7 @@
         >
           <div v-for="(phase, index) in collection.phases" :key="index">
             <div
-              class="tw-flex tw-flex-col tw-gap-4 tw-items-center tw-justify-between tw-w-full md:tw-flex-row"
+              class="tw-flex tw-flex-col tw-gap-4 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
             >
               <ValidationProvider
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
@@ -322,12 +322,34 @@
               </ValidationProvider>
               <ValidationProvider
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
+                name="publicSalePrice"
+                :rules="'required|number'"
+                v-slot="{ errors }"
+              >
+                <div class="dashboard-text-field-border tw-w-full">
+                  <v-text-field
+                    v-model="phase.mint_price"
+                    placeholder="Mint Price"
+                    outlined
+                    single-line
+                    color="#fff"
+                    hide-details
+                    clearable
+                    class="dashboard-input"
+                    inputmode="numeric"
+                  >
+                  </v-text-field>
+                </div>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
                 rules="required|saleTime"
                 v-slot="{ errors }"
               >
                 <div class="dashboard-text-field-border tw-w-full">
                   <date-picker
-                    v-model="phase.mintTime"
+                    v-model="phase.mint_time"
                     type="datetime"
                     placeholder="Select Mint Time"
                   ></date-picker>
@@ -463,7 +485,11 @@ import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 
-import { createCollection, getDraftById } from "@/services/CollectionService";
+import {
+  createCollection,
+  getDraftById,
+  sortPhases,
+} from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 
 import DatePicker from "vue2-datepicker";
@@ -585,7 +611,7 @@ export default {
         txnhash: null,
         un: "",
         candy_id: process.env.CANDY_MACHINE_ID,
-        phases: [{ name: null, mintTime: null }],
+        phases: [{ name: "", mint_time: null, mint_price: null }],
       },
       message: "",
       image: { name: null },
@@ -683,7 +709,18 @@ export default {
           });
         });
 
-        tempCollection.phases = phases;
+        if (this.whitelistEnabled) {
+          phases.push({
+            id: "whitelist",
+            name: "whitelist sale",
+            mint_time: this.collection.whitelist_sale_time,
+            mint_price: this.collection.whitelist_price,
+          });
+        }
+
+        const sortedPhases = sortPhases(phases);
+
+        this.collection.phases = tempCollection.phases = sortedPhases;
 
         await this.sendDataToCandyMachineCreator();
 
@@ -740,29 +777,28 @@ export default {
 
     async sendDataToCandyMachineCreator() {
       let whitelistTime = null;
+      let whitelist_price = 0;
 
-      let publicSaleTime = null;
+      let publicSaleTime = Math.floor(
+        new Date(this.collection.public_sale_time).getTime() / 1000
+      );
 
-      if (this.whitelistEnabled) {
+      whitelistTime = Math.floor(
+        new Date(this.collection.public_sale_time).getTime() / 1000
+      );
+
+      whitelist_price = this.collection.public_sale_price;
+
+      if (this.collection.phases[0]) {
         whitelistTime = Math.floor(
-          new Date(this.collection.whitelist_sale_time).getTime() / 1000
+          this.collection.phases[0].mint_time.getTime() / 1000
         );
-        publicSaleTime = Math.floor(
-          new Date(this.collection.public_sale_time).getTime() / 1000
-        );
-      } else {
-        whitelistTime = Math.floor(
-          new Date(this.collection.public_sale_time).getTime() / 1000
-        );
-        publicSaleTime =
-          Math.floor(
-            new Date(this.collection.public_sale_time).getTime() / 1000
-          ) + 1;
+        whitelist_price = this.collection.phases[0].mint_price;
       }
 
-      const whitelist_price = this.collection.whitelist_price
-        ? this.collection.whitelist_price
-        : this.collection.public_sale_price;
+      if (!this.whitelistEnabled) {
+        publicSaleTime += 1;
+      }
 
       const candyMachineArguments = {
         collection_name: this.collection.name,
@@ -817,7 +853,7 @@ export default {
       : [];
 
     this.collection.phases.map((phase: any) => {
-      phase.mintTime = new Date(phase.mintTime);
+      phase.mint_time = new Date(phase.mint_time);
     });
 
     if (this.collection.whitelist_price) {

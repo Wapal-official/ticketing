@@ -9,7 +9,7 @@
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item :disabled="item.disabled">
           <NuxtLink
-            class="!tw-text-white"
+            class="!tw-text-white !tw-capitalize"
             :to="item.href ? item.href : $route.fullPath"
           >
             {{ item.text }}
@@ -18,38 +18,88 @@
       </template>
     </v-breadcrumbs>
     <div
-      class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center"
+      class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center md:tw-justify-between"
     >
-      <button
-        @click="gotoSetupWhitelistPage"
-        class="!tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
-        :disabled="!setupWhitelistStatus"
-      >
-        Setup Whitelist
-      </button>
-      <form @submit.prevent="">
-        <label
-          class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
+      <!-- <div class="tw-relative">
+        <reusable-theme-button title="" :bordered="true" @click="">
+          <template #icon> Filter <v-icon>mdi-tune</v-icon> </template>
+        </reusable-theme-button>
+        <div
+          class="tw-absolute tw-top-[90%] tw-w-full px-8 tw-py-4 tw-bg-wapal-background tw-rounded-b-md tw-rounded-t-none tw-border !tw-border-solid tw-border-wapal-pink tw-min-w-screen md:tw-min-w-[300px]"
         >
-          <input
-            type="file"
-            class="tw-invisible tw-w-0 tw-h-0 disabled:tw-cursor-not-allowed"
-            @change="setCSVFile"
-          />
-          <div
-            class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
+          <button
+            class="tw-w-full tw-px-8 tw-py-6 tw-flex tw-flex-row tw-items-center tw-justify-between tw-bg-wapal-background"
           >
-            Import CSV
+            <span>Role</span>
+            <v-icon class="!tw-text-wapal-pink">mdi-chevron-down</v-icon>
+          </button>
+          <div class="tw-w-full tw-bg-wapal-background tw-px-8">
+            <input
+              class="tw-w-full tw-border !tw-border-solid tw-border-white tw-py-4 tw-px-2 focus:tw-outline-none"
+            />
+            <reusable-theme-button title="Apply" class="tw-my-4" />
           </div>
-        </label>
-      </form>
-      <button
-        class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
-        @click="showSetWhitelistModal = true"
-        :disabled="sendingDataToSetRoot"
+        </div>
+      </div>
+      <v-menu offset-y id="filter-dropdown" :close-on-content-click="false">
+        <template v-slot:activator="{ on, attrs }">
+          <button
+            class="tw-text-base tw-capitalize tw-text-white tw-bg-transparent !tw-border !tw-border-solid !tw-border-wapal-pink tw-rounded-md tw-px-6 tw-py-2 tw-text-center tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 disabled:tw-cursor-not-allowed"
+            v-bind="attrs"
+            v-on="on"
+          >
+            Filter <v-icon>mdi-tune</v-icon>
+          </button>
+        </template>
+
+        <button
+          class="tw-w-full tw-px-8 tw-py-6 tw-flex tw-flex-row tw-items-center tw-justify-between tw-bg-wapal-background"
+        >
+          <span>Role</span>
+          <v-icon class="!tw-text-wapal-pink">mdi-chevron-down</v-icon>
+        </button>
+        <div class="tw-w-full tw-bg-wapal-background tw-px-8">
+          <input
+            class="tw-w-full tw-border !tw-border-solid tw-border-white tw-py-4 tw-px-2 focus:tw-outline-none"
+          />
+          <reusable-theme-button title="Apply" class="tw-my-4" />
+        </div>
+      </v-menu> -->
+      <div
+        class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center"
       >
-        Set Whitelist
-      </button>
+        <button
+          @click="gotoSetupWhitelistPage"
+          class="!tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
+          :disabled="!setupWhitelistStatus"
+          v-if="$route.params.phase === 'whitelist'"
+        >
+          Setup Whitelist
+        </button>
+        <form @submit.prevent="">
+          <label
+            class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
+          >
+            <input
+              type="file"
+              class="tw-invisible tw-w-0 tw-h-0 disabled:tw-cursor-not-allowed"
+              @change="setCSVFile"
+            />
+            <div
+              class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
+            >
+              Import CSV
+            </div>
+          </label>
+        </form>
+        <button
+          class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
+          @click="showSetWhitelistModal = true"
+          :disabled="sendingDataToSetRoot"
+        >
+          Set Whitelist
+        </button>
+      </div>
     </div>
     <div
       class="tw-rounded tw-w-full tw-py-4 tw-px-4 tw-border-[3px] tw-border-wapal-secondary-blue tw-my-4"
@@ -182,6 +232,7 @@ import {
 
 import moment from "moment";
 import { getCollectionByUsername } from "@/services/CollectionService";
+
 export default {
   components: { Loading },
   layout: "dashboard",
@@ -189,7 +240,11 @@ export default {
     return {
       breadcrumbs: [
         { text: "Whitelist", href: "/dashboard/whitelist" },
-        { text: "Whitelist Entries" },
+        {
+          text: "Phase",
+          href: `/dashboard/whitelist/${this.$route.params.id}`,
+        },
+        { text: this.$route.params.phase },
       ],
       headers: [
         {
@@ -232,7 +287,10 @@ export default {
       paginatedWhitelistEntries: [],
       selectedCSVFile: null,
       showCSVUploadModal: false,
-      collection: { _id: null },
+      collection: {
+        _id: null,
+        phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
+      },
       loading: true,
       sendingDataToSetRoot: false,
       showSetWhitelistModal: false,
@@ -259,6 +317,7 @@ export default {
 
         formData.append("collection_id", this.collection._id);
         formData.append("user_id", this.$store.state.userStore.user.user_id);
+        formData.append("phase", this.$route.params.phase);
         formData.append("csv", this.selectedCSVFile);
 
         const res = await uploadCSVInWhitelistEntry(formData);
@@ -282,7 +341,14 @@ export default {
     async mapWhitelistEntries(page: number) {
       this.loading = true;
 
-      const res = await getWhitelistEntryById(this.collection._id, 100, page);
+      const res = await getWhitelistEntryById(
+        this.collection._id,
+        100,
+        page,
+        this.$route.params.phase
+      );
+
+      console.log(res);
 
       if (res.data.whitelistEntries.length === 0) {
         this.loading = false;
@@ -304,6 +370,7 @@ export default {
 
         const rootData = {
           collection_id: this.collection._id,
+          phase: this.$route.params.phase,
         };
 
         const res = await setRoot(rootData);
@@ -342,6 +409,22 @@ export default {
       );
     },
   },
+  computed: {
+    checkWhitelistSale() {
+      const whitelistTime = new Date(
+        this.collection.candyMachine.whitelist_sale_time
+      ).getTime();
+      const publicSaleTime = new Date(
+        this.collection.candyMachine.public_sale_time
+      ).getTime();
+
+      if (publicSaleTime - whitelistTime === 1000) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+  },
   async mounted() {
     const res = await getWhitelistByUsername(this.$route.params.id);
 
@@ -377,7 +460,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .whitelist-data-table {
   min-width: 100% !important;
   max-width: 100% !important;
@@ -392,5 +475,11 @@ export default {
   > tr:last-child
   > th {
   border-bottom: none !important;
+}
+
+.v-menu__content {
+  box-shadow: none;
+  border: 1px solid #ff36ab;
+  border-radius: 0px 0px 10px 10px;
 }
 </style>
