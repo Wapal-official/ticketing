@@ -68,14 +68,6 @@
       <div
         class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center"
       >
-        <button
-          @click="gotoSetupWhitelistPage"
-          class="!tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
-          :disabled="!setupWhitelistStatus"
-          v-if="$route.params.phase === 'whitelist'"
-        >
-          Setup Whitelist
-        </button>
         <form @submit.prevent="">
           <label
             class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
@@ -224,7 +216,6 @@
 <script lang="ts">
 import Loading from "@/components/Reusable/Loading.vue";
 import {
-  getWhitelistByUsername,
   getWhitelistEntryById,
   setRoot,
   uploadCSVInWhitelistEntry,
@@ -294,7 +285,6 @@ export default {
       loading: true,
       sendingDataToSetRoot: false,
       showSetWhitelistModal: false,
-      setupWhitelistStatus: false,
       scrolledNumber: 1,
       mappingData: false,
       uploading: false,
@@ -403,11 +393,6 @@ export default {
         this.sendingDataToSetRoot = false;
       }
     },
-    gotoSetupWhitelistPage() {
-      this.$router.push(
-        `/dashboard/whitelist/setup-whitelist/${this.collection._id}`
-      );
-    },
   },
   computed: {
     checkWhitelistSale() {
@@ -426,21 +411,12 @@ export default {
     },
   },
   async mounted() {
-    const res = await getWhitelistByUsername(this.$route.params.id);
-
-    const whitelist = res.data.whitelist;
 
     const collectionRes = await getCollectionByUsername(this.$route.params.id);
 
     this.collection = collectionRes.data.collection[0];
 
     await this.mapWhitelistEntries(1);
-
-    if (whitelist) {
-      this.setupWhitelistStatus = false;
-    } else {
-      this.setupWhitelistStatus = true;
-    }
 
     if (process.client) {
       window.addEventListener("scroll", async () => {
