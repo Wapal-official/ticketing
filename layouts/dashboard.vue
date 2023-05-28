@@ -11,15 +11,11 @@
       </div>
       <div
         class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background tw-z-50"
-        :class="sidebarClass"
-      >
+        :class="sidebarClass">
         <dashboard-sidebar @close="closeSideBar" />
       </div>
       <dashboard-footer />
-      <upload-progress
-        v-if="getUploadingStatus && getUploadingBar"
-        @close="closeUploadProgress"
-      />
+      <upload-progress v-if="getUploadingStatus && getUploadingBar" @close="closeUploadProgress" />
     </div>
     <toast />
   </v-app>
@@ -31,7 +27,7 @@ import DashboardSidebar from "@/components/Dashboard/Sidebar/DashboardSidebar.vu
 import Toast from "@/components/Reusable/Toast.vue";
 import UploadProgress from "@/components/Dashboard/UploadProgress.vue";
 import Verification from "@/components/Landing/Verification.vue";
-
+import tourMixin from '@/mixins/tourMixin.js';
 import { uploadSocketState } from "@/sockets/socket";
 export default {
   middleware: "signup",
@@ -43,6 +39,7 @@ export default {
     UploadProgress,
     Verification,
   },
+  mixins: [tourMixin],
   data() {
     return {
       sidebarClass: "-tw-translate-x-full",
@@ -87,8 +84,20 @@ export default {
     getUploadingBar() {
       return uploadSocketState.showUploadBar;
     },
+
+    walkthroughMobile() {
+      return this.$store.state.tourStore.openSidebar
+
+    }
   },
   mounted() {
+    // this.startTour({ store: this.$store });
+    if (localStorage.getItem('seen_asset_tour') === null) {
+      this.startTour({ store: this.$store });
+
+      localStorage.setItem('seen_asset_tour', 'true');
+    }
+
     this.$store.dispatch("walletStore/initializeWallet");
     if (process.client) {
       window.addEventListener("dragenter", (e) => e.preventDefault());
@@ -121,6 +130,15 @@ export default {
     }
   },
   watch: {
+    walkthroughMobile(storage: any) {
+      if (storage) {
+        this.sidebarClass = "tw-translate-x-0";
+      }
+      else {
+        this.sidebarClass = "-tw-translate-x-full";
+      }
+    },
+
     walletAddress(newVal: any) {
       if (!newVal) {
         this.$router.push("/");
@@ -138,9 +156,11 @@ export default {
 .v-breadcrumbs {
   padding-left: 0 !important;
 }
+
 .dashboard-container {
   width: calc(100vw - 320px);
 }
+
 @media only screen and (max-width: 1024px) {
   .dashboard-container {
     width: 100%;
