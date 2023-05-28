@@ -140,25 +140,44 @@
           <div class="tw-text-red-600">{{ errors[0] }}</div>
         </ValidationProvider>
         <div v-for="(role, index) in roles" :key="index">
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-            name="discord_role_name"
-            v-slot="{ errors }"
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row"
           >
-            <label>Discord role name {{ `role ${index + 1}` }}:</label>
-            <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field
-                v-model="role.name"
-                outlined
-                single-line
-                color="#fff"
-                hide-details
-                clearable
-                class="dashboard-input"
-              ></v-text-field>
-            </div>
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
-          </ValidationProvider>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group tw-w-full"
+              name="discord_role_name"
+              v-slot="{ errors }"
+            >
+              <label>Discord role name {{ `role ${index + 1}` }}:</label>
+              <div class="dashboard-text-field-border tw-w-full">
+                <v-text-field
+                  v-model="role.name"
+                  outlined
+                  single-line
+                  color="#fff"
+                  hide-details
+                  clearable
+                  class="dashboard-input"
+                ></v-text-field>
+              </div>
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group tw-w-full"
+              name="phase_name"
+              v-slot="{ errors }"
+            >
+              <label>Mint Phase:</label>
+              <reusable-auto-complete
+                v-model="role.phase"
+                :items="phases"
+                itemValue="id"
+                placeholder="Select Mint Phase"
+                text="name"
+              />
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="discord_role_id"
@@ -341,6 +360,7 @@ export default {
         {
           name: null,
           id: null,
+          phase: null,
         },
       ],
       selectCollectionOptions: [],
@@ -359,18 +379,23 @@ export default {
         },
       ],
       collection: { name: null },
+      phases: [{ name: "", mint_time: "", mint_price: "" }],
     };
   },
   async mounted() {
+    this.phases = [];
     const res = await getCollection(this.$route.params.id);
 
     this.collection = res.collection[0];
+
+    this.phases = this.collection.phases ? this.collection.phases : [];
   },
   methods: {
     addRole() {
       this.roles.push({
         name: "",
         id: "",
+        phase: "",
       });
       this.nextId++;
     },
@@ -393,12 +418,14 @@ export default {
 
         tempWhitelist.discord_roles = this.roles;
 
+        console.log(tempWhitelist);
+
         await createWhitelist(tempWhitelist);
 
         this.submitting = false;
         this.message = "Whitelist Created Successfully";
         this.$toast.showMessage({ message: this.message, error: false });
-        this.$router.push("/dashboard/whitelist");
+        this.$router.push(`/dashboard/whitelist/${this.collection.username}`);
       } catch (error) {
         this.message = error;
         this.$toast.showMessage({ message: this.message, error: true });

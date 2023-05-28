@@ -706,6 +706,23 @@ export default {
     setPhases() {
       this.phases = this.collection.phases ? this.collection.phases : [];
 
+      if (!this.collection.phases) {
+        if (
+          new Date(this.collection.candyMachine.public_sale_time).getTime() -
+            new Date(
+              this.collection.candyMachine.whitelist_sale_time
+            ).getTime() >
+          1000
+        ) {
+          this.phases.push({
+            name: "whitelist sale",
+            id: "whitelist",
+            mint_price: this.collection.candyMachine.whitelist_sale_price,
+            mint_time: this.collection.candyMachine.whitelist_sale_time,
+          });
+        }
+      }
+
       const publicSale = {
         name: "public sale",
         id: "public-sale",
@@ -778,6 +795,7 @@ export default {
   },
   async mounted() {
     if (this.collection) {
+      console.log(this.collection);
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();
