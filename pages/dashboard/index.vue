@@ -1,100 +1,53 @@
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
     <div
-      class="tw-flex tw-w-full tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
-    >
+      class="tw-flex tw-w-full tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between">
       <div class="collection1">
-        <NuxtLink to="/dashboard/create-collection"
-          ><gradient-border-button
-            >Create New Collection</gradient-border-button
-          >
+        <NuxtLink to="/dashboard/create-collection"><gradient-border-button>Create New Collection</gradient-border-button>
         </NuxtLink>
       </div>
     </div>
     <div class="tw-w-full tw-py-2">
-      <v-tabs
-        active-class="!tw-text-wapal-pink"
-        class="!tw-bg-transparent"
-        id="explore-tab"
-        v-model="launchpadTab"
-        @change="tabChanged(launchpadTab)"
-      >
-        <v-tab
-          :ripple="false"
-          class="!tw-capitalize !tw-text-white"
-          v-for="tab in launchpadTabs"
-          :key="tab.id"
-          >{{ tab.title }}</v-tab
-        >
+      <v-tabs active-class="!tw-text-wapal-pink" class="!tw-bg-transparent" id="explore-tab" v-model="launchpadTab"
+        @change="tabChanged(launchpadTab)">
+        <v-tab :ripple="false" class="!tw-capitalize !tw-text-white" v-for="tab in launchpadTabs" :key="tab.id">{{
+          tab.title }}</v-tab>
       </v-tabs>
     </div>
-    <v-tabs-items
-      v-model="launchpadTab"
-      id="explore-tab-items"
-      class="tw-py-8 tw-w-full"
-      v-if="!loading"
-      @change="tabChanged(launchpadTab)"
-    >
+    <v-tabs-items v-model="launchpadTab" id="explore-tab-items" class="tw-py-8 tw-w-full" v-if="!loading"
+      @change="tabChanged(launchpadTab)">
       <v-tab-item>
         <div
-          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
-        >
-          <nft-card
-            v-for="collection in liveCollections"
-            :key="collection._id"
-            v-if="liveCollections[0]._id"
-            :collection="collection"
-          />
+          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3">
+          <nft-card v-for="collection in liveCollections" :key="collection._id" v-if="liveCollections[0]._id"
+            :collection="collection" />
         </div>
-        <h2
-          class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full"
-          v-if="liveCollections.length === 0"
-        >
+        <h2 class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full" v-if="liveCollections.length === 0">
           No Live Collections
         </h2>
       </v-tab-item>
       <v-tab-item>
         <div
-          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
-        >
-          <nft-card
-            v-for="collection in underReviewCollections"
-            :key="collection._id"
-            v-if="underReviewCollections[0]._id"
-            :collection="collection"
-          />
+          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3">
+          <nft-card v-for="collection in underReviewCollections" :key="collection._id"
+            v-if="underReviewCollections[0]._id" :collection="collection" />
         </div>
-        <h2
-          class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full"
-          v-if="underReviewCollections.length === 0"
-        >
+        <h2 class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full" v-if="underReviewCollections.length === 0">
           No Under Review Collections
         </h2>
       </v-tab-item>
       <v-tab-item>
         <div
-          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
-        >
-          <nft-card
-            v-for="collection in drafts"
-            :key="collection._id"
-            v-if="drafts[0]._id"
-            :collection="collection"
-            redirectTo="draft"
-          />
+          class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3">
+          <nft-card v-for="collection in drafts" :key="collection._id" v-if="drafts[0]._id" :collection="collection"
+            redirectTo="draft" />
         </div>
-        <h2
-          class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full"
-          v-if="drafts.length === 0"
-        >
+        <h2 class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full" v-if="drafts.length === 0">
           No Drafts
         </h2>
       </v-tab-item>
     </v-tabs-items>
-    <div
-      class="tw-py-16 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-      v-else
-    >
+    <div class="tw-py-16 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center" v-else>
       <loading />
     </div>
     <v-tour name="myTour2" :steps="steps"></v-tour>
@@ -209,10 +162,10 @@ export default {
     },
   },
   async mounted() {
-    if (localStorage.getItem("seen_collection_tour") === null) {
-      this.$tours["myTour2"].start();
-      localStorage.setItem("seen_collection_tour", "true");
-    }
+    // if (localStorage.getItem("seen_collection_tour") === null) {
+    //   this.$tours["myTour2"].start();
+    //   localStorage.setItem("seen_collection_tour", "true");
+    // }
   },
 };
 </script>

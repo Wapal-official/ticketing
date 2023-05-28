@@ -291,10 +291,10 @@ export default {
   mounted() {
     this.mapFolders();
 
-    if (localStorage.getItem('seen_asset_tour') === null) {
-      this.$tours['myTour'].start();
-      localStorage.setItem('seen_asset_tour', 'true');
-    }
+    // if (localStorage.getItem('seen_asset_tour') === null) {
+    //   this.$tours['myTour'].start();
+    //   localStorage.setItem('seen_asset_tour', 'true');
+    // }
   },
 };
 </script>
