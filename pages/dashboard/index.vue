@@ -50,7 +50,6 @@
     <div class="tw-py-16 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center" v-else>
       <loading />
     </div>
-    <v-tour name="myTour2" :steps="steps"></v-tour>
   </div>
 </template>
 
@@ -72,40 +71,7 @@ export default {
       underReviewCollections: [{ _id: "" }],
       drafts: [{ _id: "" }],
       loading: true,
-      steps: [
-        {
-          target: ".dashboard2",
-          content: `Create your launchpad`,
-          header: {
-            title: "Lauchpad Page",
-          },
-          params: {
-            placement: "right",
-            highlight: true,
-          },
-        },
-        {
-          target: ".collection1",
-          content: " Create your own launchpad on “Create your collection",
-          params: {
-            highlight: true,
-          },
-        },
-        {
-          target: ".dashboard3",
-          content: `To run WL campaign`,
-          before: (_type: any) => {
-            return new Promise<void>((resolve, _reject) => {
-              this.$router.push("/dashboard/whitelist");
-              resolve();
-            });
-          },
-          params: {
-            placement: "right",
-            highlight: true,
-          },
-        },
-      ],
+
       launchpadTabs: [
         { id: 0, title: "Live" },
         { id: 1, title: "Under Review" },
@@ -160,12 +126,6 @@ export default {
 
       this.loading = false;
     },
-  },
-  async mounted() {
-    // if (localStorage.getItem("seen_collection_tour") === null) {
-    //   this.$tours["myTour2"].start();
-    //   localStorage.setItem("seen_collection_tour", "true");
-    // }
   },
 };
 </script>

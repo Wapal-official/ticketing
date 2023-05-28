@@ -22,8 +22,7 @@
         <whitelist-card v-for="whitelist in whitelists" :whitelist="whitelist" :key="whitelist._id" type="dashboard"
           v-if="whitelists[0]._id" />
       </div>
-    </div>
-    <v-tour name="myTour3" :steps="steps"></v-tour>
+    </div> 
   </div>
 </template>
 <script lang="ts">
@@ -40,31 +39,7 @@ export default {
     return {
       collections: [{ _id: null }],
       whitelists: [{ _id: null }],
-      loading: true,
-      steps: [
-        {
-          target: ".dashboard3",
-          content: `To run WL campaign`,
-          header: {
-            title: "Whitelist Page",
-          },
-          params: {
-            placement: "right",
-            highlight: true,
-          },
-        },
-        // {
-        //   target: '.whitelist1',
-        //   content: 'Run a WL campaign with “Create Whitelist',
-        //   params: {
-        //     placement: 'right',
-        //     hightlight: 'true',
-        //     disableInteraction: false,
-        //     backdrop: true,
-        //     backdropClass: 'tour-backdrop'
-        //   }
-        // }
-      ],
+      loading: true, 
     };
   },
   computed: {},
@@ -106,11 +81,7 @@ export default {
     });
 
     this.loading = false;
-
-    // if (localStorage.getItem("seen_whitelist_tour") === null) {
-    //   this.$tours["myTour3"].start();
-    //   localStorage.setItem("seen_whitelist_tour", "true");
-    // }
+ 
   },
 };
 </script>
