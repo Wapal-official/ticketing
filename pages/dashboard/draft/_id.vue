@@ -664,7 +664,7 @@ export default {
 
         this.collection.baseURL = selectedFolder.metadata.baseURI;
 
-        const tempCollection = this.collection;
+        const tempCollection = { ...this.collection };
 
         tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
           ? new Date(tempCollection.whitelist_sale_time).toISOString()
@@ -700,6 +700,9 @@ export default {
         this.collection.phases = tempCollection.phases = sortedPhases;
 
         await this.sendDataToCandyMachineCreator();
+
+        tempCollection.txnhash = this.collection.txnhash;
+        tempCollection.resource_account = this.collection.resource_account;
 
         const formData = new FormData();
 
