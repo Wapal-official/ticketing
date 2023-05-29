@@ -1,49 +1,28 @@
 <template>
   <div class="tw-w-full">
-    <div
-      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
-    >
+    <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full">
       <h1 class="tw-text-lg tw-text-wapal-pink">All Collections</h1>
       <div
         class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
-        v-if="!loading"
-      >
-        <nft-card
-          v-for="collection in collections"
-          :key="collection._id"
-          :collection="collection"
-          redirectTo="whitelist"
-          type="dashboard"
-          v-if="collections[0]._id"
-        />
+        v-if="!loading">
+        <nft-card v-for="collection in collections" :key="collection._id" :collection="collection" redirectTo="whitelist"
+          type="dashboard" v-if="collections[0]._id" />
       </div>
       <loading v-else />
 
-      <div
-        class="tw-w-full tw-text-center tw-py-4 tw-text-wapal-pink"
-        v-if="this.collections.length === 0"
-      >
+      <div class="tw-w-full tw-text-center tw-py-4 tw-text-wapal-pink" v-if="this.collections.length === 0">
         No Collections
       </div>
     </div>
-    <div
-      class="whitelist1 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-py-8 tw-w-full"
-    >
+    <div class="whitelist1 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-py-8 tw-w-full">
       <h1 class="tw-text-lg tw-text-wapal-pink">Whitelisted Collections</h1>
       <div
         class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
-        v-if="!loading"
-      >
-        <whitelist-card
-          v-for="whitelist in whitelists"
-          :whitelist="whitelist"
-          :key="whitelist._id"
-          type="dashboard"
-          v-if="whitelists[0]._id"
-        />
+        v-if="!loading">
+        <whitelist-card v-for="whitelist in whitelists" :whitelist="whitelist" :key="whitelist._id" type="dashboard"
+          v-if="whitelists[0]._id" />
       </div>
-    </div>
-    <v-tour name="myTour3" :steps="steps"></v-tour>
+    </div> 
   </div>
 </template>
 <script lang="ts">
@@ -60,31 +39,7 @@ export default {
     return {
       collections: [{ _id: null }],
       whitelists: [{ _id: null }],
-      loading: true,
-      steps: [
-        {
-          target: ".dashboard3",
-          content: `To run WL campaign`,
-          header: {
-            title: "Whitelist Page",
-          },
-          params: {
-            placement: "right",
-            highlight: true,
-          },
-        },
-        // {
-        //   target: '.whitelist1',
-        //   content: 'Run a WL campaign with “Create Whitelist',
-        //   params: {
-        //     placement: 'right',
-        //     hightlight: 'true',
-        //     disableInteraction: false,
-        //     backdrop: true,
-        //     backdropClass: 'tour-backdrop'
-        //   }
-        // }
-      ],
+      loading: true, 
     };
   },
   computed: {},
@@ -122,15 +77,11 @@ export default {
           }
         });
         return collection;
-      } catch (error) {}
+      } catch (error) { }
     });
 
     this.loading = false;
-
-    if (localStorage.getItem("seen_whitelist_tour") === null) {
-      this.$tours["myTour3"].start();
-      localStorage.setItem("seen_whitelist_tour", "true");
-    }
+ 
   },
 };
 </script>
