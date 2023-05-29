@@ -135,3 +135,9 @@ export const getAuctionByName = async (name: string) => {
 
   return res;
 };
+
+export const getUpcomingAuctions = async ({perPage, page}:{perPage:number, page:number}) => {
+  const res = await publicRequest.get(`/api/auction/upcoming?limit=${perPage}&page=${page}`);
+
+  return res.data.auctions;
+}
