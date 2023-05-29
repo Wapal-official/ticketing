@@ -572,8 +572,8 @@ export default {
     async getFormattedWalletAddress(walletAddress) {
       const res = await getDomainNameFromWalletAddress(walletAddress);
 
-      if (res.length > 0) {
-        return res[0].domain + ".apt";
+      if (res.name) {
+        return res.name + ".apt";
       }
 
       return (

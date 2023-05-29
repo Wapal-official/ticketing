@@ -143,18 +143,7 @@ export const getUpcomingAuctions = async ({perPage, page}:{perPage:number, page:
 }
 
 export const getDomainNameFromWalletAddress = async(walletAddress:any) => {
-  const res = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
-    operationName:"ANS_Lookup",
-    query:`
-          query ANS_Lookup{ 
-            current_ans_lookup(
-            where: {registered_address: {_eq: "${walletAddress}"}}
-          ) {
-            domain
-          }
-        }
-          `
-  });
-
-  return res.data.data.current_ans_lookup;
+  const res = await publicRequest.get(`https://www.aptosnames.com/api/mainnet/v1/primary-name/${walletAddress}`);
+  console.log(res);
+  return res.data;
 }
