@@ -141,3 +141,9 @@ export const getUpcomingAuctions = async ({perPage, page}:{perPage:number, page:
 
   return res.data.auctions;
 }
+
+export const getDomainNameFromWalletAddress = async(walletAddress:any) => {
+  const res = await publicRequest.get(`https://www.aptosnames.com/api/mainnet/v1/primary-name/${walletAddress}`);
+  console.log(res);
+  return res.data;
+}

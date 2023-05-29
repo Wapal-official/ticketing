@@ -75,20 +75,35 @@ export default {
         offset: this.offset,
         walletAddress: this.walletAddress,
       });
+
       if (data.data.current_token_ownerships.length > 0) {
         const nfts = data.data.current_token_ownerships;
         for (var x = 0; x < nfts.length; x++) {
           try {
-            let meta = await this.$axios.get(
-              nfts[x].current_token_data.metadata_uri
-            );
-            this.metadata.push(meta.data);
-            this.nfts.push(nfts[x]);
+            if (
+              nfts[x].current_token_data.metadata_uri.slice(0, 4) === "ipfs"
+            ) {
+              const url = this.sliceIPFSUrl(
+                nfts[x].current_token_data.metadata_uri
+              );
+              let meta = await this.$axios.get(`https://ipfs.io/ipfs/${url}`);
+              this.metadata.push(meta.data);
+              this.nfts.push(nfts[x]);
+            } else {
+              let meta = await this.$axios.get(
+                nfts[x].current_token_data.metadata_uri
+              );
+              this.metadata.push(meta.data);
+              this.nfts.push(nfts[x]);
+            }
           } catch {}
         }
       } else {
         this.end = true;
       }
+    },
+    sliceIPFSUrl(url) {
+      return url.slice(7, url.length);
     },
   },
 };

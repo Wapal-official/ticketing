@@ -164,11 +164,7 @@
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-py-2"
               >
                 <div class="!tw-text-white">
-                  {{
-                    item.wallet_address.slice(0, 5) +
-                    "..." +
-                    item.wallet_address.slice(-5, item.wallet_address.length)
-                  }}
+                  {{ item.displayName }}
                   bid for {{ item.bid }} APT
                 </div>
                 <div>
@@ -210,7 +206,11 @@
 
 <script>
 import { publicRequest } from "@/services/fetcher";
-import { getCurrentBid, placeBid } from "@/services/AuctionService";
+import {
+  getCurrentBid,
+  getDomainNameFromWalletAddress,
+  placeBid,
+} from "@/services/AuctionService";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 
 extend("bidAmount", {
@@ -322,7 +322,19 @@ export default {
       let response = res.data.auction;
       let rev = response.biddings.reverse();
       response.biddings = rev;
+
+      const bidRes = await Promise.all(
+        response.biddings.map(async (bid) => {
+          const domainNameRes = await this.getFormattedWalletAddress(
+            bid.wallet_address
+          );
+
+          bid.displayName = domainNameRes;
+        })
+      );
+
       this.auction = response;
+
       this.current_bid = getCurrentBid(this.auction);
 
       this.loadingAuction = false;
@@ -556,6 +568,19 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
         this.loading = false;
       }
+    },
+    async getFormattedWalletAddress(walletAddress) {
+      const res = await getDomainNameFromWalletAddress(walletAddress);
+
+      if (res.name) {
+        return res.name + ".apt";
+      }
+
+      return (
+        walletAddress.slice(0, 5) +
+        "..." +
+        walletAddress.slice(-5, walletAddress.length)
+      );
     },
   },
   watch: {
