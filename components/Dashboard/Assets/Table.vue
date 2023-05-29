@@ -47,7 +47,7 @@ export default {
           sortable: true,
           value: "name",
           width: "700px",
-          class: "!tw-text-white !tw-border-b-wapal-pink",
+          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
         },
         {
           text: "Date Created",
@@ -55,7 +55,7 @@ export default {
           sortable: true,
           value: "createdDate",
           width: "200px",
-          class: "!tw-text-white !tw-border-b-wapal-pink",
+          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
         },
         {
           text: "Size",
@@ -63,7 +63,7 @@ export default {
           sortable: true,
           value: "size",
           width: "200px",
-          class: "!tw-text-white !tw-border-b-wapal-pink",
+          class: "!tw-text-white !tw-border-b-wapal-dashboard-active",
         },
       ],
     };

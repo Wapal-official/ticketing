@@ -57,8 +57,7 @@ export const uploadCSVInWhitelistEntry = async (formData: any) => {
 export const getWhitelistEntryById = async (
   collection_id: string,
   limit: number,
-  page: number,
-  phaseName: string
+  page: number
 ) => {
   let entryLimit = limit;
   let entryPage = page;
@@ -71,7 +70,7 @@ export const getWhitelistEntryById = async (
   }
 
   const res = await axios.get(
-    `${process.env.baseURL}/api/whitelist/entry?phase=${phaseName}&limit=${entryLimit}&page=${entryPage}`,
+    `${process.env.baseURL}/api/whitelist/entry?limit=${entryLimit}&page=${entryPage}`,
     {
       params: { collection_id: collection_id },
     }
@@ -92,38 +91,6 @@ export const setRoot = async (rootData: any) => {
 export const getWhitelistByUsername = async (username: string) => {
   const res = await axios.get(
     `${process.env.baseURL}/api/whitelist/${username}`
-  );
-
-  return res;
-};
-
-export const getProof = async ({
-  walletAddress,
-  collectionId,
-  phase,
-}: {
-  walletAddress: string;
-  collectionId: string;
-  phase: string;
-}) => {
-  const res = await publicRequest.get(
-    `/api/whitelist/proof?wallet_address=${walletAddress}&collection_id=${collectionId}&phase=${phase}`
-  );
-
-  return res;
-};
-
-export const getMintLimit = async ({
-  walletAddress,
-  collectionId,
-  phase,
-}: {
-  walletAddress: string;
-  collectionId: string;
-  phase: string;
-}) => {
-  const res = await publicRequest.get(
-    `/api/whitelist/mint_limit?wallet_address=${walletAddress}&collection_id=${collectionId}&phase=${phase}`
   );
 
   return res;

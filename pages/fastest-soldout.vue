@@ -66,7 +66,7 @@ export default {
           value: "rank",
           width: "100px",
           class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
+            "!tw-text-white !tw-border-b-wapal-dashboard-active !tw-text-base tw-font-normal",
         },
         {
           text: "Collection Name",
@@ -75,7 +75,7 @@ export default {
           value: "name",
           width: "300px",
           class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
+            "!tw-text-white !tw-border-b-wapal-dashboard-active !tw-text-base tw-font-normal",
         },
         {
           text: "Soldout In",
@@ -84,7 +84,7 @@ export default {
           value: "soldOutIn",
           width: "100px",
           class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
+            "!tw-text-white !tw-border-b-wapal-dashboard-active !tw-text-base tw-font-normal",
         },
         {
           text: "Price",
@@ -93,7 +93,7 @@ export default {
           value: "price",
           width: "100px",
           class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
+            "!tw-text-white !tw-border-b-wapal-dashboard-active !tw-text-base tw-font-normal",
         },
         {
           text: "Items",
@@ -102,7 +102,7 @@ export default {
           value: "supply",
           width: "100px",
           class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
+            "!tw-text-white !tw-border-b-wapal-dashboard-active !tw-text-base tw-font-normal",
         },
       ],
       collections: [],

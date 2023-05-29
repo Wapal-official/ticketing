@@ -143,31 +143,3 @@ export const getDraftsOfUser = async (page: number) => {
 
   return res;
 };
-
-export const getOwnedCollectionOfUser = async (
-  owner_address: string,
-  collection_name: string
-) => {
-  const res = await axios.post(`${process.env.GRAPHQL_URL}`, {
-    operationName: "SingleCollectionOfUser",
-    query: `query SingleCollectionOfUser {
-      current_token_ownerships(
-        where: {owner_address: {_eq: "${owner_address}"}, collection_name: {_eq: "${collection_name}"}}
-      ) {
-        amount
-      }
-    }`,
-  });
-  return res;
-};
-
-export const sortPhases = (phases: any[]) => {
-  const sortedPhases = phases.sort((firstPhase: any, secondPhase: any): any => {
-    return (
-      new Date(firstPhase.mint_time).getTime() -
-      new Date(secondPhase.mint_time).getTime()
-    );
-  });
-
-  return sortedPhases;
-};

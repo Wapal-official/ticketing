@@ -118,8 +118,7 @@ export default {
       const spotRes = await getWhitelistEntryById(
         this.whitelist.collection_id,
         1,
-        1,
-        "whitelist"
+        1
       );
 
       this.spots = {

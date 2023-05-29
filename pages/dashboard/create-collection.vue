@@ -197,7 +197,7 @@
           <v-switch v-model="whitelistEnabled"></v-switch>
         </div>
         <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-start"
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
         >
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
@@ -251,7 +251,7 @@
           </div>
         </div>
         <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-start"
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
         >
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
@@ -301,13 +301,13 @@
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
         </div>
-        <label>Mint Phases</label>
+        <!-- <label>Mint Phases</label>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
         >
           <div v-for="(phase, index) in collection.phases" :key="index">
             <div
-              class="tw-flex tw-flex-col tw-gap-4 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
+              class="tw-flex tw-flex-col tw-gap-4 tw-items-center tw-justify-between tw-w-full md:tw-flex-row"
             >
               <ValidationProvider
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
@@ -331,34 +331,12 @@
               </ValidationProvider>
               <ValidationProvider
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-                name="publicSalePrice"
-                :rules="'required|number'"
-                v-slot="{ errors }"
-              >
-                <div class="dashboard-text-field-border tw-w-full">
-                  <v-text-field
-                    v-model="phase.mint_price"
-                    placeholder="Mint Price"
-                    outlined
-                    single-line
-                    color="#fff"
-                    hide-details
-                    clearable
-                    class="dashboard-input"
-                    inputmode="numeric"
-                  >
-                  </v-text-field>
-                </div>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
                 rules="required|saleTime"
                 v-slot="{ errors }"
               >
                 <div class="dashboard-text-field-border tw-w-full">
                   <date-picker
-                    v-model="phase.mint_time"
+                    v-model="phase.mintTime"
                     type="datetime"
                     placeholder="Select Mint Time"
                   ></date-picker>
@@ -381,7 +359,7 @@
           >
             Add Phase
           </button>
-        </div>
+        </div> -->
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="twitter"
@@ -494,11 +472,7 @@ import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
 import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 
-import {
-  createCollection,
-  createDraft,
-  sortPhases,
-} from "@/services/CollectionService";
+import { createCollection, createDraft } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 
 import DatePicker from "vue2-datepicker";
@@ -620,7 +594,7 @@ export default {
         txnhash: "",
         un: "",
         candy_id: process.env.CANDY_MACHINE_ID,
-        phases: [{ name: "", mint_time: null, mint_price: null }],
+        phases: [{ name: "", mintTime: null }],
       },
       message: "",
       image: { name: null },
@@ -719,18 +693,7 @@ export default {
           });
         });
 
-        if (this.whitelistEnabled) {
-          phases.push({
-            id: "whitelist",
-            name: "whitelist sale",
-            mint_time: this.collection.whitelist_sale_time,
-            mint_price: this.collection.whitelist_price,
-          });
-        }
-
-        const sortedPhases = sortPhases(phases);
-
-        this.collection.phases = tempCollection.phases = sortedPhases;
+        tempCollection.phases = phases;
 
         if (this.tbd) {
           const formData = new FormData();
@@ -825,28 +788,29 @@ export default {
 
     async sendDataToCandyMachineCreator() {
       let whitelistTime = null;
-      let whitelist_price = 0;
 
-      let publicSaleTime = Math.floor(
-        new Date(this.collection.public_sale_time).getTime() / 1000
-      );
+      let publicSaleTime = null;
 
-      whitelistTime = Math.floor(
-        new Date(this.collection.public_sale_time).getTime() / 1000
-      );
-
-      whitelist_price = this.collection.public_sale_price;
-
-      if (this.collection.phases[0]) {
+      if (this.whitelistEnabled) {
         whitelistTime = Math.floor(
-          new Date(this.collection.phases[0].mint_time).getTime() / 1000
+          new Date(this.collection.whitelist_sale_time).getTime() / 1000
         );
-        whitelist_price = this.collection.phases[0].mint_price;
+        publicSaleTime = Math.floor(
+          new Date(this.collection.public_sale_time).getTime() / 1000
+        );
+      } else {
+        whitelistTime = Math.floor(
+          new Date(this.collection.public_sale_time).getTime() / 1000
+        );
+        publicSaleTime =
+          Math.floor(
+            new Date(this.collection.public_sale_time).getTime() / 1000
+          ) + 1;
       }
 
-      if (!this.whitelistEnabled) {
-        publicSaleTime += 1;
-      }
+      const whitelist_price = this.collection.whitelist_price
+        ? this.collection.whitelist_price
+        : this.collection.public_sale_price;
 
       const candyMachineArguments = {
         collection_name: this.collection.name,
@@ -896,6 +860,7 @@ export default {
   },
   async mounted() {
     this.collection.phases = [];
+
     const folderRes = await getFolderById(
       process.env.baseURL?.includes("staging")
         ? "642aeb3da50447f2631f38f3"

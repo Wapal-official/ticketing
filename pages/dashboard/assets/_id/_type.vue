@@ -66,7 +66,7 @@
       </div>
       <v-dialog
         v-model="showFileDetails"
-        content-class="!tw-w-full !tw-mx-2 !tw-rounded-none md:!tw-mx-auto md:!tw-w-1/2 md:!tw-border-t-wapal-pink md:!tw-border-b-wapal-pink lg:!tw-w-[40%]"
+        content-class="!tw-w-full !tw-mx-2 !tw-rounded-none md:!tw-mx-auto md:!tw-w-1/2 md:!tw-border-t-wapal-dashboard-active md:!tw-border-b-wapal-dashboard-active lg:!tw-w-[40%]"
       >
         <assets-image-details
           :file="currentFile"
