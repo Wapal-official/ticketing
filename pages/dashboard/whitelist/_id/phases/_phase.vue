@@ -84,13 +84,6 @@
             </div>
           </label>
         </form>
-        <button
-          class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
-          @click="showSetWhitelistModal = true"
-          :disabled="sendingDataToSetRoot"
-        >
-          Set Whitelist
-        </button>
       </div>
     </div>
     <div
@@ -170,47 +163,6 @@
         </div>
       </div>
     </v-dialog>
-    <v-dialog
-      v-model="showSetWhitelistModal"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
-    >
-      <div
-        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
-      >
-        <h3 class="tw-text-lg">Are you sure you want to set Whitelist?</h3>
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
-        >
-          <button
-            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
-            @click="sendDataToSetRoot"
-          >
-            Yes
-          </button>
-          <button
-            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
-            @click="showSetWhitelistModal = false"
-          >
-            No
-          </button>
-        </div>
-      </div>
-    </v-dialog>
-    <v-dialog
-      v-model="sendingDataToSetRoot"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
-    >
-      <div
-        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
-      >
-        <h2>Setting Root</h2>
-        <div
-          class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-center"
-        >
-          <loading />
-        </div>
-      </div>
-    </v-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -283,8 +235,6 @@ export default {
         phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
       },
       loading: true,
-      sendingDataToSetRoot: false,
-      showSetWhitelistModal: false,
       scrolledNumber: 1,
       mappingData: false,
       uploading: false,
@@ -353,46 +303,6 @@ export default {
       this.loading = false;
       this.mappingData = false;
     },
-    async sendDataToSetRoot() {
-      try {
-        this.showSetWhitelistModal = false;
-        this.sendingDataToSetRoot = true;
-
-        const rootData = {
-          collection_id: this.collection._id,
-          phase: this.$route.params.phase,
-        };
-
-        const res = await setRoot(rootData);
-
-        const root: any[] = [];
-
-        res.data.root.data.map((rootData: any) => {
-          rootData.data;
-
-          root.push(rootData);
-        });
-
-        const transactionRes = await this.$store.dispatch(
-          "walletStore/setMerkleRoot",
-          {
-            root: root,
-            resourceAccount: this.collection.candyMachine.resource_account,
-            candyMachineId: this.collection.candyMachine.candy_id,
-          }
-        );
-
-        this.$toast.showMessage({
-          message: "Wallet Addresses Added For Whitelist",
-        });
-
-        this.sendingDataToSetRoot = false;
-      } catch (error) {
-        console.log(error);
-        this.$toast.showMessage({ message: error, error: true });
-        this.sendingDataToSetRoot = false;
-      }
-    },
   },
   computed: {
     checkWhitelistSale() {
@@ -411,7 +321,6 @@ export default {
     },
   },
   async mounted() {
-
     const collectionRes = await getCollectionByUsername(this.$route.params.id);
 
     this.collection = collectionRes.data.collection[0];

@@ -331,28 +331,6 @@
               </ValidationProvider>
               <ValidationProvider
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-                name="publicSalePrice"
-                :rules="'required|number'"
-                v-slot="{ errors }"
-              >
-                <div class="dashboard-text-field-border tw-w-full">
-                  <v-text-field
-                    v-model="phase.mint_price"
-                    placeholder="Mint Price"
-                    outlined
-                    single-line
-                    color="#fff"
-                    hide-details
-                    clearable
-                    class="dashboard-input"
-                    inputmode="numeric"
-                  >
-                  </v-text-field>
-                </div>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
                 rules="required|saleTime"
                 v-slot="{ errors }"
               >
@@ -620,7 +598,7 @@ export default {
         txnhash: "",
         un: "",
         candy_id: process.env.CANDY_MACHINE_ID,
-        phases: [{ name: "", mint_time: null, mint_price: null }],
+        phases: [{ name: "", mint_time: null }],
       },
       message: "",
       image: { name: null },
@@ -715,7 +693,6 @@ export default {
             id: id,
             name: phase.name,
             mint_time: phase.mint_time,
-            mint_price: phase.mint_price,
           });
         });
 
@@ -730,7 +707,7 @@ export default {
 
         const sortedPhases = sortPhases(phases);
 
-        this.collection.phases = tempCollection.phases = sortedPhases;
+        tempCollection.phases = sortedPhases;
 
         if (this.tbd) {
           const formData = new FormData();
@@ -825,7 +802,7 @@ export default {
 
     async sendDataToCandyMachineCreator() {
       let whitelistTime = null;
-      let whitelist_price = 0;
+      let whitelist_price = this.collection.whitelist_price;
 
       let publicSaleTime = Math.floor(
         new Date(this.collection.public_sale_time).getTime() / 1000
@@ -841,7 +818,6 @@ export default {
         whitelistTime = Math.floor(
           new Date(this.collection.phases[0].mint_time).getTime() / 1000
         );
-        whitelist_price = this.collection.phases[0].mint_price;
       }
 
       if (!this.whitelistEnabled) {
