@@ -1,35 +1,44 @@
 <template>
-  <div class="sidebar tw-flex tw-flex-col tw-items-start tw-justify-start tw-px-16">
+  <div
+    class="sidebar tw-flex tw-flex-col tw-items-start tw-justify-start tw-px-16"
+  >
     <div class="dashboard1 tw-px-4 min-h-48 tw-d-block tw-my-3">
       <NuxtLink
-        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-dashboard-active"
-        to="/dashboard/assets" @click.native="close">
+        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
+        to="/dashboard/assets"
+        @click.native="close"
+      >
         Assets
       </NuxtLink>
     </div>
     <div class="dashboard2 tw-px-4 min-h-48 tw-d-block tw-my-3">
       <NuxtLink
-        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-dashboard-active"
-        to="/dashboard" @click.native="close">
+        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
+        to="/dashboard"
+        @click.native="close"
+      >
         Launchpad
       </NuxtLink>
     </div>
     <div class="dashboard3 tw-px-4 min-h-48 tw-d-block tw-my-3">
       <NuxtLink
-        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-dashboard-active"
-        to="/dashboard/whitelist" @click.native="close">
+        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
+        to="/dashboard/whitelist"
+        @click.native="close"
+      >
         Whitelist
       </NuxtLink>
     </div>
-    <div class="tw-px-4 min-h-48 tw-d-block tw-my-3">
+    <div class="dashboard4 tw-px-4 min-h-48 tw-d-block tw-my-3">
       <NuxtLink
-        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-dashboard-active"
+        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
         to="/dashboard/auction"
         @click.native="close"
       >
-      Auction
+        Auction
       </NuxtLink>
     </div>
+    <!-- <button @click="startTour">Start Tour</button> -->
     <!-- <div class="tw-px-4 min-h-48 tw-d-block tw-my-3">
       <NuxtLink
         class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-dashboard-active"
@@ -59,8 +68,10 @@ export default {
       this.$emit("hidden");
     },
   },
+  mounted() {},
 };
 </script>
+
 <style scoped>
 .sidebar {
   height: calc(100vh - 95px);
@@ -80,6 +91,6 @@ export default {
 }
 
 a.nuxt-link-exact-active {
-  color: #48cae4 !important;
+  @apply !tw-text-wapal-pink;
 }
 </style>
