@@ -135,3 +135,26 @@ export const getAuctionByName = async (name: string) => {
 
   return res;
 };
+
+export const getUpcomingAuctions = async ({perPage, page}:{perPage:number, page:number}) => {
+  const res = await publicRequest.get(`/api/auction/upcoming?limit=${perPage}&page=${page}`);
+
+  return res.data.auctions;
+}
+
+export const getDomainNameFromWalletAddress = async(walletAddress:any) => {
+  const res = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+    operationName:"ANS_Lookup",
+    query:`
+          query ANS_Lookup{ 
+            current_ans_lookup(
+            where: {registered_address: {_eq: "${walletAddress}"}}
+          ) {
+            domain
+          }
+        }
+          `
+  });
+
+  return res.data.data.current_ans_lookup;
+}

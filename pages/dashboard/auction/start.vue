@@ -181,7 +181,7 @@ export default {
         required: (value) => !!value || "Required.",
         positive: (v) => (v && v > 0) || "Should be more than zero.",
       },
-      twitter: null,
+      twitter: "",
     };
   },
   computed: {
