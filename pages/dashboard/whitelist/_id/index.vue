@@ -2,30 +2,46 @@
   <div
     class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
   >
-  <div class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between">
-    <v-breadcrumbs :items="breadcrumbs" class="breadcrumb !tw-text-base">
-      <template v-slot:divider>
-        <v-icon>mdi-chevron-right</v-icon>
-      </template>
-      <template v-slot:item="{ item }">
-        <v-breadcrumbs-item :disabled="item.disabled">
-          <NuxtLink
-            class="!tw-text-white"
-            :to="item.href ? item.href : $route.fullPath"
-          >
-            {{ item.text }}
-          </NuxtLink>
-        </v-breadcrumbs-item>
-      </template>
-    </v-breadcrumbs>
-    <button
+    <div
+      class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-center md:tw-justify-between"
+    >
+      <v-breadcrumbs
+        :items="breadcrumbs"
+        class="breadcrumb !tw-text-base !tw-w-full"
+      >
+        <template v-slot:divider>
+          <v-icon>mdi-chevron-right</v-icon>
+        </template>
+        <template v-slot:item="{ item }">
+          <v-breadcrumbs-item :disabled="item.disabled">
+            <NuxtLink
+              class="!tw-text-white"
+              :to="item.href ? item.href : $route.fullPath"
+            >
+              {{ item.text }}
+            </NuxtLink>
+          </v-breadcrumbs-item>
+        </template>
+      </v-breadcrumbs>
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-end"
+      >
+        <button
           @click="gotoSetupWhitelistPage"
           class="!tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
           :disabled="!setupWhitelistStatus"
         >
           Setup Whitelist
         </button>
-  </div>
+        <button
+          class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
+          @click="showSetWhitelistModal = true"
+          :disabled="sendingDataToSetRoot"
+        >
+          Set Whitelist
+        </button>
+      </div>
+    </div>
     <table class="tw-w-full tw-text-wapal-gray" v-if="!loading">
       <thead class="tw-border-b tw-border-[#ff36ab33]">
         <th class="tw-text-left tw-text-lg tw-py-7 tw-px-4">Phase Name</th>
@@ -50,6 +66,47 @@
       </tbody>
     </table>
     <loading v-else />
+    <v-dialog
+      v-model="showSetWhitelistModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <div
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
+      >
+        <h3 class="tw-text-lg">Are you sure you want to set Whitelist?</h3>
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
+        >
+          <button
+            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
+            @click="sendDataToSetRoot"
+          >
+            Yes
+          </button>
+          <button
+            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
+            @click="showSetWhitelistModal = false"
+          >
+            No
+          </button>
+        </div>
+      </div>
+    </v-dialog>
+    <v-dialog
+      v-model="sendingDataToSetRoot"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <div
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
+      >
+        <h2>Setting Root</h2>
+        <div
+          class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-center"
+        >
+          <loading />
+        </div>
+      </div>
+    </v-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -57,7 +114,7 @@ import Loading from "@/components/Reusable/Loading.vue";
 
 import moment from "moment";
 import { getCollectionByUsername } from "@/services/CollectionService";
-import {getWhitelistByUsername} from "@/services/WhitelistService";
+import { getWhitelistByUsername, setRoot } from "@/services/WhitelistService";
 export default {
   components: { Loading },
   layout: "dashboard",
@@ -72,8 +129,11 @@ export default {
         phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
       },
       loading: true,
-      
+
       setupWhitelistStatus: false,
+
+      sendingDataToSetRoot: false,
+      showSetWhitelistModal: false,
     };
   },
   methods: {
@@ -84,6 +144,45 @@ export default {
       this.$router.push(
         `/dashboard/whitelist/setup-whitelist/${this.collection._id}`
       );
+    },
+    async sendDataToSetRoot() {
+      try {
+        this.showSetWhitelistModal = false;
+        this.sendingDataToSetRoot = true;
+
+        const rootData = {
+          collection_id: this.collection._id,
+        };
+
+        const res = await setRoot(rootData);
+
+        const root: any[] = [];
+
+        res.data.root.data.map((rootData: any) => {
+          rootData.data;
+
+          root.push(rootData);
+        });
+
+        const transactionRes = await this.$store.dispatch(
+          "walletStore/setMerkleRoot",
+          {
+            root: root,
+            resourceAccount: this.collection.candyMachine.resource_account,
+            candyMachineId: this.collection.candyMachine.candy_id,
+          }
+        );
+
+        this.$toast.showMessage({
+          message: "Wallet Addresses Added For Whitelist",
+        });
+
+        this.sendingDataToSetRoot = false;
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+        this.sendingDataToSetRoot = false;
+      }
     },
   },
   computed: {
@@ -103,10 +202,9 @@ export default {
     },
   },
   async mounted() {
-
     const res = await getWhitelistByUsername(this.$route.params.id);
 
-const whitelist = res.data.whitelist;
+    const whitelist = res.data.whitelist;
 
     const collectionRes = await getCollectionByUsername(this.$route.params.id);
 
