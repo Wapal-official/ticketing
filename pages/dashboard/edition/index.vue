@@ -24,7 +24,10 @@
         <div
           class="tw-w-1/5 tw-flex tw-flex-row tw-items-center tw-justify-end"
         >
-          <reusable-theme-button title="Create" />
+          <reusable-theme-button
+            title="Create"
+            @click="$router.push('/dashboard/edition/create')"
+          />
         </div>
       </div>
       <div class="tw-w-full tw-h-[1px] tw-bg-white/20"></div>

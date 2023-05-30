@@ -1,0 +1,625 @@
+<template>
+  <div>
+    <p class="tw-text-3xl tw-text-wapal-gray !tw-font-medium">NFT Details</p>
+
+    <v-stepper v-model="step" class="!tw-bg-transparent">
+      <v-stepper-items>
+        <v-stepper-content step="1">
+          <p class="text-h6">Collection</p>
+          <ValidationObserver ref="collectionForm" v-slot="{ handleSubmit }">
+            <form
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 xl:tw-w-1/2"
+              @submit.prevent="handleSubmit(nextStep)"
+            >
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <label
+                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                  >Collection Name</label
+                >
+                <reusable-text-field
+                  v-model="mint.colName"
+                  type="text"
+                  placeholder="Collection Name"
+                ></reusable-text-field>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <label
+                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                  >Collection Description</label
+                >
+                <reusable-text-area
+                  v-model="mint.colDesc"
+                  placeholder="Collection Description"
+                  type="text"
+                ></reusable-text-area>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="link"
+                v-slot="{ errors }"
+              >
+                <label>Twitter Link</label>
+                <reusable-text-field
+                  v-model="mint.twitter"
+                  type="text"
+                  placeholder="Twitter Link"
+                ></reusable-text-field>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <p class="text-h6">Token Details</p>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <label
+                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                  >Token Name</label
+                >
+                <reusable-text-field
+                  v-model="mint.tokenName"
+                  placeholder="Token Name"
+                  type="text"
+                ></reusable-text-field>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <label
+                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                  >Token Description</label
+                >
+                <reusable-text-area
+                  v-model="mint.tokenDesc"
+                  placeholder="Token Description"
+                  type="text"
+                ></reusable-text-area>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <div
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
+              >
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                  rules="required"
+                  name="auction_start"
+                  v-slot="{ errors }"
+                >
+                  <label
+                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                    >NFT Type</label
+                  >
+                  <reusable-auto-complete
+                    v-model="mint.type"
+                    placeholder="Select NFT Type"
+                    text="name"
+                    value="id"
+                    :items="nftType"
+                  />
+                  <div class="tw-text-red-600">{{ errors[0] }}</div>
+                </ValidationProvider>
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                  rules="required|percentage"
+                  v-slot="{ errors }"
+                >
+                  <label
+                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                    >Royalties Fees in Percent</label
+                  >
+                  <reusable-text-field
+                    v-model="mint.royalty"
+                    type="text"
+                    placeholder="Eg. 2"
+                  ></reusable-text-field>
+                  <div class="tw-text-red-600">{{ errors[0] }}</div>
+                </ValidationProvider>
+              </div>
+
+              <div class="upload-bar tw-w-full" id="drop-container">
+                <v-col style="padding: 30px" align="center">
+                  <img :src="uploadIcon" alt="upload" /><br />
+                  <small>Drag And Drop Your Files Here</small><br />
+                  <small>OR</small><br />
+                  <button
+                    class="tw-px-6 tw-py-2 tw-rounded tw-bg-wapal-gray tw-text-black"
+                    @click.prevent="$refs.imageUploader.click()"
+                    v-if="file == null"
+                  >
+                    Browse
+                  </button>
+                  <button
+                    class="tw-px-6 tw-py-2 tw-rounded tw-bg-wapal-gray tw-text-black"
+                    @click.prevent="$refs.imageUploader.click()"
+                    v-else
+                  >
+                    {{ file.name }}
+                  </button>
+                  <div v-if="imageError" class="tw-text-red-600">
+                    {{ imageErrorMessage }}
+                  </div>
+                </v-col>
+              </div>
+              <input
+                ref="imageUploader"
+                class="d-none"
+                type="file"
+                accept="image/*"
+                @change="selectImage"
+              />
+              <reusable-theme-button title="Next" />
+            </form>
+          </ValidationObserver>
+        </v-stepper-content>
+        <v-stepper-content step="2">
+          <div class="text-h6 tw-py-2">NFT</div>
+          <div
+            class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2"
+          >
+            <div class="tw-w-full" id="image-preview"></div>
+            <ValidationObserver v-slot="{ handleSubmit }" ref="attributeForm">
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <label>Name</label>
+                <reusable-text-field
+                  v-model="mint.tokenName"
+                  type="text"
+                  :disabled="true"
+                ></reusable-text-field>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <label>Description</label>
+                <reusable-text-area
+                  v-model="mint.tokenDesc"
+                  type="text"
+                  :readOnly="true"
+                ></reusable-text-area>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <form @submit.prevent="handleSubmit()">
+                <div class="tw-pb-2">Add Attributes</div>
+                <div
+                  class="tw-w-full"
+                  v-for="(attribute, index) in mint.attributes"
+                  :key="index"
+                >
+                  <div
+                    class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-start md:tw-justify-between md:tw-gap-4"
+                  >
+                    <ValidationProvider
+                      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <label
+                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2 tw-text-sm"
+                        >Attribute Type</label
+                      >
+                      <reusable-text-field
+                        v-model="attribute.trait_type"
+                        type="text"
+                        placeholder="Background"
+                      ></reusable-text-field>
+                      <div class="tw-text-red-600">{{ errors[0] }}</div>
+                    </ValidationProvider>
+                    <ValidationProvider
+                      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <label
+                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2 tw-text-sm"
+                        >Value</label
+                      >
+                      <div
+                        class="tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-2"
+                      >
+                        <reusable-text-field
+                          v-model="attribute.value"
+                          type="text"
+                          placeholder="Blue"
+                        ></reusable-text-field>
+                        <button
+                          class="tw-bg-transparent !tw-border !tw-border-solid !tw-border-wapal-pink tw-text-white tw-px-4 tw-py-2 tw-mb-4 tw-rounded-lg"
+                          @click.prevent="removeAttribute(index)"
+                        >
+                          <v-icon>mdi-trash-can</v-icon>
+                        </button>
+                      </div>
+                      <div class="tw-text-red-600">{{ errors[0] }}</div>
+                    </ValidationProvider>
+                  </div>
+                </div>
+                <button
+                  class="tw-bg-transparent !tw-border !tw-border-solid !tw-border-wapal-pink tw-text-white tw-px-6 tw-py-2 tw-mb-4 tw-rounded-lg"
+                  @click.prevent="addAttribute"
+                >
+                  <v-icon class="!tw-text-white !tw-pr-2">mdi-plus</v-icon
+                  ><span>Add</span>
+                </button>
+                <div
+                  class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+                >
+                  <reusable-theme-button title="Back" @click="step = 1" />
+                  <reusable-theme-button
+                    title="Submit"
+                    @click="submit"
+                    :loading="loading"
+                  />
+                </div>
+              </form>
+            </ValidationObserver>
+          </div>
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
+    <v-dialog
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-1/3 3xl:!tw-w-1/4"
+      v-model="createAuctionModal"
+      persistent
+    >
+      <div
+        class="tw-w-full tw-h-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-[#141414] tw-rounded tw-px-8 tw-pt-4 tw-pb-8"
+      >
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+        >
+          <button
+            @click="createAuctionModal = false"
+            v-if="showCloseAuctionModal"
+          >
+            <v-icon class="!tw-text-white">mdi-close</v-icon>
+          </button>
+        </div>
+        <h3 class="tw-text-2xl tw-font-semibold">Wallet Approval</h3>
+        <div class="tw-h-[1px] tw-bg-[#ffffff4d] tw-w-full"></div>
+        <h4 class="tw-text-lg tw-font-semibold">Create Auction</h4>
+        <p>
+          Please review and approve up to three transactions in your wallet
+          window to create your NFT.
+        </p>
+        <div
+          class="tw-rounded tw-bg-[#262525] tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-py-4 tw-px-4"
+        >
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+          >
+            <span>1. Uploading Image and Metadata</span>
+            <div v-if="auctionProgress < 1">
+              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
+                >mdi-check-circle-outline</v-icon
+              >
+            </div>
+            <div v-else>
+              <div v-if="auctionProgress === 1 && !createError">
+                <v-progress-circular
+                  width="4"
+                  size="24"
+                  :color="defaultTheme.wapalPink"
+                  indeterminate
+                ></v-progress-circular>
+              </div>
+              <div v-else>
+                <v-icon
+                  class="!tw-font-light !tw-text-wapal-pink"
+                  v-if="auctionProgress > 1"
+                  >mdi-check-circle-outline</v-icon
+                >
+                <v-icon class="!tw-font-light !tw-text-red-600" v-else
+                  >mdi-close-circle-outline</v-icon
+                >
+              </div>
+            </div>
+          </div>
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+          >
+            <span>2. Creating Collection</span>
+            <div v-if="auctionProgress < 2">
+              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
+                >mdi-check-circle-outline</v-icon
+              >
+            </div>
+            <div v-else>
+              <div v-if="auctionProgress === 2 && !createError">
+                <v-progress-circular
+                  width="4"
+                  size="24"
+                  :color="defaultTheme.wapalPink"
+                  indeterminate
+                ></v-progress-circular>
+              </div>
+              <div v-else>
+                <v-icon
+                  class="!tw-font-light !tw-text-wapal-pink"
+                  v-if="auctionProgress > 2"
+                  >mdi-check-circle-outline</v-icon
+                >
+                <v-icon class="!tw-font-light !tw-text-red-600" v-else
+                  >mdi-close-circle-outline</v-icon
+                >
+              </div>
+            </div>
+          </div>
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+          >
+            <span>3. Minting Collection</span>
+            <div v-if="auctionProgress < 3">
+              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
+                >mdi-check-circle-outline</v-icon
+              >
+            </div>
+            <div v-else>
+              <div v-if="auctionProgress === 3 && !createError">
+                <v-progress-circular
+                  width="4"
+                  size="24"
+                  :color="defaultTheme.wapalPink"
+                  indeterminate
+                ></v-progress-circular>
+              </div>
+              <div v-else>
+                <v-icon
+                  class="!tw-font-light !tw-text-wapal-pink"
+                  v-if="auctionProgress > 3"
+                  >mdi-check-circle-outline</v-icon
+                >
+                <v-icon class="!tw-font-light !tw-text-red-600" v-else
+                  >mdi-close-circle-outline</v-icon
+                >
+              </div>
+            </div>
+          </div>
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+          >
+            <span>4. Adding Collection To Auction</span>
+            <div v-if="auctionProgress < 4">
+              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
+                >mdi-check-circle-outline</v-icon
+              >
+            </div>
+            <div v-else>
+              <div v-if="auctionProgress === 4 && !createError">
+                <v-progress-circular
+                  width="4"
+                  size="24"
+                  :color="defaultTheme.wapalPink"
+                  indeterminate
+                ></v-progress-circular>
+              </div>
+              <div v-else>
+                <v-icon
+                  class="!tw-font-light !tw-text-wapal-pink"
+                  v-if="auctionProgress > 4"
+                  >mdi-check-circle-outline</v-icon
+                >
+                <v-icon class="!tw-font-light !tw-text-red-600" v-else
+                  >mdi-close-circle-outline</v-icon
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+import uploadIcon from "@/assets/img/upload-icon.svg";
+import { defaultTheme } from "@/theme/wapaltheme";
+
+extend("percentage", {
+  validate(value) {
+    const getDecimalVal = value.toString().indexOf(".");
+    if (getDecimalVal < 1) {
+      return true;
+    }
+    const decimalPart = value.toString().substring(getDecimalVal + 1);
+    if (decimalPart.length > 1) {
+      return false;
+    }
+    return true;
+  },
+  message: "Please enter only one decimal point in percentage",
+});
+
+extend("link", {
+  validate(value) {
+    try {
+      const givenURL = new URL(value);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  },
+  message: "Please enter a valid link",
+});
+
+export default {
+  layout: "dashboard",
+  components: { ValidationObserver, ValidationProvider },
+  data() {
+    return {
+      step: 1,
+      mint: {
+        colName: "",
+        colDesc: "",
+        tokenName: "",
+        tokenDesc: "",
+        royalty: "",
+        colImage: "",
+        nftName: "",
+        nftDesc: "",
+        attributes: [{ trait_type: "", value: "" }],
+        twitter: "",
+        type: "",
+      },
+      attribute: "",
+      value: "",
+      loading: false,
+      valid: true,
+      activePicker: "",
+      startMenu: false,
+      endMenu: false,
+      file: null,
+      imageError: false,
+      imageErrorMessage: "",
+      createAuctionModal: false,
+      auctionProgress: 0,
+      showCloseAuctionModal: false,
+      createError: false,
+      nftType: [
+        { name: "One on One", id: "1/1" },
+        { name: "Limited Edition", id: "limited-edition" },
+        { name: "Open Edition", id: "open-edition" },
+      ],
+      defaultTheme,
+      uploadIcon,
+    };
+  },
+  watch: {
+    startMenu(val) {
+      val && setTimeout(() => (this.activePicker = "DAY"));
+    },
+    endMenu(val) {
+      val && setTimeout(() => (this.activePicker = "DAY"));
+    },
+  },
+  computed: {
+    walletAddress() {
+      return this.$store.state.walletStore.wallet.walletAddress;
+    },
+    selectedNft() {
+      return this.$store.state.auction.selectedNft;
+    },
+  },
+  async mounted() {
+    const dropContainer = document.getElementById("drop-container");
+
+    dropContainer.addEventListener("dragenter", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropContainer.classList.add("dragover");
+    });
+
+    dropContainer.addEventListener("dragleave", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropContainer.classList.remove("dragover");
+    });
+
+    dropContainer.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    dropContainer.addEventListener("drop", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropContainer.classList.remove("dragover");
+      const files = e.dataTransfer.files;
+      this.file = files[0];
+      this.displayImage();
+    });
+  },
+  methods: {
+    saveStart(date) {
+      this.$refs.startmenu.save(date);
+    },
+    saveEnd(date) {
+      this.$refs.endmenu.save(date);
+    },
+    async nextStep() {
+      this.imageError = false;
+      if (!this.file) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Select an Image";
+        return;
+      }
+      this.step = 2;
+    },
+    addAttribute() {
+      this.mint.attributes.push({
+        trait_type: "",
+        value: "",
+      });
+    },
+    removeAttribute(index) {
+      this.mint.attributes.splice(index, 1);
+    },
+    displayImage() {
+      const imgElement = document.createElement("img");
+
+      imgElement.src = URL.createObjectURL(this.file);
+      imgElement.classList.add("tw-w-full");
+      imgElement.classList.add("tw-h-full");
+      imgElement.classList.add("tw-object-fill");
+      imgElement.classList.add("tw-max-h-[580px]");
+
+      const previewElement = document.getElementById("image-preview");
+
+      if (previewElement.firstChild) {
+        previewElement.removeChild(previewElement.firstChild);
+      }
+
+      previewElement.prepend(imgElement);
+    },
+    selectImage(e) {
+      this.file = e.target.files[0];
+      this.displayImage();
+    },
+    async submit() {
+      const validate = await this.$refs.attributeForm.validate();
+
+      if (!validate) {
+        return;
+      }
+    },
+  },
+};
+</script>
+
+<style scoped>
+.upload-bar {
+  margin: 0px 0px 30px 0px;
+  width: 100%;
+  border: 2px dashed #d9d9d9;
+}
+
+.v-stepper__content {
+  padding: 0px !important;
+}
+
+.v-sheet.v-stepper:not(.v-sheet--outlined) {
+  box-shadow: none !important;
+}
+
+.mint-auction-stepper .v-stepper__step__step {
+  background: black !important;
+}
+</style>

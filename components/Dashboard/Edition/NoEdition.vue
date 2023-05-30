@@ -6,7 +6,10 @@
       <h2 class="tw-text-2xl tw-text-center">
         You don't have any Nfts of this type
       </h2>
-      <reusable-theme-button title="Create" />
+      <reusable-theme-button
+        title="Create"
+        @click="$router.push('/dashboard/edition/create')"
+      />
     </div>
   </div>
 </template>
