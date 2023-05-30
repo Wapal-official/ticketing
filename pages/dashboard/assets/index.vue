@@ -75,7 +75,6 @@
         </button>
       </div>
     </v-dialog>
-    <v-tour name="myTour" :steps="steps"></v-tour>
   </div>
 </template>
 <script lang="ts">
@@ -118,40 +117,6 @@ export default {
       breadcrumbs: [{ text: "Vaults" }],
       loading: true,
       defaultTheme,
-      steps: [
-        {
-          target: '.dashboard1',
-          header: {
-            title: 'Asset Page',
-          },
-          content: `Upload your project's assets `,
-          params: {
-            placement: 'right',
-            highlight: true,
-          },
-        },
-        {
-          target: '.asset1',
-          content: 'Upload your images and metadata under "Assets"',
-          params: {
-            highlight: true,
-          }
-        },
-        {
-          target: '.dashboard2',
-          content: `Create your launchpad`,
-          before: (_type: any) => {
-            return new Promise<void>((resolve, _reject) => {
-              this.$router.push('/dashboard/');
-              resolve();
-            });
-          },
-          params: {
-            placement: 'right',
-            highlight: true
-          },
-        },
-      ],
     };
   },
   computed: {
@@ -291,10 +256,6 @@ export default {
   mounted() {
     this.mapFolders();
 
-    if (localStorage.getItem('seen_asset_tour') === null) {
-      this.$tours['myTour'].start();
-      localStorage.setItem('seen_asset_tour', 'true');
-    }
   },
 };
 </script>

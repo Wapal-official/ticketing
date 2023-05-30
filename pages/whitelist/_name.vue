@@ -671,7 +671,7 @@ export default {
         });
       });
 
-      if (checkedRoles !== 0) {
+      if (checkedRoles === this.whitelist.discord_roles.length) {
         return false;
       }
 
@@ -697,7 +697,7 @@ export default {
           discordRoles.push(role.name);
         });
 
-        let whitelistData;
+        let whitelistData: any;
 
         if (
           !this.whitelist.discord_roles ||
@@ -731,7 +731,37 @@ export default {
           };
         }
 
-        await createWhitelistEntry(whitelistData);
+        try {
+          const sendWhitelistRequests = await Promise.all(
+            this.discordRes.data.roles.map(async (userRole: any) => {
+              try {
+                const roles: string[] = [];
+                const res = await Promise.all(
+                  this.whitelist.discord_roles.map(
+                    async (whitelistRole: any) => {
+                      try {
+                        if (userRole == whitelistRole.id) {
+                          roles.push(whitelistRole.name);
+
+                          whitelistData.discord.roles = roles;
+                          whitelistData.phase = whitelistRole.phase;
+
+                          await createWhitelistEntry(whitelistData);
+                        }
+                      } catch (error: any) {
+                        throw error;
+                      }
+                    }
+                  )
+                );
+              } catch (error: any) {
+                throw error;
+              }
+            })
+          );
+        } catch (error: any) {
+          throw error;
+        }
 
         this.showVerifyingDialog = false;
 
@@ -739,6 +769,7 @@ export default {
           message: "Whitelist Request Sent Successfully",
         });
       } catch (error: any) {
+        console.log(error);
         if (
           error.response.data.msg &&
           error.response.data.msg === "Duplicate entry."
@@ -770,7 +801,8 @@ export default {
         const spotsRes = await getWhitelistEntryById(
           this.whitelist.collection_id,
           1,
-          1
+          1,
+          "whitelist"
         );
 
         this.resource.occupiedSpots = spotsRes.data.spotsCount;
@@ -940,7 +972,8 @@ export default {
     const spotsRes = await getWhitelistEntryById(
       this.whitelist.collection_id,
       1,
-      1
+      1,
+      "whitelist"
     );
 
     this.resource.totalSpots = this.whitelist.whitelist_spots;

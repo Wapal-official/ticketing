@@ -70,9 +70,9 @@
       <div
         class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-bg-[#0C224B] tw-text-[#F0F0F0] tw-px-6 tw-py-4 tw-w-full tw-rounded"
       >
-        <div class="tw-text-lg">Min Bid: {{ auction.min_bid }} APT</div>
+        <div class="tw-text-lg">Current Bid: {{ getBid }} APT</div>
         <reusable-theme-button
-          title="Place Your Bid"
+          :title="!auctionEnded ? 'Place Your bid' : 'Auction Ended'"
           @click="$router.push('/auctions/lost-in-my-thoughts')"
         />
       </div>
@@ -119,6 +119,7 @@ export default {
         endAt: "",
         startAt: "",
         min_bid: 0,
+        biddings: [],
       },
       auctionEnded: false,
       auctionStarted: false,
@@ -132,6 +133,15 @@ export default {
       this.auctionStarted = true;
     },
   },
+  computed: {
+    getBid() {
+      if (this.auction.biddings.length > 0) {
+        return this.auction.biddings[this.auction.biddings.length - 1].bid;
+      }
+
+      return this.auction.min_bid;
+    },
+  },
   async mounted() {
     this.loading = true;
     const res = await getAuctionByName(
@@ -141,7 +151,7 @@ export default {
     );
     this.auction = res.data.auction;
 
-    const now = new Date();
+    console.log(this.auction);
 
     this.loading = false;
   },

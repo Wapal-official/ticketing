@@ -40,6 +40,16 @@
       <div
         class="tw-rounded tw-w-full tw-bg-[#001233] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-px-4 tw-py-8 md:tw-px-8 xl:tw-w-[60%] preview-shadow"
       >
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+        >
+          <a :href="auction.twitter" target="_blank" v-if="auction.twitter">
+            <v-icon
+              class="!tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink"
+              >mdi-twitter</v-icon
+            >
+          </a>
+        </div>
         <div class="tw-text-wapal-gray tw-pb-8">
           <h1
             class="tw-text-2xl tw-pb-4 tw-font-semibold tw-capitalize md:tw-text-4xl"
@@ -51,21 +61,25 @@
           </p>
         </div>
         <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-p-4 tw-bg-[#0C224B] tw-rounded tw-w-full lg:tw-flex-row lg:tw-items-center lg:tw-justify-between"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-w-full"
           v-if="!auctionStarted"
         >
           <div
-            class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full lg:tw-flex-row 2xl:tw-flex-row tw-gap-4"
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-py-4 tw-px-4 tw-bg-[#0C224B] tw-rounded tw-w-fit lg:tw-flex-row lg:tw-items-center lg:tw-justify-between lg:tw-px-8"
           >
-            <span
-              class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
-              >Auction Starts In</span
+            <div
+              class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-gap-4"
             >
-            <reusable-count-down
-              :startTime="auction.startAt"
-              :shadow="true"
-              @countdownComplete="startAuction"
-            />
+              <span
+                class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
+                >Auction Starts In</span
+              >
+              <reusable-count-down
+                :startTime="auction.startAt"
+                :shadow="true"
+                @countdownComplete="startAuction"
+              />
+            </div>
           </div>
         </div>
         <ValidationObserver
@@ -150,11 +164,7 @@
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-py-2"
               >
                 <div class="!tw-text-white">
-                  {{
-                    item.wallet_address.slice(0, 5) +
-                    "..." +
-                    item.wallet_address.slice(-5, item.wallet_address.length)
-                  }}
+                  {{ item.displayName }}
                   bid for {{ item.bid }} APT
                 </div>
                 <div>
@@ -196,7 +206,11 @@
 
 <script>
 import { publicRequest } from "@/services/fetcher";
-import { getCurrentBid, placeBid } from "@/services/AuctionService";
+import {
+  getCurrentBid,
+  getDomainNameFromWalletAddress,
+  placeBid,
+} from "@/services/AuctionService";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 
 extend("bidAmount", {
@@ -308,7 +322,19 @@ export default {
       let response = res.data.auction;
       let rev = response.biddings.reverse();
       response.biddings = rev;
+
+      const bidRes = await Promise.all(
+        response.biddings.map(async (bid) => {
+          const domainNameRes = await this.getFormattedWalletAddress(
+            bid.wallet_address
+          );
+
+          bid.displayName = domainNameRes;
+        })
+      );
+
       this.auction = response;
+
       this.current_bid = getCurrentBid(this.auction);
 
       this.loadingAuction = false;
@@ -542,6 +568,19 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
         this.loading = false;
       }
+    },
+    async getFormattedWalletAddress(walletAddress) {
+      const res = await getDomainNameFromWalletAddress(walletAddress);
+
+      if (res.name) {
+        return res.name + ".apt";
+      }
+
+      return (
+        walletAddress.slice(0, 5) +
+        "..." +
+        walletAddress.slice(-5, walletAddress.length)
+      );
     },
   },
   watch: {
