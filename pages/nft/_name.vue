@@ -412,8 +412,12 @@ export default {
     },
 
     checkWhitelistSaleTimer() {
-      if (this.phases.length > 1) {
-        return true;
+      if (this.phases.length === 1) {
+        return false;
+      } else {
+        if (new Date(this.phases[0].mint_time).getTime() > Date.now()) {
+          return true;
+        }
       }
       return false;
     },
@@ -648,7 +652,9 @@ export default {
           this.proof.push(proof.data);
         });
 
-        this.mintLimit = res.data.mint_limit;
+        this.mintLimit = mintLimitRes.data.data.mint_limit;
+
+        await getOwnedCollectionOfUser();
 
         this.gettingProof = false;
         this.notWhitelisted = false;
@@ -717,11 +723,15 @@ export default {
           this.phases.push({
             name: "whitelist sale",
             id: "whitelist",
-            mint_price: this.collection.candyMachine.whitelist_sale_price,
+            mint_price: this.collection.candyMachine.whitelist_price,
             mint_time: this.collection.candyMachine.whitelist_sale_time,
           });
         }
       }
+
+      this.phases.map((phase) => {
+        phase.mint_price = this.collection.candyMachine.whitelist_price;
+      });
 
       const publicSale = {
         name: "public sale",
@@ -759,7 +769,10 @@ export default {
       return !this.showWhitelistSaleTimer || !this.showPublicSaleTimer;
     },
     showLiveInTimer() {
-      return this.showWhitelistSaleTimer && this.showPublicSaleTimer;
+      if (this.phases.length > 1) {
+        return this.showWhitelistSaleTimer && this.showPublicSaleTimer;
+      }
+      return this.showPublicSaleTimer;
     },
     getTitle() {
       return this.collection.name ? "Wapal - " + this.collection.name : "Title";
@@ -810,7 +823,7 @@ export default {
       this.showWhitelistSaleTimer = this.checkWhitelistSaleTimer();
       this.showPublicSaleTimer = this.checkPublicSaleTimer();
 
-      this.showEndInTimer = false;
+      this.showEndInTimer = true;
 
       this.resource = await this.$store.dispatch(
         "walletStore/getSupplyAndMintedOfCollection",
@@ -855,11 +868,9 @@ export default {
         this.whitelistNumber = whitelistRes.data.spotsCount;
       }
 
-      await this.getOwnedCollectionOfUser();
-
       this.loading = false;
 
-      if (this.checkWhitelistSaleTimer() && this.showPublicSaleTimer) {
+      if (this.showEndInTimer && this.showPublicSaleTimer) {
         await this.setProof();
       } else {
         this.gettingProof = false;
