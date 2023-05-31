@@ -355,7 +355,7 @@ export const actions = {
     }
   },
 
-  async checkBalanceForFolderUpload({ dispatch }: { dispatch: any }) {
+  async checkBalanceForFolderUpload() {
     const arweaveRate = await this.$axios.get(
       "https://api.coinconvert.net/convert/ar/usd?amount=1"
     );
@@ -367,7 +367,7 @@ export const actions = {
 
     const price = res.data.price;
 
-    const totalAR = (price / 1000000000000) * arweaveRate.data.USD;
+    const totalAR = (price / Math.pow(10,12)) * arweaveRate.data.USD;
 
     const uploadMultiplier = 1.091;
     const oracleFee = 1.1;
@@ -376,7 +376,7 @@ export const actions = {
       (totalAR / aptosRate.data.USD) * uploadMultiplier * oracleFee;
 
     return {
-      requiredBalance: totalAPT.toFixed(6),
+      requiredBalance: totalAPT.toFixed(8),
     };
   },
   async signTransactionForUploadingFolder(
@@ -389,7 +389,7 @@ export const actions = {
 
     checkNetwork();
 
-    const transactionAmount = Math.ceil(requiredBalance * 100000000);
+    const transactionAmount = (requiredBalance * Math.pow(10,8)).toFixed(0);
 
     const payload = {
       arguments: [
@@ -717,5 +717,62 @@ export const actions = {
     } catch (error) {
       throw error;
     }
+  },
+  async getAptForFileUpload() {
+    const arweaveRate = await this.$axios.get(
+      "https://api.coinconvert.net/convert/ar/usd?amount=1"
+    );
+    const aptosRate = await this.$axios.get(
+      "https://api.coinconvert.net/convert/apt/usd?amount=1"
+    );
+
+    const res = await getPrice();
+
+    const price = res.data.price;
+
+    const totalAR = (price / Math.pow(10, 12)) * arweaveRate.data.USD;
+
+    const uploadMultiplier = 1.091;
+    const oracleFee = 1.1;
+
+    const totalAPT =
+      (totalAR / aptosRate.data.USD) * uploadMultiplier * oracleFee;
+
+    return {
+      requiredBalance: totalAPT.toFixed(8),
+    };
+  },
+  async signTransactionForFileUpload(
+    { state }: { state: any },
+    requiredBalance: any
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    checkNetwork();
+
+    const transactionAmount = (requiredBalance * Math.pow(10,8)).toFixed(0);
+
+    const payload = {
+      arguments: [
+        "0x59e129c0275f5289f58b85f75090921b50d1745e0ba54197ac0586676b0a64b8",
+        transactionAmount,
+      ],
+      function: "0x1::coin::transfer",
+      type: "entry_function_payload",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+    };
+
+    const transaction = await wallet.signAndSubmitTransaction(payload);
+
+    if (!transaction.success) {
+      const transactionResult = await client.waitForTransactionWithResult(
+        transaction.hash
+      );
+      return transactionResult;
+    }
+
+    return transaction;
   },
 };
