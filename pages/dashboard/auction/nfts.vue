@@ -86,7 +86,9 @@ export default {
               const url = this.sliceIPFSUrl(
                 nfts[x].current_token_data.metadata_uri
               );
-              let meta = await this.$axios.get(`https://ipfs.io/ipfs/${url}`);
+              let meta = await this.$axios.get(
+                `https://cloudflare-ipfs.com/ipfs/${url}`
+              );
               this.metadata.push(meta.data);
               this.nfts.push(nfts[x]);
             } else {
