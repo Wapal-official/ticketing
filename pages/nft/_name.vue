@@ -815,6 +815,8 @@ export default {
 
       this.showEndInTimer = true;
 
+      console.log(this.showWhitelistSaleTimer);
+
       this.resource = await this.$store.dispatch(
         "walletStore/getSupplyAndMintedOfCollection",
         {
@@ -860,7 +862,7 @@ export default {
 
       this.loading = false;
 
-      if (!this.showWhitelistSaleTimer && this.showPublicSaleTimer) {
+      if (this.phases.length > 1 && this.showPublicSaleTimer) {
         await this.setProof();
       } else {
         this.gettingProof = false;
@@ -884,7 +886,7 @@ export default {
   },
   watch: {
     async getWalletAddress() {
-      if (!this.showWhitelistSaleTimer && this.showPublicSaleTimer) {
+      if (this.phases.length > 1 && this.showPublicSaleTimer) {
         await this.setProof();
         await this.getOwnedCollectionOfUser();
       }
