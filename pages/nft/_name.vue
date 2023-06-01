@@ -632,7 +632,6 @@ export default {
     },
     async setProof() {
       if (!this.getWalletAddress) {
-        this.gettingProof = false;
         return;
       }
       try {
