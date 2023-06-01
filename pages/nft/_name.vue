@@ -631,6 +631,9 @@ export default {
       }
     },
     async setProof() {
+      if (!this.getWalletAddress) {
+        return;
+      }
       try {
         this.gettingProof = true;
 
@@ -688,22 +691,9 @@ export default {
         return this.phases[this.phases.length - 1];
       }
 
-      console.log(this.phaseCounter);
-
-      console.log("next sale", this.phases[this.phaseCounter].name);
-
       this.phaseEndInTime = this.phases[this.phaseCounter].mint_time;
 
       this.nextSale = this.phases[this.phaseCounter];
-
-      console.log(this.nextSale);
-
-      console.log(
-        "currentSale",
-        this.phaseCounter > 0
-          ? this.phases[this.phaseCounter - 1].name
-          : this.phases[0].name
-      );
 
       return this.phaseCounter > 0
         ? this.phases[this.phaseCounter - 1]
@@ -808,7 +798,6 @@ export default {
   },
   async mounted() {
     if (this.collection) {
-      console.log(this.collection);
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();
@@ -870,7 +859,7 @@ export default {
 
       this.loading = false;
 
-      if (this.showEndInTimer && this.showPublicSaleTimer) {
+      if (!this.showWhitelistSaleTimer && this.showPublicSaleTimer) {
         await this.setProof();
       } else {
         this.gettingProof = false;
@@ -894,8 +883,10 @@ export default {
   },
   watch: {
     async getWalletAddress() {
-      await this.setProof();
-      await this.getOwnedCollectionOfUser();
+      if (!this.showWhitelistSaleTimer && this.showPublicSaleTimer) {
+        await this.setProof();
+        await this.getOwnedCollectionOfUser();
+      }
     },
   },
 };

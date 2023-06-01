@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <section class="tw-py-4 2xl:tw-container tw-mx-auto">
-      <banner />
+      <featured />
     </section>
     <div>
       <landing-slider :collections="collections" :loading="loading" />
@@ -53,7 +53,7 @@ import UpcomingSection from "@/components/Landing/UpcomingSection.vue";
 import FastestSoldoutSection from "@/components/Landing/FastestSoldoutSection.vue";
 import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vue";
 import Loading from "@/components/Reusable/Loading.vue";
-import Banner from "@/components/Landing/Banner.vue";
+import Featured from "@/components/Landing/Featured.vue";
 import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.vue";
 import { getUpcomingAuctions } from "@/services/AuctionService";
 import {
@@ -72,7 +72,7 @@ export default {
     FastestSoldoutSection,
     LandingSectionHeading,
     Loading,
-    Banner,
+    Featured,
     WhitelistOpportunities,
   },
   data() {
