@@ -64,6 +64,7 @@
             :collection="collection"
           />
         </div>
+
         <h2
           class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full"
           v-if="underReviewCollections.length === 0"

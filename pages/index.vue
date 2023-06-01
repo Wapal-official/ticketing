@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <section class="tw-py-4 2xl:tw-container tw-mx-auto">
-      <banner />
+      <featured />
     </section>
     <div>
       <landing-slider :collections="collections" :loading="loading" />
@@ -53,9 +53,14 @@ import UpcomingSection from "@/components/Landing/UpcomingSection.vue";
 import FastestSoldoutSection from "@/components/Landing/FastestSoldoutSection.vue";
 import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vue";
 import Loading from "@/components/Reusable/Loading.vue";
-import Banner from "@/components/Landing/Banner.vue";
+import Featured from "@/components/Landing/Featured.vue";
 import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.vue";
-import { getAuctionByName, getAuctions } from "@/services/AuctionService";
+
+import {
+  getUpcomingAuctions,
+  getAuctionByName,
+} from "@/services/AuctionService";
+
 import {
   getCollections,
   getLiveCollections,
@@ -72,7 +77,7 @@ export default {
     FastestSoldoutSection,
     LandingSectionHeading,
     Loading,
-    Banner,
+    Featured,
     WhitelistOpportunities,
   },
   data() {
@@ -111,9 +116,8 @@ export default {
   },
   async created() {
     await this.getCollections();
-    this.auctions = await getAuctions({ page: 1, perPage: 3 }).then((res) => {
-      return res;
-    });
+
+    this.auctions = await getUpcomingAuctions({ page: 1, perPage: 4 });
 
     if (this.getProduction) {
       const res = await getAuctionByName("all-is-lost");

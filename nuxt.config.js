@@ -97,7 +97,7 @@ export default {
     treeShake: true,
     defaultAssets: {
       font: {
-        family: "Poppins",
+        family: "Inter",
       },
     },
   },

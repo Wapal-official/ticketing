@@ -94,55 +94,21 @@
               >
                 <ValidationProvider
                   class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required|auctionTime"
+                  rules="required"
                   name="auction_start"
                   v-slot="{ errors }"
                 >
                   <label
                     class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                    >Start Date</label
+                    >NFT Type</label
                   >
-                  <reusable-date-picker
-                    v-model="mint.startDate"
-                    placeholder="Select Auction Start Time"
-                    type="datetime"
+                  <reusable-auto-complete
+                    v-model="mint.type"
+                    placeholder="Select NFT Type"
+                    text="name"
+                    value="id"
+                    :items="nftType"
                   />
-                  <div class="tw-text-red-600">{{ errors[0] }}</div>
-                </ValidationProvider>
-                <ValidationProvider
-                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required|endTime:@auction_start"
-                  v-slot="{ errors }"
-                >
-                  <label
-                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                    >End Date</label
-                  >
-                  <reusable-date-picker
-                    v-model="mint.endDate"
-                    placeholder="Select Auction End Time"
-                    type="datetime"
-                  />
-                  <div class="tw-text-red-600">{{ errors[0] }}</div>
-                </ValidationProvider>
-              </div>
-              <div
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
-              >
-                <ValidationProvider
-                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required|bidAmount"
-                  v-slot="{ errors }"
-                >
-                  <label
-                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                    >Min. Bid in Apt</label
-                  >
-                  <reusable-text-field
-                    v-model="mint.minBid"
-                    placeholder="Eg. 1"
-                    type="text"
-                  ></reusable-text-field>
                   <div class="tw-text-red-600">{{ errors[0] }}</div>
                 </ValidationProvider>
                 <ValidationProvider
@@ -162,6 +128,7 @@
                   <div class="tw-text-red-600">{{ errors[0] }}</div>
                 </ValidationProvider>
               </div>
+
               <div class="upload-bar tw-w-full" id="drop-container">
                 <v-col style="padding: 30px" align="center">
                   <img :src="uploadIcon" alt="upload" /><br />
@@ -462,54 +429,9 @@
 </template>
 
 <script>
-import { uploadAndCreateFile } from "../../services/AuctionService";
-import { createCollection } from "@/services/CollectionService";
-import { getWalletNFT } from "@/services/AuctionService";
-import { publicRequest } from "@/services/fetcher";
-
-import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/index.css";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import uploadIcon from "@/assets/img/upload-icon.svg";
 import { defaultTheme } from "@/theme/wapaltheme";
-
-extend("bidAmount", {
-  validate(value) {
-    if (value <= 0) {
-      return false;
-    }
-    return true;
-  },
-  message: "Minimum bid amount should be greater than zero",
-});
-
-extend("auctionTime", {
-  validate(value) {
-    const difference = Math.floor(
-      value.getTime() / (1000 * 60) - new Date().getTime() / (1000 * 60)
-    );
-
-    if (difference < 3) {
-      return false;
-    }
-
-    return true;
-  },
-  message:
-    "Auction Start Time should be at least 3 minutes greater than current time",
-});
-
-extend("endTime", {
-  params: ["target"],
-  validate(value, target) {
-    if (new Date(target.target).getTime() > value.getTime()) {
-      return false;
-    }
-
-    return true;
-  },
-  message: "Auction End Time should be greater than Auction Start Time",
-});
 
 extend("percentage", {
   validate(value) {
@@ -540,28 +462,22 @@ extend("link", {
 
 export default {
   layout: "dashboard",
-  components: { DatePicker, ValidationObserver, ValidationProvider },
+  components: { ValidationObserver, ValidationProvider },
   data() {
     return {
       step: 1,
-      validRules: {
-        required: (value) => !!value || "Required.",
-        positive: (v) => (v && v > 0) || "Should be more than zero.",
-      },
       mint: {
         colName: "",
         colDesc: "",
         tokenName: "",
         tokenDesc: "",
-        startDate: "",
-        endDate: "",
-        minBid: "",
         royalty: "",
         colImage: "",
         nftName: "",
         nftDesc: "",
         attributes: [{ trait_type: "", value: "" }],
         twitter: "",
+        type: "",
       },
       attribute: "",
       value: "",
@@ -577,6 +493,11 @@ export default {
       auctionProgress: 0,
       showCloseAuctionModal: false,
       createError: false,
+      nftType: [
+        { name: "One on One", id: "1/1" },
+        { name: "Limited Edition", id: "limited-edition" },
+        { name: "Open Edition", id: "open-edition" },
+      ],
       defaultTheme,
       uploadIcon,
     };
@@ -677,185 +598,6 @@ export default {
 
       if (!validate) {
         return;
-      }
-
-      try {
-        if (this.file != null) {
-          if (this.mint.attributes.length > 0) {
-            this.createError = false;
-            this.loading = true;
-            this.createAuctionModal = true;
-
-            this.auctionProgress = 1;
-
-            //uploading and creating metadata file
-            const metaUri =
-              (await uploadAndCreateFile(this.file, {
-                name: this.mint.tokenName,
-                description: this.mint.tokenDesc,
-                attributes: this.mint.attributes,
-              })) + "/";
-
-            let mintTime = Math.floor(new Date().getTime() / 1000) + 10;
-
-            if (this.$store.state.walletStore.wallet.wallet === "Martian") {
-              mintTime += 20;
-            }
-
-            this.auctionProgress = 2;
-
-            //creating collection
-            const candymachine = await this.$store.dispatch(
-              "walletStore/createCandyMachine",
-              {
-                collection_name: this.mint.colName,
-                collection_description: this.mint.colDesc,
-                baseuri: metaUri,
-                royalty_payee_address: this.walletAddress,
-                royalty_points_denominator: 1000,
-                royalty_points_numerator: this.mint.royalty * 10,
-                presale_mint_time: mintTime,
-                public_sale_mint_time: mintTime + 1,
-                presale_mint_price: 0,
-                public_sale_mint_price: 0,
-                total_supply: 1,
-              }
-            );
-
-            const resource_account = candymachine.resourceAccount;
-            const txnhash = candymachine.transactionHash;
-
-            //saving collection to db
-            const formData = new FormData();
-
-            formData.append("name", this.mint.colName);
-            formData.append("description", this.mint.colDesc);
-            formData.append("royalty_percentage", this.mint.royalty);
-            formData.append("royalty_payee_address", this.walletAddress);
-            formData.append(
-              "whitelist_sale_time",
-              Math.floor(new Date().getTime() / 1000) + 10
-            );
-            formData.append(
-              "public_sale_time",
-              Math.floor(new Date().getTime() / 1000) + 10
-            );
-
-            formData.append("public_sale_price", this.mint.minBid * 100000000);
-            formData.append("whitelist_price", this.mint.minBid * 100000000);
-            formData.append("supply", 1);
-            formData.append("twitter", "");
-            formData.append("discord", "");
-            formData.append("website", "");
-            formData.append("resource_account", resource_account);
-            formData.append("txnhash", txnhash);
-            formData.append("candy_id", process.env.CANDY_MACHINE_ID);
-            formData.append("image", this.file);
-            formData.append("phases", JSON.stringify([]));
-
-            await createCollection(formData);
-
-            //mint
-            setTimeout(async () => {
-              try {
-                this.auctionProgress = 3;
-
-                const mint = await this.$store.dispatch(
-                  "walletStore/mintCollection",
-                  {
-                    resourceAccount: resource_account,
-                    publicMint: true,
-                    candyMachineId: process.env.CANDY_MACHINE_ID,
-                  }
-                );
-
-                if (mint.success) {
-                  //auction
-                  this.auctionProgress = 4;
-
-                  const nftRes = await getWalletNFT({
-                    creatorAddress: this.walletAddress,
-                    collectionName: this.mint.colName,
-                    tokenName: this.mint.colName + " #0",
-                    metadata_uri: metaUri + "0.json",
-                  });
-
-                  const nft = nftRes.data.current_token_ownerships[0];
-
-                  const meta = await this.$axios.get(
-                    nft.current_token_data.metadata_uri
-                  );
-
-                  this.$store.commit("auction/selectNft", {
-                    nft: nft,
-                    meta: meta.data,
-                  });
-
-                  const auction = await this.$store.dispatch(
-                    "walletStore/createAuction",
-                    {
-                      start_date: this.mint.startDate,
-                      end_date: this.mint.endDate,
-                      min_bid: this.mint.minBid,
-                    }
-                  );
-
-                  const auction_name = this.selectedNft.meta.name.replaceAll(
-                    "#",
-                    ""
-                  );
-
-                  await publicRequest.post("/api/auction", {
-                    nft: this.selectedNft,
-                    startAt: this.mint.startDate,
-                    endAt: this.mint.endDate,
-                    min_bid: this.mint.minBid,
-                    id: auction.cur_auction_id,
-                    auction_name: auction_name,
-                    twitter: this.mint.twitter,
-                  });
-
-                  this.$toast.showMessage({
-                    message: "Auction Created Successfully",
-                    error: false,
-                  });
-                  this.loading = false;
-                  this.createAuctionModal = false;
-
-                  this.auctionProgress = 5;
-
-                  this.$router.push("/dashboard/auction/list");
-                }
-
-                this.loading = false;
-              } catch (error) {
-                console.log(error);
-                this.$toast.showMessage({ message: error, error: true });
-                this.loading = false;
-                this.createError = true;
-                this.showCloseAuctionModal = true;
-              }
-            }, 5000);
-          } else {
-            this.$toast.showMessage({
-              message: "Provide at least one attribute",
-              error: true,
-              c,
-            });
-          }
-        } else {
-          this.$toast.showMessage({
-            message: "Please select image",
-            error: true,
-          });
-        }
-      } catch (error) {
-        console.log(error);
-        this.$toast.showMessage({ message: error, error: true });
-        this.loading = false;
-
-        this.createError = true;
-        this.showCloseAuctionModal = true;
       }
     },
   },

@@ -38,10 +38,19 @@
         Auction
       </NuxtLink>
     </div>
+    <!-- <div class="dashboard5 tw-px-4 min-h-48 tw-d-block tw-my-3">
+      <NuxtLink
+        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
+        to="/dashboard/edition"
+        @click.native="close"
+      >
+        Edition
+      </NuxtLink>
+    </div> -->
     <!-- <button @click="startTour">Start Tour</button> -->
     <!-- <div class="tw-px-4 min-h-48 tw-d-block tw-my-3">
       <NuxtLink
-        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-dashboard-active"
+        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
         to="/dashboard/verification"
         @click.native="close"
       >
@@ -71,7 +80,6 @@ export default {
   mounted() {},
 };
 </script>
-
 <style scoped>
 .sidebar {
   height: calc(100vh - 95px);
