@@ -55,7 +55,7 @@ import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vu
 import Loading from "@/components/Reusable/Loading.vue";
 import Banner from "@/components/Landing/Banner.vue";
 import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.vue";
-import { getAuctions } from "@/services/AuctionService";
+import { getAuctionByName, getAuctions } from "@/services/AuctionService";
 import {
   getCollections,
   getLiveCollections,
@@ -111,10 +111,28 @@ export default {
   },
   async created() {
     await this.getCollections();
-    this.auctions = await getAuctions({ page: 1, perPage: 4 }).then((res) => {
+    this.auctions = await getAuctions({ page: 1, perPage: 3 }).then((res) => {
       return res;
     });
+
+    if (this.getProduction) {
+      const res = await getAuctionByName("all-is-lost");
+
+      const auction = res.data.auction;
+
+      this.auctions.unshift(auction);
+    }
+
     this.loading = false;
+  },
+  computed: {
+    getProduction() {
+      return (
+        process.env.baseURL ? process.env.baseURL.includes("staging") : false
+      )
+        ? false
+        : true;
+    },
   },
 };
 </script>
