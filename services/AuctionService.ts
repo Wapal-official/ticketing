@@ -157,3 +157,17 @@ export const getDomainNameFromWalletAddress = async (walletAddress: any) => {
 
   return res.data;
 };
+
+export const getEndedAuctions = async ({
+  perPage,
+  page,
+}: {
+  perPage: number;
+  page: number;
+}) => {
+  const res = await publicRequest.get(
+    `/api/auction/ended?limit=${perPage}&page=${page}`
+  );
+
+  return res.data.auctions;
+};

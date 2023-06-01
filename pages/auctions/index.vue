@@ -10,10 +10,10 @@
     >
       <AuctionCard v-for="(item, i) in auctions" :key="i" :auction="item" />
     </div>
-    <ReusableLoading v-if="!end" />
+    <ReusableLoading v-if="!allEnd" />
     <v-card
       color="transparent"
-      v-if="!end"
+      v-if="!allEnd"
       v-intersect="{
         handler: fetchAuctions,
         options: {
@@ -25,15 +25,19 @@
   </div>
 </template>
 <script>
-import { getUpcomingAuctions } from "@/services/AuctionService";
+import {
+  getUpcomingAuctions,
+  getEndedAuctions,
+} from "@/services/AuctionService";
 export default {
   data() {
     return {
-      end: false,
+      allEnd: false,
       auctions: [],
       page: 0,
       perPage: 20,
       loading: true,
+      liveEnd: false,
     };
   },
   computed: {
@@ -50,14 +54,27 @@ export default {
   methods: {
     async fetchAuctions() {
       this.page++;
-      let resp = await getUpcomingAuctions({
-        page: this.page,
-        perPage: this.perPage,
-      });
-      if (resp.length == 0) {
-        this.end = true;
+      if (!this.liveEnd) {
+        let resp = await getUpcomingAuctions({
+          page: this.page,
+          perPage: this.perPage,
+        });
+        if (resp.length == 0) {
+          this.liveEnd = true;
+          this.page = 0;
+        } else {
+          this.auctions.push(...resp);
+        }
       } else {
-        this.auctions.push(...resp);
+        let resp = await getEndedAuctions({
+          page: this.page,
+          perPage: this.perPage,
+        });
+        if (resp.length == 0) {
+          this.allEnd = true;
+        } else {
+          this.auctions.push(...resp);
+        }
       }
     },
   },
