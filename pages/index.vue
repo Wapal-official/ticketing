@@ -117,26 +117,9 @@ export default {
   async created() {
     await this.getCollections();
 
-    this.auctions = await getUpcomingAuctions({ page: 1, perPage: 3 });
-
-    if (this.getProduction) {
-      const res = await getAuctionByName("all-is-lost");
-
-      const auction = res.data.auction;
-
-      this.auctions.unshift(auction);
-    }
+    this.auctions = await getUpcomingAuctions({ page: 1, perPage: 4 });
 
     this.loading = false;
-  },
-  computed: {
-    getProduction() {
-      return (
-        process.env.baseURL ? process.env.baseURL.includes("staging") : false
-      )
-        ? false
-        : true;
-    },
   },
 };
 </script>
