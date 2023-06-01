@@ -38,7 +38,7 @@
         Auction
       </NuxtLink>
     </div>
-    <div class="dashboard5 tw-px-4 min-h-48 tw-d-block tw-my-3">
+    <!-- <div class="dashboard5 tw-px-4 min-h-48 tw-d-block tw-my-3">
       <NuxtLink
         class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
         to="/dashboard/edition"
@@ -46,7 +46,7 @@
       >
         Edition
       </NuxtLink>
-    </div>
+    </div> -->
     <!-- <button @click="startTour">Start Tour</button> -->
     <!-- <div class="tw-px-4 min-h-48 tw-d-block tw-my-3">
       <NuxtLink
