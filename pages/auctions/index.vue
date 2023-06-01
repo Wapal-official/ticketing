@@ -25,7 +25,7 @@
   </div>
 </template>
 <script>
-import { getAuctions } from "@/services/AuctionService";
+import { getUpcomingAuctions } from "@/services/AuctionService";
 export default {
   data() {
     return {
@@ -50,7 +50,7 @@ export default {
   methods: {
     async fetchAuctions() {
       this.page++;
-      let resp = await getAuctions({
+      let resp = await getUpcomingAuctions({
         page: this.page,
         perPage: this.perPage,
       });
