@@ -646,7 +646,7 @@ export default {
           phase: this.currentSale.id,
         };
 
-        const mintLimitRes = await getMintLimit(proofParams);
+        // const mintLimitRes = await getMintLimit(proofParams);
 
         const res = await getProof(proofParams);
 
@@ -656,7 +656,7 @@ export default {
           this.proof.push(proof.data);
         });
 
-        this.mintLimit = mintLimitRes.data.data.mint_limit;
+        this.mintLimit = res.data.mint_limit;
 
         await getOwnedCollectionOfUser();
 
