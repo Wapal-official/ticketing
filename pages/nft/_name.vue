@@ -815,8 +815,6 @@ export default {
 
       this.showEndInTimer = true;
 
-      console.log(this.showWhitelistSaleTimer);
-
       this.resource = await this.$store.dispatch(
         "walletStore/getSupplyAndMintedOfCollection",
         {
