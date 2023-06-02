@@ -43,10 +43,14 @@
           <div class="tw-text-wapal-pink" v-else>Ended</div>
         </div>
         <div>
-          <div class="!tw-text-white">Current Bid</div>
+          <div class="!tw-text-white">
+            {{ !auctionEnded ? "Current Bid" : "Highest Bid" }}
+          </div>
           <div class="tw-text-wapal-pink">
             {{
-              auction.biddings[0] ? auction.biddings[0].bid : auction.min_bid
+              auction.biddings[0]
+                ? auction.biddings[auction.biddings.length - 1].bid
+                : auction.min_bid
             }}
             APT
           </div>
