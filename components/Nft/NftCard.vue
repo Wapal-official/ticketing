@@ -187,10 +187,6 @@ export default {
         return `/dashboard/draft/${this.collection._id}`;
       }
 
-      if (this.redirectTo === "landingDraft") {
-        return `/nft/draft/${this.collection._id}`;
-      }
-
       return `/nft/${this.collection.username}`;
     },
     getSupply() {

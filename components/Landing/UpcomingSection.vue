@@ -18,7 +18,6 @@
             v-for="(collection, index) in upcomingCollection"
             :key="collection._id"
             :collection="collection"
-            :redirectTo="collection.redirectTo ? collection.redirectTo : ''"
             :class="{
               'lg:tw-hidden 1xl:tw-flex': index === 3,
             }"
@@ -56,7 +55,6 @@ export default {
             public_sale_price: null,
           },
           status: { sold_out: false },
-          redirectTo: "",
         },
       ],
     };

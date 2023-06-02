@@ -62,7 +62,6 @@ import {
 } from "@/services/AuctionService";
 
 import {
-  getApprovedDrafts,
   getCollections,
   getLiveCollections,
   getUpcomingCollections,
@@ -105,40 +104,6 @@ export default {
       this.liveCollections = liveCollectionsRes.data.data;
 
       this.upcomingCollections = upcomingCollectionsRes.data.data;
-
-      if (this.upcomingCollections.length < 4) {
-        const draftRes = await getApprovedDrafts(
-          1,
-          4 - this.upcomingCollections.length
-        );
-        const drafts: any[] = [];
-
-        draftRes.data.data.map((draft: any) => {
-          drafts.push({
-            baseURL: draft.data.baseURL,
-            candy_id: draft.data.candy_id,
-            description: draft.data.description,
-            discord: draft.data.discord,
-            image: draft.data.image,
-            instagram: draft.data.instagram,
-            isApproved: draft.data.isApproved,
-            name: draft.data.name,
-            phases: draft.data.phases,
-            public_sale_price: draft.data.public_sale_price,
-            public_sale_time: draft.data.public_sale_time,
-            royalty_payee_address: draft.data.royalty_payee_address,
-            royalty_percentage: draft.data.royalty_percentage,
-            supply: draft.data.supply,
-            twitter: draft.data.twitter,
-            website: draft.data.website,
-            whitelist_price: draft.data.whitelist_price,
-            redirectTo: "landingDraft",
-            _id: draft._id,
-          });
-        });
-
-        this.upcomingCollections.push(...drafts);
-      }
 
       const res = await getCollections(1, 100);
 
