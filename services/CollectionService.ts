@@ -171,3 +171,11 @@ export const sortPhases = (phases: any[]) => {
 
   return sortedPhases;
 };
+
+export const getApprovedDrafts = async (page: number, limit: number) => {
+  const res = await publicRequest.get(
+    `/api/collection/draft/approved?limit=${limit}&page=${page}`
+  );
+
+  return res;
+};
