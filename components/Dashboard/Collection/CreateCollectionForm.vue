@@ -865,6 +865,18 @@ export default {
       formData.append("candy_id", tempCollection.candy_id);
       formData.append("phases", JSON.stringify(tempCollection.phases));
       formData.append("image", this.image);
+      formData.append("isApproved", "false");
+
+      if (!this.publicSaleTBD) {
+        formData.append("public_sale_time", tempCollection.public_sale_time);
+      }
+
+      if (!this.whitelistTBD) {
+        formData.append(
+          "whitelist_sale_time",
+          tempCollection.whitelist_sale_time
+        );
+      }
 
       await createDraft(formData);
 
