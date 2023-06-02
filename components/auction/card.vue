@@ -9,6 +9,7 @@
       <img
         :src="auction.nft.meta.image"
         :alt="auction.nft.meta.name"
+        loading="lazy"
         class="tw-rounded-t tw-w-full tw-min-h-[260px] tw-max-h-[260px] 3xl:tw-min-h-[450px] 3xl:tw-max-h-[450px] tw-object-cover tw-group tw-transform tw-transition-all tw-duration-300 tw-ease-linear group-hover:tw-scale-125"
       />
     </div>

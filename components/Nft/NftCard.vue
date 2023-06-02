@@ -8,6 +8,7 @@
         <img
           :src="collection?.image"
           :alt="collection?.name"
+          loading="lazy"
           class="tw-w-full tw-h-full tw-object-cover tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
         />
       </div>
