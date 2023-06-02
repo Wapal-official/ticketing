@@ -226,6 +226,7 @@
   font-weight: 700;
   -webkit-text-fill-color: #070f1c;
   -webkit-text-stroke: 2px #ff36ab;
+  font-family: 'Verdana';
 }
 
 .live-counter-shadow {
