@@ -2,7 +2,7 @@
   <div class="tw-py-4">
     <v-row v-if="nfts.length > 0" justify="start">
       <v-col
-        v-for="(item, i) in nfts"
+        v-for="(item, i) in metadata"
         :key="i"
         cols="12"
         lg="3"
@@ -11,7 +11,10 @@
       >
         <v-card
           tile
-          @click="$router.push(`/dashboard/auction/${item.name}`)"
+          @click="
+            $router.push('/dashboard/auction/start'),
+              $store.commit('auction/selectNft', { nft: nfts[i], meta: item })
+          "
           color="transparent"
         >
           <v-img :src="item.image" class="tw-h-[350px]"></v-img>
@@ -42,7 +45,7 @@
   </div>
 </template>
 <script>
-import { getOwnedCollectionsOfUser } from "@/services/AuctionService";
+import { getTokensOfCollection } from "@/services/AuctionService";
 export default {
   data() {
     return {
@@ -67,36 +70,35 @@ export default {
       this.loading = true;
       this.offset = this.page * this.limit;
       this.page++;
-      let data = await getOwnedCollectionsOfUser({
+      let data = await getTokensOfCollection({
         limit: this.limit,
         offset: this.offset,
         walletAddress: this.walletAddress,
+        collectionName: this.$route.params.collection,
       });
 
       if (data.data.current_token_ownerships.length > 0) {
         const nfts = data.data.current_token_ownerships;
         for (var x = 0; x < nfts.length; x++) {
           try {
-            let meta = null;
             if (
               nfts[x].current_token_data.metadata_uri.slice(0, 4) === "ipfs"
             ) {
               const url = this.sliceIPFSUrl(
                 nfts[x].current_token_data.metadata_uri
               );
-              meta = await this.$axios.get(
+              let meta = await this.$axios.get(
                 `https://cloudflare-ipfs.com/ipfs/${url}`
               );
+              this.metadata.push(meta.data);
+              this.nfts.push(nfts[x]);
             } else {
-              meta = await this.$axios.get(
+              let meta = await this.$axios.get(
                 nfts[x].current_token_data.metadata_uri
               );
+              this.metadata.push(meta.data);
+              this.nfts.push(nfts[x]);
             }
-
-            this.nfts.push({
-              name: nfts[x].current_token_data.collection_name,
-              image: meta.data.image,
-            });
           } catch {}
         }
       } else {
