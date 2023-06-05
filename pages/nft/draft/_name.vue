@@ -251,6 +251,9 @@ export default {
 
       return false;
     },
+    getTitle() {
+      return this.collection.name ? "Wapal - " + this.collection.name : "Title";
+    },
   },
   async mounted() {
     this.loading = false;

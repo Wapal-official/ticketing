@@ -860,7 +860,11 @@ export default {
 
       this.loading = false;
 
-      if (this.phases.length > 1 && this.showPublicSaleTimer) {
+      if (
+        this.phases.length > 1 &&
+        this.showPublicSaleTimer &&
+        !this.showWhitelistSaleTimer
+      ) {
         await this.setProof();
       } else {
         this.gettingProof = false;

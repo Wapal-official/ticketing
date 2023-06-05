@@ -691,7 +691,7 @@ export default {
         const phases: any[] = [];
 
         tempCollection.phases.map((phase: any) => {
-          const id = phase.name.replaceAll(" ", "-").toLowerCase();
+          const id = phase.name.trim().replaceAll(" ", "-").toLowerCase();
 
           phases.push({
             id: id,
@@ -712,6 +712,8 @@ export default {
         const sortedPhases = sortPhases(phases);
 
         this.collection.phases = tempCollection.phases = sortedPhases;
+
+        console.log(phases);
 
         if (this.tbd) {
           await this.sendDataToCreateDraft(tempCollection);
