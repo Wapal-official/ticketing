@@ -7,11 +7,18 @@
 import { publicRequest } from "@/services/fetcher";
 export default {
   async asyncData({ params, error }) {
-    const res = await publicRequest.get(`/api/auction/${params.id}`);
-    const auction = res.data.auction;
-    if (res.data.auction.length === 0) {
-      error({ statusCode: 404, message: "Auction not found" });
+    let auction = null;
+    try {
+      const res = await publicRequest.get(`/api/auction/${params.id}`);
+      auction = res.data.auction;
+    } catch (error) {
+      if (params.id.includes("\\")) {
+        const cleanedParams = params.id.split("\\").join("%5C");
+        const res = await publicRequest.get(`/api/auction/${cleanedParams}`);
+        auction = res.data.auction;
+      }
     }
+
     return { auction };
   },
   head() {

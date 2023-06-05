@@ -321,9 +321,15 @@ export default {
       return true;
     },
     async getAuctionDetails() {
-      const res = await publicRequest.get(
-        `/api/auction/${this.$route.params.id}`
-      );
+      let res = null;
+      try {
+        res = await publicRequest.get(`/api/auction/${this.$route.params.id}`);
+      } catch (error) {
+        if (this.$route.params.id.includes("\\")) {
+          const cleanedParams = this.$route.params.id.split("\\").join("%5C");
+          res = await publicRequest.get(`/api/auction/${cleanedParams}`);
+        }
+      }
 
       let response = res.data.auction;
       let rev = response.biddings.reverse();

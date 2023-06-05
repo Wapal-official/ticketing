@@ -846,10 +846,13 @@ export default {
                     }
                   );
 
-                  const auction_name = this.selectedNft.meta.name.replaceAll(
+                  let auction_name = this.selectedNft.meta.name.replaceAll(
                     "#",
                     ""
                   );
+
+                  auction_name = auction_name.replaceAll("\\", "-");
+                  auction_name = auction_name.replaceAll("/", "-");
 
                   await publicRequest.post("/api/auction", {
                     nft: this.selectedNft,
