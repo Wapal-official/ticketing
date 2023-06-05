@@ -2,7 +2,7 @@
   <div class="tw-py-4">
     <v-row v-if="nfts.length > 0" justify="start">
       <v-col
-        v-for="(item, i) in nfts"
+        v-for="(item, i) in metadata"
         :key="i"
         cols="12"
         lg="3"
@@ -11,27 +11,23 @@
       >
         <v-card
           tile
-          @click="$router.push(`/dashboard/auction/${item.name}`)"
+          @click="
+            $router.push('/dashboard/auction/start'),
+              $store.commit('auction/selectNft', { nft: nfts[i], meta: item })
+          "
           color="transparent"
         >
           <v-img :src="item.image" class="tw-h-[350px]"></v-img>
           <div
-            class="tw-w-full tw-py-4 tw-border-l tw-text-left tw-border-r tw-border-b tw-border-wapal-pink"
+            class="tw-w-full tw-py-4 tw-text-center tw-border-l tw-border-r tw-border-b tw-border-wapal-pink"
           >
-            <h4
-              class="tw-w-full tw-px-4 tw-flex tw-flex-row tw-items-center tw-justify-between"
-            >
-              {{ item.name }}
-              <span class="tw-text-wapal-pink tw-pl-2">{{
-                item.ownedNumber
-              }}</span>
-            </h4>
+            <h4>{{ item.name }}</h4>
           </div>
         </v-card>
       </v-col>
     </v-row>
     <v-row no-gutters v-else class="py-10" justify="center">
-      <p v-if="end">No nfts</p>
+      <p v-if="end && !loading">No nfts</p>
       <ReusableLoading v-else />
     </v-row>
     <v-card
@@ -49,10 +45,7 @@
   </div>
 </template>
 <script>
-import {
-  getOwnedCollectionsOfUser,
-  getNumberOfTokensInOwnedCollectionOfUser,
-} from "@/services/AuctionService";
+import { getTokensOfCollection } from "@/services/AuctionService";
 export default {
   data() {
     return {
@@ -77,44 +70,35 @@ export default {
       this.loading = true;
       this.offset = this.page * this.limit;
       this.page++;
-      let data = await getOwnedCollectionsOfUser({
+      let data = await getTokensOfCollection({
         limit: this.limit,
         offset: this.offset,
         walletAddress: this.walletAddress,
+        collectionName: this.$route.params.collection,
       });
 
       if (data.data.current_token_ownerships.length > 0) {
         const nfts = data.data.current_token_ownerships;
         for (var x = 0; x < nfts.length; x++) {
           try {
-            let meta = null;
-            const numberRes = await getNumberOfTokensInOwnedCollectionOfUser(
-              nfts[x].current_token_data.collection_name,
-              this.walletAddress
-            );
-
             if (
               nfts[x].current_token_data.metadata_uri.slice(0, 4) === "ipfs"
             ) {
               const url = this.sliceIPFSUrl(
                 nfts[x].current_token_data.metadata_uri
               );
-              meta = await this.$axios.get(
+              let meta = await this.$axios.get(
                 `https://cloudflare-ipfs.com/ipfs/${url}`
               );
+              this.metadata.push(meta.data);
+              this.nfts.push(nfts[x]);
             } else {
-              meta = await this.$axios.get(
+              let meta = await this.$axios.get(
                 nfts[x].current_token_data.metadata_uri
               );
+              this.metadata.push(meta.data);
+              this.nfts.push(nfts[x]);
             }
-
-            this.nfts.push({
-              name: nfts[x].current_token_data.collection_name,
-              image: meta.data.image,
-              ownedNumber:
-                numberRes.data.current_token_ownerships_aggregate.aggregate
-                  .count,
-            });
           } catch {}
         }
       } else {

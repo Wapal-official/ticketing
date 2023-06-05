@@ -214,11 +214,7 @@
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
-          <v-checkbox
-            v-model="whitelistTBD"
-            label="TBD"
-            v-if="!draft"
-          ></v-checkbox>
+          <v-checkbox v-model="whitelistTBD" label="TBD"></v-checkbox>
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
@@ -244,11 +240,7 @@
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
-          <v-checkbox
-            v-model="publicSaleTBD"
-            label="TBD"
-            v-if="!draft"
-          ></v-checkbox>
+          <v-checkbox v-model="publicSaleTBD" label="TBD"></v-checkbox>
         </div>
       </div>
       <div
@@ -628,7 +620,7 @@ export default {
       socialError: false,
       whitelistTBD: false,
       publicSaleTBD: false,
-      loading: false,
+      loading: true,
     };
   },
   methods: {
@@ -691,7 +683,7 @@ export default {
         const phases: any[] = [];
 
         tempCollection.phases.map((phase: any) => {
-          const id = phase.name.replaceAll(" ", "-").toLowerCase();
+          const id = phase.name.trim().replaceAll(" ", "-").toLowerCase();
 
           phases.push({
             id: id,
@@ -886,6 +878,44 @@ export default {
       this.$toast.showMessage({ message: this.message, error: false });
       this.$router.push("/dashboard");
     },
+    async setCollectionDataFromDraft() {
+      const draftRes = await getDraftById(this.$route.params.id);
+
+      this.collection = draftRes.data.draft.data;
+
+      this.collection.phases = this.collection.phases
+        ? JSON.parse(this.collection.phases)
+        : [];
+
+      this.collection.phases.map((phase: any) => {
+        phase.mint_time = new Date(phase.mint_time);
+      });
+
+      if (this.collection.whitelist_price) {
+        this.whitelistEnabled = true;
+      }
+
+      this.folders.map((folder: any) => {
+        if (folder.metadata.baseURI === this.collection.baseURL) {
+          this.baseURL = folder.folder_name;
+        }
+      });
+
+      this.whitelistTBD = this.collection.whitelist_sale_time ? false : true;
+      this.publicSaleTBD = this.collection.public_sale_time ? false : true;
+
+      if (this.collection.whitelist_sale_time) {
+        this.collection.whitelist_sale_time = new Date(
+          this.collection.whitelist_sale_time
+        );
+      }
+
+      if (this.collection.public_sale_time) {
+        this.collection.public_sale_time = new Date(
+          this.collection.public_sale_time
+        );
+      }
+    },
   },
   computed: {
     tbd() {
@@ -911,31 +941,9 @@ export default {
     });
 
     if (this.draft) {
-      this.loading = true;
-      const draftRes = await getDraftById(this.$route.params.id);
-
-      this.collection = draftRes.data.draft.data;
-
-      this.collection.phases = this.collection.phases
-        ? JSON.parse(this.collection.phases)
-        : [];
-
-      this.collection.phases.map((phase: any) => {
-        phase.mint_time = new Date(phase.mint_time);
-      });
-
-      if (this.collection.whitelist_price) {
-        this.whitelistEnabled = true;
-      }
-
-      this.folders.map((folder: any) => {
-        if (folder.metadata.baseURI === this.collection.baseURL) {
-          this.baseURL = folder.folder_name;
-        }
-      });
-
-      this.loading = false;
+      await this.setCollectionDataFromDraft();
     }
+    this.loading = false;
   },
 };
 </script>

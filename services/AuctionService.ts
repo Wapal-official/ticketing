@@ -171,3 +171,100 @@ export const getEndedAuctions = async ({
 
   return res.data.auctions;
 };
+
+export const getOwnedCollectionsOfUser = async (params: any) => {
+  let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+    operationName: "AccountTokensData",
+    query:
+      `query AccountTokensData {
+          current_token_ownerships(
+            distinct_on: collection_name
+            limit: ` +
+      params.limit +
+      `
+            offset:` +
+      params.offset +
+      `
+            where: {owner_address: {_eq: "` +
+      params.walletAddress +
+      `"}}
+            ) {
+              owner_address
+              property_version
+              amount
+            current_token_data {
+              name
+              metadata_uri
+              description
+              collection_name
+              creator_address
+              token_data_id_hash
+            }
+          }
+        }`,
+    variables: null,
+  });
+  return resp.data;
+};
+
+export const getNumberOfTokensInOwnedCollectionOfUser = async (
+  collection_name: string,
+  wallet_address: string
+) => {
+  const res = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+    operationName: "NumberOfTokensInOwnedCollectionOfUser",
+    query: `
+    query NumberOfTokensInOwnedCollectionOfUser{
+      current_token_ownerships_aggregate(
+        where: {collection_name: {_eq: "${collection_name}"}, owner_address: {_eq: "${wallet_address}"}}
+      ) {
+        aggregate {
+          count
+        }
+        nodes {
+          collection_name
+        }
+      }
+    }
+    `,
+  });
+
+  return res.data;
+};
+
+export const getTokensOfCollection = async (params: any) => {
+  let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+    operationName: "AccountTokensData",
+    query:
+      `query AccountTokensData {
+          current_token_ownerships(
+            limit: ` +
+      params.limit +
+      `
+            offset:` +
+      params.offset +
+      `
+            where: {owner_address: {_eq: "` +
+      params.walletAddress +
+      `"},
+      collection_name: {_eq: "` +
+      params.collectionName +
+      `"}}
+            ) {
+              owner_address
+              property_version
+              amount
+            current_token_data {
+              name
+              metadata_uri
+              description
+              collection_name
+              creator_address
+              token_data_id_hash
+            }
+          }
+        }`,
+    variables: null,
+  });
+  return resp.data;
+};
