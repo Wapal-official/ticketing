@@ -207,6 +207,31 @@ export const getOwnedCollectionsOfUser = async (params: any) => {
   return resp.data;
 };
 
+export const getNumberOfTokensInOwnedCollectionOfUser = async (
+  collection_name: string,
+  wallet_address: string
+) => {
+  const res = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+    operationName: "NumberOfTokensInOwnedCollectionOfUser",
+    query: `
+    query NumberOfTokensInOwnedCollectionOfUser{
+      current_token_ownerships_aggregate(
+        where: {collection_name: {_eq: "${collection_name}"}, owner_address: {_eq: "${wallet_address}"}}
+      ) {
+        aggregate {
+          count
+        }
+        nodes {
+          collection_name
+        }
+      }
+    }
+    `,
+  });
+
+  return res.data;
+};
+
 export const getTokensOfCollection = async (params: any) => {
   let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "AccountTokensData",

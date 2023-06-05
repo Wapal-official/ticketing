@@ -27,7 +27,7 @@
       </v-col>
     </v-row>
     <v-row no-gutters v-else class="py-10" justify="center">
-      <p v-if="end">No nfts</p>
+      <p v-if="end && !loading">No nfts</p>
       <ReusableLoading v-else />
     </v-row>
     <v-card

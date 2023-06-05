@@ -16,9 +16,16 @@
         >
           <v-img :src="item.image" class="tw-h-[350px]"></v-img>
           <div
-            class="tw-w-full tw-py-4 tw-text-center tw-border-l tw-border-r tw-border-b tw-border-wapal-pink"
+            class="tw-w-full tw-py-4 tw-border-l tw-text-left tw-border-r tw-border-b tw-border-wapal-pink"
           >
-            <h4>{{ item.name }}</h4>
+            <h4
+              class="tw-w-full tw-px-4 tw-flex tw-flex-row tw-items-center tw-justify-between"
+            >
+              {{ item.name }}
+              <span class="tw-text-wapal-pink tw-pl-2">{{
+                item.ownedNumber
+              }}</span>
+            </h4>
           </div>
         </v-card>
       </v-col>
@@ -42,7 +49,10 @@
   </div>
 </template>
 <script>
-import { getOwnedCollectionsOfUser } from "@/services/AuctionService";
+import {
+  getOwnedCollectionsOfUser,
+  getNumberOfTokensInOwnedCollectionOfUser,
+} from "@/services/AuctionService";
 export default {
   data() {
     return {
@@ -78,6 +88,11 @@ export default {
         for (var x = 0; x < nfts.length; x++) {
           try {
             let meta = null;
+            const numberRes = await getNumberOfTokensInOwnedCollectionOfUser(
+              nfts[x].current_token_data.collection_name,
+              this.walletAddress
+            );
+
             if (
               nfts[x].current_token_data.metadata_uri.slice(0, 4) === "ipfs"
             ) {
@@ -96,6 +111,9 @@ export default {
             this.nfts.push({
               name: nfts[x].current_token_data.collection_name,
               image: meta.data.image,
+              ownedNumber:
+                numberRes.data.current_token_ownerships_aggregate.aggregate
+                  .count,
             });
           } catch {}
         }
