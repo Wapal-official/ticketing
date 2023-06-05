@@ -354,7 +354,7 @@ export const actions = {
 
     const price = res.data.price;
 
-    const totalAR = (price / Math.pow(10,12)) * arweaveRate.data.USD;
+    const totalAR = (price / Math.pow(10, 12)) * arweaveRate.data.USD;
 
     const uploadMultiplier = 1.091;
     const oracleFee = 1.1;
@@ -376,7 +376,7 @@ export const actions = {
 
     checkNetwork();
 
-    const transactionAmount = (requiredBalance * Math.pow(10,8)).toFixed(0);
+    const transactionAmount = (requiredBalance * Math.pow(10, 8)).toFixed(0);
 
     const payload = {
       arguments: [
@@ -716,9 +716,9 @@ export const actions = {
       "https://api.coinconvert.net/convert/apt/usd?amount=1"
     );
 
-    const res = await getPrice();
+    // const res = await getPrice();
 
-    const price = res.data.price;
+    const price = 0.005 * Math.pow(10, 12);
 
     const totalAR = (price / Math.pow(10, 12)) * arweaveRate.data.USD;
 
@@ -742,7 +742,7 @@ export const actions = {
 
     checkNetwork();
 
-    const transactionAmount = (requiredBalance * Math.pow(10,8)).toFixed(0);
+    const transactionAmount = (requiredBalance * Math.pow(10, 8)).toFixed(0);
 
     const payload = {
       arguments: [

@@ -48,7 +48,7 @@
                 rules="link"
                 v-slot="{ errors }"
               >
-                <label>Twitter Link</label>
+                <label ref="social">Twitter Link</label>
                 <reusable-text-field
                   v-model="mint.twitter"
                   type="text"
@@ -56,6 +56,22 @@
                 ></reusable-text-field>
                 <div class="tw-text-red-600">{{ errors[0] }}</div>
               </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="link"
+                v-slot="{ errors }"
+              >
+                <label>Instagram Link</label>
+                <reusable-text-field
+                  v-model="mint.instagram"
+                  type="text"
+                  placeholder="Instagram Link"
+                ></reusable-text-field>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <div v-if="socialError" class="tw-text-red-600">
+                {{ socialErrorMessage }}
+              </div>
               <p class="text-h6">Token Details</p>
               <ValidationProvider
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
@@ -329,7 +345,7 @@
         <div class="tw-h-[1px] tw-bg-[#ffffff4d] tw-w-full"></div>
         <h4 class="tw-text-lg tw-font-semibold">Create Auction</h4>
         <p>
-          Please review and approve up to three transactions in your wallet
+          Please review and approve up to four transactions in your wallet
           window to create your NFT.
         </p>
         <div
@@ -562,6 +578,7 @@ export default {
         nftDesc: "",
         attributes: [{ trait_type: "", value: "" }],
         twitter: "",
+        instagram: "",
       },
       attribute: "",
       value: "",
@@ -577,6 +594,8 @@ export default {
       auctionProgress: 0,
       showCloseAuctionModal: false,
       createError: false,
+      socialError: false,
+      socialErrorMessage: "",
       defaultTheme,
       uploadIcon,
     };
@@ -635,11 +654,24 @@ export default {
     },
     async nextStep() {
       this.imageError = false;
+      this.socialError = false;
+
       if (!this.file) {
         this.imageError = true;
         this.imageErrorMessage = "Please Select an Image";
         return;
       }
+
+      if (!this.mint.twitter && !this.mint.instagram) {
+        this.socialError = true;
+        this.socialErrorMessage =
+          "Please provide a twitter link or instagram link";
+
+        this.$refs["social"].scrollIntoView({ behavior: "smooth" });
+
+        return;
+      }
+
       this.step = 2;
     },
     addAttribute() {
@@ -687,6 +719,19 @@ export default {
             this.createAuctionModal = true;
 
             this.auctionProgress = 1;
+
+            const aptRes = await this.$store.dispatch(
+              "walletStore/getAptForFileUpload"
+            );
+
+            const transactionRes = await this.$store.dispatch(
+              "walletStore/signTransactionForFileUpload",
+              aptRes.requiredBalance
+            );
+
+            if (!transactionRes.success) {
+              throw new Error("Transaction Not Successful Please Try Again");
+            }
 
             //uploading and creating metadata file
             const metaUri =
@@ -744,9 +789,10 @@ export default {
             formData.append("public_sale_price", this.mint.minBid * 100000000);
             formData.append("whitelist_price", this.mint.minBid * 100000000);
             formData.append("supply", 1);
-            formData.append("twitter", "");
+            formData.append("twitter", this.mint.twitter);
             formData.append("discord", "");
             formData.append("website", "");
+            formData.append("instagram", this.mint.instagram);
             formData.append("resource_account", resource_account);
             formData.append("txnhash", txnhash);
             formData.append("candy_id", process.env.CANDY_MACHINE_ID);
@@ -813,6 +859,7 @@ export default {
                     id: auction.cur_auction_id,
                     auction_name: auction_name,
                     twitter: this.mint.twitter,
+                    instagram: this.mint.instagram,
                   });
 
                   this.$toast.showMessage({
