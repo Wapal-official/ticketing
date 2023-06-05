@@ -49,6 +49,12 @@
               >mdi-twitter</v-icon
             >
           </a>
+          <a :href="auction.instagram" target="_blank" v-if="auction.instagram">
+            <v-icon
+              class="!tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink"
+              >mdi-instagram</v-icon
+            >
+          </a>
         </div>
         <div class="tw-text-wapal-gray tw-pb-8">
           <h1
