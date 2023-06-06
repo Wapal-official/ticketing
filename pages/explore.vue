@@ -80,7 +80,7 @@ export default {
     this.loading = false;
   },
   watch: {
-    getPath(path) {
+    getPath(path: string) {
       if (path === "all") {
         this.exploreTab = 0;
       } else if (path === "live") {
