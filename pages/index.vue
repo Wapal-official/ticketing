@@ -152,7 +152,14 @@ export default {
   async created() {
     await this.getCollections();
 
-    this.auctions = await getUpcomingAuctions({ page: 1, perPage: 4 });
+    if (process.env.baseURL && !process.env.baseURL.includes("staging")) {
+      this.auctions = await getUpcomingAuctions({ page: 1, perPage: 3 });
+      const auctionRes = await getAuctionByName("aptosmonkeys-3693");
+
+      this.auctions.unshift(auctionRes.data.auction);
+    } else {
+      this.auctions = await getUpcomingAuctions({ page: 1, perPage: 4 });
+    }
 
     this.loading = false;
   },
