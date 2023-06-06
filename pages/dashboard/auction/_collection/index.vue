@@ -81,24 +81,45 @@ export default {
         const nfts = data.data.current_token_ownerships;
         for (var x = 0; x < nfts.length; x++) {
           try {
+            let meta = null;
             if (
               nfts[x].current_token_data.metadata_uri.slice(0, 4) === "ipfs"
             ) {
               const url = this.sliceIPFSUrl(
                 nfts[x].current_token_data.metadata_uri
               );
-              let meta = await this.$axios.get(
+              meta = await this.$axios.get(
                 `https://cloudflare-ipfs.com/ipfs/${url}`
               );
-              this.metadata.push(meta.data);
-              this.nfts.push(nfts[x]);
             } else {
-              let meta = await this.$axios.get(
+              meta = await this.$axios.get(
                 nfts[x].current_token_data.metadata_uri
               );
-              this.metadata.push(meta.data);
-              this.nfts.push(nfts[x]);
             }
+
+            let imageURL = meta.data.image;
+
+            if (imageURL.slice(0, 4) === "ipfs") {
+              const url = this.sliceIPFSUrl(imageURL);
+
+              imageURL = `https://cloudflare-ipfs.com/ipfs/${url}`;
+            }
+
+            if (imageURL.includes("ipfs.apt.land")) {
+              const index = imageURL.indexOf("ipfs.apt.land");
+
+              const slicedURL = imageURL.slice(index, imageURL.length);
+
+              imageURL = slicedURL.replaceAll("/", "-");
+
+              imageURL =
+                "https://ipfs.bluemove.net/uploads/cdn-image/" + imageURL;
+            }
+            meta.data.image = imageURL;
+
+            this.metadata.push(meta.data);
+
+            this.nfts.push(nfts[x]);
           } catch {}
         }
       } else {
