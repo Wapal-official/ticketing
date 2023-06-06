@@ -67,8 +67,7 @@ export default {
   },
   methods: {
     goToExplorePage() {
-      this.$store.commit("exploreStore/setExploreTab", "upcoming");
-      this.$router.push("/explore");
+      this.$router.push("/explore/upcoming");
     },
   },
 };
