@@ -73,7 +73,7 @@
         <div class="tw-text-lg">Current Bid: {{ getBid }} APT</div>
         <reusable-theme-button
           :title="!auctionEnded ? 'Place Your bid' : 'Auction Ended'"
-          @click="$router.push('/auctions/lost-in-my-thoughts')"
+          @click="$router.push('/auctions/aptosmonkeys-3693')"
         />
       </div>
     </div>
@@ -147,11 +147,9 @@ export default {
     const res = await getAuctionByName(
       process.env.baseURL?.includes("staging")
         ? "all-is-lost"
-        : "lost-in-my-thoughts"
+        : "aptosmonkeys-3693"
     );
     this.auction = res.data.auction;
-
-    console.log(this.auction);
 
     this.loading = false;
   },
