@@ -201,6 +201,8 @@ export default {
         return 777;
       } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
         return 222;
+      } else if (this.collection._id === "64686db77db14461740bab0f") {
+        return 355;
       }
 
       return this.collection.supply;
