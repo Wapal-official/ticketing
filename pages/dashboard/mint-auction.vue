@@ -819,65 +819,75 @@ export default {
                   //auction
                   this.auctionProgress = 4;
 
-                  const nftRes = await getWalletNFT({
-                    creatorAddress: this.walletAddress,
-                    collectionName: this.mint.colName,
-                    tokenName: this.mint.colName + " #0",
-                    metadata_uri: metaUri + "0.json",
-                  });
+                  setTimeout(async () => {
+                    try {
+                      const nftRes = await getWalletNFT({
+                        creatorAddress: this.walletAddress,
+                        collectionName: this.mint.colName,
+                        tokenName: this.mint.colName + " #0",
+                        metadata_uri: metaUri + "0.json",
+                      });
 
-                  const nft = nftRes.data.current_token_ownerships[0];
+                      const nft = nftRes.data.current_token_ownerships[0];
 
-                  const meta = await this.$axios.get(
-                    nft.current_token_data.metadata_uri
-                  );
+                      const meta = await this.$axios.get(
+                        nft.current_token_data.metadata_uri
+                      );
 
-                  this.$store.commit("auction/selectNft", {
-                    nft: nft,
-                    meta: meta.data,
-                  });
+                      this.$store.commit("auction/selectNft", {
+                        nft: nft,
+                        meta: meta.data,
+                      });
 
-                  const auction = await this.$store.dispatch(
-                    "walletStore/createAuction",
-                    {
-                      start_date: this.mint.startDate,
-                      end_date: this.mint.endDate,
-                      min_bid: this.mint.minBid,
+                      const auction = await this.$store.dispatch(
+                        "walletStore/createAuction",
+                        {
+                          start_date: this.mint.startDate,
+                          end_date: this.mint.endDate,
+                          min_bid: this.mint.minBid,
+                        }
+                      );
+
+                      let auction_name = this.selectedNft.meta.name.replaceAll(
+                        "#",
+                        ""
+                      );
+
+                      auction_name = auction_name.replaceAll("\\", "-");
+                      auction_name = auction_name.replaceAll("/", "-");
+
+                      await publicRequest.post("/api/auction", {
+                        nft: this.selectedNft,
+                        startAt: this.mint.startDate,
+                        endAt: this.mint.endDate,
+                        min_bid: this.mint.minBid,
+                        id: auction.cur_auction_id,
+                        auction_name: auction_name,
+                        twitter: this.mint.twitter,
+                        instagram: this.mint.instagram,
+                      });
+
+                      this.$toast.showMessage({
+                        message: "Auction Created Successfully",
+                        error: false,
+                      });
+                      this.loading = false;
+                      this.createAuctionModal = false;
+
+                      this.auctionProgress = 5;
+
+                      this.$router.push("/dashboard/auction/list");
+                    } catch (error) {
+                      console.log(error);
+                      this.$toast.showMessage({ message: error, error: true });
+                      this.loading = false;
+                      this.createError = true;
+                      this.showCloseAuctionModal = true;
+
+                      this.loading = false;
                     }
-                  );
-
-                  let auction_name = this.selectedNft.meta.name.replaceAll(
-                    "#",
-                    ""
-                  );
-
-                  auction_name = auction_name.replaceAll("\\", "-");
-                  auction_name = auction_name.replaceAll("/", "-");
-
-                  await publicRequest.post("/api/auction", {
-                    nft: this.selectedNft,
-                    startAt: this.mint.startDate,
-                    endAt: this.mint.endDate,
-                    min_bid: this.mint.minBid,
-                    id: auction.cur_auction_id,
-                    auction_name: auction_name,
-                    twitter: this.mint.twitter,
-                    instagram: this.mint.instagram,
-                  });
-
-                  this.$toast.showMessage({
-                    message: "Auction Created Successfully",
-                    error: false,
-                  });
-                  this.loading = false;
-                  this.createAuctionModal = false;
-
-                  this.auctionProgress = 5;
-
-                  this.$router.push("/dashboard/auction/list");
+                  }, 2000);
                 }
-
-                this.loading = false;
               } catch (error) {
                 console.log(error);
                 this.$toast.showMessage({ message: error, error: true });

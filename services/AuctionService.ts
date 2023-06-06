@@ -187,7 +187,8 @@ export const getOwnedCollectionsOfUser = async (params: any) => {
       `
             where: {owner_address: {_eq: "` +
       params.walletAddress +
-      `"}}
+      `"},
+        amount:{_gt:0}}
             ) {
               owner_address
               property_version
@@ -216,7 +217,10 @@ export const getNumberOfTokensInOwnedCollectionOfUser = async (
     query: `
     query NumberOfTokensInOwnedCollectionOfUser{
       current_token_ownerships_aggregate(
-        where: {collection_name: {_eq: "${collection_name}"}, owner_address: {_eq: "${wallet_address}"}}
+        where: {
+          collection_name: {_eq: "${collection_name}"}, 
+          owner_address: {_eq: "${wallet_address}"},
+          amount:{_gt:0}}
       ) {
         aggregate {
           count
@@ -249,7 +253,9 @@ export const getTokensOfCollection = async (params: any) => {
       `"},
       collection_name: {_eq: "` +
       params.collectionName +
-      `"}}
+      `"},
+      amount:{_gt:0}
+    }
             ) {
               owner_address
               property_version

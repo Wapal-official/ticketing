@@ -108,9 +108,28 @@ export default {
               );
             }
 
+            let imageURL = meta.data.image;
+
+            if (imageURL.slice(0, 4) === "ipfs") {
+              const url = this.sliceIPFSUrl(imageURL);
+
+              imageURL = `https://cloudflare-ipfs.com/ipfs/${url}`;
+            }
+
+            if (imageURL.includes("ipfs.apt.land")) {
+              const index = imageURL.indexOf("ipfs.apt.land");
+
+              const slicedURL = imageURL.slice(index, imageURL.length);
+
+              imageURL = slicedURL.replaceAll("/", "-");
+
+              imageURL =
+                "https://ipfs.bluemove.net/uploads/cdn-image/" + imageURL;
+            }
+
             this.nfts.push({
               name: nfts[x].current_token_data.collection_name,
-              image: meta.data.image,
+              image: imageURL,
               ownedNumber:
                 numberRes.data.current_token_ownerships_aggregate.aggregate
                   .count,
