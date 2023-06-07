@@ -323,157 +323,16 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
-    <v-dialog
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-1/3 3xl:!tw-w-1/4"
-      v-model="createAuctionModal"
-      persistent
-    >
-      <div
-        class="tw-w-full tw-h-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-[#141414] tw-rounded tw-px-8 tw-pt-4 tw-pb-8"
-      >
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
-        >
-          <button
-            @click="createAuctionModal = false"
-            v-if="showCloseAuctionModal"
-          >
-            <v-icon class="!tw-text-white">mdi-close</v-icon>
-          </button>
-        </div>
-        <h3 class="tw-text-2xl tw-font-semibold">Wallet Approval</h3>
-        <div class="tw-h-[1px] tw-bg-[#ffffff4d] tw-w-full"></div>
-        <h4 class="tw-text-lg tw-font-semibold">Create Auction</h4>
-        <p>
-          Please review and approve up to four transactions in your wallet
-          window to create your NFT.
-        </p>
-        <div
-          class="tw-rounded tw-bg-[#262525] tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-py-4 tw-px-4"
-        >
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
-          >
-            <span>1. Uploading Image and Metadata</span>
-            <div v-if="auctionProgress < 1">
-              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
-                >mdi-check-circle-outline</v-icon
-              >
-            </div>
-            <div v-else>
-              <div v-if="auctionProgress === 1 && !createError">
-                <v-progress-circular
-                  width="4"
-                  size="24"
-                  :color="defaultTheme.wapalPink"
-                  indeterminate
-                ></v-progress-circular>
-              </div>
-              <div v-else>
-                <v-icon
-                  class="!tw-font-light !tw-text-wapal-pink"
-                  v-if="auctionProgress > 1"
-                  >mdi-check-circle-outline</v-icon
-                >
-                <v-icon class="!tw-font-light !tw-text-red-600" v-else
-                  >mdi-close-circle-outline</v-icon
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
-          >
-            <span>2. Creating Collection</span>
-            <div v-if="auctionProgress < 2">
-              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
-                >mdi-check-circle-outline</v-icon
-              >
-            </div>
-            <div v-else>
-              <div v-if="auctionProgress === 2 && !createError">
-                <v-progress-circular
-                  width="4"
-                  size="24"
-                  :color="defaultTheme.wapalPink"
-                  indeterminate
-                ></v-progress-circular>
-              </div>
-              <div v-else>
-                <v-icon
-                  class="!tw-font-light !tw-text-wapal-pink"
-                  v-if="auctionProgress > 2"
-                  >mdi-check-circle-outline</v-icon
-                >
-                <v-icon class="!tw-font-light !tw-text-red-600" v-else
-                  >mdi-close-circle-outline</v-icon
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
-          >
-            <span>3. Minting Collection</span>
-            <div v-if="auctionProgress < 3">
-              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
-                >mdi-check-circle-outline</v-icon
-              >
-            </div>
-            <div v-else>
-              <div v-if="auctionProgress === 3 && !createError">
-                <v-progress-circular
-                  width="4"
-                  size="24"
-                  :color="defaultTheme.wapalPink"
-                  indeterminate
-                ></v-progress-circular>
-              </div>
-              <div v-else>
-                <v-icon
-                  class="!tw-font-light !tw-text-wapal-pink"
-                  v-if="auctionProgress > 3"
-                  >mdi-check-circle-outline</v-icon
-                >
-                <v-icon class="!tw-font-light !tw-text-red-600" v-else
-                  >mdi-close-circle-outline</v-icon
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
-          >
-            <span>4. Adding Collection To Auction</span>
-            <div v-if="auctionProgress < 4">
-              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
-                >mdi-check-circle-outline</v-icon
-              >
-            </div>
-            <div v-else>
-              <div v-if="auctionProgress === 4 && !createError">
-                <v-progress-circular
-                  width="4"
-                  size="24"
-                  :color="defaultTheme.wapalPink"
-                  indeterminate
-                ></v-progress-circular>
-              </div>
-              <div v-else>
-                <v-icon
-                  class="!tw-font-light !tw-text-wapal-pink"
-                  v-if="auctionProgress > 4"
-                  >mdi-check-circle-outline</v-icon
-                >
-                <v-icon class="!tw-font-light !tw-text-red-600" v-else
-                  >mdi-close-circle-outline</v-icon
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </v-dialog>
+    <reusable-progress-modal
+      :showProgressModal="createAuctionModal"
+      :showClose="showCloseAuctionModal"
+      name="Create Auction"
+      description="Please review and approve up to four transactions in your wallet window to create your NFT."
+      :steps="steps"
+      :progress="auctionProgress"
+      :error="createError"
+      @closeProgressModal="createAuctionModal = false"
+    />
   </div>
 </template>
 
@@ -597,6 +456,12 @@ export default {
       createError: false,
       socialError: false,
       socialErrorMessage: "",
+      steps: [
+        { step: 1, name: "Uploading Image and Metadata" },
+        { step: 2, name: "Creating Collection" },
+        { step: 3, name: "Minting Collection" },
+        { step: 4, name: "Adding Collection to Auction" },
+      ],
       defaultTheme,
       uploadIcon,
     };
