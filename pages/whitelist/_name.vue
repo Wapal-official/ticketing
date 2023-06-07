@@ -263,11 +263,11 @@
             <div class="tw-text-lg">
               Follow
               <a
-                :href="`https://twitter.com/${whitelist.twitter}`"
+                :href="getTwitterURL()"
                 @click.stop=""
                 target="_blank"
                 class="!tw-text-wapal-pink"
-                >{{ whitelist.twitter }}</a
+                >{{ getTwitterUsername() }}</a
               >
               on Twitter
             </div>
@@ -856,6 +856,33 @@ export default {
         "discord",
         windowFeatures
       );
+    },
+    getTwitterURL() {
+      if (this.whitelist.twitter) {
+        if (this.whitelist.twitter.slice(0, 4) === "https") {
+          return this.twitter.whitelist;
+        }
+
+        return `https://twitter.com/${this.whitelist.twitter}`;
+      }
+
+      return `https://twitter.com`;
+    },
+    getTwitterUsername() {
+      if (this.whitelist.twitter) {
+        if (this.whitelist.twitter.slice(0, 4) === "https") {
+          const urlIndex = this.whitelist.twitter.lastIndexOf("/");
+
+          const username = this.whitelist.twitter.slice(
+            urlIndex + 1,
+            this.whitelist.twitter.length
+          );
+
+          return username;
+        }
+
+        return this.whitelist.twitter;
+      }
     },
   },
   computed: {
