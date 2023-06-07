@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <section class="tw-py-4 2xl:tw-container tw-mx-auto">
-      <featured />
+      <auction-featured />
     </section>
     <div>
       <landing-slider :collections="collections" :loading="loading" />
