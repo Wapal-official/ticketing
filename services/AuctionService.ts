@@ -274,3 +274,9 @@ export const getTokensOfCollection = async (params: any) => {
   });
   return resp.data;
 };
+
+export const setCompleteAuction = async (auctionId: string) => {
+  const res = await publicRequest.patch(`/api/auction/${auctionId}`);
+
+  return res.data;
+};

@@ -140,6 +140,7 @@
                   : 'Claim NFT'
               "
               @click="completeAuction"
+              :disabled="auction.completed"
               v-if="checkOwner"
             />
             <reusable-theme-button
@@ -150,6 +151,16 @@
             />
           </div>
         </ValidationObserver>
+        <div
+          class="tw-text-green-600 tw-text-lg"
+          v-if="
+            auction.completed &&
+            checkOwner &&
+            auction.nft.nft.owner_address !== getWalletConnectedStatus
+          "
+        >
+          Congratulations on winning the bid. NFT has been sent to your wallet.
+        </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
           v-if="auctionStarted"
@@ -216,6 +227,7 @@ import {
   getCurrentBid,
   getDomainNameFromWalletAddress,
   placeBid,
+  setCompleteAuction,
 } from "@/services/AuctionService";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 
@@ -569,6 +581,10 @@ export default {
         });
 
         if (res.success) {
+          await setCompleteAuction(this.auction._id);
+
+          await this.getAuctionDetails();
+
           this.$toast.showMessage({
             message: "Auction Completed Successfully",
           });
