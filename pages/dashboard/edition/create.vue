@@ -48,7 +48,7 @@
                 rules="link"
                 v-slot="{ errors }"
               >
-                <label>Twitter Link</label>
+                <label ref="social">Twitter Link</label>
                 <reusable-text-field
                   v-model="mint.twitter"
                   type="text"
@@ -56,6 +56,22 @@
                 ></reusable-text-field>
                 <div class="tw-text-red-600">{{ errors[0] }}</div>
               </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="link"
+                v-slot="{ errors }"
+              >
+                <label>Instagram Link</label>
+                <reusable-text-field
+                  v-model="mint.instagram"
+                  type="text"
+                  placeholder="Instagram Link"
+                ></reusable-text-field>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <div v-if="socialError" class="tw-text-red-600">
+                {{ socialErrorMessage }}
+              </div>
               <p class="text-h6">Token Details</p>
               <ValidationProvider
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
@@ -214,7 +230,7 @@
                 ></reusable-text-area>
                 <div class="tw-text-red-600">{{ errors[0] }}</div>
               </ValidationProvider>
-              <form @submit.prevent="handleSubmit()">
+              <form @submit.prevent="handleSubmit(submit)">
                 <div class="tw-pb-2">Add Attributes</div>
                 <div
                   class="tw-w-full"
@@ -291,157 +307,16 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
-    <v-dialog
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-1/3 3xl:!tw-w-1/4"
-      v-model="createAuctionModal"
-      persistent
-    >
-      <div
-        class="tw-w-full tw-h-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-[#141414] tw-rounded tw-px-8 tw-pt-4 tw-pb-8"
-      >
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
-        >
-          <button
-            @click="createAuctionModal = false"
-            v-if="showCloseAuctionModal"
-          >
-            <v-icon class="!tw-text-white">mdi-close</v-icon>
-          </button>
-        </div>
-        <h3 class="tw-text-2xl tw-font-semibold">Wallet Approval</h3>
-        <div class="tw-h-[1px] tw-bg-[#ffffff4d] tw-w-full"></div>
-        <h4 class="tw-text-lg tw-font-semibold">Create Auction</h4>
-        <p>
-          Please review and approve up to three transactions in your wallet
-          window to create your NFT.
-        </p>
-        <div
-          class="tw-rounded tw-bg-[#262525] tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-py-4 tw-px-4"
-        >
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
-          >
-            <span>1. Uploading Image and Metadata</span>
-            <div v-if="auctionProgress < 1">
-              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
-                >mdi-check-circle-outline</v-icon
-              >
-            </div>
-            <div v-else>
-              <div v-if="auctionProgress === 1 && !createError">
-                <v-progress-circular
-                  width="4"
-                  size="24"
-                  :color="defaultTheme.wapalPink"
-                  indeterminate
-                ></v-progress-circular>
-              </div>
-              <div v-else>
-                <v-icon
-                  class="!tw-font-light !tw-text-wapal-pink"
-                  v-if="auctionProgress > 1"
-                  >mdi-check-circle-outline</v-icon
-                >
-                <v-icon class="!tw-font-light !tw-text-red-600" v-else
-                  >mdi-close-circle-outline</v-icon
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
-          >
-            <span>2. Creating Collection</span>
-            <div v-if="auctionProgress < 2">
-              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
-                >mdi-check-circle-outline</v-icon
-              >
-            </div>
-            <div v-else>
-              <div v-if="auctionProgress === 2 && !createError">
-                <v-progress-circular
-                  width="4"
-                  size="24"
-                  :color="defaultTheme.wapalPink"
-                  indeterminate
-                ></v-progress-circular>
-              </div>
-              <div v-else>
-                <v-icon
-                  class="!tw-font-light !tw-text-wapal-pink"
-                  v-if="auctionProgress > 2"
-                  >mdi-check-circle-outline</v-icon
-                >
-                <v-icon class="!tw-font-light !tw-text-red-600" v-else
-                  >mdi-close-circle-outline</v-icon
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
-          >
-            <span>3. Minting Collection</span>
-            <div v-if="auctionProgress < 3">
-              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
-                >mdi-check-circle-outline</v-icon
-              >
-            </div>
-            <div v-else>
-              <div v-if="auctionProgress === 3 && !createError">
-                <v-progress-circular
-                  width="4"
-                  size="24"
-                  :color="defaultTheme.wapalPink"
-                  indeterminate
-                ></v-progress-circular>
-              </div>
-              <div v-else>
-                <v-icon
-                  class="!tw-font-light !tw-text-wapal-pink"
-                  v-if="auctionProgress > 3"
-                  >mdi-check-circle-outline</v-icon
-                >
-                <v-icon class="!tw-font-light !tw-text-red-600" v-else
-                  >mdi-close-circle-outline</v-icon
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
-          >
-            <span>4. Adding Collection To Auction</span>
-            <div v-if="auctionProgress < 4">
-              <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
-                >mdi-check-circle-outline</v-icon
-              >
-            </div>
-            <div v-else>
-              <div v-if="auctionProgress === 4 && !createError">
-                <v-progress-circular
-                  width="4"
-                  size="24"
-                  :color="defaultTheme.wapalPink"
-                  indeterminate
-                ></v-progress-circular>
-              </div>
-              <div v-else>
-                <v-icon
-                  class="!tw-font-light !tw-text-wapal-pink"
-                  v-if="auctionProgress > 4"
-                  >mdi-check-circle-outline</v-icon
-                >
-                <v-icon class="!tw-font-light !tw-text-red-600" v-else
-                  >mdi-close-circle-outline</v-icon
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </v-dialog>
+    <reusable-progress-modal
+      :showProgressModal="createEditionModal"
+      :showClose="showCloseModal"
+      :progress="progress"
+      :error="error"
+      :steps="getSteps"
+      :name="getName"
+      :description="getDescription"
+      @closeProgressModal="createEditionModal = false"
+    />
   </div>
 </template>
 
@@ -449,6 +324,7 @@
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import uploadIcon from "@/assets/img/upload-icon.svg";
 import { defaultTheme } from "@/theme/wapaltheme";
+import { uploadAndCreateFile } from "@/services/AuctionService";
 
 extend("percentage", {
   validate(value) {
@@ -496,6 +372,7 @@ export default {
         twitter: "",
         type: "",
         supply: "",
+        instagram: "",
       },
       attribute: "",
       value: "",
@@ -507,15 +384,24 @@ export default {
       file: null,
       imageError: false,
       imageErrorMessage: "",
-      createAuctionModal: false,
-      auctionProgress: 0,
-      showCloseAuctionModal: false,
-      createError: false,
+      createEditionModal: false,
+      progress: 0,
+      showCloseModal: false,
+      error: false,
+      oneOnOneSteps: [
+        { step: 1, name: "Uploading Image and Metadata" },
+        { step: 2, name: "Creating Collection" },
+        { step: 3, name: "Minting Collection" },
+      ],
+      limitedEditionSteps: [],
+      openEditionSteps: [],
       nftType: [
         { name: "One on One", id: "1/1" },
         { name: "Limited Edition", id: "limited-edition" },
         { name: "Open Edition", id: "open-edition" },
       ],
+      socialError: false,
+      socialErrorMessage: "",
       defaultTheme,
       uploadIcon,
     };
@@ -534,6 +420,21 @@ export default {
     },
     selectedNft() {
       return this.$store.state.auction.selectedNft;
+    },
+    getSteps() {
+      if (this.mint.type === "1/1") {
+        return this.oneOnOneSteps;
+      } else if (this.mint.type === "limited-edition") {
+        return this.limitedEditionSteps;
+      } else {
+        return this.openEditionSteps;
+      }
+    },
+    getName() {
+      return "Create Edition";
+    },
+    getDescription() {
+      return "Please review and approve up to four transactions in your wallet window to create your edition.";
     },
   },
   async mounted() {
@@ -579,6 +480,16 @@ export default {
         this.imageErrorMessage = "Please Select an Image";
         return;
       }
+
+      if (!this.mint.twitter && !this.mint.instagram) {
+        this.socialError = true;
+        this.socialErrorMessage =
+          "Please provide a twitter link or instagram link";
+
+        this.$refs["social"].scrollIntoView({ behavior: "smooth" });
+
+        return;
+      }
       this.step = 2;
     },
     addAttribute() {
@@ -619,7 +530,7 @@ export default {
       }
 
       if (this.mint.type === "1/1") {
-        await createOneOnOneCollection();
+        await this.createOneOnOneCollection();
       }
     },
     async createOneOnOneCollection() {
@@ -628,11 +539,24 @@ export default {
           throw new Error("Please provide at least one attribute");
         }
 
-        this.createError = false;
+        this.error = false;
         this.loading = true;
-        this.createAuctionModal = true;
+        this.createEditionModal = true;
 
-        this.auctionProgress = 1;
+        this.progress = 1;
+
+        const aptRes = await this.$store.dispatch(
+          "walletStore/getAptForFileUpload"
+        );
+
+        const transactionRes = await this.$store.dispatch(
+          "walletStore/signTransactionForFileUpload",
+          aptRes.requiredBalance
+        );
+
+        if (!transactionRes.success) {
+          throw new Error("Transaction Not Successful Please Try Again");
+        }
 
         //uploading and creating metadata file
         const metaUri =
@@ -648,7 +572,7 @@ export default {
           mintTime += 20;
         }
 
-        this.auctionProgress = 2;
+        this.progress = 2;
 
         //creating collection
         const candymachine = await this.$store.dispatch(
@@ -671,40 +595,10 @@ export default {
         const resource_account = candymachine.resourceAccount;
         const txnhash = candymachine.transactionHash;
 
-        //saving collection to db
-        const formData = new FormData();
-
-        formData.append("name", this.mint.colName);
-        formData.append("description", this.mint.colDesc);
-        formData.append("royalty_percentage", this.mint.royalty);
-        formData.append("royalty_payee_address", this.walletAddress);
-        formData.append(
-          "whitelist_sale_time",
-          Math.floor(new Date().getTime() / 1000) + 10
-        );
-        formData.append(
-          "public_sale_time",
-          Math.floor(new Date().getTime() / 1000) + 10
-        );
-
-        formData.append("public_sale_price", this.mint.minBid * 100000000);
-        formData.append("whitelist_price", this.mint.minBid * 100000000);
-        formData.append("supply", 1);
-        formData.append("twitter", "");
-        formData.append("discord", "");
-        formData.append("website", "");
-        formData.append("resource_account", resource_account);
-        formData.append("txnhash", txnhash);
-        formData.append("candy_id", process.env.CANDY_MACHINE_ID);
-        formData.append("image", this.file);
-        formData.append("phases", JSON.stringify([]));
-
-        await createCollection(formData);
-
         //mint
         setTimeout(async () => {
           try {
-            this.auctionProgress = 3;
+            this.progress = 3;
 
             const mint = await this.$store.dispatch(
               "walletStore/mintCollection",
@@ -714,13 +608,25 @@ export default {
                 candyMachineId: process.env.CANDY_MACHINE_ID,
               }
             );
+
+            this.$toast.showMessage({
+              message: "1/1 Collection Minted Successfully",
+            });
+
+            this.$router.push("/dashboard/edition");
           } catch (error) {
             console.log(error);
+            this.loading = false;
+            this.error = true;
+            this.showCloseModal = true;
             this.$toast.showMessage({ message: error, error: true });
           }
         });
       } catch (error) {
         console.log(error);
+        this.loading = false;
+        this.error = true;
+        this.showCloseModal = true;
         this.$toast.showMessage({ message: error, error: true });
       }
     },

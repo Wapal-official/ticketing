@@ -44,7 +44,7 @@
             <div v-else>
               <v-icon
                 class="!tw-font-light !tw-text-wapal-pink"
-                v-if="progress > 1"
+                v-if="progress > step.step"
                 >mdi-check-circle-outline</v-icon
               >
               <v-icon class="!tw-font-light !tw-text-red-600" v-else
