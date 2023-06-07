@@ -323,7 +323,17 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
-    <v-dialog
+    <reusable-progress-modal
+      :showProgressModal="createAuctionModal"
+      :showClose="showCloseAuctionModal"
+      name="Create Auction"
+      description="Please review and approve up to four transactions in your wallet window to create your NFT."
+      :steps="steps"
+      :progress="auctionProgress"
+      :error="createError"
+      @closeProgressModal="createAuctionModal = false"
+    />
+    <!-- <v-dialog
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-1/3 3xl:!tw-w-1/4"
       v-model="createAuctionModal"
       persistent
@@ -473,7 +483,7 @@
           </div>
         </div>
       </div>
-    </v-dialog>
+    </v-dialog> -->
   </div>
 </template>
 
@@ -596,6 +606,12 @@ export default {
       createError: false,
       socialError: false,
       socialErrorMessage: "",
+      steps: [
+        { step: 1, name: "Uploading Image and Metadata" },
+        { step: 2, name: "Creating Collection" },
+        { step: 3, name: "Minting Collection" },
+        { step: 4, name: "Adding Collection to Auction" },
+      ],
       defaultTheme,
       uploadIcon,
     };

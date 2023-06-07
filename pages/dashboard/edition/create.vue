@@ -107,6 +107,7 @@
                     placeholder="Select NFT Type"
                     text="name"
                     value="id"
+                    itemValue="id"
                     :items="nftType"
                   />
                   <div class="tw-text-red-600">{{ errors[0] }}</div>
@@ -128,7 +129,23 @@
                   <div class="tw-text-red-600">{{ errors[0] }}</div>
                 </ValidationProvider>
               </div>
-
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+                v-if="mint.type === 'limited-edition'"
+              >
+                <label
+                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
+                  >Supply</label
+                >
+                <reusable-text-field
+                  v-model="mint.supply"
+                  type="text"
+                  placeholder="Eg. 2"
+                ></reusable-text-field>
+                <div class="tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
               <div class="upload-bar tw-w-full" id="drop-container">
                 <v-col style="padding: 30px" align="center">
                   <img :src="uploadIcon" alt="upload" /><br />
@@ -478,6 +495,7 @@ export default {
         attributes: [{ trait_type: "", value: "" }],
         twitter: "",
         type: "",
+        supply: "",
       },
       attribute: "",
       value: "",
@@ -598,6 +616,112 @@ export default {
 
       if (!validate) {
         return;
+      }
+
+      if (this.mint.type === "1/1") {
+        await createOneOnOneCollection();
+      }
+    },
+    async createOneOnOneCollection() {
+      try {
+        if (!this.mint.attributes.length > 0) {
+          throw new Error("Please provide at least one attribute");
+        }
+
+        this.createError = false;
+        this.loading = true;
+        this.createAuctionModal = true;
+
+        this.auctionProgress = 1;
+
+        //uploading and creating metadata file
+        const metaUri =
+          (await uploadAndCreateFile(this.file, {
+            name: this.mint.tokenName,
+            description: this.mint.tokenDesc,
+            attributes: this.mint.attributes,
+          })) + "/";
+
+        let mintTime = Math.floor(new Date().getTime() / 1000) + 10;
+
+        if (this.$store.state.walletStore.wallet.wallet === "Martian") {
+          mintTime += 20;
+        }
+
+        this.auctionProgress = 2;
+
+        //creating collection
+        const candymachine = await this.$store.dispatch(
+          "walletStore/createCandyMachine",
+          {
+            collection_name: this.mint.colName,
+            collection_description: this.mint.colDesc,
+            baseuri: metaUri,
+            royalty_payee_address: this.walletAddress,
+            royalty_points_denominator: 1000,
+            royalty_points_numerator: this.mint.royalty * 10,
+            presale_mint_time: mintTime,
+            public_sale_mint_time: mintTime + 1,
+            presale_mint_price: 0,
+            public_sale_mint_price: 0,
+            total_supply: 1,
+          }
+        );
+
+        const resource_account = candymachine.resourceAccount;
+        const txnhash = candymachine.transactionHash;
+
+        //saving collection to db
+        const formData = new FormData();
+
+        formData.append("name", this.mint.colName);
+        formData.append("description", this.mint.colDesc);
+        formData.append("royalty_percentage", this.mint.royalty);
+        formData.append("royalty_payee_address", this.walletAddress);
+        formData.append(
+          "whitelist_sale_time",
+          Math.floor(new Date().getTime() / 1000) + 10
+        );
+        formData.append(
+          "public_sale_time",
+          Math.floor(new Date().getTime() / 1000) + 10
+        );
+
+        formData.append("public_sale_price", this.mint.minBid * 100000000);
+        formData.append("whitelist_price", this.mint.minBid * 100000000);
+        formData.append("supply", 1);
+        formData.append("twitter", "");
+        formData.append("discord", "");
+        formData.append("website", "");
+        formData.append("resource_account", resource_account);
+        formData.append("txnhash", txnhash);
+        formData.append("candy_id", process.env.CANDY_MACHINE_ID);
+        formData.append("image", this.file);
+        formData.append("phases", JSON.stringify([]));
+
+        await createCollection(formData);
+
+        //mint
+        setTimeout(async () => {
+          try {
+            this.auctionProgress = 3;
+
+            const mint = await this.$store.dispatch(
+              "walletStore/mintCollection",
+              {
+                resourceAccount: resource_account,
+                publicMint: true,
+                candyMachineId: process.env.CANDY_MACHINE_ID,
+              }
+            );
+          } catch (error) {
+            console.log(error);
+            this.$toast.showMessage({ message: error, error: true });
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
       }
     },
   },
