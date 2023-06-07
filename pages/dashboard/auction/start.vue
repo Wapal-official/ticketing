@@ -108,8 +108,11 @@
   </div>
 </template>
 <script>
+import generateName from "@/utils/generateName";
+
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
+
 import { publicRequest } from "../../../services/fetcher";
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
@@ -210,7 +213,7 @@ export default {
             }
           );
 
-          const auction_name = this.selectedNft.meta.name.replaceAll("#", "");
+          const auction_name = generateName(this.selectedNft.meta.name);
 
           publicRequest
             .post("/api/auction", {

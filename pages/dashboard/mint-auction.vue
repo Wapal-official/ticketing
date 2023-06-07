@@ -488,6 +488,7 @@ import "vue2-datepicker/index.css";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import uploadIcon from "@/assets/img/upload-icon.svg";
 import { defaultTheme } from "@/theme/wapaltheme";
+import generateName from "@/utils/generateName";
 
 extend("bidAmount", {
   validate(value) {
@@ -848,13 +849,9 @@ export default {
                         }
                       );
 
-                      let auction_name = this.selectedNft.meta.name.replaceAll(
-                        "#",
-                        ""
+                      const auction_name = generateName(
+                        this.selectedNft.meta.name
                       );
-
-                      auction_name = auction_name.replaceAll("\\", "-");
-                      auction_name = auction_name.replaceAll("/", "-");
 
                       await publicRequest.post("/api/auction", {
                         nft: this.selectedNft,
