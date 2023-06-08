@@ -65,6 +65,7 @@
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="twitter_acc"
           v-slot="{ errors }"
+          rules="twitterUsername"
         >
           <label>Twitter Account To Follow (Twitter Username)</label>
           <div class="dashboard-text-field-border tw-w-full">
@@ -334,6 +335,32 @@ extend("number", {
     return true;
   },
   message: "This field must be a number",
+});
+
+extend("twitterUsername", {
+  validate(value) {
+    try {
+      const givenURL = new URL(value);
+    } catch (error) {
+      const pattern = new RegExp(
+        "^(https?:\\/\\/)?" +
+          "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+          "((\\d{1,3}\\.){3}\\d{1,3}))" +
+          "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+          "(\\?[;&a-z\\d%_.~+=-]*)?" +
+          "(\\#[-a-z\\d_]*)?$",
+        "i"
+      );
+
+      if (pattern.test(value)) {
+        return false;
+      }
+
+      return true;
+    }
+    return false;
+  },
+  message: "Please Enter Twitter Username",
 });
 
 export default {
