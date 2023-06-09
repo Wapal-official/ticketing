@@ -126,7 +126,7 @@ export const getApprovedCollectionsOfUser = async (
     `/api/collection/approved?user_id=${userId}&limit=10&page=${page}`
   );
 
-  return res;
+  return res.data.data;
 };
 
 export const getUnderReviewCollectionsOfUser = async (
@@ -137,7 +137,7 @@ export const getUnderReviewCollectionsOfUser = async (
     `/api/collection/under-review?user_id=${userId}&limit=10&page=${page}`
   );
 
-  return res;
+  return res.data.data;
 };
 
 export const getDraftsOfUser = async (page: number) => {
@@ -145,7 +145,7 @@ export const getDraftsOfUser = async (page: number) => {
     `/api/collection/draft?limit=10&page=${page}`
   );
 
-  return res;
+  return res.data.data;
 };
 
 export const getOwnedCollectionOfUser = async (

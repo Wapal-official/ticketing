@@ -14,7 +14,7 @@
     <div class="dashboard2 tw-px-4 min-h-48 tw-d-block tw-my-3">
       <NuxtLink
         class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
-        to="/dashboard"
+        to="/dashboard/collection"
         @click.native="close"
       >
         Launchpad
