@@ -60,7 +60,7 @@ import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.
 
 import {
   getUpcomingAuctions,
-  getAuctionByName,
+  getEndedAuctions,
 } from "@/services/AuctionService";
 
 import {
@@ -155,6 +155,15 @@ export default {
     await this.getCollections();
 
     this.auctions = await getUpcomingAuctions({ page: 1, perPage: 4 });
+
+    if (this.auctions.length < 4) {
+      const endedRes = await getEndedAuctions({
+        page: 1,
+        perPage: 4 - this.auctions.length,
+      });
+
+      this.auctions.push(...endedRes);
+    }
 
     this.loading = false;
   },
