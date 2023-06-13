@@ -84,6 +84,20 @@
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
           <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <label for="instagram">Collection/Artist Instagram Profile</label>
+            <reusable-text-field
+              v-model="instagram"
+              background="#0C224B"
+            ></reusable-text-field>
+          </ValidationProvider>
+          <div v-if="socialError" class="tw-text-red-600">
+            {{ socialErrorMessage }}
+          </div>
+          <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group"
             rules="required|bidAmount"
             v-slot="{ errors }"
@@ -185,6 +199,9 @@ export default {
         positive: (v) => (v && v > 0) || "Should be more than zero.",
       },
       twitter: "",
+      instagram: "",
+      socialError: false,
+      socialErrorMessage: "",
     };
   },
   computed: {
@@ -200,9 +217,17 @@ export default {
   methods: {
     async startAuction() {
       try {
+        this.socialError = false;
         const validated = await this.$refs.form.validate();
 
         if (validated) {
+          if (!this.twitter && !this.instagram) {
+            this.socialError = true;
+            this.socialErrorMessage =
+              "Please Provide at least a Twitter link or Instagram link";
+            return;
+          }
+
           this.loading = true;
           let auction = await this.$store.dispatch(
             "walletStore/createAuction",
@@ -224,6 +249,7 @@ export default {
               id: auction.cur_auction_id,
               auction_name: auction_name,
               twitter: this.twitter,
+              instagram: this.instagram,
             })
             .then((res) => {
               this.$toast.showMessage({
