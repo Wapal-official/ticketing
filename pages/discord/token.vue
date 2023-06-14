@@ -5,19 +5,20 @@
 </template>
 <script lang="ts">
 import Loading from "@/components/Reusable/Loading.vue";
+import { getDiscordSecret } from "@/services/EnvService";
 export default {
   components: { Loading },
   async mounted() {
     try {
+      const DISCORD_CLIENT_SECRET = await getDiscordSecret();
+
       const discordOptions = this.$auth.strategies.discord.options;
 
       const data = {
         client_id: process.env.DISCORD_CLIENT_ID
           ? process.env.DISCORD_CLIENT_ID
           : "",
-        client_secret: process.env.DISCORD_CLIENT_SECRET
-          ? process.env.DISCORD_CLIENT_SECRET
-          : "",
+        client_secret: DISCORD_CLIENT_SECRET,
         grant_type: "authorization_code",
         code: this.$route.query.code,
         redirect_uri: discordOptions.redirectUri,
