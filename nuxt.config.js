@@ -1,12 +1,11 @@
 import colors from "vuetify/es5/util/colors";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const API_URL = process.env.API_URL;
-const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
-const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const CANDY_MACHINE_ID = process.env.CANDY_MACHINE_ID;
 const NETWORK = process.env.NETWORK;
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const APTOS_API_KEY = process.env.APTOS_API_KEY;
 const PID = process.env.PID;
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
@@ -130,12 +129,9 @@ export default {
   axios: { baseURL: API_URL },
   env: {
     baseURL: API_URL,
-    AWS_ACCESS_KEY: AWS_ACCESS_KEY,
-    AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY,
     CANDY_MACHINE_ID: CANDY_MACHINE_ID,
     NETWORK: NETWORK,
     DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
-    DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
     APTOS_API_KEY: APTOS_API_KEY,
     PID: PID,
     GRAPHQL_URL: GRAPHQL_URL,
@@ -144,8 +140,6 @@ export default {
     strategies: {
       discord: {
         scheme: "oauth2",
-        clientId: DISCORD_CLIENT_ID,
-        clientSecret: DISCORD_CLIENT_SECRET,
         scope: [
           "identify",
           "email",
@@ -160,8 +154,12 @@ export default {
         },
         redirect_uri: discordRedirectURI,
         redirectUri: discordRedirectURI,
+        clientId:DISCORD_CLIENT_ID,
         fetchUser: false,
       },
     },
   },
+  serverMiddleware: [
+    { path: '/api/discord-secret', handler: '~/api/discord-secret.ts' }
+  ],
 };
