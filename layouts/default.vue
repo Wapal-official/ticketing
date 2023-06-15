@@ -27,7 +27,7 @@ export default {
       }
     },
   },
-  mounted() {
+  created() {
     this.$store.dispatch("walletStore/initializeWallet");
   },
 };
