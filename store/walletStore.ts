@@ -14,11 +14,9 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
-import { AptosClient, TokenClient, HexString, TxnBuilderTypes } from "aptos";
+import { AptosClient, HexString, TxnBuilderTypes } from "aptos";
 
 import { getPrice } from "@/services/AssetsService";
-
-let NODE_URL = `https://aptos-${process.env.NETWORK}.nodereal.io/v1/${process.env.APTOS_API_KEY}/v1`;
 
 let network = NetworkName.Testnet;
 
@@ -26,12 +24,9 @@ if (process.env.NETWORK === "testnet") {
   network = NetworkName.Testnet;
 } else {
   network = NetworkName.Mainnet;
-  NODE_URL = "https://fullnode.mainnet.wapal.io/v1";
 }
 
-const client = new AptosClient(NODE_URL);
-
-const token = new TokenClient(client);
+let client: any = null;
 
 const wallets = [
   new PetraWallet(),
@@ -77,6 +72,7 @@ export const state = () => ({
     publicKey: "",
     proof: "",
     initializedAccountChange: false,
+    NODE_URL: "",
   },
 });
 
@@ -92,6 +88,9 @@ export const mutations = {
   },
   setInitializeAccountChange(state: any, accountChange: boolean) {
     state.wallet.initializedAccountChange = accountChange;
+  },
+  setNODE_URL(state: any, NODE_URL: any) {
+    state.NODE_URL = NODE_URL;
   },
 };
 
@@ -111,6 +110,7 @@ export const actions = {
     dispatch: any;
     commit: any;
   }) {
+    client = new AptosClient(state.NODE_URL);
     if (!wallet.isConnected()) {
       await wallet.connect(state.wallet.wallet);
     }
@@ -271,7 +271,6 @@ export const actions = {
       await connectWallet(state.wallet.wallet);
     }
     checkNetwork();
-
     const res: any = await client.getAccountResources(
       state.wallet.walletAddress
     );
@@ -413,7 +412,7 @@ export const actions = {
     return signMessage;
   },
   async getSupplyAndMintedOfCollection(
-    {},
+    { state }: { state: any },
     {
       resourceAccountAddress,
       candyMachineId,
@@ -462,7 +461,10 @@ export const actions = {
 
     return transaction;
   },
-  async createAuction({ rootState }: { rootState: any }, detail: any) {
+  async createAuction(
+    { rootState, state }: { rootState: any; state: any },
+    detail: any
+  ) {
     if (!wallet.isConnected()) {
       await connectWallet(rootState.walletStore.wallet.wallet);
     }
@@ -511,7 +513,10 @@ export const actions = {
       throw new Error("Transaction Failed Please Try Again");
     }
   },
-  async placeBid({ rootState }: { rootState: any }, auction: any) {
+  async placeBid(
+    { rootState, state }: { rootState: any; state: any },
+    auction: any
+  ) {
     try {
       if (!wallet.isConnected()) {
         await connectWallet(rootState.walletStore.wallet.wallet);
