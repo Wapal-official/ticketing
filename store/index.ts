@@ -1,5 +1,4 @@
 import { NetworkName } from "@aptos-labs/wallet-adapter-core";
-import { AptosClient } from "aptos";
 
 const parseCookies = (str: string) =>
   str
@@ -11,10 +10,7 @@ const parseCookies = (str: string) =>
     }, {});
 
 export const actions = {
-  nuxtServerInit(
-    { commit }: { commit: any },
-    { req, config }: { req: any; config: any }
-  ) {
+  nuxtServerInit({ commit }: { commit: any }, { req }: { req: any }) {
     const cookieHeader = req.headers.cookie;
 
     if (cookieHeader) {
