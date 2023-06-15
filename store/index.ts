@@ -1,9 +1,5 @@
-// import WalletAddress from "@/interfaces/walletAddress";
-// export const actions = {
-//   async nuxtServerInit({ commit }: { commit: any }, { req }: { req: any }) {
-//     console.log(req);
-//   },
-// };
+import { NetworkName } from "@aptos-labs/wallet-adapter-core";
+import { AptosClient } from "aptos";
 
 const parseCookies = (str: string) =>
   str
@@ -15,7 +11,10 @@ const parseCookies = (str: string) =>
     }, {});
 
 export const actions = {
-  nuxtServerInit({ commit }: { commit: any }, { req }: { req: any }) {
+  nuxtServerInit(
+    { commit }: { commit: any },
+    { req, config }: { req: any; config: any }
+  ) {
     const cookieHeader = req.headers.cookie;
 
     if (cookieHeader) {
@@ -35,6 +34,18 @@ export const actions = {
       );
       commit("userStore/setUser", user ? user : {});
       commit("discordStore/setDiscordToken", discordToken ? discordToken : {});
+
+      let network = NetworkName.Testnet;
+
+      let NODE_URL = `https://aptos-${process.env.NETWORK}.nodereal.io/v1/${this.$config.APTOS_API_KEY}/v1`;
+
+      if (process.env.NETWORK === "testnet") {
+        network = NetworkName.Testnet;
+      } else {
+        network = NetworkName.Mainnet;
+        NODE_URL = "https://fullnode.mainnet.wapal.io/v1";
+      }
+      commit("walletStore/setNODE_URL", NODE_URL);
     }
   },
 };

@@ -135,17 +135,18 @@ export default {
     CANDY_MACHINE_ID: CANDY_MACHINE_ID,
     NETWORK: NETWORK,
     DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
-    DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
-    APTOS_API_KEY: APTOS_API_KEY,
     PID: PID,
     GRAPHQL_URL: GRAPHQL_URL,
+  },
+  privateRuntimeConfig:{
+    DISCORD_CLIENT_SECRET:DISCORD_CLIENT_SECRET,
+    APTOS_API_KEY: APTOS_API_KEY,
   },
   auth: {
     strategies: {
       discord: {
         scheme: "oauth2",
         clientId: DISCORD_CLIENT_ID,
-        clientSecret: DISCORD_CLIENT_SECRET,
         scope: [
           "identify",
           "email",
