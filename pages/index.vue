@@ -69,7 +69,6 @@ import {
   getLiveCollections,
   getUpcomingCollections,
 } from "@/services/CollectionService";
-import { getDiscordSecret } from "~/services/EnvService";
 
 export default {
   name: "IndexPage",
@@ -149,10 +148,6 @@ export default {
     },
   },
   async created() {
-    const res = await getDiscordSecret();
-
-    console.log(res);
-
     await this.getCollections();
 
     this.auctions = await getUpcomingAuctions({ page: 1, perPage: 4 });

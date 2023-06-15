@@ -5,14 +5,23 @@
 </template>
 <script lang="ts">
 import Loading from "@/components/Reusable/Loading.vue";
-import { getDiscordSecret } from "@/services/EnvService";
+import axios from "axios";
 export default {
   components: { Loading },
-  async mounted() {
+  async asyncData({
+    $config,
+    query,
+    $auth,
+  }: {
+    $config: any;
+    query: any;
+    $auth: any;
+  }) {
+    let close = false;
     try {
-      const DISCORD_CLIENT_SECRET = await getDiscordSecret();
+      const discordOptions = $auth.strategies.discord.options;
 
-      const discordOptions = this.$auth.strategies.discord.options;
+      const DISCORD_CLIENT_SECRET = $config.DISCORD_CLIENT_SECRET;
 
       const data = {
         client_id: process.env.DISCORD_CLIENT_ID
@@ -20,14 +29,14 @@ export default {
           : "",
         client_secret: DISCORD_CLIENT_SECRET,
         grant_type: "authorization_code",
-        code: this.$route.query.code,
+        code: query.code,
         redirect_uri: discordOptions.redirectUri,
         scope: discordOptions.scope.join(" "),
       };
 
       const postData = new URLSearchParams(data);
 
-      const res = await this.$axios.post(
+      const res = await axios.post(
         "https://discord.com/api/v10/oauth2/token",
         postData,
         {
@@ -37,15 +46,28 @@ export default {
         }
       );
 
+      const resData = res.data;
       if (res.data.access_token) {
-        this.$store.dispatch(
-          "discordStore/setDiscordToken",
-          `${res.data.token_type} ${res.data.access_token}`
-        );
+        close = true;
 
-        window.close();
+        return { close, resData };
       }
+
+      return { close };
     } catch (error) {
+      console.log(error);
+      close = true;
+      return { close };
+    }
+  },
+  async mounted() {
+    if (this.resData) {
+      this.$store.dispatch(
+        "discordStore/setDiscordToken",
+        `${this.resData.token_type} ${this.resData.access_token}`
+      );
+    }
+    if (this.close) {
       window.close();
     }
   },
