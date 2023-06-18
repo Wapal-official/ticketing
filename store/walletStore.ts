@@ -266,6 +266,73 @@ export const actions = {
       transactionHash: transactionRes.hash,
     };
   },
+  async createCandyMachineV2(
+    { state }: { state: any },
+    candyMachineArguments: any
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    checkNetwork();
+
+    const create_candy_machine = {
+      type: "entry_function_payload",
+      function: process.env.CANDY_MACHINE_V2 + "::candymachine::init_candy",
+      type_arguments: [],
+      arguments: [
+        candyMachineArguments.collection_name,
+        candyMachineArguments.collection_description,
+        candyMachineArguments.baseuri,
+        candyMachineArguments.royalty_payee_address,
+        candyMachineArguments.royalty_points_denominator,
+        candyMachineArguments.royalty_points_numerator,
+        candyMachineArguments.presale_mint_time,
+        candyMachineArguments.public_sale_mint_time,
+        candyMachineArguments.presale_mint_price,
+        candyMachineArguments.public_sale_mint_price,
+        candyMachineArguments.total_supply,
+        [false, false, false],
+        [false, false, false, false, false],
+        0,
+        false,
+        "" + makeId(5),
+      ],
+    };
+
+    let transactionRes = await wallet.signAndSubmitTransaction(
+      create_candy_machine
+    );
+
+    let getResourceAccount: any = await client.waitForTransactionWithResult(
+      transactionRes.hash
+    );
+
+    if (!getResourceAccount.success) {
+      throw new Error("Transaction not Successful please try again");
+    }
+
+    let resourceAccount = null;
+    getResourceAccount.changes.some((change: any) => {
+      if (
+        change.type === "write_resource" &&
+        change.data.type ===
+          `${process.env.CANDY_MACHINE_V2}::candymachine::CandyMachine`
+      ) {
+        resourceAccount = change.address;
+      }
+
+      return (
+        change.data.type ===
+        `${process.env.CANDY_MACHINE_V2}::candymachine::CandyMachine`
+      );
+    });
+
+    return {
+      resourceAccount: resourceAccount,
+      transactionHash: transactionRes.hash,
+    };
+  },
   async checkBalance({ state }: { state: any }) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
@@ -314,7 +381,7 @@ export const actions = {
           type: "entry_function_payload",
           function: candyMachineId + "::candymachine::mint_script",
           type_arguments: [],
-          arguments: [resourceAccount],
+          arguments: [resourceAccount, resourceAccount],
         };
       } else {
         if (proof.length > 0) {
@@ -329,9 +396,13 @@ export const actions = {
         }
       }
 
+      console.log(create_mint_script);
+
       const transaction = await wallet.signAndSubmitTransaction(
         create_mint_script
       );
+
+      console.log("transaction", transaction);
 
       const res = await client.waitForTransactionWithResult(transaction.hash);
 

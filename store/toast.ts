@@ -8,4 +8,8 @@ export const mutations = {
     state.message = payload.message;
     state.error = payload.error;
   },
+
+  clearToast(state: any) {
+    state.message = "";
+  },
 };

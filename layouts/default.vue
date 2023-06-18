@@ -30,5 +30,13 @@ export default {
   created() {
     this.$store.dispatch("walletStore/initializeWallet");
   },
+  mounted() {
+    if (this.$store.state.toast.message) {
+      this.$toast.showMessage({
+        message: this.$store.state.toast.message,
+        error: this.$store.state.toast.error,
+      });
+    }
+  },
 };
 </script>
