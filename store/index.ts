@@ -1,5 +1,3 @@
-import { NetworkName } from "@aptos-labs/wallet-adapter-core";
-
 const parseCookies = (str: string) =>
   str
     .split(";")
@@ -30,18 +28,6 @@ export const actions = {
       );
       commit("userStore/setUser", user ? user : {});
       commit("discordStore/setDiscordToken", discordToken ? discordToken : {});
-
-      let network = NetworkName.Testnet;
-
-      let NODE_URL = `https://aptos-${process.env.NETWORK}.nodereal.io/v1/${this.$config.APTOS_API_KEY}/v1`;
-
-      if (process.env.NETWORK === "testnet") {
-        network = NetworkName.Testnet;
-      } else {
-        network = NetworkName.Mainnet;
-        NODE_URL = "https://fullnode.mainnet.wapal.io/v1";
-      }
-      commit("walletStore/setNODE_URL", NODE_URL);
     }
   },
 };

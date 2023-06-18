@@ -26,7 +26,7 @@ if (process.env.NETWORK === "testnet") {
   network = NetworkName.Mainnet;
 }
 
-let client: any = null;
+const client = new AptosClient(process.env.NODE_URL || "");
 
 const wallets = [
   new PetraWallet(),
@@ -72,7 +72,6 @@ export const state = () => ({
     publicKey: "",
     proof: "",
     initializedAccountChange: false,
-    NODE_URL: "",
   },
 });
 
@@ -88,9 +87,6 @@ export const mutations = {
   },
   setInitializeAccountChange(state: any, accountChange: boolean) {
     state.wallet.initializedAccountChange = accountChange;
-  },
-  setNODE_URL(state: any, NODE_URL: any) {
-    state.NODE_URL = NODE_URL;
   },
 };
 
@@ -110,7 +106,6 @@ export const actions = {
     dispatch: any;
     commit: any;
   }) {
-    client = new AptosClient(state.NODE_URL);
     if (!wallet.isConnected()) {
       await wallet.connect(state.wallet.wallet);
     }
