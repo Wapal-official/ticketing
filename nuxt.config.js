@@ -1,8 +1,6 @@
 import colors from "vuetify/es5/util/colors";
 
 const API_URL = process.env.API_URL;
-const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
-const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const CANDY_MACHINE_ID = process.env.CANDY_MACHINE_ID;
 const NETWORK = process.env.NETWORK;
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
@@ -19,6 +17,12 @@ let discordRedirectURI = "http://localhost:3000/discord/token";
 // } else {
 //   discordRedirectURI = "https://wapal.io/discord/token";
 // }
+
+let NODE_URL = `https://aptos-${NETWORK}.nodereal.io/v1/${APTOS_API_KEY}/v1`;
+
+if (NETWORK === "mainnet") {
+  NODE_URL = "https://fullnode.mainnet.wapal.io/v1";
+}
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -136,11 +140,11 @@ export default {
     DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
     PID: PID,
     GRAPHQL_URL: GRAPHQL_URL,
-    CANDY_MACHINE_V2:CANDY_MACHINE_V2
+    CANDY_MACHINE_V2:CANDY_MACHINE_V2,
+    NODE_URL:NODE_URL,
   },
   privateRuntimeConfig:{
     DISCORD_CLIENT_SECRET:DISCORD_CLIENT_SECRET,
-    APTOS_API_KEY: APTOS_API_KEY,
   },
   auth: {
     strategies: {
