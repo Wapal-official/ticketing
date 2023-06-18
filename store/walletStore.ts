@@ -356,12 +356,14 @@ export const actions = {
       candyMachineId,
       proof,
       mintLimit,
+      v2,
     }: {
       resourceAccount: string;
       publicMint: boolean;
       candyMachineId: string;
       proof: any[];
       mintLimit: number;
+      v2: boolean;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -372,32 +374,46 @@ export const actions = {
     try {
       var create_mint_script: any;
       if (publicMint) {
-        create_mint_script = {
-          type: "entry_function_payload",
-          function: candyMachineId + "::candymachine::mint_script",
-          type_arguments: [],
-          arguments: [resourceAccount, resourceAccount],
-        };
-      } else {
-        if (proof.length > 0) {
+        if (!v2) {
           create_mint_script = {
             type: "entry_function_payload",
-            function: candyMachineId + "::candymachine::mint_from_merkle",
+            function: candyMachineId + "::candymachine::mint_script",
             type_arguments: [],
-            arguments: [resourceAccount, proof, mintLimit],
+            arguments: [resourceAccount],
           };
+        } else {
+          create_mint_script = {
+            type: "entry_function_payload",
+            function: candyMachineId + "::candymachine::mint_script",
+            type_arguments: [],
+            arguments: [resourceAccount, resourceAccount],
+          };
+        }
+      } else {
+        if (proof.length > 0) {
+          if (!v2) {
+            create_mint_script = {
+              type: "entry_function_payload",
+              function: candyMachineId + "::candymachine::mint_from_merkle",
+              type_arguments: [],
+              arguments: [resourceAccount, proof, mintLimit],
+            };
+          } else {
+            create_mint_script = {
+              type: "entry_function_payload",
+              function: candyMachineId + "::candymachine::mint_from_merkle",
+              type_arguments: [],
+              arguments: [resourceAccount, resourceAccount, proof, mintLimit],
+            };
+          }
         } else {
           throw new Error("You are not whitelisted for this collection");
         }
       }
 
-      console.log(create_mint_script);
-
       const transaction = await wallet.signAndSubmitTransaction(
         create_mint_script
       );
-
-      console.log("transaction", transaction);
 
       const res = await client.waitForTransactionWithResult(transaction.hash);
 
@@ -494,7 +510,15 @@ export const actions = {
       }
     }
 
-    return { total_supply: resource.total_supply, minted: resource.minted };
+    const v2 = res.some((data: any) => {
+      return data.type === "0x1::object::ObjectCore";
+    });
+
+    return {
+      total_supply: resource.total_supply,
+      minted: resource.minted,
+      v2: v2,
+    };
   },
   async setMerkleRoot(
     { state }: { state: any },
@@ -717,6 +741,7 @@ export const actions = {
       mintNumber,
       proof,
       mintLimit,
+      v2,
     }: {
       resourceAccount: string;
       publicMint: boolean;
@@ -724,6 +749,7 @@ export const actions = {
       mintNumber: number;
       proof: any[];
       mintLimit: number;
+      v2: boolean;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -747,6 +773,7 @@ export const actions = {
           candyMachineId,
           proof,
           mintLimit,
+          v2,
         });
 
         return res;

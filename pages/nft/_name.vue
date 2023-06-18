@@ -390,6 +390,7 @@ export default {
       phaseCounter: 0,
       phaseEndInTime: null,
       nextSale: null,
+      v2: false,
     };
   },
   methods: {
@@ -573,6 +574,7 @@ export default {
           mintNumber: this.numberOfNft,
           proof: this.proof,
           mintLimit: this.mintLimit,
+          v2: this.v2,
         });
 
         if (res.success) {
@@ -832,6 +834,8 @@ export default {
           candyMachineId: this.collection.candyMachine.candy_id,
         }
       );
+
+      this.v2 = this.resource.v2;
 
       if (this.collection._id === "642bf277c10560ca41e179fa") {
         this.resource = {
