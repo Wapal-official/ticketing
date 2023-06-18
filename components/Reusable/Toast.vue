@@ -36,6 +36,10 @@ export default {
         this.message = state.toast.message;
         this.error = state.toast.error;
         this.show = true;
+
+        setTimeout(() => {
+          this.$store.commit("toast/clearToast");
+        }, 1000);
       }
     });
   },

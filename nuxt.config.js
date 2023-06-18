@@ -8,14 +8,15 @@ const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const APTOS_API_KEY = process.env.APTOS_API_KEY;
 const PID = process.env.PID;
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
+const CANDY_MACHINE_V2 = process.env.CANDY_MACHINE_V2;
 
-let discordRedirectURI = "https://staging.wapal.io/discord/token";
+let discordRedirectURI = "http://localhost:3000/discord/token";
 
-if (API_URL.includes("staging")) {
-  discordRedirectURI = "https://staging.wapal.io/discord/token";
-} else {
-  discordRedirectURI = "https://wapal.io/discord/token";
-}
+// if (API_URL.includes("staging")) {
+//   discordRedirectURI = "https://staging.wapal.io/discord/token";
+// } else {
+//   discordRedirectURI = "https://wapal.io/discord/token";
+// }
 
 let NODE_URL = `https://aptos-${NETWORK}.nodereal.io/v1/${APTOS_API_KEY}/v1`;
 
@@ -139,6 +140,7 @@ export default {
     DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
     PID: PID,
     GRAPHQL_URL: GRAPHQL_URL,
+    CANDY_MACHINE_V2:CANDY_MACHINE_V2,
     NODE_URL:NODE_URL,
   },
   privateRuntimeConfig:{
