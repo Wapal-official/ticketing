@@ -97,8 +97,9 @@ export default {
     },
     displayWalletDisconnectedMessage() {
       this.showDisconnectWalletDialog = false;
-      this.walletConnectedSnackbar = true;
-      this.message = `${this.walletStore.wallet} Wallet Disconnected Successfully`;
+      this.$toast.showMessage({
+        message: `${this.walletStore.wallet} Wallet Disconnected Successfully`,
+      });
     },
   },
   computed: {
