@@ -94,7 +94,7 @@ export default {
       this.loading = false;
     },
   },
-  async mounted() {
+  async created() {
     this.collections = [];
   },
 };

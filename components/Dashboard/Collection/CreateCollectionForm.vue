@@ -597,9 +597,8 @@ export default {
         resource_account: "",
         txnhash: "",
         un: "",
-        candy_id: process.env.CANDY_MACHINE_V2,
+        candy_id: process.env.CANDY_MACHINE_ID,
         phases: [{ name: "", mint_time: null }],
-        saveAsDraft: false,
       },
       message: "",
       image: { name: null },
@@ -627,6 +626,7 @@ export default {
       whitelistTBD: false,
       publicSaleTBD: false,
       loading: true,
+      saveAsDraft: false,
     };
   },
   methods: {
@@ -815,7 +815,7 @@ export default {
       };
 
       const res = await this.$store.dispatch(
-        "walletStore/createCandyMachineV2",
+        "walletStore/createCandyMachine",
         candyMachineArguments
       );
 
