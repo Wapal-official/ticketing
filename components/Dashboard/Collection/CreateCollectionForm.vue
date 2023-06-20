@@ -597,7 +597,7 @@ export default {
         resource_account: "",
         txnhash: "",
         un: "",
-        candy_id: process.env.CANDY_MACHINE_ID,
+        candy_id: process.env.CANDY_MACHINE_V2,
         phases: [{ name: "", mint_time: null }],
         saveAsDraft: false,
       },
@@ -762,8 +762,9 @@ export default {
 
         this.message = "Collection Created Successfully";
         this.$toast.showMessage({ message: this.message, error: false });
-        this.$router.push("/dashboard");
+        this.$router.push("/dashboard/collection/under-review");
       } catch (error: any) {
+        console.log(error);
         this.$toast.showMessage({ message: error, error: true });
 
         this.collection.phases.pop();
@@ -814,7 +815,7 @@ export default {
       };
 
       const res = await this.$store.dispatch(
-        "walletStore/createCandyMachine",
+        "walletStore/createCandyMachineV2",
         candyMachineArguments
       );
 

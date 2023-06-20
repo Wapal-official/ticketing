@@ -261,6 +261,73 @@ export const actions = {
       transactionHash: transactionRes.hash,
     };
   },
+  async createCandyMachineV2(
+    { state }: { state: any },
+    candyMachineArguments: any
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    checkNetwork();
+
+    const create_candy_machine = {
+      type: "entry_function_payload",
+      function: process.env.CANDY_MACHINE_V2 + "::candymachine::init_candy",
+      type_arguments: [],
+      arguments: [
+        candyMachineArguments.collection_name,
+        candyMachineArguments.collection_description,
+        candyMachineArguments.baseuri,
+        candyMachineArguments.royalty_payee_address,
+        candyMachineArguments.royalty_points_denominator,
+        candyMachineArguments.royalty_points_numerator,
+        candyMachineArguments.presale_mint_time,
+        candyMachineArguments.public_sale_mint_time,
+        candyMachineArguments.presale_mint_price,
+        candyMachineArguments.public_sale_mint_price,
+        candyMachineArguments.total_supply,
+        [false, false, false],
+        [false, false, false, false, false],
+        0,
+        false,
+        "" + makeId(5),
+      ],
+    };
+
+    let transactionRes = await wallet.signAndSubmitTransaction(
+      create_candy_machine
+    );
+
+    let getResourceAccount: any = await client.waitForTransactionWithResult(
+      transactionRes.hash
+    );
+
+    if (!getResourceAccount.success) {
+      throw new Error("Transaction not Successful please try again");
+    }
+
+    let resourceAccount = null;
+    getResourceAccount.changes.some((change: any) => {
+      if (
+        change.type === "write_resource" &&
+        change.data.type ===
+          `${process.env.CANDY_MACHINE_V2}::candymachine::CandyMachine`
+      ) {
+        resourceAccount = change.address;
+      }
+
+      return (
+        change.data.type ===
+        `${process.env.CANDY_MACHINE_V2}::candymachine::CandyMachine`
+      );
+    });
+
+    return {
+      resourceAccount: resourceAccount,
+      transactionHash: transactionRes.hash,
+    };
+  },
   async checkBalance({ state }: { state: any }) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
@@ -289,12 +356,14 @@ export const actions = {
       candyMachineId,
       proof,
       mintLimit,
+      v2,
     }: {
       resourceAccount: string;
       publicMint: boolean;
       candyMachineId: string;
       proof: any[];
       mintLimit: number;
+      v2: boolean;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -305,20 +374,38 @@ export const actions = {
     try {
       var create_mint_script: any;
       if (publicMint) {
-        create_mint_script = {
-          type: "entry_function_payload",
-          function: candyMachineId + "::candymachine::mint_script",
-          type_arguments: [],
-          arguments: [resourceAccount],
-        };
-      } else {
-        if (proof.length > 0) {
+        if (!v2) {
           create_mint_script = {
             type: "entry_function_payload",
-            function: candyMachineId + "::candymachine::mint_from_merkle",
+            function: candyMachineId + "::candymachine::mint_script",
             type_arguments: [],
-            arguments: [resourceAccount, proof, mintLimit],
+            arguments: [resourceAccount],
           };
+        } else {
+          create_mint_script = {
+            type: "entry_function_payload",
+            function: candyMachineId + "::candymachine::mint_script",
+            type_arguments: [],
+            arguments: [resourceAccount, resourceAccount],
+          };
+        }
+      } else {
+        if (proof.length > 0) {
+          if (!v2) {
+            create_mint_script = {
+              type: "entry_function_payload",
+              function: candyMachineId + "::candymachine::mint_from_merkle",
+              type_arguments: [],
+              arguments: [resourceAccount, proof, mintLimit],
+            };
+          } else {
+            create_mint_script = {
+              type: "entry_function_payload",
+              function: candyMachineId + "::candymachine::mint_from_merkle",
+              type_arguments: [],
+              arguments: [resourceAccount, resourceAccount, proof, mintLimit],
+            };
+          }
         } else {
           throw new Error("You are not whitelisted for this collection");
         }
@@ -423,7 +510,15 @@ export const actions = {
       }
     }
 
-    return { total_supply: resource.total_supply, minted: resource.minted };
+    const v2 = res.some((data: any) => {
+      return data.type === "0x1::object::ObjectCore";
+    });
+
+    return {
+      total_supply: resource.total_supply,
+      minted: resource.minted,
+      v2: v2,
+    };
   },
   async setMerkleRoot(
     { state }: { state: any },
@@ -646,6 +741,7 @@ export const actions = {
       mintNumber,
       proof,
       mintLimit,
+      v2,
     }: {
       resourceAccount: string;
       publicMint: boolean;
@@ -653,6 +749,7 @@ export const actions = {
       mintNumber: number;
       proof: any[];
       mintLimit: number;
+      v2: boolean;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -676,6 +773,7 @@ export const actions = {
           candyMachineId,
           proof,
           mintLimit,
+          v2,
         });
 
         return res;

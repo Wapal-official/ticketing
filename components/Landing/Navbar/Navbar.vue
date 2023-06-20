@@ -14,7 +14,7 @@
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
                 <NuxtLink
-                  to="/explore"
+                  to="/explore/all"
                   class="!tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink tw-uppercase !tw-font-normal"
                 >
                   Explore
@@ -22,9 +22,21 @@
               </div>
             </template>
             <v-list class="!tw-bg-modal-gray !tw-min-w-[200px]">
-              <explore-list-item name="All NFT" @close="close" />
-              <explore-list-item name="Live" @close="close" />
-              <explore-list-item name="Upcoming" @close="close" />
+              <explore-list-item
+                name="All NFT"
+                link="/explore/all"
+                @close="close"
+              />
+              <explore-list-item
+                name="Live"
+                link="/explore/live"
+                @close="close"
+              />
+              <explore-list-item
+                name="Upcoming"
+                link="/explore/upcoming"
+                @close="close"
+              />
               <explore-list-item
                 name="Domain Name"
                 link="/domain-name"

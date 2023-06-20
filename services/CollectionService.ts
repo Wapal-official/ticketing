@@ -83,7 +83,9 @@ export const getLiveCollections = async (page: number, limit: number) => {
     `${process.env.baseURL}/api/collection/live?page=${page}&limit=${limit}`
   );
 
-  return res;
+  const collections = res.data.data;
+
+  return collections;
 };
 
 export const getUpcomingCollections = async (page: number, limit: number) => {
@@ -91,7 +93,9 @@ export const getUpcomingCollections = async (page: number, limit: number) => {
     `${process.env.baseURL}/api/collection/upcoming?page=${page}&limit=${limit}`
   );
 
-  return res;
+  const collections = res.data.data;
+
+  return collections;
 };
 
 export const createDraft = async (formData: any) => {
@@ -122,7 +126,7 @@ export const getApprovedCollectionsOfUser = async (
     `/api/collection/approved?user_id=${userId}&limit=10&page=${page}`
   );
 
-  return res;
+  return res.data.data;
 };
 
 export const getUnderReviewCollectionsOfUser = async (
@@ -133,7 +137,7 @@ export const getUnderReviewCollectionsOfUser = async (
     `/api/collection/under-review?user_id=${userId}&limit=10&page=${page}`
   );
 
-  return res;
+  return res.data.data;
 };
 
 export const getDraftsOfUser = async (page: number) => {
@@ -141,7 +145,7 @@ export const getDraftsOfUser = async (page: number) => {
     `/api/collection/draft?limit=10&page=${page}`
   );
 
-  return res;
+  return res.data.data;
 };
 
 export const getOwnedCollectionOfUser = async (
@@ -177,5 +181,5 @@ export const getApprovedDrafts = async (page: number, limit: number) => {
     `/api/collection/draft/approved?limit=${limit}&page=${page}`
   );
 
-  return res;
+  return res.data.data;
 };

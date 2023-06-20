@@ -11,11 +11,15 @@
       </div>
       <div
         class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background tw-z-50"
-        :class="sidebarClass">
+        :class="sidebarClass"
+      >
         <dashboard-sidebar @close="closeSideBar" />
       </div>
       <dashboard-footer />
-      <upload-progress v-if="getUploadingStatus && getUploadingBar" @close="closeUploadProgress" />
+      <upload-progress
+        v-if="getUploadingStatus && getUploadingBar"
+        @close="closeUploadProgress"
+      />
     </div>
     <toast />
   </v-app>
@@ -27,7 +31,7 @@ import DashboardSidebar from "@/components/Dashboard/Sidebar/DashboardSidebar.vu
 import Toast from "@/components/Reusable/Toast.vue";
 import UploadProgress from "@/components/Dashboard/UploadProgress.vue";
 import Verification from "@/components/Landing/Verification.vue";
-import tourMixin from '@/mixins/tourMixin.js';
+import tourMixin from "@/mixins/tourMixin.js";
 import { uploadSocketState } from "@/sockets/socket";
 export default {
   middleware: "signup",
@@ -86,16 +90,15 @@ export default {
     },
 
     walkthroughMobile() {
-      return this.$store.state.tourStore.openSidebar
-
-    }
+      return this.$store.state.tourStore.openSidebar;
+    },
   },
   mounted() {
     // this.startTour({ store: this.$store });
-    if (localStorage.getItem('seen_asset_tour') === null) {
+    if (localStorage.getItem("seen_asset_tour") === null) {
       this.startTour({ store: this.$store });
 
-      localStorage.setItem('seen_asset_tour', 'true');
+      localStorage.setItem("seen_asset_tour", "true");
     }
 
     this.$store.dispatch("walletStore/initializeWallet");
@@ -133,8 +136,7 @@ export default {
     walkthroughMobile(storage: any) {
       if (storage) {
         this.sidebarClass = "tw-translate-x-0";
-      }
-      else {
+      } else {
         this.sidebarClass = "-tw-translate-x-full";
       }
     },
@@ -147,6 +149,9 @@ export default {
     userId(newVal: any) {
       if (!newVal) {
         this.$router.push("/");
+        this.$toast.showMessage({
+          message: `${this.walletStore.wallet} Wallet Disconnected Successfully`,
+        });
       }
     },
   },

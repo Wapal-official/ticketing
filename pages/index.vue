@@ -101,12 +101,8 @@ export default {
       this.upcomingCollections = [];
       this.liveCollections = [];
 
-      const liveCollectionsRes = await getLiveCollections(1, 3);
-      const upcomingCollectionsRes = await getUpcomingCollections(1, 4);
-
-      this.liveCollections = liveCollectionsRes.data.data;
-
-      this.upcomingCollections = upcomingCollectionsRes.data.data;
+      this.liveCollections = await getLiveCollections(1, 3);
+      this.upcomingCollections = await getUpcomingCollections(1, 4);
 
       if (this.upcomingCollections.length < 4) {
         const draftRes = await getApprovedDrafts(
@@ -115,7 +111,7 @@ export default {
         );
         const drafts: any[] = [];
 
-        draftRes.data.data.map((draft: any) => {
+        draftRes.map((draft: any) => {
           drafts.push({
             baseURL: draft.data.baseURL,
             candy_id: draft.data.candy_id,

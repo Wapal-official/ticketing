@@ -66,8 +66,7 @@ export default {
   },
   methods: {
     goToExplorePage() {
-      this.$store.commit("exploreStore/setExploreTab", "live");
-      this.$router.push("/explore");
+      this.$router.push("/explore/live");
     },
   },
 };

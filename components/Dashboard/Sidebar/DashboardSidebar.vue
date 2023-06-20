@@ -2,40 +2,19 @@
   <div
     class="sidebar tw-flex tw-flex-col tw-items-start tw-justify-start tw-px-16"
   >
-    <div class="dashboard1 tw-px-4 min-h-48 tw-d-block tw-my-3">
+    <div
+      class="tw-px-4 min-h-48 tw-d-block tw-my-3"
+      :class="`dashboard${index + 1}`"
+      v-for="(item, index) in sidebarItems"
+      :key="item.path"
+    >
       <NuxtLink
         class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
-        to="/dashboard/assets"
+        :to="item.path"
+        :class="{ 'nuxt-link-exact-active': checkCurrentPageRegex(item.path) }"
         @click.native="close"
       >
-        Assets
-      </NuxtLink>
-    </div>
-    <div class="dashboard2 tw-px-4 min-h-48 tw-d-block tw-my-3">
-      <NuxtLink
-        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
-        to="/dashboard"
-        @click.native="close"
-      >
-        Launchpad
-      </NuxtLink>
-    </div>
-    <div class="dashboard3 tw-px-4 min-h-48 tw-d-block tw-my-3">
-      <NuxtLink
-        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
-        to="/dashboard/whitelist"
-        @click.native="close"
-      >
-        Whitelist
-      </NuxtLink>
-    </div>
-    <div class="dashboard4 tw-px-4 min-h-48 tw-d-block tw-my-3">
-      <NuxtLink
-        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
-        to="/dashboard/auction"
-        @click.native="close"
-      >
-        Auction
+        {{ item.name }}
       </NuxtLink>
     </div>
     <!-- <div class="dashboard5 tw-px-4 min-h-48 tw-d-block tw-my-3">
@@ -66,6 +45,12 @@ export default {
       showWhitelist: false,
       showVerification: false,
       showSidebar: true,
+      sidebarItems: [
+        { path: "/dashboard/assets", name: "Assets" },
+        { path: "/dashboard/collection", name: "Collection" },
+        { path: "/dashboard/whitelist", name: "Whitelist" },
+        { path: "/dashboard/auction", name: "Auction" },
+      ],
     };
   },
   methods: {
@@ -75,6 +60,12 @@ export default {
     },
     closeClick() {
       this.$emit("hidden");
+    },
+    checkCurrentPageRegex(path: string) {
+      if (this.$route.path.includes(path)) {
+        return true;
+      }
+      return false;
     },
   },
   mounted() {},
