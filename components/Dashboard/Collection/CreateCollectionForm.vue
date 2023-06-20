@@ -750,6 +750,12 @@ export default {
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify(tempCollection.phases));
 
+        const draft_id = this.$route.params.id;
+
+        if (draft_id) {
+          formData.append("draft_id", draft_id);
+        }
+
         if (this.image.name) {
           formData.append("image", this.image);
         } else {
@@ -883,7 +889,7 @@ export default {
 
       this.message = "Draft Created Successfully";
       this.$toast.showMessage({ message: this.message, error: false });
-      this.$router.push("/dashboard");
+      this.$router.push("/dashboard/collection/draft");
     },
     async setCollectionDataFromDraft() {
       const draftRes = await getDraftById(this.$route.params.id);

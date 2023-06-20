@@ -124,9 +124,9 @@
             Starts In
             <count-down
               class="tw-pl-2"
-              :startTime="currentSale.mint_time"
+              :startTime="collection.whitelist_sale_time"
               @countdownComplete="whitelistCountdownComplete"
-              v-if="this.collection.whitelist_sale_time"
+              v-if="collection.whitelist_sale_time"
             />
             <div v-else class="tw-pl-2 tw-text-wapal-pink">TBD</div>
           </div>
@@ -156,8 +156,8 @@
             Starts In
             <count-down
               class="tw-pl-2"
-              :startTime="this.collection.public_sale_time"
-              v-if="this.collection.public_sale_time"
+              :startTime="collection.public_sale_time"
+              v-if="collection.public_sale_time"
             />
             <div v-else class="tw-pl-2 tw-text-wapal-pink">TBD</div>
           </div>
