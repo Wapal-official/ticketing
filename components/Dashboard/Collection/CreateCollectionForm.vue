@@ -725,7 +725,11 @@ export default {
         this.collection.phases = tempCollection.phases = sortedPhases;
 
         if (this.tbd || this.saveAsDraft) {
+          if(this.draft){
           await this.saveDraft(tempCollection);
+          }else{
+            await this.sendDataToCreateDraft(tempCollection);
+          }
           return;
         }
 
