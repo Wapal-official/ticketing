@@ -103,17 +103,13 @@ export const createDraft = async (formData: any) => {
     headers: { "content-type": "multipart/form-data" },
   };
 
-  const res = await publicRequest.post(
-    `/api/collection/draft/`,
-    formData,
-    config
-  );
+  const res = await publicRequest.post(`/api/draft/`, formData, config);
 
   return res;
 };
 
 export const getDraftById = async (draftId: any) => {
-  const res = await publicRequest.get(`/api/collection/draft/${draftId}`);
+  const res = await publicRequest.get(`/api/draft/${draftId}`);
 
   return res;
 };
@@ -141,9 +137,7 @@ export const getUnderReviewCollectionsOfUser = async (
 };
 
 export const getDraftsOfUser = async (page: number) => {
-  const res = await publicRequest.get(
-    `/api/collection/draft?limit=10&page=${page}`
-  );
+  const res = await publicRequest.get(`/api/draft?limit=10&page=${page}`);
 
   return res.data.data;
 };
@@ -178,8 +172,16 @@ export const sortPhases = (phases: any[]) => {
 
 export const getApprovedDrafts = async (page: number, limit: number) => {
   const res = await publicRequest.get(
-    `/api/collection/draft/approved?limit=${limit}&page=${page}`
+    `/api/draft/approved?limit=${limit}&page=${page}`
   );
 
   return res.data.data;
+};
+
+export const editDraft = async (draftId: string, data: any) => {
+  const res = await publicRequest.patch(`/api/draft/${draftId}`, {
+    data: data,
+  });
+
+  return res;
 };

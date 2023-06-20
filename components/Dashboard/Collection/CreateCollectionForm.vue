@@ -450,15 +450,26 @@
         v-if="!draft"
       ></v-checkbox>
       <div
-        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4"
+        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4 tw-gap-4"
       >
-        <gradient-border-button type="submit" :disabled="submitting">
+        <gradient-border-button
+          @click.native.prevent="saveDraft"
+          :disabled="submitting"
+          v-if="draft"
+        >
+          Save Changes
+        </gradient-border-button>
+        <gradient-border-button
+          @click.native.prevent="submitCollection"
+          type="submit"
+          :disabled="submitting"
+        >
           <v-progress-circular
             indeterminate
             color="white"
             v-if="submitting"
           ></v-progress-circular>
-          Submit
+          Create Collection
         </gradient-border-button>
       </div>
     </form>
@@ -475,6 +486,7 @@ import {
   createDraft,
   sortPhases,
   getDraftById,
+  editDraft,
 } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 
@@ -712,7 +724,7 @@ export default {
         this.collection.phases = tempCollection.phases = sortedPhases;
 
         if (this.tbd || this.saveAsDraft) {
-          await this.sendDataToCreateDraft(tempCollection);
+          await this.saveDraft(tempCollection);
           return;
         }
 
@@ -869,8 +881,13 @@ export default {
       formData.append("instagram", tempCollection.instagram);
       formData.append("candy_id", tempCollection.candy_id);
       formData.append("phases", JSON.stringify(tempCollection.phases));
-      formData.append("image", this.image);
       formData.append("isApproved", "false");
+
+      if (this.image) {
+        formData.append("image", this.image);
+      } else {
+        formData.append("image", tempCollection.image);
+      }
 
       if (!this.publicSaleTBD) {
         formData.append("public_sale_time", tempCollection.public_sale_time);
@@ -896,17 +913,21 @@ export default {
 
       this.collection = draftRes.data.draft.data;
 
-      this.collection.phases = this.collection.phases
-        ? JSON.parse(this.collection.phases)
-        : [];
+      try {
+        this.collection.phases = this.collection.phases
+          ? JSON.parse(this.collection.phases)
+          : [];
+      } catch {
+        this.collection.phases = this.collection.phases
+          ? this.collection.phases
+          : [];
+      }
 
       this.collection.phases.map((phase: any) => {
         phase.mint_time = new Date(phase.mint_time);
       });
 
-      if (this.collection.whitelist_price) {
-        this.whitelistEnabled = true;
-      }
+      this.whitelistEnabled = true;
 
       this.folders.map((folder: any) => {
         if (folder.metadata.baseURI === this.collection.baseURL) {
@@ -927,6 +948,72 @@ export default {
         this.collection.public_sale_time = new Date(
           this.collection.public_sale_time
         );
+      }
+    },
+    async saveDraft() {
+      try {
+        const formData = new FormData();
+
+        const selectedFolder = this.folders.find(
+          (folder: any) => folder.folder_name === this.baseURL
+        );
+
+        this.collection.baseURL = selectedFolder.metadata.baseURI;
+
+        const tempCollection = { ...this.collection };
+
+        formData.append("name", tempCollection.name);
+        formData.append("description", tempCollection.description);
+        formData.append(
+          "royalty_percentage",
+          tempCollection.royalty_percentage
+        );
+
+        formData.append(
+          "royalty_payee_address",
+          tempCollection.royalty_payee_address
+        );
+        formData.append("baseURL", tempCollection.baseURL);
+
+        formData.append("supply", tempCollection.supply);
+
+        formData.append("public_sale_price", tempCollection.public_sale_price);
+        formData.append("whitelist_price", tempCollection.whitelist_price);
+        formData.append("twitter", tempCollection.twitter);
+        formData.append("discord", tempCollection.discord);
+        formData.append("website", tempCollection.website);
+        formData.append("instagram", tempCollection.instagram);
+        formData.append("candy_id", tempCollection.candy_id);
+        formData.append("phases", JSON.stringify(tempCollection.phases));
+        formData.append("isApproved", "false");
+
+        if (this.image) {
+          formData.append("image", this.image);
+        } else {
+          formData.append("image", tempCollection.image);
+        }
+
+        if (!this.publicSaleTBD) {
+          formData.append("public_sale_time", tempCollection.public_sale_time);
+        }
+
+        if (!this.whitelistTBD) {
+          formData.append(
+            "whitelist_sale_time",
+            tempCollection.whitelist_sale_time
+          );
+        }
+        const res = await editDraft(this.$route.params.id, tempCollection);
+
+        this.$toast.showMessage({ message: "Draft Updated Successfully" });
+
+        this.$router.push("/dashboard/collection/draft");
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({
+          message: "Something went wrong. Please try again",
+          error: true,
+        });
       }
     },
   },
