@@ -444,6 +444,11 @@
           {{ socialErrorMessage }}
         </div>
       </ValidationProvider>
+      <v-checkbox
+        v-model="saveAsDraft"
+        label="Save as Draft"
+        v-if="!draft"
+      ></v-checkbox>
       <div
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4"
       >
@@ -594,6 +599,7 @@ export default {
         un: "",
         candy_id: process.env.CANDY_MACHINE_ID,
         phases: [{ name: "", mint_time: null }],
+        saveAsDraft: false,
       },
       message: "",
       image: { name: null },
@@ -692,7 +698,7 @@ export default {
           });
         });
 
-        if (this.whitelistEnabled && !this.tbd) {
+        if (this.whitelistEnabled && !this.tbd && !this.saveAsDraft) {
           phases.push({
             id: "whitelist",
             name: "whitelist sale",
@@ -705,7 +711,7 @@ export default {
 
         this.collection.phases = tempCollection.phases = sortedPhases;
 
-        if (this.tbd) {
+        if (this.tbd || this.saveAsDraft) {
           await this.sendDataToCreateDraft(tempCollection);
           return;
         }

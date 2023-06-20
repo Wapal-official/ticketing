@@ -92,7 +92,13 @@ export default {
         return true;
       }
       if (!this.collection.candyMachine) {
-        return true;
+        if (
+          !this.collection.public_sale_time &&
+          !this.collection.whitelist_sale_time
+        ) {
+          return true;
+        }
+        return false;
       }
 
       const whiteListDate = this.collection.candyMachine.whitelist_sale_time
@@ -118,7 +124,27 @@ export default {
     },
     getStartTime() {
       if (!this.collection.candyMachine) {
-        return;
+        if (
+          !this.collection.whitelist_sale_time &&
+          !this.collection.public_sale_time
+        ) {
+          return;
+        }
+
+        const whiteListDate = this.collection.whitelist_sale_time
+          ? new Date(this.collection.whitelist_sale_time)
+          : null;
+        const publicSaleDate = new Date(this.collection.public_sale_time);
+
+        if (!whiteListDate) {
+          return publicSaleDate.toString();
+        }
+
+        if (whiteListDate > publicSaleDate) {
+          return publicSaleDate.toString();
+        } else {
+          return whiteListDate.toString();
+        }
       }
 
       const whiteListDate = this.collection.candyMachine.whitelist_sale_time

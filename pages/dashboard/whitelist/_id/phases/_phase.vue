@@ -288,8 +288,6 @@ export default {
         this.$route.params.phase
       );
 
-      console.log(res);
-
       if (res.data.whitelistEntries.length === 0) {
         this.loading = false;
         this.mappingData = true;
