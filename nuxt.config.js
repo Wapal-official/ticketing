@@ -10,13 +10,13 @@ const PID = process.env.PID;
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
 const CANDY_MACHINE_V2 = process.env.CANDY_MACHINE_V2;
 
-let discordRedirectURI = "http://localhost:3000/discord/token";
+let discordRedirectURI = "http://staging.wapal.io/discord/token";
 
-// if (API_URL.includes("staging")) {
-//   discordRedirectURI = "https://staging.wapal.io/discord/token";
-// } else {
-//   discordRedirectURI = "https://wapal.io/discord/token";
-// }
+if (API_URL.includes("staging")) {
+  discordRedirectURI = "https://staging.wapal.io/discord/token";
+} else {
+  discordRedirectURI = "https://wapal.io/discord/token";
+}
 
 let NODE_URL = `https://aptos-${NETWORK}.nodereal.io/v1/${APTOS_API_KEY}/v1`;
 

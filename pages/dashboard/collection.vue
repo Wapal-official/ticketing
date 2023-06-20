@@ -58,7 +58,10 @@ export default {
     },
   },
   mounted() {
-    if (this.$route.path === "/dashboard/collection") {
+    if (
+      this.$route.path === "/dashboard/collection" ||
+      this.$route.path === "/dashboard/collection/"
+    ) {
       this.$router.push("/dashboard/collection/live");
       this.launchpadTab = 0;
     } else if (this.$route.path === "/dashboard/collection/live") {

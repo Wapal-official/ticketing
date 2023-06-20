@@ -75,6 +75,9 @@ export default {
     },
   },
   mounted() {
+    if (this.$route.path === "/explore" || this.$route.path === "/explore/") {
+      this.$router.push("/explore/all");
+    }
     this.getActiveTab();
 
     this.loading = false;
