@@ -457,14 +457,13 @@
           :disabled="submitting"
           v-if="draft"
         >
-          <v-progress-circular
-            indeterminate
-            color="white"
-            v-if="submitting"
-          ></v-progress-circular>
           Save Changes
         </gradient-border-button>
-        <gradient-border-button type="submit" :disabled="submitting">
+        <gradient-border-button
+          @click.native.prevent="submitCollection"
+          type="submit"
+          :disabled="submitting"
+        >
           <v-progress-circular
             indeterminate
             color="white"
@@ -928,9 +927,7 @@ export default {
         phase.mint_time = new Date(phase.mint_time);
       });
 
-      if (this.collection.whitelist_price) {
-        this.whitelistEnabled = true;
-      }
+      this.whitelistEnabled = true;
 
       this.folders.map((folder: any) => {
         if (folder.metadata.baseURI === this.collection.baseURL) {
