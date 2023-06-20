@@ -185,3 +185,19 @@ export const editDraft = async (draftId: string, data: any) => {
 
   return res;
 };
+
+export const editImage = async (draftId: string, data: any) => {
+  const config = {
+    headers: { "content-type": "multipart/form-data" },
+  };
+
+  const res = await publicRequest.patch(
+    `/api/draft/image/${draftId}`,
+    data,
+    config
+  );
+
+  console.log(res);
+
+  return res;
+};

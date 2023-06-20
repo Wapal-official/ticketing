@@ -487,6 +487,7 @@ import {
   sortPhases,
   getDraftById,
   editDraft,
+  editImage,
 } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 
@@ -724,7 +725,11 @@ export default {
         this.collection.phases = tempCollection.phases = sortedPhases;
 
         if (this.tbd || this.saveAsDraft) {
+          if(this.draft){
           await this.saveDraft(tempCollection);
+          }else{
+            await this.sendDataToCreateDraft(tempCollection);
+          }
           return;
         }
 
@@ -883,7 +888,7 @@ export default {
       formData.append("phases", JSON.stringify(tempCollection.phases));
       formData.append("isApproved", "false");
 
-      if (this.image) {
+      if (this.image.name) {
         formData.append("image", this.image);
       } else {
         formData.append("image", tempCollection.image);
@@ -962,48 +967,13 @@ export default {
 
         const tempCollection = { ...this.collection };
 
-        formData.append("name", tempCollection.name);
-        formData.append("description", tempCollection.description);
-        formData.append(
-          "royalty_percentage",
-          tempCollection.royalty_percentage
-        );
+        await editDraft(this.$route.params.id, tempCollection);
 
-        formData.append(
-          "royalty_payee_address",
-          tempCollection.royalty_payee_address
-        );
-        formData.append("baseURL", tempCollection.baseURL);
-
-        formData.append("supply", tempCollection.supply);
-
-        formData.append("public_sale_price", tempCollection.public_sale_price);
-        formData.append("whitelist_price", tempCollection.whitelist_price);
-        formData.append("twitter", tempCollection.twitter);
-        formData.append("discord", tempCollection.discord);
-        formData.append("website", tempCollection.website);
-        formData.append("instagram", tempCollection.instagram);
-        formData.append("candy_id", tempCollection.candy_id);
-        formData.append("phases", JSON.stringify(tempCollection.phases));
-        formData.append("isApproved", "false");
-
-        if (this.image) {
+        if (this.image.name) {
           formData.append("image", this.image);
-        } else {
-          formData.append("image", tempCollection.image);
-        }
 
-        if (!this.publicSaleTBD) {
-          formData.append("public_sale_time", tempCollection.public_sale_time);
+          await editImage(this.$route.params.id, formData);
         }
-
-        if (!this.whitelistTBD) {
-          formData.append(
-            "whitelist_sale_time",
-            tempCollection.whitelist_sale_time
-          );
-        }
-        const res = await editDraft(this.$route.params.id, tempCollection);
 
         this.$toast.showMessage({ message: "Draft Updated Successfully" });
 
