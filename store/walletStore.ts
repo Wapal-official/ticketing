@@ -26,7 +26,7 @@ if (process.env.NETWORK === "testnet") {
   network = NetworkName.Mainnet;
 }
 
-const client = new AptosClient(process.env.NODE_URL || "");
+export const client = new AptosClient(process.env.NODE_URL || "");
 
 const wallets = [
   new PetraWallet(),
@@ -43,7 +43,7 @@ const wallets = [
   }),
 ];
 
-const wallet = new WalletCore(wallets);
+export const wallet = new WalletCore(wallets);
 
 const makeId = (length: number) => {
   var result = "";
@@ -59,7 +59,7 @@ const connectWallet = async (walletName: WalletName) => {
   await wallet.connect(walletName);
 };
 
-const checkNetwork = () => {
+export const checkNetwork = () => {
   if (wallet.network?.name.toLowerCase() !== network.toLowerCase()) {
     throw new Error(`Please Change your network to ${network}`);
   }
@@ -273,7 +273,7 @@ export const actions = {
 
     const create_candy_machine = {
       type: "entry_function_payload",
-      function: process.env.CANDY_MACHINE_V2 + "::candymachine::init_candy",
+      function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
       type_arguments: [],
       arguments: [
         candyMachineArguments.collection_name,
@@ -312,14 +312,14 @@ export const actions = {
       if (
         change.type === "write_resource" &&
         change.data.type ===
-          `${process.env.CANDY_MACHINE_V2}::candymachine::CandyMachine`
+          `${process.env.CANDY_MACHINE_ID}::candymachine::CandyMachine`
       ) {
         resourceAccount = change.address;
       }
 
       return (
         change.data.type ===
-        `${process.env.CANDY_MACHINE_V2}::candymachine::CandyMachine`
+        `${process.env.CANDY_MACHINE_ID}::candymachine::CandyMachine`
       );
     });
 
@@ -356,14 +356,12 @@ export const actions = {
       candyMachineId,
       proof,
       mintLimit,
-      v2,
     }: {
       resourceAccount: string;
       publicMint: boolean;
       candyMachineId: string;
       proof: any[];
       mintLimit: number;
-      v2: boolean;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -374,38 +372,20 @@ export const actions = {
     try {
       var create_mint_script: any;
       if (publicMint) {
-        if (!v2) {
-          create_mint_script = {
-            type: "entry_function_payload",
-            function: candyMachineId + "::candymachine::mint_script",
-            type_arguments: [],
-            arguments: [resourceAccount],
-          };
-        } else {
-          create_mint_script = {
-            type: "entry_function_payload",
-            function: candyMachineId + "::candymachine::mint_script",
-            type_arguments: [],
-            arguments: [resourceAccount, resourceAccount],
-          };
-        }
+        create_mint_script = {
+          type: "entry_function_payload",
+          function: candyMachineId + "::candymachine::mint_script",
+          type_arguments: [],
+          arguments: [resourceAccount],
+        };
       } else {
         if (proof.length > 0) {
-          if (!v2) {
-            create_mint_script = {
-              type: "entry_function_payload",
-              function: candyMachineId + "::candymachine::mint_from_merkle",
-              type_arguments: [],
-              arguments: [resourceAccount, proof, mintLimit],
-            };
-          } else {
-            create_mint_script = {
-              type: "entry_function_payload",
-              function: candyMachineId + "::candymachine::mint_from_merkle",
-              type_arguments: [],
-              arguments: [resourceAccount, resourceAccount, proof, mintLimit],
-            };
-          }
+          create_mint_script = {
+            type: "entry_function_payload",
+            function: candyMachineId + "::candymachine::mint_from_merkle",
+            type_arguments: [],
+            arguments: [resourceAccount, proof, mintLimit],
+          };
         } else {
           throw new Error("You are not whitelisted for this collection");
         }
@@ -510,14 +490,9 @@ export const actions = {
       }
     }
 
-    const v2 = res.some((data: any) => {
-      return data.type === "0x1::object::ObjectCore";
-    });
-
     return {
       total_supply: resource.total_supply,
       minted: resource.minted,
-      v2: v2,
     };
   },
   async setMerkleRoot(
@@ -741,7 +716,6 @@ export const actions = {
       mintNumber,
       proof,
       mintLimit,
-      v2,
     }: {
       resourceAccount: string;
       publicMint: boolean;
@@ -749,7 +723,6 @@ export const actions = {
       mintNumber: number;
       proof: any[];
       mintLimit: number;
-      v2: boolean;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -773,7 +746,6 @@ export const actions = {
           candyMachineId,
           proof,
           mintLimit,
-          v2,
         });
 
         return res;
