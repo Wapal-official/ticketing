@@ -217,7 +217,7 @@ export default {
     this.editCollection.totalSupply = this.collection.supply;
 
     this.editCollection.royalty =
-      (chainRes.royalty_points_numerator * 10) /
+      (chainRes.royalty_points_numerator * 100) /
       chainRes.royalty_points_denominator;
 
     this.loading = false;
