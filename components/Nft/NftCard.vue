@@ -217,6 +217,10 @@ export default {
         return `/nft/draft/${this.collection._id}`;
       }
 
+      if (this.redirectTo === "edit") {
+        return `/dashboard/collection/edit/${this.collection._id}`;
+      }
+
       return `/nft/${this.collection.username}`;
     },
     getSupply() {

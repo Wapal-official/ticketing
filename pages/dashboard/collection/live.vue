@@ -9,6 +9,7 @@
           :key="collection._id"
           v-if="collections[0]._id"
           :collection="collection"
+          redirectTo="edit"
         />
       </div>
       <h2

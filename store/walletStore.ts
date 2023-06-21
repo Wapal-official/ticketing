@@ -26,7 +26,7 @@ if (process.env.NETWORK === "testnet") {
   network = NetworkName.Mainnet;
 }
 
-const client = new AptosClient(process.env.NODE_URL || "");
+export const client = new AptosClient(process.env.NODE_URL || "");
 
 const wallets = [
   new PetraWallet(),
@@ -43,7 +43,7 @@ const wallets = [
   }),
 ];
 
-const wallet = new WalletCore(wallets);
+export const wallet = new WalletCore(wallets);
 
 const makeId = (length: number) => {
   var result = "";
@@ -59,7 +59,7 @@ const connectWallet = async (walletName: WalletName) => {
   await wallet.connect(walletName);
 };
 
-const checkNetwork = () => {
+export const checkNetwork = () => {
   if (wallet.network?.name.toLowerCase() !== network.toLowerCase()) {
     throw new Error(`Please Change your network to ${network}`);
   }
@@ -273,7 +273,7 @@ export const actions = {
 
     const create_candy_machine = {
       type: "entry_function_payload",
-      function: process.env.CANDY_MACHINE_V2 + "::candymachine::init_candy",
+      function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
       type_arguments: [],
       arguments: [
         candyMachineArguments.collection_name,
@@ -312,14 +312,14 @@ export const actions = {
       if (
         change.type === "write_resource" &&
         change.data.type ===
-          `${process.env.CANDY_MACHINE_V2}::candymachine::CandyMachine`
+          `${process.env.CANDY_MACHINE_ID}::candymachine::CandyMachine`
       ) {
         resourceAccount = change.address;
       }
 
       return (
         change.data.type ===
-        `${process.env.CANDY_MACHINE_V2}::candymachine::CandyMachine`
+        `${process.env.CANDY_MACHINE_ID}::candymachine::CandyMachine`
       );
     });
 

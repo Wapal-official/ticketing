@@ -2,6 +2,7 @@
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
     <div
       class="tw-flex tw-w-full tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+      v-if="showTabs"
     >
       <div class="collection1">
         <NuxtLink to="/dashboard/create-collection"
@@ -11,7 +12,7 @@
         </NuxtLink>
       </div>
     </div>
-    <div class="tw-w-full tw-py-2">
+    <div class="tw-w-full tw-py-2" v-if="showTabs">
       <v-tabs
         active-class="!tw-text-wapal-pink"
         class="!tw-bg-transparent"
@@ -71,6 +72,18 @@ export default {
     } else {
       this.launchpadTab = 2;
     }
+  },
+  computed: {
+    showTabs() {
+      const routeRegex =
+        /^\/dashboard\/collection\/edit(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i;
+
+      if (routeRegex.test(this.$route.path)) {
+        return false;
+      }
+
+      return true;
+    },
   },
 };
 </script>
