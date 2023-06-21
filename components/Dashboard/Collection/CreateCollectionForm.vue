@@ -214,7 +214,6 @@
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
-          <v-checkbox v-model="whitelistTBD" label="TBD"></v-checkbox>
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
@@ -240,7 +239,6 @@
             </div>
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
-          <v-checkbox v-model="publicSaleTBD" label="TBD"></v-checkbox>
         </div>
       </div>
       <div
@@ -269,6 +267,8 @@
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
+
+          <v-checkbox v-model="whitelistTBD" label="TBD"></v-checkbox>
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
@@ -292,6 +292,8 @@
             </v-text-field>
           </div>
           <div class="tw-text-red-600">{{ errors[0] }}</div>
+
+          <v-checkbox v-model="publicSaleTBD" label="TBD"></v-checkbox>
         </ValidationProvider>
       </div>
       <label>Mint Phases</label>
@@ -725,9 +727,9 @@ export default {
         this.collection.phases = tempCollection.phases = sortedPhases;
 
         if (this.tbd || this.saveAsDraft) {
-          if(this.draft){
-          await this.saveDraft(tempCollection);
-          }else{
+          if (this.draft) {
+            await this.saveDraft(tempCollection);
+          } else {
             await this.sendDataToCreateDraft(tempCollection);
           }
           return;
@@ -914,6 +916,8 @@ export default {
       this.$router.push("/dashboard/collection/draft");
     },
     async setCollectionDataFromDraft() {
+      this.whitelistEnabled = true;
+
       const draftRes = await getDraftById(this.$route.params.id);
 
       this.collection = draftRes.data.draft.data;
@@ -931,8 +935,6 @@ export default {
       this.collection.phases.map((phase: any) => {
         phase.mint_time = new Date(phase.mint_time);
       });
-
-      this.whitelistEnabled = true;
 
       this.folders.map((folder: any) => {
         if (folder.metadata.baseURI === this.collection.baseURL) {
@@ -1014,6 +1016,18 @@ export default {
       await this.setCollectionDataFromDraft();
     }
     this.loading = false;
+  },
+  watch: {
+    whitelistTBD() {
+      this.collection.whitelist_sale_time = "";
+    },
+    publicSaleTBD() {
+      this.collection.public_sale_time = "";
+    },
+    whitelistEnabled() {
+      this.collection.whitelist_sale_time = "";
+      this.collection.whitelist_price = "";
+    },
   },
 };
 </script>
