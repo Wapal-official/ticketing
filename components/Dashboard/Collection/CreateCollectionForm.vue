@@ -695,11 +695,11 @@ export default {
 
         tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
           ? new Date(tempCollection.whitelist_sale_time).toISOString()
-          : null;
+          : "";
 
-        tempCollection.public_sale_time = new Date(
-          tempCollection.public_sale_time
-        ).toISOString();
+        tempCollection.public_sale_time = tempCollection.public_sale_time
+          ? new Date(tempCollection.public_sale_time).toISOString()
+          : "";
 
         const phases: any[] = [];
 
@@ -840,7 +840,7 @@ export default {
       };
 
       const res = await this.$store.dispatch(
-        "walletStore/createCandyMachine",
+        "walletStore/createCandyMachineV2",
         candyMachineArguments
       );
 
