@@ -1,5 +1,6 @@
 <template>
-  <div
+  <div class="tw-w-full"></div>
+  <!-- <div
     class="tw-w-full tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-px-8 tw-pb-8 tw-pt-4 lg:tw-gap-16 lg:tw-flex-row lg:tw-justify-start xl:tw-w-4/5"
     v-if="!loading"
   >
@@ -228,7 +229,7 @@
         ></div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 <script lang="ts">
 import {

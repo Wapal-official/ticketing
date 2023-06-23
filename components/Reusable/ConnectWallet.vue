@@ -1,27 +1,19 @@
 <template>
   <div class="tw-text-sm">
-    <gradient-border-button
-      @click.native="connectWallet"
+    <button-primary
+      @click="connectWallet"
       v-if="!walletStore.wallet"
+      title="Connect Wallet"
+    />
+    <button-primary
+      @click="disconnectWallet"
+      :title="displayFormattedWalletAddress"
+      v-else
     >
-      Connect Wallet
-    </gradient-border-button>
-
-    <gradient-border-button @click.native="disconnectWallet" v-else
-      ><div
-        class="tw-text-xs tw-w-full tw-flex tw-flex-row tw-justify-center tw-gap-2 tw-rounded-md tw-font-medium tw-relative tw-overflow-hidden md:tw-items-start lg:tw-items-center"
-      >
-        <client-only>
-          <v-icon class="!tw-text-wapal-pink">mdi-account</v-icon></client-only
-        >
-        <span class="tw-text-lg lg:tw-text-sm md:tw-hidden lg:tw-flex">{{
-          displayFormattedWalletAddress
-        }}</span>
-        <span class="tw-text-lg tw-hidden md:tw-flex lg:tw-hidden">{{
-          displayFormattedWalletAddressForMediumScreens
-        }}</span>
-      </div>
-    </gradient-border-button>
+      <template #prepend-icon>
+        <v-icon class="!tw-text-white">mdi-account</v-icon>
+      </template>
+    </button-primary>
     <v-dialog
       v-model="showConnectWalletDialog"
       content-class="!tw-w-full md:!tw-w-1/2 xl:!tw-w-1/3"
