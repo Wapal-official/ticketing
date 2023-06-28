@@ -234,7 +234,7 @@
 }
 
 .nft-discord-icon:hover {
-  fill: #ea59be;
+  fill: #FB2576;
 }
 
 .preview-shadow {
@@ -245,7 +245,7 @@
 /*Search Bar*/
 .search-bar-input {
   border-style: solid !important;
-  @apply tw-w-full tw-pl-10 tw-pr-4 tw-py-2 tw-bg-[#4b4b4b] tw-text-white tw-border tw-border-transparent tw-transition-all tw-duration-200 tw-ease-linear placeholder:tw-text-white focus:tw-outline-none focus:tw-border-modal-gray focus:tw-shadow focus:tw-shadow-modal-gray md:tw-rounded  md:tw-bg-transparent md:tw-border-modal-gray;
+  @apply tw-w-full tw-px-6 tw-py-2 tw-bg-[#25262B] tw-text-white tw-rounded-md tw-border tw-border-[#383A3F] tw-transition-all tw-duration-200 tw-ease-linear placeholder:tw-text-[#909296] focus:tw-outline-none;
 }
 
 /*Explore List*/

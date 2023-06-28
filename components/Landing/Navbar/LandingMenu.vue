@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-text-base tw-gap-4 lg:tw-flex-row lg:!tw-justify-end lg:tw-items-center xl:tw-gap-8"
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-text-base tw-gap-4 lg:tw-flex-row lg:!tw-justify-end lg:tw-items-center 2xl:tw-gap-8"
   >
     <div class="tw-flex tw-w-full lg:tw-hidden">
       <v-list-group
@@ -32,13 +32,12 @@
         />
       </v-list-group>
     </div>
-    <connect-wallet @close="close" class="tw-mt-8 lg:tw-mt-0" />
-    <button
-      class="tw-rounded tw-bg-[#FF36AB] tw-text-white tw-px-8 tw-py-2"
+    <button-primary
       @click="checkWalletStatus"
-    >
-      Launch
-    </button>
+      title="Launch"
+      :bordered="true"
+    />
+    <connect-wallet @close="close" class="tw-mt-8 lg:tw-mt-0" />
     <v-dialog
       v-model="showConnectWalletModal"
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"

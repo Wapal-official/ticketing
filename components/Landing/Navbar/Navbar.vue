@@ -1,13 +1,19 @@
 <template>
-  <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
+  <div
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-bg-dark-9"
+  >
     <nav
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-8 tw-py-6 lg:tw-px-4 xl:!tw-px-24"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-pt-8 tw-max-h-[40px]"
     >
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 lg:tw-w-[20%]"
       >
-        <NuxtLink to="/" class="tw-min-w-[140px] tw-max-w-[140px]">
-          <img :src="logo" alt="logo" />
+        <NuxtLink to="/" class="">
+          <img
+            :src="logo"
+            alt="logo"
+            class="tw-min-w-[102px] tw-max-w-[102px] tw-min-h-[40px] tw-max-h-[40px]"
+          />
         </NuxtLink>
         <div class="tw-hidden lg:tw-flex">
           <v-menu offset-y open-on-hover>
@@ -15,9 +21,10 @@
               <div v-bind="attrs" v-on="on">
                 <NuxtLink
                   to="/explore/all"
-                  class="!tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink tw-uppercase !tw-font-normal"
+                  class="!tw-text-[#A6A7AB] tw-transition tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-center tw-gap-0.5 tw-justify-start hover:!tw-text-wapal-pink"
                 >
-                  Explore
+                  <span>Explore</span>
+                  <v-icon class="!tw-text-[#A6A7AB]">mdi-chevron-down</v-icon>
                 </NuxtLink>
               </div>
             </template>
@@ -47,17 +54,14 @@
           </v-menu>
         </div>
       </div>
+
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full lg:tw-w-[80%]"
+        class="tw-hidden tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[35%]"
       >
-        <div
-          class="tw-hidden tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[60%]"
-        >
-          <search-bar />
-        </div>
-        <div class="tw-hidden lg:tw-flex tw-w-full lg:tw-w-[40%]">
-          <landing-menu />
-        </div>
+        <search-bar />
+      </div>
+      <div class="tw-hidden tw-w-full lg:tw-flex lg:tw-w-[35%] xl:tw-w-1/4">
+        <landing-menu />
       </div>
       <div
         class="tw-w-full tw-absolute tw-transition-all tw-duration-300 tw-ease-linear tw-z-50 tw-left-0 tw-top-0"
