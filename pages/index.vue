@@ -1,10 +1,7 @@
 <template>
   <div class="">
-    <section class="tw-py-4 2xl:tw-container tw-mx-auto">
-      <featured />
-    </section>
+    <landing-featured-slider />
     <div>
-      <landing-slider :collections="collections" :loading="loading" />
       <div class="tw-px-4 md:tw-px-16">
         <section class="tw-pt-8 tw-pb-4 tw-container tw-mx-auto">
           <landing-section-heading heading="Live" />
@@ -55,7 +52,6 @@ import UpcomingSection from "@/components/Landing/UpcomingSection.vue";
 import FastestSoldoutSection from "@/components/Landing/FastestSoldoutSection.vue";
 import LandingSectionHeading from "@/components/Landing/LandingSectionHeading.vue";
 import Loading from "@/components/Reusable/Loading.vue";
-import Featured from "@/components/Landing/Featured.vue";
 import WhitelistOpportunities from "@/components/Landing/WhitelistOpportunities.vue";
 
 import {
@@ -80,7 +76,6 @@ export default {
     FastestSoldoutSection,
     LandingSectionHeading,
     Loading,
-    Featured,
     WhitelistOpportunities,
   },
   data() {

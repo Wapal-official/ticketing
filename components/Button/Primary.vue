@@ -1,8 +1,9 @@
 <template>
   <button
-    class="tw-rounded-md tw-bg-primary-1 tw-text-white tw-px-8 tw-py-2.5"
+    class="tw-rounded-md tw-bg-primary-1 tw-text-white tw-px-8 tw-py-2.5 tw-box-border disabled:tw-cursor-not-allowed 3xl:tw-text-lg"
     :class="{
       '!tw-border-solid tw-border tw-border-dark-4 tw-bg-transparent': bordered,
+      'tw-w-full': fullWidth,
     }"
     @click="$emit('click')"
     :disabled="disabled"
@@ -26,6 +27,7 @@ export default {
     title: { type: String, required: true },
     disabled: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
+    fullWidth: { type: Boolean, default: false },
   },
 };
 </script>
