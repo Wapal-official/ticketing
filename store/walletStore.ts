@@ -660,7 +660,7 @@ export const actions = {
 
     const res = await wallet.signAndSubmitTransaction(increase_bid);
 
-    const txhRes = await client.getTransactionByHash(res.hash);
+    const txhRes = await client.waitForTransactionWithResult(res.hash);
 
     return txhRes;
   },

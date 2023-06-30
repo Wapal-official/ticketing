@@ -341,7 +341,7 @@ export default {
               message: `${this.collection.name} Minted Successfully`,
             });
 
-            const res = await this.$store.dispatch(
+            let res = await this.$store.dispatch(
               "walletStore/getSupplyAndMintedOfCollection",
               {
                 resourceAccountAddress:
@@ -349,6 +349,13 @@ export default {
                 candyMachineId: this.collection.candyMachine.candy_id,
               }
             );
+
+            if (this.collection._id === "64625d957c7212d927559962") {
+              res = {
+                minted: res.minted,
+                total_supply: 2333,
+              };
+            }
 
             if (res.total_supply === res.minted) {
               await setSoldOut(this.collection._id);
