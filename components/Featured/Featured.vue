@@ -8,7 +8,7 @@
       <img
         :src="collection.image"
         :alt="collection.name"
-        class="md:tw-w-[550px] md:tw-h-[550px] tw-object-cover tw-rounded-xl 3xl:tw-w-[750px] 3xl:tw-h-[750px]"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] tw-object-cover tw-rounded-xl 3xl:tw-w-[750px] 3xl:tw-h-[750px] 3xl:tw-max-h-[750px]"
       />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
