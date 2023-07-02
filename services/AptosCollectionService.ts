@@ -228,3 +228,42 @@ export const updateCollection = async (
 
   return result;
 };
+
+export const mintMany = async ({
+  candy_machine_id,
+  candy_object,
+  amount,
+  publicMint,
+  proof,
+  mint_limit,
+}: {
+  candy_machine_id: string;
+  candy_object: string;
+  amount: number;
+  publicMint: boolean;
+  proof: string;
+  mint_limit: number;
+}) => {
+  let mint_many_script = {
+    type: "entry_function_payload",
+    function: `${candy_machine_id}::candymachine::mint_script_many`,
+    type_arguments: [],
+    arguments: [candy_object, amount],
+  };
+
+  if (!publicMint) {
+    mint_many_script = {
+      type: "entry_function_payload",
+      function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
+      type_arguments: [],
+      arguments: [candy_object, proof, mint_limit, amount],
+    };
+  }
+  console.log(mint_many_script);
+
+  const transaction = await wallet.signAndSubmitTransaction(mint_many_script);
+
+  const result = await client.waitForTransactionWithResult(transaction.hash);
+
+  return result;
+};

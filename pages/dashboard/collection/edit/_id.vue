@@ -264,37 +264,48 @@ export default {
     };
   },
   async mounted() {
-    const res = await getCollection(this.$route.params.id);
-
-    this.collection = res.collection[0];
-
-    const chainRes = await getCollectionDetails(
-      this.collection.candyMachine.candy_id,
-      this.collection.candyMachine.resource_account
-    );
-
-    this.editCollection.whitelistSaleTime = new Date(
-      this.collection.candyMachine.whitelist_sale_time
-    );
-
-    this.editCollection.publicSaleTime = new Date(
-      this.collection.candyMachine.public_sale_time
-    );
-
-    this.editCollection.publicSalePrice =
-      this.collection.candyMachine.public_sale_price;
-
-    this.editCollection.whitelistPrice =
-      this.collection.candyMachine.whitelist_price;
-    this.editCollection.totalSupply = this.collection.supply;
-
-    this.editCollection.royalty =
-      (chainRes.royalty_points_numerator * 100) /
-      chainRes.royalty_points_denominator;
-
-    this.loading = false;
+    this.fetchCollection();
   },
   methods: {
+    async fetchCollection() {
+      this.loading = true;
+      const res = await getCollection(this.$route.params.id);
+
+      this.collection = res.collection[0];
+
+      const chainRes = await getCollectionDetails(
+        this.collection.candyMachine.candy_id,
+        this.collection.candyMachine.resource_account
+      );
+
+      console.log(chainRes);
+
+      this.collection.candyMachine.whitelist_sale_time =
+        this.editCollection.whitelistSaleTime = new Date(
+          chainRes.presale_mint_time * 1000
+        );
+
+      this.collection.candyMachine.public_sale_time =
+        this.editCollection.publicSaleTime = new Date(
+          chainRes.public_sale_mint_time * 1000
+        );
+
+      this.collection.candyMachine.public_sale_price =
+        this.editCollection.publicSalePrice =
+          chainRes.public_sale_mint_price / Math.pow(10, 8);
+
+      this.collection.candyMachine.whitelist_price =
+        this.editCollection.whitelistPrice =
+          chainRes.presale_mint_price / Math.pow(10, 8);
+      this.collection.supply = this.editCollection.totalSupply =
+        chainRes.total_supply;
+
+      this.editCollection.royalty =
+        (chainRes.royalty_points_numerator * 100) /
+        chainRes.royalty_points_denominator;
+
+      this.loading = false;
+    },
     formatDateTime(date: string) {
       return moment(date).format("YYYY-MM-DD hh:mm:ss");
     },
@@ -372,6 +383,8 @@ export default {
         this.$toast.showMessage({ message: "Collection Updated Successfully" });
 
         this.changeDialog = false;
+
+        this.fetchCollection();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
@@ -388,6 +401,8 @@ export default {
         this.$toast.showMessage({ message: "Collection Updated Successfully" });
 
         this.changeDialog = false;
+
+        this.fetchCollection();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
@@ -404,6 +419,8 @@ export default {
         this.$toast.showMessage({ message: "Collection Updated Successfully" });
 
         this.changeDialog = false;
+
+        this.fetchCollection();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
@@ -420,6 +437,8 @@ export default {
         this.$toast.showMessage({ message: "Collection Updated Successfully" });
 
         this.changeDialog = false;
+
+        this.fetchCollection();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
@@ -436,6 +455,8 @@ export default {
         this.$toast.showMessage({ message: "Collection Updated Successfully" });
 
         this.changeDialog = false;
+
+        this.fetchCollection();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
