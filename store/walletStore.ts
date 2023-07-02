@@ -106,11 +106,11 @@ export const actions = {
     dispatch: any;
     commit: any;
   }) {
-    if (!wallet.isConnected()) {
-      await wallet.connect(state.wallet.wallet);
+    if (!wallet.isConnected() && state.wallet.wallet) {
+      dispatch("connectWallet", state.wallet.wallet);
     }
 
-    if (!state.wallet.initializedAccountChange) {
+    if (!state.wallet.initializedAccountChange && wallet.isConnected()) {
       try {
         await wallet.onNetworkChange();
         await wallet.onAccountChange();
@@ -123,10 +123,8 @@ export const actions = {
         await wallet.disconnect();
       });
 
-      wallet.addListener("accountChange", async () => {
-        await dispatch("connectWallet", {
-          walletName: state.wallet.wallet,
-        });
+      wallet.addListener("accountChange", async (newAccount) => {
+        await dispatch("connectWallet", state.wallet.wallet);
 
         dispatch("userStore/disconnectUser", null, { root: true });
       });
@@ -136,16 +134,14 @@ export const actions = {
     commit("setWallet");
   },
   async connectWallet(
-    { state, commit }: { state: any; commit: any },
+    { state, commit, dispatch }: { state: any; commit: any; dispatch: any },
     walletName: WalletName
   ) {
     try {
       await connectWallet(walletName);
 
-      if (wallet.isConnected() && !state.wallet.initializedAccountChange) {
-        await wallet.onAccountChange();
-        await wallet.onNetworkChange();
-        commit("setInitializeAccountChange", true);
+      if (!state.wallet.initializedAccountChange) {
+        await dispatch("initializeWallet");
       }
 
       commit("setWallet", {
@@ -460,9 +456,9 @@ export const actions = {
 
     return transaction;
   },
-  async signLoginMessage({ state }: { state: any }) {
+  async signLoginMessage({ state, dispatch }: { state: any; dispatch: any }) {
     if (!wallet.isConnected()) {
-      await connectWallet(state.wallet.wallet);
+      dispatch("connectWallet", state.wallet.wallet);
     }
 
     checkNetwork();
