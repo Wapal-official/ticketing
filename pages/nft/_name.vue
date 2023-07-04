@@ -138,7 +138,6 @@
                   <button
                     class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold disabled:tw-cursor-not-allowed"
                     @click="decreaseNumberOfNft"
-                    :disabled="showPublicSaleTimer"
                   >
                     -
                   </button>
@@ -146,12 +145,10 @@
                     class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-24 tw-max-w-32 disabled:tw-cursor-not-allowed"
                     v-model="numberOfNft"
                     @input="checkNumberOfNft"
-                    :disabled="showPublicSaleTimer"
                   />
                   <button
                     class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold disabled:tw-cursor-not-allowed"
                     @click="increaseNumberOfNft"
-                    :disabled="showPublicSaleTimer"
                   >
                     +
                   </button>
@@ -296,6 +293,7 @@ import { getProof, getMintLimit } from "@/services/WhitelistService";
 import { getWhitelistEntryById } from "@/services/WhitelistService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
+import { mintMany } from "~/services/AptosCollectionService";
 
 export default {
   async asyncData({ params }) {
@@ -390,6 +388,7 @@ export default {
       phaseCounter: 0,
       phaseEndInTime: null,
       nextSale: null,
+      v2: false,
     };
   },
   methods: {
@@ -564,16 +563,26 @@ export default {
             throw new Error("Mint Limit Reached");
           }
         }
-
-        const res = await this.$store.dispatch("walletStore/mintBulk", {
-          resourceAccount: this.collection.candyMachine.resource_account,
-          publicMint: !this.checkPublicSaleTimer(),
-          collectionId: this.collection._id,
-          candyMachineId: this.collection.candyMachine.candy_id,
-          mintNumber: this.numberOfNft,
-          proof: this.proof,
-          mintLimit: this.mintLimit,
-        });
+        let res = null;
+        if (!this.v2) {
+          res = await this.$store.dispatch("walletStore/mintBulk", {
+            resourceAccount: this.collection.candyMachine.resource_account,
+            publicMint: !this.checkPublicSaleTimer(),
+            candyMachineId: this.collection.candyMachine.candy_id,
+            mintNumber: this.numberOfNft,
+            proof: this.proof,
+            mintLimit: this.mintLimit,
+          });
+        } else {
+          res = await mintMany({
+            candy_machine_id: this.collection.candyMachine.candy_id,
+            candy_object: this.collection.candyMachine.resource_account,
+            amount: this.numberOfNft,
+            publicMint: !this.checkPublicSaleTimer(),
+            proof: this.proof,
+            mint_limit: this.mintLimit,
+          });
+        }
 
         if (res.success) {
           this.$toast.showMessage({
@@ -832,6 +841,8 @@ export default {
           candyMachineId: this.collection.candyMachine.candy_id,
         }
       );
+
+      this.v2 = this.resource.v2;
 
       if (this.collection._id === "642bf277c10560ca41e179fa") {
         this.resource = {
