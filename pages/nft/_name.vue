@@ -388,6 +388,7 @@ export default {
       phaseCounter: 0,
       phaseEndInTime: null,
       nextSale: null,
+      v2: false,
     };
   },
   methods: {
@@ -562,15 +563,26 @@ export default {
             throw new Error("Mint Limit Reached");
           }
         }
-
-        const res = await mintMany({
-          candy_machine_id: this.collection.candyMachine.candy_id,
-          candy_object: this.collection.candyMachine.resource_account,
-          amount: this.numberOfNft,
-          publicMint: !this.checkPublicSaleTimer(),
-          proof: this.proof,
-          mint_limit: this.mintLimit,
-        });
+        let res = null;
+        if (!this.v2) {
+          res = await this.$store.dispatch("walletStore/mintBulk", {
+            resourceAccount: this.collection.candyMachine.resource_account,
+            publicMint: !this.checkPublicSaleTimer(),
+            candyMachineId: this.collection.candyMachine.candy_id,
+            mintNumber: this.numberOfNft,
+            proof: this.proof,
+            mintLimit: this.mintLimit,
+          });
+        } else {
+          res = await mintMany({
+            candy_machine_id: this.collection.candyMachine.candy_id,
+            candy_object: this.collection.candyMachine.resource_account,
+            amount: this.numberOfNft,
+            publicMint: !this.checkPublicSaleTimer(),
+            proof: this.proof,
+            mint_limit: this.mintLimit,
+          });
+        }
 
         if (res.success) {
           this.$toast.showMessage({
@@ -829,6 +841,8 @@ export default {
           candyMachineId: this.collection.candyMachine.candy_id,
         }
       );
+
+      this.v2 = this.resource.v2;
 
       if (this.collection._id === "642bf277c10560ca41e179fa") {
         this.resource = {

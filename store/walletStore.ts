@@ -486,9 +486,14 @@ export const actions = {
       }
     }
 
+    const v2 = res.some((data: any) => {
+      return data.type === "0x1::object::ObjectCore";
+    });
+
     return {
       total_supply: resource.total_supply,
       minted: resource.minted,
+      v2: v2,
     };
   },
   async setMerkleRoot(
