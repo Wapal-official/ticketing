@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-w-[90%] tw-container tw-mx-auto tw-py-16 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-16 lg:tw-pb-6"
+    class="tw-w-[90%] tw-container tw-mx-auto tw-py-16 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-16 lg:tw-pb-6 2xl:!tw-max-w-[1152px]"
   >
     <div
       class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-6 tw-place-items-center lg:tw-grid-cols-2 lg:tw-gap-16 lg:tw-items-center lg:tw-justify-center"
@@ -8,7 +8,7 @@
       <img
         :src="auction?.nft.meta.image"
         :alt="auction?.nft.meta.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] tw-object-cover tw-rounded-xl 3xl:tw-w-[750px] 3xl:tw-h-[750px]"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
       />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"

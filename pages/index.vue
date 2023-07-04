@@ -1,9 +1,12 @@
 <template>
   <div class="">
     <landing-featured-slider />
+    <landing-explore-section />
+    <landing-all-collection-section />
+    <landing-auction-section />
     <div>
       <div class="tw-px-4 md:tw-px-16">
-        <section class="tw-pt-8 tw-pb-4 tw-container tw-mx-auto">
+        <!-- <section class="tw-pt-8 tw-pb-4 tw-container tw-mx-auto">
           <landing-section-heading heading="Live" />
           <live-section v-if="!loading" :collections="liveCollections" />
           <loading v-else />
@@ -15,13 +18,13 @@
             :collections="upcomingCollections"
           />
           <loading v-else />
-        </section>
+        </section> -->
 
-        <section class="tw-py-8 tw-container tw-mx-auto">
+        <!-- <section class="tw-py-8 tw-container tw-mx-auto">
           <landing-section-heading heading="Auctions" />
           <LandingAuctions v-if="!loading" :auctions="auctions" />
           <loading v-else />
-        </section>
+        </section> -->
 
         <!-- <section class="tw-py-8 tw-container tw-mx-auto">
           <landing-section-heading heading="Whitelist Opportunities" />
