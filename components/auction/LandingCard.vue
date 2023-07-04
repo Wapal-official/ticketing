@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border-solid tw-border tw-border-dark-4 tw-group md:tw-w-[312px] md:tw-max-w-[312px]"
+    class="!tw-text-white tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border-solid tw-border tw-border-dark-4 tw-group md:tw-w-[312px] md:tw-max-w-[312px]"
     :to="`/auctions/${auction?.auction_name}`"
   >
     <div

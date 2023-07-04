@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     :to="`/nft/${collection?.username}`"
-    class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 tw-text-white"
+    class="!tw-text-white tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
   >
     <div class="tw-text-sm tw-font-semibold">{{ collectionNumber }}.</div>
     <img
