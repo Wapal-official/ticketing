@@ -3,9 +3,7 @@
     :to="`/nft/${collection?.username}`"
     class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 tw-text-white"
   >
-    <div class="tw-text-[0.875em] tw-font-semibold">
-      {{ collectionNumber }}.
-    </div>
+    <div class="tw-text-sm tw-font-semibold">{{ collectionNumber }}.</div>
     <img
       class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
       :src="collection?.image"
@@ -13,7 +11,7 @@
     />
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1">
       <div class="tw-font-medium">{{ collection?.name }}</div>
-      <div class="tw-text-dark-2 tw-text-[0.875em] tw-font-medium">
+      <div class="tw-text-dark-2 tw-text-sm tw-font-medium">
         {{ minted }}/{{ totalSupply }}
         Minted
       </div>

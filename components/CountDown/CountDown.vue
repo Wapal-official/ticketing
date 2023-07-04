@@ -1,36 +1,62 @@
 <template>
-  <div class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2">
+  <div
+    class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+    :class="{ '!tw-gap-1': small }"
+  >
     <div
       class="tw-text-white tw-text-[1.75rem] tw-tracking-[-0.0175rem] tw-font-medium"
       v-if="days > 0"
+      :class="{ '!tw-text-base': small }"
     >
       {{ days
-      }}<span class="tw-text-lg tw-text-dark-2 tw-font-semibold">D</span>
+      }}<span
+        class="tw-text-lg tw-text-dark-2 tw-font-semibold"
+        :class="{ '!tw-text-sm': small }"
+        >D</span
+      >
     </div>
     <div
       class="tw-text-white tw-text-[1.75rem] tw-tracking-tight tw-font-medium"
+      :class="{ '!tw-text-base': small }"
     >
       {{ hours
-      }}<span class="tw-text-lg tw-text-dark-2 tw-font-semibold">H</span>
+      }}<span
+        class="tw-text-lg tw-text-dark-2 tw-font-semibold"
+        :class="{ '!tw-text-sm': small }"
+        >H</span
+      >
     </div>
     <div
       class="tw-text-white tw-text-[1.75rem] tw-tracking-tight tw-font-medium"
+      :class="{ '!tw-text-base': small }"
     >
       {{ minutes
-      }}<span class="tw-text-lg tw-text-dark-2 tw-font-semibold">M</span>
+      }}<span
+        class="tw-text-lg tw-text-dark-2 tw-font-semibold"
+        :class="{ '!tw-text-sm': small }"
+        >M</span
+      >
     </div>
     <div
       class="tw-text-white tw-text-[1.75rem] tw-tracking-tight tw-font-medium"
+      :class="{ '!tw-text-base': small }"
     >
       {{ seconds
-      }}<span class="tw-text-lg tw-text-dark-2 tw-font-semibold">S</span>
+      }}<span
+        class="tw-text-lg tw-text-dark-2 tw-font-semibold"
+        :class="{ '!tw-text-sm': small }"
+        >S</span
+      >
     </div>
   </div>
 </template>
 
 <script lang="ts">
 export default {
-  props: { startTime: { type: String } },
+  props: {
+    startTime: { type: String },
+    small: { type: Boolean, default: false },
+  },
   data() {
     return {
       days: 0,
@@ -79,6 +105,7 @@ export default {
   },
   mounted() {
     this.setDate();
+    console.log(this.startTime);
     this.startCountdown(this.startTime);
   },
 };

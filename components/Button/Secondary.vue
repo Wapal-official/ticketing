@@ -1,10 +1,10 @@
 <template>
   <button
-    class="tw-rounded-md tw-bg-primary-1 tw-text-white tw-px-8 tw-py-2.5 tw-box-border disabled:tw-cursor-not-allowed 3xl:tw-text-lg"
+    class="tw-rounded-md tw-bg-transparent tw-text-primary-2 tw-px-8 tw-py-2.5 tw-box-border tw-transition-all tw-duration-200 tw-ease-linear disabled:tw-cursor-not-allowed 3xl:tw-text-lg hover:tw-bg-dark-6"
     :class="{
       '!tw-border-solid tw-border tw-border-dark-4 tw-bg-transparent': bordered,
       'tw-w-full': fullWidth,
-      'tw-text-sm 3xl:tw-text-base': small,
+      'tw-text-sm 3xl:tw-text-base tw-px-4': small,
     }"
     @click="$emit('click')"
     :disabled="disabled"

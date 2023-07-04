@@ -3,6 +3,7 @@
     <landing-featured-slider />
     <landing-explore-section />
     <landing-all-collection-section />
+    <landing-auction-section />
     <div>
       <div class="tw-px-4 md:tw-px-16">
         <section class="tw-pt-8 tw-pb-4 tw-container tw-mx-auto">
