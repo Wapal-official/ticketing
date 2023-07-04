@@ -14,7 +14,7 @@
         />
       </div>
       <div
-        class="tw-absolute tw-w-full tw-h-1/2 tw-top-[50.2%] gradient tw-rounded-lg"
+        class="tw-absolute tw-w-full tw-h-1/2 tw-bottom-[-1px] gradient tw-rounded-lg"
       ></div>
       <div
         class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-flex tw-flex-col tw-items-start tw-justify-between tw-px-4"
