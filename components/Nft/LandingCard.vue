@@ -1,20 +1,20 @@
 <template>
   <div
-    class="!tw-w-full !tw-h-[338px] !tw-max-h-[338px] tw-rounded-lg tw-cursor-pointer tw-group/landing-card md:!tw-w-[312px] md:!tw-h-[312px]"
+    class="!tw-w-full !tw-h-[338px] !tw-max-h-[338px] tw-cursor-pointer tw-group/landing-card md:!tw-w-[312px] md:!tw-h-[312px]"
     @click="redirectToCollection"
   >
-    <div
-      class="tw-relative tw-w-full tw-h-full tw-overflow-hidden tw-rounded-lg"
-    >
-      <div class="tw-w-full tw-h-full">
+    <div class="tw-relative tw-w-full tw-h-full tw-rounded-lg">
+      <div
+        class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative"
+      >
         <img
-          :src="collection?.image"
-          :alt="collection?.name"
+          :src="isCollection ? collection?.image : collection?.nft.meta.image"
+          :alt="isCollection ? collection?.name : collection?.nft.meta.name"
           class="tw-w-full tw-h-full tw-object-cover tw-rounded-lg tw-absolute tw-top-0 tw-transition-all tw-ease-linear tw-duration-300 tw-transform group-hover/landing-card:tw-scale-125"
         />
       </div>
       <div
-        class="tw-absolute tw-w-full tw-h-1/2 tw-top-[51%] gradient tw-rounded-lg"
+        class="tw-absolute tw-w-full tw-h-1/2 tw-top-[50.2%] gradient tw-rounded-lg"
       ></div>
       <div
         class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-flex tw-flex-col tw-items-start tw-justify-between tw-px-4"
@@ -37,13 +37,16 @@
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-pb-4"
         >
           <h3 class="tw-font-semibold">
-            {{ collection?.name }}
+            {{ isCollection ? collection?.name : collection?.nft.meta.name }}
           </h3>
           <div
             class="tw-text-white/70 tw-text-[0.875rem]"
             v-if="getPrice != '0APT'"
           >
-            Price {{ getPrice }}
+            {{
+              isCollection ? "Price" : getLiveStatus ? "Current Bid" : "Min Bid"
+            }}
+            {{ getPrice }}
           </div>
           <div class="tw-text-white/70 tw-text-[0.875rem]" v-else>
             Free Mint
@@ -55,9 +58,22 @@
 </template>
 <script lang="ts">
 export default {
-  props: { collection: { type: Object } },
+  props: {
+    collection: { type: Object },
+    type: { type: String, default: "collection" },
+  },
   computed: {
+    isCollection() {
+      return this.type === "collection";
+    },
     getLiveStatus() {
+      if (this.type === "auction") {
+        if (new Date(this.collection.startAt) > new Date()) {
+          return false;
+        }
+
+        return true;
+      }
       if (!this.collection.candyMachine) {
         if (
           !this.collection.public_sale_time &&
@@ -90,6 +106,17 @@ export default {
       return false;
     },
     getPrice() {
+      if (this.type === "auction") {
+        if (this.collection.biddings.length > 0) {
+          return (
+            this.collection.biddings[this.collection.biddings.length - 1].bid +
+            "APT"
+          );
+        }
+
+        return this.collection.min_bid + "APT";
+      }
+
       if (!this.collection.candyMachine) {
         if (this.collection.whitelist_price) {
           return this.collection.whitelist_price + "APT";
@@ -128,6 +155,11 @@ export default {
   },
   methods: {
     redirectToCollection() {
+      if (this.type === "auction") {
+        this.$router.push(`/auctions/${this.collection.auction_name}`);
+
+        return;
+      }
       this.$router.push(`/nft/${this.collection.username}`);
     },
   },

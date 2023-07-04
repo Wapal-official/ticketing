@@ -4,7 +4,11 @@
       class="tw-container tw-mx-auto md:tw-w-[90%] lg:tw-w-[95%] 2xl:tw-w-[90%]"
     >
       <tab :tabs="tabs" @tabChanged="tabChanged" class="tw-mb-10" />
-      <landing-explore-slider :collections="collections" v-if="!loading" />
+      <landing-explore-slider
+        :collections="collections"
+        :type="type"
+        v-if="!loading"
+      />
       <div
         class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 md:tw-grid-cols-2 lg:tw-grid-cols-3 xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
         v-else
@@ -33,6 +37,7 @@ import {
   getFeaturedCollection,
   getLiveCollections,
 } from "@/services/CollectionService";
+import { getUpcomingAuctions } from "~/services/AuctionService";
 export default {
   data() {
     return {
@@ -44,6 +49,7 @@ export default {
       limit: 8,
       fetchInterval: null,
       end: false,
+      type: "collection",
     };
   },
   methods: {
@@ -58,6 +64,9 @@ export default {
       this.end = false;
 
       this.loading = true;
+
+      this.type = "collection";
+
       switch (tab) {
         case 0:
           await this.getFeaturedCollections();
@@ -86,12 +95,31 @@ export default {
     async getFeaturedCollections(page: number) {
       this.collections = [];
 
+      this.type = "collection";
       const res = await getFeaturedCollection();
       this.collections.push(res.data.collection);
+
       this.end = true;
     },
     async getAuctions() {
-      this.collections = [];
+      this.page++;
+
+      if (this.page === 1) {
+        this.collections = [];
+      }
+
+      this.type = "auction";
+
+      const res = await getUpcomingAuctions({
+        perPage: this.limit,
+        page: this.page,
+      });
+
+      this.collections.push(...res);
+
+      if (res.length === 0) {
+        this.end = true;
+      }
 
       this.end = true;
     },
@@ -101,6 +129,8 @@ export default {
       if (this.page === 1) {
         this.collections = [];
       }
+
+      this.type = "collection";
 
       const res = await getLiveCollections(this.page, this.limit);
 
