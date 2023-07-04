@@ -1,7 +1,7 @@
 <template>
   <v-tabs
     v-model="tab"
-    class="!tw-bg-dark-6 !tw-w-fit tw-rounded-lg tw-p-2"
+    class="!tw-bg-dark-6 tw-rounded-lg tw-p-2 md:!tw-w-fit"
     slider-color="transparent"
     background-color="transparent"
     @change="$emit('tabChanged', tab)"

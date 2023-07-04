@@ -31,6 +31,9 @@ module.exports = {
         "dark-7":"#1A1B1E",
         "dark-8":"#141517",
         "dark-9":"#101113",
+        'utility-red':"#FF5449",
+        "utility-green":"#8CD867",
+        "utility-yellow":"#FFAD05",
       },
       screens: {
         "1xl": "1440px",

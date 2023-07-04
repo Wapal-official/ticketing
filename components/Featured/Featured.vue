@@ -318,11 +318,7 @@
   </div> -->
 </template>
 <script lang="ts">
-import {
-  getCollectionByUsername,
-  getFeaturedCollection,
-  setSoldOut,
-} from "@/services/CollectionService";
+import { setSoldOut } from "@/services/CollectionService";
 
 export default {
   props: { propCollection: { type: Object } },
