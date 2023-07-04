@@ -29,6 +29,7 @@
           }"
         />
       </div>
+      <loading-collections v-else />
     </div>
   </section>
 </template>
