@@ -1,9 +1,5 @@
 <template>
-  <section
-    class="swiper mySwiper tw-w-full lg:tw-mt-[18px]"
-    ref="swiper"
-    v-if="!loading"
-  >
+  <section class="swiper mySwiper tw-w-full" ref="swiper" v-if="!loading">
     <div class="swiper-wrapper tw-w-full">
       <div
         class="swiper-slide tw-w-full"
