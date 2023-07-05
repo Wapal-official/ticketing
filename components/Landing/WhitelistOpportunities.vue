@@ -47,7 +47,6 @@ export default {
   },
   async mounted() {
     const res = await getAllWhitelist(1, 5);
-    console.log("test");
     this.whitelists = res.data.whitelists;
     this.loading = false;
   },

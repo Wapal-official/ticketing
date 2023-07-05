@@ -152,7 +152,7 @@ export default {
     async fetchWhitelists() {
       this.loading = true;
 
-      const res = await getAllWhitelist();
+      const res = await getAllWhitelist(1, 100);
       const whitelists = res.data.whitelists;
 
       const collectionRes = await Promise.all(
