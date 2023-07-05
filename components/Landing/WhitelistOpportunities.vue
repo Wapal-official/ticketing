@@ -1,41 +1,35 @@
 <template>
-  <div
-    v-if="!loading"
-    class="tw-flex tw-flex-col tw-items-start tw-justify-end tw-w-full tw-gap-4"
-  >
+  <section class="tw-w-full tw-bg-dark-8 tw-pb-24">
     <div
-      class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-center tw-text-wapal-pink tw-text-xl"
-      v-if="!whitelists[0] || !whitelists[0]._id"
+      class="tw-container tw-mx-auto tw-px-8 md:tw-w-[90%] lg:tw-w-full 2xl:tw-px-[3.75rem] 3xl:tw-w-[90%]"
     >
-      No Whitelist Opportunities
-    </div>
-    <div
-      class="tw-w-full tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-8"
-      v-else
-    >
-      <div class="tw-flex tw-flex-row tw-flex-wrap tw-w-full">
-        <div
-          class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
-        >
-          <whitelist-card
-            v-for="(whitelist, index) in whitelists"
-            :key="whitelist._id"
-            :whitelist="whitelist"
-            :class="{
-              'lg:tw-hidden 1xl:tw-flex': index === 3,
-            }"
-          />
-        </div>
-      </div>
-      <gradient-border-button
-        @click.native="gotoWhitelistPage"
-        class="tw-mt-2 tw-self-end"
+      <div
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-justify-between md:tw-items-center tw-pb-8"
       >
-        View All
-      </gradient-border-button>
+        <landing-section-heading heading="Whitelist Opportunities" />
+        <button-primary
+          :bordered="true"
+          title="View All"
+          @click="$router.push('/whitelist-opportunities')"
+        />
+      </div>
+      <div
+        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-6 md:tw-grid-cols-2 lg:tw-grid-cols-3 1xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
+        v-if="!loading"
+      >
+        <whitelist-landing-card
+          v-for="(whitelist, index) in whitelists"
+          :key="index"
+          :whitelist="whitelist"
+          :class="{
+            'lg:tw-hidden 1xl:tw-flex': index === 3,
+            'tw-hidden 3xl:tw-flex': index === 4,
+          }"
+        />
+      </div>
+      <loading-collections v-else />
     </div>
-  </div>
-  <loading v-else />
+  </section>
 </template>
 <script lang="ts">
 import Loading from "@/components/Reusable/Loading.vue";
@@ -52,8 +46,8 @@ export default {
     };
   },
   async mounted() {
-    const res = await getAllWhitelist();
-    this.whitelists = res.data.whitelists.slice(0, 4);
+    const res = await getAllWhitelist(1, 5);
+    this.whitelists = res.data.whitelists;
     this.loading = false;
   },
   methods: {
