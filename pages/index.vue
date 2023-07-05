@@ -5,46 +5,6 @@
     <landing-all-collection-section />
     <landing-auction-section />
     <landing-whitelist-opportunities />
-    <div>
-      <div class="tw-px-4 md:tw-px-16">
-        <!-- <section class="tw-pt-8 tw-pb-4 tw-container tw-mx-auto">
-          <landing-section-heading heading="Live" />
-          <live-section v-if="!loading" :collections="liveCollections" />
-          <loading v-else />
-        </section>
-        <section class="tw-py-8 tw-container tw-mx-auto">
-          <landing-section-heading heading="Upcoming" />
-          <upcoming-section
-            v-if="!loading"
-            :collections="upcomingCollections"
-          />
-          <loading v-else />
-        </section> -->
-
-        <!-- <section class="tw-py-8 tw-container tw-mx-auto">
-          <landing-section-heading heading="Auctions" />
-          <LandingAuctions v-if="!loading" :auctions="auctions" />
-          <loading v-else />
-        </section> -->
-
-        <!-- <section class="tw-py-8 tw-container tw-mx-auto">
-          <landing-section-heading heading="Whitelist Opportunities" />
-          <whitelist-opportunities />
-        </section> -->
-
-        <!-- <section
-          class="tw-py-8 tw-container tw-mx-auto"
-          v-if="fastestSoldoutCollections.length >= 10"
-        >
-          <landing-section-heading heading="Fastest Soldout" />
-          <fastest-soldout-section
-            v-if="!loading"
-            :collections="fastestSoldoutCollections"
-          />
-          <loading v-else />
-        </section> -->
-      </div>
-    </div>
   </div>
 </template>
 
