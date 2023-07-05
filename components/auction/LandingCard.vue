@@ -13,9 +13,9 @@
       />
     </div>
     <div
-      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-px-4 tw-gap-3 tw-w-full"
+      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-w-full"
     >
-      <div>
+      <div class="tw-px-4">
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5"
         >
@@ -29,7 +29,7 @@
         <h3 class="tw-font-bold tw-text-lg">{{ auction?.nft.meta.name }}</h3>
       </div>
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-px-4"
       >
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
@@ -56,7 +56,7 @@
         </div>
       </div>
       <div
-        class="tw-border-t tw-border-solid tw-border-t-dark-4 tw-py-4 tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+        class="tw-border-t tw-border-solid tw-border-t-dark-4 tw-py-4 tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-px-4"
       >
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
