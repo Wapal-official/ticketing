@@ -10,7 +10,7 @@
         <button-primary
           :bordered="true"
           title="View All"
-          @click="$router.push('/whitelist-opportunities')"
+          @click="$router.push('/whitelist')"
         />
       </div>
       <div
