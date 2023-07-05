@@ -46,4 +46,8 @@ export default {
 .v-tab:focus::before {
   opacity: 0 !important;
 }
+
+::v-deep .v-slide-group__prev--disabled {
+  display: none !important;
+}
 </style>
