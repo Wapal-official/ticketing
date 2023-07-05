@@ -12,7 +12,7 @@
         <button-primary
           :bordered="true"
           title="View All"
-          @click="this.$router.push('/explore/all')"
+          @click="$router.push('/auctions')"
         />
       </div>
       <div

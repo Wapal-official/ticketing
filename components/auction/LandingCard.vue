@@ -22,7 +22,7 @@
           <h2 class="tw-font-medium tw-text-xs">
             {{ auction?.nft.nft.current_token_data.collection_name }}
           </h2>
-          <v-icon class="!tw-text-primary-1 !tw-text-base"
+          <v-icon class="!tw-text-primary-1 !tw-text-sm"
             >mdi-check-decagram</v-icon
           >
         </div>

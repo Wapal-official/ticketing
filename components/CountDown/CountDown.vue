@@ -105,7 +105,6 @@ export default {
   },
   mounted() {
     this.setDate();
-    console.log(this.startTime);
     this.startCountdown(this.startTime);
   },
 };
