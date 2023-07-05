@@ -1,9 +1,9 @@
 import { publicRequest } from "./fetcher";
 import axios from "axios";
 
-export const getAllWhitelist = async () => {
+export const getAllWhitelist = async (page: number, limit: number) => {
   const res = await axios.get(
-    `${process.env.baseURL}/api/whitelist/all?limit=100&page=1`
+    `${process.env.baseURL}/api/whitelist/all?limit=${limit}&page=${page}`
   );
 
   return res;
@@ -100,7 +100,7 @@ export const getWhitelistByUsername = async (username: string) => {
 export const getProof = async ({
   walletAddress,
   collectionId,
-  phase
+  phase,
 }: {
   walletAddress: string;
   collectionId: string;

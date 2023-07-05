@@ -2,7 +2,7 @@
   <v-app class="!tw-bg-[#101113] tw-w-full tw-overflow-hidden tw-relative">
     <div>
       <Navbar @landingMenuToggled="toggleMainContainer" />
-      <Nuxt :class="mainClass" class="tw-pb-16" />
+      <Nuxt :class="mainClass" />
       <wapal-footer :class="mainClass" />
     </div>
     <toast />

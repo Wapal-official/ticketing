@@ -1,7 +1,7 @@
 <template>
   <section class="tw-w-full tw-bg-dark-8 tw-pb-24">
     <div
-      class="tw-container tw-px-8 tw-mx-auto md:tw-px-0 md:tw-w-[90%] lg:tw-w-[95%] 2xl:tw-w-[90%]"
+      class="tw-container tw-mx-auto tw-px-8 md:tw-w-[90%] lg:tw-w-full 2xl:lg:tw-px-[3.75rem] 3xl:tw-w-[90%]"
     >
       <div
         class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-justify-between md:tw-items-center tw-pb-8"

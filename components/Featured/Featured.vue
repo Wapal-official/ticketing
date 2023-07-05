@@ -1,17 +1,17 @@
 <template>
   <div
-    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-16 lg:tw-pb-6 2xl:!tw-max-w-[1152px]"
+    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-16 lg:tw-pb-6 xl:!tw-max-w-[1100px]"
   >
     <div
-      class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-6 tw-place-items-center lg:tw-grid-cols-2 lg:tw-gap-16 lg:tw-items-center lg:tw-justify-center"
+      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-center"
     >
       <img
         :src="collection.image"
         :alt="collection.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
       />
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 xl:tw-w-[526px]"
       >
         <h2
           class="tw-text-lg tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1.5 3xl:tw-text-xl"
