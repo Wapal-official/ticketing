@@ -6,4 +6,6 @@ export enum defaultTheme {
   error = "#D03050",
   wapalPink = "#FF36AB",
   wapalBackground = "#0E0D0D",
+  primary = "#FB2576",
+  primarySecond = "#FC6399",
 }

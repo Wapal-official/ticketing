@@ -96,23 +96,23 @@ export default {
   async mounted() {
     const res = await getFeaturedCollection();
     this.featuredCollection = res.data.collection;
-
-    const liveRes = await getCollectionByUsername("degen-star-wars");
-
-    const upcomingCollectionRes = await getCollectionByUsername("ring-runner");
-
-    const whitelistRes = await getCollectionByUsername("celestials");
-
     this.featuredCollections.push(this.featuredCollection);
-    this.featuredCollections.push(liveRes.data.collection[0]);
-    this.featuredCollections.push(upcomingCollectionRes.data.collection[0]);
-    this.featuredCollections.push(whitelistRes.data.collection[0]);
 
-    const upcomingAuctionRes = await getAuctionByName("awakened-panda-465");
-    const liveAuctionRes = await getAuctionByName("doggy-style-9");
+    // const liveRes = await getCollectionByUsername("degen-star-wars");
 
-    this.featuredAuctions.push(liveAuctionRes.data.auction);
-    this.featuredAuctions.push(upcomingAuctionRes.data.auction);
+    // const upcomingCollectionRes = await getCollectionByUsername("ring-runner");
+
+    // const whitelistRes = await getCollectionByUsername("celestials");
+
+    // this.featuredCollections.push(liveRes.data.collection[0]);
+    // this.featuredCollections.push(upcomingCollectionRes.data.collection[0]);
+    // this.featuredCollections.push(whitelistRes.data.collection[0]);
+
+    // const upcomingAuctionRes = await getAuctionByName("awakened-panda-465");
+    // const liveAuctionRes = await getAuctionByName("doggy-style-9");
+
+    // this.featuredAuctions.push(liveAuctionRes.data.auction);
+    // this.featuredAuctions.push(upcomingAuctionRes.data.auction);
 
     this.loading = false;
 

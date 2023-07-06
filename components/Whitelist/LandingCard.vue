@@ -93,7 +93,7 @@ export default {
   },
   computed: {
     getMintDate() {
-      if (this.collection.phases.length > 0) {
+      if (this.collection.phases && this.collection.phases.length > 0) {
         return moment(this.collection.phases[0].mint_time).format(
           "MMM DD, HH:MM A"
         );
