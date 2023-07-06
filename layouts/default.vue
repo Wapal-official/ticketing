@@ -1,5 +1,5 @@
 <template>
-  <v-app class="!tw-bg-[#101113] tw-w-full tw-overflow-hidden tw-relative">
+  <v-app class="!tw-bg-dark-8 tw-w-full tw-overflow-hidden tw-relative">
     <div>
       <Navbar @landingMenuToggled="toggleMainContainer" />
       <Nuxt :class="mainClass" v-if="!$slots.default" />

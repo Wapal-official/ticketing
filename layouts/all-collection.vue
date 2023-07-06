@@ -1,6 +1,7 @@
 <template>
   <default-layout>
     <featured :propCollection="collection" v-if="!loading" />
+    <loading-collection v-else />
     <div class="tw-px-8 tw-pt-[6.75em] tw-pb-24 lg:tw-px-[3.75em]">
       <tab-bordered :tab="tab" @tabChanged="tabChanged" class="tw-mb-10" />
       <NuxtChild />
@@ -23,7 +24,6 @@ export default {
   async mounted() {
     const res = await getFeaturedCollection();
     this.collection = res.data.collection;
-    console.log(this.$route.path);
     if (this.$route.path === "/latest-collection") {
       this.tab = 0;
     } else if (this.$route.path === "/upcoming-collection") {
