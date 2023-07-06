@@ -2,13 +2,19 @@
   <div class="tw-w-full">
     <landing-section-heading heading="Upcoming Collection" class="tw-pb-8" />
     <div
+      v-if="!loading && collections.length === 0"
+      class="tw-w-full tw-text-center tw-text-xl tw-text-primary-1"
+    >
+      No Collections
+    </div>
+    <div
       class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-x-6 tw-gap-y-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 1xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
+      v-else
     >
       <nft-collection-card
         v-for="(collection, index) in collections"
         :key="index"
         :collection="collection"
-        :live="false"
       />
     </div>
     <div class="py-16" v-if="loading">
