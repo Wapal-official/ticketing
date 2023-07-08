@@ -1,13 +1,13 @@
 <template>
   <NuxtLink
-    class="!tw-text-white tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border-solid tw-border tw-border-dark-4 tw-group md:tw-w-[312px] md:tw-max-w-[312px]"
+    class="!tw-text-white tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border-solid tw-border tw-border-dark-4 tw-group md:tw-w-[313.6px] md:tw-max-w-[314px]"
     :to="`/auctions/${auction?.auction_name}`"
   >
     <div
       class="tw-w-full tw-h-[312px] tw-rounded-t-lg tw-overflow-hidden md:tw-w-[312px] md:tw-h-[312px]"
     >
       <img
-        class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-w-[312px] md:tw-h-[312px] group-hover:tw-scale-125"
+        class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-min-w-[313px] md:tw-h-[312px] group-hover:tw-scale-125"
         :src="auction?.nft.meta.image"
         :alt="auction?.nft.meta.name"
       />
@@ -22,7 +22,9 @@
           <h2 class="tw-font-medium tw-text-xs">
             {{ auction?.nft.nft.current_token_data.collection_name }}
           </h2>
-          <v-icon class="!tw-text-primary-1 !tw-text-sm"
+          <v-icon
+            class="!tw-text-primary-1 !tw-text-sm"
+            v-if="auction?.isVerified"
             >mdi-check-decagram</v-icon
           >
         </div>

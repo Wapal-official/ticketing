@@ -1,5 +1,208 @@
 <template>
-  <div v-if="!loadingAuction">
+  <div
+    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[5.5em] lg:tw-pb-24 xl:!tw-max-w-[1100px]"
+    v-if="!loadingAuction"
+  >
+    <div
+      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
+    >
+      <img
+        :src="auction.nft.meta.image"
+        :alt="auction.nft.meta.name"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+      />
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
+      >
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-3"
+          v-if="!auctionStarted"
+        >
+          <div class="tw-w-3 tw-h-3 tw-rounded-full tw-bg-primary-1"></div>
+          <div
+            class="tw-text-white tw-flex tw-flex-row tw-items-start tw-justify-center tw-gap-1"
+          >
+            <div class="tw-text-white tw-font-bold">Starts in</div>
+            <count-down-plain
+              :startTime="auction.startAt"
+              class="tw-font-bold"
+              @countdownComplete="startAuction"
+            />
+          </div>
+        </div>
+        <h1 class="tw-text-white tw-text-[2.5em] tw-font-bold">
+          {{ auction.nft.meta.name }}
+        </h1>
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+        >
+          <a :href="auction.twitter" target="_blank" v-if="auction.twitter">
+            <v-icon
+              class="tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
+              >mdi-twitter</v-icon
+            > </a
+          ><a
+            :href="auction.discord"
+            target="_blank"
+            class="nft-discord-icon"
+            v-if="auction.discord"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"
+              ></path>
+            </svg>
+          </a>
+          <a :href="auction.instagram" target="_blank" v-if="auction.instagram">
+            <v-icon
+              class="tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
+              >mdi-instagram</v-icon
+            >
+          </a>
+          <button>
+            <v-icon class="!tw-text-white">mdi-share-variant</v-icon>
+          </button>
+        </div>
+        <div class="tw-pb-2 tw-text-dark-0">
+          {{ auction.nft.meta.description }}
+        </div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+          v-if="!auctionEnded && auctionStarted"
+        >
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-baseline tw-justify-between"
+          >
+            <div>
+              <div class="tw-font-semibold tw-text-dark-0 tw-uppercase tw-pb-1">
+                Current Bid
+              </div>
+              <div class="tw-text-white tw-text-[1.75em] tw-font-medium">
+                {{ current_bid }} APT
+              </div>
+            </div>
+            <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
+              <div class="tw-font-semibold tw-text-dark-0 tw-uppercase tw-pb-1">
+                End Time
+              </div>
+              <count-down
+                :startTime="auction.endAt"
+                @countdownComplete="endAuction"
+              />
+            </div>
+          </div>
+          <ValidationObserver
+            ref="form"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between lg:tw-flex-col lg:tw-items-start lg:tw-justify-start xl:tw-flex-row xl:tw-items-start xl:tw-justify-between"
+          >
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full md:tw-w-[213px] md:tw-max-w-[213px] lg:tw-w-full lg:tw-max-w-full xl:tw-w-[213px] xl:tw-max-w-[213px]"
+              rules="required|bidAmount|lamport"
+              v-slot="{ errors }"
+            >
+              <text-field
+                v-model="bid"
+                placeholder="Bid price(APT)"
+                class="tw-w-full"
+              />
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <div
+              class="md:tw-w-[213px] md:tw-max-w-[213px] lg:tw-w-full lg:tw-max-w-full xl:tw-w-[213px] xl:tw-max-w-[213px]"
+            >
+              <button-primary
+                title="Place a Bid"
+                :fullWidth="true"
+                @click="placeBid"
+                v-if="showPlaceBidButton"
+                :loading="loading"
+              />
+              <button-primary
+                title="Increase Your Bid"
+                :fullWidth="true"
+                @click="increaseBid"
+                :loading="loading"
+                v-else
+              />
+            </div>
+          </ValidationObserver>
+        </div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+          v-if="auctionEnded"
+        >
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-baseline tw-justify-between"
+          >
+            <div>
+              <div class="tw-font-semibold tw-text-dark-0 tw-uppercase tw-pb-1">
+                Final Bid
+              </div>
+              <div class="tw-text-white tw-text-[1.75em] tw-font-medium">
+                {{ current_bid }} APT
+              </div>
+            </div>
+            <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
+              <div class="tw-font-semibold tw-text-dark-0 tw-uppercase tw-pb-1">
+                Auction Ended
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+          v-if="auctionStarted"
+        >
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
+          >
+            <div class="tw-font-semibold">Last bid</div>
+            <button
+              class="tw-text-sm tw-text-dark-2"
+              @click="showMoreBiddings = !showMoreBiddings"
+            >
+              {{ !showMoreBiddings ? "See More" : "See Less" }}
+            </button>
+          </div>
+          <div
+            v-if="auction.biddings.length > 0"
+            class="tw-w-full tw-pr-4 bid-list"
+            :class="{
+              'tw-h-[40px] tw-overflow-hidden': !showMoreBiddings,
+              'tw-overflow-auto tw-h-[80px]': showMoreBiddings,
+            }"
+          >
+            <div
+              v-for="(item, i) in auction.biddings"
+              :key="i"
+              class="tw-w-full"
+            >
+              <div
+                class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-py-2"
+              >
+                <div class="!tw-text-dark-0">
+                  {{ item.displayName }}
+                  bid for {{ item.bid }} APT
+                </div>
+                <div>
+                  <small class="tw-text-sm tw-font-medium tw-text-dark-2">{{
+                    $moment(item.time).fromNow()
+                  }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p v-else class="text-center">No biddings yet</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div v-if="!loadingAuction">
     <div
       class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-pt-16 tw-pb-16 md:tw-px-16 xl:tw-flex-row xl:tw-gap-16 xl:tw-items-start"
     >
@@ -215,7 +418,7 @@
         @close="showSignupDialog = false"
       />
     </v-dialog>
-  </div>
+  </div> -->
   <div class="tw-py-32 tw-w-full" v-else>
     <reusable-loading />
   </div>
@@ -252,6 +455,7 @@ extend("lamport", {
 });
 
 export default {
+  props: { propAuctionName: { type: String } },
   components: { ValidationObserver, ValidationProvider },
   data() {
     return {
@@ -263,7 +467,7 @@ export default {
       validRules: {
         required: (value) => !!value || "Required.",
       },
-      bid: 0,
+      bid: "",
       endInterval: 0,
       showSignupDialog: false,
       showConnectWalletDialog: false,
@@ -275,6 +479,7 @@ export default {
       auctionStarted: false,
       previousBid: 0,
       bidInterval: null,
+      showMoreBiddings: false,
     };
   },
   watch: {
@@ -334,13 +539,19 @@ export default {
     },
     async getAuctionDetails() {
       let res = null;
-      try {
-        res = await publicRequest.get(`/api/auction/${this.$route.params.id}`);
-      } catch (error) {
-        if (this.$route.params.id.includes("\\")) {
-          const cleanedParams = this.$route.params.id.split("\\").join("%5C");
-          res = await publicRequest.get(`/api/auction/${cleanedParams}`);
+      if (!this.propAuctionName) {
+        try {
+          res = await publicRequest.get(
+            `/api/auction/${this.$route.params.id}`
+          );
+        } catch (error) {
+          if (this.$route.params.id.includes("\\")) {
+            const cleanedParams = this.$route.params.id.split("\\").join("%5C");
+            res = await publicRequest.get(`/api/auction/${cleanedParams}`);
+          }
         }
+      } else {
+        res = await publicRequest.get(`/api/auction/${this.propAuctionName}`);
       }
 
       let response = res.data.auction;
@@ -541,6 +752,9 @@ export default {
           this.showPlaceBidButton = true;
           this.showIncreaseBidButton = false;
         }
+      } else {
+        this.showPlaceBidButton = true;
+        this.showIncreaseBidButton = false;
       }
     },
     async withdrawBid() {
@@ -605,9 +819,9 @@ export default {
       }
 
       return (
-        walletAddress.slice(0, 5) +
+        walletAddress.slice(0, 4) +
         "..." +
-        walletAddress.slice(-5, walletAddress.length)
+        walletAddress.slice(-2, walletAddress.length)
       );
     },
   },

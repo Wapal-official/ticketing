@@ -18,10 +18,9 @@
 <script lang="ts">
 import { defaultTheme } from "@/theme/wapaltheme";
 export default {
-  props: { tab: { type: Number } },
+  props: { tab: { type: Number }, tabs: { type: Array } },
   data() {
     return {
-      tabs: ["Latest Collection", "Upcoming Collection"],
       defaultTheme,
     };
   },

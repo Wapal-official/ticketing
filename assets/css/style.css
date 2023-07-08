@@ -1,4 +1,9 @@
 /* Landing */
+*{
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
 .landing-background {
   background: linear-gradient(
     180deg,
@@ -364,4 +369,27 @@
 
 .mdi-checkbox-blank-outline {
   color: #d9d9d9 !important;
+}
+
+/* New Design Input */ 
+.wapal-input {
+  border-radius: 7px !important;
+  @apply tw-bg-dark-6 tw-border-dark-4 tw-border-solid tw-border;
+}
+.wapal-input.v-text-field--outlined > .v-input__control > .v-input__slot {
+  min-height: 44px !important;
+}
+.wapal-input.v-text-field--outlined fieldset {
+  border: none !important;
+}
+.wapal-input.v-text-field--enclosed .v-input__append-inner {
+  margin-top: 10px !important;
+}
+
+.wapal-input.v-text-field--outlined.v-input--is-focused
+  .v-input__slot:before {
+  border: none !important;
+}
+.wapal-input.v-text-field--outlined .v-label {
+  top: 15px !important;
 }

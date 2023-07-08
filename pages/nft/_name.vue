@@ -41,7 +41,7 @@
             v-if="collection.twitter"
           >
             <v-icon
-              class="!tw-text-base tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
+              class=" tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
               >mdi-twitter</v-icon
             > </a
           ><a
@@ -52,8 +52,8 @@
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
+              width="20"
+              height="20"
               viewBox="0 0 16 16"
             >
               <path
@@ -67,12 +67,12 @@
             v-if="collection.instagram"
           >
             <v-icon
-              class="!tw-text-base tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
+              class=" tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
               >mdi-instagram</v-icon
             >
           </a>
           <button>
-            <v-icon class="!tw-text-white !tw-text-base"
+            <v-icon class="!tw-text-white "
               >mdi-share-variant</v-icon
             >
           </button>
