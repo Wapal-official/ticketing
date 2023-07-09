@@ -1,7 +1,7 @@
 <template>
   <section class="tw-w-full tw-bg-dark-8 tw-py-24 tw-px-8 md:tw-px-0">
     <div
-      class="tw-container tw-mx-auto tw-px-8 md:tw-w-[90%] lg:tw-w-full 2xl:tw-px-[3.75rem] 3xl:tw-w-[90%]"
+      class="tw-container tw-mx-auto md:tw-px-8 md:tw-w-[90%] lg:tw-w-full 2xl:tw-px-[3.75rem] 3xl:tw-w-[90%]"
     >
       <tab :tabs="tabs" @tabChanged="tabChanged" class="tw-mb-10" />
       <landing-explore-slider
