@@ -1,8 +1,8 @@
 <template>
   <default-layout>
-    <nft-detail :collection="collection" v-if="!loading" />
+    <auction-detail :propAuctionName="featuredAuctionName" v-if="!loading" />
     <loading-collection v-else />
-    <div class="tw-px-8 tw-pt-[6.75em] tw-pb-24 lg:tw-px-[3.75em]">
+    <div class="tw-px-8 tw-pb-24 lg:tw-px-[3.75em]">
       <tab-bordered
         :tab="tab"
         :tabs="tabs"
@@ -14,11 +14,8 @@
   </default-layout>
 </template>
 <script lang="ts">
-import {
-  getCollectionByUsername,
-  getFeaturedCollection,
-} from "@/services/CollectionService";
 import DefaultLayout from "@/layouts/default.vue";
+import { getAuctionByName } from "@/services/AuctionService";
 export default {
   layout: "default",
   components: { DefaultLayout },
@@ -27,16 +24,18 @@ export default {
       collection: null,
       loading: true,
       tab: 0,
-      tabs: ["Latest Collection", "Upcoming Collection"],
+      tabs: ["Live Auction", "Past Auction"],
+      featuredAuctionName: "",
     };
   },
   async mounted() {
-    const liveRes = await getCollectionByUsername("celestials");
+    const res = await getAuctionByName("doggy-style-9");
 
-    this.collection = liveRes.data.collection[0];
-    if (this.$route.path === "/latest-collection") {
+    this.featuredAuctionName = res.data.auction.auction_name;
+
+    if (this.$route.path === "/live-auction") {
       this.tab = 0;
-    } else if (this.$route.path === "/upcoming-collection") {
+    } else if (this.$route.path === "/past-auction") {
       this.tab = 1;
     }
 
@@ -48,13 +47,13 @@ export default {
 
       switch (tab) {
         case 0:
-          this.$router.push("/latest-collection");
+          this.$router.push("/live-auction");
           break;
         case 1:
-          this.$router.push("/upcoming-collection");
+          this.$router.push("/past-auction");
           break;
         default:
-          this.$router.push("/latest-collection");
+          this.$router.push("/live-auction");
           break;
       }
     },

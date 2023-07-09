@@ -1,14 +1,14 @@
 <template>
   <NuxtLink
-    class="!tw-text-white tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border-solid tw-border tw-border-dark-4 tw-group md:tw-w-[312px] md:tw-max-w-[312px]"
+    class="!tw-text-white tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border-solid tw-border tw-border-dark-4 tw-group md:tw-w-[313.6px] md:tw-max-w-[314px]"
     v-if="!loading"
     :to="`/whitelist/${collection.username}`"
   >
     <div
-      class="tw-w-full tw-h-[312px] tw-rounded-t-lg tw-overflow-hidden md:tw-w-[312px] md:tw-h-[312px]"
+      class="tw-w-full tw-h-[312px] tw-rounded-t-lg tw-overflow-hidden md:tw-w-[312px] md:tw-min-h-[312px]"
     >
       <img
-        class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-w-[312px] md:tw-h-[312px] group-hover:tw-scale-125"
+        class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-min-w-[313px] md:tw-h-[312px] group-hover:tw-scale-125"
         :src="collection.image"
         :alt="collection.name"
       />

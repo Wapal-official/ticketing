@@ -62,8 +62,8 @@ export default {
   },
   async mounted() {
     const res = await getFeaturedCollection();
-    this.featuredCollection = res.data.collection;
-    this.featuredCollections.push(this.featuredCollection);
+    // this.featuredCollection = res.data.collection;
+    // this.featuredCollections.push(this.featuredCollection);
 
     const liveRes = await getCollectionByUsername("degen-star-wars");
 
