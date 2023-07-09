@@ -1,6 +1,6 @@
 <template>
   <default-layout>
-    <featured :propCollection="collection" v-if="!loading" />
+    <nft-detail :collection="collection" v-if="!loading" />
     <loading-collection v-else />
     <div class="tw-px-8 tw-pt-[6.75em] tw-pb-24 lg:tw-px-[3.75em]">
       <tab-bordered
@@ -31,10 +31,6 @@ export default {
     };
   },
   async mounted() {
-    // const res = await getFeaturedCollection();
-
-    // this.collection = res.data.collection;
-
     const liveRes = await getCollectionByUsername("celestials");
 
     this.collection = liveRes.data.collection[0];
