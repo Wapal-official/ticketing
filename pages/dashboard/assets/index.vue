@@ -1,76 +1,110 @@
 <template>
-  <div class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4">
-    <gradient-border-button class="asset1" @click.native="newFolderDialog = true">
-      Create New NFT Vault +
-    </gradient-border-button>
-    <v-breadcrumbs :items="breadcrumbs" class="breadcrumb !tw-text-base">
+  <div
+    class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
+  >
+    <div
+      class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+    >
+      <dashboard-page-heading heading="Assets" />
+      <button-primary title="+ Create NFT Vault" />
+    </div>
+    <v-breadcrumbs
+      :items="breadcrumbs"
+      class="breadcrumb !tw-text-base !tw-font-medium"
+    >
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
     </v-breadcrumbs>
     <div class="tw-flex tw-flex-row tw-flex-wrap tw-gap-4" v-if="!loading">
       <button
-        class="tw-bg-wapal-gray tw-px-4 tw-py-2 tw-text-black tw-rounded-sm tw-flex tw-flex-row tw-items-center tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-gray-300"
-        v-if="folders[0].folder_name" v-for="(folder, index) in folders" :key="folder.folder_name"
-        @click="folderClicked(folder._id)">
-        <div class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2">
-          <v-icon class="!tw-text-black">mdi-folder</v-icon>
+        class="tw-bg-dark-4 tw-px-4 tw-py-3 tw-text-white tw-rounded tw-flex tw-flex-row tw-items-baseline tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-dark-5"
+        v-if="folders[0].folder_name"
+        v-for="(folder, index) in folders"
+        :key="folder.folder_name"
+        @click="folderClicked(folder._id)"
+      >
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 tw-font-medium"
+        >
+          <i class="bx bxs-folder tw-text-xl"></i>
           {{ folder.folder_name }}
         </div>
         <v-menu v-if="index !== 0">
           <template v-slot:activator="{ on, attrs }">
             <button v-bind="attrs" v-on="on">
-              <v-icon class="!tw-text-black">mdi-dots-vertical</v-icon>
+              <i class="bx bx-dots-vertical-rounded tw-text-xl"></i>
             </button>
           </template>
-          <div class="tw-flex tw-flex-col tw-justify-items-start tw-items-start tw-bg-modal-gray tw-py-4">
+          <div
+            class="tw-flex tw-flex-col tw-justify-items-start tw-items-start tw-bg-modal-gray tw-py-4"
+          >
             <button
               class="tw-w-full tw-py-1 tw-px-4 tw-text-left tw-transition-all tw-duration-200 tw-ease-linear hover:tw-bg-black/60"
-              @click="showRenameFolderDialog(folder)">
+              @click="showRenameFolderDialog(folder)"
+            >
               Rename
             </button>
             <button
               class="tw-w-full tw-py-1 tw-px-4 tw-text-left tw-transition-all tw-duration-200 tw-ease-linear hover:tw-bg-black/60"
-              @click="showDeleteFolderDialog(folder)">
+              @click="showDeleteFolderDialog(folder)"
+            >
               Delete
             </button>
           </div>
         </v-menu>
       </button>
     </div>
-    <loading v-else />
-    <v-dialog v-model="newFolderDialog"
-      content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]">
+    <reusable-loading v-else />
+    <v-dialog
+      v-model="newFolderDialog"
+      content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
       <h2 class="tw-text-xl tw-font-semibold">
         {{ currentFolder.folder_name ? "Rename NFT Vault" : "New NFT Vault" }}
       </h2>
-      <input v-model="newFolderName"
+      <input
+        v-model="newFolderName"
         class="tw-w-full tw-px-4 tw-py-2 tw-text-white tw-bg-transparent tw-rounded tw-border-solid tw-border-2 tw-border-wapal-gray focus:tw-outline-none"
-        placeholder="Vault Name" />
-      <div class="tw-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4">
-        <button class="tw-px-4 tw-py-2 tw-rounded-sm tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-pink"
-          @click="cancelCreatingNewFolder">
+        placeholder="Vault Name"
+      />
+      <div
+        class="tw-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
+      >
+        <button
+          class="tw-px-4 tw-py-2 tw-rounded-sm tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-pink"
+          @click="cancelCreatingNewFolder"
+        >
           Cancel
         </button>
         <button
           class="tw-px-4 tw-py-2 tw-rounded-sm tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-pink disabled:tw-bg-wapal-pink/80"
-          :disabled="!newFolderName" @click="createNewFolder">
+          :disabled="!newFolderName"
+          @click="createNewFolder"
+        >
           {{ currentFolder.folder_name ? "Rename" : "Create" }}
         </button>
       </div>
     </v-dialog>
-    <v-dialog v-model="deleteFolderDialog"
-      content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]">
+    <v-dialog
+      v-model="deleteFolderDialog"
+      content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
       <h2 class="tw-text-xl tw-font-semibold">Delete NFT Vault</h2>
       <p>Are you sure you want to Delete {{ currentFolder?.folder_name }}?</p>
-      <div class="tw-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4">
-        <button class="tw-px-4 tw-py-2 tw-rounded-sm tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-pink"
-          @click="deleteFolderDialog = false">
+      <div
+        class="tw-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
+      >
+        <button
+          class="tw-px-4 tw-py-2 tw-rounded-sm tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-pink"
+          @click="deleteFolderDialog = false"
+        >
           No
         </button>
         <button
           class="tw-px-4 tw-py-2 tw-rounded-sm tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-pink disabled:tw-bg-wapal-pink/80"
-          @click="deleteFolder(currentFolder)">
+          @click="deleteFolder(currentFolder)"
+        >
           Yes
         </button>
       </div>
@@ -78,8 +112,6 @@
   </div>
 </template>
 <script lang="ts">
-import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
-import Loading from "@/components/Reusable/Loading.vue";
 import { defaultTheme } from "@/theme/wapaltheme";
 
 import {
@@ -91,7 +123,6 @@ import {
 
 export default {
   layout: "dashboard",
-  components: { GradientBorderButton, Loading },
   data() {
     return {
       folders: [
@@ -255,7 +286,6 @@ export default {
   },
   mounted() {
     this.mapFolders();
-
   },
 };
 </script>

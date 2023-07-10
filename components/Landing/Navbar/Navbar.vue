@@ -71,13 +71,14 @@
       </div>
       <div class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4">
         <button @click="displaySearchBar" class="tw-flex md:tw-hidden">
-          <i class="bx bx-search !tw-text-wapal-gray">mdi-magnify</i>
+          <i class="bx bx-search !tw-text-wapal-gray"></i>
         </button>
         <button @click="toggleLandingMenu" class="tw-flex lg:tw-hidden">
-          <i class="bx bx-menu !tw-text-wapal-gray" v-if="!landingMenuShowing"
-            >mdi-menu</i
-          >
-          <i class="bx bx-x !tw-text-wapal-gray" v-else>mdi-close</i>
+          <i
+            class="bx bx-menu !tw-text-wapal-gray"
+            v-if="!landingMenuShowing"
+          ></i>
+          <i class="bx bx-x !tw-text-wapal-gray" v-else></i>
         </button>
       </div>
     </nav>

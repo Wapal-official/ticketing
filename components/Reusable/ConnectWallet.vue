@@ -8,10 +8,11 @@
     <button-primary
       @click="disconnectWallet"
       :title="displayFormattedWalletAddress"
+      :bordered="true"
       v-else
     >
       <template #prepend-icon>
-        <i class="bx bxs-user !tw-text-white"></i>
+        <i class="bx bxs-user !tw-text-primary-1 tw-text-xl tw-pr-1"></i>
       </template>
     </button-primary>
     <v-dialog

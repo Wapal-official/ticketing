@@ -1,16 +1,17 @@
 <template>
-  <v-app class="tw-w-full tw-h-full tw-overflow-hidden">
+  <v-app class="tw-w-full tw-h-full tw-overflow-hidden !tw-bg-dark-8">
     <verification v-if="!getVerifiedStatus" />
     <div v-else>
       <dashboard-navbar :closeIcon="closeIcon" @toggleSidebar="toggleSidebar" />
+      <div class="tw-w-full tw-h-[1px] tw-bg-dark-6"></div>
       <div class="tw-flex tw-flex-row tw-items-start relative">
         <dashboard-sidebar class="tw-hidden lg:tw-flex" />
         <div class="dashboard-container">
-          <Nuxt class="!tw-px-4 !tw-py-4 md:!tw-px-8" />
+          <Nuxt class="!tw-px-6 !tw-py-8" />
         </div>
       </div>
       <div
-        class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-wapal-background tw-z-50"
+        class="tw-absolute tw-w-full tw-top-[95px] tw-left-0 tw-transition-all tw-duration-150 tw-ease-linear tw-bg-dark-8 tw-z-50"
         :class="sidebarClass"
       >
         <dashboard-sidebar @close="closeSideBar" />

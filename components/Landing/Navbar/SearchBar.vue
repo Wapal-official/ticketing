@@ -12,14 +12,12 @@
       class="bx bx-x !tw-text-black !tw-text-2xl !tw-absolute !tw-right-[1%] tw-peer peer-focus:!tw-text-wapal-gray"
       v-if="searchInput.length > 0"
       @click="clearSearch"
-      >mdi-close</i
-    >
+    ></i>
     <i
       class="bx bx-search !tw-flex !tw-text-black !tw-text-2xl !tw-absolute !tw-right-[1%] tw-peer peer-focus:!tw-text-wapal-gray md:!tw-hidden"
-      @click.native="closeSearchBar"
+      @click="closeSearchBar"
       v-if="searchInput.length === 0"
-      >mdi-close</i
-    >
+    ></i>
     <div
       class="tw-absolute tw-top-[110%] tw-bg-modal-gray tw-rounded tw-py-4 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-z-50"
       v-if="showSearchResults"
