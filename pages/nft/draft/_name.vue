@@ -1,5 +1,77 @@
 <template>
-  <div>
+  <div
+    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[5.5em] lg:tw-pb-[7.5em] xl:!tw-max-w-[1100px]"
+    v-if="!loading"
+  >
+    <div
+      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
+    >
+      <img
+        :src="collection.image"
+        :alt="collection.name"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+      />
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
+      >
+        <h1 class="tw-text-white tw-text-[2.5em] tw-font-bold">
+          {{ collection.name }}
+        </h1>
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+        >
+          <a
+            :href="collection.twitter"
+            target="_blank"
+            v-if="collection.twitter"
+          >
+            <i
+              class="bx bxl-twitter tw-transition tw-duration-200 tw-ease-linear tw-text-2xl hover:!tw-text-primary-1"
+            ></i> </a
+          ><a
+            :href="collection.discord"
+            target="_blank"
+            v-if="collection.discord"
+          >
+            <i
+              class="bx bxl-discord-alt tw-transition tw-duration-200 tw-ease-linear tw-text-2xl hover:!tw-text-primary-1"
+            ></i>
+          </a>
+          <a
+            :href="collection.instagram"
+            target="_blank"
+            v-if="collection.instagram"
+          >
+            <i
+              class="bx bxl-instagram tw-transition tw-duration-200 tw-ease-linear tw-text-2xl hover:!tw-text-primary-1"
+            ></i>
+          </a>
+          <button>
+            <i
+              class="bx bxs-share-alt tw-transition tw-duration-200 tw-ease-linear tw-text-2xl hover:!tw-text-primary-1"
+            ></i>
+          </button>
+        </div>
+        <div class="tw-pb-2 tw-text-dark-0">
+          {{ collection.description }}
+        </div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3"
+        >
+          <h2 class="tw-text-white tw-text-[1.375em] tw-font-bold">
+            Mint Phases
+          </h2>
+          <nft-mint-phase-box
+            v-for="(phase, index) in phases"
+            :key="index"
+            :phase="phase"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <loading-collection v-else />
+  <!-- <div>
     <div
       class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-pt-16 tw-pb-16 md:tw-px-16 lg:tw-flex-row lg:tw-gap-16"
       v-if="!loading"
@@ -170,7 +242,7 @@
     >
       <loading />
     </div>
-  </div>
+  </div> -->
 </template>
 <script>
 import { getCollection, getDraftById } from "@/services/CollectionService";
@@ -237,6 +309,7 @@ export default {
       publicSaleDate: null,
       showWhitelistSaleTimer: true,
       showPublicSaleTimer: true,
+      phases: [],
     };
   },
   methods: {},
@@ -257,6 +330,26 @@ export default {
   },
   async mounted() {
     this.loading = false;
+
+    if (this.collection.phases) {
+      if (this.collection.phases.length === 0) {
+        this.phases = this.collection.phases;
+      } else {
+        this.phases = JSON.parse(this.collection.phases);
+      }
+    }
+
+    this.phases.push({
+      name: "whitelist sale",
+      mint_time: this.collection.whitelist_sale_time,
+      mint_price: this.collection.whitelist_sale_price,
+    });
+
+    this.phases.push({
+      name: "public sale",
+      mint_time: this.collection.public_sale_time,
+      mint_price: this.collection.public_sale_price,
+    });
   },
 };
 </script>

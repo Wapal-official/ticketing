@@ -25,9 +25,7 @@
           Price
         </div>
         <div class="tw-text-white">
-          {{
-            phase?.mint_price === 0 ? "Free Mint" : phase?.mint_price + "APT"
-          }}
+          {{ getMintPrice }}
         </div>
       </div>
     </div>
@@ -39,7 +37,19 @@ export default {
   props: { phase: { type: Object } },
   computed: {
     getFormattedMintDate() {
+      if (!this.phase.mint_time) {
+        return "TBD";
+      }
       return moment(this.phase.mint_time).format("MMM DD, HH:MM A");
+    },
+    getMintPrice() {
+      if (!this.phase.mint_price) {
+        return "TBD";
+      }
+
+      return this.phase?.mint_price === 0
+        ? "Free Mint"
+        : this.phase?.mint_price + "APT";
     },
   },
 };
