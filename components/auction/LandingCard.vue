@@ -38,13 +38,15 @@
           <div class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-xs">
             Current Bid
           </div>
-          <div class="">
+          <div
+            class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
+          >
             {{
               auction?.biddings[0]
                 ? auction?.biddings[auction?.biddings.length - 1].bid
                 : auction?.min_bid
             }}
-            APT
+            <span><img :src="aptIcon" alt="apt" /></span>
           </div>
         </div>
         <div class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-1">
@@ -84,12 +86,14 @@
   </NuxtLink>
 </template>
 <script lang="ts">
+import aptIcon from "@/assets/img/apt.svg";
 export default {
   props: { auction: { type: Object } },
   data() {
     return {
       auctionStarted: false,
       auctionEnded: false,
+      aptIcon,
     };
   },
   computed: {},
