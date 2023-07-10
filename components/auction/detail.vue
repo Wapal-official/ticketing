@@ -833,16 +833,4 @@ export default {
 .theme-text {
   color: #ff36ab;
 }
-
-.bid-list::-webkit-scrollbar {
-  width: 3px;
-}
-
-.bid-list::-webkit-scrollbar-track {
-  background: #d9d9d9;
-}
-
-.bid-list::-webkit-scrollbar-thumb {
-  background-color: #ff36ab;
-}
 </style>

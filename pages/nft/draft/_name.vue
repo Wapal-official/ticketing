@@ -61,11 +61,15 @@
           <h2 class="tw-text-white tw-text-[1.375em] tw-font-bold">
             Mint Phases
           </h2>
-          <nft-mint-phase-box
-            v-for="(phase, index) in phases"
-            :key="index"
-            :phase="phase"
-          />
+          <div
+            class="tw-w-full tw-h-[250px] tw-overflow-auto bid-list tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3"
+          >
+            <nft-mint-phase-box
+              v-for="(phase, index) in phases"
+              :key="index"
+              :phase="phase"
+            />
+          </div>
         </div>
       </div>
     </div>
