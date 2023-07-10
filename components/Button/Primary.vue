@@ -5,6 +5,7 @@
       '!tw-border-solid tw-border tw-border-dark-4 tw-bg-transparent': bordered,
       'tw-w-full': fullWidth,
       'tw-text-sm 3xl:tw-text-base': small,
+      'tw-bg-dark-6': dark,
     }"
     @click="$emit('click')"
     :disabled="disabled"
@@ -30,6 +31,7 @@ export default {
     loading: { type: Boolean, default: false },
     fullWidth: { type: Boolean, default: false },
     small: { type: Boolean, default: false },
+    dark: { type: Boolean, default: false },
   },
 };
 </script>
