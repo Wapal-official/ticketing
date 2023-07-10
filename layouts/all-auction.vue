@@ -3,12 +3,7 @@
     <auction-detail :propAuctionName="featuredAuctionName" v-if="!loading" />
     <loading-collection v-else />
     <div class="tw-px-8 tw-pb-24 lg:tw-px-[3.75em]">
-      <tab-bordered
-        :tab="tab"
-        :tabs="tabs"
-        @tabChanged="tabChanged"
-        class="tw-mb-10"
-      />
+      <Tab :tab="tab" :tabs="tabs" @tabChanged="tabChanged" class="tw-mb-10" />
       <NuxtChild />
     </div>
   </default-layout>

@@ -63,7 +63,7 @@
           <a
             :href="whitelist?.discord_server_url"
             target="_blank"
-            class="hover:!tw-text-primary-1"
+            class="!tw-text-white hover:!tw-text-primary-1"
             @click.stop=""
             >{{ whitelist?.discord_server_name }}</a
           >
@@ -101,7 +101,7 @@
           <a
             :href="whitelist?.twitter"
             target="_blank"
-            class="hover:!tw-text-primary-1"
+            class="!tw-text-white hover:!tw-text-primary-1"
             @click.stop=""
             >{{ whitelist?.twitter }}</a
           >
@@ -543,7 +543,6 @@ export default {
       const whitelistEndDate = new Date(this.whitelist.whitelist_end);
 
       if (this.full) {
-        console.log("full");
         return false;
       }
 
@@ -553,12 +552,10 @@ export default {
         !this.getDiscordConnected ||
         !this.joinedDiscordServer
       ) {
-        console.log("verify");
         return false;
       }
 
       if (now < whitelistStartDate || now > whitelistEndDate) {
-        console.log("date");
         return false;
       }
       return true;

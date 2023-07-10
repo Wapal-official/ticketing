@@ -3,7 +3,12 @@
     <div
       class="tw-container tw-mx-auto md:tw-px-8 md:tw-w-[90%] lg:tw-w-full 2xl:tw-px-[3.75rem] 3xl:tw-w-[90%]"
     >
-      <tab :tabs="tabs" @tabChanged="tabChanged" class="tw-mb-10" />
+      <tab
+        :tab="tabNumber"
+        :tabs="tabs"
+        @tabChanged="tabChanged"
+        class="tw-mb-10"
+      />
       <landing-explore-slider
         :collections="collections"
         :type="type"
@@ -73,7 +78,7 @@ export default {
 
       this.loading = false;
     },
-    async getFeaturedCollections(page: number) {
+    async getFeaturedCollections() {
       this.collections = [];
 
       this.type = "collection";
@@ -164,6 +169,8 @@ export default {
       }, 10000);
     },
   },
-  async mounted() {},
+  async mounted() {
+    this.tabChanged(0);
+  },
 };
 </script>
