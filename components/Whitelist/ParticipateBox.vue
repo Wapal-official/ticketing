@@ -94,12 +94,12 @@
       </div>
       <div
         class="tw-w-full tw-px-4 tw-py-3 tw-bg-dark-7 tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-rounded"
-        v-if="whitelist?.discord_server_id"
+        v-if="whitelist?.twitter"
       >
         <div class="tw-text-medium">
           Follow
           <a
-            :href="whitelist?.discord_server_url"
+            :href="whitelist?.twitter"
             target="_blank"
             class="hover:!tw-text-primary-1"
             @click.stop=""
@@ -128,7 +128,15 @@
           >
         </div>
       </div>
-      <!-- <button @click="checkUserForVerification">Verify and Enter</button> -->
+    </div>
+    <div
+      class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-pt-6"
+    >
+      <button-primary
+        title="Verify and Enter"
+        @click="checkUserForVerification"
+        :disabled="!getVerificationStatus"
+      />
     </div>
     <v-dialog
       v-model="showConnectWalletModal"
@@ -535,6 +543,7 @@ export default {
       const whitelistEndDate = new Date(this.whitelist.whitelist_end);
 
       if (this.full) {
+        console.log("full");
         return false;
       }
 
@@ -544,10 +553,12 @@ export default {
         !this.getDiscordConnected ||
         !this.joinedDiscordServer
       ) {
+        console.log("verify");
         return false;
       }
 
       if (now < whitelistStartDate || now > whitelistEndDate) {
+        console.log("date");
         return false;
       }
       return true;

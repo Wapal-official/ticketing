@@ -22,7 +22,7 @@
           <div
             class="tw-text-white tw-flex tw-flex-row tw-items-start tw-justify-center tw-gap-1"
           >
-            <div class="tw-text-white tw-font-bold">Live in</div>
+            <div class="tw-text-white tw-font-bold">Starts in</div>
             <count-down-plain
               :startTime="whitelist?.whitelist_start"
               class="tw-font-bold"
@@ -121,10 +121,11 @@ export default {
   props: { collection: { type: Object }, whitelist: { type: Object } },
   data() {
     return {
-      live: true,
+      live: false,
       interval: null,
       resource: { occupiedSpots: 0, totalSpots: 0 },
-      loading: true,
+      loading: false,
+      start_date: null,
     };
   },
   computed: {
@@ -158,8 +159,8 @@ export default {
       this.full = true;
     }
 
-    if (new Date(this.whitelist.start_date) < new Date()) {
-      this.live = false;
+    if (new Date(this.whitelist.whitelist_start) < new Date()) {
+      this.live = true;
     }
 
     this.loading = false;
