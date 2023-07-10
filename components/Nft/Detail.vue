@@ -41,7 +41,7 @@
             v-if="collection.twitter"
           >
             <i
-              class="bx bxl-twitter tw-transition tw-duration-200 tw-ease-linear tw-text-2xl hover:!tw-text-primary-1"
+              class="bx bxl-twitter tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
             ></i> </a
           ><a
             :href="collection.discord"
@@ -49,7 +49,7 @@
             v-if="collection.discord"
           >
             <i
-              class="bx bxl-discord-alt tw-transition tw-duration-200 tw-ease-linear tw-text-2xl hover:!tw-text-primary-1"
+              class="bx bxl-discord-alt tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
             ></i>
           </a>
           <a
@@ -58,12 +58,12 @@
             v-if="collection.instagram"
           >
             <i
-              class="bx bxl-instagram tw-transition tw-duration-200 tw-ease-linear tw-text-2xl hover:!tw-text-primary-1"
+              class="bx bxl-instagram tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
             ></i>
           </a>
           <button>
             <i
-              class="bx bxs-share-alt tw-transition tw-duration-200 tw-ease-linear tw-text-2xl hover:!tw-text-primary-1"
+              class="bx bxs-share-alt tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
             ></i>
           </button>
         </div>

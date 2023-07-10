@@ -30,7 +30,7 @@
         >
           <a :href="auction?.twitter" target="_blank" v-if="auction?.twitter">
             <i
-              class="bx bxl-twitter !tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
+              class="bx bxl-twitter !tw-text-2xl !tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
             ></i>
           </a>
           <a
@@ -39,7 +39,7 @@
             v-if="auction?.instagram"
           >
             <i
-              class="bx bxl-instagram !tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
+              class="bx bxl-instagram !tw-text-2xl !tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
             ></i>
           </a>
         </div>

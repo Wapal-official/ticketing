@@ -38,16 +38,16 @@
         >
           <a :href="auction.twitter" target="_blank" v-if="auction.twitter">
             <i
-              class="bx bxl-twitter tw-transition tw-duration-200 tw-ease-linear tw-text-2xl hover:!tw-text-primary-1"
+              class="bx bxl-twitter tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
             ></i> </a
           ><a :href="auction.discord" target="_blank" v-if="auction.discord">
             <i
-              class="bx bxl-discord-alt tw-transition tw-duration-200 tw-ease-linear tw-text-2xl hover:!tw-text-primary-1"
+              class="bx bxl-discord-alt tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
             ></i>
           </a>
           <a :href="auction.instagram" target="_blank" v-if="auction.instagram">
             <i
-              class="bx bxl-instagram tw-transition tw-duration-200 tw-ease-linear tw-text-2xl hover:!tw-text-primary-1"
+              class="bx bxl-instagram tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
             ></i>
           </a>
           <button>
