@@ -24,7 +24,7 @@
                   class="!tw-text-[#A6A7AB] tw-transition tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-center tw-gap-0.5 tw-justify-start hover:!tw-text-wapal-pink"
                 >
                   <span>Explore</span>
-                  <v-icon class="!tw-text-[#A6A7AB]">mdi-chevron-down</v-icon>
+                  <i class="bx bx-chevron-down !tw-text-[#A6A7AB]"></i>
                 </NuxtLink>
               </div>
             </template>
@@ -71,13 +71,13 @@
       </div>
       <div class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4">
         <button @click="displaySearchBar" class="tw-flex md:tw-hidden">
-          <v-icon class="!tw-text-wapal-gray">mdi-magnify</v-icon>
+          <i class="bx bx-search !tw-text-wapal-gray">mdi-magnify</i>
         </button>
         <button @click="toggleLandingMenu" class="tw-flex lg:tw-hidden">
-          <v-icon class="!tw-text-wapal-gray" v-if="!landingMenuShowing"
-            >mdi-menu</v-icon
+          <i class="bx bx-menu !tw-text-wapal-gray" v-if="!landingMenuShowing"
+            >mdi-menu</i
           >
-          <v-icon class="!tw-text-wapal-gray" v-else>mdi-close</v-icon>
+          <i class="bx bx-x !tw-text-wapal-gray" v-else>mdi-close</i>
         </button>
       </div>
     </nav>

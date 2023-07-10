@@ -17,11 +17,10 @@
           class="tw-text-lg tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1.5 3xl:tw-text-xl"
         >
           <span>{{ auction?.nft.nft.current_token_data.collection_name }}</span>
-          <v-icon
-            class="!tw-text-primary-1 !tw-text-base"
+          <i
+            class="bx bxs-badge-check tw-text-primary-1"
             v-if="auction?.isVerified"
-            >mdi-check-decagram</v-icon
-          >
+          ></i>
         </h2>
         <h1 class="tw-text-4xl tw-font-bold 3xl:tw-text-5xl">
           {{ auction?.nft.meta.name }}
@@ -30,20 +29,18 @@
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
         >
           <a :href="auction?.twitter" target="_blank" v-if="auction?.twitter">
-            <v-icon
-              class="!tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
-              >mdi-twitter</v-icon
-            >
+            <i
+              class="bx bxl-twitter !tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
+            ></i>
           </a>
           <a
             :href="auction?.instagram"
             target="_blank"
             v-if="auction?.instagram"
           >
-            <v-icon
-              class="!tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
-              >mdi-instagram</v-icon
-            >
+            <i
+              class="bx bxl-instagram !tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
+            ></i>
           </a>
         </div>
         <div class="tw-text-dark-0 3xl:tw-text-lg">

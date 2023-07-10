@@ -8,17 +8,17 @@
       v-model="searchInput"
       @input="search"
     />
-    <v-icon
-      class="!tw-text-black !tw-text-2xl !tw-absolute !tw-right-[1%] tw-peer peer-focus:!tw-text-wapal-gray"
+    <i
+      class="bx bx-x !tw-text-black !tw-text-2xl !tw-absolute !tw-right-[1%] tw-peer peer-focus:!tw-text-wapal-gray"
       v-if="searchInput.length > 0"
       @click="clearSearch"
-      >mdi-close</v-icon
+      >mdi-close</i
     >
-    <v-icon
-      class="!tw-flex !tw-text-black !tw-text-2xl !tw-absolute !tw-right-[1%] tw-peer peer-focus:!tw-text-wapal-gray md:!tw-hidden"
+    <i
+      class="bx bx-search !tw-flex !tw-text-black !tw-text-2xl !tw-absolute !tw-right-[1%] tw-peer peer-focus:!tw-text-wapal-gray md:!tw-hidden"
       @click.native="closeSearchBar"
       v-if="searchInput.length === 0"
-      >mdi-close</v-icon
+      >mdi-close</i
     >
     <div
       class="tw-absolute tw-top-[110%] tw-bg-modal-gray tw-rounded tw-py-4 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-z-50"

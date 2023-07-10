@@ -87,8 +87,8 @@
               :disabled="verifyingJoinedDiscordServer"
             />
           </div>
-          <v-icon class="!tw-text-primary-1 tw-py-2.5" v-else
-            >mdi-check-circle</v-icon
+          <i class="bx bxs-check-circle !tw-text-primary-1 tw-py-2.5" v-else
+            >mdi-check-circle</i
           >
         </div>
       </div>

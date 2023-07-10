@@ -24,19 +24,17 @@
         class="tw-w-12 tw-h-12 tw-border tw-border-solid tw-border-dark-3 tw-rounded-full tw-transition-all tw-duration-150 tw-ease-linear tw-flex tw-flex-col tw-items-center tw-justify-center tw-group hover:tw-bg-dark-0"
         @click="previous"
       >
-        <v-icon
-          class="!tw-text-dark-0 !tw-text-3xl tw-group group-hover:!tw-text-dark-2"
-          >mdi-chevron-left</v-icon
-        >
+        <i
+          class="bx bx-chevron-left !tw-text-dark-0 !tw-text-3xl tw-group group-hover:!tw-text-dark-2"
+        ></i>
       </button>
       <button
         class="tw-w-12 tw-h-12 tw-border tw-border-solid tw-border-dark-3 tw-rounded-full tw-transition-all tw-duration-150 tw-ease-linear tw-flex tw-flex-col tw-items-center tw-justify-center tw-group hover:tw-bg-dark-0"
         @click="next"
       >
-        <v-icon
-          class="!tw-text-dark-0 !tw-text-3xl tw-group group-hover:!tw-text-dark-2"
-          >mdi-chevron-right</v-icon
-        >
+        <i
+          class="bx bx-chevron-right !tw-text-dark-0 !tw-text-3xl tw-group group-hover:!tw-text-dark-2"
+        ></i>
       </button>
     </div>
   </section>
@@ -88,10 +86,6 @@ export default {
       grabCursor: true,
       centeredSlides: true,
       rewind: true,
-      autoplay: {
-        delay: 6000,
-        disableOnInteraction: false,
-      },
       slidesPerView: 1,
     });
   },

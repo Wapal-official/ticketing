@@ -22,11 +22,10 @@
           <h2 class="tw-font-medium tw-text-xs">
             {{ auction?.nft.nft.current_token_data.collection_name }}
           </h2>
-          <v-icon
-            class="!tw-text-primary-1 !tw-text-sm"
+          <i
+            class="bx bxs-badge-check !tw-text-primary-1"
             v-if="auction?.isVerified"
-            >mdi-check-decagram</v-icon
-          >
+          ></i>
         </div>
         <h3 class="tw-font-bold tw-text-lg">{{ auction?.nft.meta.name }}</h3>
       </div>

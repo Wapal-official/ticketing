@@ -11,7 +11,7 @@
       v-else
     >
       <template #prepend-icon>
-        <v-icon class="!tw-text-white">mdi-account</v-icon>
+        <i class="bx bxs-user !tw-text-white"></i>
       </template>
     </button-primary>
     <v-dialog

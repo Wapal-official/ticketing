@@ -22,11 +22,10 @@
           <h2 class="tw-font-medium tw-text-lg">
             {{ collection?.name }}
           </h2>
-          <v-icon
-            class="!tw-text-primary-1 !tw-text-sm"
+          <i
+            class="bx bxs-badge-check !tw-text-primary-1"
             v-if="collection?.isVerified"
-            >mdi-check-decagram</v-icon
-          >
+          ></i>
         </div>
       </div>
       <div
