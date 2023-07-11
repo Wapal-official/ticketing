@@ -149,27 +149,20 @@
           </div>
         </div>
         <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5 tw-relative"
           v-if="auctionStarted"
         >
+          <div
+            class="tw-absolute tw-w-full tw-h-1/4 tw-overflow-hidden tw-left-0 tw-bottom-0 tw-rounded-b-lg tw-bg-gradient-to-b tw-from-black/0 tw-to-black"
+          ></div>
           <div
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
           >
             <div class="tw-font-semibold">Last bid</div>
-            <button
-              class="tw-text-sm tw-text-dark-2"
-              @click="showMoreBiddings = !showMoreBiddings"
-            >
-              {{ !showMoreBiddings ? "See More" : "See Less" }}
-            </button>
           </div>
           <div
             v-if="auction.biddings.length > 0"
-            class="tw-w-full tw-pr-4 bid-list"
-            :class="{
-              'tw-h-[40px] tw-overflow-hidden': !showMoreBiddings,
-              'tw-overflow-auto tw-h-[80px]': showMoreBiddings,
-            }"
+            class="tw-w-full tw-pr-4 no-scrollbar tw-overflow-auto tw-h-[80px]"
           >
             <div
               v-for="(item, i) in auction.biddings"

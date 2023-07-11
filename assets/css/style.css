@@ -400,18 +400,13 @@
   top: 15px !important;
 }
 
-.bid-list::-webkit-scrollbar {
-  width: 3px;
+/*Hide scrollbar in chrome*/
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
-.bid-list::-webkit-scrollbar-track {
-  background: #d9d9d9;
-}
-
-.bid-list::-webkit-scrollbar-thumb {
-  @apply tw-bg-primary-1;
-}
-
-.bid-list {
-  padding-right: 8px;
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

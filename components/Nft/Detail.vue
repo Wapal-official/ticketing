@@ -140,14 +140,17 @@
           </div>
         </div>
         <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3"
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-relative tw-rounded-lg"
           v-if="currentSale.id !== 'public-sale'"
         >
+          <div
+            class="tw-absolute tw-w-full tw-h-1/4 tw-overflow-hidden tw-left-0 tw-bottom-0 tw-rounded-b-lg tw-bg-gradient-to-b tw-from-black/0 tw-to-black"
+          ></div>
           <h2 class="tw-text-white tw-text-[1.375em] tw-font-bold">
             Mint Phases
           </h2>
           <div
-            class="tw-w-full tw-h-[250px] tw-overflow-auto bid-list tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3"
+            class="tw-w-full tw-h-[250px] tw-overflow-auto no-scrollbar tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-rounded-lg"
           >
             <nft-mint-phase-box
               v-for="(phase, index) in phases"
