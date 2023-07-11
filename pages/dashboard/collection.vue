@@ -8,7 +8,10 @@
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
       >
         <dashboard-page-heading heading="Collection" />
-        <button-primary title="Create New Collection">
+        <button-primary
+          title="Create New Collection"
+          @click="$router.push('/dashboard/create-collection')"
+        >
           <template #prepend-icon>
             <i class="bx bx-plus tw-text-xl tw-pr-2"></i>
           </template>
