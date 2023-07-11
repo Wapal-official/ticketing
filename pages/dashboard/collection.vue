@@ -4,32 +4,25 @@
       class="tw-flex tw-w-full tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
       v-if="showTabs"
     >
-      <div class="collection1">
-        <NuxtLink to="/dashboard/create-collection"
-          ><button-gradient-border-button
-            >Create New Collection</button-gradient-border-button
-          >
-        </NuxtLink>
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+      >
+        <dashboard-page-heading heading="Collection" />
+        <button-primary title="Create New Collection">
+          <template #prepend-icon>
+            <i class="bx bx-plus tw-text-xl tw-pr-2"></i>
+          </template>
+        </button-primary>
       </div>
     </div>
-    <div class="tw-w-full tw-py-2" v-if="showTabs">
-      <v-tabs
-        active-class="!tw-text-wapal-pink"
-        class="!tw-bg-transparent"
-        id="explore-tab"
-        v-model="launchpadTab"
-        @change="tabChanged(launchpadTab)"
-      >
-        <v-tab
-          :ripple="false"
-          class="!tw-capitalize !tw-text-white"
-          v-for="tab in launchpadTabs"
-          :key="tab.id"
-          >{{ tab.title }}</v-tab
-        >
-      </v-tabs>
+    <div class="tw-w-full tw-py-6" v-if="showTabs">
+      <tab-bordered
+        :tab="launchpadTab"
+        :tabs="launchpadTabs"
+        @tabChanged="tabChanged"
+      />
     </div>
-    <div class="tw-py-8 tw-w-full">
+    <div class="tw-pb-6 tw-w-full">
       <Nuxt />
     </div>
   </div>
@@ -39,11 +32,7 @@ export default {
   layout: "dashboard",
   data() {
     return {
-      launchpadTabs: [
-        { id: 0, title: "Live" },
-        { id: 1, title: "Under Review" },
-        { id: 2, title: "Draft" },
-      ],
+      launchpadTabs: ["Live", "Under Review", "Draft"],
       launchpadTab: 0,
     };
   },
