@@ -1,6 +1,6 @@
 <template>
   <section class="swiper mySwiper tw-w-full" ref="swiper" v-if="!loading">
-    <div class="swiper-wrapper tw-w-full">
+    <div class="swiper-wrapper tw-w-full md:!tw-px-[3.75em]">
       <div
         class="swiper-slide tw-w-full"
         v-for="collection in featuredCollections"
@@ -18,7 +18,7 @@
     </div>
 
     <div
-      class="tw-w-4/5 tw-mx-auto tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4 tw-pb-6 lg:tw-pb-24 2xl:!tw-max-w-[1152px]"
+      class="tw-w-4/5 tw-mx-auto tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4 tw-pb-6 lg:tw-pt-6 lg:tw-pb-12 1xl:!tw-max-w-[1320px]"
     >
       <button
         class="tw-w-12 tw-h-12 tw-border tw-border-solid tw-border-dark-3 tw-rounded-full tw-transition-all tw-duration-150 tw-ease-linear tw-flex tw-flex-col tw-items-center tw-justify-center tw-group hover:tw-bg-dark-0"

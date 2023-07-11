@@ -1,61 +1,65 @@
 <template>
   <div
-    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-16 lg:tw-pb-6 1xl:!tw-max-w-[1320px]"
+    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-28 lg:tw-pb-0 lg:tw-px-28 1xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px]"
   >
     <div
-      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-center xl:tw-gap-[4.5em]"
+      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
       <img
         :src="collection.image"
         :alt="collection.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
       />
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 lg:tw-w-[474px]"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
       >
-        <!-- <h2
-          class="tw-text-lg tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1.5 3xl:tw-text-xl"
+        <h1
+          class="tw-text-4xl tw-font-bold 3xl:tw-text-5xl tw-tracking-[-0.025em]"
         >
-          <span>{{ collection.name }}</span>
-          <i
-            class="bx bxs-badge-check tw-text-primary-1"
-            v-if="collection?.isVerified"
-          ></i>
-        </h2> -->
-        <h1 class="tw-text-4xl tw-font-bold 3xl:tw-text-5xl">
           {{ collection.name }}
         </h1>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
+          <a
+            :href="collection.discord"
+            target="_blank"
+            v-if="collection.discord"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+          >
+            <i
+              class="bx bxl-discord-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
+            ></i>
+          </a>
           <a
             :href="collection.twitter"
             target="_blank"
             v-if="collection.twitter"
+            class="tw-ml-0.5 tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
           >
             <i
-              class="bx bxl-twitter !tw-text-2xl tw-transition tw-duration-200 tw-ease-linear !tw-text-white hover:!tw-text-primary-1"
-            ></i> </a
-          ><a
-            :href="collection.discord"
-            target="_blank"
-            v-if="collection.discord"
-          >
-            <i
-              class="bx bxl-discord-alt !tw-text-2xl tw-transition tw-duration-200 tw-ease-linear !tw-text-white hover:!tw-text-primary-1"
+              class="bx bxl-twitter tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
           <a
             :href="collection.instagram"
             target="_blank"
             v-if="collection.instagram"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
           >
             <i
-              class="bx bxl-instagram !tw-text-2xl tw-transition tw-duration-200 tw-ease-linear !tw-text-white hover:!tw-text-primary-1"
+              class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
+          <button
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
+          >
+            <i
+              class="bx bxs-share-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear !tw-text-white"
+            ></i>
+          </button>
         </div>
-        <div class="tw-text-dark-0 3xl:tw-text-lg">
+        <div class="tw-text-dark-0 tw-pb-4 3xl:tw-text-lg">
           {{ collection.description }}
         </div>
         <div
@@ -63,7 +67,7 @@
           v-if="showLiveInTimer"
         >
           <h3
-            class="tw-uppercase tw-text-dark-2 tw-font-semibold 3xl:tw-text-lg"
+            class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm 3xl:tw-text-lg"
           >
             {{ currentSale.name }} Starts In
           </h3>

@@ -1,53 +1,41 @@
 <template>
-  <div
-    class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
-    :class="{ '!tw-gap-1': small }"
-  >
-    <div
-      class="tw-text-white tw-text-[1.75rem] tw-tracking-[-0.0175rem] tw-font-medium"
-      v-if="days > 0"
+  <div>
+    <span
+      class="tw-text-[1.75rem] tw-tracking-tight tw-font-medium"
       :class="{ '!tw-text-base': small }"
+      >{{ days }}</span
+    ><span
+      class="tw-text-lg tw-text-dark-2 tw-font-bold"
+      :class="{ '!tw-text-sm': small }"
+      >D</span
     >
-      {{ days
-      }}<span
-        class="tw-text-lg tw-text-dark-2 tw-font-semibold"
-        :class="{ '!tw-text-sm': small }"
-        >D</span
-      >
-    </div>
-    <div
-      class="tw-text-white tw-text-[1.75rem] tw-tracking-tight tw-font-medium"
+    <span
+      class="tw-text-[1.75rem] tw-tracking-tight tw-font-medium"
       :class="{ '!tw-text-base': small }"
+      >{{ hours }}</span
+    ><span
+      class="tw-text-lg tw-text-dark-2 tw-font-bold"
+      :class="{ '!tw-text-sm': small }"
+      >H</span
     >
-      {{ hours
-      }}<span
-        class="tw-text-lg tw-text-dark-2 tw-font-semibold"
-        :class="{ '!tw-text-sm': small }"
-        >H</span
-      >
-    </div>
-    <div
-      class="tw-text-white tw-text-[1.75rem] tw-tracking-tight tw-font-medium"
+    <span
+      class="tw-text-[1.75rem] tw-tracking-tight tw-font-medium"
       :class="{ '!tw-text-base': small }"
+      >{{ minutes }}</span
+    ><span
+      class="tw-text-lg tw-text-dark-2 tw-font-bold"
+      :class="{ '!tw-text-sm': small }"
+      >M</span
     >
-      {{ minutes
-      }}<span
-        class="tw-text-lg tw-text-dark-2 tw-font-semibold"
-        :class="{ '!tw-text-sm': small }"
-        >M</span
-      >
-    </div>
-    <div
-      class="tw-text-white tw-text-[1.75rem] tw-tracking-tight tw-font-medium"
+    <span
+      class="tw-text-[1.75rem] tw-tracking-tight tw-font-medium"
       :class="{ '!tw-text-base': small }"
+      >{{ seconds }}</span
+    ><span
+      class="tw-text-lg tw-text-dark-2 tw-font-bold"
+      :class="{ '!tw-text-sm': small }"
+      >S</span
     >
-      {{ seconds
-      }}<span
-        class="tw-text-lg tw-text-dark-2 tw-font-semibold"
-        :class="{ '!tw-text-sm': small }"
-        >S</span
-      >
-    </div>
   </div>
 </template>
 
