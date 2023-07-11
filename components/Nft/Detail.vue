@@ -81,58 +81,62 @@
           v-if="live"
         >
           <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-col md:tw-items-start md:tw-justify-start"
           >
             <div
-              class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
-            >
-              <div class="tw-text-white/70">
-                {{ resource.minted }}/{{ resource.total_supply }} Minted
-              </div>
-              <div v-if="currentSale.mint_price !== 0">
-                Price {{ currentSale.mint_price }} APT
-              </div>
-              <div v-else>Free Mint</div>
-            </div>
-            <div
-              class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
             >
               <div
-                class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
-                id="resourceMintedPercent"
-              ></div>
+                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+              >
+                <div class="tw-text-white/70">
+                  {{ resource.minted }}/{{ resource.total_supply }} Minted
+                </div>
+                <div v-if="currentSale.mint_price !== 0">
+                  Price {{ currentSale.mint_price }} APT
+                </div>
+                <div v-else>Free Mint</div>
+              </div>
+              <div
+                class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+              >
+                <div
+                  class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
+                  id="resourceMintedPercent"
+                ></div>
+              </div>
             </div>
-          </div>
-          <div
-            class="tw-w-full tw-mt-4 tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
-          >
             <div
-              class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white tw-rounded tw-border tw-border-solid tw-border-dark-4 tw-bg-dark-6"
+              class="tw-w-full tw-rounded-lg tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
             >
-              <button
-                class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
-                @click="decreaseNumberOfNft"
+              <div
+                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white tw-rounded tw-border tw-border-solid tw-border-dark-4 tw-bg-dark-6"
               >
-                -
-              </button>
-              <input
-                class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
-                v-model="numberOfNft"
-                @input="checkNumberOfNft"
+                <button
+                  class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
+                  @click="decreaseNumberOfNft"
+                >
+                  -
+                </button>
+                <input
+                  class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
+                  v-model="numberOfNft"
+                  @input="checkNumberOfNft"
+                />
+                <button
+                  class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
+                  @click="increaseNumberOfNft"
+                >
+                  +
+                </button>
+              </div>
+              <button-primary
+                :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
+                :disabled="minting || collection.status.sold_out"
+                @click="mintBulkCollection"
+                :fullWidth="true"
               />
-              <button
-                class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
-                @click="increaseNumberOfNft"
-              >
-                +
-              </button>
             </div>
-            <button-primary
-              :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
-              :disabled="minting || collection.status.sold_out"
-              @click="mintBulkCollection"
-              :fullWidth="true"
-            />
           </div>
         </div>
         <div
