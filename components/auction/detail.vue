@@ -14,22 +14,6 @@
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
       >
-        <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-3"
-          v-if="!auctionStarted"
-        >
-          <div class="tw-w-3 tw-h-3 tw-rounded-full tw-bg-primary-1"></div>
-          <div
-            class="tw-text-white tw-flex tw-flex-row tw-items-start tw-justify-center tw-gap-1"
-          >
-            <div class="tw-text-white tw-font-bold">Starts in</div>
-            <count-down-plain
-              :startTime="auction.startAt"
-              class="tw-font-bold"
-              @countdownComplete="startAuction"
-            />
-          </div>
-        </div>
         <h1 class="tw-text-white tw-text-[2.5em] tw-font-bold">
           {{ auction.nft.meta.name }}
         </h1>
@@ -51,13 +35,25 @@
             ></i>
           </a>
           <button>
-            <i class="bx bxs-share-alt tw-text-2xl !tw-text-white"
-              >mdi-share-variant</i
-            >
+            <i class="bx bxs-share-alt tw-text-2xl !tw-text-white"></i>
           </button>
         </div>
         <div class="tw-pb-2 tw-text-dark-0">
           {{ auction.nft.meta.description }}
+        </div>
+        <div
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
+          v-if="!auctionStarted"
+        >
+          <h3
+            class="tw-uppercase tw-text-dark-2 tw-font-semibold 3xl:tw-text-lg"
+          >
+            Auction Starts In
+          </h3>
+          <count-down
+            :startTime="auction?.startAt"
+            @countdownComplete="startAuction"
+          />
         </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
