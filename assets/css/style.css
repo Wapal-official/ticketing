@@ -7,7 +7,7 @@
   font-style: normal;
   font-variant: normal;
   text-transform: none;
-  -webkit-font-smoothing: subpixel-antialiased;
+  -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
 }

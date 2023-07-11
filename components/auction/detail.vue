@@ -18,24 +18,34 @@
           {{ auction.nft.meta.name }}
         </h1>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
-          <a :href="auction.twitter" target="_blank" v-if="auction.twitter">
+          <a
+            :href="auction.twitter"
+            target="_blank"
+            v-if="auction.twitter"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+          >
             <i
-              class="bx bxl-twitter tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
-            ></i> </a
-          ><a :href="auction.discord" target="_blank" v-if="auction.discord">
-            <i
-              class="bx bxl-discord-alt tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
+              class="bx bxl-twitter tw-text-lg tw-transition tw-duration-200 tw-ease-linear tw-ml-0.5"
             ></i>
           </a>
-          <a :href="auction.instagram" target="_blank" v-if="auction.instagram">
+          <a
+            :href="auction.instagram"
+            target="_blank"
+            v-if="auction.instagram"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+          >
             <i
-              class="bx bxl-instagram tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
+              class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
-          <button>
-            <i class="bx bxs-share-alt tw-text-2xl !tw-text-white"></i>
+          <button
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
+          >
+            <i
+              class="bx bxs-share-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear !tw-text-white"
+            ></i>
           </button>
         </div>
         <div class="tw-pb-2 tw-text-dark-0">
