@@ -2,7 +2,7 @@
   <div class="tw-bg-modal-gray tw-px-8 tw-py-4 tw-text-white tw-text-center">
     <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end">
       <button class="tw-text-black tw-text-base" @click="close">
-        <v-icon class="!tw-text-black !tw-font-semibold">mdi-close</v-icon>
+        <i class="bx bx-x !tw-text-black !tw-font-semibold tw-text-2xl"></i>
       </button>
     </div>
     <p class="tw-text-sm md:tw-text-lg tw-font-normal tw-pb-4">

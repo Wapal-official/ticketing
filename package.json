@@ -23,6 +23,7 @@
     "@types/js-cookie": "^3.0.2",
     "aptos": "^1.6.0",
     "aws-sdk": "^2.1311.0",
+    "boxicons": "^2.1.4",
     "caniuse-lite": "^1.0.30001513",
     "cookie-universal-nuxt": "^2.2.2",
     "core-js": "^3.25.3",

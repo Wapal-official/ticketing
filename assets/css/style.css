@@ -6,7 +6,6 @@
   line-height: 1.5em;
   speak: none;
   font-style: normal;
-  font-weight: normal;
   font-variant: normal;
   text-transform: none;
   -webkit-font-smoothing: antialiased;
@@ -400,4 +399,20 @@
 }
 .wapal-input.v-text-field--outlined .v-label {
   top: 15px !important;
+}
+
+.bid-list::-webkit-scrollbar {
+  width: 3px;
+}
+
+.bid-list::-webkit-scrollbar-track {
+  background: #d9d9d9;
+}
+
+.bid-list::-webkit-scrollbar-thumb {
+  @apply tw-bg-primary-1;
+}
+
+.bid-list {
+  padding-right: 8px;
 }

@@ -53,19 +53,19 @@
       </div>
     </div>
     <button
-      class="tw-bg-wapal-gray tw-px-4 tw-py-2 tw-text-black tw-rounded-sm tw-flex tw-flex-row tw-items-center tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-gray-300"
+      class="tw-bg-dark-4 tw-px-4 tw-py-3 tw-text-white tw-rounded tw-flex tw-flex-row tw-items-baseline tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-dark-5"
       v-else
     >
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
       >
-        <v-icon class="!tw-text-black">mdi-file</v-icon>
+        <i class="bx bxs-folder tw-text-xl"></i>
         {{ file?.name }}
       </div>
       <v-menu>
         <template v-slot:activator="{ on, attrs }">
           <button v-on="on">
-            <v-icon class="!tw-text-black">mdi-dots-vertical</v-icon>
+            <i class="bx bx-dots-vertical-rounded tw-text-xl"></i>
           </button>
         </template>
         <div

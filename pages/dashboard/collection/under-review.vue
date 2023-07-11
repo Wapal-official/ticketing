@@ -1,22 +1,17 @@
 <template>
   <div class="tw-w-full">
     <div class="tw-w-full">
-      <div
-        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
-      >
-        <nft-card
-          v-for="collection in collections"
-          :key="collection._id"
-          v-if="collections[0]._id"
-          :collection="collection"
-          redirectTo="edit"
-        />
-      </div>
+      <dashboard-collection-table
+        :headers="tableHeaders"
+        :items="collections"
+        @rowClicked="redirectToEditPage"
+        v-if="collections[0]"
+      />
       <h2
-        class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full"
+        class="tw-text-primary-1 tw-text-xl tw-text-center tw-w-full"
         v-if="collections.length === 0 && !loading"
       >
-        No Live Collections
+        No Under Review Collections
       </h2>
     </div>
 
@@ -39,6 +34,7 @@
 </template>
 <script lang="ts">
 import { getUnderReviewCollectionsOfUser } from "@/services/CollectionService";
+import { getCollectionDetails } from "@/services/AptosCollectionService";
 
 export default {
   data() {
@@ -47,6 +43,48 @@ export default {
       loading: true,
       end: false,
       page: 0,
+      tableHeaders: [
+        {
+          text: "Collection Name",
+          align: "start",
+          sortable: true,
+          value: "name",
+          width: "264px",
+          class:
+            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          showImage: true,
+          showSerialNumber: true,
+        },
+        {
+          text: "Price",
+          align: "start",
+          sortable: true,
+          value: "price",
+          width: "200px",
+          class:
+            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          showAptIcon: true,
+        },
+        {
+          text: "Item",
+          align: "start",
+          sortable: true,
+          value: "supply",
+          width: "200px",
+          class:
+            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+        },
+        {
+          text: "Minted",
+          align: "start",
+          sortable: true,
+          value: "progress",
+          width: "200px",
+          class:
+            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          progress: true,
+        },
+      ],
     };
   },
   methods: {
@@ -59,13 +97,56 @@ export default {
         this.page
       );
 
-      this.collections.push(...collections);
+      const mappedCollections = await Promise.all(
+        collections.map(async (collection: any) => {
+          //Get Collection Detail
+          const resource = await getCollectionDetails(
+            collection.candyMachine.candy_id,
+            collection.candyMachine.resource_account
+          );
+
+          //Store minted and total supply of collection and calculate minted percent
+          const collectionResource = {
+            minted: resource.minted,
+            total: resource.total_supply,
+            progressPercent: Math.floor(
+              (resource.minted / resource.total_supply) * 100
+            ),
+            text: `${resource.minted}/${resource.total_supply} Minted`,
+          };
+
+          collection.progress = collectionResource;
+
+          collection.price = this.getPrice(collection);
+
+          this.collections.push(collection);
+        })
+      );
 
       if (collections.length === 0) {
         this.end = true;
       }
 
       this.loading = false;
+    },
+    getPrice(collection: any) {
+      const whitelistDate = new Date(
+        collection.candyMachine.whitelist_sale_time
+      );
+      const publicSaleDate = new Date(collection.candyMachine.public_sale_time);
+
+      if (new Date() > publicSaleDate) {
+        return collection.candyMachine.public_sale_price;
+      }
+
+      if (new Date() > whitelistDate) {
+        return collection.candyMachine.whitelist_price;
+      }
+
+      return collection.candyMachine.public_sale_price;
+    },
+    redirectToEditPage(collection: any) {
+      this.$router.push(`/dashboard/collection/edit/${collection._id}`);
     },
   },
   created() {

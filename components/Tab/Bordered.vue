@@ -9,7 +9,7 @@
       v-for="tab in tabs"
       :key="tab"
       :ripple="false"
-      class="tw-text-dark-0 !tw-capitalize !tw-text-base !tw-font-medium tw-transition-all tw-duration-150 tw-ease-linear 3xl:tw-text-lg hover:!tw-bg-transparent hover:!tw-text-primary-2"
+      class="tw-text-dark-0 !tw-text-left !tw-capitalize !tw-text-base !tw-font-medium tw-transition-all tw-duration-150 tw-ease-linear 3xl:tw-text-lg hover:!tw-bg-transparent hover:!tw-text-primary-2"
     >
       {{ tab }}
     </v-tab>

@@ -53,40 +53,16 @@
             class="tw-flex tw-flex-row tw-items-start tw-justify-center tw-gap-4"
           >
             <a href="https://t.co/3KwwcoQ2xW" target="_blank">
-              <img
-                :src="discord"
-                alt="discord"
-                class="tw-group"
-                width="24px"
-                height="24px"
-              />
+              <i class="bx bxl-discord-alt tw-text-xl tw-text-dark-2"></i>
             </a>
             <a href="https://t.me/wapal_official" target="_blank">
-              <img
-                :src="telegram"
-                alt="telegram"
-                class="tw-group"
-                width="24px"
-                height="24px"
-              />
+              <i class="bx bxl-telegram tw-text-xl tw-text-dark-2"></i>
             </a>
             <a href="https://github.com/mokshyaprotocol" target="_blank">
-              <img
-                :src="github"
-                alt="github"
-                class="tw-group"
-                width="24px"
-                height="24px"
-              />
+              <i class="bx bxl-github tw-text-xl tw-text-dark-2"></i>
             </a>
             <a href="https://twitter.com/wapal_official" target="_blank">
-              <img
-                :src="twitter"
-                alt="twitter"
-                class="tw-group"
-                width="24px"
-                height="24px"
-              />
+              <i class="bx bxl-twitter tw-text-xl tw-text-dark-2"></i>
             </a>
           </div>
         </div>

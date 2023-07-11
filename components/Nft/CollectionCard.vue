@@ -22,11 +22,10 @@
           <h2 class="tw-font-medium tw-text-lg">
             {{ collection?.name }}
           </h2>
-          <v-icon
-            class="!tw-text-primary-1 !tw-text-sm"
+          <i
+            class="bx bxs-badge-check !tw-text-primary-1"
             v-if="collection?.isVerified"
-            >mdi-check-decagram</v-icon
-          >
+          ></i>
         </div>
       </div>
       <div
@@ -36,8 +35,11 @@
           <div class="tw-uppercase tw-text-xs tw-font-semibold tw-text-dark-2">
             Price
           </div>
-          <div class="tw-text-white tw-font-normal" v-if="getPrice !== '0 APT'">
-            {{ getPrice }}
+          <div
+            class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
+            v-if="getPrice !== '0'"
+          >
+            {{ getPrice }}<span><img :src="aptIcon" alt="apt" /></span>
           </div>
           <div class="tw-text-white tw-font-normal" v-else>Free Mint</div>
         </div>
@@ -83,6 +85,7 @@
   </NuxtLink>
 </template>
 <script lang="ts">
+import aptIcon from "@/assets/img/apt.svg";
 export default {
   props: {
     collection: { type: Object },
@@ -91,16 +94,17 @@ export default {
   data() {
     return {
       status: true,
+      aptIcon,
     };
   },
   computed: {
     getPrice() {
       if (!this.collection.candyMachine) {
         if (this.collection.whitelist_price) {
-          return this.collection.whitelist_price + " apt";
+          return this.collection.whitelist_price;
         }
         if (this.collection.public_sale_price) {
-          return this.collection.public_sale_price + " apt";
+          return this.collection.public_sale_price;
         }
 
         return "TBD";
@@ -117,17 +121,17 @@ export default {
         this.collection.candyMachine.public_sale_price ==
         this.collection.candyMachine.whitelist_price
       ) {
-        return this.collection.candyMachine.public_sale_price + " APT";
+        return this.collection.candyMachine.public_sale_price;
       }
 
       if (now > publicSaleDate) {
-        return this.collection.candyMachine.public_sale_price + " APT";
+        return this.collection.candyMachine.public_sale_price;
       }
 
       if (whiteListDate && publicSaleDate > now) {
-        return this.collection.candyMachine.whitelist_price + " APT";
+        return this.collection.candyMachine.whitelist_price;
       } else {
-        return this.collection.candyMachine.public_sale_price + " APT";
+        return this.collection.candyMachine.public_sale_price;
       }
     },
     getSupply() {
