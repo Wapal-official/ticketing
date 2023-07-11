@@ -1,6 +1,6 @@
 <template>
   <button
-    class="tw-rounded-md tw-bg-primary-1 tw-text-white tw-px-8 tw-py-2.5 tw-box-border tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-start disabled:tw-cursor-not-allowed 3xl:tw-text-lg"
+    class="tw-rounded-md tw-bg-primary-1 tw-text-white tw-px-8 tw-py-2.5 tw-box-border tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-center disabled:tw-cursor-not-allowed 3xl:tw-text-lg"
     :class="{
       '!tw-border-solid tw-border tw-border-dark-4 tw-bg-transparent': bordered,
       'tw-w-full': fullWidth,
