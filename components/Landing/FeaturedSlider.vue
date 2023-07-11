@@ -38,7 +38,7 @@
       </button>
     </div>
   </section>
-  <loading-collection v-else />
+  <loading-featured-collection v-else />
 </template>
 <script>
 import Swiper from "swiper/swiper-bundle.min";
