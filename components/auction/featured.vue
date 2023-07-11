@@ -34,10 +34,10 @@
             :href="auction?.twitter"
             target="_blank"
             v-if="auction?.twitter"
-            class="tw-ml-0.5 tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
           >
             <i
-              class="bx bxl-twitter tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
+              class="bx bxl-twitter tw-text-lg tw-transition tw-duration-200 tw-ease-linear tw-ml-0.5"
             ></i>
           </a>
           <a
@@ -85,7 +85,7 @@
             Current Bid
           </h3>
           <h4
-            class="tw-text-white tw-uppercase tw-text-[1.75rem] tw-pt-4 tw-pb-6"
+            class="tw-text-white tw-uppercase tw-text-[1.75rem] tw-pt-4 tw-pb-6 tw-font-medium"
           >
             {{ getBid }} Apt
           </h4>
