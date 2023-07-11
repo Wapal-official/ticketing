@@ -22,7 +22,7 @@
     </v-breadcrumbs>
     <div class="tw-flex tw-flex-row tw-flex-wrap tw-gap-4" v-if="!loading">
       <button
-        class="tw-bg-dark-4 tw-px-4 tw-py-3 tw-text-white tw-rounded tw-flex tw-flex-row tw-items-baseline tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-dark-5"
+        class="tw-bg-dark-4 tw-px-4 tw-py-3 tw-text-white tw-rounded tw-flex tw-flex-row tw-items-center tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-dark-5"
         v-if="folders[0].folder_name"
         v-for="(folder, index) in folders"
         :key="folder.folder_name"
@@ -31,12 +31,16 @@
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 tw-font-medium"
         >
-          <i class="bx bxs-folder tw-text-xl"></i>
-          {{ folder.folder_name }}
+          <i class="bx bxs-folder tw-text-2xl"></i>
+          <span>{{ folder.folder_name }}</span>
         </div>
         <v-menu v-if="index !== 0">
           <template v-slot:activator="{ on, attrs }">
-            <button v-bind="attrs" v-on="on">
+            <button
+              v-bind="attrs"
+              v-on="on"
+              class="tw-flex tw-flex-row tw-items-center tw-justify-center"
+            >
               <i class="bx bx-dots-vertical-rounded tw-text-xl"></i>
             </button>
           </template>

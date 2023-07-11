@@ -1,19 +1,33 @@
 <template>
-  <v-text-field
-    v-model="internalValue"
-    :readonly="readOnly"
-    outlined
-    single-line
-    color="#fff"
-    hide-details
-    clearable
-    :placeholder="placeholder"
-    :counter="counter"
-    :type="type"
-    :disabled="disabled"
-    class="wapal-input"
+  <div
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
   >
-  </v-text-field>
+    <label
+      v-if="label"
+      class="tw-text-white tw-text-sm tw-font-medium"
+      :class="
+        required
+          ? `after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2`
+          : ''
+      "
+      >{{ label }}</label
+    >
+    <v-text-field
+      v-model="internalValue"
+      :readonly="readOnly"
+      outlined
+      single-line
+      color="#fff"
+      hide-details
+      clearable
+      :placeholder="placeholder"
+      :counter="counter"
+      :type="type"
+      :disabled="disabled"
+      class="wapal-input tw-w-full"
+    >
+    </v-text-field>
+  </div>
 </template>
 
 <script>
@@ -50,6 +64,13 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
+    },
+    required: {
+      type: Boolean,
+      default: false,
+    },
+    label: {
+      type: String,
     },
   },
   computed: {

@@ -7,6 +7,9 @@
 <script lang="ts">
 export default {
   layout: "dashboard",
+  data() {
+    return {};
+  },
 };
 </script>
 <style scoped>

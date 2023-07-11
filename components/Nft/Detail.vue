@@ -33,37 +33,43 @@
           {{ collection.name }}
         </h1>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
+          <a
+            :href="collection.discord"
+            target="_blank"
+            v-if="collection.discord"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+          >
+            <i
+              class="bx bxl-discord-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
+            ></i>
+          </a>
           <a
             :href="collection.twitter"
             target="_blank"
             v-if="collection.twitter"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
           >
             <i
-              class="bx bxl-twitter tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
-            ></i> </a
-          ><a
-            :href="collection.discord"
-            target="_blank"
-            v-if="collection.discord"
-          >
-            <i
-              class="bx bxl-discord-alt tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
+              class="bx bxl-twitter tw-text-lg tw-transition tw-duration-200 tw-ease-linear tw-ml-0.5"
             ></i>
           </a>
           <a
             :href="collection.instagram"
             target="_blank"
             v-if="collection.instagram"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
           >
             <i
-              class="bx bxl-instagram tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
+              class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
-          <button>
+          <button
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
+          >
             <i
-              class="bx bxs-share-alt tw-transition tw-duration-200 tw-ease-linear tw-text-2xl !tw-text-white hover:!tw-text-primary-1"
+              class="bx bxs-share-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear !tw-text-white"
             ></i>
           </button>
         </div>
@@ -75,69 +81,76 @@
           v-if="live"
         >
           <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-col md:tw-items-start md:tw-justify-start"
           >
             <div
-              class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
-            >
-              <div class="tw-text-white/70">
-                {{ resource.minted }}/{{ resource.total_supply }} Minted
-              </div>
-              <div v-if="currentSale.mint_price !== 0">
-                Price {{ currentSale.mint_price }} APT
-              </div>
-              <div v-else>Free Mint</div>
-            </div>
-            <div
-              class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
             >
               <div
-                class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
-                id="resourceMintedPercent"
-              ></div>
+                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+              >
+                <div class="tw-text-white/70">
+                  {{ resource.minted }}/{{ resource.total_supply }} Minted
+                </div>
+                <div v-if="currentSale.mint_price !== 0">
+                  Price {{ currentSale.mint_price }} APT
+                </div>
+                <div v-else>Free Mint</div>
+              </div>
+              <div
+                class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+              >
+                <div
+                  class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
+                  id="resourceMintedPercent"
+                ></div>
+              </div>
             </div>
-          </div>
-          <div
-            class="tw-w-full tw-mt-4 tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
-          >
             <div
-              class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white tw-rounded tw-border tw-border-solid tw-border-dark-4 tw-bg-dark-6"
+              class="tw-w-full tw-rounded-lg tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
             >
-              <button
-                class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
-                @click="decreaseNumberOfNft"
+              <div
+                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white tw-rounded tw-border tw-border-solid tw-border-dark-4 tw-bg-dark-6"
               >
-                -
-              </button>
-              <input
-                class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
-                v-model="numberOfNft"
-                @input="checkNumberOfNft"
+                <button
+                  class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
+                  @click="decreaseNumberOfNft"
+                >
+                  -
+                </button>
+                <input
+                  class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
+                  v-model="numberOfNft"
+                  @input="checkNumberOfNft"
+                />
+                <button
+                  class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
+                  @click="increaseNumberOfNft"
+                >
+                  +
+                </button>
+              </div>
+              <button-primary
+                :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
+                :disabled="minting || collection.status.sold_out"
+                @click="mintBulkCollection"
+                :fullWidth="true"
               />
-              <button
-                class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
-                @click="increaseNumberOfNft"
-              >
-                +
-              </button>
             </div>
-            <button-primary
-              :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
-              :disabled="minting || collection.status.sold_out"
-              @click="mintBulkCollection"
-              :fullWidth="true"
-            />
           </div>
         </div>
         <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3"
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-relative tw-rounded-lg"
           v-if="currentSale.id !== 'public-sale'"
         >
+          <div
+            class="tw-absolute tw-w-full tw-h-1/4 tw-overflow-hidden tw-left-0 tw-bottom-0 tw-rounded-b-lg tw-bg-gradient-to-b tw-from-black/0 tw-to-black"
+          ></div>
           <h2 class="tw-text-white tw-text-[1.375em] tw-font-bold">
             Mint Phases
           </h2>
           <div
-            class="tw-w-full tw-h-[250px] tw-overflow-auto bid-list tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3"
+            class="tw-w-full tw-h-[250px] tw-overflow-auto no-scrollbar tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-rounded-lg"
           >
             <nft-mint-phase-box
               v-for="(phase, index) in phases"

@@ -1,17 +1,17 @@
 <template>
   <div
-    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-16 lg:tw-pb-6 xl:!tw-max-w-[1100px]"
+    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[7em] lg:tw-pb-0 lg:tw-px-28 xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px] 2xl:tw-pt-[7.5em]"
   >
     <div
-      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-center xl:tw-gap-[4.5em]"
+      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
       <img
         :src="auction?.nft.meta.image"
         :alt="auction?.nft.meta.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
       />
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 lg:tw-w-[474px]"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
       >
         <h2
           class="tw-text-lg tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1.5 3xl:tw-text-xl"
@@ -22,28 +22,43 @@
             v-if="auction?.isVerified"
           ></i>
         </h2>
-        <h1 class="tw-text-4xl tw-font-bold 3xl:tw-text-5xl">
+        <h1
+          class="tw-text-4xl tw-font-bold 3xl:tw-text-5xl tw-tracking-[-0.025em]"
+        >
           {{ auction?.nft.meta.name }}
         </h1>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
-          <a :href="auction?.twitter" target="_blank" v-if="auction?.twitter">
+          <a
+            :href="auction?.twitter"
+            target="_blank"
+            v-if="auction?.twitter"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+          >
             <i
-              class="bx bxl-twitter !tw-text-2xl !tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
+              class="bx bxl-twitter tw-text-lg tw-transition tw-duration-200 tw-ease-linear tw-ml-0.5"
             ></i>
           </a>
           <a
             :href="auction?.instagram"
             target="_blank"
             v-if="auction?.instagram"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
           >
             <i
-              class="bx bxl-instagram !tw-text-2xl !tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
+              class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
+          <button
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
+          >
+            <i
+              class="bx bxs-share-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear !tw-text-white"
+            ></i>
+          </button>
         </div>
-        <div class="tw-text-dark-0 3xl:tw-text-lg">
+        <div class="tw-text-dark-0 tw-pb-4 3xl:tw-text-lg">
           {{ auction?.nft.meta.description }}
         </div>
         <div
@@ -51,7 +66,7 @@
           v-if="!auctionStarted"
         >
           <h3
-            class="tw-uppercase tw-text-dark-2 tw-font-semibold 3xl:tw-text-lg"
+            class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm 3xl:tw-text-lg"
           >
             Auction Starts In
           </h3>
@@ -65,12 +80,12 @@
           v-else
         >
           <h3
-            class="tw-text-dark-0 tw-text-[1.375rem] tw-uppercase tw-font-medium tw-tracking-[-0.01375rem] 2xl:tw-tracking-normal"
+            class="tw-text-dark-0 tw-text-[1.375rem] tw-uppercase tw-font-medium tw-tracking-[-0.01375em]"
           >
             Current Bid
           </h3>
           <h4
-            class="tw-text-white tw-uppercase tw-text-[1.75rem] tw-pt-4 tw-pb-6"
+            class="tw-text-white tw-uppercase tw-text-[1.75rem] tw-pt-4 tw-pb-6 tw-font-medium"
           >
             {{ getBid }} Apt
           </h4>
