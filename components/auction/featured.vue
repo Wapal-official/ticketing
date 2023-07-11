@@ -17,7 +17,10 @@
           class="tw-text-lg tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1.5 3xl:tw-text-xl"
         >
           <span>{{ auction?.nft.nft.current_token_data.collection_name }}</span>
-          <i class="bx bxs-badge-check tw-text-primary-1"></i>
+          <i
+            class="bx bxs-badge-check tw-text-primary-1"
+            v-if="auction?.isVerified"
+          ></i>
         </h2>
         <h1
           class="tw-text-4xl tw-font-bold 3xl:tw-text-5xl tw-tracking-[-0.025em]"

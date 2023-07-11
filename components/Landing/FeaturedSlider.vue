@@ -1,6 +1,6 @@
 <template>
   <section class="swiper mySwiper tw-w-full" ref="swiper" v-if="!loading">
-    <div class="swiper-wrapper tw-w-full md:!tw-px-[3.75em]">
+    <div class="swiper-wrapper tw-w-full lg:!tw-px-[3.75em]">
       <div
         class="swiper-slide tw-w-full"
         v-for="collection in featuredCollections"
