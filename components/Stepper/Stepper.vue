@@ -16,6 +16,7 @@
             :complete="internalStepNumber > index + 1"
             :step="index + 1"
             class="tw-cursor-pointer"
+            @click="stepClicked(index + 1)"
           >
             {{ step }}
           </v-stepper-step>
@@ -58,6 +59,11 @@ export default {
   methods: {
     checkLastItemCondition(index: number) {
       return index < this.steps.length - 1;
+    },
+    stepClicked(step: number) {
+      if (step < this.internalStepNumber) {
+        this.$emit("stepClicked", step);
+      }
     },
   },
 };

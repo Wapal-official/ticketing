@@ -12,34 +12,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.image-collection {
-  display: none;
-  background-color: #878787;
-}
-
-::v-deep .mx-input-wrapper,
-::v-deep .mx-datepicker {
-  width: 100% !important;
-}
-
-::v-deep .mx-input {
-  width: 100% !important;
-  background: #0e0d0d !important;
-  border: none !important;
-  height: 50px !important;
-  color: #d9d9d9 !important;
-  font-size: 1em;
-  border-radius: 7px !important;
-}
-
-.mx-icon-calendar,
-.mx-icon-clear,
-.mx-input::placeholder {
-  color: #d9d9d9 !important;
-}
-
-.mdi-checkbox-blank-outline {
-  color: #d9d9d9 !important;
-}
-</style>

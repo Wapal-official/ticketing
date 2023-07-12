@@ -36,7 +36,7 @@ export default {
 </script>
 <style scoped>
 .v-tab--active {
-  @apply !tw-text-dark-9 !tw-bg-white !tw-border-white;
+  @apply !tw-text-dark-9 !tw-bg-white !tw-border-white !tw-font-semibold;
 }
 
 .v-tab--active:hover {

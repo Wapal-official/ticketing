@@ -1,29 +1,391 @@
 <template>
-  <div class="tw-w-full">
-    <stepper :steps="steps" :stepNumber="stepNumber">
-      <!-- <v-stepper-content step="1">
-        <ValidationObserver ref="detailForm" class="tw-w-full">
-          <form
-            class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[60%]"
+  <div class="tw-w-full" v-if="!loading">
+    <stepper :steps="steps" :stepNumber="stepNumber" @stepClicked="changeStep">
+      <v-stepper-content step="1">
+        <ValidationObserver
+          ref="detailForm"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+        >
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="name"
+            rules="required"
+            v-slot="{ errors }"
           >
+            <input-text-field
+              label="Collection Name"
+              :required="true"
+              v-model="collection.name"
+              placeholder="Collection Name"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="description"
+            rules="required|descriptionLength"
+            v-slot="{ errors }"
+          >
+            <input-text-area
+              label="Collection Description"
+              :required="true"
+              v-model="collection.description"
+              placeholder="Collection Description"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="twitter"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              v-model="collection.twitter"
+              clearable
+              type="url"
+              placeholder="Twitter Link"
+              label="Twitter Link"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="discord"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              v-model="collection.discord"
+              label="Discord Link"
+              placeholder="Discord Link"
+              type="url"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="instagram"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              v-model="collection.instagram"
+              label="Instagram Link"
+              placeholder="Instagram Link"
+              type="url"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="website"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              v-model="collection.website"
+              label="Website Link"
+              placeholder="Website Link"
+              type="url"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            <div class="tw-text-red-600 tw-text-sm" v-if="socialError">
+              {{ socialErrorMessage }}
+            </div>
+          </ValidationProvider>
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+          >
+            <input-image-drag-and-drop
+              label="Featured Image"
+              :required="true"
+              @fileSelected="imageSelected"
+              :file="image"
+            />
+            <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
+              {{ imageErrorMessage }}
+            </div>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
+          >
+            <button-primary title="Next" @click="validateFormForNextStep" />
+          </div>
+        </ValidationObserver>
+      </v-stepper-content>
+      <v-stepper-content step="2">
+        <ValidationObserver
+          ref="royaltyForm"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+        >
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="royaltyPayeeAddress"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              v-model="collection.royalty_payee_address"
+              label="Royalty Payee Address"
+              :required="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="royaltyPercentage"
+            rules="required|number|percentage"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              v-model="collection.royalty_percentage"
+              label="Royalty Percentage"
+              placeholder="Eg. 5.5"
+              :required="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="baseurl"
+            :rules="!tbd ? 'required' : ''"
+            v-slot="{ errors }"
+          >
+            <input-auto-complete
+              v-model="baseURL"
+              :items="folders"
+              placeholder="Select your NFT Vault"
+              text="folder_name"
+              @change="setSupply"
+              label="Assets"
+              :required="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="supply"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              v-model="collection.supply"
+              :disabled="true"
+              label="Supply"
+              placeholder="Supply"
+              :required="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
+          >
+            <button-primary title="Next" @click="validateFormForNextStep" />
+          </div>
+        </ValidationObserver>
+      </v-stepper-content>
+      <v-stepper-content step="3">
+        <ValidationObserver
+          ref="phaseForm"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+        >
+          <div
+            class="tw-flex tw-flex-row tw-gap-4 tw-items-center tw-w-full md:tw-w-1/2"
+          >
+            <label>Whitelist Sale</label>
+            <v-switch v-model="whitelistEnabled"></v-switch>
+          </div>
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-start"
+            v-if="whitelistEnabled"
+          >
+            <div
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+            >
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+                name="whitelistSaleTime"
+                rules="saleTime"
+                v-slot="{ errors }"
+                v-if="whitelistEnabled"
+              >
+                <input-date-picker
+                  v-model="collection.whitelist_sale_time"
+                  type="datetime"
+                  placeholder="Select Whitelist Sale time"
+                  :disabled="whitelistTBD"
+                  label="Whitelist Sale Time"
+                />
+                <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+              </ValidationProvider>
+
+              <v-checkbox
+                v-model="whitelistTBD"
+                label="TBD"
+                :ripple="false"
+                class="!tw-text-dark-2"
+              ></v-checkbox>
+            </div>
             <ValidationProvider
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-              name="name"
-              rules="required"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+              name="whitelistSalePrice"
+              rules="number"
               v-slot="{ errors }"
             >
-              <text-field
-                label="Collection Name"
-                :required="true"
-                v-model="collection.name"
-                placeholder="Collection Name"
+              <input-text-field
+                v-model="collection.whitelist_price"
+                label="Whitelist Sale Price"
+                placeholder="Eg: 0.1"
+                :disabled="!whitelistEnabled"
+                :showAptIcon="true"
               />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
-          </form>
+          </div>
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-start"
+          >
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+              name="publicSaleTime"
+              :rules="
+                !tbd
+                  ? 'required|saleTime|public_sale_time:@whitelistSaleTime'
+                  : 'saleTime|public_sale_time:@whitelistSaleTime'
+              "
+              v-slot="{ errors }"
+            >
+              <input-date-picker
+                v-model="collection.public_sale_time"
+                type="datetime"
+                placeholder="Select Public Sale time"
+                :disabled="publicSaleTBD"
+                label="Public Sale Time"
+                :required="!publicSaleTBD"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+
+              <v-checkbox
+                v-model="publicSaleTBD"
+                label="TBD"
+                :ripple="false"
+                class="!tw-text-dark-2"
+              ></v-checkbox>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+              name="publicSalePrice"
+              :rules="!tbd ? 'required|number' : 'number'"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                v-model="collection.public_sale_price"
+                placeholder="Eg: 0.1"
+                label="Public Sale Price"
+                :required="!publicSaleTBD"
+                :showAptIcon="true"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+          >
+            <div
+              v-for="(phase, index) in collection.phases"
+              :key="index"
+              class="tw-w-full"
+            >
+              <div
+                class="tw-flex tw-flex-col tw-gap-4 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
+              >
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <input-text-field
+                    v-model="phase.name"
+                    placeholder="Phase Name"
+                    label="Phase Name"
+                  />
+                  <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+                </ValidationProvider>
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                  rules="required|saleTime"
+                  v-slot="{ errors }"
+                >
+                  <input-date-picker
+                    v-model="phase.mint_time"
+                    type="datetime"
+                    placeholder="Select Mint Time"
+                    label="Mint Time"
+                  ></input-date-picker>
+                  <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+                </ValidationProvider>
+              </div>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+                name="publicSalePrice"
+                :rules="'required|number'"
+                v-slot="{ errors }"
+              >
+                <input-text-field
+                  v-model="collection.public_sale_price"
+                  placeholder="Eg: 0"
+                  label="Public Mint Limit"
+                  :required="true"
+                />
+                <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <div class="tw-flex tw-flex-row tw-w-full tw-justify-end">
+                <button
+                  class="tw-bg-[#A0A0A0] tw-rounded tw-py-2 tw-px-6 tw-text-white tw-my-2"
+                  @click.prevent="removeMintPhase(index)"
+                >
+                  Remove Phase
+                </button>
+              </div>
+            </div>
+
+            <button-primary
+              title="Add Phase"
+              :bordered="true"
+              @click="addMintPhase"
+            >
+              <template #prepend-icon>
+                <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
+              </template>
+            </button-primary>
+            <v-checkbox
+              v-model="saveAsDraft"
+              label="Save as Draft"
+              v-if="!draft"
+            ></v-checkbox>
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+              :class="{ 'tw-justify-between': draft }"
+            >
+              <button-primary
+                title="Save Changes"
+                :loading="submitting"
+                @click="saveDraft"
+                v-if="draft"
+              />
+              <button-primary
+                title="Create Collection"
+                :loading="submitting"
+                @click="submitCollection"
+              />
+            </div>
+          </div>
         </ValidationObserver>
-      </v-stepper-content> -->
+      </v-stepper-content>
     </stepper>
-    <ValidationObserver ref="form" v-slot="{ handleSubmit }" v-if="!loading">
+    <!-- <ValidationObserver ref="form" v-slot="{ handleSubmit }" v-if="!loading">
       <form
         class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[60%]"
         @submit.prevent="handleSubmit(submitCollection)"
@@ -502,13 +864,13 @@
         </div>
       </form>
     </ValidationObserver>
-    <reusable-loading v-else />
+    <reusable-loading v-else /> -->
   </div>
+  <reusable-loading v-else />
 </template>
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
-import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 
 import {
   createCollection,
@@ -613,8 +975,6 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
-    GradientBorderButton,
-    DatePicker,
   },
   props: { draft: { type: Boolean, default: false } },
   data() {
@@ -669,50 +1029,75 @@ export default {
       socialError: false,
       whitelistTBD: false,
       publicSaleTBD: false,
-      loading: true,
+      loading: false,
       saveAsDraft: false,
     };
   },
   methods: {
-    async submitCollection() {
-      this.imageError = false;
-      this.socialError = false;
+    async changeStep(step: number) {
+      this.stepNumber = step;
+    },
+    async validateFormForNextStep() {
+      switch (this.stepNumber) {
+        case 1:
+          const detailValidated = await this.$refs.detailForm.validate();
 
-      const socials = [
-        this.collection.twitter,
-        this.collection.discord,
-        this.collection.website,
-        this.collection.instagram,
-      ];
-      let counter = 0;
+          if (!detailValidated) {
+            break;
+          }
 
-      socials.map((social) => {
-        if (social) {
-          counter++;
-        }
-      });
+          this.socialError = false;
 
-      if (counter <= 1) {
-        this.socialError = true;
-        this.socialErrorMessage = "Please Fill up at least 2 social links";
+          const socials = [
+            this.collection.twitter,
+            this.collection.discord,
+            this.collection.website,
+            this.collection.instagram,
+          ];
+          let counter = 0;
 
-        this.$refs["social"].scrollIntoView({ behavior: "smooth" });
+          socials.map((social) => {
+            if (social) {
+              counter++;
+            }
+          });
 
-        return;
+          if (counter <= 1) {
+            this.socialError = true;
+            this.socialErrorMessage = "Please Fill up at least 2 social links";
+
+            break;
+          }
+
+          if (!this.image.name && !this.collection.image) {
+            this.imageError = true;
+            this.imageErrorMessage = "Please select an image for collection";
+            return;
+          }
+
+          this.stepNumber++;
+          break;
+        case 2:
+          const royaltyValidated = await this.$refs.royaltyForm.validate();
+
+          if (!royaltyValidated) {
+            break;
+          }
+
+          this.stepNumber++;
+          break;
+        default:
+          break;
       }
+    },
+    async submitCollection() {
+      const phaseValidated = await this.$refs.phaseForm.validate();
 
-      if (!this.image.name && !this.collection.image) {
-        this.imageError = true;
-        this.imageErrorMessage = "Please select an image for collection";
-        this.$refs["imageSelect"].scrollIntoView({ behavior: "smooth" });
+      if (!phaseValidated) {
         return;
       }
       try {
         this.submitting = true;
-
-        if (this.imageError) {
-          return;
-        }
 
         const selectedFolder = this.folders.find(
           (folder: any) => folder.folder_name === this.baseURL
@@ -827,8 +1212,8 @@ export default {
       }
     },
 
-    imageSelected(event: any) {
-      this.image = event.target.files[0];
+    imageSelected(image: any) {
+      this.image = image;
     },
 
     async sendDataToCandyMachineCreator() {
@@ -1024,6 +1409,10 @@ export default {
     },
   },
   async mounted() {
+    if (this.draft) {
+      this.loading = true;
+    }
+
     this.collection.phases = [];
     const folderRes = await getFolderById(
       process.env.baseURL?.includes("staging")
@@ -1064,30 +1453,5 @@ export default {
 .image-collection {
   display: none;
   background-color: #878787;
-}
-
-::v-deep .mx-input-wrapper,
-::v-deep .mx-datepicker {
-  width: 100% !important;
-}
-
-::v-deep .mx-input {
-  width: 100% !important;
-  background: #0e0d0d !important;
-  border: none !important;
-  height: 50px !important;
-  color: #d9d9d9 !important;
-  font-size: 1em;
-  border-radius: 7px !important;
-}
-
-.mx-icon-calendar,
-.mx-icon-clear,
-.mx-input::placeholder {
-  color: #d9d9d9 !important;
-}
-
-.mdi-checkbox-blank-outline {
-  color: #d9d9d9 !important;
 }
 </style>

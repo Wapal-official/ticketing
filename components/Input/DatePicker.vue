@@ -12,31 +12,30 @@
       "
       >{{ label }}</label
     >
-    <v-text-field
-      v-model="internalValue"
-      :readonly="readOnly"
-      outlined
-      single-line
-      color="#fff"
-      hide-details
-      clearable
-      :placeholder="placeholder"
-      :counter="counter"
-      :type="type"
-      :disabled="disabled"
-      class="wapal-input tw-w-full"
-    >
-    </v-text-field>
+    <div class="tw-relative tw-w-full">
+      <date-picker
+        v-model="internalValue"
+        type="datetime"
+        :placeholder="placeholder"
+        :disabled="disabled"
+        class="wapal-input"
+      ></date-picker>
+      <div class="tw-absolute tw-top-[12px] tw-left-[6px]">
+        <i class="bx bx-calendar tw-text-xl tw-text-white"></i>
+      </div>
+    </div>
   </div>
 </template>
 
-<script>
-import { defaultTheme } from "@/theme/wapaltheme.ts";
+<script lang="ts">
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
+import { defaultTheme } from "@/theme/wapaltheme";
 export default {
+  components: { DatePicker },
   props: {
     value: {
       type: [String, Number],
-      required: true,
     },
     placeholder: {
       type: String,
@@ -78,7 +77,7 @@ export default {
       get() {
         return this.value;
       },
-      set(newValue) {
+      set(newValue: any) {
         this.$emit("input", newValue);
       },
     },
@@ -90,4 +89,14 @@ export default {
   },
 };
 </script>
-<style scoped></style>
+<style scoped>
+::v-deep .mx-input {
+  @apply !tw-h-[44px] !tw-bg-dark-6;
+  padding: 6px 30px !important;
+  padding-right: 10px !important;
+}
+
+::v-deep .mx-icon-calendar {
+  display: none;
+}
+</style>

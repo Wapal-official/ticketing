@@ -99,7 +99,7 @@
               rules="required|bidAmount|lamport"
               v-slot="{ errors }"
             >
-              <text-field
+              <input-text-field
                 v-model="bid"
                 placeholder="Bid price(APT)"
                 class="tw-w-full"

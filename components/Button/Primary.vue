@@ -1,6 +1,6 @@
 <template>
   <button
-    class="tw-rounded-md tw-bg-primary-1 tw-text-white tw-px-8 tw-py-2.5 tw-box-border tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-center disabled:tw-cursor-not-allowed"
+    class="tw-rounded-md tw-bg-primary-1 tw-text-white tw-px-8 tw-py-2.5 tw-box-border tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 disabled:tw-cursor-not-allowed"
     :class="{
       '!tw-border-solid tw-border tw-border-dark-4 tw-bg-transparent': bordered,
       'tw-w-full': fullWidth,
@@ -18,7 +18,7 @@
       v-if="loading"
     ></v-progress-circular>
     <slot name="prepend-icon"> </slot>
-    {{ title }}
+    <span>{{ title }}</span>
     <slot name="append-icon"> </slot>
   </button>
 </template>

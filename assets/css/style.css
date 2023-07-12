@@ -400,6 +400,11 @@
   top: 15px !important;
 }
 
+.wapal-input input,
+.wapal-input textarea {
+  @apply !tw-text-sm !tw-text-dark-0 placeholder:!tw-text-sm;
+}
+
 /*Hide scrollbar in chrome*/
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -409,4 +414,21 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/*Switch and Checkbox*/
+.v-input--switch__track.primary--text {
+  @apply !tw-text-primary-1 !tw-caret-primary-1 !tw-opacity-100;
+}
+
+.v-input--selection-controls__ripple.primary--text {
+  @apply !tw-text-primary-1 !tw-caret-primary-1;
+}
+
+.v-input--switch__thumb.primary--text {
+  @apply !tw-text-white !tw-caret-white;
+}
+
+.v-input--selection-controls__input .mdi-checkbox-marked {
+  @apply !tw-text-primary-1 !tw-caret-primary-1;
 }
