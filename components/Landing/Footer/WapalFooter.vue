@@ -3,7 +3,7 @@
     class="tw-w-full tw-border-t tw-border-solid tw-border-t-dark-6 tw-pt-12"
   >
     <div
-      class="tw-grid tw-grid-cols-1 tw-gap-6 tw-px-[3.75em] tw-pb-4 md:tw-grid-cols-3 md:tw-pb-32 lg:tw-grid-cols-7"
+      class="tw-grid tw-grid-cols-1 tw-gap-6 tw-px-8 tw-pb-4 md:tw-px-[3.75em] md:tw-grid-cols-3 md:tw-pb-32 lg:tw-grid-cols-7"
     >
       <div class="md:tw-col-span-1 lg:tw-col-span-4">
         <NuxtLink to="/">
