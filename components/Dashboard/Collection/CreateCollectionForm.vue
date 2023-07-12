@@ -101,7 +101,7 @@
               label="Featured Image"
               :required="true"
               @fileSelected="imageSelected"
-              :file="image"
+              :file="collection.image"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
               {{ imageErrorMessage }}

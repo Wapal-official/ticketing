@@ -74,7 +74,7 @@ export default {
       type: String,
     },
     file: {
-      type: [Object, String],
+      type: [String],
     },
   },
   data() {
@@ -146,6 +146,28 @@ export default {
       this.generatePreviewImage(item);
     },
   },
-  mounted() {},
+  mounted() {
+    if (this.file) {
+      this.imageSelected = true;
+
+      const imgElement = document.createElement("img");
+
+      imgElement.src = this.file;
+      imgElement.classList.add("tw-w-full");
+      imgElement.classList.add("tw-h-full");
+      imgElement.classList.add("tw-object-fill");
+      imgElement.classList.add("tw-rounded");
+
+      setTimeout(() => {
+        const previewElement = this.$refs.imagePreview;
+
+        if (previewElement.firstChild) {
+          previewElement.removeChild(previewElement.firstChild);
+        }
+
+        previewElement.prepend(imgElement);
+      }, 200);
+    }
+  },
 };
 </script>
