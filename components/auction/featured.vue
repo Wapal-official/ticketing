@@ -14,7 +14,7 @@
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
       >
         <h2
-          class="tw-text-lg tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1.5 3xl:tw-text-xl"
+          class="tw-text-lg tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1.5"
         >
           <span>{{ auction?.nft.nft.current_token_data.collection_name }}</span>
           <i
@@ -22,9 +22,7 @@
             v-if="auction?.isVerified"
           ></i>
         </h2>
-        <h1
-          class="tw-text-4xl tw-font-bold 3xl:tw-text-5xl tw-tracking-[-0.025em]"
-        >
+        <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
           {{ auction?.nft.meta.name }}
         </h1>
         <div
@@ -58,16 +56,14 @@
             ></i>
           </button>
         </div>
-        <div class="tw-text-dark-0 tw-pb-4 3xl:tw-text-lg">
+        <div class="tw-text-dark-0 tw-pb-4">
           {{ auction?.nft.meta.description }}
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
           v-if="!auctionStarted"
         >
-          <h3
-            class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm 3xl:tw-text-lg"
-          >
+          <h3 class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm">
             Auction Starts In
           </h3>
           <count-down

@@ -13,9 +13,7 @@
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
       >
-        <h1
-          class="tw-text-4xl tw-font-bold 3xl:tw-text-5xl tw-tracking-[-0.025em]"
-        >
+        <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
           {{ collection.name }}
         </h1>
         <div
@@ -59,16 +57,14 @@
             ></i>
           </button>
         </div>
-        <div class="tw-text-dark-0 tw-pb-4 3xl:tw-text-lg">
+        <div class="tw-text-dark-0 tw-pb-4">
           {{ collection.description }}
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
           v-if="showLiveInTimer"
         >
-          <h3
-            class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm 3xl:tw-text-lg"
-          >
+          <h3 class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm">
             {{ currentSale.name }} Starts In
           </h3>
           <count-down :startTime="currentSale.mint_time" />
@@ -81,7 +77,7 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
           >
             <div
-              class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+              class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
             >
               <div class="tw-text-white/70">
                 {{ resource.minted }}/{{ resource.total_supply }} Minted
