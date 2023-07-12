@@ -17,9 +17,10 @@
             @click="showConnectWalletModal = true"
             v-if="!getWalletStatus"
           />
-          <v-icon class="!tw-text-primary-1 tw-py-2.5" v-else
-            >mdi-check-circle</v-icon
-          >
+          <i
+            class="bx bxs-check-circle !tw-text-primary-1 tw-py-2.5 tw-text-2xl"
+            v-else
+          ></i>
         </div>
       </div>
       <div
@@ -33,9 +34,10 @@
             @click="showSignupDialog = true"
             v-if="!getUserStatus"
           />
-          <v-icon class="!tw-text-primary-1 tw-py-2.5" v-else
-            >mdi-check-circle</v-icon
-          >
+          <i
+            class="bx bxs-check-circle !tw-text-primary-1 tw-py-2.5 tw-text-2xl"
+            v-else
+          ></i>
         </div>
       </div>
       <div
@@ -49,9 +51,10 @@
             @click="connectDiscord"
             v-if="!getDiscordConnected"
           />
-          <v-icon class="!tw-text-primary-1 tw-py-2.5" v-else
-            >mdi-check-circle</v-icon
-          >
+          <i
+            class="bx bxs-check-circle !tw-text-primary-1 tw-py-2.5 tw-text-2xl"
+            v-else
+          ></i>
         </div>
       </div>
       <div
@@ -87,9 +90,10 @@
               :disabled="verifyingJoinedDiscordServer"
             />
           </div>
-          <i class="bx bxs-check-circle !tw-text-primary-1 tw-py-2.5" v-else
-            >mdi-check-circle</i
-          >
+          <i
+            class="bx bxs-check-circle !tw-text-primary-1 tw-py-2.5 tw-text-2xl"
+            v-else
+          ></i>
         </div>
       </div>
       <div
@@ -123,9 +127,10 @@
               @click="followedTwitter = true"
             />
           </div>
-          <v-icon class="!tw-text-primary-1 tw-py-2.5" v-else
-            >mdi-check-circle</v-icon
-          >
+          <i
+            class="bx bxs-check-circle !tw-text-primary-1 tw-py-2.5 tw-text-2xl"
+            v-else
+          ></i>
         </div>
       </div>
     </div>
