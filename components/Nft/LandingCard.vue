@@ -10,6 +10,7 @@
         <img
           :src="isCollection ? collection?.image : collection?.nft.meta.image"
           :alt="isCollection ? collection?.name : collection?.nft.meta.name"
+          :onerror="imageNotFound()"
           class="tw-w-full tw-h-full tw-object-cover tw-rounded-lg tw-absolute tw-top-0 tw-transition-all tw-ease-linear tw-duration-300 tw-transform group-hover/landing-card:tw-scale-125"
         />
       </div>
@@ -57,10 +58,16 @@
   </div>
 </template>
 <script lang="ts">
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: {
     collection: { type: Object },
     type: { type: String, default: "collection" },
+  },
+  data() {
+    return {
+      imageNotFound,
+    };
   },
   computed: {
     isCollection() {

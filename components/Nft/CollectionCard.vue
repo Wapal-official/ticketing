@@ -10,6 +10,7 @@
         class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-w-[312px] md:tw-h-[312px] group-hover:tw-scale-125"
         :src="collection?.image"
         :alt="collection?.name"
+        :onerror="imageNotFound()"
       />
     </div>
     <div
@@ -86,6 +87,7 @@
 </template>
 <script lang="ts">
 import aptIcon from "@/assets/img/apt.svg";
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: {
     collection: { type: Object },
@@ -95,6 +97,7 @@ export default {
     return {
       status: true,
       aptIcon,
+      imageNotFound,
     };
   },
   computed: {

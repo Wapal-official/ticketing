@@ -8,6 +8,7 @@
       <img
         :src="collection.image"
         :alt="collection.name"
+        :onerror="imageNotFound()"
         class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
       />
       <div
@@ -308,6 +309,7 @@
 </template>
 <script lang="ts">
 import { setSoldOut } from "@/services/CollectionService";
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: { propCollection: { type: Object } },
   data() {
@@ -344,6 +346,7 @@ export default {
       currentSale: { name: "", mint_time: "", mint_price: 0 },
       nextSale: { name: "", mint_time: "", mint_price: 0 },
       phaseCounter: 0,
+      imageNotFound,
     };
   },
   methods: {

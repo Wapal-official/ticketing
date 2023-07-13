@@ -29,6 +29,7 @@
                 {{ itemIndex + 1 }}.<img
                   :src="item.image"
                   :alt="item[header.value]"
+                  :onerror="imageNotFound()"
                   class="tw-w-[64px] tw-h-[64px] tw-object-cover tw-rounded"
                 />{{ item[header.value] }}
               </div>
@@ -67,11 +68,13 @@
 </template>
 <script>
 import aptIcon from "@/assets/img/aptBlack.svg";
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: { headers: { type: Array }, items: { type: Array } },
   data() {
     return {
       aptIcon,
+      imageNotFound,
     };
   },
 };

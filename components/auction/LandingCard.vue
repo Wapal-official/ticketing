@@ -10,6 +10,7 @@
         class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-min-w-[313px] md:tw-h-[312px] group-hover:tw-scale-125"
         :src="auction?.nft.meta.image"
         :alt="auction?.nft.meta.name"
+        :onerror="imageNotFound()"
       />
     </div>
     <div
@@ -87,6 +88,7 @@
 </template>
 <script lang="ts">
 import aptIcon from "@/assets/img/apt.svg";
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: { auction: { type: Object } },
   data() {
@@ -94,6 +96,7 @@ export default {
       auctionStarted: false,
       auctionEnded: false,
       aptIcon,
+      imageNotFound,
     };
   },
   computed: {},

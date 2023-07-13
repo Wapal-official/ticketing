@@ -9,6 +9,7 @@
         :src="auction?.nft.meta.image"
         :alt="auction?.nft.meta.name"
         class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
+        :onerror="imageNotFound()"
       />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
@@ -96,6 +97,7 @@
   </div>
 </template>
 <script lang="ts">
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: { auction: { type: Object } },
   data() {
@@ -103,6 +105,7 @@ export default {
       loading: true,
       auctionEnded: false,
       auctionStarted: false,
+      imageNotFound,
     };
   },
   methods: {
