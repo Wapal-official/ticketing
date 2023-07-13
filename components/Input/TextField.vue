@@ -12,31 +12,38 @@
       "
       >{{ label }}</label
     >
-    <v-text-field
-      v-model="internalValue"
-      :readonly="readOnly"
-      outlined
-      single-line
-      color="#fff"
-      hide-details
-      clearable
-      :placeholder="placeholder"
-      :counter="counter"
-      :type="type"
-      :disabled="disabled"
-      class="wapal-input tw-w-full"
-    >
-    </v-text-field>
+
+    <div class="tw-relative tw-w-full">
+      <v-text-field
+        v-model="internalValue"
+        :readonly="readOnly"
+        outlined
+        single-line
+        color="#fff"
+        hide-details
+        :clearable="!showAptIcon"
+        :placeholder="placeholder"
+        :counter="counter"
+        :type="type"
+        :disabled="disabled"
+        class="wapal-input tw-w-full"
+        :class="{ 'tw-cursor-disabled': disabled }"
+      >
+      </v-text-field>
+      <div class="tw-absolute tw-top-[16px] tw-right-[9px]" v-if="showAptIcon">
+        <img :src="aptIcon" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { defaultTheme } from "@/theme/wapaltheme.ts";
+import aptIcon from "@/assets/img/aptBlack.svg";
 export default {
   props: {
     value: {
       type: [String, Number],
-      required: true,
     },
     placeholder: {
       type: String,
@@ -72,6 +79,10 @@ export default {
     label: {
       type: String,
     },
+    showAptIcon: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     internalValue: {
@@ -86,6 +97,7 @@ export default {
   data() {
     return {
       defaultTheme,
+      aptIcon,
     };
   },
 };

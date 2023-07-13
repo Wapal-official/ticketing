@@ -41,7 +41,7 @@ export const createCollection = async (formData: any) => {
 
 export const getCollectionsOfUser = async (userId: string) => {
   const res = await axios.get(
-    `${process.env.baseURL}/api/collection/user?page=1&limit=100&user_id=${userId}`
+    `${process.env.baseURL}/api/collection/user?page=1&limit=20&user_id=${userId}`
   );
 
   return res;

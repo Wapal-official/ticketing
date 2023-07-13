@@ -7,6 +7,7 @@
     <img
       class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
       :src="collection?.image"
+      :onerror="`this.onerror=null;this.src='${logo}'`"
       :alt="collection?.name"
     />
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1">
@@ -34,7 +35,7 @@
 </template>
 <script lang="ts">
 import { getCollection } from "@/services/CollectionService";
-
+import logo from "@/assets/img/logo/logo-vertical.png";
 export default {
   props: {
     collection: { type: Object },
@@ -44,6 +45,7 @@ export default {
     return {
       totalSupply: 0,
       minted: 0,
+      logo,
     };
   },
   async mounted() {

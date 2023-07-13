@@ -9,7 +9,7 @@
       v-for="(tab, index) in tabs"
       :key="tab"
       :ripple="false"
-      class="!tw-text-white tw-rounded-full tw-py-2 tw-px-6 !tw-capitalize !tw-text-base !tw-font-medium tw-transition-all tw-duration-200 tw-ease-linear tw-border-solid tw-border tw-border-dark-4 3xl:tw-text-lg hover:tw-border-white hover:!tw-bg-white hover:!tw-text-dark-9"
+      class="!tw-text-white tw-rounded-full !tw-h-[40px] !tw-max-h-[40px] tw-py-2 tw-px-6 !tw-capitalize !tw-text-base !tw-font-medium tw-transition-all tw-duration-200 tw-ease-linear tw-border-solid tw-border tw-border-dark-4 3xl:tw-text-lg hover:tw-border-white hover:!tw-bg-white hover:!tw-text-dark-9 hover:!tw-font-semibold"
       :class="{ 'tw-ml-4': index !== 0 }"
     >
       {{ tab }}
@@ -36,7 +36,7 @@ export default {
 </script>
 <style scoped>
 .v-tab--active {
-  @apply !tw-text-dark-9 !tw-bg-white !tw-border-white;
+  @apply !tw-text-dark-9 !tw-bg-white !tw-border-white !tw-font-semibold;
 }
 
 .v-tab--active:hover {

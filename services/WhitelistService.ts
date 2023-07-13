@@ -11,7 +11,7 @@ export const getAllWhitelist = async (page: number, limit: number) => {
 
 export const getWhitelistOfUser = async (userId: string) => {
   const res = await axios.get(
-    `${process.env.baseURL}/api/whitelist/user?limit=100&page=1&user_id=${userId}`
+    `${process.env.baseURL}/api/whitelist/user?limit=20&page=1&user_id=${userId}`
   );
 
   return res;
