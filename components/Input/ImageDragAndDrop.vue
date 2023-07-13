@@ -14,7 +14,7 @@
     >
 
     <div
-      class="tw-border tw-border-dashed tw-border-dark-4 tw-py-20 tw-rounded tw-cursor-pointer tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center"
+      class="tw-border tw-border-dashed tw-border-dark-4 tw-py-20 tw-rounded tw-cursor-pointer tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
       @click="dropZoneClicked"
       @dragover.prevent="dragover"
       @dragleave.prevent="dragleave"
