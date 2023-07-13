@@ -1,5 +1,125 @@
 <template>
   <div
+    class="tw-w-full tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 lg:tw-mx-0 lg:tw-pt-4 lg:tw-pb-24"
+  >
+    <div
+      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center xl:tw-flex-row xl:tw-items-start xl:tw-justify-start xl:tw-gap-[4.5em]"
+    >
+      <img
+        :src="selectedNft.meta.image"
+        :alt="selectedNft.meta.name"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+        :onerror="imageNotFound()"
+      />
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 xl:tw-w-[474px]"
+      >
+        <h1 class="tw-text-white tw-text-[2.5em] tw-font-bold">
+          {{ selectedNft.meta.name }}
+        </h1>
+        <div class="tw-pb-2 tw-text-dark-0">
+          {{ selectedNft.meta.description }}
+        </div>
+        <h2 class="tw-text-white tw-text-[1.375em] tw-font-bold">
+          Create Auction
+        </h2>
+        <ValidationObserver
+          ref="form"
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+        >
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
+          >
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+              rules="required|auctionTime"
+              name="auction_start"
+              v-slot="{ errors }"
+            >
+              <input-date-picker
+                v-model="start_date"
+                label="Start Date"
+                placeholder="Start Date"
+                :required="true"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+              rules="required|endTime:@auction_start"
+              name="auction_end"
+              v-slot="{ errors }"
+            >
+              <input-date-picker
+                v-model="end_date"
+                label="End Date"
+                placeholder="End Date"
+                :required="true"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
+
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+            rules="link"
+            name="twitter"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Collection/Artist Twitter Profile"
+              placeholder="Twitter Link"
+              v-model="twitter"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+            rules="link"
+            name="instagram"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Collection/Artist Instagram Profile"
+              placeholder="Instagram Link"
+              v-model="instagram"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            <div class="tw-text-red-600 tw-text-sm" v-if="socialError">
+              {{ socialErrorMessage }}
+            </div>
+          </ValidationProvider>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
+          >
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+              rules="required|bidAmount"
+              name="min_bid"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                label="Min. Bid Price"
+                placeholder="Eg. 0"
+                v-model="apt"
+                :showAptIcon="true"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <div class="tw-w-full md:tw-pt-7">
+              <button-primary
+                title="Add To Auction"
+                @click="startAuction"
+                :fullWidth="true"
+              />
+            </div>
+          </div>
+        </ValidationObserver>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div
     class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-pt-16 tw-pb-16 3xl:tw-px-16 xl:tw-flex-row xl:tw-gap-16 xl:tw-items-start"
   >
     <div
@@ -119,17 +239,16 @@
         </ValidationObserver>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 <script>
 import generateName from "@/utils/generateName";
 
-import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/index.css";
-
 import { publicRequest } from "../../../services/fetcher";
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
+
+import imageNotFound from "@/utils/imageNotFound";
 
 extend("required", {
   ...required,
@@ -183,15 +302,14 @@ extend("link", {
 
 export default {
   components: {
-    DatePicker,
     ValidationProvider,
     ValidationObserver,
   },
   data() {
     return {
-      start_date: "",
-      end_date: "",
-      apt: "",
+      start_date: null,
+      end_date: null,
+      apt: null,
       valid: true,
       loading: false,
       validRules: {
@@ -202,6 +320,7 @@ export default {
       instagram: "",
       socialError: false,
       socialErrorMessage: "",
+      imageNotFound,
     };
   },
   computed: {
