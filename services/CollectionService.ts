@@ -74,8 +74,7 @@ export const getCollectionByUsername = async (username: string) => {
 
 export const getFeaturedCollection = async () => {
   const res = await axios.get(`${process.env.baseURL}/api/collection/featured`);
-
-  return res;
+  return res.data.collection;
 };
 
 export const getLiveCollections = async (page: number, limit: number) => {
