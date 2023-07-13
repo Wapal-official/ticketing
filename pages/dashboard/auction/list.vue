@@ -1,23 +1,19 @@
 <template>
   <div class="tw-py-4">
-    <v-row v-if="auctions.length > 0" justify="start">
-      <v-col v-for="(item, i) in auctions" :key="i" cols="12" lg="3" md="6">
-        <v-card
-          tile
-          @click="$router.push('/auctions/' + item.auction_name)"
-          color="transparent"
-        >
-          <v-img :src="item.nft.meta.image" class="tw-h-[350px]"></v-img>
-          <div
-            class="tw-w-full tw-py-4 tw-text-center tw-border-l tw-border-r tw-border-b tw-border-wapal-pink"
-          >
-            <h4>{{ item.nft.meta.name }}</h4>
-          </div>
-        </v-card>
-      </v-col>
-    </v-row>
+    <div v-if="auctions.length > 0" justify="start">
+      <dashboard-collection-table
+        :headers="headers"
+        :items="auctions"
+        @rowClicked="redirectToAuctionPage"
+      />
+    </div>
     <v-row no-gutters v-else class="py-10" justify="center">
-      <p v-if="end">No auctions</p>
+      <dashboard-no-collection
+        message="You Do Not Have Any Auctions"
+        buttonTitle="Create Auction"
+        @click="$router.push('/dashboard/auction/nfts')"
+        v-if="end"
+      />
       <ReusableLoading v-else />
     </v-row>
     <v-card
@@ -35,7 +31,7 @@
   </div>
 </template>
 <script>
-import { publicRequest } from "../../../services/fetcher";
+import { publicRequest } from "@/services/fetcher";
 export default {
   data() {
     return {
@@ -43,6 +39,39 @@ export default {
       auctions: [],
       page: 0,
       perPage: 10,
+      headers: [
+        {
+          text: "Collection Name",
+          align: "start",
+          sortable: true,
+          value: "name",
+          width: "264px",
+          class:
+            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          showImage: true,
+          showSerialNumber: true,
+        },
+        {
+          text: "Social Link",
+          align: "start",
+          sortable: true,
+          value: "socialLink",
+          width: "200px",
+          class:
+            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          showSocialLink: true,
+        },
+        {
+          text: "Highest Bid",
+          align: "start",
+          sortable: true,
+          value: "highestBid",
+          width: "200px",
+          class:
+            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          showAptIcon: true,
+        },
+      ],
     };
   },
   mounted() {
@@ -61,14 +90,24 @@ export default {
         .then((res) => {
           let resp = res.data.auctions;
           if (resp.length > 0) {
-            for (var i = 0; i < resp.length; i++) {
-              this.auctions.push(resp[i]);
-            }
+            resp.map((auction) => {
+              auction.name = auction.nft.meta.name;
+              auction.image = auction.nft.meta.image;
+
+              auction.highestBid = auction.biddings
+                ? auction.biddings[auction.bidding.length - 1]
+                : auction.min_bid;
+
+              this.auctions.push(auction);
+            });
           } else {
             this.end = true;
           }
         })
         .catch((err) => console.log(err.response));
+    },
+    redirectToAuctionPage(item) {
+      this.$router.push(`/auctions/${item.auction_name}`);
     },
   },
 };
