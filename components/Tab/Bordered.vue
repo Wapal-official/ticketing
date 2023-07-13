@@ -9,7 +9,7 @@
       v-for="(tab, index) in tabs"
       :key="tab"
       :ripple="false"
-      class="tw-px-6 tw-text-dark-0 tw-border-t tw-border-r tw-border-b tw-border-dark-3 tw-border-solid !tw-h-[40px] !tw-max-h-[40px] !tw-text-left !tw-capitalize !tw-text-base !tw-font-medium tw-transition-all tw-duration-150 tw-ease-linear 3xl:tw-text-lg hover:!tw-bg-white hover:!tw-text-black hover:!tw-border-white hover:tw-font-semibold"
+      class="tw-px-6 tw-text-dark-0 tw-border-t tw-border-r tw-border-b tw-border-dark-3 tw-border-solid !tw-h-[40px] !tw-max-h-[40px] !tw-text-left !tw-capitalize !tw-text-base !tw-font-medium tw-transition-all tw-duration-150 tw-ease-linear 3xl:tw-text-lg hover:!tw-bg-white hover:!tw-text-black hover:!tw-border-white hover:!tw-font-semibold"
       :class="[
         { 'tw-rounded-l tw-border-l': index === 0 },
         { 'tw-rounded-r': getLastItem(index) },
@@ -60,5 +60,9 @@ export default {
 
 .v-tab:focus::before {
   opacity: 0 !important;
+}
+
+::v-deep .v-slide-group__prev--disabled {
+  display: none !important;
 }
 </style>
