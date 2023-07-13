@@ -3,9 +3,11 @@
     class="!tw-w-full !tw-h-[338px] !tw-max-h-[338px] tw-cursor-pointer tw-group/landing-card md:!tw-w-[312px] md:!tw-h-[312px]"
     @click="redirectToCollection"
   >
-    <div class="tw-relative tw-w-full tw-h-full tw-rounded-lg">
+    <div
+      class="tw-relative tw-w-full tw-h-full tw-rounded-lg md:!tw-w-[312px] md:!tw-h-[312px]"
+    >
       <div
-        class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative"
+        class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative md:!tw-w-[312px] md:!tw-h-[312px]"
       >
         <img
           :src="isCollection ? collection?.image : collection?.nft.meta.image"
