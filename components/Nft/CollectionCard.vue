@@ -37,7 +37,7 @@
           </div>
           <div
             class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
-            v-if="getPrice !== '0'"
+            v-if="getPrice !== 0"
           >
             {{ getPrice }}<span><img :src="aptIcon" alt="apt" /></span>
           </div>

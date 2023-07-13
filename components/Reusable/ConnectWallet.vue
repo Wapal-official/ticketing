@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-text-sm">
+  <div>
     <button-primary
       @click="connectWallet"
       v-if="!walletStore.wallet"
