@@ -7,12 +7,12 @@
         @rowClicked="redirectToEditPage"
         v-if="collections[0]"
       />
-      <h2
-        class="tw-text-primary-1 tw-text-xl tw-text-center tw-w-full"
+      <dashboard-no-collection
+        message="You do not have any Collection"
+        buttonTitle="Create Collection"
+        @click="$router.push('/dashboard/create-collection')"
         v-if="collections.length === 0 && !loading"
-      >
-        No Under Review Collections
-      </h2>
+      />
     </div>
 
     <div class="py-16" v-if="loading">
