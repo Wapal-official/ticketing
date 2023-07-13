@@ -327,36 +327,24 @@
                   rules="required|saleTime"
                   v-slot="{ errors }"
                 >
-                  <input-date-picker
-                    v-model="phase.mint_time"
-                    type="datetime"
-                    placeholder="Select Mint Time"
-                    label="Mint Time"
-                  ></input-date-picker>
-                  <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+                  <div
+                    class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-full"
+                  >
+                    <input-date-picker
+                      v-model="phase.mint_time"
+                      type="datetime"
+                      placeholder="Select Mint Time"
+                      label="Mint Time"
+                    ></input-date-picker>
+
+                    <button @click="removeMintPhase(index)" class="tw-mt-8">
+                      <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
+                    </button>
+                  </div>
+                  <div class="tw-text-red-600 tw-text-sm">
+                    {{ errors[0] }}
+                  </div>
                 </ValidationProvider>
-              </div>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-                name="publicSalePrice"
-                :rules="'required|number'"
-                v-slot="{ errors }"
-              >
-                <input-text-field
-                  v-model="collection.public_sale_price"
-                  placeholder="Eg: 0"
-                  label="Public Mint Limit"
-                  :required="true"
-                />
-                <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <div class="tw-flex tw-flex-row tw-w-full tw-justify-end">
-                <button
-                  class="tw-bg-[#A0A0A0] tw-rounded tw-py-2 tw-px-6 tw-text-white tw-my-2"
-                  @click.prevent="removeMintPhase(index)"
-                >
-                  Remove Phase
-                </button>
               </div>
             </div>
 
@@ -369,6 +357,20 @@
                 <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
               </template>
             </button-primary>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+              name="publicSalePrice"
+              :rules="'required|number'"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                v-model="public_mint_limit"
+                placeholder="Eg: 0"
+                label="Public Mint Limit"
+                :required="true"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
             <v-checkbox
               v-model="saveAsDraft"
               label="Save as Draft"
@@ -892,9 +894,6 @@ import {
 } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 
-import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/index.css";
-
 extend("required", {
   ...required,
   message: "This field is required",
@@ -1014,6 +1013,7 @@ export default {
         candy_id: process.env.CANDY_MACHINE_ID,
         phases: [{ name: "", mint_time: null }],
       },
+      public_mint_limit: null,
       message: "",
       image: { name: null },
       imageErrorMessage: "",
