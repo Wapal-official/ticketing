@@ -29,6 +29,9 @@
           >click to browse</span
         ></label
       >
+      <label class="tw-text-xs tw-font-medium tw-text-dark-2"
+        >Size: 400x400px</label
+      >
       <input
         type="file"
         accept=".png, .jpg, .jpeg, .gif, .webp"

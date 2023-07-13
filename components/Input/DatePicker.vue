@@ -35,7 +35,7 @@ export default {
   components: { DatePicker },
   props: {
     value: {
-      type: [String, Number],
+      type: [Date],
     },
     placeholder: {
       type: String,

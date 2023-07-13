@@ -93,8 +93,6 @@ export default {
 
       const drafts = await getDraftsOfUser(this.page);
 
-      console.log(drafts);
-
       const mappedCollections = await Promise.all(
         drafts.map(async (draft: any) => {
           //Set minted to 0 and

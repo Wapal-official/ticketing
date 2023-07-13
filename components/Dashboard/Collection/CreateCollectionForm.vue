@@ -6,6 +6,9 @@
           ref="detailForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
         >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Nft Collection Details
+          </h2>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="name"
@@ -119,6 +122,9 @@
           ref="royaltyForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
         >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Royalty and Assets
+          </h2>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
             name="royaltyPayeeAddress"
@@ -191,6 +197,9 @@
           ref="phaseForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
         >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Sale Phase
+          </h2>
           <div
             class="tw-flex tw-flex-row tw-gap-4 tw-items-center tw-w-full md:tw-w-1/2"
           >
@@ -363,6 +372,7 @@
             <v-checkbox
               v-model="saveAsDraft"
               label="Save as Draft"
+              :ripple="false"
               v-if="!draft"
             ></v-checkbox>
             <div
