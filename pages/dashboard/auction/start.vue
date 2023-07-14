@@ -3,7 +3,7 @@
     class="tw-w-full tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 lg:tw-mx-0 lg:tw-pt-4 lg:tw-pb-24"
   >
     <div
-      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center xl:tw-flex-row xl:tw-items-start xl:tw-justify-start xl:tw-gap-[4.5em]"
+      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center xl:tw-flex-row xl:tw-items-start xl:tw-justify-start xl:tw-gap-[3em]"
     >
       <img
         :src="selectedNft.meta.image"
@@ -62,6 +62,21 @@
 
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+            rules="required|bidAmount"
+            name="min_bid"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Min. Bid Price"
+              placeholder="Eg. 0"
+              v-model="apt"
+              :showAptIcon="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
             rules="link"
             name="twitter"
             v-slot="{ errors }"
@@ -89,30 +104,12 @@
               {{ socialErrorMessage }}
             </div>
           </ValidationProvider>
-          <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
-          >
-            <ValidationProvider
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
-              rules="required|bidAmount"
-              name="min_bid"
-              v-slot="{ errors }"
-            >
-              <input-text-field
-                label="Min. Bid Price"
-                placeholder="Eg. 0"
-                v-model="apt"
-                :showAptIcon="true"
-              />
-              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-            </ValidationProvider>
-            <div class="tw-w-full md:tw-pt-7">
-              <button-primary
-                title="Add To Auction"
-                @click="startAuction"
-                :fullWidth="true"
-              />
-            </div>
+          <div class="tw-w-full">
+            <button-primary
+              title="Add To Auction"
+              @click="startAuction"
+              :fullWidth="true"
+            />
           </div>
         </ValidationObserver>
       </div>
