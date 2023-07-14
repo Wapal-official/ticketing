@@ -1,5 +1,370 @@
 <template>
-  <div>
+  <div class="tw-w-full">
+    <stepper
+      :steps="formSteps"
+      :stepNumber="formStepNumber"
+      @stepClicked="changeStep"
+    >
+      <v-stepper-content step="1">
+        <ValidationObserver
+          ref="detailForm"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+        >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Nft Collection Details
+          </h2>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="name"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Collection Name"
+              :required="true"
+              v-model="mint.colName"
+              placeholder="Collection Name"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="description"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-area
+              label="Collection Description"
+              :required="true"
+              v-model="mint.colDesc"
+              placeholder="Collection Description"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="twitter"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Twitter Link"
+              v-model="mint.twitter"
+              placeholder="Twitter Link"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="instagram"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Instagram Link"
+              v-model="mint.instagram"
+              placeholder="Instagram Link"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            <div class="tw-text-red-600 tw-text-sm" v-if="socialError">
+              {{ socialErrorMessage }}
+            </div>
+          </ValidationProvider>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+          >
+            <button-primary title="Next" @click="validateFormForNextStep" />
+          </div>
+        </ValidationObserver>
+      </v-stepper-content>
+      <v-stepper-content step="2">
+        <ValidationObserver
+          ref="tokenDetailForm"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+        >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Token Details
+          </h2>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="tokenName"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              :required="true"
+              label="Token Name"
+              v-model="mint.tokenName"
+              placeholder="Token Name"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="tokenDescription"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-area
+              :required="true"
+              label="Token Description"
+              v-model="mint.tokenDesc"
+              placeholder="Token Description"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
+          >
+            <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="startDate"
+              rules="required|auctionTime"
+              v-slot="{ errors }"
+            >
+              <input-date-picker
+                :required="true"
+                label="Start Date"
+                v-model="mint.startDate"
+                placeholder="Auction Start Date"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="endDate"
+              rules="required|endTime:@startDate"
+              v-slot="{ errors }"
+            >
+              <input-date-picker
+                :required="true"
+                label="End Date"
+                v-model="mint.endDate"
+                placeholder="Auction End Date"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
+          >
+            <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="minBid"
+              rules="required|bidAmount"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                :required="true"
+                label="Min. Bid Price"
+                v-model="mint.minBid"
+                placeholder="Eg. 0.5"
+                :showAptIcon="true"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="royalty_percentage"
+              rules="required|percentage"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                :required="true"
+                label="Royalty Percentage"
+                v-model="mint.royalty"
+                placeholder="Eg. 4"
+                :showPercentage="true"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          >
+            <input-image-drag-and-drop
+              :required="true"
+              label="Image"
+              :file="mint.colImage"
+              @fileSelected="selectImage"
+            />
+            <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
+              {{ imageErrorMessage }}
+            </div>
+          </ValidationProvider>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+          >
+            <button-primary title="Next" @click="validateFormForNextStep" />
+          </div>
+        </ValidationObserver>
+      </v-stepper-content>
+      <v-stepper-content step="3">
+        <ValidationObserver
+          ref="attributeForm"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+        >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Attributes
+          </h2>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-flex-row md:tw-justify-start"
+          >
+            <div
+              id="image-preview"
+              class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
+            ></div>
+            <div
+              class="tw-w-[316px] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
+            >
+              <h1
+                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium tw-pb-2"
+              >
+                {{ mint.colName }}
+                <i class="bx bxs-badge-check tw-text-xl tw-text-primary-1"></i>
+              </h1>
+              <h2 class="tw-text-white tw-text-[1.375em] tw-font-medium">
+                {{ mint.tokenName }}
+              </h2>
+              <div class="tw-pb-4 tw-text-dark-0 tw-text-sm">
+                {{ mint.tokenDesc }}
+              </div>
+              <div
+                class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5 tw-flex tw-flex-row tw-items-start tw-justify-between"
+              >
+                <div
+                  class="tw-w-full tw-flex tw-flex-col tw-items-stat tw-justify-start tw-gap-3"
+                >
+                  <div>
+                    <div
+                      class="tw-text-dark-2 tw-text-xs tw-font-semibold tw-uppercase tw-leading-5"
+                    >
+                      Start Date
+                    </div>
+                    <div class="tw-text-white tw-text-sm tw-font-semibold">
+                      {{ formatDate(mint.startDate) }}
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      class="tw-text-dark-2 tw-text-xs tw-font-semibold tw-uppercase tw-leading-5"
+                    >
+                      Min Bid
+                    </div>
+                    <div
+                      class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
+                    >
+                      {{ mint.minBid }} <img :src="aptIcon" />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="tw-w-full tw-flex tw-flex-col tw-items-stat tw-justify-start tw-gap-3"
+                >
+                  <div>
+                    <div
+                      class="tw-text-dark-2 tw-text-xs tw-font-semibold tw-uppercase tw-leading-5"
+                    >
+                      End Date
+                    </div>
+                    <div class="tw-text-white tw-text-sm tw-font-semibold">
+                      {{ formatDate(mint.endDate) }}
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      class="tw-text-dark-2 tw-text-xs tw-font-semibold tw-uppercase tw-leading-5"
+                    >
+                      Royalties
+                    </div>
+                    <div
+                      class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
+                    >
+                      {{ mint.royalty }}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+          >
+            <div
+              v-for="(attribute, index) in mint.attributes"
+              :key="index"
+              class="tw-w-full"
+            >
+              <div
+                class="tw-flex tw-flex-col tw-gap-4 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
+              >
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <input-text-field
+                    v-model="attribute.trait_type"
+                    placeholder="Attribute Type"
+                    label="Attribute Type"
+                    :required="true"
+                  />
+                  <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+                </ValidationProvider>
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <div
+                    class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-full"
+                  >
+                    <input-text-field
+                      v-model="attribute.value"
+                      placeholder="Value"
+                      label="Value"
+                      :required="true"
+                    />
+
+                    <button @click="removeAttribute(index)" class="tw-mt-8">
+                      <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
+                    </button>
+                  </div>
+                  <div class="tw-text-red-600 tw-text-sm">
+                    {{ errors[0] }}
+                  </div>
+                </ValidationProvider>
+              </div>
+            </div>
+
+            <button-primary
+              title="Add Attribute"
+              :bordered="true"
+              @click="addAttribute"
+            >
+              <template #prepend-icon>
+                <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
+              </template>
+            </button-primary>
+          </div>
+          <div class="tw-w-full tw-flex tw-items-center tw-justify-end">
+            <button-primary title="Create" :loading="loading" @click="submit" />
+          </div>
+        </ValidationObserver>
+      </v-stepper-content>
+    </stepper>
+    <reusable-progress-modal
+      :showProgressModal="createAuctionModal"
+      :showClose="showCloseAuctionModal"
+      name="Create Auction"
+      description="Please review and approve up to four transactions in your wallet window to create your NFT."
+      :steps="steps"
+      :progress="auctionProgress"
+      :error="createError"
+      @closeProgressModal="createAuctionModal = false"
+    />
+  </div>
+  <!-- <div>
     <p class="tw-text-3xl tw-text-wapal-gray !tw-font-medium">NFT Details</p>
 
     <v-stepper v-model="step" class="!tw-bg-transparent">
@@ -333,7 +698,7 @@
       :error="createError"
       @closeProgressModal="createAuctionModal = false"
     />
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -348,6 +713,8 @@ import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import uploadIcon from "@/assets/img/upload-icon.svg";
 import { defaultTheme } from "@/theme/wapaltheme";
 import generateName from "@/utils/generateName";
+import aptIcon from "@/assets/img/apt.svg";
+import moment from "moment";
 
 extend("bidAmount", {
   validate(value) {
@@ -425,20 +792,20 @@ export default {
         positive: (v) => (v && v > 0) || "Should be more than zero.",
       },
       mint: {
-        colName: "",
-        colDesc: "",
-        tokenName: "",
-        tokenDesc: "",
-        startDate: "",
-        endDate: "",
-        minBid: "",
-        royalty: "",
-        colImage: "",
-        nftName: "",
-        nftDesc: "",
-        attributes: [{ trait_type: "", value: "" }],
-        twitter: "",
-        instagram: "",
+        colName: null,
+        colDesc: null,
+        tokenName: null,
+        tokenDesc: null,
+        startDate: null,
+        endDate: null,
+        minBid: null,
+        royalty: null,
+        colImage: null,
+        nftName: null,
+        nftDesc: null,
+        attributes: [{ trait_type: null, value: null }],
+        twitter: null,
+        instagram: null,
       },
       attribute: "",
       value: "",
@@ -462,8 +829,11 @@ export default {
         { step: 3, name: "Minting Collection" },
         { step: 4, name: "Adding Collection to Auction" },
       ],
+      formSteps: ["Details", "Token", "Attributes"],
+      formStepNumber: 1,
       defaultTheme,
       uploadIcon,
+      aptIcon,
     };
   },
   watch: {
@@ -482,35 +852,7 @@ export default {
       return this.$store.state.auction.selectedNft;
     },
   },
-  async mounted() {
-    const dropContainer = document.getElementById("drop-container");
-
-    dropContainer.addEventListener("dragenter", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dropContainer.classList.add("dragover");
-    });
-
-    dropContainer.addEventListener("dragleave", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dropContainer.classList.remove("dragover");
-    });
-
-    dropContainer.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    });
-
-    dropContainer.addEventListener("drop", async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dropContainer.classList.remove("dragover");
-      const files = e.dataTransfer.files;
-      this.file = files[0];
-      this.displayImage();
-    });
-  },
+  async mounted() {},
   methods: {
     saveStart(date) {
       this.$refs.startmenu.save(date);
@@ -556,7 +898,8 @@ export default {
       imgElement.classList.add("tw-w-full");
       imgElement.classList.add("tw-h-full");
       imgElement.classList.add("tw-object-fill");
-      imgElement.classList.add("tw-max-h-[580px]");
+      imgElement.classList.add("tw-max-h-[300px]");
+      imgElement.classList.add("tw-rounded");
 
       const previewElement = document.getElementById("image-preview");
 
@@ -566,8 +909,8 @@ export default {
 
       previewElement.prepend(imgElement);
     },
-    selectImage(e) {
-      this.file = e.target.files[0];
+    selectImage(file) {
+      this.file = file;
       this.displayImage();
     },
     async submit() {
@@ -661,7 +1004,7 @@ export default {
             formData.append("instagram", this.mint.instagram);
             formData.append("resource_account", resource_account);
             formData.append("txnhash", txnhash);
-            formData.append("candy_id", process.env.CANDY_MACHINE_ID);
+            formData.append("candy_id", process.env.CANDY_MACHINE_V1);
             formData.append("image", this.file);
             formData.append("phases", JSON.stringify([]));
 
@@ -677,7 +1020,7 @@ export default {
                   {
                     resourceAccount: resource_account,
                     publicMint: true,
-                    candyMachineId: process.env.CANDY_MACHINE_ID,
+                    candyMachineId: process.env.CANDY_MACHINE_V1,
                   }
                 );
 
@@ -779,6 +1122,52 @@ export default {
         this.createError = true;
         this.showCloseAuctionModal = true;
       }
+    },
+    changeStep(step) {
+      this.formStepNumber = step;
+    },
+    async validateFormForNextStep() {
+      switch (this.formStepNumber) {
+        case 1:
+          const detailValidated = await this.$refs.detailForm.validate();
+
+          if (!detailValidated) {
+            break;
+          }
+
+          this.socialError = false;
+
+          if (!this.mint.twitter && !this.mint.instagram) {
+            this.socialError = true;
+            this.socialErrorMessage =
+              "Please provide a twitter link or instagram link";
+
+            break;
+          }
+
+          this.formStepNumber++;
+          break;
+        case 2:
+          const tokenValidated = await this.$refs.tokenDetailForm.validate();
+
+          if (!tokenValidated) {
+            break;
+          }
+
+          if (!this.file || !this.file.name) {
+            this.imageError = true;
+            this.imageErrorMessage = "Please select an image for collection";
+            break;
+          }
+
+          this.formStepNumber++;
+          break;
+        default:
+          break;
+      }
+    },
+    formatDate(date) {
+      return moment(date).format("MMM DD, hh:mm A");
     },
   },
 };

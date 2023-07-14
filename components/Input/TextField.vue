@@ -33,6 +33,11 @@
       <div class="tw-absolute tw-top-[16px] tw-right-[9px]" v-if="showAptIcon">
         <img :src="aptIcon" />
       </div>
+      <i
+        class="tw-absolute tw-top-[10px] tw-right-[9px] tw-text-dark-2"
+        v-if="showPercentage"
+        >%</i
+      >
     </div>
   </div>
 </template>
@@ -80,6 +85,10 @@ export default {
       type: String,
     },
     showAptIcon: {
+      type: Boolean,
+      default: false,
+    },
+    showPercentage: {
       type: Boolean,
       default: false,
     },
