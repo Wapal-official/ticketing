@@ -83,7 +83,7 @@ export default {
 
       this.type = "collection";
       const res = await getFeaturedCollection();
-      this.collections.push(res.data.collection);
+      this.collections.push(...res);
 
       this.end = true;
     },

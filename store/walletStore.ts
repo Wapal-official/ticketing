@@ -219,7 +219,7 @@ export const actions = {
 
     const create_candy_machine = {
       type: "entry_function_payload",
-      function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
+      function: process.env.CANDY_MACHINE_V1 + "::candymachine::init_candy",
       type_arguments: [],
       arguments: [
         candyMachineArguments.collection_name,

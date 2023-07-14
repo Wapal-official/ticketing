@@ -14,12 +14,14 @@
     <button
       class="tw-group tw-opacity-0 tw-absolute tw-z-10 tw-left-0.5 tw-top-[44%] tw-w-12 tw-h-12 tw-rounded-full tw-transition-all tw-duration-150 tw-ease-linear tw-flex tw-flex-col tw-items-center tw-justify-center tw-group tw-bg-white group-hover:tw-opacity-100 md:-tw-left-6"
       @click="previous"
+      v-if="sliderCollections.length > 4"
     >
       <i class="bx bx-chevron-left !tw-text-black tw-text-2xl"></i>
     </button>
     <button
       class="tw-group tw-opacity-0 tw-absolute tw-z-10 tw-right-0.5 tw-top-[44%] tw-w-12 tw-h-12 tw-rounded-full tw-transition-all tw-duration-150 tw-ease-linear tw-flex tw-flex-col tw-items-center tw-justify-center tw-group tw-bg-white group-hover:tw-opacity-100 md:-tw-right-6"
       @click="next"
+      v-if="sliderCollections.length > 4"
     >
       <i class="bx bx-chevron-right !tw-text-black tw-text-2xl"></i>
     </button>

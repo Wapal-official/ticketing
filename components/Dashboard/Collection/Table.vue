@@ -15,7 +15,7 @@
             v-for="(item, itemIndex) in items"
             :key="itemIndex"
             class="tw-cursor-pointer hover:!tw-bg-black/60"
-            @click="$emit('rowClicked', item)"
+            @click.self="$emit('rowClicked', item)"
           >
             <td
               class="!tw-border-b-dark-6 !tw-py-4 tw-font-medium !tw-text-base"
@@ -29,6 +29,7 @@
                 {{ itemIndex + 1 }}.<img
                   :src="item.image"
                   :alt="item[header.value]"
+                  :onerror="imageNotFound()"
                   class="tw-w-[64px] tw-h-[64px] tw-object-cover tw-rounded"
                 />{{ item[header.value] }}
               </div>
@@ -57,6 +58,26 @@
                   <img :src="aptIcon" alt="apt"
                 /></span>
               </div>
+              <div
+                v-else-if="header.showSocialLink"
+                class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+              >
+                <a :href="item.twitter" target="_blank" v-if="item.twitter">
+                  <i
+                    class="bx bxl-twitter tw-text-xl tw-text-white tw-transition-all tw-duration-200 tw-ease-linear hover:tw-text-primary-1"
+                  ></i
+                ></a>
+                <a :href="item.discord" target="_blank" v-if="item.discord">
+                  <i
+                    class="bx bxl-discord-alt tw-text-xl tw-text-white tw-transition-all tw-duration-200 tw-ease-linear hover:tw-text-primary-1"
+                  ></i
+                ></a>
+                <a :href="item.instagram" target="_blank" v-if="item.instagram">
+                  <i
+                    class="bx bxl-instagram tw-text-xl tw-text-white tw-transition-all tw-duration-200 tw-ease-linear hover:tw-text-primary-1"
+                  ></i
+                ></a>
+              </div>
               <div v-else>{{ item[header.value] }}</div>
             </td>
           </tr>
@@ -67,11 +88,13 @@
 </template>
 <script>
 import aptIcon from "@/assets/img/aptBlack.svg";
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: { headers: { type: Array }, items: { type: Array } },
   data() {
     return {
       aptIcon,
+      imageNotFound,
     };
   },
 };

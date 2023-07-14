@@ -7,12 +7,12 @@
         @rowClicked="redirectToEditPage"
         v-if="drafts[0]"
       />
-      <h2
-        class="tw-text-primary-1 tw-text-xl tw-text-center tw-w-full"
+      <dashboard-no-collection
+        message="You do not have any Drafts"
+        buttonTitle="Create Draft"
+        @click="$router.push('/dashboard/create-collection')"
         v-if="drafts.length === 0 && !loading"
-      >
-        No Drafts
-      </h2>
+      />
     </div>
 
     <div class="py-16" v-if="loading">

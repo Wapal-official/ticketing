@@ -9,6 +9,7 @@ const APTOS_API_KEY = process.env.APTOS_API_KEY;
 const PID = process.env.PID;
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
 const CANDY_MACHINE_V2 = process.env.CANDY_MACHINE_V2;
+const CANDY_MACHINE_V1 = "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0";
 
 let discordRedirectURI = "http://staging.wapal.io/discord/token";
 
@@ -142,6 +143,7 @@ export default {
     GRAPHQL_URL: GRAPHQL_URL,
     CANDY_MACHINE_V2:CANDY_MACHINE_V2,
     NODE_URL:NODE_URL,
+    CANDY_MACHINE_V1:CANDY_MACHINE_V1,
   },
   privateRuntimeConfig:{
     DISCORD_CLIENT_SECRET:DISCORD_CLIENT_SECRET,

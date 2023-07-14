@@ -3,13 +3,16 @@
     class="!tw-w-full !tw-h-[338px] !tw-max-h-[338px] tw-cursor-pointer tw-group/landing-card md:!tw-w-[312px] md:!tw-h-[312px]"
     @click="redirectToCollection"
   >
-    <div class="tw-relative tw-w-full tw-h-full tw-rounded-lg">
+    <div
+      class="tw-relative tw-w-full tw-h-full tw-rounded-lg md:!tw-w-[312px] md:!tw-h-[312px]"
+    >
       <div
-        class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative"
+        class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative md:!tw-w-[312px] md:!tw-h-[312px]"
       >
         <img
           :src="isCollection ? collection?.image : collection?.nft.meta.image"
           :alt="isCollection ? collection?.name : collection?.nft.meta.name"
+          :onerror="imageNotFound()"
           class="tw-w-full tw-h-full tw-object-cover tw-rounded-lg tw-absolute tw-top-0 tw-transition-all tw-ease-linear tw-duration-300 tw-transform group-hover/landing-card:tw-scale-125"
         />
       </div>
@@ -20,7 +23,7 @@
         class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-flex tw-flex-col tw-items-start tw-justify-between tw-px-4"
       >
         <div
-          class="tw-rounded-full tw-bg-black/20 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2.5 tw-px-3.5 tw-py-1.5 tw-mt-4"
+          class="tw-rounded-full tw-bg-black/20 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2.5 tw-px-3.5 tw-py-1.5 tw-mt-4 tw-backdrop-blur-[2px]"
         >
           <div
             class="tw-rounded-full tw-w-2.5 tw-h-2.5"
@@ -57,10 +60,16 @@
   </div>
 </template>
 <script lang="ts">
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: {
     collection: { type: Object },
     type: { type: String, default: "collection" },
+  },
+  data() {
+    return {
+      imageNotFound,
+    };
   },
   computed: {
     isCollection() {

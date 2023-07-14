@@ -12,6 +12,13 @@
           :headers="collectionHeaders"
           :items="collections"
           @rowClicked="redirectToWhitelistPage"
+          v-if="collections.length > 0"
+        />
+        <dashboard-no-collection
+          message="You do not have any Collections"
+          buttonTitle="Create Collection"
+          @click="$router.push('/dashboard/create-collection')"
+          v-if="collections.length === 0 && !loading"
         />
       </v-tab-item>
       <v-tab-item>
@@ -19,6 +26,13 @@
           :headers="whitelistHeaders"
           :items="whitelists"
           @rowClicked="redirectToWhitelistPage"
+          v-if="whitelists.length > 0"
+        />
+        <dashboard-no-collection
+          message="You do not have any Whitelist Collections"
+          buttonTitle="Create Collection"
+          @click="$router.push('/dashboard/create-collection')"
+          v-if="whitelists.length === 0 && !loading"
         />
       </v-tab-item>
     </v-tabs-items>

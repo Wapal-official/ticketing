@@ -9,6 +9,7 @@
       <img
         :src="collection?.image"
         :alt="collection?.name"
+        :onerror="imageNotFound()"
         class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
       />
       <div
@@ -113,8 +114,8 @@
 </template>
 <script lang="ts">
 import moment from "moment";
-import { getWhitelistEntryById } from "~/services/WhitelistService";
-
+import { getWhitelistEntryById } from "@/services/WhitelistService";
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: { collection: { type: Object }, whitelist: { type: Object } },
   data() {
@@ -124,6 +125,7 @@ export default {
       resource: { occupiedSpots: 0, totalSpots: 0 },
       loading: false,
       start_date: null,
+      imageNotFound,
     };
   },
   computed: {

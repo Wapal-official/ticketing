@@ -11,6 +11,7 @@
         class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-min-w-[313px] md:tw-h-[312px] group-hover:tw-scale-125"
         :src="collection.image"
         :alt="collection.name"
+        :onerror="imageNotFound()"
       />
     </div>
     <div
@@ -51,6 +52,7 @@
 import { getCollection } from "@/services/CollectionService";
 import { getWhitelistEntryById } from "@/services/WhitelistService";
 import moment from "moment";
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: { whitelist: { type: Object } },
   data() {
@@ -60,6 +62,7 @@ export default {
       totalSpots: 0,
       takenSpots: 0,
       takenSpotsPercent: 0,
+      imageNotFound,
     };
   },
   async mounted() {
