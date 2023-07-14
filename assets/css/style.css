@@ -429,3 +429,12 @@
 .v-input--selection-controls__input .mdi-checkbox-marked {
   @apply !tw-text-primary-1 !tw-caret-primary-1;
 }
+
+/*Data table header class*/
+.default-data-table-header {
+  @apply !tw-text-dark-2 !tw-border-b-dark-6 !tw-text-sm tw-uppercase tw-font-medium tw-pb-8;
+}
+
+.default-data-table-header span {
+  text-transform: uppercase;
+}

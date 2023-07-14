@@ -49,8 +49,7 @@ export default {
           sortable: true,
           value: "name",
           width: "264px",
-          class:
-            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          class: "default-data-table-header",
           showImage: true,
           showSerialNumber: true,
         },
@@ -60,8 +59,7 @@ export default {
           sortable: true,
           value: "price",
           width: "200px",
-          class:
-            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          class: "default-data-table-header",
           showAptIcon: true,
         },
         {
@@ -70,8 +68,7 @@ export default {
           sortable: true,
           value: "supply",
           width: "200px",
-          class:
-            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          class: "default-data-table-header",
         },
         {
           text: "Minted",
@@ -79,8 +76,7 @@ export default {
           sortable: true,
           value: "progress",
           width: "200px",
-          class:
-            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          class: "default-data-table-header",
           progress: true,
         },
       ],

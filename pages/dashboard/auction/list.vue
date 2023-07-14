@@ -46,8 +46,7 @@ export default {
           sortable: true,
           value: "name",
           width: "264px",
-          class:
-            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          class: "default-data-table-header",
           showImage: true,
           showSerialNumber: true,
         },
@@ -57,8 +56,7 @@ export default {
           sortable: true,
           value: "socialLink",
           width: "200px",
-          class:
-            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          class: "default-data-table-header",
           showSocialLink: true,
         },
         {
@@ -67,8 +65,7 @@ export default {
           sortable: true,
           value: "highestBid",
           width: "200px",
-          class:
-            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
+          class: "default-data-table-header",
           showAptIcon: true,
         },
       ],
