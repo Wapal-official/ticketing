@@ -12,7 +12,7 @@
         :onerror="imageNotFound()"
       />
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 xl:tw-w-[474px]"
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-flex-grow"
       >
         <h1 class="tw-text-white tw-text-[2.5em] tw-font-bold">
           {{ selectedNft.meta.name }}
