@@ -550,6 +550,16 @@ export default {
       }
       this.loading = true;
       try {
+        if (this.auction.biddings.length < 1) {
+          this.$toast.showMessage({
+            message: "Auction has no bids",
+            error: true,
+          });
+
+          this.loading = false;
+          return;
+        }
+
         const creation_number = this.auction.biddings[0].creation_number;
 
         const res = await this.$store.dispatch("walletStore/withdrawBid", {
