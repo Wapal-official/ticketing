@@ -5,7 +5,7 @@
     persistent
   >
     <div
-      class="tw-w-full tw-h-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-[#141414] tw-rounded tw-px-8 tw-pt-4 tw-pb-8"
+      class="tw-w-full tw-h-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-dark-9 tw-rounded tw-px-8 tw-pt-4 tw-pb-8 tw-border tw-border-dark-6 tw-border-solid"
     >
       <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end">
         <button @click="$emit('closeProgressModal')" v-if="showClose">
@@ -19,14 +19,16 @@
         {{ description }}
       </p>
       <div
-        class="tw-rounded tw-bg-[#262525] tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-py-4 tw-px-4"
+        class="tw-rounded tw-bg-dark-8 tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-py-4 tw-px-4"
       >
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
           v-for="step in steps"
           :key="step.step"
         >
-          <span>{{ step.step }}. {{ step.name }}</span>
+          <span class="tw-text-dark-0 tw-font-semibold tw-text-sm tw-leading-5"
+            >{{ step.step }}. {{ step.name }}</span
+          >
           <div v-if="progress < step.step">
             <v-icon class="!tw-font-light !tw-text-[#ffffff4d]"
               >mdi-check-circle-outline</v-icon
