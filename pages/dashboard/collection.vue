@@ -9,6 +9,7 @@
       >
         <dashboard-page-heading heading="Collection" />
         <button-primary
+          :bordered="true"
           title="Create New Collection"
           @click="$router.push('/dashboard/create-collection')"
         >

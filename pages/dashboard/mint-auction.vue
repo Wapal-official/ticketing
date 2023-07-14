@@ -1091,7 +1091,7 @@ export default {
 
                       this.loading = false;
                     }
-                  }, 2000);
+                  }, 5000);
                 }
               } catch (error) {
                 console.log(error);
