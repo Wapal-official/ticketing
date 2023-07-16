@@ -1,10 +1,10 @@
 <template>
   <div
-    class="tw-bg-modal-gray tw-px-8 tw-py-4 tw-text-wapal-gray tw-text-center"
+    class="tw-bg-dark-8 tw-px-8 tw-py-4 tw-text-wapal-gray tw-text-center tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6"
   >
     <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end">
-      <button class="tw-text-black tw-text-base" @click="close">
-        <v-icon class="!tw-text-black !tw-font-semibold">mdi-close</v-icon>
+      <button class="tw-text-dark-0 tw-text-base" @click="close">
+        <i class="bx bx-x tw-text-xl"></i>
       </button>
     </div>
     <div class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4">
@@ -13,19 +13,17 @@
         :alt="walletStore.wallet"
         class="tw-w-12 tw-h-12"
       />
-      <div class="tw-text-sm md:tw-text-lg">Wallet Currently Connected</div>
+      <div class="tw-text-sm tw-text-dark-0 md:tw-text-lg">
+        Wallet Currently Connected
+      </div>
     </div>
-    <primary-button @click.native="disconnectWallet" class="tw-ml-4 tw-mt-2"
-      >Disconnect Wallet
-    </primary-button>
+    <button-primary title="Disconnect Wallet" @click="disconnectWallet" />
   </div>
 </template>
 
 <script lang="ts">
-import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 import bloctoIcon from "@/assets/img/blocto-icon-svg.svg";
 export default {
-  components: { PrimaryButton },
   data() {
     return {
       bloctoIcon,

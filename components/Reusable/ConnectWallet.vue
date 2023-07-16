@@ -1,20 +1,16 @@
 <template>
   <div>
     <button-primary
-      @click="connectWallet"
-      v-if="!walletStore.wallet"
-      title="Connect Wallet"
-    />
-    <button-primary
       @click="disconnectWallet"
       :title="displayFormattedWalletAddress"
       :bordered="true"
-      v-else
+      v-if="walletStore.wallet"
     >
       <template #prepend-icon>
         <i class="bx bxs-user !tw-text-primary-1 tw-text-xl tw-pr-1"></i>
       </template>
     </button-primary>
+    <button-primary @click="connectWallet" title="Connect Wallet" v-else />
     <v-dialog
       v-model="showConnectWalletDialog"
       content-class="!tw-w-full md:!tw-w-1/2 xl:!tw-w-1/3"
