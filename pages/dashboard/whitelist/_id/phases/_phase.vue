@@ -342,6 +342,8 @@ export default {
         });
 
         whitelistEntry.discord_roles = roles;
+
+        whitelistEntry.discord_username = whitelistEntry.discord.username;
       });
 
       this.paginatedWhitelistEntries.push(...this.whitelistEntries);
