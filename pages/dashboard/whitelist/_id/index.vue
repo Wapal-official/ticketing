@@ -43,13 +43,17 @@
       </div>
     </div>
     <table class="tw-w-full tw-text-wapal-gray" v-if="!loading">
-      <thead class="tw-border-b tw-border-[#ff36ab33]">
-        <th class="tw-text-left tw-text-lg tw-py-7 tw-px-4">Phase Name</th>
-        <th class="tw-text-left tw-text-lg tw-py-7 tw-px-4">Mint Date</th>
+      <thead class="">
+        <th class="default-data-table-header tw-text-left !tw-py-3 tw-px-3">
+          Phase Name
+        </th>
+        <th class="default-data-table-header tw-text-right !tw-py-3 tw-px-3">
+          Mint Date
+        </th>
       </thead>
       <tbody>
         <tr
-          class="tw-border-b tw-border-[#ff36ab33] tw-transition tw-duration-200 tw-ease-linear tw-cursor-pointer hover:tw-bg-black/80"
+          class="tw-border-b !tw-border-b-dark-6 tw-transition tw-duration-200 tw-ease-linear tw-cursor-pointer hover:tw-bg-black/80"
           v-for="(phase, index) in collection.phases"
           :key="index"
           @click="
@@ -58,14 +62,20 @@
             )
           "
         >
-          <td class="tw-py-8 tw-px-4 tw-capitalize">{{ phase.name }}</td>
-          <td class="tw-py-8 tw-px-4">
+          <td
+            class="tw-py-3 tw-px-3 tw-capitalize tw-text-white tw-font-medium tw-text-left"
+          >
+            {{ phase.name }}
+          </td>
+          <td
+            class="tw-py-3 tw-px-3 tw-text-white tw-font-medium tw-text-right"
+          >
             {{ getFormattedDate(phase.mint_time) }}
           </td>
         </tr>
       </tbody>
     </table>
-    <loading v-else />
+    <reusable-loading v-else />
     <v-dialog
       v-model="showSetWhitelistModal"
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
@@ -103,20 +113,18 @@
         <div
           class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-center"
         >
-          <loading />
+          <reusable-loading />
         </div>
       </div>
     </v-dialog>
   </div>
 </template>
 <script lang="ts">
-import Loading from "@/components/Reusable/Loading.vue";
-
 import moment from "moment";
 import { getCollectionByUsername } from "@/services/CollectionService";
 import { getWhitelistByUsername, setRoot } from "@/services/WhitelistService";
 export default {
-  components: { Loading },
+  components: {},
   layout: "dashboard",
   data() {
     return {
