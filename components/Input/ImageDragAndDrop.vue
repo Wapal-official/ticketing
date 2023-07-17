@@ -43,7 +43,7 @@
       />
     </div>
     <div
-      class="tw-w-[200px] tw-h-[200px] tw-relative tw-rounded"
+      class="tw-w-[200px] tw-h-[200px] tw-relative tw-rounded tw-group"
       ref="dropZone"
       v-else
     >
@@ -57,7 +57,7 @@
       />
       <div ref="imagePreview" class="tw-w-full tw-h-full tw-rounded"></div>
       <button
-        class="tw-w-full tw-absolute tw-bottom-[-2px] tw-left-0 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-1 tw-py-2 tw-bg-dark-7 tw-text-white tw-rounded"
+        class="tw-w-full tw-absolute tw-bottom-[-2px] tw-left-0 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-1 tw-py-2 tw-bg-dark-7 tw-text-white tw-rounded tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear group-hover:tw-opacity-100"
         @click="dropZoneClicked"
       >
         <span class="tw-text-sm tw-font-medium">Change</span>
