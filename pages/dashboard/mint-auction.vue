@@ -309,31 +309,30 @@
                     label="Attribute Type"
                     :required="true"
                   />
-                  <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+                  <div class="tw-text-red-600 tw-text-sm">
+                    {{ errors[0] }}
+                  </div>
                 </ValidationProvider>
                 <ValidationProvider
                   class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
                   rules="required"
                   v-slot="{ errors }"
                 >
-                  <div
-                    class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-full"
-                  >
-                    <input-text-field
-                      v-model="attribute.value"
-                      placeholder="Value"
-                      label="Value"
-                      :required="true"
-                    />
+                  <input-text-field
+                    v-model="attribute.value"
+                    placeholder="Value"
+                    label="Value"
+                    :required="true"
+                  />
 
-                    <button @click="removeAttribute(index)" class="tw-mt-8">
-                      <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
-                    </button>
-                  </div>
                   <div class="tw-text-red-600 tw-text-sm">
                     {{ errors[0] }}
                   </div>
                 </ValidationProvider>
+
+                <button @click="removeAttribute(index)" class="tw-mt-10">
+                  <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
+                </button>
               </div>
             </div>
 

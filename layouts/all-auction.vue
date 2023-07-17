@@ -2,7 +2,7 @@
   <default-layout>
     <auction-detail :propAuctionName="featuredAuctionName" v-if="!loading" />
     <loading-collection v-else />
-    <div class="tw-px-8 tw-pb-24 lg:tw-px-[3.75em]">
+    <div class="tw-container tw-mx-auto tw-px-8 tw-pb-24 lg:tw-px-[3.75em]">
       <Tab :tab="tab" :tabs="tabs" @tabChanged="tabChanged" class="tw-mb-10" />
       <NuxtChild />
     </div>

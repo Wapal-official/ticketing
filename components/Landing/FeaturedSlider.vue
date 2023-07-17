@@ -1,5 +1,9 @@
 <template>
-  <section class="swiper mySwiper tw-w-full" ref="swiper" v-if="!loading">
+  <section
+    class="swiper mySwiper tw-w-full tw-container"
+    ref="swiper"
+    v-if="!loading"
+  >
     <div class="swiper-wrapper tw-w-full xl:!tw-px-[3.75em]">
       <div
         class="swiper-slide tw-w-full"

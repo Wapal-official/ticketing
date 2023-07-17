@@ -5,7 +5,7 @@
     <NuxtLink
       v-for="(item, index) in sidebarItems"
       :key="item.path"
-      class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear tw-py-3 tw-px-4 tw-my-3 tw-w-full tw-rounded tw-font-medium hover:!tw-text-primary-2 hover:tw-bg-dark-6"
+      class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear tw-py-3 tw-px-4 tw-w-full tw-rounded tw-font-medium hover:!tw-text-primary-2 hover:tw-bg-dark-6"
       :to="item.path"
       :class="{
         'nuxt-link-exact-active': checkCurrentPageRegex(item.path),

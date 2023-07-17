@@ -1,8 +1,6 @@
 <template>
   <section class="tw-w-full tw-bg-dark-8 tw-py-10 tw-px-8 md:tw-px-0">
-    <div
-      class="tw-container tw-mx-auto md:tw-px-8 md:tw-w-[90%] lg:tw-w-full xl:tw-px-[3.75rem] 3xl:tw-w-[90%]"
-    >
+    <div class="tw-container tw-mx-auto md:tw-px-8 xl:tw-px-[3.75rem]">
       <tab
         :tab="tabNumber"
         :tabs="tabs"

@@ -19,6 +19,7 @@
       class="wapal-input tw-w-full"
       :placeholder="placeholder"
       :item-text="text"
+      :item-value="itemValue"
       @change="change"
       hide-details
       clearable
@@ -68,6 +69,9 @@ export default {
       default: false,
     },
     label: {
+      type: String,
+    },
+    itemValue: {
       type: String,
     },
   },

@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-w-full">
+  <div class="tw-container tw-mx-auto">
     <landing-section-heading heading="Latest Collection" class="tw-pb-8" />
     <div
       v-if="!loading && collections.length === 0"

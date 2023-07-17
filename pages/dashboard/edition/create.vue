@@ -1,312 +1,309 @@
 <template>
-  <div>
-    <p class="tw-text-3xl tw-text-wapal-gray !tw-font-medium">NFT Details</p>
-
-    <v-stepper v-model="step" class="!tw-bg-transparent">
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <p class="text-h6">Collection</p>
-          <ValidationObserver ref="collectionForm" v-slot="{ handleSubmit }">
-            <form
-              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 xl:tw-w-1/2"
-              @submit.prevent="handleSubmit(nextStep)"
-            >
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <label
-                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                  >Collection Name</label
-                >
-                <reusable-text-field
-                  v-model="mint.colName"
-                  type="text"
-                  placeholder="Collection Name"
-                ></reusable-text-field>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <label
-                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                  >Collection Description</label
-                >
-                <reusable-text-area
-                  v-model="mint.colDesc"
-                  placeholder="Collection Description"
-                  type="text"
-                ></reusable-text-area>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="link"
-                v-slot="{ errors }"
-              >
-                <label ref="social">Twitter Link</label>
-                <reusable-text-field
-                  v-model="mint.twitter"
-                  type="text"
-                  placeholder="Twitter Link"
-                ></reusable-text-field>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="link"
-                v-slot="{ errors }"
-              >
-                <label>Instagram Link</label>
-                <reusable-text-field
-                  v-model="mint.instagram"
-                  type="text"
-                  placeholder="Instagram Link"
-                ></reusable-text-field>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <div v-if="socialError" class="tw-text-red-600">
-                {{ socialErrorMessage }}
-              </div>
-              <p class="text-h6">Token Details</p>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <label
-                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                  >Token Name</label
-                >
-                <reusable-text-field
-                  v-model="mint.tokenName"
-                  placeholder="Token Name"
-                  type="text"
-                ></reusable-text-field>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <label
-                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                  >Token Description</label
-                >
-                <reusable-text-area
-                  v-model="mint.tokenDesc"
-                  placeholder="Token Description"
-                  type="text"
-                ></reusable-text-area>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <div
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
-              >
-                <ValidationProvider
-                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required"
-                  name="auction_start"
-                  v-slot="{ errors }"
-                >
-                  <label
-                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                    >NFT Type</label
-                  >
-                  <reusable-auto-complete
-                    v-model="mint.type"
-                    placeholder="Select NFT Type"
-                    text="name"
-                    value="id"
-                    itemValue="id"
-                    :items="nftType"
-                  />
-                  <div class="tw-text-red-600">{{ errors[0] }}</div>
-                </ValidationProvider>
-                <ValidationProvider
-                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required|percentage"
-                  v-slot="{ errors }"
-                >
-                  <label
-                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                    >Royalties Fees in Percent</label
-                  >
-                  <reusable-text-field
-                    v-model="mint.royalty"
-                    type="text"
-                    placeholder="Eg. 2"
-                  ></reusable-text-field>
-                  <div class="tw-text-red-600">{{ errors[0] }}</div>
-                </ValidationProvider>
-              </div>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
-                v-if="mint.type === 'limited-edition'"
-              >
-                <label
-                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                  >Supply</label
-                >
-                <reusable-text-field
-                  v-model="mint.supply"
-                  type="text"
-                  placeholder="Eg. 2"
-                ></reusable-text-field>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <div class="upload-bar tw-w-full" id="drop-container">
-                <v-col style="padding: 30px" align="center">
-                  <img :src="uploadIcon" alt="upload" /><br />
-                  <small>Drag And Drop Your Files Here</small><br />
-                  <small>OR</small><br />
-                  <button
-                    class="tw-px-6 tw-py-2 tw-rounded tw-bg-wapal-gray tw-text-black"
-                    @click.prevent="$refs.imageUploader.click()"
-                    v-if="file == null"
-                  >
-                    Browse
-                  </button>
-                  <button
-                    class="tw-px-6 tw-py-2 tw-rounded tw-bg-wapal-gray tw-text-black"
-                    @click.prevent="$refs.imageUploader.click()"
-                    v-else
-                  >
-                    {{ file.name }}
-                  </button>
-                  <div v-if="imageError" class="tw-text-red-600">
-                    {{ imageErrorMessage }}
-                  </div>
-                </v-col>
-              </div>
-              <input
-                ref="imageUploader"
-                class="d-none"
-                type="file"
-                accept="image/*"
-                @change="selectImage"
-              />
-              <reusable-theme-button title="Next" />
-            </form>
-          </ValidationObserver>
-        </v-stepper-content>
-        <v-stepper-content step="2">
-          <div class="text-h6 tw-py-2">NFT</div>
-          <div
-            class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2"
+  <div class="tw-w-full">
+    <stepper
+      :steps="formSteps"
+      :stepNumber="formStepNumber"
+      @stepClicked="changeStep"
+    >
+      <v-stepper-content step="1">
+        <ValidationObserver
+          ref="detailForm"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+        >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Nft Collection Details
+          </h2>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="name"
+            rules="required"
+            v-slot="{ errors }"
           >
-            <div class="tw-w-full" id="image-preview"></div>
-            <ValidationObserver v-slot="{ handleSubmit }" ref="attributeForm">
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
+            <input-text-field
+              label="Collection Name"
+              :required="true"
+              v-model="mint.colName"
+              placeholder="Collection Name"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="description"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-area
+              label="Collection Description"
+              :required="true"
+              v-model="mint.colDesc"
+              placeholder="Collection Description"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="twitter"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Twitter Link"
+              v-model="mint.twitter"
+              placeholder="Twitter Link"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="instagram"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Instagram Link"
+              v-model="mint.instagram"
+              placeholder="Instagram Link"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            <div class="tw-text-red-600 tw-text-sm" v-if="socialError">
+              {{ socialErrorMessage }}
+            </div>
+          </ValidationProvider>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+          >
+            <button-primary title="Next" @click="validateFormForNextStep" />
+          </div>
+        </ValidationObserver>
+      </v-stepper-content>
+      <v-stepper-content step="2">
+        <ValidationObserver
+          ref="tokenDetailForm"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+        >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Token Details
+          </h2>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="tokenName"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              :required="true"
+              label="Token Name"
+              v-model="mint.tokenName"
+              placeholder="Token Name"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="tokenDescription"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-area
+              :required="true"
+              label="Token Description"
+              v-model="mint.tokenDesc"
+              placeholder="Token Description"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
+          >
+            <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="type"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <input-auto-complete
+                :required="true"
+                label="NFT Type"
+                v-model="mint.type"
+                placeholder="Select NFT Type"
+                :items="nftType"
+                text="name"
+                itemValue="id"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="royalty_percentage"
+              rules="required|percentage"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                :required="true"
+                label="Royalty Percentage"
+                v-model="mint.royalty"
+                placeholder="Eg. 4"
+                :showPercentage="true"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+            rules="required"
+            v-slot="{ errors }"
+            v-if="mint.type === 'limited-edition'"
+          >
+            <input-text-field
+              v-model="mint.supply"
+              label="Supply"
+              :required="true"
+              placeholder="Eg. 2"
+            />
+            <div class="tw-text-red-600">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+          >
+            <input-image-drag-and-drop
+              :required="true"
+              label="Image"
+              :file="mint.colImage"
+              @fileSelected="selectImage"
+            />
+            <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
+              {{ imageErrorMessage }}
+            </div>
+          </ValidationProvider>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+          >
+            <button-primary title="Next" @click="validateFormForNextStep" />
+          </div>
+        </ValidationObserver>
+      </v-stepper-content>
+      <v-stepper-content step="3">
+        <ValidationObserver
+          ref="attributeForm"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+        >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Attributes
+          </h2>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-flex-row md:tw-justify-start"
+          >
+            <div
+              id="image-preview"
+              class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
+            ></div>
+            <div
+              class="tw-w-[316px] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
+            >
+              <h1
+                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium tw-pb-2"
               >
-                <label>Name</label>
-                <reusable-text-field
-                  v-model="mint.tokenName"
-                  type="text"
-                  :disabled="true"
-                ></reusable-text-field>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
+                {{ mint.colName }}
+                <i class="bx bxs-badge-check tw-text-xl tw-text-primary-1"></i>
+              </h1>
+              <h2 class="tw-text-white tw-text-[1.375em] tw-font-medium">
+                {{ mint.tokenName }}
+              </h2>
+              <div class="tw-pb-4 tw-text-dark-0 tw-text-sm">
+                {{ mint.tokenDesc }}
+              </div>
+              <div
+                class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5 tw-flex tw-flex-row tw-items-start tw-justify-between"
               >
-                <label>Description</label>
-                <reusable-text-area
-                  v-model="mint.tokenDesc"
-                  type="text"
-                  :readOnly="true"
-                ></reusable-text-area>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <form @submit.prevent="handleSubmit(submit)">
-                <div class="tw-pb-2">Add Attributes</div>
                 <div
-                  class="tw-w-full"
-                  v-for="(attribute, index) in mint.attributes"
-                  :key="index"
+                  class="tw-w-full tw-flex tw-flex-col tw-items-stat tw-justify-start tw-gap-3"
                 >
-                  <div
-                    class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-start md:tw-justify-between md:tw-gap-4"
-                  >
-                    <ValidationProvider
-                      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                      rules="required"
-                      v-slot="{ errors }"
+                  <div>
+                    <div
+                      class="tw-text-dark-2 tw-text-xs tw-font-semibold tw-uppercase tw-leading-5"
                     >
-                      <label
-                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2 tw-text-sm"
-                        >Attribute Type</label
-                      >
-                      <reusable-text-field
-                        v-model="attribute.trait_type"
-                        type="text"
-                        placeholder="Background"
-                      ></reusable-text-field>
-                      <div class="tw-text-red-600">{{ errors[0] }}</div>
-                    </ValidationProvider>
-                    <ValidationProvider
-                      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                      rules="required"
-                      v-slot="{ errors }"
+                      Royalties
+                    </div>
+                    <div
+                      class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
                     >
-                      <label
-                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2 tw-text-sm"
-                        >Value</label
-                      >
-                      <div
-                        class="tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-2"
-                      >
-                        <reusable-text-field
-                          v-model="attribute.value"
-                          type="text"
-                          placeholder="Blue"
-                        ></reusable-text-field>
-                        <button
-                          class="tw-bg-transparent !tw-border !tw-border-solid !tw-border-wapal-pink tw-text-white tw-px-4 tw-py-2 tw-mb-4 tw-rounded-lg"
-                          @click.prevent="removeAttribute(index)"
-                        >
-                          <v-icon>mdi-trash-can</v-icon>
-                        </button>
-                      </div>
-                      <div class="tw-text-red-600">{{ errors[0] }}</div>
-                    </ValidationProvider>
+                      {{ mint.royalty }}%
+                    </div>
                   </div>
                 </div>
-                <button
-                  class="tw-bg-transparent !tw-border !tw-border-solid !tw-border-wapal-pink tw-text-white tw-px-6 tw-py-2 tw-mb-4 tw-rounded-lg"
-                  @click.prevent="addAttribute"
-                >
-                  <v-icon class="!tw-text-white !tw-pr-2">mdi-plus</v-icon
-                  ><span>Add</span>
-                </button>
-                <div
-                  class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
-                >
-                  <reusable-theme-button title="Back" @click="step = 1" />
-                  <reusable-theme-button
-                    title="Submit"
-                    @click="submit"
-                    :loading="loading"
-                  />
-                </div>
-              </form>
-            </ValidationObserver>
+              </div>
+            </div>
           </div>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+          >
+            <div
+              v-for="(attribute, index) in mint.attributes"
+              :key="index"
+              class="tw-w-full"
+            >
+              <div
+                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-full"
+              >
+                <div
+                  class="tw-flex tw-flex-col tw-gap-4 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
+                >
+                  <ValidationProvider
+                    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
+                    <input-text-field
+                      v-model="attribute.trait_type"
+                      placeholder="Attribute Type"
+                      label="Attribute Type"
+                      :required="true"
+                    />
+                    <div class="tw-text-red-600 tw-text-sm">
+                      {{ errors[0] }}
+                    </div>
+                  </ValidationProvider>
+                  <ValidationProvider
+                    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
+                    <input-text-field
+                      v-model="attribute.value"
+                      placeholder="Value"
+                      label="Value"
+                      :required="true"
+                    />
+
+                    <div class="tw-text-red-600 tw-text-sm">
+                      {{ errors[0] }}
+                    </div>
+                  </ValidationProvider>
+
+                  <button @click="removeAttribute(index)" class="tw-mt-10">
+                    <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <button-primary
+              title="Add Attribute"
+              :bordered="true"
+              @click="addAttribute"
+            >
+              <template #prepend-icon>
+                <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
+              </template>
+            </button-primary>
+          </div>
+          <div class="tw-w-full tw-flex tw-items-center tw-justify-end">
+            <button-primary title="Create" :loading="loading" @click="submit" />
+          </div>
+        </ValidationObserver>
+      </v-stepper-content>
+    </stepper>
     <reusable-progress-modal
       :showProgressModal="createEditionModal"
       :showClose="showCloseModal"
@@ -322,8 +319,6 @@
 
 <script>
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
-import uploadIcon from "@/assets/img/upload-icon.svg";
-import { defaultTheme } from "@/theme/wapaltheme";
 import { uploadAndCreateFile } from "@/services/AuctionService";
 
 extend("percentage", {
@@ -402,8 +397,8 @@ export default {
       ],
       socialError: false,
       socialErrorMessage: "",
-      defaultTheme,
-      uploadIcon,
+      formStepNumber: 1,
+      formSteps: ["Details", "Token", "Attributes"],
     };
   },
   watch: {
@@ -437,35 +432,7 @@ export default {
       return "Please review and approve up to four transactions in your wallet window to create your edition.";
     },
   },
-  async mounted() {
-    const dropContainer = document.getElementById("drop-container");
-
-    dropContainer.addEventListener("dragenter", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dropContainer.classList.add("dragover");
-    });
-
-    dropContainer.addEventListener("dragleave", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dropContainer.classList.remove("dragover");
-    });
-
-    dropContainer.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    });
-
-    dropContainer.addEventListener("drop", async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dropContainer.classList.remove("dragover");
-      const files = e.dataTransfer.files;
-      this.file = files[0];
-      this.displayImage();
-    });
-  },
+  async mounted() {},
   methods: {
     saveStart(date) {
       this.$refs.startmenu.save(date);
@@ -508,7 +475,8 @@ export default {
       imgElement.classList.add("tw-w-full");
       imgElement.classList.add("tw-h-full");
       imgElement.classList.add("tw-object-fill");
-      imgElement.classList.add("tw-max-h-[580px]");
+      imgElement.classList.add("tw-max-h-[300px]");
+      imgElement.classList.add("tw-rounded");
 
       const previewElement = document.getElementById("image-preview");
 
@@ -518,8 +486,8 @@ export default {
 
       previewElement.prepend(imgElement);
     },
-    selectImage(e) {
-      this.file = e.target.files[0];
+    selectImage(file) {
+      this.file = file;
       this.displayImage();
     },
     async submit() {
@@ -629,6 +597,52 @@ export default {
         this.showCloseModal = true;
         this.$toast.showMessage({ message: error, error: true });
       }
+    },
+    async validateFormForNextStep() {
+      switch (this.formStepNumber) {
+        case 1:
+          const detailValidated = await this.$refs.detailForm.validate();
+
+          if (!detailValidated) {
+            break;
+          }
+
+          this.socialError = false;
+
+          if (!this.mint.twitter && !this.mint.instagram) {
+            this.socialError = true;
+            this.socialErrorMessage =
+              "Please provide a twitter link or instagram link";
+
+            break;
+          }
+
+          this.formStepNumber++;
+          break;
+        case 2:
+          const tokenValidated = await this.$refs.tokenDetailForm.validate();
+
+          if (!tokenValidated) {
+            break;
+          }
+
+          if (!this.file || !this.file.name) {
+            this.imageError = true;
+            this.imageErrorMessage = "Please select an image for collection";
+            break;
+          }
+
+          this.formStepNumber++;
+          break;
+        default:
+          break;
+      }
+    },
+    changeStep(step) {
+      this.formStepNumber = step;
+    },
+    formatDate(date) {
+      return date;
     },
   },
 };
