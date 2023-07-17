@@ -402,6 +402,10 @@
   @apply !tw-text-sm !tw-text-dark-0 placeholder:!tw-text-sm;
 }
 
+input:disabled {
+  cursor: not-allowed;
+}
+
 /*Hide scrollbar in chrome*/
 .no-scrollbar::-webkit-scrollbar {
   display: none;

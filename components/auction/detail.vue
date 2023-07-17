@@ -227,6 +227,12 @@
         </div>
       </div>
     </div>
+    <v-dialog
+      v-model="showConnectWalletDialog"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
+    >
+      <connect-wallet-modal @closeModal="showConnectWalletDialog = false" />
+    </v-dialog>
   </div>
   <!-- <div v-if="!loadingAuction">
     <div
@@ -429,21 +435,6 @@
         </div>
       </div>
     </div>
-    <v-dialog
-      v-model="showConnectWalletDialog"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
-    >
-      <connect-wallet-modal @closeModal="showConnectWalletDialog = false" />
-    </v-dialog>
-    <v-dialog
-      v-model="showSignupDialog"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
-    >
-      <signup-modal
-        message="Login into your wapal account to place a bid"
-        @close="showSignupDialog = false"
-      />
-    </v-dialog>
   </div> -->
   <div class="tw-py-32 tw-w-full" v-else>
     <reusable-loading />

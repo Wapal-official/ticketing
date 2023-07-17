@@ -3,10 +3,12 @@
     <span
       class="tw-text-[1.75rem] tw-tracking-tight tw-font-medium"
       :class="{ '!tw-text-base': small }"
+      v-if="days > 0"
       >{{ days }}</span
     ><span
       class="tw-text-lg tw-text-dark-2 tw-font-bold"
       :class="{ '!tw-text-sm': small }"
+      v-if="days > 0"
       >D</span
     >
     <span
