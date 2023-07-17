@@ -113,8 +113,13 @@
               type="file"
               class="tw-invisible tw-w-0 tw-h-0 disabled:tw-cursor-not-allowed"
               @change="setCSVFile"
+              ref="csv"
             />
-            <button-primary :bordered="true" title="Import CSV">
+            <button-primary
+              :bordered="true"
+              title="Import CSV"
+              @click="showFileSelectionDialog"
+            >
               <template #prepend-icon>
                 <i class="bx bx-import tw-text-xl tw-text-white tw-pr-2"></i>
               </template>
@@ -350,6 +355,9 @@ export default {
 
       this.loading = false;
       this.mappingData = false;
+    },
+    showFileSelectionDialog() {
+      this.$refs.csv.click();
     },
   },
   computed: {
