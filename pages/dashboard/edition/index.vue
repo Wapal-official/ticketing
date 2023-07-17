@@ -5,7 +5,8 @@
       <div
         class="tw-w-full tw-py-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
       >
-        <v-tabs
+        <tab-bordered :tabs="tabs" v-model="tab" />
+        <!-- <v-tabs
           v-model="tab"
           background-color="transparent"
           active-class="!tw-text-wapal-pink"
@@ -20,19 +21,27 @@
           >
             {{ item.tab }}
           </v-tab>
-        </v-tabs>
+        </v-tabs> -->
         <div
           class="tw-w-1/5 tw-flex tw-flex-row tw-items-center tw-justify-end"
         >
-          <reusable-theme-button
+          <button-primary
             title="Create"
             @click="$router.push('/dashboard/edition/create')"
-          />
+            :bordered="true"
+          >
+            <template #prepend-icon>
+              <i class="bx bx-plus tw-text-xl tw-pr-2"></i>
+            </template>
+          </button-primary>
         </div>
       </div>
-      <div class="tw-w-full tw-h-[1px] tw-bg-white/20"></div>
     </div>
-    <dashboard-edition-no-edition class="tw-my-16" />
+    <dashboard-no-collection
+      message="You Do Not Have any NFTs of this type"
+      buttonTitle="Create"
+      @click="$router.push('/dashboard/edition/create')"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -41,11 +50,7 @@ export default {
   data() {
     return {
       tab: null,
-      tabItems: [
-        { tab: "1/1s" },
-        { tab: "Limited Editions" },
-        { tab: "Open Edition" },
-      ],
+      tabs: ["1/1s", "Limited Editions", "Open Edition"],
     };
   },
 };
