@@ -39,8 +39,18 @@
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-pb-4"
         >
-          <h3 class="tw-font-semibold">
-            {{ isCollection ? collection?.name : collection?.nft.meta.name }}
+          <h3
+            class="tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
+          >
+            <span>
+              {{
+                isCollection ? collection?.name : collection?.nft.meta.name
+              }}</span
+            >
+            <i
+              class="bx bxs-badge-check tw-text-primary-1"
+              v-if="collection?.isVerified"
+            ></i>
           </h3>
           <div
             class="tw-text-white/70 tw-text-[0.875rem]"
