@@ -66,13 +66,36 @@
               class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
-          <button
-            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
-          >
-            <i
-              class="bx bxs-share-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear !tw-text-white"
-            ></i>
-          </button>
+          <div class="tw-relative">
+            <button
+              class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
+              @click="showShareBox = !showShareBox"
+            >
+              <i
+                class="bx bxs-share-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear !tw-text-white"
+              ></i>
+            </button>
+            <div
+              class="tw-absolute tw-z-20 tw-overflow-hidden tw-bg-dark-6 tw-top-[110%] tw-w-[200px] tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-py-4"
+              v-if="showShareBox"
+              v-click-outside="hideShareBox"
+            >
+              <button
+                class="tw-w-full tw-px-4 tw-py-4 tw-relative tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 before:tw-w-full before:tw-h-full before:tw-left-0 before:tw-bg-white/20 before:tw-opacity-0 before:tw-absolute hover:before:tw-opacity-[0.08]"
+                @click="copyLink"
+              >
+                <i class="bx bx-copy tw-text-lg"></i>
+                <span>Copy Link</span>
+              </button>
+              <button
+                class="tw-w-full tw-px-4 tw-py-4 tw-relative tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 before:tw-w-full before:tw-h-full before:tw-left-0 before:tw-bg-white/20 before:tw-opacity-0 before:tw-absolute hover:before:tw-opacity-[0.08]"
+                @click="shareOnTwitter"
+              >
+                <i class="bx bxl-twitter tw-text-lg"></i>
+                <span>Share on Twitter</span>
+              </button>
+            </div>
+          </div>
         </div>
         <div class="tw-pb-2 tw-text-dark-0">
           {{ collection.description }}
@@ -511,6 +534,7 @@ export default {
       nextSale: null,
       v2: false,
       live: false,
+      showShareBox: false,
       imageNotFound,
     };
   },
@@ -890,6 +914,43 @@ export default {
       }
 
       return false;
+    },
+    async copyLink(event) {
+      const clipboardData =
+        event.clipboardData ||
+        window.clipboardData ||
+        event.originalEvent?.clipboardData ||
+        navigator.clipboard;
+
+      const baseURL = process.env.baseURL?.includes("staging")
+        ? "https://staging.wapal.io"
+        : "https://wapal.io";
+
+      clipboardData.writeText(`${baseURL}/nft/${this.collection.username}`);
+
+      this.$toast.showMessage({ message: "Link Copied" });
+
+      this.showShareBox = false;
+    },
+    shareOnTwitter() {
+      const baseURL = process.env.baseURL?.includes("staging")
+        ? "https://staging.wapal.io"
+        : "https://wapal.io";
+
+      const twitterURL = "https://twitter.com";
+
+      const text = "Check out this collection on Wapal";
+
+      const link = `${baseURL}/nft/${this.collection.username}`;
+
+      const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}&via=wapal_official`;
+
+      window.open(twitterShareLink, "_blank");
+
+      this.showShareBox = false;
+    },
+    hideShareBox() {
+      this.showShareBox = false;
     },
   },
   computed: {
