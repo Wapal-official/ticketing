@@ -1075,6 +1075,7 @@ export default {
                         auction_name: auction_name,
                         twitter: this.mint.twitter,
                         instagram: this.mint.instagram,
+                        user_id: this.$store.state.userStore.user.user_id,
                       });
 
                       this.$toast.showMessage({

@@ -370,6 +370,7 @@ export default {
               auction_name: auction_name,
               twitter: this.twitter,
               instagram: this.instagram,
+              user_id: this.$store.state.userStore.user.user_id,
             })
             .then((res) => {
               this.$toast.showMessage({
