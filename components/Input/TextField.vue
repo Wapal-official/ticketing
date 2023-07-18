@@ -14,6 +14,9 @@
     >
 
     <div class="tw-relative tw-w-full">
+      <div class="tw-absolute tw-top-[16px] tw-left-[9px]">
+        <slot name="prepend-icon"> </slot>
+      </div>
       <v-text-field
         v-model="internalValue"
         :readonly="readOnly"
@@ -21,30 +24,26 @@
         single-line
         color="#fff"
         hide-details
-        :clearable="!showAptIcon"
+        :clearable="!$slots['append-icon']"
         :placeholder="placeholder"
         :counter="counter"
         :type="type"
         :disabled="disabled"
-        class="wapal-input tw-w-full"
-        :class="{ 'tw-cursor-disabled': disabled }"
+        class="wapal-input tw-w-full px-8"
+        :class="{ 'tw-cursor-not-allowed': disabled }"
       >
       </v-text-field>
-      <div class="tw-absolute tw-top-[16px] tw-right-[9px]" v-if="showAptIcon">
-        <img :src="aptIcon" />
-      </div>
-      <i
-        class="tw-absolute tw-top-[10px] tw-right-[9px] tw-text-dark-2"
-        v-if="showPercentage"
-        >%</i
+      <div
+        class="tw-absolute tw-top-0 tw-right-[9px] tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-text-dark-2"
       >
+        <slot name="append-icon"> </slot>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { defaultTheme } from "@/theme/wapaltheme.ts";
-import aptIcon from "@/assets/img/aptBlack.svg";
 export default {
   props: {
     value: {
@@ -84,10 +83,6 @@ export default {
     label: {
       type: String,
     },
-    showAptIcon: {
-      type: Boolean,
-      default: false,
-    },
     showPercentage: {
       type: Boolean,
       default: false,
@@ -106,8 +101,10 @@ export default {
   data() {
     return {
       defaultTheme,
-      aptIcon,
     };
+  },
+  mounted() {
+    console.log(this.$slots);
   },
 };
 </script>

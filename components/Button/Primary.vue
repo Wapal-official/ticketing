@@ -8,7 +8,7 @@
       'tw-bg-dark-6': dark,
     }"
     @click="$emit('click')"
-    :disabled="disabled"
+    :disabled="disabled || loading"
   >
     <v-progress-circular
       :size="24"
@@ -17,9 +17,11 @@
       indeterminate
       v-if="loading"
     ></v-progress-circular>
-    <slot name="prepend-icon"> </slot>
-    <span>{{ title }}</span>
-    <slot name="append-icon"> </slot>
+    <div class="tw-flex tw-flex-row tw-items-center tw-justify-start" v-else>
+      <slot name="prepend-icon"> </slot>
+      <span>{{ title }}</span>
+      <slot name="append-icon"> </slot>
+    </div>
   </button>
 </template>
 <script lang="ts">

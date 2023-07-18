@@ -159,8 +159,11 @@
                 label="Min. Bid Price"
                 v-model="mint.minBid"
                 placeholder="Eg. 0.5"
-                :showAptIcon="true"
-              />
+              >
+                <template #append-icon>
+                  <img :src="darkAptIcon" alt="APT" />
+                </template>
+              </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
             <ValidationProvider
@@ -174,8 +177,11 @@
                 label="Royalty Percentage"
                 v-model="mint.royalty"
                 placeholder="Eg. 4"
-                :showPercentage="true"
-              />
+              >
+                <template #append-icon>
+                  <i class="tw-text-sm">%</i>
+                </template>
+              </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
@@ -709,10 +715,10 @@ import { publicRequest } from "@/services/fetcher";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
-import uploadIcon from "@/assets/img/upload-icon.svg";
 import { defaultTheme } from "@/theme/wapaltheme";
 import generateName from "@/utils/generateName";
 import aptIcon from "@/assets/img/apt.svg";
+import darkAptIcon from "@/assets/img/aptBlack.svg";
 import moment from "moment";
 
 extend("bidAmount", {
@@ -829,10 +835,10 @@ export default {
         { step: 4, name: "Adding Collection to Auction" },
       ],
       formSteps: ["Details", "Token", "Attributes"],
-      formStepNumber: 1,
+      formStepNumber: 2,
       defaultTheme,
-      uploadIcon,
       aptIcon,
+      darkAptIcon,
     };
   },
   watch: {

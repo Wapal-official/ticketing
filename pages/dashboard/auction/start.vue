@@ -70,8 +70,11 @@
               label="Min. Bid Price"
               placeholder="Eg. 0"
               v-model="apt"
-              :showAptIcon="true"
-            />
+            >
+              <template #append-icon>
+                <img :src="aptIcon" alt="APT" />
+              </template>
+            </input-text-field>
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
 
@@ -246,7 +249,7 @@ import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
 
 import imageNotFound from "@/utils/imageNotFound";
-
+import aptIcon from "@/assets/img/aptBlack.svg";
 extend("required", {
   ...required,
   message: "This field is required",
@@ -318,6 +321,7 @@ export default {
       socialError: false,
       socialErrorMessage: "",
       imageNotFound,
+      aptIcon,
     };
   },
   computed: {

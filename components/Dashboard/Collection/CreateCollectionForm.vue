@@ -248,8 +248,11 @@
                 label="Whitelist Sale Price"
                 placeholder="Eg: 0.1"
                 :disabled="!whitelistEnabled"
-                :showAptIcon="true"
-              />
+              >
+                <template #append-icon>
+                  <img :src="aptIcon" alt="APT" />
+                </template>
+              </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
@@ -294,8 +297,11 @@
                 placeholder="Eg: 0.1"
                 label="Public Sale Price"
                 :required="!publicSaleTBD"
-                :showAptIcon="true"
-              />
+              >
+                <template #append-icon>
+                  <img :src="aptIcon" alt="APT" />
+                </template>
+              </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
@@ -883,7 +889,7 @@
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
-
+import aptIcon from "@/assets/img/aptBlack.svg";
 import {
   createCollection,
   createDraft,
@@ -1041,6 +1047,7 @@ export default {
       publicSaleTBD: false,
       loading: false,
       saveAsDraft: false,
+      aptIcon,
     };
   },
   methods: {

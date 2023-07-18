@@ -128,7 +128,7 @@
           </ValidationObserver>
         </div>
         <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
           v-if="auctionEnded"
         >
           <div
@@ -146,6 +146,44 @@
               <div class="tw-font-semibold tw-text-dark-0 tw-uppercase tw-pb-1">
                 Auction Ended
               </div>
+              <count-down :startTime="auction.endAt" />
+            </div>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-baseline tw-justify-between"
+          >
+            <div
+              class="tw-w-full md:tw-w-[213px] md:tw-max-w-[213px] lg:tw-w-full lg:tw-max-w-full xl:tw-w-[213px] xl:tw-max-w-[213px]"
+            >
+              <input-text-field
+                v-model="bid"
+                placeholder="Bid price(APT)"
+                :disabled="true"
+                class="tw-w-full"
+              />
+            </div>
+            <div
+              class="md:tw-w-[213px] md:tw-max-w-[213px] lg:tw-w-full lg:tw-max-w-full xl:tw-w-[213px] xl:tw-max-w-[213px]"
+            >
+              <button-primary
+                title="Withdraw Bid"
+                :fullWidth="true"
+                :loading="loading"
+                :title="
+                  auction.nft.nft.owner_address === getWalletConnectedStatus
+                    ? 'Complete Auction'
+                    : 'Claim NFT'
+                "
+                @click="completeAuction"
+                :disabled="auction.completed"
+                v-if="checkOwner"
+              />
+              <button-primary
+                title="Withdraw Bid"
+                :fullWidth="true"
+                @click="withdrawBid"
+                v-else
+              />
             </div>
           </div>
         </div>
@@ -189,6 +227,12 @@
         </div>
       </div>
     </div>
+    <v-dialog
+      v-model="showConnectWalletDialog"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
+    >
+      <connect-wallet-modal @closeModal="showConnectWalletDialog = false" />
+    </v-dialog>
   </div>
   <!-- <div v-if="!loadingAuction">
     <div
@@ -391,21 +435,6 @@
         </div>
       </div>
     </div>
-    <v-dialog
-      v-model="showConnectWalletDialog"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
-    >
-      <connect-wallet-modal @closeModal="showConnectWalletDialog = false" />
-    </v-dialog>
-    <v-dialog
-      v-model="showSignupDialog"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
-    >
-      <signup-modal
-        message="Login into your wapal account to place a bid"
-        @close="showSignupDialog = false"
-      />
-    </v-dialog>
   </div> -->
   <div class="tw-py-32 tw-w-full" v-else>
     <reusable-loading />
@@ -456,7 +485,7 @@ export default {
       validRules: {
         required: (value) => !!value || "Required.",
       },
-      bid: "",
+      bid: null,
       endInterval: 0,
       showSignupDialog: false,
       showConnectWalletDialog: false,
