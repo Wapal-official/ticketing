@@ -103,9 +103,7 @@ export default {
       defaultTheme,
     };
   },
-  mounted() {
-    console.log(this.$slots);
-  },
+  mounted() {},
 };
 </script>
 <style scoped></style>
