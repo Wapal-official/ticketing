@@ -186,7 +186,7 @@
       <v-stepper-content step="3">
         <ValidationObserver
           ref="attributeForm"
-          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full"
         >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Attributes
@@ -199,55 +199,15 @@
               class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
             ></div>
             <div
-              class="tw-w-[316px] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
-            >
-              <h1
-                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium tw-pb-2"
-              >
-                {{ mint.colName }}
-                <i class="bx bxs-badge-check tw-text-xl tw-text-primary-1"></i>
-              </h1>
-              <h2 class="tw-text-white tw-text-[1.375em] tw-font-medium">
-                {{ mint.tokenName }}
-              </h2>
-              <div class="tw-pb-4 tw-text-dark-0 tw-text-sm">
-                {{ mint.tokenDesc }}
-              </div>
-              <div
-                class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5 tw-flex tw-flex-row tw-items-start tw-justify-between"
-              >
-                <div
-                  class="tw-w-full tw-flex tw-flex-col tw-items-stat tw-justify-start tw-gap-3"
-                >
-                  <div>
-                    <div
-                      class="tw-text-dark-2 tw-text-xs tw-font-semibold tw-uppercase tw-leading-5"
-                    >
-                      Royalties
-                    </div>
-                    <div
-                      class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
-                    >
-                      {{ mint.royalty }}%
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
-          >
-            <div
-              v-for="(attribute, index) in mint.attributes"
-              :key="index"
-              class="tw-w-full"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
             >
               <div
-                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-full"
+                v-for="(attribute, index) in mint.attributes"
+                :key="index"
+                class="tw-w-full"
               >
                 <div
-                  class="tw-flex tw-flex-col tw-gap-4 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
+                  class="tw-flex tw-flex-col tw-gap-6 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
                 >
                   <ValidationProvider
                     class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
@@ -286,22 +246,84 @@
                   </button>
                 </div>
               </div>
+              <button-primary
+                title="Add Attribute"
+                :bordered="true"
+                @click="addAttribute"
+                class="tw-my-5"
+              >
+                <template #prepend-icon>
+                  <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
+                </template>
+              </button-primary>
+              <div
+                class="tw-w-full tw-flex tw-items-center tw-flex-row tw-justify-end"
+              >
+                <button-primary title="Next" @click="validateFormForNextStep" />
+              </div>
             </div>
-
-            <button-primary
-              title="Add Attribute"
-              :bordered="true"
-              @click="addAttribute"
-            >
-              <template #prepend-icon>
-                <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
-              </template>
-            </button-primary>
-          </div>
-          <div class="tw-w-full tw-flex tw-items-center tw-justify-end">
-            <button-primary title="Create" :loading="loading" @click="submit" />
           </div>
         </ValidationObserver>
+      </v-stepper-content>
+      <v-stepper-content step="4">
+        <div
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full"
+        >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Review
+          </h2>
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 md:tw-flex-row md:tw-items-start md:tw-justify-start"
+          >
+            <div
+              id="image-review"
+              class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
+            ></div>
+            <div
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 lg:tw-w-[540px]"
+            >
+              <h1
+                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium tw-pb-2"
+              >
+                {{ mint.colName }}
+                <i class="bx bxs-badge-check tw-text-xl tw-text-primary-1"></i>
+              </h1>
+              <h2 class="tw-text-white tw-text-[1.375em] tw-font-medium">
+                {{ mint.tokenName }}
+              </h2>
+              <div class="tw-pb-4 tw-text-dark-0 tw-text-sm">
+                {{ mint.tokenDesc }}
+              </div>
+
+              <div
+                class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5 tw-flex tw-flex-row tw-items-start tw-justify-between"
+              >
+                <div
+                  class="tw-w-full tw-flex tw-flex-col tw-items-stat tw-justify-start tw-gap-3"
+                >
+                  <div>
+                    <div
+                      class="tw-text-dark-2 tw-text-xs tw-font-semibold tw-uppercase tw-leading-5"
+                    >
+                      Royalties
+                    </div>
+                    <div
+                      class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
+                    >
+                      {{ mint.royalty }}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="tw-w-full tw-flex tw-items-center tw-flex-row tw-justify-end tw-py-5"
+              >
+                <button-primary title="Create" @click="submit" />
+              </div>
+            </div>
+          </div>
+        </div>
       </v-stepper-content>
     </stepper>
     <reusable-progress-modal
@@ -397,8 +419,8 @@ export default {
       ],
       socialError: false,
       socialErrorMessage: "",
+      formSteps: ["Details", "Token", "Attributes", "Review"],
       formStepNumber: 1,
-      formSteps: ["Details", "Token", "Attributes"],
     };
   },
   watch: {
@@ -469,22 +491,38 @@ export default {
       this.mint.attributes.splice(index, 1);
     },
     displayImage() {
-      const imgElement = document.createElement("img");
+      const previewImgElement = document.createElement("img");
+      const reviewImgElement = document.createElement("img");
 
-      imgElement.src = URL.createObjectURL(this.file);
-      imgElement.classList.add("tw-w-full");
-      imgElement.classList.add("tw-h-full");
-      imgElement.classList.add("tw-object-fill");
-      imgElement.classList.add("tw-max-h-[300px]");
-      imgElement.classList.add("tw-rounded");
+      reviewImgElement.src = previewImgElement.src = URL.createObjectURL(
+        this.file
+      );
+      previewImgElement.classList.add("tw-w-full");
+      previewImgElement.classList.add("tw-h-full");
+      previewImgElement.classList.add("tw-object-fill");
+      previewImgElement.classList.add("tw-max-h-[300px]");
+      previewImgElement.classList.add("tw-rounded");
+
+      reviewImgElement.classList.add("tw-w-full");
+      reviewImgElement.classList.add("tw-h-full");
+      reviewImgElement.classList.add("tw-object-fill");
+      reviewImgElement.classList.add("tw-max-h-[300px]");
+      reviewImgElement.classList.add("tw-rounded");
 
       const previewElement = document.getElementById("image-preview");
+      const reviewElement = document.getElementById("image-review");
 
       if (previewElement.firstChild) {
         previewElement.removeChild(previewElement.firstChild);
       }
 
-      previewElement.prepend(imgElement);
+      if (reviewElement.firstChild) {
+        reviewElement.removeChild(reviewElement.firstChild);
+      }
+
+      previewElement.prepend(previewImgElement);
+
+      reviewElement.prepend(reviewImgElement);
     },
     selectImage(file) {
       this.file = file;
@@ -632,6 +670,14 @@ export default {
             break;
           }
 
+          this.formStepNumber++;
+          break;
+        case 3:
+          const validate = await this.$refs.attributeForm.validate();
+
+          if (!validate) {
+            break;
+          }
           this.formStepNumber++;
           break;
         default:
