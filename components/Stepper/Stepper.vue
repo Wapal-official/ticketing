@@ -3,7 +3,7 @@
     v-model="internalStepNumber"
     class="!tw-bg-transparent !tw-shadow-none tw-w-full"
   >
-    <v-stepper-header class="tw-w-full !tw-shadow-none">
+    <v-stepper-header class="tw-w-full !tw-shadow-none tw-overflow-auto">
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
       >

@@ -214,7 +214,7 @@
             Attributes
           </h2>
           <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-flex-row md:tw-justify-start"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-items-center md:tw-justify-center lg:tw-flex-row lg:tw-justify-start"
           >
             <div
               id="image-preview"
@@ -295,7 +295,7 @@
             Review
           </h2>
           <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 md:tw-flex-row md:tw-items-start md:tw-justify-start"
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 md:tw-items-center md:tw-justify-center lg:tw-flex-row lg:tw-justify-start"
           >
             <div
               id="image-review"
