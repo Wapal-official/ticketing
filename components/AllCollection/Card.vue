@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    :to="`/nft/${collection?.username}`"
+    :to="getRedirectLink"
     class="!tw-text-white tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
   >
     <div class="tw-text-sm tw-font-semibold">{{ collectionNumber }}.</div>
@@ -70,12 +70,6 @@ export default {
   computed: {
     getLiveStatus() {
       if (!this.collection.candyMachine) {
-        if (
-          !this.collection.public_sale_time &&
-          !this.collection.whitelist_sale_time
-        ) {
-          return true;
-        }
         return false;
       }
 
@@ -97,6 +91,13 @@ export default {
           return true;
         }
       }
+    },
+    getRedirectLink() {
+      if (this.collection.redirectTo === "landingDraft") {
+        return `/nft/draft/${this.collection?._id}`;
+      }
+
+      return `/nft/${this.collection?.username}`;
     },
   },
 };
