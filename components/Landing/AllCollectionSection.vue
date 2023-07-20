@@ -13,16 +13,17 @@
           @click="$router.push('/latest-collection')"
         />
       </div>
-      <div
-        class="tw-grid tw-grid-cols-1 tw-gap-6 md:tw-grid-cols-2 lg:tw-grid-cols-4"
-        v-if="!loading"
-      >
-        <all-collection-card
-          v-for="(collection, index) in collections"
-          :key="index"
-          :collectionNumber="index + 1"
-          :collection="collection"
-        />
+      <div class="tw-w-full tw-overflow-auto" v-if="!loading">
+        <div
+          class="tw-grid tw-gap-6 tw-grid-cols-4 tw-w-full tw-min-w-[1300px] lg:tw-min-w-full"
+        >
+          <all-collection-card
+            v-for="(collection, index) in collections"
+            :key="index"
+            :collectionNumber="index + 1"
+            :collection="collection"
+          />
+        </div>
       </div>
       <div
         class="tw-grid tw-grid-cols-1 tw-gap-6 md:tw-grid-cols-2 lg:tw-grid-cols-4"
@@ -38,18 +39,60 @@
   </section>
 </template>
 <script lang="ts">
-import { getCollections } from "@/services/CollectionService";
+import {
+  getApprovedDrafts,
+  getCollections,
+} from "@/services/CollectionService";
 
 export default {
   data() {
     return { collections: [], loading: true };
   },
   async mounted() {
-    const res = await getCollections(1, 16);
+    this.mapAllCollections();
+  },
+  methods: {
+    async mapAllCollections() {
+      const res = await getCollections(1, 16);
 
-    this.collections = res;
+      this.collections = res;
 
-    this.loading = false;
+      if (this.collections.length < 16) {
+        const draftRes = await getApprovedDrafts(
+          1,
+          16 - this.collections.length
+        );
+        const drafts: any[] = [];
+
+        draftRes.map((draft: any) => {
+          drafts.push({
+            baseURL: draft.data.baseURL,
+            candy_id: draft.data.candy_id,
+            description: draft.data.description,
+            discord: draft.data.discord,
+            image: draft.data.image,
+            instagram: draft.data.instagram,
+            isApproved: draft.data.isApproved,
+            name: draft.data.name,
+            phases: draft.data.phases,
+            public_sale_price: draft.data.public_sale_price,
+            public_sale_time: draft.data.public_sale_time,
+            royalty_payee_address: draft.data.royalty_payee_address,
+            royalty_percentage: draft.data.royalty_percentage,
+            supply: draft.data.supply,
+            twitter: draft.data.twitter,
+            website: draft.data.website,
+            whitelist_price: draft.data.whitelist_price,
+            redirectTo: "landingDraft",
+            _id: draft._id,
+          });
+        });
+
+        this.collections.push(...drafts);
+      }
+
+      this.loading = false;
+    },
   },
 };
 </script>

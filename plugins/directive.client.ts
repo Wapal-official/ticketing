@@ -13,7 +13,9 @@ Vue.directive("click-outside", {
       // Check that the click was outside the el and its children, and wasn't a drag
       if (!(el == event.target || el.contains(event.target)) && !dragging) {
         // call method provided in attribute value
-        vnode.context[binding.expression](event);
+        try {
+          vnode.context[binding.expression](event);
+        } catch {}
       }
     };
     document.addEventListener("touchstart", el.eventClearDrag);
