@@ -165,15 +165,6 @@
           </div>
         </div>
       </v-dialog>
-      <div
-        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-        v-if="mappingFiles"
-      >
-        <v-progress-circular
-          indeterminate
-          :color="defaultTheme.wapalPink"
-        ></v-progress-circular>
-      </div>
       <v-dialog
         v-model="showCSVUploadModal"
         content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
@@ -189,11 +180,25 @@
 
     <div
       class="tw-py-16 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-      v-else
+      v-if="!loading"
     >
+      <v-card
+        color="transparent"
+        v-intersect="{
+          handler: mapFiles,
+          options: {
+            threshold: [0, 0.5, 1],
+          },
+        }"
+        class="!tw-shadow-none"
+        v-if="!end"
+      >
+      </v-card>
+
       <v-progress-circular
         indeterminate
         :color="defaultTheme.wapalPink"
+        v-if="mappingFiles"
       ></v-progress-circular>
     </div>
   </div>
@@ -264,6 +269,9 @@ export default {
       assetLimit: 0,
       showCSVUploadModal: false,
       CSVLength: 0,
+      end: false,
+      page: 0,
+      debounce: null,
       UploadIcon,
       defaultTheme,
     };
@@ -428,88 +436,94 @@ export default {
         this.fileLoading = false;
       }
     },
-    async mapFiles(scrollNumber: number) {
-      let tempFiles = [];
+    async mapFiles() {
+      this.mappingFiles = true;
+      clearTimeout(this.debounce);
 
-      this.paginatedFiles = [];
-      if (!scrollNumber) {
-        tempFiles = this.folderInfo.files.slice(0, this.assetLimit);
-      } else {
+      this.debounce = setTimeout(async () => {
+        this.page++;
+        const scrollNumber = this.page * this.assetLimit;
+        this.paginatedFiles = [];
+
+        if (scrollNumber > this.folderInfo.files.length) {
+          this.end = true;
+        }
+
+        let tempFiles = [];
         tempFiles = this.folderInfo.files.slice(
           scrollNumber - this.assetLimit,
           scrollNumber
         );
-      }
+        const mappedFiles = await Promise.all(
+          tempFiles.map(async (file: any, index: number) => {
+            try {
+              let src = null;
 
-      const mappedFiles = await Promise.all(
-        tempFiles.map(async (file: any, index: number) => {
-          try {
-            let src = null;
+              const fileIndex = scrollNumber
+                ? scrollNumber - this.assetLimit + index
+                : index;
 
-            const fileIndex = scrollNumber
-              ? scrollNumber - this.assetLimit + index
-              : index;
+              if (this.folderInfo.metadata.baseURI) {
+                src = `${this.folderInfo.metadata.baseURI}${fileIndex}.json`;
+              } else {
+                src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+              }
 
-            if (this.folderInfo.metadata.baseURI) {
-              src = `${this.folderInfo.metadata.baseURI}${fileIndex}.json`;
-            } else {
-              src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+              const res = await this.$axios.get(src);
+
+              const tempFile = res.data;
+
+              let fileType = "image";
+              let generatedFile = null;
+
+              if (
+                res.headers["content-type"] ===
+                "application/json; charset=utf-8"
+              ) {
+                fileType = "json";
+              }
+
+              if (fileType === "json" && this.type === "assets") {
+                const createdDate = this.folderInfo.createdDate
+                  ? this.folderInfo.createdDate
+                  : moment().format("DD/MM/YYYY");
+
+                generatedFile = {
+                  _id: fileIndex,
+                  name: tempFile.name,
+                  src: src,
+                  type: res.headers["content-type"],
+                  createdDate: createdDate,
+                  size: res.headers["content-length"],
+                  image: tempFile.image,
+                };
+              } else {
+                const createdDate = moment().format("DD/MM/YYYY");
+
+                generatedFile = {
+                  _id: fileIndex,
+                  name: fileIndex.toString(),
+                  src: src,
+                  type: res.headers["content-type"],
+                  createdDate: createdDate,
+                  size: res.headers["content-length"],
+                };
+              }
+
+              return generatedFile;
+            } catch (error) {
+              console.log(error);
             }
+          })
+        );
 
-            const res = await this.$axios.get(src);
+        mappedFiles.sort((a: any, b: any) => {
+          return a._id - b._id;
+        });
+        this.paginatedFiles.push(...mappedFiles);
 
-            const tempFile = res.data;
-
-            let fileType = "image";
-            let generatedFile = null;
-
-            if (
-              res.headers["content-type"] === "application/json; charset=utf-8"
-            ) {
-              fileType = "json";
-            }
-
-            if (fileType === "json" && this.type === "assets") {
-              const createdDate = this.folderInfo.createdDate
-                ? this.folderInfo.createdDate
-                : moment().format("DD/MM/YYYY");
-
-              generatedFile = {
-                _id: fileIndex,
-                name: tempFile.name,
-                src: src,
-                type: res.headers["content-type"],
-                createdDate: createdDate,
-                size: res.headers["content-length"],
-                image: tempFile.image,
-              };
-            } else {
-              const createdDate = moment().format("DD/MM/YYYY");
-
-              generatedFile = {
-                _id: fileIndex,
-                name: fileIndex.toString(),
-                src: src,
-                type: res.headers["content-type"],
-                createdDate: createdDate,
-                size: res.headers["content-length"],
-              };
-            }
-
-            return generatedFile;
-          } catch (error) {
-            console.log(error);
-          }
-        })
-      );
-
-      mappedFiles.sort((a: any, b: any) => {
-        return a._id - b._id;
-      });
-
-      this.paginatedFiles.push(...mappedFiles);
-
-      this.mappingFiles = false;
+        this.mappingFiles = false;
+      }, 1000);
     },
     async sendDataToUploadFolder() {
       this.serverUploadPercent = 0;
@@ -702,14 +716,16 @@ export default {
 
       this.fileIndex = 0;
       this.scrolledNumber = 1;
-      this.mapFiles(0);
+      this.page = 0;
+      this.mapFiles();
     },
     showGridView() {
       this.listView = false;
 
       this.fileIndex = 0;
       this.scrolledNumber = 1;
-      this.mapFiles(0);
+      this.page = 0;
+      this.mapFiles();
     },
   },
   computed: {
@@ -747,27 +763,17 @@ export default {
       throw { statusCode: 404, message: "Page not found" };
     }
 
+    this.assetLimit = this.type === "assets" ? 12 : 48;
+
     await this.fetchFiles();
 
-    this.assetLimit = this.type === "assets" ? 10 : 50;
+    await this.mapFiles();
 
-    await this.mapFiles(undefined);
-
-    if (process.client) {
-      window.addEventListener("scroll", async () => {
-        if (
-          window.scrollY + window.innerHeight >=
-            document.documentElement.scrollHeight &&
-          !this.mappingFiles
-        ) {
-          this.scrolledNumber++;
-
-          this.mappingFiles = true;
-
-          await this.mapFiles(this.assetLimit * this.scrolledNumber);
-        }
-      });
-    }
+    setTimeout(() => {
+      if (this.type === "metadata") {
+        this.mapFiles();
+      }
+    }, 5000);
   },
   watch: {
     checkUploadingStatus: async function (newValue: string) {
