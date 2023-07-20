@@ -1,13 +1,15 @@
 <template>
-  <v-app class="tw-w-full tw-h-full tw-overflow-hidden !tw-bg-dark-8">
+  <v-app
+    class="tw-w-full tw-h-full tw-overflow-hidden !tw-bg-dark-8 no-scrollbar"
+  >
     <verification v-if="!getVerifiedStatus" />
     <div v-else>
       <dashboard-navbar :closeIcon="closeIcon" @toggleSidebar="toggleSidebar" />
       <div class="tw-w-full tw-h-[1px] tw-bg-dark-6"></div>
       <div class="tw-flex tw-flex-row tw-items-start relative tw-w-full">
         <dashboard-sidebar class="tw-hidden lg:tw-flex" />
-        <div class="dashboard-container">
-          <Nuxt class="!tw-px-6 !tw-py-8" />
+        <div class="dashboard-container tw-overflow-auto no-scrollbar">
+          <Nuxt class="!tw-px-6 !tw-py-8 tw-h-screen" />
         </div>
       </div>
       <div
@@ -16,7 +18,7 @@
       >
         <dashboard-sidebar @close="closeSideBar" />
       </div>
-      <dashboard-footer />
+      <!-- <dashboard-footer /> -->
       <upload-progress
         v-if="getUploadingStatus && getUploadingBar"
         @close="closeUploadProgress"
@@ -165,11 +167,13 @@ export default {
 
 .dashboard-container {
   width: calc(100vw - 230px);
+  height: calc(100vh - 80px);
 }
 
 @media only screen and (max-width: 1024px) {
   .dashboard-container {
     width: 100%;
+    height: 100%;
   }
 }
 </style>
