@@ -27,6 +27,7 @@
                 :src="item.image"
                 :alt="item.collectionName"
                 class="tw-w-[64px] tw-h-[64px] tw-object-cover tw-rounded"
+                :onerror="imageNotFound()"
               />{{ item.collectionName }}
             </td>
             <td
@@ -105,7 +106,7 @@ import { getCollection } from "@/services/CollectionService";
 import discord from "@/assets/img/footer/discord.svg";
 
 import moment from "moment";
-
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   components: { Loading },
   data() {
@@ -150,6 +151,7 @@ export default {
       paginatedWhitelists: [],
       loading: true,
       discord,
+      imageNotFound,
     };
   },
   methods: {

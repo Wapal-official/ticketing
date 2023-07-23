@@ -30,7 +30,7 @@
             class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
           >
             <h2 class="tw-text-lg tw-font-bold">{{ item.name }}</h2>
-            <i class="bx bxs-badge-check tw-text-xl tw-text-primary-1"></i>
+            <i class="bx bxs-badge-check tw-text-sm tw-text-primary-1"></i>
           </div>
         </div>
       </div>

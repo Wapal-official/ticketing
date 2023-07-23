@@ -3,7 +3,8 @@
     <nft-detail :collection="collection" v-if="!loading" />
     <loading-collection v-else />
     <div
-      class="tw-container tw-mx-auto tw-px-8 tw-pt-[6.75em] tw-pb-24 lg:tw-px-[3.75em]"
+      class="tw-container tw-mx-auto tw-px-8 tw-pb-24 lg:tw-px-[3.75em]"
+      ref="tab"
     >
       <Tab :tab="tab" :tabs="tabs" @tabChanged="tabChanged" class="tw-mb-10" />
       <NuxtChild />
@@ -27,10 +28,21 @@ export default {
       tabs: ["Latest Collection", "Upcoming Collection"],
     };
   },
+  async asyncData({ from }: { from: any }) {
+    const previousPage = from;
+
+    return { previousPage };
+  },
+  computed: {
+    path() {
+      return this.$route.fullPath;
+    },
+  },
   async mounted() {
     const liveRes = await getCollectionByUsername("celestials");
 
     this.collection = liveRes.data.collection[0];
+
     if (this.$route.path === "/latest-collection") {
       this.tab = 0;
     } else if (this.$route.path === "/upcoming-collection") {
@@ -54,6 +66,13 @@ export default {
           this.$router.push("/latest-collection");
           break;
       }
+    },
+  },
+  watch: {
+    path() {
+      setTimeout(() => {
+        this.$refs.tab.scrollIntoView({ behavior: "smooth" });
+      }, 50);
     },
   },
 };

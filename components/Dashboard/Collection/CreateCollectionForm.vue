@@ -40,7 +40,7 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="twitter"
-            rules="link"
+            rules="link|required"
             v-slot="{ errors }"
           >
             <input-text-field
@@ -49,6 +49,7 @@
               type="url"
               placeholder="Twitter Link"
               label="Twitter Link"
+              :required="true"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
@@ -60,7 +61,7 @@
           >
             <input-text-field
               v-model="collection.discord"
-              label="Discord Link"
+              label="Discord Link (Optional)"
               placeholder="Discord Link"
               type="url"
             />
@@ -74,7 +75,7 @@
           >
             <input-text-field
               v-model="collection.instagram"
-              label="Instagram Link"
+              label="Instagram Link (Optional)"
               placeholder="Instagram Link"
               type="url"
             />
@@ -88,7 +89,7 @@
           >
             <input-text-field
               v-model="collection.website"
-              label="Website Link"
+              label="Website Link (Optional)"
               placeholder="Website Link"
               type="url"
             />

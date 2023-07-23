@@ -2,7 +2,10 @@
   <default-layout>
     <auction-detail :propAuctionName="featuredAuctionName" v-if="!loading" />
     <loading-collection v-else />
-    <div class="tw-container tw-mx-auto tw-px-8 tw-pb-24 lg:tw-px-[3.75em]">
+    <div
+      class="tw-container tw-mx-auto tw-px-8 tw-pb-24 lg:tw-px-[3.75em]"
+      ref="tab"
+    >
       <Tab :tab="tab" :tabs="tabs" @tabChanged="tabChanged" class="tw-mb-10" />
       <NuxtChild />
     </div>
@@ -51,6 +54,18 @@ export default {
           this.$router.push("/live-auction");
           break;
       }
+    },
+  },
+  computed: {
+    path() {
+      return this.$route.fullPath;
+    },
+  },
+  watch: {
+    path() {
+      setTimeout(() => {
+        this.$refs.tab.scrollIntoView({ behavior: "smooth" });
+      }, 50);
     },
   },
 };
