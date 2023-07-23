@@ -1,13 +1,21 @@
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
+    <dashboard-page-heading heading="Collection" v-if="showTabs" />
+
     <div
-      class="tw-flex tw-w-full tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+      class="tw-w-full tw-py-6 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
       v-if="showTabs"
     >
+      <div class="tw-w-full">
+        <tab-bordered
+          :tab="launchpadTab"
+          :tabs="launchpadTabs"
+          @tabChanged="tabChanged"
+        />
+      </div>
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start md:tw-justify-end"
       >
-        <dashboard-page-heading heading="Collection" />
         <button-primary
           :bordered="true"
           title="Create New Collection"
@@ -18,13 +26,6 @@
           </template>
         </button-primary>
       </div>
-    </div>
-    <div class="tw-w-full tw-py-6" v-if="showTabs">
-      <tab-bordered
-        :tab="launchpadTab"
-        :tabs="launchpadTabs"
-        @tabChanged="tabChanged"
-      />
     </div>
     <div class="tw-pb-6 tw-w-full">
       <Nuxt />

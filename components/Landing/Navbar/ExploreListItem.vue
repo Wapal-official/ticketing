@@ -3,7 +3,7 @@
     <button @click="goToExplorePage">
       <v-list-item>
         <v-list-item-title
-          class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
+          class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-primary-1"
           >{{ name }}</v-list-item-title
         >
       </v-list-item>

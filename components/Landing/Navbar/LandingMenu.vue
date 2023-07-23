@@ -7,7 +7,7 @@
         :ripple="false"
         id="explore-list-group"
         v-model="showExploreMenu"
-        active-class="!tw-text-wapal-pink "
+        active-class="!tw-text-primary-1 "
         class="!tw-text-white tw-w-full"
       >
         <template

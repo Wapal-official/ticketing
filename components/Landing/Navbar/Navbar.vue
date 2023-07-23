@@ -3,7 +3,7 @@
     class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-bg-dark-9 tw-pt-5 tw-pb-2"
   >
     <nav
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-max-h-[40px]"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-max-h-[40px] lg:tw-px-[3.75em]"
     >
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 lg:tw-w-[20%]"
@@ -21,7 +21,7 @@
               <div v-bind="attrs" v-on="on">
                 <NuxtLink
                   to="/explore/all"
-                  class="!tw-text-[#A6A7AB] tw-transition tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-center tw-gap-0.5 tw-justify-start hover:!tw-text-wapal-pink"
+                  class="!tw-text-[#A6A7AB] tw-transition tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-center tw-gap-0.5 tw-justify-start hover:!tw-text-primary-1"
                 >
                   <span>Explore</span>
                   <i class="bx bx-chevron-down !tw-text-[#A6A7AB]"></i>

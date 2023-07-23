@@ -8,7 +8,10 @@
       <div class="tw-w-full tw-h-[1px] tw-bg-dark-6"></div>
       <div class="tw-flex tw-flex-row tw-items-start relative tw-w-full">
         <dashboard-sidebar class="tw-hidden lg:tw-flex" />
-        <div class="dashboard-container tw-overflow-auto no-scrollbar">
+        <div
+          class="dashboard-container tw-overflow-auto no-scrollbar"
+          ref="container"
+        >
           <Nuxt class="!tw-px-6 !tw-py-8 tw-h-screen" />
         </div>
       </div>
@@ -95,6 +98,9 @@ export default {
     walkthroughMobile() {
       return this.$store.state.tourStore.openSidebar;
     },
+    path() {
+      return this.$route.fullPath;
+    },
   },
   mounted() {
     // this.startTour({ store: this.$store });
@@ -156,6 +162,9 @@ export default {
           message: `${this.walletStore.wallet} Wallet Disconnected Successfully`,
         });
       }
+    },
+    path() {
+      this.$refs.container.scrollTo(0, 0);
     },
   },
 };

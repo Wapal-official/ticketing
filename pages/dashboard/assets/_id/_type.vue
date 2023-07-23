@@ -1,17 +1,16 @@
 <template>
   <div>
-    <button
+    <button-primary
       v-if="
         type === 'metadata' &&
         folderInfo.metadata.files.length === 0 &&
         !loading &&
         checkImageUploaded
       "
-      class="tw-rounded tw-px-6 tw-py-2 tw-text-white tw-bg-wapal-pink"
       @click="showCSVUploadModal = true"
-    >
-      Import CSV
-    </button>
+      title="Import CSV"
+      :bordered="true"
+    />
     <div
       class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-relative"
       v-if="!loading"
@@ -66,7 +65,7 @@
       </div>
       <v-dialog
         v-model="showFileDetails"
-        content-class="!tw-w-full !tw-mx-2 !tw-rounded-none md:!tw-mx-auto md:!tw-w-1/2 md:!tw-border-t-wapal-pink md:!tw-border-b-wapal-pink lg:!tw-w-[40%]"
+        content-class="!tw-w-full !tw-mx-2 !tw-rounded-none md:!tw-mx-auto md:!tw-w-1/2 md:!tw-border-t-primary-1 md:!tw-border-b-primary-1 lg:!tw-w-[40%]"
       >
         <assets-image-details
           :file="currentFile"
@@ -143,7 +142,7 @@
               class="tw-relative tw-w-full tw-rounded-lg tw-py-1 tw-bg-wapal-gray"
             >
               <div
-                class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-wapal-pink tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
+                class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-primary-1 tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
                 :style="`width:${serverUploadPercent}%`"
               ></div>
             </div>
@@ -195,11 +194,7 @@
       >
       </v-card>
 
-      <v-progress-circular
-        indeterminate
-        :color="defaultTheme.wapalPink"
-        v-if="mappingFiles"
-      ></v-progress-circular>
+      <reusable-loading v-if="mappingFiles" />
     </div>
   </div>
 </template>
