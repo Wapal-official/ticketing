@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-w-full">
+  <div class="tw-w-full" ref="top">
     <stepper
       :steps="formSteps"
       :stepNumber="formStepNumber"
@@ -1220,6 +1220,10 @@ export default {
         default:
           break;
       }
+      this.gotToTop();
+    },
+    gotToTop() {
+      this.$refs.top.scrollIntoView({ behavior: "smooth" });
     },
     formatDate(date) {
       return moment(date).format("MMM DD, hh:mm A");

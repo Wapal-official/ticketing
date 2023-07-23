@@ -4,7 +4,7 @@
   >
     <v-progress-circular
       indeterminate
-      :color="defaultTheme.wapalPink"
+      :color="defaultTheme.primary"
     ></v-progress-circular>
   </div>
 </template>

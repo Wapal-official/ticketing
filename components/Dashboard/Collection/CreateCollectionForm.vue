@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-w-full" v-if="!loading">
+  <div class="tw-w-full" v-if="!loading" ref="top">
     <stepper :steps="steps" :stepNumber="stepNumber" @stepClicked="changeStep">
       <v-stepper-content step="1">
         <ValidationObserver
@@ -326,6 +326,7 @@
                     v-model="phase.name"
                     placeholder="Phase Name"
                     label="Phase Name"
+                    :required="true"
                   />
                   <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
                 </ValidationProvider>
@@ -342,6 +343,7 @@
                       type="datetime"
                       placeholder="Select Mint Time"
                       label="Mint Time"
+                      :required="true"
                     ></input-date-picker>
 
                     <button @click="removeMintPhase(index)" class="tw-mt-8">
@@ -1107,6 +1109,10 @@ export default {
         default:
           break;
       }
+      this.gotToTop();
+    },
+    gotToTop() {
+      this.$refs.top.scrollIntoView({ behavior: "smooth" });
     },
     async submitCollection() {
       const phaseValidated = await this.$refs.phaseForm.validate();

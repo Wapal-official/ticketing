@@ -17,7 +17,7 @@
             @click="$router.push('/dashboard/mint-auction')"
           >
             <template #prepend-icon>
-              <i class="bx bx-plus tw-text-xl tw-text-white"></i>
+              <i class="bx bx-plus tw-text-xl tw-text-white tw-pr-2"></i>
             </template>
           </button-primary>
         </div>
