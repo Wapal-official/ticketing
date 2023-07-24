@@ -3,16 +3,16 @@
     class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-bg-dark-9 tw-pt-5 tw-pb-2"
   >
     <nav
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-max-h-[40px] lg:tw-px-[3.75em]"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-max-h-[40px] xl:tw-px-[3.75em]"
     >
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 lg:tw-w-[20%]"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12 lg:tw-w-[20%]"
       >
         <NuxtLink to="/" class="">
           <img
             :src="logo"
             alt="logo"
-            class="tw-min-w-[102px] tw-max-w-[102px] tw-min-h-[40px] tw-max-h-[40px]"
+            class="tw-min-w-[40px] tw-max-w-[40px] tw-min-h-[40px] tw-max-h-[40px]"
           />
         </NuxtLink>
         <div class="tw-hidden lg:tw-flex">
@@ -56,7 +56,7 @@
       </div>
 
       <div
-        class="tw-hidden tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[35%]"
+        class="tw-hidden tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[392px]"
       >
         <search-bar />
       </div>
@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import logo from "@/assets/img/logo/mainnet-beta.png";
+import logo from "@/assets/img/logo/logo.svg";
 import LandingMenu from "@/components/Landing/Navbar/LandingMenu.vue";
 import SearchBar from "@/components/Landing/Navbar/SearchBar.vue";
 import ExploreListItem from "@/components/Landing/Navbar/ExploreListItem.vue";

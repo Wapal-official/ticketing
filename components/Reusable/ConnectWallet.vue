@@ -94,16 +94,16 @@ export default {
   computed: {
     displayFormattedWalletAddress() {
       return this.walletStore.walletAddress
-        ? this.walletStore.walletAddress.substring(0, 8) +
+        ? this.walletStore.walletAddress.substring(0, 5) +
             "..." +
-            this.walletStore.walletAddress.slice(-3)
+            this.walletStore.walletAddress.slice(-2)
         : "";
     },
     displayFormattedWalletAddressForMediumScreens() {
       return this.walletStore.walletAddress
-        ? this.walletStore.walletAddress.substring(0, 15) +
+        ? this.walletStore.walletAddress.substring(0, 5) +
             "..." +
-            this.walletStore.walletAddress.slice(-10)
+            this.walletStore.walletAddress.slice(-2)
         : "";
     },
     walletStore() {
