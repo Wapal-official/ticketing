@@ -14,7 +14,9 @@
     >
 
     <div class="tw-relative tw-w-full">
-      <div class="tw-absolute tw-top-[16px] tw-left-[9px]">
+      <div
+        class="tw-absolute tw-top-0 tw-left-[9px] tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-text-dark-2 tw-z-20"
+      >
         <slot name="prepend-icon"> </slot>
       </div>
       <v-text-field
@@ -30,7 +32,10 @@
         :type="type"
         :disabled="disabled"
         class="wapal-input tw-w-full px-8"
-        :class="{ 'tw-cursor-not-allowed': disabled }"
+        :class="{
+          'tw-cursor-not-allowed': disabled,
+          '!tw-pl-6': $slots['prepend-icon'],
+        }"
       >
       </v-text-field>
       <div
