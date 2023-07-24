@@ -39,13 +39,13 @@
               <v-progress-circular
                 width="4"
                 size="24"
-                :color="defaultTheme.wapalPink"
+                :color="defaultTheme.primary"
                 indeterminate
               ></v-progress-circular>
             </div>
             <div v-else>
               <v-icon
-                class="!tw-font-light !tw-text-wapal-pink"
+                class="!tw-font-light !tw-text-primary-1"
                 v-if="progress > step.step"
                 >mdi-check-circle-outline</v-icon
               >
