@@ -170,7 +170,7 @@
 <script lang="ts">
 import { defaultTheme } from "@/theme/wapaltheme";
 import FooterLink from "@/components/Landing/Footer/FooterLink.vue";
-import logo from "@/assets/img/logo/mainnet-beta.png";
+import logo from "@/assets/img/logo/logo-white.svg";
 import discord from "@/assets/img/footer/discord.svg";
 import twitter from "@/assets/img/footer/twitter.svg";
 import github from "@/assets/img/footer/github.svg";
