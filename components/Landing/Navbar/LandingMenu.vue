@@ -17,11 +17,19 @@
         >
           <span class="tw-w-full"> Explore</span>
         </template>
-        <explore-list-item name="All NFT" link="/explore/all" @close="close" />
-        <explore-list-item name="Live" link="/explore/live" @close="close" />
+        <explore-list-item
+          name="All NFT"
+          link="/latest-collection"
+          @close="close"
+        />
+        <explore-list-item
+          name="Live"
+          link="/latest-collection"
+          @close="close"
+        />
         <explore-list-item
           name="Upcoming"
-          link="/explore/upcoming"
+          link="/upcoming-collection"
           @close="close"
         />
         <explore-list-item
