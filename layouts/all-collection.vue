@@ -71,6 +71,12 @@ export default {
   watch: {
     path() {
       setTimeout(() => {
+        if (this.$route.path === "/latest-collection") {
+          this.tab = 0;
+        } else if (this.$route.path === "/upcoming-collection") {
+          this.tab = 1;
+        }
+
         this.$refs.tab.scrollIntoView({ behavior: "smooth" });
       }, 50);
     },

@@ -7,7 +7,7 @@
         <img
           :src="logo"
           alt="logo"
-          class="tw-min-w-[102px] tw-max-w-[102px] tw-min-h-[40px] tw-max-h-[40px]"
+          class="tw-min-w-[40px] tw-max-w-[40px] tw-min-h-[40px] tw-max-h-[40px]"
         />
       </NuxtLink>
       <div class="tw-hidden lg:tw-flex">
@@ -27,7 +27,7 @@
   </div>
 </template>
 <script lang="ts">
-import logo from "@/assets/img/logo/mainnet-beta.png";
+import logo from "@/assets/img/logo/logo.svg";
 import ConnectWallet from "@/components/Reusable/ConnectWallet.vue";
 export default {
   components: { ConnectWallet },

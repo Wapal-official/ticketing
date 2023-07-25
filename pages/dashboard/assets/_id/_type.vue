@@ -72,41 +72,40 @@
           @close="showFileDetails = false"
         />
       </v-dialog>
-
-      <form
-        class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
+      <div
+        class="tw-border tw-border-dashed tw-border-dark-4 tw-py-40 tw-rounded tw-cursor-pointer tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
+        @click="dropZoneClicked"
+        @dragover.prevent="dragover"
+        @dragleave.prevent="dragleave"
+        @drop.prevent="drop"
+        :class="dropZoneClass"
+        id="drop-zone"
         v-if="!fileLoading && !folderInfo.files[0] && checkImageUploaded"
       >
         <label
-          class="tw-w-full tw-h-full tw-px-8 tw-py-8 tw-border-2 tw-border-dashed tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-cursor-pointer md:tw-w-1/2"
-          :class="dropZoneClass"
+          class="tw-text-sm tw-font-medium tw-cursor-pointer"
           id="drop-zone"
-          @dragover.prevent="dragover"
-          @dragleave.prevent="dragleave"
-          @drop.prevent="drop"
+          >Drop your files here, or
+          <span class="tw-text-primary-1" id="drop-zone"
+            >click to browse</span
+          ></label
         >
-          <img :src="UploadIcon" alt="upload" id="drop-zone" />
-          <div id="drop-zone">Drag and Drop Your Files Here</div>
-          <div id="drop-zone">OR</div>
-          <div
-            id="drop-zone"
-            class="tw-bg-wapal-gray tw-text-white tw-px-8 tw-py-2 tw-rounded tw-cursor-pointer"
-          >
-            Browse
-          </div>
-          <input
-            type="file"
-            class="!tw-hidden"
-            @change="fileChanged"
-            webkitdirectory
-            mozdirectory
-            msdirectory
-            odirectory
-            directory
-            multiple
-            name="file"
-        /></label>
-      </form>
+        <input
+          type="file"
+          @change="fileChanged"
+          webkitdirectory
+          mozdirectory
+          msdirectory
+          odirectory
+          directory
+          multiple
+          name="file"
+          class="tw-hidden tw-w-full tw-h-full"
+          ref="input"
+          id="drop-zone"
+        />
+      </div>
+
       <div
         class="tw-text-white tw-text-center tw-text-lg tw-w-full"
         v-if="!checkImageUploaded"
@@ -236,7 +235,7 @@ export default {
       showFileDetails: false,
       listView: false,
       image: false,
-      dropZoneClass: "tw-border-wapal-gray",
+      dropZoneClass: "tw-border-dark-4",
       uploadedFile: null,
       showFileUploadDialog: false,
       showUploadingDialog: false,
@@ -285,8 +284,11 @@ export default {
     },
     dragleave(e: any) {
       e.dataTransfer!.dropEffect = "copy";
-      this.dropZoneClass = "tw-border-wapal-gray";
+      this.dropZoneClass = "tw-border-dark-4";
       this.showDropZone = false;
+    },
+    dropZoneClicked() {
+      this.$refs.input.click();
     },
     async drop(event: any) {
       this.showDropZone = false;

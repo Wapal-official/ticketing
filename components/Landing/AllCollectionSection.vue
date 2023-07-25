@@ -13,7 +13,10 @@
           @click="$router.push('/latest-collection')"
         />
       </div>
-      <div class="tw-w-full tw-overflow-auto" v-if="!loading">
+      <div
+        class="tw-w-full tw-overflow-auto tw-pb-4 lg:tw-pb-0"
+        v-if="!loading"
+      >
         <div
           class="tw-grid tw-gap-6 tw-grid-cols-4 tw-w-full tw-min-w-[1300px] lg:tw-min-w-full"
         >

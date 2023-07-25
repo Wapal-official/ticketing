@@ -7,7 +7,7 @@
       v-if="walletStore.wallet"
     >
       <template #prepend-icon>
-        <i class="bx bxs-user !tw-text-primary-1 tw-text-xl tw-pr-1"></i>
+        <i class="bx bxs-user !tw-text-primary-1 tw-text-xl tw-pr-[0.62em]"></i>
       </template>
     </button-primary>
     <button-primary @click="connectWallet" title="Connect Wallet" v-else />
@@ -94,16 +94,16 @@ export default {
   computed: {
     displayFormattedWalletAddress() {
       return this.walletStore.walletAddress
-        ? this.walletStore.walletAddress.substring(0, 8) +
+        ? this.walletStore.walletAddress.substring(0, 5) +
             "..." +
-            this.walletStore.walletAddress.slice(-3)
+            this.walletStore.walletAddress.slice(-2)
         : "";
     },
     displayFormattedWalletAddressForMediumScreens() {
       return this.walletStore.walletAddress
-        ? this.walletStore.walletAddress.substring(0, 15) +
+        ? this.walletStore.walletAddress.substring(0, 5) +
             "..." +
-            this.walletStore.walletAddress.slice(-10)
+            this.walletStore.walletAddress.slice(-2)
         : "";
     },
     walletStore() {

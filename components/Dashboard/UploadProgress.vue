@@ -33,7 +33,7 @@
     </div>
     <div class="tw-relative tw-w-full tw-rounded-lg tw-py-1 tw-bg-wapal-gray">
       <div
-        class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-wapal-pink tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
+        class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-primary-1 tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
         id="progress-bar"
       ></div>
     </div>
