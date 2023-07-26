@@ -1,18 +1,18 @@
 <template>
   <div
-    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-bg-dark-9 tw-pt-5 tw-pb-2"
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-bg-dark-9 tw-py-4 tw-border-b tw-border-dark-6"
   >
     <nav
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-max-h-[40px] xl:tw-px-[3.75em]"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-max-h-[40px] lg:tw-gap-0 xl:tw-px-[3.75em]"
     >
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12 lg:tw-w-[20%]"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12 lg:tw-w-[224px]"
       >
         <NuxtLink to="/" class="">
           <img
             :src="logo"
             alt="logo"
-            class="tw-min-w-[40px] tw-max-w-[40px] tw-min-h-[40px] tw-max-h-[40px]"
+            class="tw-min-w-[106px] tw-max-w-[106px] tw-min-h-[28px] tw-max-h-[28px]"
           />
         </NuxtLink>
         <div class="tw-hidden lg:tw-flex">
@@ -28,7 +28,7 @@
                 </NuxtLink>
               </div>
             </template>
-            <v-list class="!tw-bg-modal-gray !tw-min-w-[200px]">
+            <v-list class="tw-bg-dark-7 !tw-min-w-[250px]">
               <explore-list-item
                 name="All NFT"
                 link="/latest-collection"
@@ -56,12 +56,20 @@
       </div>
 
       <div
-        class="tw-hidden tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[392px]"
+        class="tw-hidden tw-w-full md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-end md:tw-w-4/5 lg:tw-w-[90%] xl:tw-w-4/5"
       >
-        <search-bar />
-      </div>
-      <div class="tw-hidden tw-w-full lg:tw-flex lg:tw-w-[35%] xl:tw-w-1/4">
-        <landing-menu />
+        <div
+          class="tw-w-4/5 tw-flex tw-flex-row tw-items-center tw-justify-between lg:tw-w-[90%] xl:tw-w-4/5"
+        >
+          <div
+            class="tw-hidden md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[392px] xl:tw-w-[424px]"
+          >
+            <search-bar />
+          </div>
+          <div class="tw-w-fit tw-hidden lg:tw-flex">
+            <landing-menu />
+          </div>
+        </div>
       </div>
       <div
         class="tw-w-full tw-absolute tw-transition-all tw-duration-300 tw-ease-linear tw-z-50 tw-left-0 tw-top-0"

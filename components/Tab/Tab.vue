@@ -9,8 +9,8 @@
       v-for="(tab, index) in tabs"
       :key="tab"
       :ripple="false"
-      class="!tw-text-white tw-rounded-full !tw-h-[40px] !tw-max-h-[40px] tw-py-2 tw-px-6 !tw-capitalize !tw-text-base !tw-font-medium tw-transition-all tw-duration-200 tw-ease-linear tw-border-solid tw-border tw-border-dark-4 3xl:tw-text-lg hover:tw-border-white hover:!tw-bg-white hover:!tw-text-dark-9 hover:!tw-font-semibold"
-      :class="{ 'tw-ml-4': index !== 0 }"
+      class="!tw-text-white tw-rounded-full !tw-h-[40px] !tw-max-h-[40px] tw-py-[0.62em] tw-px-6 !tw-capitalize !tw-text-sm !tw-font-medium tw-transition-all tw-duration-200 tw-ease-linear tw-border-solid tw-border tw-border-dark-4 hover:tw-border-white hover:!tw-bg-white hover:!tw-text-dark-9 hover:!tw-font-semibold"
+      :class="{ 'tw-ml-3': index !== 0 }"
     >
       {{ tab }}
     </v-tab>

@@ -382,7 +382,7 @@
   @apply tw-bg-dark-6 tw-border-dark-4 tw-border-solid tw-border;
 }
 .wapal-input.v-text-field--outlined > .v-input__control > .v-input__slot {
-  min-height: 44px !important;
+  min-height: 40px !important;
 }
 .wapal-input.v-text-field--outlined fieldset {
   border: none !important;
