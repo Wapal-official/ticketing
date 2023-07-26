@@ -3,9 +3,13 @@
     <div class="swiper mySwiper tw-w-full" ref="swiper">
       <div class="swiper-wrapper tw-w-full">
         <div
-          class="swiper-slide"
-          v-for="collection in sliderCollections"
+          class="swiper-slide !tw-w-[312px]"
+          v-for="(collection, index) in sliderCollections"
           :key="collection._id"
+          :class="{
+            'tw-mr-6 lg:tw-mr-2 xl:tw-mr-6 2xl:tw-mr-10':
+              index !== sliderCollections.length - 1,
+          }"
         >
           <nft-landing-card :collection="collection" :type="type" />
         </div>
@@ -54,40 +58,7 @@ export default {
       grabCursor: true,
       touchEventsTarget: "container",
       rewind: true,
-      breakpoints: {
-        375: {
-          slidesPerView: 1,
-          spaceBetween: 24,
-        },
-        768: {
-          slidesPerView: 2,
-          spaceBetween: 74,
-        },
-        1024: {
-          slidesPerView: 3,
-          spaceBetween: 24,
-        },
-        1280: {
-          slidesPerView: 3,
-          spaceBetween: 32,
-        },
-        1336: {
-          slidesPerView: 3,
-          spaceBetween: 32,
-        },
-        1440: {
-          slidesPerView: 4,
-          spaceBetween: 40,
-        },
-        1536: {
-          slidesPerView: 4,
-          spaceBetween: 32,
-        },
-        1920: {
-          slidesPerView: 5,
-          spaceBetween: 32,
-        },
-      },
+      slidesPerView: "auto",
       virtual: {
         slides: this.sliderCollections,
         renderExternal: (data) => {},

@@ -8,6 +8,7 @@
         <button-primary
           :bordered="true"
           title="View All"
+          contentClass="tw-px-2"
           @click="$router.push('/whitelist')"
         />
       </div>

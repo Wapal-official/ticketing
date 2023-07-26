@@ -7,7 +7,7 @@
         <img
           :src="logo"
           alt="logo"
-          class="tw-min-w-[40px] tw-max-w-[40px] tw-min-h-[40px] tw-max-h-[40px]"
+          class="tw-min-w-[106px] tw-max-w-[106px] tw-min-h-[28px] tw-max-h-[28px]"
         />
       </NuxtLink>
       <div class="tw-hidden lg:tw-flex">
