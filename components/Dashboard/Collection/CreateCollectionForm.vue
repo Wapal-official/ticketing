@@ -1109,10 +1109,6 @@ export default {
         default:
           break;
       }
-      this.gotToTop();
-    },
-    gotToTop() {
-      this.$refs.top.scrollIntoView({ behavior: "smooth" });
     },
     async submitCollection() {
       const phaseValidated = await this.$refs.phaseForm.validate();
@@ -1469,6 +1465,10 @@ export default {
     whitelistEnabled() {
       this.collection.whitelist_sale_time = "";
       this.collection.whitelist_price = "";
+    },
+    stepNumber() {
+      const container = document.getElementById("container");
+      container?.scrollTo(0, 0);
     },
   },
 };

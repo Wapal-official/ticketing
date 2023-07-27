@@ -12,6 +12,7 @@
           title="View All"
           contentClass="tw-px-2"
           @click="$router.push('/latest-collection')"
+          class="lg:tw-mr-5"
         />
       </div>
       <div

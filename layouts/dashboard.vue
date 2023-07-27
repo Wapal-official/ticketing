@@ -11,6 +11,7 @@
         <div
           class="dashboard-container tw-overflow-auto no-scrollbar"
           ref="container"
+          id="container"
         >
           <Nuxt class="!tw-px-6 !tw-py-8 tw-h-screen" />
         </div>

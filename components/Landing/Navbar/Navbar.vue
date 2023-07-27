@@ -77,7 +77,9 @@
       >
         <search-bar @closeSearchBar="closeSearchBar" />
       </div>
-      <div class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4">
+      <div
+        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4 md:tw-hidden"
+      >
         <button @click="displaySearchBar" class="tw-flex md:tw-hidden">
           <i class="bx bx-search !tw-text-wapal-gray tw-text-2xl"></i>
         </button>

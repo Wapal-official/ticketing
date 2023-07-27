@@ -7,7 +7,7 @@
           v-for="(collection, index) in sliderCollections"
           :key="collection._id"
           :class="{
-            'tw-mr-6 lg:tw-mr-2 xl:tw-mr-6 2xl:tw-mr-10':
+            'tw-mr-6 lg:tw-mr-2 xl:tw-mr-6 2xl:tw-mr-12 3xl:tw-mr-[3.3em]':
               index !== sliderCollections.length - 1,
           }"
         >
