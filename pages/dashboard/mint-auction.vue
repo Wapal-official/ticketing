@@ -873,6 +873,10 @@ export default {
     endMenu(val) {
       val && setTimeout(() => (this.activePicker = "DAY"));
     },
+    formStepNumber() {
+      const container = document.getElementById("container");
+      container?.scrollTo(0, 0);
+    },
   },
   computed: {
     walletAddress() {
@@ -1220,10 +1224,6 @@ export default {
         default:
           break;
       }
-      this.gotToTop();
-    },
-    gotToTop() {
-      this.$refs.top.scrollIntoView({ behavior: "smooth" });
     },
     formatDate(date) {
       return moment(date).format("MMM DD, hh:mm A");
