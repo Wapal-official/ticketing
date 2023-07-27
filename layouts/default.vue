@@ -1,8 +1,11 @@
 <template>
   <v-app class="landing-background tw-w-full tw-overflow-hidden tw-relative">
     <div>
-      <Navbar @landingMenuToggled="toggleMainContainer" />
-      <Nuxt :class="mainClass" class="tw-pb-16" />
+      <Navbar
+        @landingMenuToggled="toggleMainContainer"
+        class="tw-absolute tw-top-0 tw-left-0"
+      />
+      <Nuxt :class="mainClass" />
       <wapal-footer :class="mainClass" />
     </div>
     <toast />

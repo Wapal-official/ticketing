@@ -1,5 +1,6 @@
 <template>
   <div class="">
+    <landing-launch-countdown />
     <section class="tw-py-4 2xl:tw-container tw-mx-auto">
       <featured />
     </section>
@@ -26,10 +27,10 @@
           <loading v-else />
         </section>
 
-        <section class="tw-py-8 tw-container tw-mx-auto">
+        <!-- <section class="tw-py-8 tw-container tw-mx-auto">
           <landing-section-heading heading="Whitelist Opportunities" />
           <whitelist-opportunities />
-        </section>
+        </section> -->
 
         <!-- <section
           class="tw-py-8 tw-container tw-mx-auto"
