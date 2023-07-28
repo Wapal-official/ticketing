@@ -32,7 +32,7 @@
               </button>
             </template>
             <div
-              class="tw-flex tw-flex-col tw-justify-items-start tw-items-start tw-bg-modal-gray tw-py-4"
+              class="tw-flex tw-flex-col tw-justify-items-start tw-items-start tw-bg-dark-7 tw-py-4"
             >
               <button
                 class="tw-w-full tw-py-1 tw-px-4 tw-transition-all tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 hover:tw-bg-black/60"
@@ -69,7 +69,7 @@
           </button>
         </template>
         <div
-          class="tw-flex tw-flex-col tw-justify-items-start tw-items-start tw-bg-modal-gray tw-py-4"
+          class="tw-flex tw-flex-col tw-justify-items-start tw-items-start tw-bg-dark-7 tw-py-4"
         >
           <button
             class="tw-w-full tw-py-1 tw-px-4 tw-transition-all tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 hover:tw-bg-black/60"

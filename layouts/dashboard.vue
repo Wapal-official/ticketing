@@ -177,7 +177,7 @@ export default {
 
 .dashboard-container {
   width: calc(100vw - 230px);
-  height: calc(100vh - 80px);
+  height: calc(100vh - 75px);
 }
 
 @media only screen and (max-width: 1024px) {

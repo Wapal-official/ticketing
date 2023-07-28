@@ -28,7 +28,7 @@
                 </NuxtLink>
               </div>
             </template>
-            <v-list class="tw-bg-dark-7 !tw-min-w-[250px]">
+            <v-list class="tw-bg-dark-7 !tw-min-w-[240px]">
               <explore-list-item
                 name="All NFT"
                 link="/latest-collection"
@@ -151,5 +151,9 @@ export default {
 <style scoped>
 .mobile-menu {
   height: calc(100vh - 95px);
+}
+
+::v-deep .v-list-item {
+  padding: 0rem 0.375rem !important;
 }
 </style>

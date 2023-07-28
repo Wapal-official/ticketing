@@ -176,7 +176,7 @@
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
     >
       <div
-        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-dark-7 tw-text-dark-0 tw-rounded"
       >
         <h3 class="tw-text-lg" v-if="!uploading">
           Are you sure you want to import this CSV file?
@@ -186,24 +186,14 @@
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
           v-if="!uploading"
         >
-          <button
-            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
-            @click="uploadCSV"
-          >
-            Yes
-          </button>
-          <button
-            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
-            @click="resetCSV"
-          >
-            No
-          </button>
+          <button-primary title="Yes" @click="uploadCSV" />
+          <button-primary title="No" @click="resetCSV" :bordered="true" />
         </div>
         <div
           class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-center"
           v-else
         >
-          <resuable-loading />
+          <reusable-loading />
         </div>
       </div>
     </v-dialog>
