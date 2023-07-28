@@ -21,6 +21,8 @@
         <reusable-animated-count-down />
         <a
           class="tw-px-[3.25em] tw-py-3 tw-bg-wapal-pink !tw-text-white tw-text-sm tw-rounded-md tw-mb-6"
+          href="https://forms.gle/h4YXLDoveqQL62Zj7"
+          target="_blank"
           >Apply for closed beta</a
         >
       </div>

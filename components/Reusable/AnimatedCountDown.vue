@@ -142,12 +142,11 @@ export default {
     };
   },
   mounted() {
-    const date = new Date();
+    const date = new Date("2023-08-01");
 
-    date.setDate(date.getDate() + 1);
-    date.setHours(date.getHours() + 12);
+    this.launchDate = new Date(date.toUTCString());
 
-    this.launchDate = date;
+    console.log(this.launchDate);
 
     this.startLaunchCountdown();
   },
