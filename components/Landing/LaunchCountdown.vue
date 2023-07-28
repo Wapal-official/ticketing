@@ -4,10 +4,10 @@
     :style="`background:url(${launchBg})`"
   >
     <div
-      class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-h-full tw-gap-4 tw-pt-16"
+      class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-h-full tw-gap-12 tw-pt-16"
     >
       <h1
-        class="tw-uppercase tw-font-semibold tw-text-white tw-text-[4rem] tw-flex tw-flex-col tw-items-center tw-justify-center tw-tracking-[-0.04rem] tw-leading-[120%]"
+        class="tw-uppercase tw-font-semibold tw-text-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-tracking-[-0.04rem] tw-leading-[200%] tw-text-3xl md:tw-leading-[120%] md:tw-text-[3.5rem] 3xl:tw-text-[4rem]"
       >
         <span>Wapal's Marketplace</span> <span>Launches in</span>
       </h1>
@@ -15,16 +15,10 @@
         class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8"
       >
         <span
-          class="tw-text-wapal-pink tw-uppercase tw-font-semibold tw-tracking-[0.6rem] tw-text-[1.5rem]"
+          class="tw-text-wapal-pink tw-uppercase tw-font-semibold tw-tracking-[0.72rem] tw-text-2xl"
           >Time Remaining</span
         >
         <reusable-animated-count-down />
-        <a
-          class="tw-px-[3.25em] tw-py-3 tw-bg-wapal-pink !tw-text-white tw-text-sm tw-rounded-md tw-mb-6"
-          href="https://forms.gle/h4YXLDoveqQL62Zj7"
-          target="_blank"
-          >Apply for closed beta</a
-        >
       </div>
     </div>
   </div>

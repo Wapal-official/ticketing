@@ -1,12 +1,10 @@
 <template>
-  <div
-    class="tw-flex tw-flex-row tw-items-center tw-justify-between md:tw-w-[50%] xl:tw-w-[26%] lg:tw-max-w-[450px]"
-  >
+  <div class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12">
     <div
-      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-fit"
+      class="tw-flex tw-flex-col tw-items-start tw-justify-end tw-gap-2 tw-w-fit"
     >
       <div
-        class="tw-text-sm tw-font-semibold tw-text-[#C1C2C5] tw-uppercase tw-leading-5 tw-tracking-[0.06rem] tw-text-right tw-w-full"
+        class="tw-font-medium tw-text-[#C1C2C5] tw-uppercase tw-leading-5 tw-tracking-[0.06rem] tw-text-right tw-w-full tw-text-xs 3xl:tw-text-sm"
       >
         Hours
       </div>
@@ -16,7 +14,10 @@
         <div
           class="tw-text-black tw-bg-white tw-rounded-lg tw-font-bold tw-text-[2rem] tw-leading-[90%] tw-tracking-[-0.02rem] tw-h-[45px] tw-overflow-hidden"
         >
-          <ul ref="hoursOnes" class="tw-transition-all tw-ease-linear !tw-pl-0">
+          <ul
+            ref="hoursOnes"
+            class="tw-transition-all tw-ease-linear tw-duration-500 !tw-pl-0"
+          >
             <li
               class="tw-p-2 tw-text-center"
               v-for="(i, index) in 10"
@@ -29,7 +30,10 @@
         <div
           class="tw-text-black tw-bg-white tw-rounded-lg tw-font-bold tw-text-[2rem] tw-leading-[90%] tw-tracking-[-0.02rem] tw-h-[45px] tw-overflow-hidden"
         >
-          <ul ref="hoursTens" class="tw-transition-all tw-ease-linear !tw-pl-0">
+          <ul
+            ref="hoursTens"
+            class="tw-transition-all tw-ease-linear tw-duration-500 !tw-pl-0"
+          >
             <li
               class="tw-p-2 tw-text-center"
               v-for="(i, index) in 10"
@@ -45,7 +49,7 @@
       class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-2 tw-w-fit"
     >
       <div
-        class="tw-text-sm tw-font-semibold tw-text-[#C1C2C5] tw-uppercase tw-leading-5 tw-tracking-[0.06rem] tw-text-right tw-w-full"
+        class="tw-font-medium tw-text-[#C1C2C5] tw-uppercase tw-leading-5 tw-tracking-[0.06rem] tw-text-right tw-w-full tw-text-xs 3xl:tw-text-sm"
       >
         Minutes
       </div>
@@ -57,7 +61,7 @@
         >
           <ul
             ref="minutesOnes"
-            class="tw-transition-all tw-ease-linear !tw-pl-0"
+            class="tw-transition-all tw-ease-linear tw-duration-500 !tw-pl-0"
           >
             <li
               class="tw-p-2 tw-text-center"
@@ -73,7 +77,7 @@
         >
           <ul
             ref="minutesTens"
-            class="tw-transition-all tw-ease-linear !tw-pl-0"
+            class="tw-transition-all tw-ease-linear tw-duration-500 !tw-pl-0"
           >
             <li
               class="tw-p-2 tw-text-center"
@@ -90,7 +94,7 @@
       class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-2 tw-w-fit"
     >
       <div
-        class="tw-text-sm tw-font-semibold tw-text-[#C1C2C5] tw-uppercase tw-leading-5 tw-tracking-[0.06rem] tw-text-right tw-w-full"
+        class="tw-font-medium tw-text-[#C1C2C5] tw-uppercase tw-leading-5 tw-tracking-[0.06rem] tw-text-right tw-w-full tw-text-xs 3xl:tw-text-sm"
       >
         Seconds
       </div>
@@ -102,7 +106,7 @@
         >
           <ul
             ref="secondsOnes"
-            class="tw-transition-all tw-ease-linear !tw-pl-0"
+            class="tw-transition-all tw-ease-linear tw-duration-500 !tw-pl-0"
           >
             <li
               class="tw-p-2 tw-text-center"
@@ -118,7 +122,7 @@
         >
           <ul
             ref="secondsTens"
-            class="tw-transition-all tw-ease-linear !tw-pl-0"
+            class="tw-transition-all tw-ease-linear tw-duration-500 !tw-pl-0"
           >
             <li
               class="tw-p-2 tw-text-center"
@@ -176,13 +180,13 @@ export default {
         const secondsTens = seconds % 10;
         const secondsOnes = Math.floor(seconds / 10);
 
-        const margin = -1.4;
+        const margin = -2.8;
 
         //Set last margins for hours and seconds. Last margin for minutes and seconds is same
-        const lastMarginSecondsTens = -12.6;
-        const lastMarginSecondsOnes = -7;
-        const lastMarginHoursTens = -12.6;
-        const lastMarginHoursOnes = -12.6;
+        const lastMarginSecondsTens = -25.2;
+        const lastMarginSecondsOnes = -14;
+        const lastMarginHoursTens = -25.2;
+        const lastMarginHoursOnes = -25.2;
 
         //Calculate current margins of hours
         let hoursTensMargin: number = lastMarginHoursTens - margin * hoursTens;
@@ -213,24 +217,28 @@ export default {
           hoursOnesMargin = lastMarginHoursOnes;
         }
 
-        this.$refs.secondsTens.style.marginTop = secondsTensMargin + "em";
-        this.$refs.secondsOnes.style.marginTop = secondsOnesMargin + "em";
+        this.$refs.secondsTens.style.marginTop = secondsTensMargin + "rem";
+        this.$refs.secondsOnes.style.marginTop = secondsOnesMargin + "rem";
 
-        this.$refs.minutesTens.style.marginTop = minutesTensMargin + "em";
-        this.$refs.minutesOnes.style.marginTop = minutesOnesMargin + "em";
+        this.$refs.minutesTens.style.marginTop = minutesTensMargin + "rem";
+        this.$refs.minutesOnes.style.marginTop = minutesOnesMargin + "rem";
 
-        this.$refs.hoursTens.style.marginTop = hoursTensMargin + "em";
-        this.$refs.hoursOnes.style.marginTop = hoursOnesMargin + "em";
+        this.$refs.hoursTens.style.marginTop = hoursTensMargin + "rem";
+        this.$refs.hoursOnes.style.marginTop = hoursOnesMargin + "rem";
 
         if (interval <= 0) {
-          this.$refs.secondsTens.style.marginTop = lastMarginSecondsTens + "em";
-          this.$refs.secondsOnes.style.marginTop = lastMarginSecondsOnes + "em";
+          this.$refs.secondsTens.style.marginTop =
+            lastMarginSecondsTens + "rem";
+          this.$refs.secondsOnes.style.marginTop =
+            lastMarginSecondsOnes + "rem";
 
-          this.$refs.minutesTens.style.marginTop = lastMarginSecondsTens + "em";
-          this.$refs.minutesOnes.style.marginTop = lastMarginSecondsOnes + "em";
+          this.$refs.minutesTens.style.marginTop =
+            lastMarginSecondsTens + "rem";
+          this.$refs.minutesOnes.style.marginTop =
+            lastMarginSecondsOnes + "rem";
 
-          this.$refs.hoursTens.style.marginTop = lastMarginHoursTens + "em";
-          this.$refs.hoursOnes.style.marginTop = lastMarginHoursOnes + "em";
+          this.$refs.hoursTens.style.marginTop = lastMarginHoursTens + "rem";
+          this.$refs.hoursOnes.style.marginTop = lastMarginHoursOnes + "rem";
 
           clearInterval(this.launchCountdown);
         }
