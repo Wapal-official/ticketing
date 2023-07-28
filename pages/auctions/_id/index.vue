@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tw-pt-20 tw-pb-14">
     <AuctionDetail />
   </div>
 </template>

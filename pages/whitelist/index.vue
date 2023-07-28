@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-container tw-mx-auto tw-px-4 tw-py-8 md:tw-px-8 tw-min-h-screen"
+    class="tw-container tw-mx-auto tw-px-4 tw-pt-20 tw-pb-14 md:tw-px-8 tw-min-h-screen"
   >
     <h1 class="tw-text-white tw-text-3xl tw-pb-6">Whitelist Opportunities</h1>
     <v-data-table

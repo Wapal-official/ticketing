@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-w-full tw-container tw-mx-auto tw-px-4">
+  <div class="tw-w-full tw-container tw-mx-auto tw-px-4 tw-pt-20 tw-pb-14">
     <h1 class="tw-text-xl tw-font-semibold tw-py-4">Auctions</h1>
     <p v-if="auctions.length === 0 && !loading" class="tw-py-4 tw-text-lg">
       No nfts in auction

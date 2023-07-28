@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-px-4 tw-py-16 tw-container tw-mx-auto tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 lg:tw-flex-row lg:tw-items-center lg:tw-gap-16 lg:tw-px-8"
+    class="tw-px-4 tw-container tw-mx-auto tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pt-32 tw-pb-14 lg:tw-flex-row lg:tw-items-center lg:tw-gap-16 lg:tw-px-8"
   >
     <div class="tw-w-full lg:tw-w-[40%]">
       <img

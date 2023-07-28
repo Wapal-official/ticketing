@@ -1,5 +1,5 @@
 <template>
-  <section class="tw-w-full tw-mx-auto tw-px-4 tw-py-8 md:tw-w-[80%]">
+  <section class="tw-w-full tw-mx-auto tw-px-4 tw-pt-20 tw-pb-14 md:tw-w-[80%]">
     <h1 class="tw-text-xl tw-pb-4">
       <strong
         >Terms and Disclaimer for Wapal (No code NFT Creator Studio)</strong

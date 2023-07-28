@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-pb-8 tw-w-full tw-min-h-screen tw-px-8">
+  <div class="tw-w-full tw-min-h-screen tw-px-8 tw-pt-32 tw-pb-14">
     <div class="tw-pb-8 tw-w-full tw-min-h-screen tw-px-8">
       <div class="tw-container tw-mx-auto">
         <v-tabs
