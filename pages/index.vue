@@ -1,9 +1,9 @@
 <template>
   <div class="">
     <landing-launch-countdown />
-    <section class="tw-py-4 2xl:tw-container tw-mx-auto">
+    <!-- <section class="tw-py-4 2xl:tw-container tw-mx-auto">
       <featured />
-    </section>
+    </section> -->
     <div>
       <landing-slider :collections="collections" :loading="loading" />
       <div class="tw-px-4 md:tw-px-16">
