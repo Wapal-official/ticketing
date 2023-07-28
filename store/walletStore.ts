@@ -235,7 +235,8 @@ export const actions = {
         candyMachineArguments.total_supply,
         [false, false, false],
         [false, false, false, false, false],
-        0,
+        candyMachineArguments.public_mint_limit,
+        ,
         "" + makeId(5),
       ],
     };
@@ -285,7 +286,7 @@ export const actions = {
         candyMachineArguments.total_supply,
         [false, false, false],
         [false, false, false, false, false],
-        0,
+        candyMachineArguments.public_mint_limit,
         false,
         "" + makeId(5),
       ],

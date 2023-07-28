@@ -373,7 +373,7 @@
               v-slot="{ errors }"
             >
               <input-text-field
-                v-model="public_mint_limit"
+                v-model="collection.public_mint_limit"
                 placeholder="Eg: 0"
                 label="Public Mint Limit"
                 :required="true"
@@ -1021,8 +1021,8 @@ export default {
         un: "",
         candy_id: process.env.CANDY_MACHINE_ID,
         phases: [{ name: "", mint_time: null }],
+        public_mint_limit: null,
       },
-      public_mint_limit: null,
       message: "",
       image: { name: null },
       imageErrorMessage: "",
@@ -1271,6 +1271,7 @@ export default {
         presale_mint_price: whitelist_price * 100000000,
         public_sale_mint_price: this.collection.public_sale_price * 100000000,
         total_supply: this.collection.supply,
+        public_mint_limit: this.collection.public_mint_limit,
       };
 
       const res = await this.$store.dispatch(
