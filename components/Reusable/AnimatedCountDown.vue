@@ -150,9 +150,26 @@ export default {
 
     this.launchDate = new Date(date.toUTCString());
 
-    console.log(this.launchDate);
+    this.launchDate = date;
 
-    this.startLaunchCountdown();
+    const interval = this.launchDate.getTime() - new Date().getTime();
+    if (interval > 0) {
+      this.startLaunchCountdown();
+    } else {
+      const lastMarginSecondsTens = -25.2;
+      const lastMarginSecondsOnes = -14;
+      const lastMarginHoursTens = -25.2;
+      const lastMarginHoursOnes = -25.2;
+
+      this.$refs.secondsTens.style.marginTop = lastMarginSecondsTens + "rem";
+      this.$refs.secondsOnes.style.marginTop = lastMarginSecondsOnes + "rem";
+
+      this.$refs.minutesTens.style.marginTop = lastMarginSecondsTens + "rem";
+      this.$refs.minutesOnes.style.marginTop = lastMarginSecondsOnes + "rem";
+
+      this.$refs.hoursTens.style.marginTop = lastMarginHoursTens + "rem";
+      this.$refs.hoursOnes.style.marginTop = lastMarginHoursOnes + "rem";
+    }
   },
   methods: {
     startLaunchCountdown() {
@@ -241,6 +258,8 @@ export default {
           this.$refs.hoursOnes.style.marginTop = lastMarginHoursOnes + "rem";
 
           clearInterval(this.launchCountdown);
+
+          location.reload();
         }
       }, 1000);
     },
