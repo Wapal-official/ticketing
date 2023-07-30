@@ -36,6 +36,7 @@
           'tw-cursor-not-allowed': disabled,
           '!tw-pl-6': $slots['prepend-icon'],
         }"
+        @keyup.enter="$emit('enterClicked')"
       >
       </v-text-field>
       <div
