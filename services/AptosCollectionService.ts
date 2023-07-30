@@ -1,4 +1,18 @@
 import { client, wallet, checkNetwork } from "@/store/walletStore";
+import Cookies from "js-cookie";
+let walletName: any = "";
+if (process.client) {
+  if (Cookies.get("wallet")) {
+    const wallet = JSON.parse(Cookies.get("wallet")!);
+    walletName = wallet.wallet;
+  }
+}
+
+const checkWalletConnected = async () => {
+  if (!wallet.isConnected()) {
+    await wallet.connect(walletName);
+  }
+};
 
 export const getCollectionDetails = async (
   candyMachineId: string,
@@ -21,9 +35,7 @@ export const updateWhitelistSaleTime = async (
   candyObject: string,
   presale_mint_time: string
 ) => {
-  // if (!wallet.isConnected()) {
-  //   await connectWallet(state.wallet.wallet);
-  // }
+  await checkWalletConnected();
 
   checkNetwork();
 
@@ -59,6 +71,7 @@ export const updatePublicSaleTime = async (
   candyObject: string,
   public_sale_time: string
 ) => {
+  await checkWalletConnected();
   checkNetwork();
 
   const public_sale_seconds = Math.floor(
@@ -91,6 +104,7 @@ export const updatePublicSalePrice = async (
   candyObject: string,
   public_sale_price: number
 ) => {
+  await checkWalletConnected();
   checkNetwork();
 
   const public_sale_lamports = (public_sale_price * Math.pow(10, 8)).toFixed(0);
@@ -121,6 +135,7 @@ export const updateWhitelistSalePrice = async (
   candyObject: string,
   whitelist_sale_price: number
 ) => {
+  await checkWalletConnected();
   checkNetwork();
 
   const whitelist_sale_lamports = (
@@ -153,6 +168,7 @@ export const updateTotalSupply = async (
   candyObject: string,
   total_supply: string
 ) => {
+  await checkWalletConnected();
   checkNetwork();
 
   const update_total_supply_script = {
@@ -181,6 +197,7 @@ export const updateCollection = async (
   candyObject: string,
   collection: any
 ) => {
+  await checkWalletConnected();
   checkNetwork();
 
   console.log("now", Math.floor(Date.now() / 1000));
@@ -244,6 +261,9 @@ export const mintMany = async ({
   proof: string;
   mint_limit: number;
 }) => {
+  await checkWalletConnected();
+  checkNetwork();
+
   let mint_many_script = {
     type: "entry_function_payload",
     function: `${candy_machine_id}::candymachine::mint_script_many`,
@@ -259,7 +279,6 @@ export const mintMany = async ({
       arguments: [candy_object, proof, mint_limit, amount],
     };
   }
-  console.log(mint_many_script);
 
   const transaction = await wallet.signAndSubmitTransaction(mint_many_script);
 
