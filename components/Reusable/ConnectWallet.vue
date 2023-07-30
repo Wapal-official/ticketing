@@ -34,7 +34,7 @@
       :timeout="3000"
       top
       centered
-      :color="defaultTheme.modalGray"
+      :color="defaultTheme.dark7"
     >
       <div
         class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2"

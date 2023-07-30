@@ -236,7 +236,6 @@ export const actions = {
         [false, false, false],
         [false, false, false, false, false],
         candyMachineArguments.public_mint_limit,
-        ,
         "" + makeId(5),
       ],
     };

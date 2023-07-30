@@ -256,6 +256,9 @@
                   <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
                 </template>
               </button-primary>
+              <div class="tw-text-sm tw-text-red-600" v-if="attributeError">
+                Please add at least 1 attribute
+              </div>
               <div
                 class="tw-w-full tw-flex tw-items-center tw-flex-row tw-justify-end"
               >
@@ -401,6 +404,7 @@ export default {
       file: null,
       imageError: false,
       imageErrorMessage: "",
+      attributeError: false,
       createEditionModal: false,
       progress: 0,
       showCloseModal: false,
@@ -584,22 +588,25 @@ export default {
 
         this.progress = 2;
 
+        const candyMachineArguments = {
+          collection_name: this.mint.colName,
+          collection_description: this.mint.colDesc,
+          baseuri: metaUri,
+          royalty_payee_address: this.walletAddress,
+          royalty_points_denominator: 1000,
+          royalty_points_numerator: this.mint.royalty * 10,
+          presale_mint_time: mintTime,
+          public_sale_mint_time: mintTime + 1,
+          presale_mint_price: 0,
+          public_sale_mint_price: 0,
+          total_supply: 1,
+          public_mint_limit: 0,
+        };
+
         //creating collection
         const candymachine = await this.$store.dispatch(
           "walletStore/createCandyMachine",
-          {
-            collection_name: this.mint.colName,
-            collection_description: this.mint.colDesc,
-            baseuri: metaUri,
-            royalty_payee_address: this.walletAddress,
-            royalty_points_denominator: 1000,
-            royalty_points_numerator: this.mint.royalty * 10,
-            presale_mint_time: mintTime,
-            public_sale_mint_time: mintTime + 1,
-            presale_mint_price: 0,
-            public_sale_mint_price: 0,
-            total_supply: 1,
-          }
+          candyMachineArguments
         );
 
         const resource_account = candymachine.resourceAccount;
@@ -641,6 +648,9 @@ export default {
       }
     },
     async validateFormForNextStep() {
+      this.attributeError = false;
+      this.socialError = false;
+      this.imageError = false;
       switch (this.formStepNumber) {
         case 1:
           const detailValidated = await this.$refs.detailForm.validate();
@@ -677,6 +687,11 @@ export default {
           this.formStepNumber++;
           break;
         case 3:
+          if (this.mint.attributes.length < 1) {
+            this.attributeError = true;
+            break;
+          }
+
           const validate = await this.$refs.attributeForm.validate();
 
           if (!validate) {
