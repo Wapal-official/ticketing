@@ -40,7 +40,7 @@ export default {
       if (!this.phase.mint_time) {
         return "TBD";
       }
-      return moment(this.phase.mint_time).format("MMM DD, hh:MM A");
+      return moment(this.phase.mint_time).format("MMM DD, hh:mm A");
     },
     getMintPrice() {
       if (isNaN(this.phase.mint_price)) {

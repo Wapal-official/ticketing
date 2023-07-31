@@ -196,7 +196,14 @@ export const editImage = async (draftId: string, data: any) => {
     config
   );
 
-  console.log(res);
+  return res;
+};
+
+export const updateCollection = async (collectionId: string, data: any) => {
+  const res = await publicRequest.patch(
+    `/api/collection/${collectionId}`,
+    data
+  );
 
   return res;
 };
