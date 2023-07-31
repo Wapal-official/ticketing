@@ -146,9 +146,9 @@ export default {
     };
   },
   mounted() {
-    const date = new Date("2023-08-01");
+    const date = new Date("2023-08-01 16:00 UTC");
 
-    this.launchDate = new Date(date.toUTCString());
+    this.launchDate = date;
 
     this.launchDate = date;
 
