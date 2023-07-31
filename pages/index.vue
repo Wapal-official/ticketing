@@ -1,8 +1,9 @@
 <template>
   <div class="">
-    <section class="tw-py-4 2xl:tw-container tw-mx-auto">
+    <landing-launch-countdown />
+    <!-- <section class="tw-py-4 2xl:tw-container tw-mx-auto">
       <featured />
-    </section>
+    </section> -->
     <div>
       <landing-slider :collections="collections" :loading="loading" />
       <div class="tw-px-4 md:tw-px-16">
@@ -26,10 +27,10 @@
           <loading v-else />
         </section>
 
-        <section class="tw-py-8 tw-container tw-mx-auto">
+        <!-- <section class="tw-py-8 tw-container tw-mx-auto">
           <landing-section-heading heading="Whitelist Opportunities" />
           <whitelist-opportunities />
-        </section>
+        </section> -->
 
         <!-- <section
           class="tw-py-8 tw-container tw-mx-auto"

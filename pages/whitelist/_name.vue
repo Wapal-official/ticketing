@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-px-4 tw-py-8 md:tw-px-16 md:tw-items-center lg:tw-items-start lg:tw-flex-row lg:tw-gap-16"
+      class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-px-4 tw-pt-20 tw-pb-14 md:tw-px-16 md:tw-items-center lg:tw-items-start lg:tw-flex-row lg:tw-gap-16"
       v-if="!loading"
     >
       <div

@@ -1,10 +1,10 @@
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
     <nav
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-8 tw-py-6 lg:tw-px-4 xl:!tw-px-24"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-8 tw-py-6 lg:tw-gap-0 lg:tw-px-4 xl:!tw-px-20"
     >
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 lg:tw-w-[20%]"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 lg:tw-w-fit"
       >
         <NuxtLink to="/" class="tw-min-w-[140px] tw-max-w-[140px]">
           <img :src="logo" alt="logo" />
@@ -48,14 +48,14 @@
         </div>
       </div>
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full lg:tw-w-[80%]"
+        class="tw-hidden tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center tw-flex-grow 1xl:tw-ml-20"
       >
-        <div
-          class="tw-hidden tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[60%]"
-        >
+        <div class="tw-w-[350px] tw-max-w-[350px]">
           <search-bar />
         </div>
-        <div class="tw-hidden lg:tw-flex tw-w-full lg:tw-w-[40%]">
+      </div>
+      <div>
+        <div class="tw-hidden lg:tw-flex tw-w-fit">
           <landing-menu />
         </div>
       </div>
