@@ -76,7 +76,7 @@ export const state = () => ({
 });
 
 export const mutations = {
-  setWallet(state: any, wallet: WalletAddress) {
+  setWallet(state: any, wallet: any) {
     state.wallet = wallet;
   },
   setProof(state: any, proof: any) {
@@ -123,8 +123,29 @@ export const actions = {
         await wallet.disconnect();
       });
 
-      wallet.addListener("accountChange", async (newAccount) => {
-        await dispatch("connectWallet", state.wallet.wallet);
+      wallet.addListener("accountChange", async (newAccount: any) => {
+        commit("setWallet", {
+          wallet: state.wallet.wallet,
+          walletAddress: newAccount?.address,
+          publicKey: Array.isArray(newAccount.publicKey)
+            ? newAccount?.publicKey[0]
+            : newAccount?.publicKey,
+          initializedAccountChange: true,
+        });
+
+        Cookies.set(
+          "wallet",
+          JSON.stringify({
+            wallet: state.wallet.wallet,
+            walletAddress: newAccount?.address,
+            publicKey: Array.isArray(newAccount.publicKey)
+              ? newAccount?.publicKey[0]
+              : newAccount?.publicKey,
+          }),
+          {
+            expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
+          }
+        );
 
         dispatch("userStore/disconnectUser", null, { root: true });
       });
@@ -236,7 +257,6 @@ export const actions = {
         [false, false, false],
         [false, false, false, false, false],
         candyMachineArguments.public_mint_limit,
-        ,
         "" + makeId(5),
       ],
     };

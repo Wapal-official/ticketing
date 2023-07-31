@@ -1,13 +1,13 @@
 <template>
   <div
-    class="tw-bg-dark-9 tw-px-8 tw-py-4 tw-text-white tw-text-center tw-flex tw-flex-col tw-items-center tw-justify-center"
+    class="tw-bg-dark-7 tw-px-8 tw-py-4 tw-text-white tw-text-center tw-flex tw-flex-col tw-items-center tw-justify-center"
   >
     <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end">
       <button class="tw-text-black tw-text-base" @click="close">
         <i class="bx bx-x !tw-text-dark-0 !tw-font-semibold tw-text-2xl"></i>
       </button>
     </div>
-    <p class="tw-text-sm md:tw-text-lg tw-font-normal tw-pb-4">
+    <p class="tw-text-sm md:tw-text-lg tw-font-normal tw-pb-4 tw-text-dark-0">
       {{ message }}
     </p>
     <button-primary @click="signMessage" title="Sign Message" />

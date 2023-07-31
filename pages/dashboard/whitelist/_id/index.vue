@@ -26,20 +26,19 @@
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-end"
       >
-        <button
+        <button-primary
           @click="gotoSetupWhitelistPage"
-          class="!tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
           :disabled="!setupWhitelistStatus"
-        >
-          Setup Whitelist
-        </button>
-        <button
-          class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
+          title="Setup Whitelist"
+          :bordered="true"
+        />
+        <button-primary
           @click="showSetWhitelistModal = true"
           :disabled="sendingDataToSetRoot"
-        >
-          Set Whitelist
-        </button>
+          :bordered="true"
+          title="
+          Set Whitelist"
+        />
       </div>
     </div>
     <table class="tw-w-full tw-text-wapal-gray" v-if="!loading">
@@ -81,24 +80,18 @@
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
     >
       <div
-        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-dark-7 tw-text-dark-0 tw-rounded"
       >
         <h3 class="tw-text-lg">Are you sure you want to set Whitelist?</h3>
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
         >
-          <button
-            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
-            @click="sendDataToSetRoot"
-          >
-            Yes
-          </button>
-          <button
-            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
+          <button-primary title="Yes" @click="sendDataToSetRoot" />
+          <button-primary
             @click="showSetWhitelistModal = false"
-          >
-            No
-          </button>
+            title="No"
+            :bordered="true"
+          />
         </div>
       </div>
     </v-dialog>

@@ -107,25 +107,25 @@
       </div>
 
       <div
-        class="tw-text-white tw-text-center tw-text-lg tw-w-full"
+        class="tw-text-dark-0 tw-text-center tw-text-lg tw-w-full"
         v-if="!checkImageUploaded"
       >
         Please Upload Images in image folder first
       </div>
       <v-dialog
         v-model="showUploadingDialog"
-        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
+        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
         :persistent="!uploadComplete"
       >
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-end"
           v-if="uploadComplete || balanceNotEnoughError.error"
         >
-          <v-icon class="!tw-text-white" @click="showUploadingDialog = false"
+          <v-icon class="!tw-text-dark-0" @click="showUploadingDialog = false"
             >mdi-close</v-icon
           >
         </div>
-        <h2 class="tw-text-lg tw-font-semibold">
+        <h2 class="tw-text-lg tw-font-semibold tw-text-dark-0">
           {{
             !uploadComplete ? "Sending Files To Server" : "Files Sent To Server"
           }}
@@ -165,7 +165,7 @@
       </v-dialog>
       <v-dialog
         v-model="showCSVUploadModal"
-        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
+        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
       >
         <dashboard-assets-import-CSV-modal
           :assetLength="folderInfo.assets.files.length"

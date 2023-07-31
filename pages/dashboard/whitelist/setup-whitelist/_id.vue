@@ -7,10 +7,9 @@
       ></DashboardBreadcrumb>
     </div>
     <h1 class="tw-text-xl tw-font-bold">Create Whitelist</h1>
-    <ValidationObserver v-slot="{ handleSubmit }">
-      <form
+    <ValidationObserver>
+      <div
         class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[60%]"
-        @submit.prevent="handleSubmit(submitWhitelist)"
       >
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -18,25 +17,12 @@
           rules="required"
           v-slot="{ errors }"
         >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Collection</label
-          >
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.name"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              inputmode="numeric"
-              disabled
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
+          <input-text-field
+            v-model="collection.name"
+            :disabled="true"
+            label="Collection"
+          />
+          <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -44,22 +30,13 @@
           rules="required|number"
           v-slot="{ errors }"
         >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >No. of Spots</label
-          >
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="whitelist.whitelist_spots"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-            ></v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
+          <input-text-field
+            v-model="whitelist.whitelist_spots"
+            label="No. of Spots"
+            placeholder="Eg 100"
+            :required="true"
+          />
+          <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -67,58 +44,36 @@
           v-slot="{ errors }"
           rules="twitterUsername"
         >
-          <label>Twitter Account To Follow (Twitter Username)</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="whitelist.twitter"
-              placeholder="Eg: wapal_official"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-            ></v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
+          <input-text-field
+            v-model="whitelist.twitter"
+            label="Twitter Account To Follow (Twitter Username)"
+            placeholder="Eg wapal_official"
+          />
+          <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="discord_server"
           v-slot="{ errors }"
         >
-          <label>Discord Server Name:</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="whitelist.discord_server_name"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-            ></v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
+          <input-text-field
+            v-model="whitelist.discord_server_name"
+            label="Discord Server Name"
+            placeholder="Eg Wapal"
+          />
+          <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           name="discord_id"
           v-slot="{ errors }"
         >
-          <label>Discord server ID:</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="whitelist.discord_server_id"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-            ></v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
+          <input-text-field
+            v-model="whitelist.discord_server_id"
+            label="Discord Server Id"
+            placeholder="Discord Server Id"
+          />
+          <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
         </ValidationProvider>
         <ValidationProvider
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -126,19 +81,12 @@
           rules="link"
           v-slot="{ errors }"
         >
-          <label>Discord server URL:</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="whitelist.discord_server_url"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-            ></v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
+          <input-text-field
+            v-model="whitelist.discord_server_url"
+            label="Discord Server Url"
+            placeholder="Discord Server Url"
+          />
+          <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
         </ValidationProvider>
         <div v-for="(role, index) in roles" :key="index">
           <div
@@ -149,34 +97,27 @@
               name="discord_role_name"
               v-slot="{ errors }"
             >
-              <label>Discord role name {{ `role ${index + 1}` }}:</label>
-              <div class="dashboard-text-field-border tw-w-full">
-                <v-text-field
-                  v-model="role.name"
-                  outlined
-                  single-line
-                  color="#fff"
-                  hide-details
-                  clearable
-                  class="dashboard-input"
-                ></v-text-field>
-              </div>
-              <div class="tw-text-red-600">{{ errors[0] }}</div>
+              <input-text-field
+                v-model="role.name"
+                :label="`Discord Role Name role ${index + 1}`"
+                placeholder="Role Name"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
             <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group tw-w-full"
               name="phase_name"
               v-slot="{ errors }"
             >
-              <label>Mint Phase:</label>
-              <reusable-auto-complete
+              <input-auto-complete
                 v-model="role.phase"
                 :items="phases"
                 itemValue="id"
                 placeholder="Select Mint Phase"
+                label="Mint Phase"
                 text="name"
               />
-              <div class="tw-text-red-600">{{ errors[0] }}</div>
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
           <ValidationProvider
@@ -184,39 +125,24 @@
             name="discord_role_id"
             v-slot="{ errors }"
           >
-            <label>Discord role id {{ `role ${index + 1}` }}:</label>
-            <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field
-                v-model="role.id"
-                outlined
-                single-line
-                color="#fff"
-                hide-details
-                clearable
-                class="dashboard-input"
-              ></v-text-field>
-            </div>
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
+            <input-text-field
+              v-model="role.id"
+              :label="`Discord role id role ${index + 1}`"
+              placeholder="Discord Role Id"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
           <div class="tw-w-half tw-text-left tw-pt-4">
-            <button
-              type="button"
-              class="tw-px-8 tw-py-2 tw-mb-2 tw-bg-[#FF36AB] tw-font-semibold tw-rounded tw-flex-row tw-items-center tw-gap-4"
+            <button-primary
               @click="removeRole(index)"
               v-if="index != 0"
-            >
-              Remove Role
-            </button>
+              title="Remove Role"
+            />
           </div>
         </div>
 
         <div class="tw-w-half tw-text-right">
-          <button
-            class="tw-px-8 tw-py-2 tw-bg-[#A0A0A0] tw-font-semibold tw-rounded tw-flex-row tw-items-center tw-gap-4"
-            @click.prevent="addRole()"
-          >
-            Add Role
-          </button>
+          <button-primary @click="addRole" :bordered="true" title="Add Role" />
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-center"
@@ -227,18 +153,14 @@
             rules="required"
             v-slot="{ errors }"
           >
-            <label
-              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-              >Whitelist Start Time</label
-            >
-            <div class="dashboard-text-field-border tw-w-full">
-              <date-picker
-                v-model="whitelist.whitelist_start"
-                type="datetime"
-                placeholder="Select Whitelist Start time"
-              ></date-picker>
-            </div>
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
+            <input-date-picker
+              v-model="whitelist.whitelist_start"
+              type="datetime"
+              label="Whitelist Start Time"
+              placeholder="Select Whitelist Start time"
+              :required="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
@@ -246,33 +168,27 @@
             rules="required|whitelistEnd:@whitelistSaleTime"
             v-slot="{ errors }"
           >
-            <label
-              class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-              >Whitelist End Time</label
-            >
-            <div class="dashboard-text-field-border tw-w-full">
-              <date-picker
-                v-model="whitelist.whitelist_end"
-                type="datetime"
-                placeholder="Select Whitelist End time"
-              ></date-picker>
-            </div>
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
+            <input-date-picker
+              v-model="whitelist.whitelist_end"
+              type="datetime"
+              label="Whitelist End Time"
+              placeholder="Select Whitelist End time"
+              :required="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
         </div>
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4"
         >
-          <gradient-border-button type="submit" :disabled="submitting">
-            <v-progress-circular
-              indeterminate
-              color="white"
-              v-if="submitting"
-            ></v-progress-circular>
-            Create
-          </gradient-border-button>
+          <button-primary
+            title="Create"
+            :loading="submitting"
+            :disabled="submitting"
+            @click="submitWhitelist"
+          />
         </div>
-      </form>
+      </div>
     </ValidationObserver>
   </div>
 </template>
@@ -281,11 +197,7 @@
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
 import { getCollection } from "@/services/CollectionService";
-import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
 import { createWhitelist } from "@/services/WhitelistService";
-
-import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/index.css";
 
 extend("required", {
   ...required,
@@ -368,8 +280,6 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
-    GradientBorderButton,
-    DatePicker,
   },
   data() {
     return {
@@ -463,25 +373,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-::v-deep .mx-input-wrapper,
-.mx-datepicker {
-  width: 100% !important;
-}
-
-::v-deep .mx-input {
-  width: 100% !important;
-  background: #0e0d0d !important;
-  border: none !important;
-  height: 50px !important;
-  color: #d9d9d9 !important;
-  font-size: 1em;
-  border-radius: 7px !important;
-}
-
-::v-deep .mx-icon-calendar,
-::v-deep .mx-icon-clear,
-::v-deep .mx-input::placeholder {
-  color: #d9d9d9 !important;
-}
-</style>

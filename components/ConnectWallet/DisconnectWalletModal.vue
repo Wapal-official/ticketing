@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-bg-dark-8 tw-px-8 tw-py-4 tw-text-wapal-gray tw-text-center tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6"
+    class="tw-bg-dark-7 tw-px-8 tw-py-4 tw-text-dark-0 tw-text-center tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6"
   >
     <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end">
       <button class="tw-text-dark-0 tw-text-base" @click="close">
