@@ -1,7 +1,7 @@
 <template>
   <v-tabs
     v-model="internalValue"
-    class="tw-w-full"
+    class="!tw-w-fit tw-group"
     background-color="transparent"
     slider-color="transparent"
   >
@@ -9,7 +9,7 @@
       v-for="(tab, index) in tabs"
       :key="tab"
       :ripple="false"
-      class="tw-px-6 tw-text-dark-0 tw-border-t tw-border-r tw-border-b tw-border-dark-3 tw-border-solid !tw-h-[40px] !tw-max-h-[40px] !tw-text-left !tw-capitalize !tw-text-base !tw-font-medium tw-transition-all tw-duration-150 tw-ease-linear 3xl:tw-text-lg hover:!tw-bg-white hover:!tw-text-black hover:!tw-border-white hover:!tw-font-semibold"
+      class="tw-px-6 tw-text-dark-0 tw-border-t tw-border-r tw-border-b tw-border-dark-3 tw-border-solid !tw-h-[40px] !tw-max-h-[40px] !tw-text-left !tw-capitalize !tw-text-base !tw-font-medium !tw-transition-all !tw-duration-200 !tw-ease-linear 3xl:tw-text-lg hover:!tw-bg-white hover:!tw-text-black hover:!tw-border-white hover:!tw-font-semibold group-hover:tw-bg-transparent group-hover:tw-text-dark-0 group-hover:tw-border-dark-3"
       :class="[
         { 'tw-rounded-l tw-border-l': index === 0 },
         { 'tw-rounded-r': getLastItem(index) },
@@ -47,7 +47,7 @@ export default {
 </script>
 <style scoped>
 .v-tab--active {
-  @apply !tw-text-black !tw-border-white !tw-bg-white !tw-font-semibold;
+  @apply tw-text-black tw-border-white tw-bg-white !tw-font-semibold;
 }
 
 .v-tab:hover {
