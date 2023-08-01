@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-w-screen tw-h-screen">
+  <div class="tw-w-screen tw-h-screen !tw-bg-black">
     <div class="tw-px-8 !lg:px-24 tw-pt-6">
       <NuxtLink to="/">
         <img :src="logoHorizontal" alt="logo" width="140px" />
@@ -9,26 +9,17 @@
       class="tw-w-full tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-px-4 md:tw-px-0"
     >
       <div
-        class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-py-8 tw-bg-[#001233] tw-rounded tw-w-full md:tw-w-1/2 lg:tw-w-1/3 xl:tw-w-1/4"
+        class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-py-8 tw-rounded tw-border tw-border-dark-6 tw-w-full md:tw-w-1/2 lg:tw-w-1/3 xl:tw-w-1/4"
       >
         <img :src="logo" alt="logo" width="165px" height="165px" />
         <ValidationObserver ref="inviteCode" class="tw-w-full">
           <ValidationProvider name="code" rules="required" v-slot="{ errors }">
-            <input
-              v-model="code"
-              class="tw-text-white tw-bg-[#0C224B] tw-px-4 tw-py-3 tw-rounded tw-w-full focus:tw-outline-none"
-              placeholder="Invite Code"
-            />
+            <input-text-field v-model="code" placeholder="Invite Code" />
 
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
         </ValidationObserver>
-        <button
-          @click="submitCode"
-          class="tw-bg-[#FF36AB] tw-text-white tw-w-full tw-rounded tw-py-2 tw-text-lg"
-        >
-          Submit
-        </button>
+        <button-primary @click="submitCode" title="Submit" :fullWidth="true" />
         <a
           href="https://docs.google.com/forms/d/e/1FAIpQLSdDhR7v1aepvJ8g_718yC8Zfi-P38rVaQP5x8mcMdhwfKLhNg/viewform"
           target="_blank"
@@ -48,8 +39,8 @@ import { required } from "vee-validate/dist/rules";
 
 import { submitVerificationCode } from "@/services/VerificationService";
 
-import logoHorizontal from "@/assets/img/logo/mainnet-beta.png";
-import logo from "@/assets/img/logo/mainnet-beta-vertical.png";
+import logoHorizontal from "@/assets/img/logo/logo.svg";
+import logo from "@/assets/img/logo/logo-vertical.png";
 
 extend("required", {
   ...required,

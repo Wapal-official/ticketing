@@ -33,7 +33,7 @@ export default {
     host: "0.0.0.0",
   },
   head: {
-    title: "Wapal | No Code NFT Creator Studio on Aptos",
+    title: "Leading NFT Launchpad on Aptos - Wapal",
     htmlAttrs: {
       lang: "en",
     },

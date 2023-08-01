@@ -24,11 +24,13 @@
           :class="{
             'tw-bg-utility-green': getLiveStatus,
             'tw-bg-utility-yellow': !getLiveStatus,
+            '!tw-bg-utility-red': soldOut,
           }"
         ></div>
-        <div class="tw-font-medium tw-text-[0.875rem]">
+        <div class="tw-font-medium tw-text-[0.875rem]" v-if="!soldOut">
           {{ getLiveStatus ? "Live" : "Upcoming" }}
         </div>
+        <div class="tw-font-medium tw-text-[0.875rem]" v-else>Soldout</div>
       </div>
     </div>
   </NuxtLink>
@@ -46,6 +48,7 @@ export default {
       totalSupply: 0,
       minted: 0,
       imageNotFound,
+      soldOut: false,
     };
   },
   async mounted() {
@@ -62,6 +65,18 @@ export default {
 
       this.totalSupply = res.total_supply;
       this.minted = res.minted;
+
+      if (this.collection._id === "642bf277c10560ca41e179fa") {
+        this.totalSupply = 777;
+      } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
+        this.totalSupply = 222;
+      } else if (this.collection._id === "64686db77db14461740bab0f") {
+        this.totalSupply = 355;
+      }
+
+      if (this.totalSupply === this.minted) {
+        this.soldOut = true;
+      }
     } catch {
       this.totalSupply = 0;
       this.minted = 0;
