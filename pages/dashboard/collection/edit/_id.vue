@@ -138,7 +138,9 @@
                 placeholder="Whitelist Sale Price"
                 v-model="editCollection.whitelistPrice"
               >
-                <template #prepend-icon> </template>
+                <template #append-icon>
+                  <img :src="aptIcon" alt="apt icon" />
+                </template>
               </input-text-field>
               <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
             </ValidationProvider>
@@ -228,7 +230,9 @@
                 placeholder="Public Sale Price"
                 v-model="editCollection.publicSalePrice"
               >
-                <template #prepend-icon> </template>
+                <template #append-icon>
+                  <img :src="aptIcon" alt="apt icon" />
+                </template>
               </input-text-field>
               <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
             </ValidationProvider>
@@ -258,6 +262,8 @@ import {
 
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import moment from "moment";
+
+import aptIcon from "@/assets/img/aptBlack.svg";
 
 extend("date", {
   validate(value) {
@@ -319,6 +325,7 @@ export default {
       editingWhitelistSaleTime: false,
       editingPublicSalePrice: false,
       editingPublicSaleTime: false,
+      aptIcon,
     };
   },
   async mounted() {

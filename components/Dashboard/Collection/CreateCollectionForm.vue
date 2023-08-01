@@ -495,7 +495,7 @@
               mint_time: collection.whitelist_sale_time,
               mint_price: collection.whitelist_price,
             }"
-             v-if="whitelistEnabled"
+            v-if="whitelistEnabled"
           />
           <nft-mint-phase-box
             :phase="{

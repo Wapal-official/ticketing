@@ -19,12 +19,12 @@
       </template>
     </input-text-field>
     <i
-      class="bx bx-x !tw-flex !tw-text-black !tw-text-2xl !tw-absolute !tw-right-[1%] tw-peer peer-focus:!tw-text-wapal-gray md:!tw-hidden"
+      class="bx bx-x !tw-flex !tw-text-dark-2 !tw-text-2xl !tw-absolute !tw-right-[1%] tw-peer peer-focus:!tw-text-wapal-gray md:!tw-hidden"
       @click="closeSearchBar"
       v-if="searchInput.length === 0"
     ></i>
     <div
-      class="tw-absolute tw-top-[110%] tw-bg-modal-gray tw-rounded tw-py-4 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-z-50"
+      class="tw-absolute tw-top-[110%] tw-bg-dark-7 tw-rounded tw-py-4 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-z-50"
       v-if="showSearchResults"
     >
       <div
