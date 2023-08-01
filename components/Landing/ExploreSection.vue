@@ -25,7 +25,7 @@ import { getUpcomingAuctions } from "~/services/AuctionService";
 export default {
   data() {
     return {
-      tabs: ["Featured", "Drops", "Editions", "Auctions", "Live"],
+      tabs: ["Featured", "Drops", "Editions", "Auctions"],
       tabNumber: 0,
       collections: [],
       loading: true,
