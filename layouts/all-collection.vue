@@ -12,10 +12,7 @@
   </default-layout>
 </template>
 <script lang="ts">
-import {
-  getCollectionByUsername,
-  getFeaturedCollection,
-} from "@/services/CollectionService";
+import { getFeaturedCollection } from "@/services/CollectionService";
 import DefaultLayout from "@/layouts/default.vue";
 export default {
   layout: "default",
@@ -39,9 +36,9 @@ export default {
     },
   },
   async mounted() {
-    const liveRes = await getCollectionByUsername("celestials");
+    const res = await getFeaturedCollection();
 
-    this.collection = liveRes.data.collection[0];
+    this.collection = res[0];
 
     if (this.$route.path === "/latest-collection") {
       this.tab = 0;
