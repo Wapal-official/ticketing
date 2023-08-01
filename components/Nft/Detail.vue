@@ -924,7 +924,7 @@ export default {
 
       const baseURL = process.env.baseURL?.includes("staging")
         ? "https://staging.wapal.io"
-        : "https://wapal.io";
+        : "https://launchpad.wapal.io";
 
       clipboardData.writeText(`${baseURL}/nft/${this.collection.username}`);
 
@@ -935,7 +935,7 @@ export default {
     shareOnTwitter() {
       const baseURL = process.env.baseURL?.includes("staging")
         ? "https://staging.wapal.io"
-        : "https://wapal.io";
+        : "https://launchpad.wapal.io";
 
       const twitterURL = "https://twitter.com";
 
