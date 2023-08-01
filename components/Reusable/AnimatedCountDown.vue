@@ -1,4 +1,5 @@
 <template>
+  <div class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-flex-wrap tw-w-full">
   <div class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12">
     <div
       class="tw-flex tw-flex-col tw-items-start tw-justify-end tw-gap-2 tw-w-fit"
@@ -136,6 +137,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 <script lang="ts">
 export default {
