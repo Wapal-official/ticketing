@@ -1393,7 +1393,7 @@ export default {
       };
 
       const res = await this.$store.dispatch(
-        "walletStore/createCandyMachineV2",
+        "walletStore/createCandyMachine",
         candyMachineArguments
       );
 

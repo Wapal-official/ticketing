@@ -22,7 +22,8 @@ if (API_URL.includes("staging")) {
 let NODE_URL = `https://aptos-${NETWORK}.nodereal.io/v1/${APTOS_API_KEY}/v1`;
 
 if (NETWORK === "mainnet") {
-  NODE_URL = "https://fullnode.mainnet.wapal.io/v1";
+  // NODE_URL = "https://fullnode.mainnet.wapal.io/v1";
+  NODE_URL = `https://fullnode.mainnet.aptoslabs.com/v1`;
 }
 
 export default {
