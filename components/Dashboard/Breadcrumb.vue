@@ -26,7 +26,7 @@ export default {
 
 .theme--dark.v-breadcrumbs .v-breadcrumbs__divider,
 .theme--dark.v-breadcrumbs .v-breadcrumbs__item--disabled {
-  @apply !tw-text-wapal-pink;
+  @apply !tw-text-primary-1;
 }
 
 .v-breadcrumbs {

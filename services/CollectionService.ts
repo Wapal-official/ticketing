@@ -41,7 +41,7 @@ export const createCollection = async (formData: any) => {
 
 export const getCollectionsOfUser = async (userId: string) => {
   const res = await axios.get(
-    `${process.env.baseURL}/api/collection/user?page=1&limit=100&user_id=${userId}`
+    `${process.env.baseURL}/api/collection/user?page=1&limit=20&user_id=${userId}`
   );
 
   return res;
@@ -74,8 +74,7 @@ export const getCollectionByUsername = async (username: string) => {
 
 export const getFeaturedCollection = async () => {
   const res = await axios.get(`${process.env.baseURL}/api/collection/featured`);
-
-  return res;
+  return res.data.collection;
 };
 
 export const getLiveCollections = async (page: number, limit: number) => {
@@ -197,7 +196,14 @@ export const editImage = async (draftId: string, data: any) => {
     config
   );
 
-  console.log(res);
+  return res;
+};
+
+export const updateCollection = async (collectionId: string, data: any) => {
+  const res = await publicRequest.patch(
+    `/api/collection/${collectionId}`,
+    data
+  );
 
   return res;
 };

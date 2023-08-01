@@ -1,37 +1,45 @@
 <template>
   <div class="tw-py-4">
-    <v-row v-if="nfts.length > 0" justify="start">
-      <v-col
+    <div
+      v-if="nfts.length > 0"
+      class="tw-grid tw-grid-cols-1 tw-gap-6 md:tw-grid-cols-2 lg:tw-grid-cols-3 xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
+    >
+      <div
+        class="tw-h-full tw-rounded tw-w-[250px] tw-max-w-[250px] tw-group tw-cursor-pointer"
         v-for="(item, i) in nfts"
         :key="i"
-        cols="12"
-        lg="3"
-        md="6"
-        align="center"
+        @click="$router.push(`/dashboard/auction/${item.name}`)"
       >
-        <v-card
-          tile
-          @click="$router.push(`/dashboard/auction/${item.name}`)"
-          color="transparent"
+        <div
+          class="tw-rounded-t tw-overflow-hidden tw-w-[250px] tw-max-w-[250px]"
         >
-          <v-img :src="item.image" class="tw-h-[350px]"></v-img>
+          <img
+            :src="item.image"
+            :alt="item.name"
+            :onerror="imageNotFound()"
+            class="tw-rounded-t tw-w-[250px] tw-h-[250px] tw-object-cover tw-transition-all tw-duration-200 tw-ease-linear tw-group group-hover:tw-scale-125"
+          />
+        </div>
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 tw-p-4 tw-border tw-border-solid tw-border-t-0 tw-border-dark-6 tw-rounded-b"
+        >
           <div
-            class="tw-w-full tw-py-4 tw-border-l tw-text-left tw-border-r tw-border-b tw-border-wapal-pink"
+            class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
           >
-            <h4
-              class="tw-w-full tw-px-4 tw-flex tw-flex-row tw-items-center tw-justify-between"
-            >
-              {{ item.name }}
-              <span class="tw-text-wapal-pink tw-pl-2">{{
-                item.ownedNumber
-              }}</span>
-            </h4>
+            <h2 class="tw-text-lg tw-font-bold">{{ item.name }}</h2>
+            <i class="bx bxs-badge-check tw-text-sm tw-text-primary-1"></i>
           </div>
-        </v-card>
-      </v-col>
-    </v-row>
-    <v-row no-gutters v-else class="py-10" justify="center">
-      <p v-if="end">No nfts</p>
+          <div>{{ item.ownedNumber }}</div>
+        </div>
+      </div>
+    </div>
+    <v-row no-gutters v-else>
+      <dashboard-no-collection
+        message="You Do Not Have Any NFTs"
+        buttonTitle="Mint and Add to Auction"
+        @click="$router.push('/dashboard/mint-auction')"
+        v-if="end"
+      />
       <ReusableLoading v-else />
     </v-row>
     <v-card
@@ -53,6 +61,7 @@ import {
   getOwnedCollectionsOfUser,
   getNumberOfTokensInOwnedCollectionOfUser,
 } from "@/services/AuctionService";
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   data() {
     return {
@@ -62,6 +71,7 @@ export default {
       offset: 0,
       page: 0,
       limit: 20,
+      imageNotFound,
     };
   },
   mounted() {

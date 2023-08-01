@@ -89,8 +89,4 @@ export default {
 .swiper-wrapper {
   transition-timing-function: linear;
 }
-
-.swiper {
-  overflow: visible;
-}
 </style>

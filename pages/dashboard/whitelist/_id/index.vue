@@ -26,30 +26,33 @@
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-end"
       >
-        <button
+        <button-primary
           @click="gotoSetupWhitelistPage"
-          class="!tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
           :disabled="!setupWhitelistStatus"
-        >
-          Setup Whitelist
-        </button>
-        <button
-          class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
+          title="Setup Whitelist"
+          :bordered="true"
+        />
+        <button-primary
           @click="showSetWhitelistModal = true"
           :disabled="sendingDataToSetRoot"
-        >
-          Set Whitelist
-        </button>
+          :bordered="true"
+          title="
+          Set Whitelist"
+        />
       </div>
     </div>
     <table class="tw-w-full tw-text-wapal-gray" v-if="!loading">
-      <thead class="tw-border-b tw-border-[#ff36ab33]">
-        <th class="tw-text-left tw-text-lg tw-py-7 tw-px-4">Phase Name</th>
-        <th class="tw-text-left tw-text-lg tw-py-7 tw-px-4">Mint Date</th>
+      <thead class="">
+        <th class="default-data-table-header tw-text-left !tw-py-3 tw-px-3">
+          Phase Name
+        </th>
+        <th class="default-data-table-header tw-text-right !tw-py-3 tw-px-3">
+          Mint Date
+        </th>
       </thead>
       <tbody>
         <tr
-          class="tw-border-b tw-border-[#ff36ab33] tw-transition tw-duration-200 tw-ease-linear tw-cursor-pointer hover:tw-bg-black/80"
+          class="tw-border-b !tw-border-b-dark-6 tw-transition tw-duration-200 tw-ease-linear tw-cursor-pointer hover:tw-bg-black/80"
           v-for="(phase, index) in collection.phases"
           :key="index"
           @click="
@@ -58,37 +61,37 @@
             )
           "
         >
-          <td class="tw-py-8 tw-px-4 tw-capitalize">{{ phase.name }}</td>
-          <td class="tw-py-8 tw-px-4">
+          <td
+            class="tw-py-3 tw-px-3 tw-capitalize tw-text-white tw-font-medium tw-text-left"
+          >
+            {{ phase.name }}
+          </td>
+          <td
+            class="tw-py-3 tw-px-3 tw-text-white tw-font-medium tw-text-right"
+          >
             {{ getFormattedDate(phase.mint_time) }}
           </td>
         </tr>
       </tbody>
     </table>
-    <loading v-else />
+    <reusable-loading v-else />
     <v-dialog
       v-model="showSetWhitelistModal"
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
     >
       <div
-        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-dark-7 tw-text-dark-0 tw-rounded"
       >
         <h3 class="tw-text-lg">Are you sure you want to set Whitelist?</h3>
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
         >
-          <button
-            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
-            @click="sendDataToSetRoot"
-          >
-            Yes
-          </button>
-          <button
-            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
+          <button-primary title="Yes" @click="sendDataToSetRoot" />
+          <button-primary
             @click="showSetWhitelistModal = false"
-          >
-            No
-          </button>
+            title="No"
+            :bordered="true"
+          />
         </div>
       </div>
     </v-dialog>
@@ -103,20 +106,18 @@
         <div
           class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-center"
         >
-          <loading />
+          <reusable-loading />
         </div>
       </div>
     </v-dialog>
   </div>
 </template>
 <script lang="ts">
-import Loading from "@/components/Reusable/Loading.vue";
-
 import moment from "moment";
 import { getCollectionByUsername } from "@/services/CollectionService";
 import { getWhitelistByUsername, setRoot } from "@/services/WhitelistService";
 export default {
-  components: { Loading },
+  components: {},
   layout: "dashboard",
   data() {
     return {

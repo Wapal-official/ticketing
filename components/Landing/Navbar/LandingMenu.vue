@@ -1,13 +1,13 @@
 <template>
   <div
-    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-text-base tw-gap-4 lg:tw-flex-row lg:!tw-justify-end lg:tw-items-center xl:tw-gap-8"
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-text-base tw-gap-4 lg:tw-flex-row lg:!tw-justify-end lg:tw-items-center"
   >
     <div class="tw-flex tw-w-full lg:tw-hidden">
       <v-list-group
         :ripple="false"
         id="explore-list-group"
         v-model="showExploreMenu"
-        active-class="!tw-text-wapal-pink "
+        active-class="!tw-text-primary-1 "
         class="!tw-text-white tw-w-full"
       >
         <template
@@ -17,11 +17,19 @@
         >
           <span class="tw-w-full"> Explore</span>
         </template>
-        <explore-list-item name="All NFT" link="/explore/all" @close="close" />
-        <explore-list-item name="Live" link="/explore/live" @close="close" />
+        <explore-list-item
+          name="All NFT"
+          link="/latest-collection"
+          @close="close"
+        />
+        <explore-list-item
+          name="Live"
+          link="/latest-collection"
+          @close="close"
+        />
         <explore-list-item
           name="Upcoming"
-          link="/explore/upcoming"
+          link="/upcoming-collection"
           @close="close"
         />
         <explore-list-item
@@ -32,13 +40,12 @@
         />
       </v-list-group>
     </div>
-    <connect-wallet @close="close" class="tw-mt-8 lg:tw-mt-0" />
-    <button
-      class="tw-rounded tw-bg-[#FF36AB] tw-text-white tw-px-8 tw-py-2"
+    <button-primary
       @click="checkWalletStatus"
-    >
-      Launch
-    </button>
+      title="Launch"
+      :bordered="true"
+    />
+    <connect-wallet @close="close" class="tw-mt-8 lg:tw-mt-0" />
     <v-dialog
       v-model="showConnectWalletModal"
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"

@@ -1,27 +1,16 @@
 <template>
-  <div class="tw-text-sm">
-    <gradient-border-button
-      @click.native="connectWallet"
-      v-if="!walletStore.wallet"
+  <div>
+    <button-primary
+      @click="disconnectWallet"
+      :title="displayFormattedWalletAddress"
+      :bordered="true"
+      v-if="walletStore.wallet"
     >
-      Connect Wallet
-    </gradient-border-button>
-
-    <gradient-border-button @click.native="disconnectWallet" v-else
-      ><div
-        class="tw-text-xs tw-w-full tw-flex tw-flex-row tw-justify-center tw-gap-2 tw-rounded-md tw-font-medium tw-relative tw-overflow-hidden md:tw-items-start lg:tw-items-center"
-      >
-        <client-only>
-          <v-icon class="!tw-text-wapal-pink">mdi-account</v-icon></client-only
-        >
-        <span class="tw-text-lg lg:tw-text-sm md:tw-hidden lg:tw-flex">{{
-          displayFormattedWalletAddress
-        }}</span>
-        <span class="tw-text-lg tw-hidden md:tw-flex lg:tw-hidden">{{
-          displayFormattedWalletAddressForMediumScreens
-        }}</span>
-      </div>
-    </gradient-border-button>
+      <template #prepend-icon>
+        <i class="bx bxs-user !tw-text-primary-1 tw-text-xl tw-pr-[0.62em]"></i>
+      </template>
+    </button-primary>
+    <button-primary @click="connectWallet" title="Connect Wallet" v-else />
     <v-dialog
       v-model="showConnectWalletDialog"
       content-class="!tw-w-full md:!tw-w-1/2 xl:!tw-w-1/3"
@@ -45,7 +34,7 @@
       :timeout="3000"
       top
       centered
-      :color="defaultTheme.modalGray"
+      :color="defaultTheme.dark7"
     >
       <div
         class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2"
@@ -105,16 +94,16 @@ export default {
   computed: {
     displayFormattedWalletAddress() {
       return this.walletStore.walletAddress
-        ? this.walletStore.walletAddress.substring(0, 8) +
+        ? this.walletStore.walletAddress.substring(0, 5) +
             "..." +
-            this.walletStore.walletAddress.slice(-3)
+            this.walletStore.walletAddress.slice(-2)
         : "";
     },
     displayFormattedWalletAddressForMediumScreens() {
       return this.walletStore.walletAddress
-        ? this.walletStore.walletAddress.substring(0, 15) +
+        ? this.walletStore.walletAddress.substring(0, 5) +
             "..." +
-            this.walletStore.walletAddress.slice(-10)
+            this.walletStore.walletAddress.slice(-2)
         : "";
     },
     walletStore() {

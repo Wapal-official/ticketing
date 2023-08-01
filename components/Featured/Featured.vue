@@ -1,5 +1,143 @@
 <template>
   <div
+    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[7em] lg:tw-pb-0 lg:tw-px-28 1xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px] 2xl:tw-pt-[7.5em]"
+  >
+    <div
+      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-start xl:tw-gap-[4.5em]"
+    >
+      <img
+        :src="collection.image"
+        :alt="collection.name"
+        :onerror="imageNotFound()"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
+      />
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
+      >
+        <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
+          {{ collection.name }}
+        </h1>
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+        >
+          <a
+            :href="collection.discord"
+            target="_blank"
+            v-if="collection.discord"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+          >
+            <i
+              class="bx bxl-discord-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
+            ></i>
+          </a>
+          <a
+            :href="collection.twitter"
+            target="_blank"
+            v-if="collection.twitter"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+          >
+            <i
+              class="bx bxl-twitter tw-text-lg tw-transition tw-duration-200 tw-ease-linear tw-ml-0.5"
+            ></i>
+          </a>
+          <a
+            :href="collection.instagram"
+            target="_blank"
+            v-if="collection.instagram"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+          >
+            <i
+              class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
+            ></i>
+          </a>
+          <div class="tw-relative">
+            <button
+              class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
+              @click="showShareBox = !showShareBox"
+            >
+              <i
+                class="bx bxs-share-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear !tw-text-white"
+              ></i>
+            </button>
+            <div
+              class="tw-absolute tw-z-20 tw-overflow-hidden tw-bg-dark-6 tw-top-[110%] tw-w-[200px] tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-py-4"
+              v-if="showShareBox"
+              v-click-outside="hideShareBox"
+            >
+              <button
+                class="tw-w-full tw-px-4 tw-py-4 tw-relative tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 before:tw-w-full before:tw-h-full before:tw-left-0 before:tw-bg-white/20 before:tw-opacity-0 before:tw-absolute hover:before:tw-opacity-[0.08]"
+                @click="copyLink"
+              >
+                <i class="bx bx-copy tw-text-lg"></i>
+                <span>Copy Link</span>
+              </button>
+              <button
+                class="tw-w-full tw-px-4 tw-py-4 tw-relative tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 before:tw-w-full before:tw-h-full before:tw-left-0 before:tw-bg-white/20 before:tw-opacity-0 before:tw-absolute hover:before:tw-opacity-[0.08]"
+                @click="shareOnTwitter"
+              >
+                <i class="bx bxl-twitter tw-text-lg"></i>
+                <span>Share on Twitter</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="tw-text-dark-0 tw-pb-4">
+          {{ collection.description }}
+        </div>
+        <div
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
+          v-if="showLiveInTimer"
+        >
+          <h3 class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm">
+            {{ currentSale.name }} Starts In
+          </h3>
+          <count-down :startTime="currentSale.mint_time" />
+        </div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+          v-else
+        >
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+          >
+            <div
+              class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
+            >
+              <div class="tw-text-white/70">
+                {{ resource.minted }}/{{ resource.total_supply }} Minted
+              </div>
+              <div>Price {{ getCurrentPrice }} APT</div>
+            </div>
+            <div
+              class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+            >
+              <div
+                class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
+                ref="mintProgress"
+              ></div>
+            </div>
+          </div>
+          <button-primary
+            :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
+            :fullWidth="true"
+            :disabled="minting || collection.status.sold_out"
+            @click="mintCollection"
+          />
+        </div>
+      </div>
+    </div>
+    <v-dialog
+      v-model="showConnectWalletModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <connect-wallet-modal
+        message="Please Connect your wallet to Mint"
+        @closeModal="showConnectWalletModal = false"
+        @walletConnected="displayWalletConnectedMessage"
+      />
+    </v-dialog>
+  </div>
+  <!-- <div
     class="tw-w-full tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-px-8 tw-pb-8 tw-pt-4 lg:tw-gap-16 lg:tw-flex-row lg:tw-justify-start xl:tw-w-4/5"
     v-if="!loading"
   >
@@ -190,56 +328,13 @@
         </div>
       </div>
     </div>
-    <v-dialog
-      v-model="showConnectWalletModal"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
-    >
-      <connect-wallet-modal
-        message="Please Connect your wallet to Mint"
-        @closeModal="showConnectWalletModal = false"
-        @walletConnected="displayWalletConnectedMessage"
-      />
-    </v-dialog>
-  </div>
-  <div
-    class="tw-w-[95%] tw-mx-auto tw-px-8 tw-py-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-16 lg:tw-flex-row lg:tw-justify-start"
-    v-else
-  >
-    <div
-      class="tw-w-full lg:tw-w-[40%] tw-bg-wapal-gray tw-min-h-[400px] tw-rounded-lg tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
-    ></div>
-    <div
-      class="tw-px-8 tw-py-8 tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 lg:tw-w-[60%] tw-bg-[#001233] banner-shadow"
-    >
-      <div
-        class="tw-py-4 tw-bg-wapal-gray tw-w-[75%] tw-rounded tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
-      ></div>
-      <div
-        class="tw-py-4 tw-bg-wapal-gray tw-w-[75%] tw-rounded tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
-      ></div>
-      <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full"
-      >
-        <div
-          class="tw-py-16 tw-bg-wapal-gray tw-w-full tw-rounded tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
-        ></div>
-        <div
-          class="tw-py-16 tw-bg-wapal-gray tw-w-full tw-rounded tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
-        ></div>
-      </div>
-    </div>
-  </div>
+  </div> -->
 </template>
 <script lang="ts">
-import {
-  getCollectionByUsername,
-  getFeaturedCollection,
-  setSoldOut,
-} from "@/services/CollectionService";
-import CountDown from "@/components/Reusable/CountDown.vue";
-
+import { setSoldOut } from "@/services/CollectionService";
+import imageNotFound from "@/utils/imageNotFound";
 export default {
-  components: { CountDown },
+  props: { propCollection: { type: Object } },
   data() {
     return {
       loading: true,
@@ -257,6 +352,7 @@ export default {
         image: "",
         twitter: "",
         discord: "",
+        instagram: "",
         isVerified: false,
         status: { sold_out: false },
       },
@@ -267,12 +363,15 @@ export default {
       showEndInTimer: false,
       minting: false,
       showConnectWalletModal: false,
-      resource: null,
+      resource: { minted: 0, total_supply: 0 },
       progressInterval: null,
       phases: [],
       currentSale: { name: "", mint_time: "", mint_price: 0 },
       nextSale: { name: "", mint_time: "", mint_price: 0 },
       phaseCounter: 0,
+      showShareBox: false,
+      collectionLink: "",
+      imageNotFound,
     };
   },
   methods: {
@@ -409,6 +508,12 @@ export default {
           }
         );
 
+        this.resource.mintedPercent = Math.floor(
+          (this.resource.minted / this.resource.total_supply) * 100
+        );
+
+        this.$refs.mintProgress.style.width = this.resource.mintedPercent + "%";
+
         if (
           this.resource.minted == this.resource.total_supply &&
           !this.collection.status.sold_out
@@ -469,6 +574,43 @@ export default {
         ? this.phases[this.phaseCounter - 1]
         : this.phases[0];
     },
+    async copyLink(event: any) {
+      const clipboardData =
+        event.clipboardData ||
+        window.clipboardData ||
+        event.originalEvent?.clipboardData ||
+        navigator.clipboard;
+
+      const baseURL = process.env.baseURL?.includes("staging")
+        ? "https://staging.wapal.io"
+        : "https://wapal.io";
+
+      clipboardData.writeText(`${baseURL}/nft/${this.collection.username}`);
+
+      this.$toast.showMessage({ message: "Link Copied" });
+
+      this.showShareBox = false;
+    },
+    shareOnTwitter() {
+      const baseURL = process.env.baseURL?.includes("staging")
+        ? "https://staging.wapal.io"
+        : "https://wapal.io";
+
+      const twitterURL = "https://twitter.com";
+
+      const text = "Check out this collection on Wapal";
+
+      const link = `${baseURL}/nft/${this.collection.username}`;
+
+      const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}&via=wapal_official`;
+
+      window.open(twitterShareLink, "_blank");
+
+      this.showShareBox = false;
+    },
+    hideShareBox() {
+      this.showShareBox = false;
+    },
   },
   computed: {
     getCurrentPrice() {
@@ -522,9 +664,7 @@ export default {
   },
   async mounted() {
     try {
-      const res = await getFeaturedCollection();
-
-      this.collection = res.data.collection;
+      this.collection = this.propCollection;
 
       this.setPhases();
 
@@ -552,6 +692,12 @@ export default {
         }
       );
 
+      this.resource.mintedPercent = Math.floor(
+        (this.resource.minted / this.resource.total_supply) * 100
+      );
+
+      this.$refs.mintProgress.style.width = this.resource.mintedPercent + "%";
+
       if (
         this.resource.minted == this.resource.total_supply &&
         !this.collection.status.sold_out
@@ -573,4 +719,8 @@ export default {
   },
 };
 </script>
-<style></style>
+<style scoped>
+.featured {
+  height: calc(100vh - 40px);
+}
+</style>

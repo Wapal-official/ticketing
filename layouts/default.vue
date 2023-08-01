@@ -1,11 +1,9 @@
 <template>
-  <v-app class="landing-background tw-w-full tw-overflow-hidden tw-relative">
+  <v-app class="!tw-bg-dark-9 tw-w-full tw-overflow-hidden tw-relative">
     <div>
-      <Navbar
-        @landingMenuToggled="toggleMainContainer"
-        class="tw-absolute tw-top-0 tw-left-0"
-      />
-      <Nuxt :class="mainClass" />
+      <Navbar @landingMenuToggled="toggleMainContainer" />
+      <Nuxt :class="mainClass" v-if="!$slots.default" />
+      <slot></slot>
       <wapal-footer :class="mainClass" />
     </div>
     <toast />

@@ -66,9 +66,46 @@
         </div>
       </v-menu> -->
       <div
-        class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center"
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center md:tw-justify-between"
       >
-        <form @submit.prevent="">
+        <div class="tw-relative tw-w-full md:tw-w-fit">
+          <button-primary
+            :bordered="true"
+            title="Role"
+            @click="showRoleFilter = !showRoleFilter"
+          >
+            <template #append-icon>
+              <i
+                class="bx bx-chevron-down tw-text-xl tw-text-white tw-pl-16"
+              ></i>
+            </template>
+          </button-primary>
+          <div
+            class="tw-absolute tw-w-full tw-top-[110%] tw-rounded tw-border tw-border-dark-4 tw-bg-dark-8 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
+            v-if="showRoleFilter"
+          >
+            <input-text-field v-model="role" placeholder="Role" />
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+            >
+              <button class="tw-text-white tw-uppercase tw-text-xs">
+                Clear
+              </button>
+              <button
+                class="tw-bg-primary-1 tw-px-6 tw-py-2 tw-text-xs tw-text-white tw-rounded"
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="tw-w-full md:tw-w-[380px] xl:tw-w-[424px]">
+          <input-text-field
+            v-model="search"
+            placeholder="Search Wallet Address"
+          />
+        </div>
+        <form @submit.prevent="" class="tw-w-full md:tw-w-fit">
           <label
             class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
           >
@@ -76,20 +113,27 @@
               type="file"
               class="tw-invisible tw-w-0 tw-h-0 disabled:tw-cursor-not-allowed"
               @change="setCSVFile"
+              ref="csv"
             />
-            <div
-              class="tw-bg-wapal-pink tw-rounded tw-px-8 tw-py-2 disabled:tw-cursor-not-allowed"
+            <button-primary
+              :bordered="true"
+              title="Import CSV"
+              @click="showFileSelectionDialog"
             >
-              Import CSV
-            </div>
+              <template #prepend-icon>
+                <i class="bx bx-import tw-text-xl tw-text-white tw-pr-2"></i>
+              </template>
+            </button-primary>
           </label>
         </form>
       </div>
     </div>
-    <div
-      class="tw-rounded tw-w-full tw-py-4 tw-px-4 tw-border-[3px] tw-border-wapal-secondary-blue tw-my-4"
-    >
-      <v-data-table
+    <div class="tw-rounded tw-w-full tw-py-4 tw-my-4">
+      <dashboard-collection-table
+        :headers="headers"
+        :items="paginatedWhitelistEntries"
+      />
+      <!-- <v-data-table
         :headers="headers"
         :items="paginatedWhitelistEntries"
         :items-per-page="5"
@@ -124,15 +168,15 @@
             </tr>
           </tbody>
         </template>
-      </v-data-table>
-      <loading v-if="loading" />
+      </v-data-table> -->
+      <reusable-loading v-if="loading" />
     </div>
     <v-dialog
       v-model="showCSVUploadModal"
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
     >
       <div
-        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-modal-gray tw-rounded"
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-dark-7 tw-text-dark-0 tw-rounded"
       >
         <h3 class="tw-text-lg" v-if="!uploading">
           Are you sure you want to import this CSV file?
@@ -142,34 +186,22 @@
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
           v-if="!uploading"
         >
-          <button
-            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#1C452C]"
-            @click="uploadCSV"
-          >
-            Yes
-          </button>
-          <button
-            class="tw-py-2 tw-px-8 tw-rounded tw-text-white tw-bg-[#7B0707]"
-            @click="resetCSV"
-          >
-            No
-          </button>
+          <button-primary title="Yes" @click="uploadCSV" />
+          <button-primary title="No" @click="resetCSV" :bordered="true" />
         </div>
         <div
           class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-center"
           v-else
         >
-          <loading />
+          <reusable-loading />
         </div>
       </div>
     </v-dialog>
   </div>
 </template>
 <script lang="ts">
-import Loading from "@/components/Reusable/Loading.vue";
 import {
   getWhitelistEntryById,
-  setRoot,
   uploadCSVInWhitelistEntry,
 } from "@/services/WhitelistService";
 
@@ -177,7 +209,6 @@ import moment from "moment";
 import { getCollectionByUsername } from "@/services/CollectionService";
 
 export default {
-  components: { Loading },
   layout: "dashboard",
   data() {
     return {
@@ -196,33 +227,29 @@ export default {
           sortable: true,
           value: "discord_username",
           width: "200px",
-          class:
-            "!tw-text-white !tw-text-base !tw-font-normal !tw-border-none !tw-bg-transparent",
+          class: "default-data-table-header",
         },
         {
           text: "Wallet Address",
           align: "start",
           sortable: true,
           value: "wallet_address",
-          class:
-            "!tw-text-white !tw-text-base !tw-font-normal !tw-border-none !tw-bg-transparent",
+          class: "default-data-table-header",
         },
         {
-          text: "Discord Roles",
+          text: "Role",
           align: "start",
           sortable: true,
           value: "discord_roles",
           width: "165px",
-          class:
-            "!tw-text-white !tw-text-base !tw-font-normal !tw-border-none !tw-bg-transparent",
+          class: "default-data-table-header",
         },
         {
           text: "Date Joined",
           align: "start",
           sortable: true,
           value: "date_joined",
-          class:
-            "!tw-text-white !tw-text-base !tw-font-normal !tw-border-none !tw-bg-transparent",
+          class: "default-data-table-header",
           width: "165px",
         },
       ],
@@ -238,6 +265,9 @@ export default {
       scrolledNumber: 1,
       mappingData: false,
       uploading: false,
+      search: null,
+      role: null,
+      showRoleFilter: false,
     };
   },
   methods: {
@@ -296,10 +326,28 @@ export default {
 
       this.whitelistEntries = res.data.whitelistEntries;
 
+      this.whitelistEntries.map((whitelistEntry: any) => {
+        whitelistEntry.date_joined = this.getFormattedDate(whitelistEntry.date);
+        let roles: string = "";
+        whitelistEntry.discord.roles.map((role: any, index: number) => {
+          roles =
+            index === whitelistEntry.discord.roles.length - 1
+              ? role
+              : `${role}, `;
+        });
+
+        whitelistEntry.discord_roles = roles;
+
+        whitelistEntry.discord_username = whitelistEntry.discord.username;
+      });
+
       this.paginatedWhitelistEntries.push(...this.whitelistEntries);
 
       this.loading = false;
       this.mappingData = false;
+    },
+    showFileSelectionDialog() {
+      this.$refs.csv.click();
     },
   },
   computed: {
@@ -344,22 +392,6 @@ export default {
 };
 </script>
 <style scoped>
-.whitelist-data-table {
-  min-width: 100% !important;
-  max-width: 100% !important;
-  overflow-x: auto !important;
-  background: transparent !important;
-}
-
-.whitelist-data-table::v-deep.theme--dark.v-data-table
-  > .v-data-table__wrapper
-  > table
-  > thead
-  > tr:last-child
-  > th {
-  border-bottom: none !important;
-}
-
 .v-menu__content {
   box-shadow: none;
   border: 1px solid #ff36ab;

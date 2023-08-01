@@ -20,7 +20,7 @@
     </v-breadcrumbs>
     <div class="tw-flex tw-flex-row tw-flex-wrap tw-gap-4">
       <NuxtLink
-        class="tw-bg-wapal-gray tw-px-4 tw-py-2 !tw-text-black tw-rounded-sm tw-flex tw-flex-row tw-items-center tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-gray-300"
+        class="tw-bg-dark-4 tw-px-4 tw-py-3 !tw-text-white tw-rounded tw-flex tw-flex-row tw-items-center tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-dark-5"
         v-for="folder in folders"
         :key="folder.name"
         :to="`${$route.params.id}/${folder.type}`"
@@ -28,20 +28,18 @@
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
-          <v-icon class="!tw-text-black">mdi-folder</v-icon>
+          <i class="bx bxs-folder tw-text-xl"></i>
           {{ folder.name }}
         </div>
       </NuxtLink>
     </div>
   </div>
-  <loading v-else />
+  <reusable-loading v-else />
 </template>
 <script lang="ts">
 import { getFolderById } from "@/services/AssetsService";
-import Loading from "@/components/Reusable/Loading.vue";
 export default {
   layout: "dashboard",
-  components: { Loading },
   data() {
     return {
       folders: [

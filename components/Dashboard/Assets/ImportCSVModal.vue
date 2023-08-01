@@ -1,8 +1,7 @@
 <template>
   <ValidationObserver ref="form">
-    <form
-      class="tw-w-full tw-bg-modal-gray tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-text-white"
-      @submit.prevent="sendCSVForMetadataUpload"
+    <div
+      class="tw-w-full tw-bg-dark-7 tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-text-dark-0"
     >
       <h2 class="tw-text-lg tw-font-medium">Import CSV</h2>
       <ValidationProvider
@@ -11,15 +10,13 @@
         v-slot="{ errors }"
         class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
       >
-        <label
-          class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-          >Name</label
-        >
-        <input
+        <input-text-field
           v-model="name"
-          class="tw-w-full tw-border-none tw-bg-wapal-gray focus:tw-outline-none tw-rounded tw-py-2 tw-px-2 tw-text-black"
+          placeholder="Name"
+          label="Name"
+          :required="true"
         />
-        <div class="tw-text-[#FF322C]">{{ errors[0] }}</div>
+        <div class="tw-text-[#FF322C] tw-text-sm">{{ errors[0] }}</div>
       </ValidationProvider>
       <ValidationProvider
         name="description"
@@ -27,18 +24,14 @@
         v-slot="{ errors }"
         class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
       >
-        <label
-          class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-          >Description</label
-        >
-
-        <textarea
+        <input-text-area
           v-model="description"
-          class="tw-w-full tw-border-none tw-bg-wapal-gray focus:tw-outline-none tw-rounded tw-py-2 tw-px-2 tw-text-black"
-          rows="4"
-        >
-        </textarea>
-        <div class="tw-text-[#FF322C]">{{ errors[0] }}</div>
+          label="Description"
+          placeholder="Description"
+          :required="true"
+        />
+
+        <div class="tw-text-[#FF322C] tw-text-sm">{{ errors[0] }}</div>
       </ValidationProvider>
       <div
         class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
@@ -53,14 +46,15 @@
             class="tw-hidden tw-w-0 tw-h-0"
             type="file"
             accept=".csv"
+            ref="input"
           />
-          <div
-            class="tw-bg-wapal-gray tw-cursor-pointer tw-text-black tw-rounded tw-py-2 tw-px-2"
-          >
-            {{ !metadataCSV.name ? "Select CSV File" : metadataCSV.name }}
-          </div>
+          <button-primary
+            :bordered="true"
+            :title="!metadataCSV.name ? 'Select CSV File' : metadataCSV.name"
+            @click="selectFile"
+          />
         </label>
-        <p class="tw-text-[#FF322C]" v-if="metadataError">
+        <p class="tw-text-[#FF322C] tw-text-sm" v-if="metadataError">
           Your metadata does not have same length as assets (Required length:
           {{ assetLength }}, Metadata length: {{ metadataLength }})
         </p>
@@ -68,15 +62,14 @@
       <div
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-pt-4"
       >
-        <button class="tw-py-2 tw-px-4 tw-bg-wapal-success">Import</button>
-        <button
-          class="tw-py-2 tw-px-4 tw-bg-wapal-danger"
-          @click.prevent="closeImportCSVModal"
-        >
-          Cancel
-        </button>
+        <button-primary title="Import" @click="sendCSVForMetadataUpload" />
+        <button-primary
+          title="Cancel"
+          :bordered="true"
+          @click="closeImportCSVModal"
+        />
       </div>
-    </form>
+    </div>
   </ValidationObserver>
 </template>
 <script lang="ts">
@@ -121,7 +114,7 @@ export default {
       });
     },
     async sendCSVForMetadataUpload() {
-      const validate = this.$refs.form.validate();
+      const validate = await this.$refs.form.validate();
 
       if (!validate) {
         return;
@@ -163,6 +156,9 @@ export default {
       this.metadataCSV = { name: "" };
 
       this.$refs.form.reset();
+    },
+    selectFile() {
+      this.$refs.input.click();
     },
   },
 };

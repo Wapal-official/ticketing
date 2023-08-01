@@ -2,6 +2,15 @@
   box-sizing: border-box !important;
 }
 /* Landing */
+* {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: none;
+  scroll-behavior: smooth;
+}
 .landing-background {
   background: linear-gradient(
     180deg,
@@ -237,7 +246,7 @@
 }
 
 .nft-discord-icon:hover {
-  fill: #ea59be;
+  fill: #fb2576;
 }
 
 .preview-shadow {
@@ -248,7 +257,7 @@
 /*Search Bar*/
 .search-bar-input {
   border-style: solid !important;
-  @apply tw-w-full tw-pl-10 tw-pr-4 tw-py-2 tw-bg-[#4b4b4b] tw-text-white tw-border tw-border-transparent tw-transition-all tw-duration-200 tw-ease-linear placeholder:tw-text-white focus:tw-outline-none focus:tw-border-modal-gray focus:tw-shadow focus:tw-shadow-modal-gray md:tw-rounded-lg  md:tw-bg-transparent md:tw-border-modal-gray;
+  @apply tw-w-full tw-px-6 tw-py-2 tw-bg-[#25262B] tw-text-white tw-rounded-md tw-border tw-border-[#383A3F] tw-transition-all tw-duration-200 tw-ease-linear placeholder:tw-text-[#909296] focus:tw-outline-none;
 }
 
 /*Explore List*/
@@ -367,4 +376,72 @@
 
 .mdi-checkbox-blank-outline {
   color: #d9d9d9 !important;
+}
+
+/* New Design Input */
+.wapal-input {
+  border-radius: 7px !important;
+  @apply tw-bg-dark-6 tw-border-dark-4 tw-border-solid tw-border;
+}
+.wapal-input.v-text-field--outlined > .v-input__control > .v-input__slot {
+  min-height: 40px !important;
+}
+.wapal-input.v-text-field--outlined fieldset {
+  border: none !important;
+}
+.wapal-input.v-text-field--enclosed .v-input__append-inner {
+  margin-top: 8px !important;
+}
+
+.wapal-input.v-text-field--outlined.v-input--is-focused .v-input__slot:before {
+  border: none !important;
+}
+.wapal-input.v-text-field--outlined .v-label {
+  top: 15px !important;
+}
+
+.wapal-input input,
+.wapal-input textarea {
+  @apply !tw-text-sm !tw-text-dark-0 placeholder:!tw-text-sm;
+}
+
+input:disabled {
+  cursor: not-allowed;
+}
+
+/*Hide scrollbar in chrome*/
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/*Switch and Checkbox*/
+.v-input--switch__track.primary--text {
+  @apply !tw-text-primary-1 !tw-caret-primary-1 !tw-opacity-100;
+}
+
+.v-input--selection-controls__ripple.primary--text {
+  @apply !tw-text-primary-1 !tw-caret-primary-1;
+}
+
+.v-input--switch__thumb.primary--text {
+  @apply !tw-text-white !tw-caret-white;
+}
+
+.v-input--selection-controls__input .mdi-checkbox-marked {
+  @apply !tw-text-primary-1 !tw-caret-primary-1;
+}
+
+/*Data table header class*/
+.default-data-table-header {
+  @apply !tw-text-dark-2 !tw-border-b-dark-6 !tw-text-sm tw-uppercase tw-font-medium tw-pb-8;
+}
+
+.default-data-table-header span {
+  text-transform: uppercase;
 }

@@ -1,6 +1,88 @@
 <template>
   <div
-    class="tw-px-4 tw-container tw-mx-auto tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pt-32 tw-pb-14 lg:tw-flex-row lg:tw-items-center lg:tw-gap-16 lg:tw-px-8"
+    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[5.5em] lg:tw-pb-24 xl:!tw-max-w-[1100px]"
+  >
+    <div
+      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
+    >
+      <img
+        :src="domain"
+        alt="domain name"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+      />
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
+      >
+        <h1 class="tw-text-white tw-text-[2.5em] tw-font-bold">DOMAIN NAME</h1>
+        <div class="tw-pb-2 tw-text-dark-0">
+          Secure your .apt domain for your journey through the Aptos ecosystem.
+        </div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8"
+        >
+          <div class="tw-relative tw-w-full">
+            <input-text-field
+              placeholder="Search Domain Names"
+              v-model="domainName"
+              @enterClicked="findDomainName"
+            >
+              <template #append-icon>
+                <button
+                  @click="findDomainName"
+                  v-if="!showDomainName || !domainName"
+                >
+                  <i class="bx bx-search !tw-text-dark-2 !tw-text-2xl"></i>
+                </button>
+                <button @click.prevent="clearDomainName" v-else>
+                  <i class="bx bx-x !tw-text-dark-2 !tw-text-2xl"></i>
+                </button>
+              </template>
+            </input-text-field>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-text-black md:tw-flex-row md:tw-items-center"
+            v-if="showDomainName"
+          >
+            <div
+              class="tw-w-full md:tw-w-[90%] tw-bg-wapal-gray tw-flex tw-flex-row tw-items-center tw-justify-between tw-py-4 tw-px-4 tw-rounded-md"
+            >
+              <div>
+                <div class="tw-text-lg">{{ domainStatus.domainName }}.Apt</div>
+                <div
+                  class="tw-text-green-800 tw-text-sm"
+                  v-if="domainStatus.available"
+                >
+                  Available
+                </div>
+                <div class="tw-text-red-800 tw-text-sm" v-else>Unavailable</div>
+              </div>
+              <div v-if="domainStatus.available">
+                <div class="tw-text-lg">{{ domainStatus.price }} APT</div>
+                <div class="tw-text-sm">Domain Cost</div>
+              </div>
+            </div>
+            <button-primary
+              v-if="domainStatus.available"
+              @click="buyDomainName"
+              title="BUY"
+            />
+          </div>
+        </div>
+      </div>
+      <v-dialog
+        v-model="showConnectWalletModal"
+        content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+      >
+        <connect-wallet-modal
+          message="Please Connect your wallet to Buy Domain Name"
+          @closeModal="showConnectWalletModal = false"
+          @walletConnected="displayWalletConnectedMessage"
+        />
+      </v-dialog>
+    </div>
+  </div>
+  <!-- <div
+    class="tw-px-4 tw-py-16 tw-container tw-mx-auto tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 lg:tw-flex-row lg:tw-items-center lg:tw-gap-16 lg:tw-px-8"
   >
     <div class="tw-w-full lg:tw-w-[40%]">
       <img
@@ -92,7 +174,7 @@
         @walletConnected="displayWalletConnectedMessage"
       />
     </v-dialog>
-  </div>
+  </div> -->
 </template>
 <script lang="ts">
 import domain from "@/assets/img/domain-name.png";

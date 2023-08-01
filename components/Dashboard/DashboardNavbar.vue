@@ -1,10 +1,14 @@
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
     <nav
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-8 tw-py-6 lg:!tw-px-24"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-py-4"
     >
-      <NuxtLink to="/" class="tw-min-w-[140px] tw-max-w-[140px]">
-        <img :src="logo" alt="logo" />
+      <NuxtLink to="/">
+        <img
+          :src="logo"
+          alt="logo"
+          class="tw-min-w-[106px] tw-max-w-[106px] tw-min-h-[28px] tw-max-h-[28px]"
+        />
       </NuxtLink>
       <div class="tw-hidden lg:tw-flex">
         <connect-wallet />
@@ -23,7 +27,7 @@
   </div>
 </template>
 <script lang="ts">
-import logo from "@/assets/img/logo/mainnet-beta.png";
+import logo from "@/assets/img/logo/logo.svg";
 import ConnectWallet from "@/components/Reusable/ConnectWallet.vue";
 export default {
   components: { ConnectWallet },

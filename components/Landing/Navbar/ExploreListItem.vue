@@ -1,16 +1,16 @@
 <template>
   <div>
-    <button @click="goToExplorePage">
+    <button
+      @click="goToExplorePage"
+      class="tw-w-full tw-flex tw-flex-row tw-items-start tw-justify-start"
+    >
       <v-list-item>
         <v-list-item-title
-          class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
+          class="!tw-text-white tw-rounded !tw-text-left tw-px-4 tw-py-3 tw-w-full tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-dark-6"
           >{{ name }}</v-list-item-title
         >
       </v-list-item>
     </button>
-    <div class="tw-w-full tw-px-4" v-if="!last">
-      <div class="tw-w-full tw-h-[1.5px] tw-bg-white"></div>
-    </div>
   </div>
 </template>
 <script lang="ts">

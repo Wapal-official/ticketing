@@ -1,106 +1,306 @@
 <template>
   <div class="tw-w-full">
-    <div
-      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+    <dashboard-page-heading heading="Whitelist" class="tw-pb-8" />
+    <tab-bordered :tabs="tabs" :tab="tab" @tabChanged="tabChanged" />
+    <v-tabs-items
+      v-model="tab"
+      v-if="!loading"
+      class="!tw-bg-transparent !tw-py-8"
     >
-      <h1 class="tw-text-lg tw-text-wapal-pink">All Collections</h1>
-      <div
-        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
-        v-if="!loading"
-      >
-        <nft-card
-          v-for="collection in collections"
-          :key="collection._id"
-          :collection="collection"
-          redirectTo="whitelist"
-          type="dashboard"
-          v-if="collections[0]._id"
+      <v-tab-item>
+        <dashboard-collection-table
+          :headers="collectionHeaders"
+          :items="collections"
+          @rowClicked="redirectToWhitelistPage"
+          v-if="collections.length > 0"
         />
-      </div>
-      <loading v-else />
-
-      <div
-        class="tw-w-full tw-text-center tw-py-4 tw-text-wapal-pink"
-        v-if="this.collections.length === 0"
-      >
-        No Collections
-      </div>
-    </div>
-    <div
-      class="whitelist1 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-py-8 tw-w-full"
-    >
-      <h1 class="tw-text-lg tw-text-wapal-pink">Whitelisted Collections</h1>
-      <div
-        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
-        v-if="!loading"
-      >
-        <whitelist-card
-          v-for="whitelist in whitelists"
-          :whitelist="whitelist"
-          :key="whitelist._id"
-          type="dashboard"
-          v-if="whitelists[0]._id"
+        <dashboard-no-collection
+          message="You do not have any Collections"
+          buttonTitle="Create Collection"
+          @click="$router.push('/dashboard/create-collection')"
+          v-if="collections.length === 0 && !loading"
         />
-      </div>
-    </div>
+      </v-tab-item>
+      <v-tab-item>
+        <dashboard-collection-table
+          :headers="whitelistHeaders"
+          :items="whitelists"
+          @rowClicked="redirectToWhitelistPage"
+          v-if="whitelists.length > 0"
+        />
+        <dashboard-no-collection
+          message="You do not have any Whitelist Collections"
+          buttonTitle="Create Collection"
+          @click="$router.push('/dashboard/create-collection')"
+          v-if="whitelists.length === 0 && !loading"
+        />
+      </v-tab-item>
+    </v-tabs-items>
+    <reusable-loading v-else />
   </div>
 </template>
 <script lang="ts">
-import WhitelistCard from "@/components/Whitelist/WhitelistCard.vue";
-import NftCard from "@/components/Nft/NftCard.vue";
-import Loading from "@/components/Reusable/Loading.vue";
-import GradientBorderButton from "@/components/Button/GradientBorderButton.vue";
-import { getCollectionsOfUser } from "@/services/CollectionService";
-import { getWhitelistOfUser } from "@/services/WhitelistService";
+import {
+  getCollection,
+  getCollectionsOfUser,
+} from "@/services/CollectionService";
+import {
+  getWhitelistById,
+  getWhitelistEntryById,
+  getWhitelistOfUser,
+} from "@/services/WhitelistService";
+import { getCollectionDetails } from "@/services/AptosCollectionService";
 export default {
   layout: "dashboard",
-  components: { NftCard, Loading, GradientBorderButton, WhitelistCard },
+  components: {},
   data() {
     return {
       collections: [{ _id: null }],
       whitelists: [{ _id: null }],
       loading: true,
+      tabs: ["All Collection", "Whitelist Collection"],
+      tab: 0,
+      collectionHeaders: [
+        {
+          text: "Collection Name",
+          align: "start",
+          sortable: true,
+          value: "name",
+          width: "264px",
+          class: "default-data-table-header",
+          showImage: true,
+          showSerialNumber: true,
+        },
+        {
+          text: "Price",
+          align: "start",
+          sortable: true,
+          value: "price",
+          width: "200px",
+          class: "default-data-table-header",
+          showAptIcon: true,
+        },
+        {
+          text: "Item",
+          align: "start",
+          sortable: true,
+          value: "supply",
+          width: "200px",
+          class: "default-data-table-header",
+        },
+        {
+          text: "Minted",
+          align: "start",
+          sortable: true,
+          value: "progress",
+          width: "200px",
+          class: "default-data-table-header",
+          progress: true,
+        },
+      ],
+      whitelistHeaders: [
+        {
+          text: "Collection Name",
+          align: "start",
+          sortable: true,
+          value: "name",
+          width: "264px",
+          class: "default-data-table-header",
+          showImage: true,
+          showSerialNumber: true,
+        },
+        {
+          text: "Price",
+          align: "start",
+          sortable: true,
+          value: "price",
+          width: "200px",
+          class: "default-data-table-header",
+          showAptIcon: true,
+        },
+        {
+          text: "Item",
+          align: "start",
+          sortable: true,
+          value: "supply",
+          width: "200px",
+          class: "default-data-table-header",
+        },
+        {
+          text: "Spots",
+          align: "start",
+          sortable: true,
+          value: "progress",
+          width: "200px",
+          class: "default-data-table-header",
+          progress: true,
+        },
+      ],
+      fetchedCollections: false,
+      fetchedWhitelists: false,
     };
   },
   computed: {},
-  methods: {},
-  async mounted() {
-    const collectionRes = await getCollectionsOfUser(
-      this.$store.state.userStore.user.user_id
-    );
-
-    const whitelistRes = await getWhitelistOfUser(
-      this.$store.state.userStore.user.user_id
-    );
-
-    this.collections = collectionRes.data.data.filter((collection: any) => {
-      const whitelistSaleDate = new Date(
-        collection.candyMachine.whitelist_sale_time
-      ).getTime();
-
-      const publicSaleDate = new Date(
-        collection.candyMachine.public_sale_time
-      ).getTime();
-
-      if (publicSaleDate - whitelistSaleDate !== 1000) {
-        return collection;
-      }
-    });
-
-    this.whitelists = whitelistRes.data.whitelists;
-
-    this.collections = this.collections.filter((collection: any) => {
-      try {
-        this.whitelists.map((whitelist: any) => {
-          if (whitelist.collection_id === collection._id) {
-            throw new Error("Collection In Whitelist");
+  methods: {
+    tabChanged(tab: number) {
+      this.tab = tab;
+      switch (tab) {
+        case 0:
+          if (!this.fetchedCollections) {
+            this.mapCollections();
           }
-        });
-        return collection;
-      } catch (error) {}
-    });
+          break;
+        case 1:
+          if (!this.fetchedWhitelists) {
+            this.mapWhitelists();
+          }
+          break;
+      }
+    },
+    getPrice(collection: any) {
+      if (
+        collection.candyMachine.whitelist_sale_time &&
+        collection.candyMachine.public_sale_time
+      ) {
+        const whitelistDate = new Date(
+          collection.candyMachine.whitelist_sale_time
+        );
+        const publicSaleDate = new Date(
+          collection.candyMachine.public_sale_time
+        );
+
+        if (new Date() > publicSaleDate) {
+          return collection.candyMachine.public_sale_price;
+        }
+
+        if (new Date() > whitelistDate) {
+          return collection.candyMachine.whitelist_price;
+        }
+      }
+
+      return collection.candyMachine.public_sale_price;
+    },
+    async mapCollections() {
+      this.loading = true;
+      const collectionRes = await getCollectionsOfUser(
+        this.$store.state.userStore.user.user_id
+      );
+
+      const whitelistRes = await getWhitelistOfUser(
+        this.$store.state.userStore.user.user_id
+      );
+
+      let collections = collectionRes.data.data.filter((collection: any) => {
+        const whitelistSaleDate = new Date(
+          collection.candyMachine.whitelist_sale_time
+        ).getTime();
+
+        const publicSaleDate = new Date(
+          collection.candyMachine.public_sale_time
+        ).getTime();
+
+        if (publicSaleDate - whitelistSaleDate !== 1000) {
+          return collection;
+        }
+      });
+
+      const whitelists = whitelistRes.data.whitelists;
+
+      collections = collections.filter((collection: any) => {
+        try {
+          this.whitelists.map((whitelist: any) => {
+            if (whitelist.collection_id === collection._id) {
+              throw new Error("Collection In Whitelist");
+            }
+          });
+          return collection;
+        } catch (error) {}
+      });
+
+      const mappedCollections = await Promise.all(
+        collections.map(async (collection: any) => {
+          //Get Collection Detail
+          const resource = await getCollectionDetails(
+            collection.candyMachine.candy_id,
+            collection.candyMachine.resource_account
+          );
+
+          //Store minted and total supply of collection and calculate minted percent
+          const collectionResource = {
+            minted: resource.minted,
+            total: resource.total_supply,
+            progressPercent: Math.floor(
+              (resource.minted / resource.total_supply) * 100
+            ),
+            text: `${resource.minted}/${resource.total_supply} Minted`,
+          };
+
+          collection.price = this.getPrice(collection);
+
+          collection.progress = collectionResource;
+
+          this.collections.push(collection);
+        })
+      );
+
+      this.loading = false;
+      this.fetchedCollections = true;
+    },
+    async mapWhitelists() {
+      this.loading = true;
+      const whitelistRes = await getWhitelistOfUser(
+        this.$store.state.userStore.user.user_id
+      );
+
+      const whitelists = whitelistRes.data.whitelists;
+
+      const mappedWhitelists = await Promise.all(
+        whitelists.map(async (whitelist: any) => {
+          //Get Whitelist Detail
+          const { data } = await getWhitelistEntryById(
+            whitelist.collection_id,
+            1,
+            1,
+            "whitelist"
+          );
+
+          const collectionRes = await getCollection(whitelist.collection_id);
+
+          whitelist.name = collectionRes.collection[0].name;
+          whitelist.image = collectionRes.collection[0].image;
+          whitelist.supply = collectionRes.collection[0].supply;
+          whitelist.username = collectionRes.collection[0].username;
+
+          //Store minted and total supply of collection and calculate minted percent
+          const collectionResource = {
+            total: data.spotsCount,
+            occupied: whitelist.whitelist_spots,
+            progressPercent: Math.floor(
+              (data.spotsCount / whitelist.whitelist_spots) * 100
+            ),
+            text: `${data.spotsCount}/${whitelist.whitelist_spots} Spots Taken`,
+          };
+
+          whitelist.price = this.getPrice(collectionRes.collection[0]);
+
+          whitelist.progress = collectionResource;
+
+          this.whitelists.push(whitelist);
+        })
+      );
+      this.loading = false;
+      this.fetchedWhitelists = true;
+    },
+    redirectToWhitelistPage(whitelist: any) {
+      this.$router.push(`/dashboard/whitelist/${whitelist.username}`);
+    },
+  },
+  async mounted() {
+    this.collections = [];
+    this.whitelists = [];
 
     this.loading = false;
+    await this.mapCollections();
   },
 };
 </script>

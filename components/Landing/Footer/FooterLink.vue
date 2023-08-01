@@ -3,14 +3,14 @@
     v-if="external"
     :href="to"
     :target="target"
-    class="!tw-text-white tw-transition-all tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink"
+    class="!tw-text-dark-2 tw-transition-all tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
   >
     {{ name }}
   </a>
   <NuxtLink
     v-else
     :to="to"
-    class="!tw-text-white tw-transition-all tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink"
+    class="!tw-text-dark-2 tw-transition-all tw-duration-200 tw-ease-linear hover:!tw-text-primary-1"
   >
     {{ name }}
   </NuxtLink>

@@ -1,68 +1,73 @@
 <template>
-  <div class="tw-bg-modal-gray tw-px-8 tw-py-4 tw-text-white tw-text-center">
-    <div class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end">
+  <div
+    class="tw-bg-dark-9 tw-py-4 tw-text-white tw-text-center tw-rounded-lg no-scrollbar"
+  >
+    <div
+      class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-py-4 tw-px-4"
+    >
+      <div
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-text-white"
+      >
+        <i class="bx bxs-wallet-alt tw-text-xl"></i>
+        <h2 class="tw-text-sm tw-uppercase tw-font-semibold tw-leading-[0.1em]">
+          Connect Wallet
+        </h2>
+      </div>
       <button class="tw-text-base" @click="close">
-        <v-icon class="!tw-text-black !tw-font-semibold">mdi-close</v-icon>
+        <i class="bx bx-x tw-text-white !tw-font-semibold tw-text-xl"></i>
       </button>
     </div>
     <div
-      class="tw-w-full tw-bg-wapal-pink tw-text-white tw-my-2 tw-px-2 tw-py-2 tw-flex tw-text-xs lg:tw-hidden"
+      class="tw-w-full tw-bg-primary-1 tw-text-white tw-my-2 tw-px-4 tw-py-2 tw-flex tw-text-xs lg:tw-hidden"
     >
       Please use Kiwi Browser for wallet connection if you are using mobile
       devices
     </div>
-    <p class="tw-text-base md:tw-text-lg" v-if="message">{{ message }}</p>
-    <p class="tw-text-base md:tw-text-lg tw-pb-4">Choose a wallet to connect</p>
     <div
-      class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-x-4 tw-gap-y-6"
+      class="tw-bg-dark-8 tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-h-[500px] tw-overflow-auto no-scrollbar"
     >
-      <h6 class="tw-text-lg tw-text-white">Preferred Wallet</h6>
       <button
-        @click="connectWallet(preferredWallet.name)"
-        class="tw-w-full tw-rounded tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-pl-4 tw-pr-4 tw-py-4 tw-bg-gray-900 md:tw-pl-20"
-      >
-        <img
-          :src="preferredWallet.icon"
-          :alt="preferredWallet.name"
-          class="tw-w-12 tw-h-12"
-        />
-        <span class="tw-text-lg tw-text-wapal-gray">{{
-          preferredWallet.name
-        }}</span>
-      </button>
-    </div>
-    <div
-      class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-x-4 tw-gap-y-6 tw-py-4"
-      v-if="installedWallets.length > 0"
-    >
-      <h6 class="tw-text-lg tw-text-white">Installed</h6>
-      <button
+        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-py-4 tw-px-8 tw-transition-all tw-duration-200 tw-ease-linear tw-relative before:tw-w-full before:tw-h-full before:tw-absolute before:tw-opacity-0 before:tw-left-0 before:tw-bg-white hover:before:tw-opacity-[0.08] disabled:hover:before:tw-opacity-0"
+        v-for="wallet in wallets"
+        :key="wallet.name"
         @click="connectWallet(wallet.name)"
-        v-for="wallet in installedWallets"
-        class="tw-w-full tw-rounded tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-pl-4 tw-pr-4 tw-py-4 tw-bg-gray-900 md:tw-pl-20"
+        :disabled="wallet.readyState === 'NotDetected'"
       >
-        <img
-          :src="wallet.name !== 'Blocto' ? wallet.icon : bloctoIcon"
-          :alt="wallet.name"
-          class="tw-w-12 tw-h-12"
-        />
-        <span class="tw-text-lg tw-text-wapal-gray">{{ wallet.name }}</span>
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+        >
+          <img
+            :src="wallet.icon"
+            :alt="wallet.name"
+            width="32px"
+            height="32px"
+          />
+          <div
+            class="tw-text-xs tw-font-medium"
+            :class="{ 'tw-text-white/50': wallet.readyState === 'NotDetected' }"
+          >
+            {{ wallet.name }}
+          </div>
+          <div
+            class="tw-rounded-full tw-text-xs tw-text-black tw-bg-[#8cd867] tw-px-3 tw-py-1"
+            v-if="wallet.preferred"
+          >
+            Preferred
+          </div>
+        </div>
+        <i
+          class="bx bx-right-arrow-alt tw-text-white"
+          :class="{ 'tw-text-white/50': wallet.readyState === 'NotDetected' }"
+        ></i>
       </button>
     </div>
     <div
-      class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-x-4 tw-gap-y-6 tw-py-4"
-      v-if="availableWallets.length > 0"
+      class="tw-border-t tw-border-dark-4 tw-text-xs tw-w-full tw-px-4 tw-pt-2"
     >
-      <h6 class="tw-text-lg tw-text-white">Available</h6>
-      <a
-        :href="wallet.url"
-        target="_blank"
-        v-for="wallet in availableWallets"
-        class="tw-w-full tw-rounded tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-pl-4 tw-pr-4 tw-py-4 tw-bg-gray-900 md:tw-pl-20"
-      >
-        <img :src="wallet.icon" :alt="wallet.name" class="tw-w-12 tw-h-12" />
-        <span class="tw-text-lg tw-text-wapal-gray">{{ wallet.name }}</span>
-      </a>
+      <p class="tw-text-left">
+        By connecting your wallet and using Wapal, you agree to our Terms of
+        Service and Privacy Policy.
+      </p>
     </div>
   </div>
 </template>
@@ -98,17 +103,14 @@ export default {
       this.$emit("closeModal");
     },
     separateWallets() {
-      this.installedWallets = this.wallets.filter(
-        (wallet: any) =>
-          (wallet.readyState === "Installed" ||
-            wallet.readyState === "Loadable") &&
-          wallet.name !== "Petra"
-      );
-
-      this.availableWallets = this.wallets.filter(
-        (wallet: any) =>
-          wallet.readyState === "NotDetected" && wallet.name !== "Petra"
-      );
+      this.wallets.map((wallet: any) => {
+        if (wallet.name === "Petra") {
+          wallet.preferred = true;
+        }
+        if (wallet.name === "Blocto") {
+          wallet.icon = this.bloctoIcon;
+        }
+      });
     },
   },
   computed: {

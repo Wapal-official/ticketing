@@ -1,17 +1,16 @@
 <template>
   <div>
-    <button
+    <button-primary
       v-if="
         type === 'metadata' &&
         folderInfo.metadata.files.length === 0 &&
         !loading &&
         checkImageUploaded
       "
-      class="tw-rounded tw-px-6 tw-py-2 tw-text-white tw-bg-wapal-pink"
       @click="showCSVUploadModal = true"
-    >
-      Import CSV
-    </button>
+      title="Import CSV"
+      :bordered="true"
+    />
     <div
       class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-relative"
       v-if="!loading"
@@ -66,68 +65,67 @@
       </div>
       <v-dialog
         v-model="showFileDetails"
-        content-class="!tw-w-full !tw-mx-2 !tw-rounded-none md:!tw-mx-auto md:!tw-w-1/2 md:!tw-border-t-wapal-pink md:!tw-border-b-wapal-pink lg:!tw-w-[40%]"
+        content-class="!tw-w-full !tw-mx-2 !tw-rounded-none md:!tw-mx-auto md:!tw-w-1/2 md:!tw-border-t-primary-1 md:!tw-border-b-primary-1 lg:!tw-w-[40%]"
       >
         <assets-image-details
           :file="currentFile"
           @close="showFileDetails = false"
         />
       </v-dialog>
-
-      <form
-        class="tw-w-full tw-h-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-8"
+      <div
+        class="tw-border tw-border-dashed tw-border-dark-4 tw-py-40 tw-rounded tw-cursor-pointer tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
+        @click="dropZoneClicked"
+        @dragover.prevent="dragover"
+        @dragleave.prevent="dragleave"
+        @drop.prevent="drop"
+        :class="dropZoneClass"
+        id="drop-zone"
         v-if="!fileLoading && !folderInfo.files[0] && checkImageUploaded"
       >
         <label
-          class="tw-w-full tw-h-full tw-px-8 tw-py-8 tw-border-2 tw-border-dashed tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-cursor-pointer md:tw-w-1/2"
-          :class="dropZoneClass"
+          class="tw-text-sm tw-font-medium tw-cursor-pointer"
           id="drop-zone"
-          @dragover.prevent="dragover"
-          @dragleave.prevent="dragleave"
-          @drop.prevent="drop"
+          >Drop your files here, or
+          <span class="tw-text-primary-1" id="drop-zone"
+            >click to browse</span
+          ></label
         >
-          <img :src="UploadIcon" alt="upload" id="drop-zone" />
-          <div id="drop-zone">Drag and Drop Your Files Here</div>
-          <div id="drop-zone">OR</div>
-          <div
-            id="drop-zone"
-            class="tw-bg-wapal-gray tw-text-white tw-px-8 tw-py-2 tw-rounded tw-cursor-pointer"
-          >
-            Browse
-          </div>
-          <input
-            type="file"
-            class="!tw-hidden"
-            @change="fileChanged"
-            webkitdirectory
-            mozdirectory
-            msdirectory
-            odirectory
-            directory
-            multiple
-            name="file"
-        /></label>
-      </form>
+        <input
+          type="file"
+          @change="fileChanged"
+          webkitdirectory
+          mozdirectory
+          msdirectory
+          odirectory
+          directory
+          multiple
+          name="file"
+          class="tw-hidden tw-w-full tw-h-full"
+          ref="input"
+          id="drop-zone"
+        />
+      </div>
+
       <div
-        class="tw-text-white tw-text-center tw-text-lg tw-w-full"
+        class="tw-text-dark-0 tw-text-center tw-text-lg tw-w-full"
         v-if="!checkImageUploaded"
       >
         Please Upload Images in image folder first
       </div>
       <v-dialog
         v-model="showUploadingDialog"
-        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
+        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
         :persistent="!uploadComplete"
       >
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-end"
           v-if="uploadComplete || balanceNotEnoughError.error"
         >
-          <v-icon class="!tw-text-white" @click="showUploadingDialog = false"
+          <v-icon class="!tw-text-dark-0" @click="showUploadingDialog = false"
             >mdi-close</v-icon
           >
         </div>
-        <h2 class="tw-text-lg tw-font-semibold">
+        <h2 class="tw-text-lg tw-font-semibold tw-text-dark-0">
           {{
             !uploadComplete ? "Sending Files To Server" : "Files Sent To Server"
           }}
@@ -143,7 +141,7 @@
               class="tw-relative tw-w-full tw-rounded-lg tw-py-1 tw-bg-wapal-gray"
             >
               <div
-                class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-wapal-pink tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
+                class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-primary-1 tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
                 :style="`width:${serverUploadPercent}%`"
               ></div>
             </div>
@@ -165,18 +163,9 @@
           </div>
         </div>
       </v-dialog>
-      <div
-        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-        v-if="mappingFiles"
-      >
-        <v-progress-circular
-          indeterminate
-          :color="defaultTheme.wapalPink"
-        ></v-progress-circular>
-      </div>
       <v-dialog
         v-model="showCSVUploadModal"
-        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
+        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
       >
         <dashboard-assets-import-CSV-modal
           :assetLength="folderInfo.assets.files.length"
@@ -189,12 +178,22 @@
 
     <div
       class="tw-py-16 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-      v-else
+      v-if="!loading"
     >
-      <v-progress-circular
-        indeterminate
-        :color="defaultTheme.wapalPink"
-      ></v-progress-circular>
+      <v-card
+        color="transparent"
+        v-intersect="{
+          handler: mapFiles,
+          options: {
+            threshold: [0, 0.5, 1],
+          },
+        }"
+        class="!tw-shadow-none"
+        v-if="!end"
+      >
+      </v-card>
+
+      <reusable-loading v-if="mappingFiles" />
     </div>
   </div>
 </template>
@@ -236,7 +235,7 @@ export default {
       showFileDetails: false,
       listView: false,
       image: false,
-      dropZoneClass: "tw-border-wapal-gray",
+      dropZoneClass: "tw-border-dark-4",
       uploadedFile: null,
       showFileUploadDialog: false,
       showUploadingDialog: false,
@@ -264,6 +263,9 @@ export default {
       assetLimit: 0,
       showCSVUploadModal: false,
       CSVLength: 0,
+      end: false,
+      page: 0,
+      debounce: null,
       UploadIcon,
       defaultTheme,
     };
@@ -282,8 +284,11 @@ export default {
     },
     dragleave(e: any) {
       e.dataTransfer!.dropEffect = "copy";
-      this.dropZoneClass = "tw-border-wapal-gray";
+      this.dropZoneClass = "tw-border-dark-4";
       this.showDropZone = false;
+    },
+    dropZoneClicked() {
+      this.$refs.input.click();
     },
     async drop(event: any) {
       this.showDropZone = false;
@@ -428,88 +433,94 @@ export default {
         this.fileLoading = false;
       }
     },
-    async mapFiles(scrollNumber: number) {
-      let tempFiles = [];
+    async mapFiles() {
+      this.mappingFiles = true;
+      clearTimeout(this.debounce);
 
-      this.paginatedFiles = [];
-      if (!scrollNumber) {
-        tempFiles = this.folderInfo.files.slice(0, this.assetLimit);
-      } else {
+      this.debounce = setTimeout(async () => {
+        this.page++;
+        const scrollNumber = this.page * this.assetLimit;
+        this.paginatedFiles = [];
+
+        if (scrollNumber > this.folderInfo.files.length) {
+          this.end = true;
+        }
+
+        let tempFiles = [];
         tempFiles = this.folderInfo.files.slice(
           scrollNumber - this.assetLimit,
           scrollNumber
         );
-      }
+        const mappedFiles = await Promise.all(
+          tempFiles.map(async (file: any, index: number) => {
+            try {
+              let src = null;
 
-      const mappedFiles = await Promise.all(
-        tempFiles.map(async (file: any, index: number) => {
-          try {
-            let src = null;
+              const fileIndex = scrollNumber
+                ? scrollNumber - this.assetLimit + index
+                : index;
 
-            const fileIndex = scrollNumber
-              ? scrollNumber - this.assetLimit + index
-              : index;
+              if (this.folderInfo.metadata.baseURI) {
+                src = `${this.folderInfo.metadata.baseURI}${fileIndex}.json`;
+              } else {
+                src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+              }
 
-            if (this.folderInfo.metadata.baseURI) {
-              src = `${this.folderInfo.metadata.baseURI}${fileIndex}.json`;
-            } else {
-              src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+              const res = await this.$axios.get(src);
+
+              const tempFile = res.data;
+
+              let fileType = "image";
+              let generatedFile = null;
+
+              if (
+                res.headers["content-type"] ===
+                "application/json; charset=utf-8"
+              ) {
+                fileType = "json";
+              }
+
+              if (fileType === "json" && this.type === "assets") {
+                const createdDate = this.folderInfo.createdDate
+                  ? this.folderInfo.createdDate
+                  : moment().format("DD/MM/YYYY");
+
+                generatedFile = {
+                  _id: fileIndex,
+                  name: tempFile.name,
+                  src: src,
+                  type: res.headers["content-type"],
+                  createdDate: createdDate,
+                  size: res.headers["content-length"],
+                  image: tempFile.image,
+                };
+              } else {
+                const createdDate = moment().format("DD/MM/YYYY");
+
+                generatedFile = {
+                  _id: fileIndex,
+                  name: fileIndex.toString(),
+                  src: src,
+                  type: res.headers["content-type"],
+                  createdDate: createdDate,
+                  size: res.headers["content-length"],
+                };
+              }
+
+              return generatedFile;
+            } catch (error) {
+              console.log(error);
             }
+          })
+        );
 
-            const res = await this.$axios.get(src);
+        mappedFiles.sort((a: any, b: any) => {
+          return a._id - b._id;
+        });
+        this.paginatedFiles.push(...mappedFiles);
 
-            const tempFile = res.data;
-
-            let fileType = "image";
-            let generatedFile = null;
-
-            if (
-              res.headers["content-type"] === "application/json; charset=utf-8"
-            ) {
-              fileType = "json";
-            }
-
-            if (fileType === "json" && this.type === "assets") {
-              const createdDate = this.folderInfo.createdDate
-                ? this.folderInfo.createdDate
-                : moment().format("DD/MM/YYYY");
-
-              generatedFile = {
-                _id: fileIndex,
-                name: tempFile.name,
-                src: src,
-                type: res.headers["content-type"],
-                createdDate: createdDate,
-                size: res.headers["content-length"],
-                image: tempFile.image,
-              };
-            } else {
-              const createdDate = moment().format("DD/MM/YYYY");
-
-              generatedFile = {
-                _id: fileIndex,
-                name: fileIndex.toString(),
-                src: src,
-                type: res.headers["content-type"],
-                createdDate: createdDate,
-                size: res.headers["content-length"],
-              };
-            }
-
-            return generatedFile;
-          } catch (error) {
-            console.log(error);
-          }
-        })
-      );
-
-      mappedFiles.sort((a: any, b: any) => {
-        return a._id - b._id;
-      });
-
-      this.paginatedFiles.push(...mappedFiles);
-
-      this.mappingFiles = false;
+        this.mappingFiles = false;
+      }, 1000);
     },
     async sendDataToUploadFolder() {
       this.serverUploadPercent = 0;
@@ -702,14 +713,16 @@ export default {
 
       this.fileIndex = 0;
       this.scrolledNumber = 1;
-      this.mapFiles(0);
+      this.page = 0;
+      this.mapFiles();
     },
     showGridView() {
       this.listView = false;
 
       this.fileIndex = 0;
       this.scrolledNumber = 1;
-      this.mapFiles(0);
+      this.page = 0;
+      this.mapFiles();
     },
   },
   computed: {
@@ -747,27 +760,17 @@ export default {
       throw { statusCode: 404, message: "Page not found" };
     }
 
+    this.assetLimit = this.type === "assets" ? 12 : 48;
+
     await this.fetchFiles();
 
-    this.assetLimit = this.type === "assets" ? 10 : 50;
+    await this.mapFiles();
 
-    await this.mapFiles(undefined);
-
-    if (process.client) {
-      window.addEventListener("scroll", async () => {
-        if (
-          window.scrollY + window.innerHeight >=
-            document.documentElement.scrollHeight &&
-          !this.mappingFiles
-        ) {
-          this.scrolledNumber++;
-
-          this.mappingFiles = true;
-
-          await this.mapFiles(this.assetLimit * this.scrolledNumber);
-        }
-      });
-    }
+    setTimeout(() => {
+      if (this.type === "metadata") {
+        this.mapFiles();
+      }
+    }, 5000);
   },
   watch: {
     checkUploadingStatus: async function (newValue: string) {

@@ -1,23 +1,18 @@
 <template>
   <div class="tw-w-full">
     <div class="tw-w-full">
-      <div
-        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-10 tw-py-4 md:tw-grid-cols-2 1xl:tw-grid-cols-3 1xl:tw-gap-12 3xl:tw-grid-cols-3"
-      >
-        <nft-card
-          v-for="draft in drafts"
-          :key="draft._id"
-          v-if="drafts[0]._id"
-          :collection="draft"
-          redirectTo="draft"
-        />
-      </div>
-      <h2
-        class="tw-text-wapal-pink tw-text-xl tw-text-center tw-w-full"
+      <dashboard-collection-table
+        :headers="tableHeaders"
+        :items="drafts"
+        @rowClicked="redirectToEditPage"
+        v-if="drafts[0]"
+      />
+      <dashboard-no-collection
+        message="You do not have any Drafts"
+        buttonTitle="Create Draft"
+        @click="$router.push('/dashboard/create-collection')"
         v-if="drafts.length === 0 && !loading"
-      >
-        No Drafts
-      </h2>
+      />
     </div>
 
     <div class="py-16" v-if="loading">
@@ -47,6 +42,44 @@ export default {
       loading: true,
       end: false,
       page: 0,
+      tableHeaders: [
+        {
+          text: "Collection Name",
+          align: "start",
+          sortable: true,
+          value: "name",
+          width: "264px",
+          class: "default-data-table-header",
+          showImage: true,
+          showSerialNumber: true,
+        },
+        {
+          text: "Price",
+          align: "start",
+          sortable: true,
+          value: "price",
+          width: "200px",
+          class: "default-data-table-header",
+          showAptIcon: true,
+        },
+        {
+          text: "Item",
+          align: "start",
+          sortable: true,
+          value: "supply",
+          width: "200px",
+          class: "default-data-table-header",
+        },
+        {
+          text: "Minted",
+          align: "start",
+          sortable: true,
+          value: "progress",
+          width: "200px",
+          class: "default-data-table-header",
+          progress: true,
+        },
+      ],
     };
   },
   methods: {
@@ -56,15 +89,52 @@ export default {
 
       const drafts = await getDraftsOfUser(this.page);
 
-      drafts.map((draft: any) => {
-        this.drafts.push({ ...draft.data, _id: draft._id });
-      });
+      const mappedCollections = await Promise.all(
+        drafts.map(async (draft: any) => {
+          //Set minted to 0 and
+          const collectionResource = {
+            minted: 0,
+            total: draft.data.supply,
+            progressPercent: Math.floor((0 / draft.data.supply) * 100),
+            text: `0/${draft.data.supply} Minted`,
+          };
+
+          draft.data.progress = collectionResource;
+
+          draft.data.price = this.getPrice(draft.data);
+
+          draft.data._id = draft._id;
+
+          this.drafts.push(draft.data);
+        })
+      );
 
       if (drafts.length === 0) {
         this.end = true;
       }
 
       this.loading = false;
+    },
+    getPrice(draft: any) {
+      if (!draft.whitelist_price || !draft.public_sale_price) {
+        return "TBD";
+      }
+
+      const whitelistDate = new Date(draft.whitelist_sale_time);
+      const publicSaleDate = new Date(draft.public_sale_time);
+
+      if (new Date() > publicSaleDate) {
+        return draft.public_sale_price;
+      }
+
+      if (new Date() > whitelistDate) {
+        return draft.whitelist_price;
+      }
+
+      return draft.public_sale_price;
+    },
+    redirectToEditPage(draft: any) {
+      this.$router.push(`/dashboard/draft/${draft._id}`);
     },
   },
   created() {

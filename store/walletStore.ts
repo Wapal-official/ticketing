@@ -26,7 +26,7 @@ if (process.env.NETWORK === "testnet") {
   network = NetworkName.Mainnet;
 }
 
-const client = new AptosClient(process.env.NODE_URL || "");
+export const client = new AptosClient(process.env.NODE_URL || "");
 
 const wallets = [
   new PetraWallet(),
@@ -43,7 +43,7 @@ const wallets = [
   }),
 ];
 
-const wallet = new WalletCore(wallets);
+export const wallet = new WalletCore(wallets);
 
 const makeId = (length: number) => {
   var result = "";
@@ -59,7 +59,7 @@ const connectWallet = async (walletName: WalletName) => {
   await wallet.connect(walletName);
 };
 
-const checkNetwork = () => {
+export const checkNetwork = () => {
   if (wallet.network?.name.toLowerCase() !== network.toLowerCase()) {
     throw new Error(`Please Change your network to ${network}`);
   }
@@ -76,7 +76,7 @@ export const state = () => ({
 });
 
 export const mutations = {
-  setWallet(state: any, wallet: WalletAddress) {
+  setWallet(state: any, wallet: any) {
     state.wallet = wallet;
   },
   setProof(state: any, proof: any) {
@@ -106,11 +106,11 @@ export const actions = {
     dispatch: any;
     commit: any;
   }) {
-    if (!wallet.isConnected()) {
-      await wallet.connect(state.wallet.wallet);
+    if (!wallet.isConnected() && state.wallet.wallet) {
+      dispatch("connectWallet", state.wallet.wallet);
     }
 
-    if (!state.wallet.initializedAccountChange) {
+    if (!state.wallet.initializedAccountChange && wallet.isConnected()) {
       try {
         await wallet.onNetworkChange();
         await wallet.onAccountChange();
@@ -123,10 +123,29 @@ export const actions = {
         await wallet.disconnect();
       });
 
-      wallet.addListener("accountChange", async () => {
-        await dispatch("connectWallet", {
-          walletName: state.wallet.wallet,
+      wallet.addListener("accountChange", async (newAccount: any) => {
+        commit("setWallet", {
+          wallet: state.wallet.wallet,
+          walletAddress: newAccount?.address,
+          publicKey: Array.isArray(newAccount.publicKey)
+            ? newAccount?.publicKey[0]
+            : newAccount?.publicKey,
+          initializedAccountChange: true,
         });
+
+        Cookies.set(
+          "wallet",
+          JSON.stringify({
+            wallet: state.wallet.wallet,
+            walletAddress: newAccount?.address,
+            publicKey: Array.isArray(newAccount.publicKey)
+              ? newAccount?.publicKey[0]
+              : newAccount?.publicKey,
+          }),
+          {
+            expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
+          }
+        );
 
         dispatch("userStore/disconnectUser", null, { root: true });
       });
@@ -136,16 +155,14 @@ export const actions = {
     commit("setWallet");
   },
   async connectWallet(
-    { state, commit }: { state: any; commit: any },
+    { state, commit, dispatch }: { state: any; commit: any; dispatch: any },
     walletName: WalletName
   ) {
     try {
       await connectWallet(walletName);
 
-      if (wallet.isConnected() && !state.wallet.initializedAccountChange) {
-        await wallet.onAccountChange();
-        await wallet.onNetworkChange();
-        commit("setInitializeAccountChange", true);
+      if (!state.wallet.initializedAccountChange) {
+        await dispatch("initializeWallet");
       }
 
       commit("setWallet", {
@@ -223,7 +240,7 @@ export const actions = {
 
     const create_candy_machine = {
       type: "entry_function_payload",
-      function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
+      function: process.env.CANDY_MACHINE_V1 + "::candymachine::init_candy",
       type_arguments: [],
       arguments: [
         candyMachineArguments.collection_name,
@@ -239,7 +256,7 @@ export const actions = {
         candyMachineArguments.total_supply,
         [false, false, false],
         [false, false, false, false, false],
-        0,
+        candyMachineArguments.public_mint_limit,
         "" + makeId(5),
       ],
     };
@@ -273,7 +290,7 @@ export const actions = {
 
     const create_candy_machine = {
       type: "entry_function_payload",
-      function: process.env.CANDY_MACHINE_V2 + "::candymachine::init_candy",
+      function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
       type_arguments: [],
       arguments: [
         candyMachineArguments.collection_name,
@@ -289,7 +306,7 @@ export const actions = {
         candyMachineArguments.total_supply,
         [false, false, false],
         [false, false, false, false, false],
-        0,
+        candyMachineArguments.public_mint_limit,
         false,
         "" + makeId(5),
       ],
@@ -312,14 +329,14 @@ export const actions = {
       if (
         change.type === "write_resource" &&
         change.data.type ===
-          `${process.env.CANDY_MACHINE_V2}::candymachine::CandyMachine`
+          `${process.env.CANDY_MACHINE_ID}::candymachine::CandyMachine`
       ) {
         resourceAccount = change.address;
       }
 
       return (
         change.data.type ===
-        `${process.env.CANDY_MACHINE_V2}::candymachine::CandyMachine`
+        `${process.env.CANDY_MACHINE_ID}::candymachine::CandyMachine`
       );
     });
 
@@ -356,14 +373,12 @@ export const actions = {
       candyMachineId,
       proof,
       mintLimit,
-      v2,
     }: {
       resourceAccount: string;
       publicMint: boolean;
       candyMachineId: string;
       proof: any[];
       mintLimit: number;
-      v2: boolean;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -374,38 +389,20 @@ export const actions = {
     try {
       var create_mint_script: any;
       if (publicMint) {
-        if (!v2) {
-          create_mint_script = {
-            type: "entry_function_payload",
-            function: candyMachineId + "::candymachine::mint_script",
-            type_arguments: [],
-            arguments: [resourceAccount],
-          };
-        } else {
-          create_mint_script = {
-            type: "entry_function_payload",
-            function: candyMachineId + "::candymachine::mint_script",
-            type_arguments: [],
-            arguments: [resourceAccount, resourceAccount],
-          };
-        }
+        create_mint_script = {
+          type: "entry_function_payload",
+          function: candyMachineId + "::candymachine::mint_script",
+          type_arguments: [],
+          arguments: [resourceAccount],
+        };
       } else {
         if (proof.length > 0) {
-          if (!v2) {
-            create_mint_script = {
-              type: "entry_function_payload",
-              function: candyMachineId + "::candymachine::mint_from_merkle",
-              type_arguments: [],
-              arguments: [resourceAccount, proof, mintLimit],
-            };
-          } else {
-            create_mint_script = {
-              type: "entry_function_payload",
-              function: candyMachineId + "::candymachine::mint_from_merkle",
-              type_arguments: [],
-              arguments: [resourceAccount, resourceAccount, proof, mintLimit],
-            };
-          }
+          create_mint_script = {
+            type: "entry_function_payload",
+            function: candyMachineId + "::candymachine::mint_from_merkle",
+            type_arguments: [],
+            arguments: [resourceAccount, proof, mintLimit],
+          };
         } else {
           throw new Error("You are not whitelisted for this collection");
         }
@@ -480,9 +477,9 @@ export const actions = {
 
     return transaction;
   },
-  async signLoginMessage({ state }: { state: any }) {
+  async signLoginMessage({ state, dispatch }: { state: any; dispatch: any }) {
     if (!wallet.isConnected()) {
-      await connectWallet(state.wallet.wallet);
+      dispatch("connectWallet", state.wallet.wallet);
     }
 
     checkNetwork();
@@ -741,7 +738,6 @@ export const actions = {
       mintNumber,
       proof,
       mintLimit,
-      v2,
     }: {
       resourceAccount: string;
       publicMint: boolean;
@@ -749,7 +745,6 @@ export const actions = {
       mintNumber: number;
       proof: any[];
       mintLimit: number;
-      v2: boolean;
     }
   ) {
     if (!wallet.isConnected()) {
@@ -773,7 +768,6 @@ export const actions = {
           candyMachineId,
           proof,
           mintLimit,
-          v2,
         });
 
         return res;

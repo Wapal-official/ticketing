@@ -1,17 +1,19 @@
 <template>
   <div
-    class="sidebar tw-flex tw-flex-col tw-items-start tw-justify-start tw-px-16"
+    class="sidebar tw-px-4 tw-py-4 tw-border-solid tw-border-r tw-border-r-dark-6"
   >
     <div
-      class="tw-px-4 min-h-48 tw-d-block tw-my-3"
-      :class="`dashboard${index + 1}`"
-      v-for="(item, index) in sidebarItems"
-      :key="item.path"
+      class="tw-group tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-h-fit"
     >
       <NuxtLink
-        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear hover:!tw-text-wapal-pink"
+        v-for="(item, index) in sidebarItems"
+        :key="item.path"
+        class="!tw-text-white tw-transition-all tw-duration-150 tw-ease-linear tw-py-3 tw-px-4 tw-w-full tw-rounded tw-font-medium sidebar-item tw-group hover:!tw-text-primary-2 hover:!tw-bg-dark-6 group-hover:tw-text-white group-hover:tw-bg-transparent"
         :to="item.path"
-        :class="{ 'nuxt-link-exact-active': checkCurrentPageRegex(item.path) }"
+        :class="{
+          'nuxt-link-exact-active': checkCurrentPageRegex(item.path),
+          ['dashboard' + (index + 1)]: true,
+        }"
         @click.native="close"
       >
         {{ item.name }}
@@ -67,14 +69,17 @@ export default {
       }
       return false;
     },
+    getDashboardClass(index: number) {
+      return `dashboard-${index + 1}`;
+    },
   },
   mounted() {},
 };
 </script>
 <style scoped>
 .sidebar {
-  height: calc(100vh - 95px);
-  width: 320px;
+  height: calc(100vh - 75px);
+  width: 230px;
 }
 
 .relative {
@@ -90,6 +95,6 @@ export default {
 }
 
 a.nuxt-link-exact-active {
-  @apply !tw-text-wapal-pink;
+  @apply !tw-text-primary-2 tw-bg-dark-6;
 }
 </style>

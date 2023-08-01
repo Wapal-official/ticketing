@@ -1,8 +1,7 @@
 <template>
   <div
-    class="tw-container tw-mx-auto tw-px-4 tw-pt-20 tw-pb-14 md:tw-px-8 tw-min-h-screen"
+    class="tw-container tw-mx-auto tw-px-4 tw-py-24 md:tw-px-8 tw-min-h-screen"
   >
-    <h1 class="tw-text-white tw-text-3xl tw-pb-6">Whitelist Opportunities</h1>
     <v-data-table
       :headers="headers"
       :items="paginatedWhitelists"
@@ -16,21 +15,24 @@
       <template v-slot:body="{ items }">
         <tbody>
           <tr
-            v-for="item in items"
+            v-for="(item, index) in items"
             :key="item._id"
             class="tw-cursor-pointer hover:!tw-bg-black/60"
             @click="redirectToWhitelist(item.username)"
           >
             <td
-              class="!tw-border-none tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-8"
+              class="!tw-border-b-dark-6 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-12 tw-font-medium !tw-text-base"
             >
-              <img
+              {{ index + 1 }}.<img
                 :src="item.image"
                 :alt="item.collectionName"
-                class="tw-w-[50px] tw-h-[50px] tw-object-cover"
+                class="tw-w-[64px] tw-h-[64px] tw-object-cover tw-rounded"
+                :onerror="imageNotFound()"
               />{{ item.collectionName }}
             </td>
-            <td class="!tw-border-none">
+            <td
+              class="!tw-border-b-dark-6 !tw-py-4 tw-font-medium !tw-text-base"
+            >
               <div
                 class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
               >
@@ -42,10 +44,8 @@
                   "
                   target="_blank"
                   @click.stop
-                  ><v-icon class="!tw-text-lg !tw-text-white"
-                    >mdi-twitter</v-icon
-                  ></a
-                >
+                  ><i class="!tw-text-lg !tw-text-white bx bxl-twitter"></i
+                ></a>
                 <a
                   class="!tw-text-lg !tw-text-white"
                   :href="
@@ -55,26 +55,31 @@
                   "
                   target="_blank"
                   @click.stop
-                  ><img :src="discord" alt="discord"
-                /></a>
+                >
+                  <i class="bx bxl-discord-alt"></i>
+                </a>
               </div>
             </td>
-            <td class="!tw-border-none">
+            <td
+              class="!tw-border-b-dark-6 !tw-py-4 tw-font-medium !tw-text-base"
+            >
               {{ getFormattedDate(item.mintDate) }}
             </td>
-            <td class="!tw-border-none tw-px-2">
+            <td
+              class="!tw-border-b-dark-6 tw-px-2 !tw-py-4 tw-font-medium !tw-text-base"
+            >
               <div
-                class="tw-w-full tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-1"
+                class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
               >
-                <div class="tw-text-xs">
-                  {{ item.spot.spotPercent }}% ({{ item.spot.occupiedSpots }} of
-                  {{ item.spot.totalSpots }} )
+                <div class="!tw-text-sm tw-font-normal tw-text-white/70">
+                  {{ item.spot.occupiedSpots }}/{{ item.spot.totalSpots }} Spot
+                  Taken
                 </div>
                 <div
-                  class="tw-relative tw-w-full tw-rounded-full tw-h-2 tw-bg-[#263D68] tw-overflow-hidden"
+                  class="tw-relative tw-w-full tw-rounded-full tw-h-2 tw-bg-white/10 tw-overflow-hidden"
                 >
                   <div
-                    class="tw-absolute tw-rounded-full tw-h-2 tw-top-0 tw-left-0 tw-bg-wapal-pink"
+                    class="tw-absolute tw-rounded-full tw-h-2 tw-top-0 tw-left-0 tw-bg-primary-1"
                     :style="`width:${item.spot.spotPercent}%`"
                   ></div>
                 </div>
@@ -85,7 +90,7 @@
       </template>
     </v-data-table>
     <div v-if="loading">
-      <loading />
+      <Loading />
     </div>
   </div>
 </template>
@@ -101,7 +106,7 @@ import { getCollection } from "@/services/CollectionService";
 import discord from "@/assets/img/footer/discord.svg";
 
 import moment from "moment";
-
+import imageNotFound from "@/utils/imageNotFound";
 export default {
   components: { Loading },
   data() {
@@ -114,14 +119,14 @@ export default {
           value: "collectionName",
           width: "300px",
           class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
+            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
         },
         {
           text: "Social Link",
           align: "start",
-          width: "150px",
+          width: "155px",
           class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
+            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
         },
         {
           text: "Mint Date",
@@ -130,7 +135,7 @@ export default {
           value: "mintDate",
           width: "150px",
           class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
+            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
         },
         {
           text: "No. Of Spots",
@@ -139,20 +144,21 @@ export default {
           value: "noOfSpots",
           width: "200px",
           class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
+            "!tw-text-dark-2 !tw-border-b-dark-6 !tw-text-base tw-uppercase tw-font-bold tw-pb-8",
         },
       ],
       whitelists: [],
       paginatedWhitelists: [],
       loading: true,
       discord,
+      imageNotFound,
     };
   },
   methods: {
     async fetchWhitelists() {
       this.loading = true;
 
-      const res = await getAllWhitelist();
+      const res = await getAllWhitelist(1, 100);
       const whitelists = res.data.whitelists;
 
       const collectionRes = await Promise.all(
@@ -180,6 +186,8 @@ export default {
             );
 
             spots.spotPercent = spotPercent;
+
+            this.count++;
 
             return {
               _id: whitelist._id,

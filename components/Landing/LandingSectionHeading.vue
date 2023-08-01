@@ -1,5 +1,5 @@
 <template>
-  <h2 class="tw-text-2xl tw-text-wapal-pink tw-font-semibold tw-py-6">
+  <h2 class="tw-uppercase tw-text-white tw-font-bold tw-text-[2rem]">
     {{ heading }}
   </h2>
 </template>

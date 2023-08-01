@@ -1,40 +1,47 @@
 <template>
-  <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
+  <div
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-bg-dark-9 tw-py-4 tw-border-b tw-border-dark-6"
+  >
     <nav
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-8 tw-py-6 lg:tw-gap-0 lg:tw-px-4 xl:!tw-px-20"
+      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-max-h-[40px] lg:tw-gap-0 xl:tw-px-[3.75em]"
     >
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 lg:tw-w-fit"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12 lg:tw-w-[224px]"
       >
-        <NuxtLink to="/" class="tw-min-w-[140px] tw-max-w-[140px]">
-          <img :src="logo" alt="logo" />
+        <NuxtLink to="/" class="">
+          <img
+            :src="logo"
+            alt="logo"
+            class="tw-min-w-[106px] tw-max-w-[106px] tw-min-h-[28px] tw-max-h-[28px]"
+          />
         </NuxtLink>
         <div class="tw-hidden lg:tw-flex">
           <v-menu offset-y open-on-hover>
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
                 <NuxtLink
-                  to="/explore/all"
-                  class="!tw-text-white tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink tw-uppercase !tw-font-normal"
+                  to="/latest-collection"
+                  class="!tw-text-[#A6A7AB] tw-transition tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-center tw-gap-0.5 tw-justify-start hover:!tw-text-primary-1"
                 >
-                  Explore
+                  <span>Explore</span>
+                  <i class="bx bx-chevron-down !tw-text-[#A6A7AB]"></i>
                 </NuxtLink>
               </div>
             </template>
-            <v-list class="!tw-bg-modal-gray !tw-min-w-[200px]">
+            <v-list class="tw-bg-dark-7 !tw-min-w-[240px]">
               <explore-list-item
                 name="All NFT"
-                link="/explore/all"
+                link="/latest-collection"
                 @close="close"
               />
               <explore-list-item
                 name="Live"
-                link="/explore/live"
+                link="/latest-collection"
                 @close="close"
               />
               <explore-list-item
                 name="Upcoming"
-                link="/explore/upcoming"
+                link="/upcoming-collection"
                 @close="close"
               />
               <explore-list-item
@@ -47,16 +54,21 @@
           </v-menu>
         </div>
       </div>
+
       <div
-        class="tw-hidden tw-mx-auto md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center tw-flex-grow 1xl:tw-ml-20"
+        class="tw-hidden tw-w-full md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-end md:tw-w-4/5 lg:tw-w-[90%] xl:tw-w-4/5"
       >
-        <div class="tw-w-[350px] tw-max-w-[350px]">
-          <search-bar />
-        </div>
-      </div>
-      <div>
-        <div class="tw-hidden lg:tw-flex tw-w-fit">
-          <landing-menu />
+        <div
+          class="tw-w-4/5 tw-flex tw-flex-row tw-items-center tw-justify-between lg:tw-w-[90%] xl:tw-w-4/5"
+        >
+          <div
+            class="tw-hidden md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[392px] xl:tw-w-[424px]"
+          >
+            <search-bar />
+          </div>
+          <div class="tw-w-fit tw-hidden lg:tw-flex">
+            <landing-menu />
+          </div>
         </div>
       </div>
       <div
@@ -65,15 +77,18 @@
       >
         <search-bar @closeSearchBar="closeSearchBar" />
       </div>
-      <div class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4">
+      <div
+        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4 md:tw-hidden"
+      >
         <button @click="displaySearchBar" class="tw-flex md:tw-hidden">
-          <v-icon class="!tw-text-wapal-gray">mdi-magnify</v-icon>
+          <i class="bx bx-search !tw-text-wapal-gray tw-text-2xl"></i>
         </button>
         <button @click="toggleLandingMenu" class="tw-flex lg:tw-hidden">
-          <v-icon class="!tw-text-wapal-gray" v-if="!landingMenuShowing"
-            >mdi-menu</v-icon
-          >
-          <v-icon class="!tw-text-wapal-gray" v-else>mdi-close</v-icon>
+          <i
+            class="bx bx-menu !tw-text-wapal-gray tw-text-2xl"
+            v-if="!landingMenuShowing"
+          ></i>
+          <i class="bx bx-x !tw-text-wapal-gray tw-text-2xl" v-else></i>
         </button>
       </div>
     </nav>
@@ -87,7 +102,7 @@
 </template>
 
 <script lang="ts">
-import logo from "@/assets/img/logo/mainnet-beta.png";
+import logo from "@/assets/img/logo/logo.svg";
 import LandingMenu from "@/components/Landing/Navbar/LandingMenu.vue";
 import SearchBar from "@/components/Landing/Navbar/SearchBar.vue";
 import ExploreListItem from "@/components/Landing/Navbar/ExploreListItem.vue";
@@ -136,5 +151,9 @@ export default {
 <style scoped>
 .mobile-menu {
   height: calc(100vh - 95px);
+}
+
+::v-deep .v-list-item {
+  padding: 0rem 0.375rem !important;
 }
 </style>
