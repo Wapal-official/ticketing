@@ -74,7 +74,7 @@ export default {
         this.totalSupply = 355;
       }
 
-      if (this.totalSupply === this.minted) {
+      if (this.totalSupply == this.minted) {
         this.soldOut = true;
       }
     } catch {
