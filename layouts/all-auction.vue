@@ -27,7 +27,7 @@ export default {
     };
   },
   async mounted() {
-    const res = await getAuctionByName("doggy-style-9");
+    const res = await getAuctionByName("aptosmonkeys-3693");
 
     this.featuredAuctionName = res.data.auction.auction_name;
 
