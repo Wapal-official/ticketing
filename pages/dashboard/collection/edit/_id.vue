@@ -1,223 +1,258 @@
 <template>
   <div
-    class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-4 md:tw-grid-cols-2"
+    class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 xl:tw-flex-row xl:tw-items-start xl:tw-justify-start"
     v-if="!loading"
   >
-    <div class="tw-w-full">
-      <img :src="collection.image" :alt="collection.name" />
-    </div>
-    <div class="tw-w-full tw-flex tw-flex-col tw-gap-4">
-      <h2 class="tw-text-2xl tw-font-semibold">{{ collection.name }}</h2>
-      <p>{{ collection.description }}</p>
-      <div>
-        <h3>Total Supply</h3>
-        <div
-          class="tw-flex tw-flex-col tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-start"
-        >
-          <div>
-            {{ collection.supply }}
-          </div>
-          <reusable-theme-button
-            title="Change Total Supply"
-            @click="showChangeDialog('total_supply')"
-          />
-        </div>
-      </div>
-      <div>
-        <h3>Whitelist Sale Time</h3>
-        <div
-          class="tw-flex tw-flex-col tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-start"
-        >
-          <div>
-            {{ formatDateTime(collection.candyMachine.whitelist_sale_time) }}
-          </div>
-          <reusable-theme-button
-            title="Change Whitelist Sale Time"
-            @click="showChangeDialog('whitelist_sale_time')"
-          />
-        </div>
-      </div>
-      <div>
-        <h3>Public Sale Time</h3>
-        <div
-          class="tw-flex tw-flex-col tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-start"
-        >
-          <div>
-            {{ formatDateTime(collection.candyMachine.public_sale_time) }}
-          </div>
-          <reusable-theme-button
-            title="Change Public Sale Time"
-            @click="showChangeDialog('public_sale_time')"
-          />
-        </div>
-      </div>
-      <div>
-        <h3>Whitelist Sale Price</h3>
-        <div
-          class="tw-flex tw-flex-col tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-start"
-        >
-          <div>
-            {{ collection.candyMachine.whitelist_price }}
-          </div>
-          <reusable-theme-button
-            title="Change Whitelist Sale Price"
-            @click="showChangeDialog('whitelist_price')"
-          />
-        </div>
-      </div>
-      <div>
-        <h3>Public Sale Price</h3>
-        <div
-          class="tw-flex tw-flex-col tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-start"
-        >
-          <div>
-            {{ collection.candyMachine.public_sale_price }}
-          </div>
-          <reusable-theme-button
-            title="Change Public Sale Price"
-            @click="showChangeDialog('public_sale_price')"
-          />
-        </div>
-      </div>
-      <div>
-        <reusable-theme-button
-          title="Edit Collection"
-          @click="editCollectionDialog = true"
-        />
-      </div>
-    </div>
-    <v-dialog
-      v-model="changeDialog"
-      content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]"
-    >
-      <h2 class="tw-text-xl tw-font-semibold">{{ changeDialogTitle }}</h2>
-      <div class="tw-w-full" v-if="changeDialogInputType !== 'date'">
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-          rules="required"
-          v-slot="{ errors }"
-        >
-          <reusable-text-field v-model="changeDialogValue" />
-        </ValidationProvider>
-      </div>
-      <div class="tw-w-full" v-else>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-          rules="required"
-          v-slot="{ errors }"
-        >
-          <reusable-date-picker v-model="changeDialogValue" />
-        </ValidationProvider>
-      </div>
-      <reusable-theme-button
-        :title="changeDialogButtonTitle"
-        @click="checkChangeCondition(changeDialogType)"
-      />
-    </v-dialog>
-    <v-dialog
-      v-model="editCollectionDialog"
-      content-class="!tw-w-full tw-mx-4 tw-px-8 tw-py-4 tw-bg-modal-gray tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:!tw-w-1/2 lg:!tw-w-[30%]"
-    >
-      <h2 class="tw-text-xl tw-font-semibold">Edit Collection</h2>
-      <ValidationProvider
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-        rules="required"
-        v-slot="{ errors }"
-      >
-        <label
-          class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-          >Whitelist Sale Time</label
-        >
-        <reusable-date-picker
-          v-model="editCollection.whitelistSaleTime"
-          placeholder="Select Whitelist Sale Time"
-          type="datetime"
-        />
-      </ValidationProvider>
+    <img
+      :src="collection.image"
+      :alt="collection.name"
+      class="tw-rounded tw-w-[421px] tw-h-[421px]"
+    />
 
-      <ValidationProvider
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-        rules="required"
-        v-slot="{ errors }"
-      >
-        <label
-          class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-          >Public Sale Time</label
+    <ValidationObserver
+      class="tw-w-full tw-flex tw-flex-col tw-gap-5 xl:tw-max-w-[534px]"
+      ref="editForm"
+    >
+      <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2">
+        <h2
+          class="tw-text-[1.375rem] tw-font-semibold tw-leading-7 tw-tracking-[0.01375rem] tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
-        <reusable-date-picker
-          v-model="editCollection.publicSaleTime"
-          placeholder="Select Public Sale Time"
-          type="datetime"
-        />
-      </ValidationProvider>
-      <ValidationProvider
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-        rules="required"
-        v-slot="{ errors }"
+          <span> {{ collection.name }}</span>
+          <i
+            class="bx bxs-badge-check tw-text-primary-1 tw-text-lg"
+            v-if="collection.isVerified"
+          ></i>
+        </h2>
+        <div class="">{{ collection.description }}</div>
+      </div>
+      <div
+        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-text-sm tw-font-semibold tw-w-full"
+        v-if="!editingTotalSupply"
       >
-        <label
-          class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-          >Whitelist Price</label
+        <div class="">Total Supply: {{ collection.supply }}</div>
+        <button
+          class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+          @click="editingTotalSupply = true"
         >
-        <reusable-text-field
-          v-model="editCollection.whitelistPrice"
-          placeholder="Enter Pre-sale Price"
-        />
-      </ValidationProvider>
-      <ValidationProvider
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-        rules="required"
-        v-slot="{ errors }"
+          <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-2xl"></i>
+          <span>Edit</span>
+        </button>
+      </div>
+      <div
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-text-sm tw-gap-2"
+        v-else
       >
-        <label
-          class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-          >Public Sale Price</label
+        <div class="tw-font-medium">Total Supply</div>
+        <div
+          class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-3"
         >
-        <reusable-text-field
-          v-model="editCollection.publicSalePrice"
-          placeholder="Enter Public sale Price"
-        />
-      </ValidationProvider>
-      <ValidationProvider
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-        rules="required"
-        v-slot="{ errors }"
-      >
-        <label
-          class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-          >Total Supply</label
+          <ValidationProvider rules="required|number" v-slot="{ errors }">
+            <input-text-field
+              placeholder="Total Supply"
+              v-model="editCollection.totalSupply"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <button-primary
+            title="Save Changes"
+            @click="checkChangeCondition('totalSupply')"
+          />
+        </div>
+      </div>
+      <div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
         >
-        <reusable-text-field
-          v-model="editCollection.totalSupply"
-          placeholder="Enter Total Supply"
-        />
-      </ValidationProvider>
-      <ValidationProvider
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-        rules="required"
-        v-slot="{ errors }"
-      >
-        <label
-          class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-          >Royalty</label
+          <div class="tw-text-white tw-font-semibold tw-capitalize">
+            Whitelist Sale
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-baseline tw-justify-between"
+            v-if="!editingWhitelistSaleTime && !editingWhitelistSalePrice"
+          >
+            <div class="">
+              <div
+                class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+              >
+                Whitelist Sale Time
+              </div>
+              <div
+                class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+              >
+                <span>
+                  {{
+                    formatDateTime(collection.candyMachine.whitelist_sale_time)
+                  }}</span
+                >
+                <button
+                  class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+                  @click="editingWhitelistSaleTime = true"
+                >
+                  <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-2xl"></i>
+                  <span>Edit</span>
+                </button>
+              </div>
+            </div>
+            <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
+              <div
+                class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+              >
+                Price
+              </div>
+              <div
+                class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+              >
+                <span>{{ collection.candyMachine.whitelist_price }}APT</span>
+                <button
+                  class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+                  @click="editingWhitelistSalePrice = true"
+                >
+                  <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-2xl"></i>
+                  <span>Edit</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-start tw-justify-between"
+            v-if="editingWhitelistSaleTime"
+          >
+            <ValidationProvider rules="required|date" v-slot="{ errors }">
+              <input-date-picker
+                placeholder="Select Whitelist Sale Time"
+                v-model="editCollection.whitelistSaleTime"
+              />
+              <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <button-primary
+              title="Save Changes"
+              @click="checkChangeCondition('whitelist_sale_time')"
+            />
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-start tw-justify-between"
+            v-if="editingWhitelistSalePrice"
+          >
+            <ValidationProvider rules="required|number" v-slot="{ errors }">
+              <input-text-field
+                placeholder="Whitelist Sale Price"
+                v-model="editCollection.whitelistPrice"
+              >
+                <template #append-icon>
+                  <img :src="aptIcon" alt="apt icon" />
+                </template>
+              </input-text-field>
+              <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <button-primary
+              title="Save Changes"
+              @click="checkChangeCondition('whitelist_sale_price')"
+            />
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
         >
-        <reusable-text-field
-          v-model="editCollection.royalty"
-          placeholder="Enter Royalty Percent"
-        />
-      </ValidationProvider>
-      <reusable-theme-button title="Edit" @click="sendDataToEditCollection" />
-    </v-dialog>
+          <div class="tw-text-white tw-font-semibold tw-capitalize">
+            Public Sale
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-baseline tw-justify-between"
+            v-if="!editingPublicSaleTime && !editingPublicSalePrice"
+          >
+            <div class="">
+              <div
+                class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+              >
+                Public Sale Time
+              </div>
+              <div
+                class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+              >
+                <span>
+                  {{
+                    formatDateTime(collection.candyMachine.public_sale_time)
+                  }}</span
+                >
+                <button
+                  class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+                  @click="editingPublicSaleTime = true"
+                >
+                  <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-2xl"></i>
+                  <span>Edit</span>
+                </button>
+              </div>
+            </div>
+            <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
+              <div
+                class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+              >
+                Price
+              </div>
+              <div
+                class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+              >
+                <span>{{ collection.candyMachine.public_sale_price }}APT</span>
+                <button
+                  class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+                  @click="editingPublicSalePrice = true"
+                >
+                  <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-2xl"></i>
+                  <span>Edit</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-start tw-justify-between"
+            v-if="editingPublicSaleTime"
+          >
+            <ValidationProvider rules="required|date" v-slot="{ errors }">
+              <input-date-picker
+                placeholder="Select Whitelist Sale Time"
+                v-model="editCollection.publicSaleTime"
+              />
+              <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <button-primary
+              title="Save Changes"
+              @click="checkChangeCondition('public_sale_time')"
+            />
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-start tw-justify-between"
+            v-if="editingPublicSalePrice"
+          >
+            <ValidationProvider rules="required|number" v-slot="{ errors }">
+              <input-text-field
+                placeholder="Public Sale Price"
+                v-model="editCollection.publicSalePrice"
+              >
+                <template #append-icon>
+                  <img :src="aptIcon" alt="apt icon" />
+                </template>
+              </input-text-field>
+              <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <button-primary
+              title="Save Changes"
+              @click="checkChangeCondition('public_sale_price')"
+            />
+          </div>
+        </div>
+      </div>
+    </ValidationObserver>
   </div>
   <div class="py-16" v-else>
     <reusable-loading />
   </div>
 </template>
 <script lang="ts">
-import { getCollection } from "@/services/CollectionService";
+import { getCollection, updateCollection } from "@/services/CollectionService";
 import {
   getCollectionDetails,
-  updateCollection,
   updateWhitelistSaleTime,
   updatePublicSaleTime,
   updateWhitelistSalePrice,
@@ -227,8 +262,31 @@ import {
 
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import moment from "moment";
+
+import aptIcon from "@/assets/img/aptBlack.svg";
+
+extend("date", {
+  validate(value) {
+    if (new Date(value).getTime() < Date.now()) {
+      return false;
+    }
+    return true;
+  },
+  message: "Sale time should be greater than current time",
+});
+
+extend("number", {
+  validate(value) {
+    if (isNaN(value)) {
+      return false;
+    }
+    return true;
+  },
+  message: "This field must be a number",
+});
+
 export default {
-  components: { ValidationProvider },
+  components: { ValidationProvider, ValidationObserver },
   data() {
     return {
       collection: {
@@ -243,6 +301,7 @@ export default {
           public_sale_price: "",
         },
         supply: "",
+        isVerified: false,
       },
       loading: true,
       whitelistSaleTime: "",
@@ -261,6 +320,12 @@ export default {
       changeDialogInputType: "",
       changeDialogValue: null,
       changeDialogType: "",
+      editingTotalSupply: false,
+      editingWhitelistSalePrice: false,
+      editingWhitelistSaleTime: false,
+      editingPublicSalePrice: false,
+      editingPublicSaleTime: false,
+      aptIcon,
     };
   },
   async mounted() {
@@ -278,27 +343,21 @@ export default {
         this.collection.candyMachine.resource_account
       );
 
-      console.log(chainRes);
+      this.editCollection.whitelistSaleTime = new Date(
+        this.collection.candyMachine.whitelist_sale_time
+      );
 
-      this.collection.candyMachine.whitelist_sale_time =
-        this.editCollection.whitelistSaleTime = new Date(
-          chainRes.presale_mint_time * 1000
-        );
+      this.editCollection.publicSaleTime = new Date(
+        this.collection.candyMachine.public_sale_time
+      );
 
-      this.collection.candyMachine.public_sale_time =
-        this.editCollection.publicSaleTime = new Date(
-          chainRes.public_sale_mint_time * 1000
-        );
+      this.editCollection.publicSalePrice =
+        this.collection.candyMachine.public_sale_price;
 
-      this.collection.candyMachine.public_sale_price =
-        this.editCollection.publicSalePrice =
-          chainRes.public_sale_mint_price / Math.pow(10, 8);
+      this.editCollection.whitelistPrice =
+        this.collection.candyMachine.whitelist_price;
 
-      this.collection.candyMachine.whitelist_price =
-        this.editCollection.whitelistPrice =
-          chainRes.presale_mint_price / Math.pow(10, 8);
-      this.collection.supply = this.editCollection.totalSupply =
-        chainRes.total_supply;
+      this.editCollection.totalSupply = this.collection.supply;
 
       this.editCollection.royalty =
         (chainRes.royalty_points_numerator * 100) /
@@ -307,52 +366,13 @@ export default {
       this.loading = false;
     },
     formatDateTime(date: string) {
-      return moment(date).format("YYYY-MM-DD hh:mm:ss");
+      return moment(date).format("MMM DD, hh:mm A");
     },
-    showChangeDialog(type: string) {
-      this.changeDialog = true;
-      switch (type) {
-        case "whitelist_sale_time":
-          this.changeDialogTitle = "Change Whitelist Sale Time";
-          this.changeDialogInputType = "date";
-          this.changeDialogButtonTitle = "Set Whitelist Sale Time";
-          this.changeDialogValue = this.editCollection.whitelistSaleTime;
-          this.changeDialogType = "whitelist_sale_time";
-          break;
-        case "public_sale_time":
-          this.changeDialogTitle = "Change Public Sale Time";
-          this.changeDialogInputType = "date";
-          this.changeDialogButtonTitle = "Set Public Sale Time";
-          this.changeDialogValue = this.editCollection.publicSaleTime;
-          this.changeDialogType = "public_sale_time";
-          break;
-        case "whitelist_price":
-          this.changeDialogTitle = "Change Whitelist Sale Price";
-          this.changeDialogInputType = "text";
-          this.changeDialogButtonTitle = "Set Whitelist Sale Price";
-          this.changeDialogValue = this.editCollection.whitelistPrice;
-          this.changeDialogType = "whitelist_price";
-          break;
-        case "public_sale_price":
-          this.changeDialogTitle = "Change Public Sale Price";
-          this.changeDialogInputType = "text";
-          this.changeDialogButtonTitle = "Set Public Sale Price";
-          this.changeDialogValue = this.editCollection.publicSalePrice;
-          this.changeDialogType = "public_sale_price";
-          break;
-        case "total_supply":
-          this.changeDialogTitle = "Change Total Supply";
-          this.changeDialogInputType = "text";
-          this.changeDialogButtonTitle = "Set Total Supply";
-          this.changeDialogValue = this.editCollection.totalSupply;
-          this.changeDialogType = "total_supply";
-          break;
-        default:
-          this.changeDialog = false;
-          break;
+    async checkChangeCondition(type: string) {
+      const validate = await this.$refs.editForm.validate();
+      if (!validate) {
+        return;
       }
-    },
-    checkChangeCondition(type: string) {
       switch (type) {
         case "whitelist_sale_time":
           this.updateWhitelistSaleTime();
@@ -360,13 +380,13 @@ export default {
         case "public_sale_time":
           this.updatePublicSaleTime();
           break;
-        case "whitelist_price":
+        case "whitelist_sale_price":
           this.updateWhitelistSalePrice();
           break;
         case "public_sale_price":
           this.updatePublicSalePrice();
           break;
-        case "total_supply":
+        case "totalSupply":
           this.updateTotalSupply();
           break;
         default:
@@ -377,12 +397,21 @@ export default {
       try {
         await updateWhitelistSaleTime(
           this.collection.candyMachine.resource_account,
-          this.changeDialogValue
+          this.editCollection.whitelistSaleTime
         );
 
-        this.$toast.showMessage({ message: "Collection Updated Successfully" });
+        const candyMachine = this.collection.candyMachine;
 
-        this.changeDialog = false;
+        candyMachine.whitelist_sale_time =
+          this.editCollection.whitelistSaleTime;
+
+        const res = await updateCollection(this.collection._id, {
+          candyMachine,
+        });
+
+        this.editingWhitelistSaleTime = false;
+
+        this.$toast.showMessage({ message: "Collection Updated Successfully" });
 
         this.fetchCollection();
       } catch (error) {
@@ -395,12 +424,20 @@ export default {
       try {
         await updatePublicSaleTime(
           this.collection.candyMachine.resource_account,
-          this.changeDialogValue
+          this.editCollection.publicSaleTime
         );
 
-        this.$toast.showMessage({ message: "Collection Updated Successfully" });
+        const candyMachine = this.collection.candyMachine;
 
-        this.changeDialog = false;
+        candyMachine.public_sale_time = this.editCollection.publicSaleTime;
+
+        const res = await updateCollection(this.collection._id, {
+          candyMachine,
+        });
+
+        this.editingPublicSaleTime = false;
+
+        this.$toast.showMessage({ message: "Collection Updated Successfully" });
 
         this.fetchCollection();
       } catch (error) {
@@ -413,12 +450,20 @@ export default {
       try {
         await updateWhitelistSalePrice(
           this.collection.candyMachine.resource_account,
-          this.changeDialogValue
+          this.editCollection.whitelistPrice
         );
 
-        this.$toast.showMessage({ message: "Collection Updated Successfully" });
+        const candyMachine = this.collection.candyMachine;
 
-        this.changeDialog = false;
+        candyMachine.whitelist_price = this.editCollection.whitelistPrice;
+
+        const res = await updateCollection(this.collection._id, {
+          candyMachine,
+        });
+
+        this.editingWhitelistSalePrice = false;
+
+        this.$toast.showMessage({ message: "Collection Updated Successfully" });
 
         this.fetchCollection();
       } catch (error) {
@@ -431,12 +476,20 @@ export default {
       try {
         await updatePublicSalePrice(
           this.collection.candyMachine.resource_account,
-          this.changeDialogValue
+          this.editCollection.publicSalePrice
         );
 
-        this.$toast.showMessage({ message: "Collection Updated Successfully" });
+        const candyMachine = this.collection.candyMachine;
 
-        this.changeDialog = false;
+        candyMachine.public_sale_price = this.editCollection.publicSalePrice;
+
+        const res = await updateCollection(this.collection._id, {
+          candyMachine,
+        });
+
+        this.editingPublicSalePrice = false;
+
+        this.$toast.showMessage({ message: "Collection Updated Successfully" });
 
         this.fetchCollection();
       } catch (error) {
@@ -449,32 +502,22 @@ export default {
       try {
         await updateTotalSupply(
           this.collection.candyMachine.resource_account,
-          this.changeDialogValue
+          this.editCollection.totalSupply
         );
 
-        this.$toast.showMessage({ message: "Collection Updated Successfully" });
+        const res = await updateCollection(this.collection._id, {
+          supply: this.editCollection.totalSupply,
+        });
 
-        this.changeDialog = false;
+        this.editingTotalSupply = false;
+
+        this.$toast.showMessage({ message: "Collection Updated Successfully" });
 
         this.fetchCollection();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.changeDialog = false;
-      }
-    },
-    async sendDataToEditCollection() {
-      try {
-        const res = await updateCollection(
-          this.collection.candyMachine.resource_account,
-          this.editCollection
-        );
-        this.$toast.showMessage({ message: "Collection Updated Successfully" });
-
-        this.editCollectionDialog = false;
-      } catch (error) {
-        console.log(error);
-        this.$toast.showMessage({ message: error, error: true });
       }
     },
   },

@@ -387,7 +387,7 @@
   border: none !important;
 }
 .wapal-input.v-text-field--enclosed .v-input__append-inner {
-  margin-top: 10px !important;
+  margin-top: 8px !important;
 }
 
 .wapal-input.v-text-field--outlined.v-input--is-focused .v-input__slot:before {

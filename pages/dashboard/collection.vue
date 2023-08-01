@@ -78,6 +78,26 @@ export default {
 
       return true;
     },
+    path() {
+      return this.$route.path;
+    },
+  },
+  watch: {
+    path() {
+      if (
+        this.$route.path === "/dashboard/collection" ||
+        this.$route.path === "/dashboard/collection/"
+      ) {
+        this.$router.push("/dashboard/collection/live");
+        this.launchpadTab = 0;
+      } else if (this.$route.path === "/dashboard/collection/live") {
+        this.launchpadTab = 0;
+      } else if (this.$route.path === "/dashboard/collection/under-review") {
+        this.launchpadTab = 1;
+      } else {
+        this.launchpadTab = 2;
+      }
+    },
   },
 };
 </script>

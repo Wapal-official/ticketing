@@ -397,13 +397,123 @@
                 v-if="draft"
               />
               <button-primary
-                title="Create Collection"
+                title="Next"
                 :loading="submitting"
-                @click="submitCollection"
+                @click="validateFormForNextStep"
               />
             </div>
           </div>
         </ValidationObserver>
+      </v-stepper-content>
+      <v-stepper-content step="4">
+        <div
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-w-full xl:tw-w-[658px]"
+        >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Review
+          </h2>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+          >
+            <h3 class="tw-leading-[150%] tw-font-bold">Details</h3>
+            <button
+              class="tw-text-sm tw-text-dark-3 tw-font-semibold"
+              @click="stepNumber = 1"
+            >
+              Edit
+            </button>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+          >
+            <h4 class="tw-font-medium">{{ collection.name }}</h4>
+            <div>
+              {{ collection.description }}
+            </div>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+          >
+            <h3 class="tw-leading-[150%] tw-font-bold">Royalty</h3>
+            <button
+              class="tw-text-sm tw-text-dark-3 tw-font-semibold"
+              @click="stepNumber = 2"
+            >
+              Edit
+            </button>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+          >
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-baseline tw-justify-between"
+            >
+              <div>
+                <div
+                  class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+                >
+                  Royalty Percentage
+                </div>
+                <div class="tw-text-white">
+                  {{ collection.royalty_percentage }}%
+                </div>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
+                <div
+                  class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+                >
+                  Total Supply
+                </div>
+                <div class="tw-text-white">{{ collection.supply }}</div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+          >
+            <h3 class="tw-leading-[150%] tw-font-bold">Phase</h3>
+            <button
+              class="tw-text-sm tw-text-dark-3 tw-font-semibold"
+              @click="stepNumber = 3"
+            >
+              Edit
+            </button>
+          </div>
+          <nft-mint-phase-box
+            v-for="(phase, index) in collection.phases"
+            :phase="{
+              name: phase.name,
+              mint_time: phase.mint_time,
+              mint_price: collection.whitelist_price,
+            }"
+            :key="index"
+            v-if="collection.phases.length > 0"
+          />
+          <nft-mint-phase-box
+            :phase="{
+              name: 'Whitelist Sale',
+              mint_time: collection.whitelist_sale_time,
+              mint_price: collection.whitelist_price,
+            }"
+            v-if="whitelistEnabled"
+          />
+          <nft-mint-phase-box
+            :phase="{
+              name: 'Public Sale',
+              mint_time: collection.public_sale_time,
+              mint_price: collection.public_sale_price,
+            }"
+          />
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+          >
+            <button-primary
+              title="Create"
+              :loading="submitting"
+              @click="submitCollection"
+            />
+          </div>
+        </div>
       </v-stepper-content>
     </stepper>
     <!-- <ValidationObserver ref="form" v-slot="{ handleSubmit }" v-if="!loading">
@@ -997,7 +1107,7 @@ export default {
   props: { draft: { type: Boolean, default: false } },
   data() {
     return {
-      steps: ["Details", "Royalty", "Phase"],
+      steps: ["Details", "Royalty", "Phase", "Review"],
       stepNumber: 1,
       collection: {
         name: "",
@@ -1104,6 +1214,14 @@ export default {
             break;
           }
 
+          this.stepNumber++;
+          break;
+        case 3:
+          const phaseValidated = await this.$refs.phaseForm.validate();
+
+          if (!phaseValidated) {
+            break;
+          }
           this.stepNumber++;
           break;
         default:
