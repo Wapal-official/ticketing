@@ -633,6 +633,11 @@ export default {
             minted: this.resource.minted,
             total_supply: 2333,
           };
+        } else if (this.collection._id === "6466a09b6fee90eea757521c") {
+          this.resource = {
+            minted: this.resource.minted,
+            total_supply: 343,
+          };
         }
 
         if (
@@ -1053,6 +1058,11 @@ export default {
         this.resource = {
           minted: this.resource.minted,
           total_supply: 2333,
+        };
+      } else if (this.collection._id === "6466a09b6fee90eea757521c") {
+        this.resource = {
+          minted: this.resource.minted,
+          total_supply: 343,
         };
       }
 
