@@ -105,12 +105,15 @@ export default {
   },
   mounted() {
     // this.startTour({ store: this.$store });
-    if (localStorage.getItem("seen_asset_tour") === null) {
-      this.startTour({ store: this.$store });
 
-      localStorage.setItem("seen_asset_tour", "true");
+    const verified = JSON.parse(localStorage.getItem("verified") || "");
+    if (verified) {
+      if (localStorage.getItem("seen_asset_tour") === null) {
+        this.startTour({ store: this.$store });
+
+        localStorage.setItem("seen_asset_tour", "true");
+      }
     }
-
     this.$store.dispatch("walletStore/initializeWallet");
     if (process.client) {
       window.addEventListener("dragenter", (e) => e.preventDefault());

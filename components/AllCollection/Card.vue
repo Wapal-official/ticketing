@@ -72,6 +72,8 @@ export default {
         this.totalSupply = 222;
       } else if (this.collection._id === "64686db77db14461740bab0f") {
         this.totalSupply = 355;
+      } else if (this.collection._id === "64625d957c7212d927559962") {
+        this.totalSupply = 2333;
       }
 
       if (this.totalSupply == this.minted) {
