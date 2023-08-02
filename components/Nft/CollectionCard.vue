@@ -147,6 +147,8 @@ export default {
         return 222;
       } else if (this.collection._id === "64686db77db14461740bab0f") {
         return 355;
+      } else if (this.collection._id === "64625d957c7212d927559962") {
+        return 2333;
       }
 
       return this.collection.supply;
