@@ -179,7 +179,7 @@
           </ValidationProvider>
         </div>
         <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4"
+          class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end tw-py-4"
         >
           <button-primary
             title="Create"
