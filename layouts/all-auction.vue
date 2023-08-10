@@ -13,7 +13,7 @@
 </template>
 <script lang="ts">
 import DefaultLayout from "@/layouts/default.vue";
-import { getAuctionByName } from "@/services/AuctionService";
+import { getFeaturedAuctions } from "@/services/AuctionService";
 export default {
   layout: "default",
   components: { DefaultLayout },
@@ -27,9 +27,11 @@ export default {
     };
   },
   async mounted() {
-    const res = await getAuctionByName("aptosmonkeys-3693");
+    const auctionRes = await getFeaturedAuctions();
 
-    this.featuredAuctionName = res.data.auction.auction_name;
+    const auction = auctionRes[0];
+
+    this.featuredAuctionName = auction.auction_name;
 
     if (this.$route.path === "/live-auction") {
       this.tab = 0;

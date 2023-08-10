@@ -47,11 +47,8 @@
 <script>
 import Swiper from "swiper/swiper-bundle.min";
 import "swiper/swiper-bundle.min.css";
-import {
-  getFeaturedCollection,
-  getCollectionByUsername,
-} from "@/services/CollectionService";
-import { getAuctionByName } from "@/services/AuctionService";
+import { getFeaturedCollection } from "@/services/CollectionService";
+import { getFeaturedAuctions } from "@/services/AuctionService";
 export default {
   data() {
     return {
@@ -66,11 +63,9 @@ export default {
     const res = await getFeaturedCollection();
     this.featuredCollections.push(...res);
 
-    // const upcomingAuctionRes = await getAuctionByName("awakened-panda-465");
-    // const liveAuctionRes = await getAuctionByName("doggy-style-9");
+    const auctionRes = await getFeaturedAuctions();
 
-    // this.featuredAuctions.push(liveAuctionRes.data.auction);
-    // this.featuredAuctions.push(upcomingAuctionRes.data.auction);
+    this.featuredAuctions.push(...auctionRes);
 
     this.loading = false;
 
