@@ -27,6 +27,7 @@
             <count-down-plain
               :startTime="phases[0].mint_time"
               class="tw-font-bold"
+              @countdownComplete="setCollectionToLive"
             />
           </div>
         </div>
@@ -100,6 +101,12 @@
         <div class="tw-pb-2 tw-text-dark-0">
           {{ collection.description }}
         </div>
+        <div class="tw-pb-2 tw-text-red-600" v-if="gettingProof">
+          Getting Proof for {{ currentSale.name }}
+        </div>
+        <div v-if="notWhitelisted" class="tw-pb-2 tw-text-red-600">
+          You are not whitelisted in {{ currentSale.name }} for this collection
+        </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
           v-if="live"
@@ -156,7 +163,12 @@
               </div>
               <button-primary
                 :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
-                :disabled="minting || collection.status.sold_out"
+                :disabled="
+                  minting ||
+                  collection.status.sold_out ||
+                  gettingProof ||
+                  notWhitelisted
+                "
                 @click="mintBulkCollection"
                 :fullWidth="true"
               />
@@ -165,7 +177,7 @@
         </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-relative tw-rounded-lg"
-          v-if="currentSale.id !== 'public-sale'"
+          v-if="phaseCounter !== phases.length"
         >
           <div
             class="tw-absolute tw-w-full tw-h-1/4 tw-overflow-hidden tw-left-0 tw-bottom-0 tw-rounded-b-lg tw-bg-gradient-to-b tw-from-black/0 tw-to-black"
@@ -174,7 +186,11 @@
             Mint Phases
           </h2>
           <div
-            class="tw-w-full tw-h-[250px] tw-overflow-auto no-scrollbar tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-rounded-lg"
+            class="tw-w-full tw-overflow-auto no-scrollbar tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-rounded-lg"
+            :class="{
+              'tw-h-[250px]': phaseCounter !== phases.length - 1,
+              'tw-h-[125px]': phaseCounter === phases.length - 1,
+            }"
           >
             <nft-mint-phase-box
               v-for="(phase, index) in phases"
@@ -208,288 +224,6 @@
     </v-dialog>
   </div>
   <loading-collection v-else />
-  <!-- <div>
-      <div
-        class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-pt-16 tw-pb-16 md:tw-px-16 lg:tw-flex-row lg:tw-gap-16"
-        v-if="!loading"
-      >
-        <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full tw-group md:tw-w-[60%] lg:tw-w-[40%]"
-        >
-          <div
-            class="tw-rounded-lg nft-preview-card-border tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear"
-          >
-            <img
-              :src="collection.image"
-              :alt="collection.name"
-              class="tw-w-full tw-rounded-lg tw-max-h-[550px] tw-object-fill"
-            />
-          </div>
-          <h3
-            class="tw-text-[1.75rem] tw-text-wapal-pink tw-font-normal tw-w-full"
-          >
-            <div
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full md:tw-items-center lg:tw-flex-row lg:tw-items-center"
-              v-if="showLiveInTimer"
-            >
-              <span class="tw-pr-4 lg:tw-pr-8">Live In</span>
-              <count-down :shadow="true" :startTime="currentSale.mint_time" />
-            </div>
-            <span
-              class="tw-text-3xl tw-flex tw-flex-row tw-items-center tw-justify-center live-counter live-counter-shadow tw-tracking-widest tw-uppercase"
-              v-else
-              >Live</span
-            >
-          </h3>
-        </div>
-        <div
-          class="tw-rounded tw-w-full tw-bg-[#001233] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-px-8 tw-py-8 lg:tw-w-[60%] preview-shadow"
-        >
-          <div
-            class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
-          >
-            <div
-              class="tw-border tw-border-[#e229a0] tw-uppercase tw-text-xs tw-text-[#e229a0] tw-px-4 tw-py-2"
-              v-if="collection.isVerified"
-            >
-              Doxxed
-            </div>
-            <a :href="collection.twitter" target="_blank">
-              <v-icon
-                class="!tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink"
-                >mdi-twitter</v-icon
-              > </a
-            ><a
-              :href="collection.discord"
-              target="_blank"
-              class="nft-discord-icon"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"
-                ></path>
-              </svg>
-            </a>
-          </div>
-          <div class="tw-text-wapal-gray tw-pb-8">
-            <h1
-              class="tw-text-2xl tw-pb-4 tw-font-medium tw-uppercase md:tw-text-[2rem]"
-            >
-              {{ collection.name }}
-            </h1>
-            <p class="tw-font-light">
-              {{ collection.description }}
-            </p>
-          </div>
-          <div class="tw-text-red-600" v-if="gettingProof">
-            Getting Proof for Whitelist Mint
-          </div>
-          <div class="tw-text-red-600" v-if="!gettingProof && notWhitelisted">
-            You are not whitelisted in {{ currentSale.name }} phase for this
-            collection
-          </div>
-          <div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
-            <div
-              class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-text-white"
-            >
-              <span class="tw-capitalize tw-text-sm">{{ currentSale.name }}</span>
-              <span class="tw-capitalize tw-text-sm"
-                >{{ resource.mintedPercent }}%
-                <span class="tw-text-[#ACACAC]"
-                  >({{ resource.minted }} out of
-                  {{ resource.total_supply }})</span
-                ></span
-              >
-            </div>
-            <div
-              class="tw-w-full tw-rounded-full tw-relative tw-bg-[#263D68] tw-h-[10px]"
-            >
-              <div
-                class="tw-absolute tw-h-[10px] tw-top-0 tw-bg-[#E500A4] tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
-                id="resourceMintedPercent"
-              ></div>
-            </div>
-          </div>
-          <div
-            class="tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-bg-[#0C224B] tw-text-[#F0F0F0] tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
-            v-if="showMintBox"
-          >
-            <div
-              class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
-            >
-              <div
-                class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6"
-                :class="{
-                  'md:tw-flex-row md:tw-items-end md:tw-justify-between':
-                    !showWhitelistSaleTimer && !showPublicSaleTimer,
-                  'md:tw-flex-col md:tw-items-start md:tw-justify-start tw-gap-6':
-                    showPublicSaleTimer,
-                }"
-              >
-                <div
-                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
-                >
-                  <h6
-                    class="tw-capitalize tw-text-white"
-                    v-if="currentSale.mint_price != 0"
-                  >
-                    price {{ currentSale.mint_price }} apt
-                  </h6>
-                  <h6 class="tw-capitalize tw-text-white" v-else>Free Mint</h6>
-                  <div
-                    class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white"
-                  >
-                    <button
-                      class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold disabled:tw-cursor-not-allowed"
-                      @click="decreaseNumberOfNft"
-                    >
-                      -
-                    </button>
-                    <input
-                      class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-24 tw-max-w-32 disabled:tw-cursor-not-allowed"
-                      v-model="numberOfNft"
-                      @input="checkNumberOfNft"
-                    />
-                    <button
-                      class="tw-bg-[#001233] tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold disabled:tw-cursor-not-allowed"
-                      @click="increaseNumberOfNft"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-                <button
-                  class="tw-text-base tw-uppercase tw-text-white tw-bg-[#FF36AB] tw-rounded tw-w-full tw-px-2 tw-py-2 tw-text-center tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 disabled:tw-cursor-not-allowed"
-                  :class="{
-                    'md:!tw-w-[30%]':
-                      !showWhitelistSaleTimer && !showPublicSaleTimer,
-                  }"
-                  @click="mintBulkCollection"
-                  :disabled="
-                    minting ||
-                    collection.status.sold_out ||
-                    !generatedProof ||
-                    notWhitelisted
-                  "
-                >
-                  <v-progress-circular indeterminate v-if="minting" color="white">
-                  </v-progress-circular>
-                  {{ !collection.status.sold_out ? "Mint" : "Sold Out" }}
-                </button>
-                <div
-                  class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-6"
-                  v-if="!showWhitelistSaleTimer && !showPublicSaleTimer"
-                >
-                  <div>Public Sale</div>
-                  <div v-if="checkWhitelistSale">
-                    No of Whitelisted Users: {{ whitelistNumber }}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full"
-              v-if="showWhitelistSaleTimer || showPublicSaleTimer"
-            >
-              <h6
-                class="tw-uppercase tw-text-wapal-pink tw-text-xl tw-font-medium"
-                v-if="showEndInTimer"
-              >
-                End In
-              </h6>
-              <count-down
-                :vertical="true"
-                :startTime="nextSale.mint_time"
-                @countdownComplete="hideEndInTimer"
-                v-if="showEndInTimer"
-              />
-            </div>
-          </div>
-          <div
-            class="tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-2 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
-            v-if="showWhitelistSaleTimer"
-          >
-            <div
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 md:tw-gap-4"
-            >
-              <div class="tw-capitalize">{{ currentSale.name }}</div>
-              <div class="tw-capitalize" v-if="currentSale.mint_price != 0">
-                price {{ currentSale.mint_price }} apt
-              </div>
-              <div class="tw-capitalize" v-else>Free Mint</div>
-            </div>
-            <div
-              class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start"
-            >
-              Starts In
-              <count-down
-                class="tw-pl-2"
-                :startTime="currentSale.mint_time"
-                @countdownComplete="whitelistCountdownComplete"
-              />
-            </div>
-          </div>
-          <div
-            class="tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-2 tw-bg-[#0C224B] tw-text-white tw-px-6 tw-py-4 tw-w-full tw-rounded md:tw-flex-row"
-            v-if="showPublicSaleTimer"
-          >
-            <div
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-0 md:tw-gap-4"
-            >
-              <div>Public Sale</div>
-              <div
-                class="tw-capitalize"
-                v-if="collection.candyMachine.public_sale_price != 0"
-              >
-                price {{ collection.candyMachine.public_sale_price }} apt
-              </div>
-              <div class="tw-capitalize" v-else>Free Mint</div>
-            </div>
-            <div
-              class="tw-text-lg tw-flex tw-flex-row tw-items-center tw-justify-start"
-            >
-              Starts In
-              <count-down
-                class="tw-pl-2"
-                :startTime="this.phases[this.phases.length - 1].mint_time"
-                @countdownComplete="publicSaleCountdownComplete"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="tw-py-32 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-        v-else
-      >
-        <loading />
-      </div>
-      <v-dialog
-        v-model="showConnectWalletModal"
-        content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
-      >
-        <connect-wallet-modal
-          message="Please Connect your wallet to Mint"
-          @closeModal="showConnectWalletModal = false"
-          @walletConnected="displayWalletConnectedMessage"
-        />
-      </v-dialog>
-      <v-dialog
-        v-model="showErrorPopup"
-        content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
-      >
-        <div
-          class="tw-w-full tw-bg-modal-gray tw-text-white tw-px-4 tw-py-4 tw-rounded"
-        >
-          {{ errorMessage }}
-        </div>
-      </v-dialog>
-    </div> -->
 </template>
 <script>
 import {
@@ -535,6 +269,7 @@ export default {
       v2: false,
       live: false,
       showShareBox: false,
+      phaseInterval: null,
       imageNotFound,
     };
   },
@@ -863,12 +598,12 @@ export default {
         }
       });
 
+      console.log(this.phaseCounter);
+
       if (this.phaseCounter === this.phases.length) {
         this.nextSale = this.phases[this.phases.length - 1];
         return this.phases[this.phases.length - 1];
       }
-
-      this.phaseEndInTime = this.phases[this.phaseCounter].mint_time;
 
       this.nextSale = this.phases[this.phaseCounter];
 
@@ -877,6 +612,7 @@ export default {
         : this.phases[0];
     },
     setPhases() {
+      this.phases = [];
       this.phases = this.collection.phases ? this.collection.phases : [];
 
       if (!this.collection.phases) {
@@ -961,6 +697,36 @@ export default {
     },
     hideShareBox() {
       this.showShareBox = false;
+    },
+    async setCollectionToLive() {
+      this.live = true;
+      if (this.phases.length === 1) {
+        this.phaseCounter = 1;
+      }
+    },
+    startPhaseInterval() {
+      this.phaseInterval = setInterval(async () => {
+        const date = new Date(this.nextSale.mint_time);
+
+        const now = new Date().getTime();
+
+        const interval = date.getTime() - now;
+
+        if (interval <= 0) {
+          clearInterval(this.phaseInterval);
+          this.phaseCounter = 0;
+          this.currentSale = this.getCurrentSale();
+
+          if (this.phaseCounter === this.phases.length) {
+            this.notWhitelisted = false;
+            this.gettingProof = false;
+
+            return;
+          }
+          await this.setProof();
+          this.startPhaseInterval();
+        }
+      }, 1000);
     },
   },
   computed: {
@@ -1101,14 +867,12 @@ export default {
         this.gettingProof = false;
       }
 
+      if (this.phases.length > 1) {
+        this.startPhaseInterval();
+      }
+
       setTimeout(() => {
-        const resourceMintedPercent = document.querySelector(
-          "#resourceMintedPercent"
-        );
-
-        resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
-
-        if (!this.collection.status.sold_out) {
+        if (!this.collection.status.sold_out && this.live) {
           this.showMintedProgress();
         }
       }, 200);

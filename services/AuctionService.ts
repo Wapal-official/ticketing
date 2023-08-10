@@ -280,3 +280,9 @@ export const setCompleteAuction = async (auctionId: string) => {
 
   return res.data;
 };
+
+export const getFeaturedAuctions = async () => {
+  const res = await publicRequest.get(`/api/auction/featured`);
+
+  return res.data.auctions;
+};

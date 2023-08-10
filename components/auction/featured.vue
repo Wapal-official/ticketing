@@ -181,7 +181,7 @@ export default {
   },
   computed: {
     getBid() {
-      if (this.auction.biddings.length > 0) {
+      if (this.auction.biddings && this.auction.biddings.length > 0) {
         return this.auction.biddings[this.auction.biddings.length - 1].bid;
       }
 
