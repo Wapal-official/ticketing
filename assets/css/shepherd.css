@@ -1,5 +1,5 @@
 .shepherd-button {
-    background: #FF36AB;
+    background: #8759FF;
     border: 0;
     border-radius: 7px;
     color: #fff;
@@ -15,7 +15,7 @@
 }
 
 .shepherd-button.shepherd-button-secondary {
-    border: 1px solid #FF36AB;
+    border: 1px solid #8759FF;
     background: #000;
     color: #fff;
 }
@@ -118,7 +118,7 @@
 .shepherd-element[data-shepherd-step-id="creating"] {
     background: #000;
     border-radius: 25px;
-    border: 1px solid #FF36AB;
+    border: 1px solid #8759FF;
     box-shadow: 0 0px 0px 000px rgba(0, 0, 0, .2);
     max-width: 400px;
     opacity: 0;
@@ -133,7 +133,7 @@
 .shepherd-element[data-shepherd-step-id="creating2"] {
     background: #000;
     border-radius: 25px;
-    border: 1px solid #FF36AB;
+    border: 1px solid #8759FF;
     box-shadow: 0 0px 0px 000px rgba(0, 0, 0, .2);
     max-width: 400px;
     opacity: 0;
@@ -155,7 +155,7 @@
 .shepherd-element[data-shepherd-step-id="creating3"] {
     background: #000;
     border-radius: 25px;
-    border: 1px solid #FF36AB;
+    border: 1px solid #8759FF;
     box-shadow: 0 0px 0px 000px rgba(0, 0, 0, .2);
     max-width: 400px;
     opacity: 0;
@@ -177,7 +177,7 @@
 .shepherd-element[data-shepherd-step-id="creating4"] {
     background: #000;
     border-radius: 25px;
-    border: 1px solid #FF36AB;
+    border: 1px solid #8759FF;
     box-shadow: 0 0px 0px 000px rgba(0, 0, 0, .2);
     max-width: 400px;
     opacity: 0;
@@ -199,7 +199,7 @@
 .shepherd-element[data-shepherd-step-id="creating5"] {
     background: #000;
     border-radius: 25px;
-    border: 1px solid #FF36AB;
+    border: 1px solid #8759FF;
     box-shadow: 0 0px 0px 000px rgba(0, 0, 0, .2);
     max-width: 400px;
     opacity: 0;
@@ -251,32 +251,32 @@
 
 .shepherd-element[data-popper-placement^=top]>.shepherd-arrow {
     bottom: -8px;
-    border-left: 1px solid #FF36AB;
-    border-top: 1px solid #FF36AB;
-    /* border-right: 1px solid #FF36AB; */
+    border-left: 1px solid #8759FF;
+    border-top: 1px solid #8759FF;
+    /* border-right: 1px solid #8759FF; */
     transform: rotate(-45deg)
 }
 
 .shepherd-element[data-popper-placement^=bottom]>.shepherd-arrow {
     top: -8px;
-    border-left: 1px solid #FF36AB;
-    border-top: 1px solid #FF36AB;
-    /* border-right: 1px solid #FF36AB; */
+    border-left: 1px solid #8759FF;
+    border-top: 1px solid #8759FF;
+    /* border-right: 1px solid #8759FF; */
     transform: rotate(45deg)
 }
 
 .shepherd-element[data-popper-placement^=left]>.shepherd-arrow {
     right: -8px;
-    border-left: 1px solid #FF36AB;
-    border-top: 1px solid #FF36AB;
-    border-right: 1px solid #FF36AB;
+    border-left: 1px solid #8759FF;
+    border-top: 1px solid #8759FF;
+    border-right: 1px solid #8759FF;
 }
 
 .shepherd-element[data-popper-placement^=right]>.shepherd-arrow {
     left: -8px;
-    border-left: 1px solid #FF36AB;
-    border-top: 1px solid #FF36AB;
-    /* border-right: 1px solid #FF36AB; */
+    border-left: 1px solid #8759FF;
+    border-top: 1px solid #8759FF;
+    /* border-right: 1px solid #8759FF; */
     transform: rotate(-45deg)
 }
 
@@ -285,9 +285,9 @@
 }
 
 .shepherd-element.shepherd-has-title[data-popper-placement^=bottom]>.shepherd-arrow:before {
-    /* border-left: 1px solid #FF36AB; */
-    /* border-top: 1px solid #FF36AB; */
-    /* border-right: 1px solid #FF36AB; */
+    /* border-left: 1px solid #8759FF; */
+    /* border-top: 1px solid #8759FF; */
+    /* border-right: 1px solid #8759FF; */
     /* transform: rotate(-45deg) */
 }
 
