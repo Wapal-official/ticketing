@@ -18,7 +18,7 @@ export default {
       
             tour.addStep({
               title: 'Asset Page',
-              text: `Upload your project's assets `,
+              text: `Here you can create the vault of NFTs`,
               attachTo: {
                 element: '.dashboard1',
                 on:  window.innerWidth <= 1024 ? false : 'right'
