@@ -18,6 +18,13 @@ export default {
       collection = res.data.collection[0];
 
       if (collection) {
+        if (collection._id === "651295af57079307bdb1cfe9") {
+          delete collection["candyMachine"].whitelist_sale_time;
+          delete collection["candyMachine"].whitelist_price;
+
+          delete collection.phases;
+        }
+
         return { collection };
       } else {
         throw new Error("Collection Not Found by Username");
@@ -26,6 +33,13 @@ export default {
       try {
         const res = await getCollection(name);
         collection = res.collection[0];
+
+        if (collection._id === "651295af57079307bdb1cfe9") {
+          delete collection["candyMachine"].whitelist_sale_time;
+          delete collection["candyMachine"].whitelist_price;
+
+          delete collection.phases;
+        }
 
         return { collection };
       } catch (error) {
