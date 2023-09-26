@@ -666,13 +666,6 @@ export default {
     try {
       this.collection = this.propCollection;
 
-      if (this.collection._id === "651295af57079307bdb1cfe9") {
-        delete this.collection["candyMachine"].whitelist_sale_time;
-        delete this.collection["candyMachine"].whitelist_price;
-
-        delete this.collection.phases;
-      }
-
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();

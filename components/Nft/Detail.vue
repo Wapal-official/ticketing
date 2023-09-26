@@ -598,6 +598,8 @@ export default {
         }
       });
 
+      console.log(this.phaseCounter);
+
       if (this.phaseCounter === this.phases.length) {
         this.nextSale = this.phases[this.phases.length - 1];
         return this.phases[this.phases.length - 1];
