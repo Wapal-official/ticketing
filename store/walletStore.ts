@@ -30,9 +30,9 @@ export const client = new AptosClient(process.env.NODE_URL || "");
 
 const wallets = [
   new PetraWallet(),
+  new PontemWallet(),
   new MartianWallet(),
   new FewchaWallet(),
-  new PontemWallet(),
   new SpikaWallet(),
   new RiseWallet(),
   new TrustWallet(),
