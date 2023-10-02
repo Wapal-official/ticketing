@@ -368,6 +368,11 @@ export default {
             minted: this.resource.minted,
             total_supply: 2333,
           };
+        } else if (this.collection._id === "6466a09b6fee90eea757521c") {
+          this.resource = {
+            minted: this.resource.minted,
+            total_supply: 343,
+          };
         }
 
         if (
@@ -593,8 +598,6 @@ export default {
         }
       });
 
-      console.log(this.phaseCounter);
-
       if (this.phaseCounter === this.phases.length) {
         this.nextSale = this.phases[this.phases.length - 1];
         return this.phases[this.phases.length - 1];
@@ -819,6 +822,11 @@ export default {
         this.resource = {
           minted: this.resource.minted,
           total_supply: 2333,
+        };
+      } else if (this.collection._id === "6466a09b6fee90eea757521c") {
+        this.resource = {
+          minted: this.resource.minted,
+          total_supply: 343,
         };
       }
 

@@ -106,16 +106,16 @@ export default {
   mounted() {
     // this.startTour({ store: this.$store });
 
-    const verified = JSON.parse(localStorage.getItem("verified") || "");
-    if (verified) {
-      if (localStorage.getItem("seen_asset_tour") === null) {
-        this.startTour({ store: this.$store });
-
-        localStorage.setItem("seen_asset_tour", "true");
-      }
-    }
-    this.$store.dispatch("walletStore/initializeWallet");
     if (process.client) {
+      if (this.getVerifiedStatus) {
+        if (localStorage.getItem("seen_asset_tour") === null) {
+          this.startTour({ store: this.$store });
+
+          localStorage.setItem("seen_asset_tour", "true");
+        }
+      }
+      this.$store.dispatch("walletStore/initializeWallet");
+
       window.addEventListener("dragenter", (e) => e.preventDefault());
       window.addEventListener("dragover", (e) => {
         e.preventDefault();

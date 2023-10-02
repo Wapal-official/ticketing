@@ -157,7 +157,7 @@ export default {
     getFolderId() {
       return process.env.baseURL?.includes("staging")
         ? "642aeb3da50447f2631f38f3"
-        : "642aecdd6d6d89ea7763a839";
+        : "64e88318505087cecc568176";
     },
   },
   methods: {
@@ -263,7 +263,7 @@ export default {
 
       const res = await getAllFolder(this.$store.state.userStore.user.user_id);
 
-      this.folders.push({ _id: this.getFolderId, folder_name: "Wapal" });
+      this.folders.push({ _id: this.getFolderId, folder_name: "sample" });
 
       res.data.folderInfo.map((folder: any) => {
         this.folders.push(folder);
