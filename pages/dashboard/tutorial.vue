@@ -9,7 +9,11 @@
         :key="index"
       >
         <div class="tw-rounded-[0.9375rem]">
-          <video class="tw-rounded-[0.9375rem]" controls>
+          <video
+            class="tw-rounded-[0.9375rem]"
+            controls
+            controlslist="fullscreen"
+          >
             <source :src="video.source" />
           </video>
         </div>
