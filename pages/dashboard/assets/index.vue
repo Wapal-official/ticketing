@@ -263,7 +263,7 @@ export default {
 
       const res = await getAllFolder(this.$store.state.userStore.user.user_id);
 
-      this.folders.push({ _id: this.getFolderId, folder_name: "Wapal" });
+      this.folders.push({ _id: this.getFolderId, folder_name: "sample" });
 
       res.data.folderInfo.map((folder: any) => {
         this.folders.push(folder);

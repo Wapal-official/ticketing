@@ -1,9 +1,26 @@
 <template>
   <div
-    class="sidebar tw-px-4 tw-py-4 tw-border-solid tw-border-r tw-border-r-dark-6"
+    class="sidebar tw-py-4 tw-border-solid tw-border-r tw-border-r-dark-6 tw-flex-col tw-items-start tw-justify-start"
   >
+    <NuxtLink
+      class="tw-w-full tw-px-4 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-py-4 tw-mb-4 tw-border-b tw-border-b-dark-4 !tw-text-white !tw-bg-transparent hover:!tw-text-primary-1"
+      to="/dashboard/tutorial"
+      :class="{
+        '!tw-text-primary-1': checkCurrentPageRegex('/dashboard/tutorial'),
+      }"
+    >
+      <span class="tw-font-semibold">Launchpad Tutorial </span>
+      <div
+        class="tw-relative tw-flex tw-flex-col tw-items-center tw-justify-center"
+      >
+        <i class="bx bx-laptop tw-text-2xl"></i>
+        <div class="tw-absolute tw-top-[-12%] tw-left-[30%]">
+          <i class="bx bx-play tw-text-[0.625rem]"></i>
+        </div>
+      </div>
+    </NuxtLink>
     <div
-      class="tw-group tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-h-fit"
+      class="tw-group tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-h-fit tw-px-4"
     >
       <NuxtLink
         v-for="(item, index) in sidebarItems"
