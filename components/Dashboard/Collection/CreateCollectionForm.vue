@@ -1129,7 +1129,7 @@ export default {
         resource_account: "",
         txnhash: "",
         un: "",
-        candy_id: process.env.CANDY_MACHINE_ID,
+        candy_id: process.env.CANDY_MACHINE_V1,
         phases: [{ name: "", mint_time: null }],
         public_mint_limit: null,
       },

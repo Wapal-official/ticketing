@@ -14,7 +14,9 @@
             controls
             controlslist="fullscreen"
           >
-            <source :src="video.source" />
+            <source
+              src="https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4"
+            />
           </video>
         </div>
         <h3 class="tw-text-lg tw-font-bold tw-text-white">{{ video.title }}</h3>
