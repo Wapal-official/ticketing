@@ -3,7 +3,7 @@
     class="sidebar tw-py-4 tw-border-solid tw-border-r tw-border-r-dark-6 tw-flex-col tw-items-start tw-justify-start"
   >
     <NuxtLink
-      class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-py-4 tw-mb-4 tw-border-b tw-border-b-dark-4 !tw-text-white !tw-bg-transparent hover:!tw-text-primary-1"
+      class="tw-w-full tw-px-4 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-py-4 tw-mb-4 tw-border-b tw-border-b-dark-4 !tw-text-white !tw-bg-transparent hover:!tw-text-primary-1"
       to="/dashboard/tutorial"
       :class="{
         '!tw-text-primary-1': checkCurrentPageRegex('/dashboard/tutorial'),
