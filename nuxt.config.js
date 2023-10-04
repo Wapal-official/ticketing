@@ -9,14 +9,15 @@ const APTOS_API_KEY = process.env.APTOS_API_KEY;
 const PID = process.env.PID;
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
 const CANDY_MACHINE_V2 = process.env.CANDY_MACHINE_V2;
-const CANDY_MACHINE_V1 = "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0";
+const CANDY_MACHINE_V1 =
+  "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0";
 
 let discordRedirectURI = "http://staging.wapal.io/discord/token";
 
 if (API_URL.includes("staging")) {
   discordRedirectURI = "https://staging.wapal.io/discord/token";
 } else {
-  discordRedirectURI = "https://wapal.io/discord/token";
+  discordRedirectURI = "https://launchpad.wapal.io/discord/token";
 }
 
 let NODE_URL = `https://aptos-${NETWORK}.nodereal.io/v1/${APTOS_API_KEY}/v1`;
@@ -58,11 +59,18 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ["@/assets/css/index.css", "@/assets/css/style.css", 'boxicons/css/boxicons.min.css'],
+  css: [
+    "@/assets/css/index.css",
+    "@/assets/css/style.css",
+    "boxicons/css/boxicons.min.css",
+  ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [  { src: '~/plugins/shepherd.js', mode: 'client' },
-    "~/plugins/toast.ts", '~/plugins/directive.client.ts'],
+  plugins: [
+    { src: "~/plugins/shepherd.js", mode: "client" },
+    "~/plugins/toast.ts",
+    "~/plugins/directive.client.ts",
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -142,12 +150,12 @@ export default {
     DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
     PID: PID,
     GRAPHQL_URL: GRAPHQL_URL,
-    CANDY_MACHINE_V2:CANDY_MACHINE_V2,
-    NODE_URL:NODE_URL,
-    CANDY_MACHINE_V1:CANDY_MACHINE_V1,
+    CANDY_MACHINE_V2: CANDY_MACHINE_V2,
+    NODE_URL: NODE_URL,
+    CANDY_MACHINE_V1: CANDY_MACHINE_V1,
   },
-  privateRuntimeConfig:{
-    DISCORD_CLIENT_SECRET:DISCORD_CLIENT_SECRET,
+  privateRuntimeConfig: {
+    DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
   },
   auth: {
     strategies: {
