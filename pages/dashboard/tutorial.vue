@@ -16,10 +16,7 @@
             playsinline
             webkit-playsinline
           >
-            <source
-              src="https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4"
-              type="video/mp4"
-            />
+            <source :src="video.source" type="video/mp4" />
           </video>
         </div>
         <h3 class="tw-text-lg tw-font-bold tw-text-white">{{ video.title }}</h3>
@@ -28,16 +25,20 @@
   </div>
 </template>
 <script lang="ts">
-import sample from "@/assets/video/video.mp4";
+import vault from "@/assets/video/vault.mp4";
+import collection from "@/assets/video/collection.mp4";
+import whitelist from "@/assets/video/whitelist.mp4";
+import auction from "@/assets/video/auction.mp4";
+
 export default {
   layout: "dashboard",
   data() {
     return {
       videos: [
-        { title: "Creating Vault", source: sample },
-        { title: "Creating a Collection", source: sample },
-        { title: "Creating a WL Campaign", source: sample },
-        { title: "Setting up an Auction", source: sample },
+        { title: "Creating Vault", source: vault },
+        { title: "Creating a Collection", source: collection },
+        { title: "Creating a WL Campaign", source: whitelist },
+        { title: "Setting up an Auction", source: auction },
       ],
     };
   },
