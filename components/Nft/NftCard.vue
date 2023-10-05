@@ -228,7 +228,7 @@ export default {
         return "TBD";
       }
       if (this.collection._id === "642bf277c10560ca41e179fa") {
-        return 777;
+        return 239;
       } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
         return 222;
       } else if (this.collection._id === "64686db77db14461740bab0f") {
