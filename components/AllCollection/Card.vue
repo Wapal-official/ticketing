@@ -67,7 +67,7 @@ export default {
       this.minted = res.minted;
 
       if (this.collection._id === "642bf277c10560ca41e179fa") {
-        this.totalSupply = 777;
+        this.totalSupply = 239;
       } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
         this.totalSupply = 222;
       } else if (this.collection._id === "64686db77db14461740bab0f") {
