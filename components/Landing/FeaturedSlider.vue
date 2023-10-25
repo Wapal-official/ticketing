@@ -10,7 +10,7 @@
         v-for="collection in featuredCollections"
         :key="collection._id"
       >
-        <featured :propCollection="collection" />
+        <featured :propCollection="collection" :external="true" />
       </div>
       <div
         class="swiper-slide tw-w-full"
@@ -49,6 +49,7 @@ import Swiper from "swiper/swiper-bundle.min";
 import "swiper/swiper-bundle.min.css";
 import { getFeaturedCollection } from "@/services/CollectionService";
 import { getFeaturedAuctions } from "@/services/AuctionService";
+import sanctuary from "@/assets/img/199.png";
 export default {
   data() {
     return {
@@ -60,12 +61,28 @@ export default {
     };
   },
   async mounted() {
-    const res = await getFeaturedCollection();
-    this.featuredCollections.push(...res);
+    // const res = await getFeaturedCollection();
+    // this.featuredCollections.push(...res);
 
-    const auctionRes = await getFeaturedAuctions();
+    // const auctionRes = await getFeaturedAuctions();
 
-    this.featuredAuctions.push(...auctionRes);
+    // this.featuredAuctions.push(...auctionRes);
+
+    const collection = {
+      link:
+        process.env.network === "testnet"
+          ? "https://staging-monkeys.wapal.io"
+          : "https://monkeys.wapal.io",
+      name: "Aptos Monkeys Sanctuary",
+      description:
+        "Sanctuaries are homes to the fighting Monkeys who stood their ground to protect their lands and fortunes.",
+      image: sanctuary,
+      twitter: "https://twitter.com/AptosMonkeys",
+      website: "https://www.aptosmonkeys.club/",
+      discord: "https://discord.com/invite/sFfe75BHQ3",
+    };
+
+    this.featuredCollections.push(collection);
 
     this.loading = false;
 

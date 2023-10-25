@@ -54,6 +54,7 @@
             <button
               class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
               @click="showShareBox = !showShareBox"
+              v-if="!external"
             >
               <i
                 class="bx bxs-share-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear !tw-text-white"
@@ -84,46 +85,57 @@
         <div class="tw-text-dark-0 tw-pb-4">
           {{ collection.description }}
         </div>
-        <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
-          v-if="showLiveInTimer"
-        >
-          <h3 class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm">
-            {{ currentSale.name }} Starts In
-          </h3>
-          <count-down :startTime="currentSale.mint_time" />
-        </div>
-        <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
-          v-else
-        >
+
+        <div class="tw-w-full" v-if="!external">
           <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
+            v-if="showLiveInTimer"
+          >
+            <h3 class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm">
+              {{ currentSale.name }} Starts In
+            </h3>
+            <count-down :startTime="currentSale.mint_time" />
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+            v-else
           >
             <div
-              class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
-            >
-              <div class="tw-text-white/70">
-                {{ resource.minted }}/{{ resource.total_supply }} Minted
-              </div>
-              <div>Price {{ getCurrentPrice }} APT</div>
-            </div>
-            <div
-              class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
             >
               <div
-                class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
-                ref="mintProgress"
-              ></div>
+                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
+              >
+                <div class="tw-text-white/70">
+                  {{ resource.minted }}/{{ resource.total_supply }} Minted
+                </div>
+                <div>Price {{ getCurrentPrice }} APT</div>
+              </div>
+              <div
+                class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+              >
+                <div
+                  class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
+                  ref="mintProgress"
+                ></div>
+              </div>
             </div>
+            <button-primary
+              :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
+              :fullWidth="true"
+              :disabled="minting || collection.status.sold_out"
+              @click="mintCollection"
+            />
           </div>
-          <button-primary
-            :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
-            :fullWidth="true"
-            :disabled="minting || collection.status.sold_out"
-            @click="mintCollection"
-          />
         </div>
+        <a
+          class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+          :href="collection.link"
+          target="_blank"
+          v-else
+        >
+          Mint
+        </a>
       </div>
     </div>
     <v-dialog
@@ -334,7 +346,10 @@
 import { setSoldOut } from "@/services/CollectionService";
 import imageNotFound from "@/utils/imageNotFound";
 export default {
-  props: { propCollection: { type: Object } },
+  props: {
+    propCollection: { type: Object },
+    external: { default: false, type: Boolean },
+  },
   data() {
     return {
       loading: true,
@@ -355,6 +370,7 @@ export default {
         instagram: "",
         isVerified: false,
         status: { sold_out: false },
+        link: "",
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
