@@ -79,6 +79,7 @@ export default {
       image: sanctuary,
       twitter: "https://twitter.com/AptosMonkeys",
       website: "https://www.aptosmonkeys.club/",
+      discord: "https://discord.com/invite/sFfe75BHQ3",
     };
 
     this.featuredCollections.push(collection);
