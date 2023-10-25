@@ -54,6 +54,7 @@
             <button
               class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
               @click="showShareBox = !showShareBox"
+              v-if="!external"
             >
               <i
                 class="bx bxs-share-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear !tw-text-white"
