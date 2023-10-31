@@ -15,8 +15,11 @@ import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
 import { AptosClient, HexString, TxnBuilderTypes } from "aptos";
+import axios from "axios";
 
 import { getPrice } from "@/services/AssetsService";
+
+const GRAPHQL_URL = process.env.GRAPHQL_URL ? process.env.GRAPHQL_URL : "";
 
 let network = NetworkName.Testnet;
 
@@ -517,6 +520,37 @@ export const actions = {
       v2: v2,
     };
   },
+  async getSupplyAndMintedOfExternalCollection(
+    {},
+    { collectionId }: { collectionId: string }
+  ) {
+    const query = {
+      query: `query GetMintedAndTotalSupplyOfCollection($COLLECTION_ID: String){
+        current_collections_v2(
+          where: {collection_id: {_eq: $COLLECTION_ID}}
+        ) {
+          max_supply
+          total_minted_v2
+        }
+      }`,
+      variables: {
+        COLLECTION_ID: collectionId,
+      },
+    };
+
+    const res = await axios.post(GRAPHQL_URL, query);
+
+    if (res.data.data.current_collections_v2[0]) {
+      const data = res.data.data.current_collections_v2[0];
+      return {
+        total_supply: data.max_supply,
+        minted: data.total_minted_v2,
+        v2: true,
+      };
+    } else {
+      return { total_supply: 0, minted: 0, v2: false };
+    }
+  },
   async setMerkleRoot(
     { state }: { state: any },
     {
@@ -856,5 +890,32 @@ export const actions = {
     }
 
     return transaction;
+  },
+  async externalMint(
+    { state }: { state: any },
+    {
+      mintFunction,
+      moduleName,
+      programId,
+    }: { mintFunction: string; moduleName: string; programId: string }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    checkNetwork();
+
+    const payload = {
+      type: "entry_function_payload",
+      function: `${programId}::${moduleName}::${mintFunction}`,
+      type_arguments: [],
+      arguments: [],
+    };
+
+    const transaction = await wallet.signAndSubmitTransaction(payload);
+
+    const res = await client.waitForTransactionWithResult(transaction.hash);
+
+    return res;
   },
 };

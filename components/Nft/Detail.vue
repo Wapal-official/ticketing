@@ -123,10 +123,12 @@
                 <div class="tw-text-white/70">
                   {{ resource.minted }}/{{ resource.total_supply }} Minted
                 </div>
-                <div v-if="currentSale.mint_price !== 0">
-                  Price {{ currentSale.mint_price }} APT
+                <div v-if="currentSale.mint_price">
+                  <div v-if="currentSale.mint_price !== 0">
+                    Price {{ currentSale.mint_price }} APT
+                  </div>
+                  <div v-else>Free Mint</div>
                 </div>
-                <div v-else>Free Mint</div>
               </div>
               <div
                 class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
@@ -161,6 +163,14 @@
                   +
                 </button>
               </div>
+              <a
+                class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+                :href="collection.mintDetails.link"
+                target="_blank"
+                v-if="collection.mintDetails && collection.mintDetails.link"
+              >
+                Mint
+              </a>
               <button-primary
                 :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
                 :disabled="
@@ -171,6 +181,7 @@
                 "
                 @click="mintBulkCollection"
                 :fullWidth="true"
+                v-else
               />
             </div>
           </div>
@@ -335,14 +346,23 @@ export default {
     },
     showMintedProgress() {
       this.progressInterval = setInterval(async () => {
-        this.resource = await this.$store.dispatch(
-          "walletStore/getSupplyAndMintedOfCollection",
-          {
-            resourceAccountAddress:
-              this.collection.candyMachine.resource_account,
-            candyMachineId: this.collection.candyMachine.candy_id,
-          }
-        );
+        if (this.collection.mintDetails) {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfExternalCollection",
+            {
+              collectionId: this.collection.candyMachine.resource_account,
+            }
+          );
+        } else {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfCollection",
+            {
+              resourceAccountAddress:
+                this.collection.candyMachine.resource_account,
+              candyMachineId: this.collection.candyMachine.candy_id,
+            }
+          );
+        }
 
         if (this.collection.status.sold_out) {
           clearInterval(this.progressInterval);
@@ -449,6 +469,11 @@ export default {
         }
 
         this.minting = true;
+
+        if (this.collection.mintDetails) {
+          this.mintCollectionExternally();
+          return;
+        }
 
         if (this.checkPublicSaleTimer()) {
           if (this.mintLimit <= this.currentlyOwned) {
@@ -726,6 +751,21 @@ export default {
         }
       }, 1000);
     },
+    async mintCollectionExternally() {
+      try {
+        const res = await this.$store.dispatch("walletStore/externalMint", {
+          mintFunction: this.collection.mintDetails.public_mint_function,
+          programId: this.collection.candyMachine.candy_id,
+          moduleName: this.collection.mintDetails.moduleName,
+        });
+        console.log(res);
+        this.minting = false;
+      } catch (error) {
+        console.log(error);
+        this.minting = false;
+        this.$toast.showMessage({ message: error, error: true });
+      }
+    },
   },
   computed: {
     getCurrentPrice() {
@@ -793,13 +833,23 @@ export default {
 
       this.showEndInTimer = true;
 
-      this.resource = await this.$store.dispatch(
-        "walletStore/getSupplyAndMintedOfCollection",
-        {
-          resourceAccountAddress: this.collection.candyMachine.resource_account,
-          candyMachineId: this.collection.candyMachine.candy_id,
-        }
-      );
+      if (this.collection.mintDetails) {
+        this.resource = await this.$store.dispatch(
+          "walletStore/getSupplyAndMintedOfExternalCollection",
+          {
+            collectionId: this.collection.candyMachine.resource_account,
+          }
+        );
+      } else {
+        this.resource = await this.$store.dispatch(
+          "walletStore/getSupplyAndMintedOfCollection",
+          {
+            resourceAccountAddress:
+              this.collection.candyMachine.resource_account,
+            candyMachineId: this.collection.candyMachine.candy_id,
+          }
+        );
+      }
 
       this.v2 = this.resource.v2;
 

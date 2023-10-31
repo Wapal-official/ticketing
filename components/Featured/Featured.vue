@@ -54,7 +54,6 @@
             <button
               class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
               @click="showShareBox = !showShareBox"
-              v-if="!external"
             >
               <i
                 class="bx bxs-share-alt tw-text-lg tw-transition tw-duration-200 tw-ease-linear !tw-text-white"
@@ -86,7 +85,7 @@
           {{ collection.description }}
         </div>
 
-        <div class="tw-w-full" v-if="!external">
+        <div class="tw-w-full">
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
             v-if="showLiveInTimer"
@@ -98,7 +97,6 @@
           </div>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
-            v-else
           >
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
@@ -109,7 +107,12 @@
                 <div class="tw-text-white/70">
                   {{ resource.minted }}/{{ resource.total_supply }} Minted
                 </div>
-                <div>Price {{ getCurrentPrice }} APT</div>
+                <div v-if="getCurrentPrice">
+                  <div v-if="getCurrentPrice !== 0">
+                    Price {{ getCurrentPrice }} APT
+                  </div>
+                  <div v-else>Free Mint</div>
+                </div>
               </div>
               <div
                 class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
@@ -120,22 +123,23 @@
                 ></div>
               </div>
             </div>
+            <a
+              class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+              :href="collection.mintDetails.link"
+              target="_blank"
+              v-if="collection.mintDetails && collection.mintDetails.link"
+            >
+              Mint
+            </a>
             <button-primary
               :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
               :fullWidth="true"
               :disabled="minting || collection.status.sold_out"
               @click="mintCollection"
+              v-else
             />
           </div>
         </div>
-        <a
-          class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
-          :href="collection.link"
-          target="_blank"
-          v-else
-        >
-          Mint
-        </a>
       </div>
     </div>
     <v-dialog
@@ -348,7 +352,6 @@ import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: {
     propCollection: { type: Object },
-    external: { default: false, type: Boolean },
   },
   data() {
     return {
@@ -370,7 +373,9 @@ export default {
         instagram: "",
         isVerified: false,
         status: { sold_out: false },
-        link: "",
+        mintDetails: {
+          link: null,
+        },
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
@@ -515,14 +520,23 @@ export default {
     },
     showMintedProgress() {
       this.progressInterval = setInterval(async () => {
-        this.resource = await this.$store.dispatch(
-          "walletStore/getSupplyAndMintedOfCollection",
-          {
-            resourceAccountAddress:
-              this.collection.candyMachine.resource_account,
-            candyMachineId: this.collection.candyMachine.candy_id,
-          }
-        );
+        if (this.collection.mintDetails) {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfExternalCollection",
+            {
+              collectionId: this.collection.candyMachine.resource_account,
+            }
+          );
+        } else {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfCollection",
+            {
+              resourceAccountAddress:
+                this.collection.candyMachine.resource_account,
+              candyMachineId: this.collection.candyMachine.candy_id,
+            }
+          );
+        }
 
         this.resource.mintedPercent = Math.floor(
           (this.resource.minted / this.resource.total_supply) * 100
@@ -707,13 +721,23 @@ export default {
 
       this.loading = false;
 
-      this.resource = await this.$store.dispatch(
-        "walletStore/getSupplyAndMintedOfCollection",
-        {
-          resourceAccountAddress: this.collection.candyMachine.resource_account,
-          candyMachineId: this.collection.candyMachine.candy_id,
-        }
-      );
+      if (this.collection.mintDetails) {
+        this.resource = await this.$store.dispatch(
+          "walletStore/getSupplyAndMintedOfExternalCollection",
+          {
+            collectionId: this.collection.candyMachine.resource_account,
+          }
+        );
+      } else {
+        this.resource = await this.$store.dispatch(
+          "walletStore/getSupplyAndMintedOfCollection",
+          {
+            resourceAccountAddress:
+              this.collection.candyMachine.resource_account,
+            candyMachineId: this.collection.candyMachine.candy_id,
+          }
+        );
+      }
 
       this.resource.mintedPercent = Math.floor(
         (this.resource.minted / this.resource.total_supply) * 100
