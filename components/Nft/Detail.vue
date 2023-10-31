@@ -450,6 +450,11 @@ export default {
 
         this.minting = true;
 
+        if (this.collection.mintDetails) {
+          this.mintCollectionExternally();
+          return;
+        }
+
         if (this.checkPublicSaleTimer()) {
           if (this.mintLimit <= this.currentlyOwned) {
             throw new Error("Mint Limit Reached");
@@ -725,6 +730,21 @@ export default {
           this.startPhaseInterval();
         }
       }, 1000);
+    },
+    async mintCollectionExternally() {
+      try {
+        const res = await this.$store.dispatch("walletStore/externalMint", {
+          mintFunction: this.collection.mintDetails.public_mint_function,
+          programId: this.collection.candyMachine.candy_id,
+          moduleName: this.collection.mintDetails.moduleName,
+        });
+        console.log(res);
+        this.minting = false;
+      } catch (error) {
+        console.log(error);
+        this.minting = false;
+        this.$toast.showMessage({ message: error, error: true });
+      }
     },
   },
   computed: {
