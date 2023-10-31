@@ -346,10 +346,7 @@ export default {
     },
     showMintedProgress() {
       this.progressInterval = setInterval(async () => {
-        if (
-          this.collection.mintDetails.public_mint_function ||
-          this.collection.mintDetails.link
-        ) {
+        if (this.collection.mintDetails) {
           this.resource = await this.$store.dispatch(
             "walletStore/getSupplyAndMintedOfExternalCollection",
             {
@@ -836,10 +833,7 @@ export default {
 
       this.showEndInTimer = true;
 
-      if (
-        this.collection.mintDetails.public_mint_function ||
-        this.collection.mintDetails.link
-      ) {
+      if (this.collection.mintDetails) {
         this.resource = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfExternalCollection",
           {

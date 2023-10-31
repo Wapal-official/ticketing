@@ -82,10 +82,7 @@ export default {
         this.soldOut = true;
       }
     } catch {
-      if (
-        this.collection.mintDetails.public_mint_function ||
-        this.collection.mintDetails.link
-      ) {
+      if (this.collection.mintDetails) {
         const res = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfExternalCollection",
           {
