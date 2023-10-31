@@ -82,8 +82,23 @@ export default {
         this.soldOut = true;
       }
     } catch {
-      this.totalSupply = 0;
-      this.minted = 0;
+      if (
+        this.collection.mintDetails.public_mint_function ||
+        this.collection.mintDetails.link
+      ) {
+        const res = await this.$store.dispatch(
+          "walletStore/getSupplyAndMintedOfExternalCollection",
+          {
+            collectionId: this.collection.candyMachine.resource_account,
+          }
+        );
+
+        this.totalSupply = res.total_supply;
+        this.minted = res.minted;
+      } else {
+        this.totalSupply = 0;
+        this.minted = 0;
+      }
     }
   },
   computed: {
