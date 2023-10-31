@@ -34,7 +34,7 @@ export default {
             "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0",
         },
         status: {
-          sold_out: false,
+          sold_out: true,
         },
         username: "aptos-monkeys-sanctuary",
       };
