@@ -8,11 +8,38 @@ import {
   getCollection,
   getCollectionByUsername,
 } from "@/services/CollectionService";
-
+import sanctuary from "@/assets/img/199.png";
 export default {
   async asyncData({ params }: { params: any }) {
     const name = params.name;
     let collection;
+
+    if (name === "aptos-monkeys-sanctuary") {
+      collection = {
+        name: "Aptos Monkeys Sanctuary",
+        description:
+          "Sanctuaries are homes to the fighting Monkeys who stood their ground to protect their lands and fortunes.",
+        image: sanctuary,
+        twitter: "https://twitter.com/AptosMonkeys",
+        website: "https://www.aptosmonkeys.club/",
+        discord: "https://discord.com/invite/sFfe75BHQ3",
+        mintDetails: {
+          link: "https://monkeys.wapal.io",
+        },
+        candyMachine: {
+          public_sale_time: "2023-10-31T06:23:35.216Z",
+          resource_account:
+            "0x39f1338e6b69c3ed2f0caa95876e898dbe4c9b272d721626d577554015d033b8",
+          candy_id:
+            "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0",
+        },
+        status: {
+          sold_out: true,
+        },
+        username: "aptos-monkeys-sanctuary",
+      };
+      return { collection };
+    }
     try {
       const res = await getCollectionByUsername(name);
       collection = res.data.collection[0];
@@ -24,7 +51,7 @@ export default {
 
           delete collection.phases;
         }
-
+        console.log(collection);
         return { collection };
       } else {
         throw new Error("Collection Not Found by Username");
