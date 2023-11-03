@@ -42,7 +42,7 @@
       </div>
     </div>
     <div
-      class="tw-flex tw-flex-row tw-flex-wrap tw-w-full tw-items-center tw-justify-start tw-gap-4"
+      class="tw-grid tw-grid-cols-2 md:tw-grid-cols-5 xl:tw-grid-cols-7 1xl:tw-grid-cols-8 3xl:tw-grid-cols-11 tw-gap-4"
       v-else
     >
       <dashboard-assets-file-card
