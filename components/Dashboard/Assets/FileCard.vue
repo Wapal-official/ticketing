@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading">
+  <div class="tw-w-full" v-if="!loading">
     <div
       class="tw-w-full tw-h-full tw-group tw-cursor-pointer"
       @click="displayFileDetails"
@@ -53,7 +53,7 @@
       </div>
     </div>
     <button
-      class="tw-bg-dark-4 tw-px-4 tw-py-3 tw-text-white tw-rounded tw-flex tw-flex-row tw-items-baseline tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-dark-5"
+      class="tw-w-full tw-bg-dark-4 tw-px-4 tw-py-3 tw-text-white tw-rounded tw-flex tw-flex-row tw-items-baseline tw-gap-8 tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-dark-5"
       v-else
     >
       <div
