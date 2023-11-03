@@ -375,7 +375,7 @@
               <input-text-field
                 v-model="collection.public_mint_limit"
                 placeholder="Eg: 0"
-                label="Public Address Mint Limit"
+                label="Public Mint Limit"
                 :required="true"
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>

@@ -51,6 +51,7 @@ export default {
 
           delete collection.phases;
         }
+        console.log(collection);
         return { collection };
       } else {
         throw new Error("Collection Not Found by Username");
