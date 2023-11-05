@@ -317,7 +317,6 @@ export default {
       this.loading = true;
 
       this.page++;
-
       const res = await getWhitelistEntryById(
         this.collection._id,
         100,
@@ -358,9 +357,10 @@ export default {
     },
     async handleIntersect(entries: any) {
       if (entries[0].isIntersecting) {
-        this.mappingData = true;
-
-        await this.mapWhitelistEntries();
+        if (this.collection._id) {
+          this.mappingData = true;
+          await this.mapWhitelistEntries();
+        }
       }
     },
   },
