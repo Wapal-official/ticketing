@@ -5,5 +5,7 @@ declare global {
     aptos: any;
     martian: any;
     clipboardData: any;
+    intergramId: any;
+    intergramCustomizations: any;
   }
 }
