@@ -66,9 +66,9 @@
         </div>
       </v-menu> -->
       <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center md:tw-justify-end"
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center md:tw-justify-between"
       >
-        <!-- <div class="tw-relative tw-w-full md:tw-w-fit">
+        <div class="tw-relative tw-w-full md:tw-w-fit">
           <button-primary
             :bordered="true"
             title="Role"
@@ -104,7 +104,7 @@
             v-model="search"
             placeholder="Search Wallet Address"
           />
-        </div> -->
+        </div>
         <form @submit.prevent="" class="tw-w-full md:tw-w-fit">
           <label
             class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
@@ -169,10 +169,6 @@
           </tbody>
         </template>
       </v-data-table> -->
-      <div
-        v-if="!loaded"
-        v-intersect="{ handler: handleIntersect, threshold: [] }"
-      ></div>
       <reusable-loading v-if="loading" />
     </div>
     <v-dialog
@@ -266,13 +262,12 @@ export default {
         phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
       },
       loading: true,
-      page: 0,
+      scrolledNumber: 1,
       mappingData: false,
       uploading: false,
       search: null,
       role: null,
       showRoleFilter: false,
-      loaded: false,
     };
   },
   methods: {
@@ -300,8 +295,8 @@ export default {
         this.$toast.showMessage({ message: "CSV File Imported Successfully" });
         this.showCSVUploadModal = false;
 
-        this.page = 0;
-        this.mapWhitelistEntries();
+        this.scrolledNumber = 1;
+        this.mapWhitelistEntries(1);
         this.uploading = false;
       } catch (error) {
         console.log(error);
@@ -313,15 +308,13 @@ export default {
       this.showCSVUploadModal = false;
       this.selectedCSVFile = false;
     },
-    async mapWhitelistEntries() {
+    async mapWhitelistEntries(page: number) {
       this.loading = true;
-
-      this.page++;
 
       const res = await getWhitelistEntryById(
         this.collection._id,
         100,
-        this.page,
+        page,
         this.$route.params.phase
       );
 
@@ -356,13 +349,6 @@ export default {
     showFileSelectionDialog() {
       this.$refs.csv.click();
     },
-    async handleIntersect(entries: any) {
-      if (entries[0].isIntersecting) {
-        this.mappingData = true;
-
-        await this.mapWhitelistEntries();
-      }
-    },
   },
   computed: {
     checkWhitelistSale() {
@@ -385,7 +371,23 @@ export default {
 
     this.collection = collectionRes.data.collection[0];
 
-    await this.mapWhitelistEntries();
+    await this.mapWhitelistEntries(1);
+
+    if (process.client) {
+      window.addEventListener("scroll", async () => {
+        if (
+          window.scrollY + window.innerHeight >=
+            document.documentElement.scrollHeight &&
+          !this.mappingData
+        ) {
+          this.scrolledNumber++;
+
+          this.mappingData = true;
+
+          await this.mapWhitelistEntries(this.scrolledNumber);
+        }
+      });
+    }
   },
 };
 </script>
