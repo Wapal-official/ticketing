@@ -241,6 +241,14 @@ export default {
           class: "default-data-table-header",
         },
         {
+          text: "Mint Limit",
+          align: "start",
+          value: "mint_limit",
+          width: "125px",
+          class: "default-data-table-header",
+          sortable: false,
+        },
+        {
           text: "Role",
           align: "start",
           sortable: true,
