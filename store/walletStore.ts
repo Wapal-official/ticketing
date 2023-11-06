@@ -791,7 +791,9 @@ export const actions = {
     }
 
     if (!publicMint && mintNumber !== 1) {
-      throw new Error("Bulk mint does not current support Whitelist mint");
+      throw new Error(
+        "Whitelist Mint does not support Bulk Minting. Please Mint one at a time"
+      );
     }
 
     try {
