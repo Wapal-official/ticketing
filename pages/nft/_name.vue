@@ -39,6 +39,34 @@ export default {
         username: "aptos-monkeys-sanctuary",
       };
       return { collection };
+    } else if (name === "lions-mint") {
+      collection = {
+        name: "Lions Mint",
+        description: "Lions Mint",
+        image:
+          "https://storage.googleapis.com/wapal_staging_images/1698574323228_6.png",
+        twitter: "https://twitter.com",
+        discord: "https://discord.com",
+        mintDetails: {
+          whitelist_mint_function: "mint_lions",
+          public_mint_function: "public_mint_lions",
+          module_name: "lions",
+          check_whitelist_function: "count",
+          many: false,
+        },
+        candyMachine: {
+          public_sale_time: "2023-10-31T06:23:35.216Z",
+          resource_account:
+            "0x2ae83e98e54f39eaa6ad6040157189f038495c1a03722aeb2aae3abd4419ea1c",
+          candy_id:
+            "0x826bfc7488ad2b0b9e31c9067f83811a46e6c427f1cff9703cf96842bf93ebfe",
+        },
+        status: {
+          sold_out: false,
+        },
+        username: "lions-mint",
+      };
+      return { collection };
     }
     try {
       const res = await getCollectionByUsername(name);

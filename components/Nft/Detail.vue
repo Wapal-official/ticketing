@@ -753,17 +753,44 @@ export default {
     },
     async mintCollectionExternally() {
       try {
+        const whitelistRes = await this.$store.dispatch(
+          "walletStore/checkIfWalletAddressIsWhitelisted",
+          {
+            walletAddress: this.getWalletAddress,
+            programId: this.collection.candyMachine.candy_id,
+            moduleName: this.collection.mintDetails.module_name,
+            viewFunction: this.collection.mintDetails.check_whitelist_function,
+          }
+        );
+
+        console.log(whitelistRes);
         const res = await this.$store.dispatch("walletStore/externalMint", {
-          mintFunction: this.collection.mintDetails.public_mint_function,
+          mintFunction: this.collection.mintDetails.whitelist_mint_function,
           programId: this.collection.candyMachine.candy_id,
-          moduleName: this.collection.mintDetails.moduleName,
+          moduleName: this.collection.mintDetails.module_name,
         });
-        console.log(res);
         this.minting = false;
       } catch (error) {
-        console.log(error);
-        this.minting = false;
-        this.$toast.showMessage({ message: error, error: true });
+        if (error.message === "Error getting whitelist proof") {
+          try {
+            if (!this.collection.mintDetails.many && this.numberOfNft > 1) {
+              throw new Error("Please Mint One NFT at a time");
+            }
+            const res = await this.$store.dispatch("walletStore/externalMint", {
+              mintFunction: this.collection.mintDetails.public_mint_function,
+              programId: this.collection.candyMachine.candy_id,
+              moduleName: this.collection.mintDetails.module_name,
+            });
+            this.minting = false;
+          } catch (error) {
+            console.log(error);
+            this.minting = false;
+            this.$toast.showMessage({ message: error, error: true });
+          }
+        } else {
+          this.minting = false;
+          this.$toast.showMessage({ message: error, error: true });
+        }
       }
     },
   },
