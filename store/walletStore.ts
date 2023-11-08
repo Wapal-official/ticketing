@@ -920,4 +920,32 @@ export const actions = {
 
     return res;
   },
+  async checkIfWalletAddressIsWhitelisted(
+    context: any,
+    {
+      walletAddress,
+      programId,
+      moduleName,
+      viewFunction,
+    }: {
+      programId: string;
+      walletAddress: string;
+      moduleName: string;
+      viewFunction: string;
+    }
+  ) {
+    try {
+      const NODE_URL = process.env.NODE_URL ? process.env.NODE_URL : "";
+
+      const res = await axios.post(`${NODE_URL}/view`, {
+        arguments: [walletAddress],
+        function: `${programId}::${moduleName}::${viewFunction}`,
+        type_arguments: [],
+      });
+
+      return res.data;
+    } catch (error) {
+      throw new Error("Error getting whitelist proof");
+    }
+  },
 };
