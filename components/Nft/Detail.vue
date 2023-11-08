@@ -753,48 +753,57 @@ export default {
     },
     async mintCollectionExternally() {
       try {
-        const whitelistRes = await this.$store.dispatch(
-          "walletStore/checkIfWalletAddressIsWhitelisted",
-          {
-            walletAddress: this.getWalletAddress,
-            programId: this.collection.candyMachine.candy_id,
-            moduleName: this.collection.mintDetails.module_name,
-            viewFunction: this.collection.mintDetails.check_whitelist_function,
-          }
-        );
-
-        if (whitelistRes) {
-          const res = await this.$store.dispatch("walletStore/externalMint", {
-            mintFunction: this.collection.mintDetails.whitelist_mint_function,
-            programId: this.collection.candyMachine.candy_id,
-            moduleName: this.collection.mintDetails.module_name,
-          });
-        }
-        this.minting = false;
-      } catch (error) {
-        if (error.message === "Error getting whitelist proof") {
-          try {
-            this.currentSale.mint_price =
-              this.collection.candyMachine.public_sale_price;
-
-            if (!this.collection.mintDetails.many && this.numberOfNft > 1) {
-              throw new Error("Please Mint One NFT at a time");
+        if (this.externalWhitelisted) {
+          const whitelistRes = await this.$store.dispatch(
+            "walletStore/checkIfWalletAddressIsWhitelisted",
+            {
+              walletAddress: this.getWalletAddress,
+              programId: this.collection.candyMachine.candy_id,
+              moduleName: this.collection.mintDetails.module_name,
+              viewFunction:
+                this.collection.mintDetails.check_whitelist_function,
             }
+          );
+
+          if (whitelistRes) {
             const res = await this.$store.dispatch("walletStore/externalMint", {
-              mintFunction: this.collection.mintDetails.public_mint_function,
+              mintFunction: this.collection.mintDetails.whitelist_mint_function,
               programId: this.collection.candyMachine.candy_id,
               moduleName: this.collection.mintDetails.module_name,
             });
-            this.minting = false;
-          } catch (error) {
-            console.log(error);
-            this.minting = false;
-            this.$toast.showMessage({ message: error, error: true });
           }
+          this.minting = false;
+        } else {
+          this.publicMintCollectionExternally();
+        }
+      } catch (error) {
+        if (error.message === "Error getting whitelist proof") {
+          this.externalWhitelisted = false;
+          this.publicMintCollectionExternally();
         } else {
           this.minting = false;
           this.$toast.showMessage({ message: error, error: true });
         }
+      }
+    },
+    async publicMintCollectionExternally() {
+      try {
+        this.currentSale.mint_price =
+          this.collection.candyMachine.public_sale_price;
+
+        if (!this.collection.mintDetails.many && this.numberOfNft > 1) {
+          throw new Error("Please Mint One NFT at a time");
+        }
+        const res = await this.$store.dispatch("walletStore/externalMint", {
+          mintFunction: this.collection.mintDetails.public_mint_function,
+          programId: this.collection.candyMachine.candy_id,
+          moduleName: this.collection.mintDetails.module_name,
+        });
+        this.minting = false;
+      } catch (error) {
+        console.log(error);
+        this.minting = false;
+        this.$toast.showMessage({ message: error, error: true });
       }
     },
   },
@@ -971,9 +980,12 @@ export default {
             this.currentSale.mint_price =
               this.collection.candyMachine.whitelist_price;
           }
+
+          this.externalWhitelisted = true;
         } catch (error) {
           this.currentSale.mint_price =
             this.collection.candyMachine.public_sale_price;
+          this.externalWhitelisted = false;
         }
       }
 
