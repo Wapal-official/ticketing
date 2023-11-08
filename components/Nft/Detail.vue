@@ -763,16 +763,20 @@ export default {
           }
         );
 
-        console.log(whitelistRes);
-        const res = await this.$store.dispatch("walletStore/externalMint", {
-          mintFunction: this.collection.mintDetails.whitelist_mint_function,
-          programId: this.collection.candyMachine.candy_id,
-          moduleName: this.collection.mintDetails.module_name,
-        });
+        if (whitelistRes) {
+          const res = await this.$store.dispatch("walletStore/externalMint", {
+            mintFunction: this.collection.mintDetails.whitelist_mint_function,
+            programId: this.collection.candyMachine.candy_id,
+            moduleName: this.collection.mintDetails.module_name,
+          });
+        }
         this.minting = false;
       } catch (error) {
         if (error.message === "Error getting whitelist proof") {
           try {
+            this.currentSale.mint_price =
+              this.collection.candyMachine.public_sale_price;
+
             if (!this.collection.mintDetails.many && this.numberOfNft > 1) {
               throw new Error("Please Mint One NFT at a time");
             }
@@ -944,6 +948,33 @@ export default {
 
       if (this.phases.length > 1) {
         this.startPhaseInterval();
+      }
+
+      if (
+        this.collection.mintDetails &&
+        this.collection.mintDetails.check_whitelist_function &&
+        this.collection.mintDetails.all_mint_at_same_time
+      ) {
+        try {
+          const whitelistRes = await this.$store.dispatch(
+            "walletStore/checkIfWalletAddressIsWhitelisted",
+            {
+              walletAddress: this.getWalletAddress,
+              programId: this.collection.candyMachine.candy_id,
+              moduleName: this.collection.mintDetails.module_name,
+              viewFunction:
+                this.collection.mintDetails.check_whitelist_function,
+            }
+          );
+
+          if (whitelistRes) {
+            this.currentSale.mint_price =
+              this.collection.candyMachine.whitelist_price;
+          }
+        } catch (error) {
+          this.currentSale.mint_price =
+            this.collection.candyMachine.public_sale_price;
+        }
       }
 
       setTimeout(() => {

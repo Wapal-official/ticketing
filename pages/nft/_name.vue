@@ -53,9 +53,12 @@ export default {
           module_name: "lions",
           check_whitelist_function: "count",
           many: false,
+          all_mint_at_same_time: true,
         },
         candyMachine: {
           public_sale_time: "2023-10-31T06:23:35.216Z",
+          public_sale_price: "0.0000001",
+          whitelist_price: 0,
           resource_account:
             "0x2ae83e98e54f39eaa6ad6040157189f038495c1a03722aeb2aae3abd4419ea1c",
           candy_id:
