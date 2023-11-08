@@ -14,7 +14,19 @@
         :alt="this.fileData?.name"
         class="tw-max-w-[300px] tw-max-h-[300px]"
         draggable="false"
+        v-if="checkFileType() === 'image'"
       />
+      <video
+        controls
+        controlslist="nodownload"
+        looop
+        playsinline
+        preload="metadata"
+        class="tw-max-w-[80%] tw-object-cover"
+        v-else-if="checkFileType() === 'video'"
+      >
+        <source :src="this.fileData?.image" />
+      </video>
       <h3 class="tw-text-white tw-font-medium tw-uppercase tw-text-sm">
         {{ this.fileData?.name }}
       </h3>
@@ -37,7 +49,7 @@
 </template>
 <script lang="ts">
 export default {
-  props: { file: { type: Object } },
+  props: { file: { type: Object }, extension: { type: String } },
   data() {
     return {
       loading: true,
@@ -48,6 +60,24 @@ export default {
   methods: {
     close() {
       this.$emit("close");
+    },
+    checkFileType() {
+      if (this.extension === ".json") {
+        return "json";
+      }
+
+      const imageRegex = /\.((jpg|jpeg|png|gif|bmp|svg|webp|ico|tiff?))$/i;
+
+      const videoRegex =
+        /\.((mp4|avi|mov|mkv|wmv|flv|webm|3gp|ogv|mpeg|mpg|m4v|divx|rm|asf|vob|ts|m2ts?))$/i;
+
+      if (imageRegex.test(this.extension)) {
+        return "image";
+      } else if (videoRegex.test(this.extension)) {
+        return "video";
+      }
+
+      return "json";
     },
   },
   async mounted() {

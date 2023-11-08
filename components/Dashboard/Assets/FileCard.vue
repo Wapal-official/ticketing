@@ -3,16 +3,32 @@
     <div
       class="tw-w-full tw-h-full tw-group tw-cursor-pointer"
       @click="displayFileDetails"
-      v-if="checkFileType === 'image'"
+      v-if="checkFileType !== 'json'"
     >
       <div class="tw-relative tw-w-full tw-overflow-hidden">
         <img
-          :src="getImageSrc"
-          :alt="getImageName"
+          :src="getAssetSrc"
+          :alt="getAssetName"
           class="tw-w-full tw-h-full tw-object-cover"
+          v-if="checkFileType === 'image'"
         />
+        <video
+          controls
+          controlslist="nodownload"
+          looop
+          playsinline
+          preload="metadata"
+          class="tw-w-full tw-h-full tw-object-cover"
+          v-else-if="checkFileType === 'video'"
+        >
+          <source :src="getAssetSrc" />
+        </video>
         <div
-          class="tw-w-full tw-h-full tw-px-4 tw-absolute tw-top-0 tw-left-0 tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-start tw-justify-end tw-gap-4 group-hover:tw-bg-black/25 group-hover:tw-opacity-100"
+          class="tw-w-full tw-h-full tw-px-4 tw-absolute tw-top-0 tw-left-0 tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-start tw-justify-end tw-gap-4 group-hover:tw-opacity-100"
+          :class="{
+            'tw-h-fit': checkFileType === 'video',
+            'group-hover:tw-bg-black/25': checkFileType === 'image',
+          }"
         >
           <button
             class="tw-rounded-full tw-w-8 tw-h-8 tw-mt-2 file-options"
@@ -49,7 +65,7 @@
       <div
         class="tw-bg-[#F0F0F0] tw-text-[#363636] tw-uppercase tw-px-4 tw-text-center tw-py-4 tw-text-sm"
       >
-        <h2>{{ getImageName }}</h2>
+        <h2>{{ getAssetName }}</h2>
       </div>
     </div>
     <button
@@ -90,6 +106,7 @@ export default {
   props: {
     file: { type: Object },
     type: { type: String },
+    extension: { type: String },
   },
   data() {
     return {
@@ -135,15 +152,27 @@ export default {
   },
   computed: {
     checkFileType() {
-      if (this.type === "assets") {
-        return "image";
+      if (this.extension === ".json") {
+        return "json";
       }
+
+      const imageRegex = /\.((jpg|jpeg|png|gif|bmp|svg|webp|ico|tiff?))$/i;
+
+      const videoRegex =
+        /\.((mp4|avi|mov|mkv|wmv|flv|webm|3gp|ogv|mpeg|mpg|m4v|divx|rm|asf|vob|ts|m2ts?))$/i;
+
+      if (imageRegex.test(this.extension)) {
+        return "image";
+      } else if (videoRegex.test(this.extension)) {
+        return "video";
+      }
+
       return "json";
     },
-    getImageSrc() {
+    getAssetSrc() {
       return this.file.image ? this.file.image : this.file?.src;
     },
-    getImageName() {
+    getAssetName() {
       return this.file.image ? this.file.name : this.file?.name;
     },
   },

@@ -11,6 +11,7 @@
           :key="file._id"
           :file="file"
           :type="type"
+          :extension="extension"
         />
       </div>
       <div class="tw-flex tw-flex-col tw-gap-4">
@@ -20,6 +21,7 @@
           :key="file._id"
           :file="file"
           :type="type"
+          :extension="extension"
         />
       </div>
       <div class="tw-flex tw-flex-col tw-gap-4">
@@ -29,6 +31,7 @@
           :key="file._id"
           :file="file"
           :type="type"
+          :extension="extension"
         />
       </div>
       <div class="tw-flex tw-flex-col tw-gap-4">
@@ -38,6 +41,7 @@
           :key="file._id"
           :file="file"
           :type="type"
+          :extension="extension"
         />
       </div>
     </div>
@@ -50,13 +54,18 @@
         :key="file._id"
         :file="file"
         :type="type"
+        :extension="extension"
       />
     </div>
   </div>
 </template>
 <script lang="ts">
 export default {
-  props: { paginatedFiles: { type: Array }, type: { type: String } },
+  props: {
+    paginatedFiles: { type: Array },
+    type: { type: String },
+    extension: { type: String },
+  },
   data() {
     return {
       firstColumnFiles: [{ _id: "" }],
