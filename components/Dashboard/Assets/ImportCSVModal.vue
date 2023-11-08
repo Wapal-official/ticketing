@@ -62,10 +62,16 @@
       <div
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-pt-4"
       >
-        <button-primary title="Import" @click="sendCSVForMetadataUpload" />
+        <button-primary
+          title="Import"
+          @click="sendCSVForMetadataUpload"
+          :disabled="generatingMetadata"
+          :loading="generatingMetadata"
+        />
         <button-primary
           title="Cancel"
           :bordered="true"
+          :disabled="generatingMetadata"
           @click="closeImportCSVModal"
         />
       </div>
@@ -94,6 +100,7 @@ export default {
       metadataCSV: { name: "" },
       metadataError: false,
       metadataLength: 0,
+      generatingMetadata: false,
     };
   },
   methods: {
@@ -130,7 +137,11 @@ export default {
           formData.append("description", this.description);
           formData.append("csv", this.metadataCSV);
 
+          this.generatingMetadata = true;
+
           const res = await uploadMetadataCSV(formData);
+
+          this.generatingMetadata = false;
 
           if (res.data.files) {
             this.$toast.showMessage({
