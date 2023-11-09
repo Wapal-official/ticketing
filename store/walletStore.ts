@@ -899,7 +899,11 @@ export const actions = {
       mintFunction,
       moduleName,
       programId,
-    }: { mintFunction: string; moduleName: string; programId: string }
+    }: {
+      mintFunction: string;
+      moduleName: string;
+      programId: string;
+    }
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
@@ -912,6 +916,39 @@ export const actions = {
       function: `${programId}::${moduleName}::${mintFunction}`,
       type_arguments: [],
       arguments: [],
+    };
+
+    const transaction = await wallet.signAndSubmitTransaction(payload);
+
+    const res = await client.waitForTransactionWithResult(transaction.hash);
+
+    return res;
+  },
+  async bulkExternalMint(
+    { state }: { state: any },
+    {
+      mintFunction,
+      moduleName,
+      programId,
+      numberOfNfts,
+    }: {
+      mintFunction: string;
+      moduleName: string;
+      programId: string;
+      numberOfNfts: number;
+    }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    checkNetwork();
+
+    const payload = {
+      type: "entry_function_payload",
+      function: `${programId}::${moduleName}::${mintFunction}`,
+      type_arguments: [],
+      arguments: [numberOfNfts],
     };
 
     const transaction = await wallet.signAndSubmitTransaction(payload);

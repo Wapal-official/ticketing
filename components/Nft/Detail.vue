@@ -107,6 +107,10 @@
         <div v-if="notWhitelisted" class="tw-pb-2 tw-text-red-600">
           You are not whitelisted in {{ currentSale.name }} for this collection
         </div>
+        <div v-if="externalWhitelisted">
+          Your Whitelist Mint Tokens:
+          {{ externalWhitelistMintNumber }} Remaining
+        </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
           v-if="live"
@@ -123,11 +127,11 @@
                 <div class="tw-text-white/70">
                   {{ resource.minted }}/{{ resource.total_supply }} Minted
                 </div>
-                <div v-if="currentSale.mint_price">
-                  <div v-if="currentSale.mint_price !== 0">
-                    Price {{ currentSale.mint_price }} APT
-                  </div>
-                  <div v-else>Free Mint</div>
+                <div v-if="currentSale.mint_price === 0">Free Mint</div>
+                <div
+                  v-if="currentSale.mint_price && currentSale.mint_price !== 0"
+                >
+                  Price {{ currentSale.mint_price }} APT
                 </div>
               </div>
               <div
@@ -281,6 +285,8 @@ export default {
       live: false,
       showShareBox: false,
       phaseInterval: null,
+      externalWhitelisted: false,
+      externalWhitelistMintNumber: 0,
       imageNotFound,
     };
   },
@@ -640,12 +646,24 @@ export default {
 
       if (!this.collection.phases) {
         if (
-          new Date(this.collection.candyMachine.public_sale_time).getTime() -
-            new Date(
-              this.collection.candyMachine.whitelist_sale_time
-            ).getTime() >
-          1000
+          !this.collection.mintDetails &&
+          !this.collection.mintDetails.all_mint_at_same_time
         ) {
+          if (
+            new Date(this.collection.candyMachine.public_sale_time).getTime() -
+              new Date(
+                this.collection.candyMachine.whitelist_sale_time
+              ).getTime() >
+            1000
+          ) {
+            this.phases.push({
+              name: "whitelist sale",
+              id: "whitelist",
+              mint_price: this.collection.candyMachine.whitelist_price,
+              mint_time: this.collection.candyMachine.whitelist_sale_time,
+            });
+          }
+        } else {
           this.phases.push({
             name: "whitelist sale",
             id: "whitelist",
@@ -754,6 +772,14 @@ export default {
     async mintCollectionExternally() {
       try {
         if (this.externalWhitelisted) {
+          const res = await this.$store.dispatch("walletStore/externalMint", {
+            mintFunction: this.collection.mintDetails.whitelist_mint_function,
+            programId: this.collection.candyMachine.candy_id,
+            moduleName: this.collection.mintDetails.module_name,
+            numberOfNfts: this.numberOfNft,
+          });
+          this.minting = false;
+
           const whitelistRes = await this.$store.dispatch(
             "walletStore/checkIfWalletAddressIsWhitelisted",
             {
@@ -764,22 +790,14 @@ export default {
                 this.collection.mintDetails.check_whitelist_function,
             }
           );
-
-          if (whitelistRes) {
-            const res = await this.$store.dispatch("walletStore/externalMint", {
-              mintFunction: this.collection.mintDetails.whitelist_mint_function,
-              programId: this.collection.candyMachine.candy_id,
-              moduleName: this.collection.mintDetails.module_name,
-            });
-          }
-          this.minting = false;
         } else {
           this.publicMintCollectionExternally();
         }
       } catch (error) {
         if (error.message === "Error getting whitelist proof") {
           this.externalWhitelisted = false;
-          this.publicMintCollectionExternally();
+          this.currentSale.mint_price =
+            this.collection.candyMachine.public_sale_price;
         } else {
           this.minting = false;
           this.$toast.showMessage({ message: error, error: true });
@@ -794,16 +812,57 @@ export default {
         if (!this.collection.mintDetails.many && this.numberOfNft > 1) {
           throw new Error("Please Mint One NFT at a time");
         }
-        const res = await this.$store.dispatch("walletStore/externalMint", {
-          mintFunction: this.collection.mintDetails.public_mint_function,
-          programId: this.collection.candyMachine.candy_id,
-          moduleName: this.collection.mintDetails.module_name,
-        });
+
+        if (this.numberOfNft > 1) {
+          const res = await this.$store.dispatch(
+            "walletStore/bulkExternalMint",
+            {
+              mintFunction:
+                this.collection.mintDetails.public_mint_many_function,
+              programId: this.collection.candyMachine.candy_id,
+              moduleName: this.collection.mintDetails.module_name,
+              numberOfNfts: this.numberOfNft,
+            }
+          );
+        } else {
+          const res = await this.$store.dispatch("walletStore/externalMint", {
+            mintFunction: this.collection.mintDetails.public_mint_function,
+            programId: this.collection.candyMachine.candy_id,
+            moduleName: this.collection.mintDetails.module_name,
+          });
+        }
         this.minting = false;
+        this.numberOfNft = 1;
       } catch (error) {
         console.log(error);
         this.minting = false;
         this.$toast.showMessage({ message: error, error: true });
+      }
+    },
+    async checkWhitelistForExternalMint() {
+      try {
+        const whitelistRes = await this.$store.dispatch(
+          "walletStore/checkIfWalletAddressIsWhitelisted",
+          {
+            walletAddress: this.getWalletAddress,
+            programId: this.collection.candyMachine.candy_id,
+            moduleName: this.collection.mintDetails.module_name,
+            viewFunction: this.collection.mintDetails.check_whitelist_function,
+          }
+        );
+
+        if (whitelistRes) {
+          this.currentSale.mint_price =
+            this.collection.candyMachine.whitelist_price;
+
+          this.externalWhitelistMintNumber = whitelistRes[0];
+        }
+
+        this.externalWhitelisted = true;
+      } catch (error) {
+        this.currentSale.mint_price =
+          this.collection.candyMachine.public_sale_price;
+        this.externalWhitelisted = false;
       }
     },
   },
@@ -855,6 +914,16 @@ export default {
   },
   async mounted() {
     if (this.collection) {
+      const whitelistDate = new Date();
+
+      whitelistDate.setSeconds(new Date().getSeconds() + 10);
+
+      this.collection.candyMachine.whitelist_sale_time =
+        whitelistDate.toISOString();
+
+      this.collection.candyMachine.public_sale_time =
+        whitelistDate.toISOString();
+
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();
@@ -964,29 +1033,7 @@ export default {
         this.collection.mintDetails.check_whitelist_function &&
         this.collection.mintDetails.all_mint_at_same_time
       ) {
-        try {
-          const whitelistRes = await this.$store.dispatch(
-            "walletStore/checkIfWalletAddressIsWhitelisted",
-            {
-              walletAddress: this.getWalletAddress,
-              programId: this.collection.candyMachine.candy_id,
-              moduleName: this.collection.mintDetails.module_name,
-              viewFunction:
-                this.collection.mintDetails.check_whitelist_function,
-            }
-          );
-
-          if (whitelistRes) {
-            this.currentSale.mint_price =
-              this.collection.candyMachine.whitelist_price;
-          }
-
-          this.externalWhitelisted = true;
-        } catch (error) {
-          this.currentSale.mint_price =
-            this.collection.candyMachine.public_sale_price;
-          this.externalWhitelisted = false;
-        }
+        await this.checkWhitelistForExternalMint();
       }
 
       setTimeout(() => {
@@ -1004,6 +1051,14 @@ export default {
       if (this.phases.length > 1 && this.showPublicSaleTimer) {
         await this.setProof();
         await this.getOwnedCollectionOfUser();
+      }
+
+      if (
+        this.collection.mintDetails &&
+        this.collection.mintDetails.check_whitelist_function &&
+        this.collection.mintDetails.all_mint_at_same_time
+      ) {
+        await this.checkWhitelistForExternalMint();
       }
     },
   },
