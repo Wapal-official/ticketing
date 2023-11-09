@@ -152,6 +152,7 @@
                 <button
                   class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
                   @click="decreaseNumberOfNft"
+                  :disabled="externalWhitelisted"
                 >
                   -
                 </button>
@@ -159,10 +160,18 @@
                   class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
                   v-model="numberOfNft"
                   @input="checkNumberOfNft"
+                  v-if="!externalWhitelisted"
                 />
+                <div
+                  class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
+                  v-else
+                >
+                  {{ externalWhitelistMintNumber }}
+                </div>
                 <button
                   class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
                   @click="increaseNumberOfNft"
+                  :disabled="externalWhitelisted"
                 >
                   +
                 </button>
