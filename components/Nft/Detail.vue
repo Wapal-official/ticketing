@@ -152,6 +152,7 @@
                 <button
                   class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
                   @click="decreaseNumberOfNft"
+                  :disabled="externalWhitelisted"
                 >
                   -
                 </button>
@@ -159,10 +160,18 @@
                   class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
                   v-model="numberOfNft"
                   @input="checkNumberOfNft"
+                  v-if="!externalWhitelisted"
                 />
+                <div
+                  class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
+                  v-else
+                >
+                  {{ externalWhitelistMintNumber }}
+                </div>
                 <button
                   class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
                   @click="increaseNumberOfNft"
+                  :disabled="externalWhitelisted"
                 >
                   +
                 </button>
@@ -399,6 +408,11 @@ export default {
             minted: this.resource.minted,
             total_supply: 343,
           };
+        } else if (this.collection._id === "654c9afff8961c791c804cf1") {
+          this.resource = {
+            minted: this.resource.minted,
+            total_supply: 1300,
+          };
         }
 
         if (
@@ -535,6 +549,16 @@ export default {
             res = {
               minted: res.minted,
               total_supply: 355,
+            };
+          } else if (this.collection._id === "6466a09b6fee90eea757521c") {
+            res = {
+              minted: this.resource.minted,
+              total_supply: 343,
+            };
+          } else if (this.collection._id === "654c9afff8961c791c804cf1") {
+            res = {
+              minted: this.resource.minted,
+              total_supply: 1300,
             };
           }
 
@@ -981,6 +1005,11 @@ export default {
         this.resource = {
           minted: this.resource.minted,
           total_supply: 343,
+        };
+      } else if (this.collection._id === "654c9afff8961c791c804cf1") {
+        this.resource = {
+          minted: this.resource.minted,
+          total_supply: 1300,
         };
       }
 
