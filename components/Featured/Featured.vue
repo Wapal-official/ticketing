@@ -488,6 +488,11 @@ export default {
                 minted: res.minted,
                 total_supply: 2333,
               };
+            } else if (this.collection._id === "654c9afff8961c791c804cf1") {
+              res = {
+                minted: this.resource.minted,
+                total_supply: 1300,
+              };
             }
 
             if (res.total_supply === res.minted) {
