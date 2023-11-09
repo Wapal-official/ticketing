@@ -934,7 +934,6 @@ export default {
   },
   async mounted() {
     if (this.collection) {
-      console.log(this.collection);
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();
