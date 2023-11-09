@@ -914,16 +914,6 @@ export default {
   },
   async mounted() {
     if (this.collection) {
-      const whitelistDate = new Date();
-
-      whitelistDate.setSeconds(new Date().getSeconds() + 10);
-
-      this.collection.candyMachine.whitelist_sale_time =
-        whitelistDate.toISOString();
-
-      this.collection.candyMachine.public_sale_time =
-        whitelistDate.toISOString();
-
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();
