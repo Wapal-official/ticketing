@@ -664,12 +664,17 @@ export default {
             });
           }
         } else {
-          this.phases.push({
-            name: "whitelist sale",
-            id: "whitelist",
-            mint_price: this.collection.candyMachine.whitelist_price,
-            mint_time: this.collection.candyMachine.whitelist_sale_time,
-          });
+          if (
+            new Date(this.collection.candyMachine.whitelist_sale_time) >
+            new Date()
+          ) {
+            this.phases.push({
+              name: "whitelist sale",
+              id: "whitelist",
+              mint_price: this.collection.candyMachine.whitelist_price,
+              mint_time: this.collection.candyMachine.whitelist_sale_time,
+            });
+          }
         }
       }
 
@@ -914,16 +919,7 @@ export default {
   },
   async mounted() {
     if (this.collection) {
-      const whitelistDate = new Date();
-
-      whitelistDate.setSeconds(new Date().getSeconds() + 10);
-
-      this.collection.candyMachine.whitelist_sale_time =
-        whitelistDate.toISOString();
-
-      this.collection.candyMachine.public_sale_time =
-        whitelistDate.toISOString();
-
+      console.log(this.collection);
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();
