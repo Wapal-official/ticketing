@@ -646,12 +646,24 @@ export default {
 
       if (!this.collection.phases) {
         if (
-          new Date(this.collection.candyMachine.public_sale_time).getTime() -
-            new Date(
-              this.collection.candyMachine.whitelist_sale_time
-            ).getTime() >
-          1000
+          !this.collection.mintDetails &&
+          !this.collection.mintDetails.all_mint_at_same_time
         ) {
+          if (
+            new Date(this.collection.candyMachine.public_sale_time).getTime() -
+              new Date(
+                this.collection.candyMachine.whitelist_sale_time
+              ).getTime() >
+            1000
+          ) {
+            this.phases.push({
+              name: "whitelist sale",
+              id: "whitelist",
+              mint_price: this.collection.candyMachine.whitelist_price,
+              mint_time: this.collection.candyMachine.whitelist_sale_time,
+            });
+          }
+        } else {
           this.phases.push({
             name: "whitelist sale",
             id: "whitelist",
@@ -902,6 +914,16 @@ export default {
   },
   async mounted() {
     if (this.collection) {
+      const whitelistDate = new Date();
+
+      whitelistDate.setSeconds(new Date().getSeconds() + 10);
+
+      this.collection.candyMachine.whitelist_sale_time =
+        whitelistDate.toISOString();
+
+      this.collection.candyMachine.public_sale_time =
+        whitelistDate.toISOString();
+
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();
