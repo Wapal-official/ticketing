@@ -224,6 +224,13 @@
             />
           </div>
         </div>
+        <a
+          href="https://wapal.io/collection/proud-lions-club"
+          class="!tw-text-primary-1"
+          target="_blank"
+          v-if="collection.username === 'proudlionsclub'"
+          >List at Wapal <i class="bx bx-link-external"></i
+        ></a>
       </div>
     </div>
     <v-dialog
