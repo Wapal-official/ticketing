@@ -38,6 +38,21 @@ export default {
         error: this.$store.state.toast.error,
       });
     }
+
+    const script = document.createElement("script");
+    script.id = "intergram";
+    script.type = "text/javascript";
+    script.src = "https://telegram-chat-widget-t3ez.onrender.com/js/widget.js";
+    document.head.appendChild(script);
+
+    // Set the intergramId after the script is loaded
+    script.onload = () => {
+      window.intergramId = "6407851940";
+      window.intergramCustomizations = {
+        mainColor: "#8759FF",
+        alwaysUseFloatingButton: true,
+      };
+    };
   },
 };
 </script>
