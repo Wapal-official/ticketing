@@ -261,7 +261,6 @@ export default {
       });
 
       let batchLength = 20;
-      console.log(files);
 
       const fileSize = files[0].size;
 
