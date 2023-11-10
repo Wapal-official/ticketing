@@ -138,6 +138,9 @@ export default {
       }
     },
     getSupply() {
+      if (this.collection._id === "654c9afff8961c791c804cf1") {
+        return 1300;
+      }
       if (!this.collection.supply) {
         return "TBD";
       }
