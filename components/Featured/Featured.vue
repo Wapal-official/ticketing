@@ -556,6 +556,13 @@ export default {
           );
         }
 
+        if (this.collection._id === "654c9afff8961c791c804cf1") {
+          this.resource = {
+            minted: this.resource.minted,
+            total_supply: 1300,
+          };
+        }
+
         this.resource.mintedPercent = Math.floor(
           (this.resource.minted / this.resource.total_supply) * 100
         );
@@ -769,6 +776,13 @@ export default {
             candyMachineId: this.collection.candyMachine.candy_id,
           }
         );
+      }
+
+      if (this.collection._id === "654c9afff8961c791c804cf1") {
+        this.resource = {
+          minted: this.resource.minted,
+          total_supply: 1300,
+        };
       }
 
       this.resource.mintedPercent = Math.floor(
