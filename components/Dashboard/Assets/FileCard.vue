@@ -12,17 +12,11 @@
           class="tw-w-full tw-h-full tw-object-cover"
           v-if="checkFileType === 'image'"
         />
-        <video
-          controls
-          controlslist="nodownload"
-          looop
-          playsinline
-          preload="metadata"
-          class="tw-w-full tw-h-full tw-object-cover"
+        <video-player
           v-else-if="checkFileType === 'video'"
-        >
-          <source :src="getAssetSrc" />
-        </video>
+          :source="getAssetSrc"
+        />
+
         <div
           class="tw-w-full tw-h-full tw-px-4 tw-absolute tw-top-0 tw-left-0 tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-start tw-justify-end tw-gap-4 group-hover:tw-opacity-100"
           :class="{

@@ -261,7 +261,6 @@ export default {
       });
 
       let batchLength = 20;
-      console.log(files);
 
       const fileSize = files[0].size;
 
@@ -274,8 +273,6 @@ export default {
       } else if (fileSizeInMB > 5) {
         batchLength = 10;
       }
-
-      console.log(batchLength);
 
       try {
         this.uploadComplete = false;
