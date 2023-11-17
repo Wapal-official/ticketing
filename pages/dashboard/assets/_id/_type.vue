@@ -1,16 +1,29 @@
 <template>
   <div>
-    <button-primary
+    <div
+      class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-4 md:tw-flex-row md:tw-items-center"
       v-if="
         type === 'metadata' &&
         folderInfo.metadata.files.length === 0 &&
         !loading &&
         checkImageUploaded
       "
-      @click="showCSVUploadModal = true"
-      title="Import CSV"
-      :bordered="true"
-    />
+    >
+      <button-primary
+        @click="showCSVUploadModal = true"
+        title="Import CSV"
+        :bordered="true"
+      />
+
+      <a
+        href="https://drive.google.com/uc?export=download&id=1W_wClJhifo6l_FyzfjaJMZNb1IV1Ptu_"
+        download="Self_generative_metadata_sample_Sample_Metadata_Generation"
+        class="tw-rounded-md !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm '!tw-border-solid tw-border tw-border-dark-4 tw-bg-transparent tw-py-2' disabled:tw-cursor-not-allowed"
+      >
+        <span> Sample CSV</span>
+        <i class="bx bxs-download"></i>
+      </a>
+    </div>
     <div
       class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full tw-relative"
       v-if="!loading"
@@ -183,7 +196,6 @@ import {
 import { defaultTheme } from "@/theme/wapaltheme";
 import moment from "moment";
 import { socket, uploadSocketState } from "@/sockets/socket";
-
 export default {
   layout: "dashboard",
   components: {

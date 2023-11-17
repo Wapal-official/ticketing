@@ -40,6 +40,13 @@
         />
       </v-list-group>
     </div>
+
+    <a
+      href="https://wapal.io"
+      target="_blank"
+      class="tw-text-sm tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-1 tw-transition-all tw-duration-150 tw-ease-linear !tw-text-white hover:!tw-text-primary-1"
+      >Marketplace <i class="bx bx-link-external"></i
+    ></a>
     <button-primary
       @click="checkWalletStatus"
       title="Launch"

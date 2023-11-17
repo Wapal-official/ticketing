@@ -47,9 +47,10 @@ export default {
 
     // Set the intergramId after the script is loaded
     script.onload = () => {
-      window.intergramId = "5619217850";
+      window.intergramId = "6407851940";
       window.intergramCustomizations = {
         mainColor: "#8759FF",
+        alwaysUseFloatingButton: true,
       };
     };
   },
