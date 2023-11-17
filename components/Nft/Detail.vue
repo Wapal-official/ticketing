@@ -677,15 +677,12 @@ export default {
 
       if (!this.collection.phases) {
         if (
-          !this.collection.mintDetails &&
-          !this.collection.mintDetails.all_mint_at_same_time
+          this.collection.mintDetails &&
+          this.collection.mintDetails.all_mint_at_same_time
         ) {
           if (
-            new Date(this.collection.candyMachine.public_sale_time).getTime() -
-              new Date(
-                this.collection.candyMachine.whitelist_sale_time
-              ).getTime() >
-            1000
+            new Date(this.collection.candyMachine.whitelist_sale_time) >
+            new Date()
           ) {
             this.phases.push({
               name: "whitelist sale",
@@ -696,8 +693,11 @@ export default {
           }
         } else {
           if (
-            new Date(this.collection.candyMachine.whitelist_sale_time) >
-            new Date()
+            new Date(this.collection.candyMachine.public_sale_time).getTime() -
+              new Date(
+                this.collection.candyMachine.whitelist_sale_time
+              ).getTime() >
+            1000
           ) {
             this.phases.push({
               name: "whitelist sale",
