@@ -50,7 +50,7 @@ export default {
       window.intergramId = "6407851940";
       window.intergramCustomizations = {
         mainColor: "#8759FF",
-        alwaysUseFloatingButton:true
+        alwaysUseFloatingButton: true,
       };
     };
   },
