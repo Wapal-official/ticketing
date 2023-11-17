@@ -16,17 +16,10 @@
         draggable="false"
         v-if="checkFileType() === 'image'"
       />
-      <video
-        controls
-        controlslist="nodownload"
-        looop
-        playsinline
-        preload="metadata"
-        class="tw-max-w-[80%] tw-object-cover"
+      <video-player
         v-else-if="checkFileType() === 'video'"
-      >
-        <source :src="this.fileData?.image" />
-      </video>
+        :source="this.fileData?.image"
+      />
       <h3 class="tw-text-white tw-font-medium tw-uppercase tw-text-sm">
         {{ this.fileData?.name }}
       </h3>

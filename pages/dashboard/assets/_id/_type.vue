@@ -525,9 +525,10 @@ export default {
     checkUploadingStatus: async function (newValue: string) {
       if (newValue) {
         setTimeout(async () => {
+          this.page = 0;
           await this.fetchFiles();
           await this.mapFiles();
-        }, 2000);
+        }, 1000);
       }
     },
   },

@@ -274,8 +274,6 @@ export default {
         batchLength = 10;
       }
 
-      console.log(batchLength);
-
       try {
         this.uploadComplete = false;
         this.uploadStatusClass = "tw-h-0";
