@@ -51,6 +51,18 @@ export default {
       window.intergramCustomizations = {
         mainColor: "#8759FF",
         alwaysUseFloatingButton: true,
+        introMessage: `Welcome to Wapal – Leading NFT No Code Creator Studio and Marketplace on Aptos! 
+
+How can we assist you today?`,
+        autoResponse:
+          "Connecting you with the first available admin. Thank you for your patience.",
+        autoNoResponse: `We strive to respond within 24 hours. For emergencies, please create a ticket on our server or reach out via the provided Telegram channel. Thank you for your understanding.
+
+Discord Link - https://discord.gg/wapal 
+
+TG - https://t.me/nrepesh`,
+        desktopHeight: 400,
+        desktopWidth: 300,
       };
     };
   },
