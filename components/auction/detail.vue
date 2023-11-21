@@ -637,7 +637,6 @@ export default {
 
       let response = res.data.auction;
 
-      console.log(response);
       let rev = response.biddings.reverse();
       response.biddings = rev;
 

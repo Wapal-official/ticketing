@@ -320,7 +320,6 @@ export const getOwnerAndRoyaltyOfTokenInAuction = async ({
       TOKEN_DATA_ID: "0x" + tokenDataId,
     },
   };
-  console.log(getOwnerAndRoyaltyOfTokenQuery);
   const res = await axios.post(GRAPHQL_URL, getOwnerAndRoyaltyOfTokenQuery);
 
   const data = res.data.data;
@@ -332,9 +331,13 @@ export const getOwnerAndRoyaltyOfTokenInAuction = async ({
 
   const royalty = data.current_token_datas[0];
 
-  const royaltyPercentage =
-    (royalty.royalty_points_numerator * 100) /
-    royalty.royalty_points_denominator;
+  let royaltyPercentage = 0;
+
+  if (royalty.royalty_points_numerator !== 0) {
+    royaltyPercentage =
+      (royalty.royalty_points_numerator * 100) /
+      royalty.royalty_points_denominator;
+  }
 
   return { owner: owner, royalty: royaltyPercentage };
 };
