@@ -1,4 +1,7 @@
 import { publicRequest } from "./fetcher";
+import axios from "axios";
+
+const GRAPHQL_URL = process.env.GRAPHQL_URL ? process.env.GRAPHQL_URL : "";
 
 export const getCurrentBid = (auction: any) => {
   let bid = 0;
@@ -285,4 +288,53 @@ export const getFeaturedAuctions = async () => {
   const res = await publicRequest.get(`/api/auction/featured`);
 
   return res.data.auctions;
+};
+
+export const getOwnerAndRoyaltyOfTokenInAuction = async ({
+  creatorAddress,
+  tokenDataId,
+}: {
+  creatorAddress: string;
+  tokenDataId: string;
+}) => {
+  const getOwnerAndRoyaltyOfTokenQuery = {
+    operationName: "GetOwnerAndRoyaltyOfToken",
+    query: `
+    query GetOwnerAndRoyaltyOfToken($CREATOR_ADDRESS:String, $TOKEN_DATA_ID:String) {
+      current_token_datas(
+        where: {creator_address: {_eq: $CREATOR_ADDRESS}}
+        limit: 1
+      ) {
+        royalty_points_denominator
+        royalty_points_numerator
+      }
+      current_token_ownerships_v2(
+        where: {amount:{_gt: 0 }, current_token_data: {current_collection: {creator_address: {_eq: $CREATOR_ADDRESS}}, token_data_id:{_eq: $TOKEN_DATA_ID}}}
+      ) {
+        owner_address
+      }
+    }
+    `,
+    variables: {
+      CREATOR_ADDRESS: creatorAddress,
+      TOKEN_DATA_ID: "0x" + tokenDataId,
+    },
+  };
+  console.log(getOwnerAndRoyaltyOfTokenQuery);
+  const res = await axios.post(GRAPHQL_URL, getOwnerAndRoyaltyOfTokenQuery);
+
+  const data = res.data.data;
+  let owner = null;
+
+  if (data.current_token_ownerships_v2[0]) {
+    owner = data.current_token_ownerships_v2[0].owner_address;
+  }
+
+  const royalty = data.current_token_datas[0];
+
+  const royaltyPercentage =
+    (royalty.royalty_points_numerator * 100) /
+    royalty.royalty_points_denominator;
+
+  return { owner: owner, royalty: royaltyPercentage };
 };
