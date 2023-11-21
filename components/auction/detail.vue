@@ -173,7 +173,7 @@
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-baseline tw-justify-between"
+            class="tw-w-full tw-flex tw-flex-col tw-items-baseline tw-justify-between tw-gap-2 md:tw-flex-row"
           >
             <div
               class="tw-w-full md:tw-w-[213px] md:tw-max-w-[213px] lg:tw-w-full lg:tw-max-w-full xl:tw-w-[213px] xl:tw-max-w-[213px]"
@@ -186,7 +186,7 @@
               />
             </div>
             <div
-              class="md:tw-w-[213px] md:tw-max-w-[213px] lg:tw-w-full lg:tw-max-w-full xl:tw-w-[213px] xl:tw-max-w-[213px]"
+              class="tw-w-full md:tw-w-[213px] md:tw-max-w-[213px] lg:tw-w-full lg:tw-max-w-full xl:tw-w-[213px] xl:tw-max-w-[213px]"
             >
               <button-primary
                 title="Withdraw Bid"
@@ -218,6 +218,35 @@
             class="tw-absolute tw-w-full tw-h-1/4 tw-overflow-hidden tw-left-0 tw-bottom-0 tw-rounded-b-lg tw-bg-gradient-to-b tw-from-black/0 tw-to-black"
           ></div>
           <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full tw-pb-2"
+            v-if="ownerAddress"
+          >
+            <div
+              class="tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-2"
+            >
+              <span
+                class="tw-uppercase tw-text-xs tw-font-semibold tw-text-dark-2 tw-tracking-[0.015rem]"
+              >
+                Owner</span
+              >
+              <span class="tw-text-primary-1 tw-text-sm tw-font-medium">{{
+                ownerAddress
+              }}</span>
+            </div>
+            <div
+              class="tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-2"
+            >
+              <span
+                class="tw-uppercase tw-text-xs tw-font-semibold tw-text-dark-2 tw-tracking-[0.015rem]"
+              >
+                Royalty</span
+              >
+              <span class="tw-text-sm tw-text-white tw-font-normal"
+                >{{ royaltyPercentage }}%</span
+              >
+            </div>
+          </div>
+          <div
             class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-w-full"
           >
             <div class="tw-font-semibold">Last bid</div>
@@ -232,13 +261,17 @@
               class="tw-w-full"
             >
               <div
-                class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-py-2"
+                class="tw-py-2 tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-items-center md:tw-justify-between md:tw-flex-row"
               >
-                <div class="!tw-text-dark-0">
+                <div
+                  class="!tw-text-dark-0 tw-flex tw-flex-row tw-items-center tw-justify-start tw-w-full md:tw-w-[70%]"
+                >
                   {{ item.displayName }}
                   bid for {{ item.bid }} APT
                 </div>
-                <div>
+                <div
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full md:tw-w-[30%]"
+                >
                   <small class="tw-text-sm tw-font-medium tw-text-dark-2">{{
                     $moment(item.time).fromNow()
                   }}</small>
@@ -472,6 +505,7 @@ import {
   getDomainNameFromWalletAddress,
   placeBid,
   setCompleteAuction,
+  getOwnerAndRoyaltyOfTokenInAuction,
 } from "@/services/AuctionService";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 
@@ -522,6 +556,8 @@ export default {
       bidInterval: null,
       showMoreBiddings: false,
       showShareBox: false,
+      royaltyPercentage: null,
+      ownerAddress: "",
       imageNotFound,
     };
   },
@@ -559,6 +595,8 @@ export default {
     this.auctionStarted = this.checkAuctionStarted();
     this.auctionEnded = this.checkAuctionEnded();
     await this.setBid();
+
+    await this.setRoyaltyAndOwnerOfToken();
 
     if (!this.auctionEnded) {
       this.bidInterval = setInterval(async () => {
@@ -598,6 +636,7 @@ export default {
       }
 
       let response = res.data.auction;
+
       let rev = response.biddings.reverse();
       response.biddings = rev;
 
@@ -926,6 +965,41 @@ export default {
     },
     hideShareBox() {
       this.showShareBox = false;
+    },
+    async setRoyaltyAndOwnerOfToken() {
+      const creatorAddress =
+        this.auction.nft.nft.current_token_data.creator_address;
+
+      const tokenDataId =
+        this.auction.nft.nft.current_token_data.token_data_id_hash;
+
+      const royaltyAndOwnerAddressRes =
+        await getOwnerAndRoyaltyOfTokenInAuction({
+          creatorAddress,
+          tokenDataId,
+        });
+
+      this.royaltyPercentage = royaltyAndOwnerAddressRes.royalty;
+
+      if (royaltyAndOwnerAddressRes.owner) {
+        const ownerNameRes = await getDomainNameFromWalletAddress(
+          royaltyAndOwnerAddressRes.owner
+        );
+
+        if (ownerNameRes.name) {
+          this.ownerAddress = ownerNameRes.name + ".apt";
+        } else {
+          this.ownerAddress =
+            royaltyAndOwnerAddressRes.owner.slice(0, 4) +
+            "..." +
+            royaltyAndOwnerAddressRes.owner.slice(
+              -2,
+              royaltyAndOwnerAddressRes.owner.length
+            );
+        }
+      } else {
+        this.ownerAddress = this.auction.biddings[0].displayName;
+      }
     },
   },
   watch: {
