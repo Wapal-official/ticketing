@@ -320,7 +320,6 @@ export const getOwnerAndRoyaltyOfTokenInAuction = async ({
       TOKEN_DATA_ID: "0x" + tokenDataId,
     },
   };
-  console.log(getOwnerAndRoyaltyOfTokenQuery);
   const res = await axios.post(GRAPHQL_URL, getOwnerAndRoyaltyOfTokenQuery);
 
   const data = res.data.data;
