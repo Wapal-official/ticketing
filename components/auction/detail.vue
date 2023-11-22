@@ -921,11 +921,7 @@ export default {
         return res.name + ".apt";
       }
 
-      return (
-        walletAddress.slice(0, 4) +
-        "..." +
-        walletAddress.slice(-2, walletAddress.length)
-      );
+      return this.sliceAddressForDisplay(walletAddress);
     },
     async copyLink(event) {
       const clipboardData =
@@ -989,17 +985,25 @@ export default {
         if (ownerNameRes.name) {
           this.ownerAddress = ownerNameRes.name + ".apt";
         } else {
-          this.ownerAddress =
-            royaltyAndOwnerAddressRes.owner.slice(0, 4) +
-            "..." +
-            royaltyAndOwnerAddressRes.owner.slice(
-              -2,
-              royaltyAndOwnerAddressRes.owner.length
-            );
+          this.ownerAddress = this.sliceAddressForDisplay(
+            royaltyAndOwnerAddressRes.owner
+          );
         }
       } else {
-        this.ownerAddress = this.auction.biddings[0].displayName;
+        if (this.auction.biddings[0]) {
+          this.ownerAddress = this.auction.biddings[0].displayName;
+        } else {
+          const ownerAddress = this.auction.nft.nft.owner_address;
+          this.ownerAddress = this.sliceAddressForDisplay(ownerAddress);
+        }
       }
+    },
+    sliceAddressForDisplay(ownerAddress) {
+      return (
+        ownerAddress.slice(0, 4) +
+        "..." +
+        ownerAddress.slice(-2, ownerAddress.length)
+      );
     },
   },
   watch: {
