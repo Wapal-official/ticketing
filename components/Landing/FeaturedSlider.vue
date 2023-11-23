@@ -85,7 +85,7 @@ export default {
       status: {
         sold_out: true,
       },
-      username: "aptos-monkeys-sanctuary",
+      username: "monkkesanturies",
     };
     this.featuredCollections.push(collection);
     const auctionRes = await getFeaturedAuctions();

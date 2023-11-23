@@ -84,7 +84,7 @@ export default {
         status: {
           sold_out: false,
         },
-        username: "aptos-monkeys-sanctuary",
+        username: "monkkesanturies",
       };
 
       this.collections.unshift(collection);

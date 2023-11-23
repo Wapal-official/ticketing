@@ -31,9 +31,20 @@
             />
           </div>
         </div>
-        <h1 class="tw-text-white tw-text-[2.5em] tw-font-bold">
-          {{ collection.name }}
-        </h1>
+        <div>
+          <a
+            :href="`${MARKETPLACE_URL}/collection/${collection.username}`"
+            class="!tw-text-primary-2 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium"
+            target="_blank"
+            v-if="live && resource.minted > 0"
+          >
+            <span>List on Secondary</span>
+            <i class="bx bx-link-external"></i>
+          </a>
+          <h1 class="tw-text-white tw-text-[2.5rem] tw-font-bold">
+            {{ collection.name }}
+          </h1>
+        </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
@@ -224,13 +235,6 @@
             />
           </div>
         </div>
-        <a
-          href="https://wapal.io/collection/proud-lions-club"
-          class="!tw-text-primary-1"
-          target="_blank"
-          v-if="collection.username === 'proudlionsclub'"
-          >List at Wapal <i class="bx bx-link-external"></i
-        ></a>
       </div>
     </div>
     <v-dialog
@@ -303,6 +307,7 @@ export default {
       phaseInterval: null,
       externalWhitelisted: false,
       externalWhitelistMintNumber: 0,
+      MARKETPLACE_URL: process.env.MARKETPLACE_URL,
       imageNotFound,
     };
   },
@@ -950,6 +955,10 @@ export default {
   },
   async mounted() {
     if (this.collection) {
+      if (this.collection.username === "proudlionsclub") {
+        this.collection.username = "proud-lions-club";
+      }
+
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();
