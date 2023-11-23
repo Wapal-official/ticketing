@@ -12,12 +12,16 @@ const CANDY_MACHINE_V2 = process.env.CANDY_MACHINE_V2;
 const CANDY_MACHINE_V1 =
   "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0";
 
+let MARKETPLACE_URL = "https://wapal.io";
+
 let discordRedirectURI = "http://staging.wapal.io/discord/token";
 
 if (API_URL.includes("staging")) {
   discordRedirectURI = "https://staging.wapal.io/discord/token";
+  MARKETPLACE_URL = "https://staging-marketplace.wapal.io";
 } else {
   discordRedirectURI = "https://launchpad.wapal.io/discord/token";
+  MARKETPLACE_URL = "https://wapal.io";
 }
 
 let NODE_URL = `https://aptos-${NETWORK}.nodereal.io/v1/${APTOS_API_KEY}/v1`;
@@ -153,6 +157,7 @@ export default {
     CANDY_MACHINE_V2: CANDY_MACHINE_V2,
     NODE_URL: NODE_URL,
     CANDY_MACHINE_V1: CANDY_MACHINE_V1,
+    MARKETPLACE_URL: MARKETPLACE_URL,
   },
   privateRuntimeConfig: {
     DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
