@@ -21,7 +21,7 @@
         </ValidationObserver>
         <button-primary @click="submitCode" title="Submit" :fullWidth="true" />
         <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLSdDhR7v1aepvJ8g_718yC8Zfi-P38rVaQP5x8mcMdhwfKLhNg/viewform"
+          href="https://t.me/wapal_aptos"
           target="_blank"
           class="!tw-text-white"
         >
