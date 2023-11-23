@@ -14,9 +14,20 @@
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
       >
-        <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
-          {{ collection.name }}
-        </h1>
+        <div>
+          <a
+            :href="`${MARKETPLACE_URL}/collection/${collection.username}`"
+            class="!tw-text-primary-2 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium"
+            target="_blank"
+            v-if="!showLiveInTimer && resource.minted > 0"
+          >
+            <span>List on Secondary</span>
+            <i class="bx bx-link-external"></i>
+          </a>
+          <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
+            {{ collection.name }}
+          </h1>
+        </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
@@ -404,6 +415,7 @@ export default {
       phaseCounter: 0,
       showShareBox: false,
       collectionLink: "",
+      MARKETPLACE_URL: process.env.MARKETPLACE_URL,
       imageNotFound,
     };
   },
@@ -740,6 +752,10 @@ export default {
         delete this.collection["candyMachine"].whitelist_price;
 
         delete this.collection.phases;
+      }
+
+      if (this.collection.username === "proudlionsclub") {
+        this.collection.username = "proud-lions-club";
       }
 
       this.setPhases();
