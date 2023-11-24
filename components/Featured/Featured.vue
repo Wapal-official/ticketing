@@ -16,7 +16,7 @@
       >
         <div>
           <a
-            :href="`${MARKETPLACE_URL}/collection/${collection.username}`"
+            :href="MARKETPLACE_URL"
             class="!tw-text-primary-2 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium"
             target="_blank"
             v-if="!showLiveInTimer && resource.minted > 0"
@@ -755,7 +755,9 @@ export default {
       }
 
       if (this.collection.username === "proudlionsclub") {
-        this.collection.username = "proud-lions-club";
+        this.MARKETPLACE_URL = `${this.MARKETPLACE_URL}/collection/proud-lions-club`;
+      } else {
+        this.MARKETPLACE_URL = `${this.MARKETPLACE_URL}/collection/${this.collection.username}`;
       }
 
       this.setPhases();
