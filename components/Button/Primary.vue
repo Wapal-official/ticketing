@@ -12,7 +12,7 @@
     :disabled="disabled || loading"
   >
     <v-progress-circular
-      :size="24"
+      :size="20"
       color="#fff"
       :width="2"
       indeterminate
