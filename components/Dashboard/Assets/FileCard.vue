@@ -44,6 +44,7 @@
           </div>
           <div
             class="tw-h-full tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
+            v-if="!this.file.name || !this.file.image"
           >
             <button-primary
               title="Add Metadata"
