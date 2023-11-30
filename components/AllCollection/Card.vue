@@ -94,7 +94,7 @@ export default {
         this.minted = res.minted;
 
         if (this.collection._id === "654c9afff8961c791c804cf1") {
-          this.totalSupply = 1350;
+          this.totalSupply = 1337;
         }
       } else {
         this.totalSupply = 0;
