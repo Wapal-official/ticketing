@@ -25,7 +25,7 @@ import { getUpcomingAuctions } from "~/services/AuctionService";
 export default {
   data() {
     return {
-      tabs: ["Featured", "Drops", "Editions", "Auctions"],
+      tabs: ["Featured", "Drops", "Auctions"],
       tabNumber: 0,
       collections: [],
       loading: true,
@@ -58,13 +58,13 @@ export default {
         case 1:
           await this.getDrops();
           break;
+        // case 2:
+        //   await this.getEditions();
+        //   break;
         case 2:
-          await this.getEditions();
-          break;
-        case 3:
           await this.getAuctions();
           break;
-        case 4:
+        case 3:
           await this.getLiveCollections();
           break;
         default:
@@ -144,6 +144,7 @@ export default {
           return;
         }
 
+        console.log(this.tabNumber);
         switch (this.tabNumber) {
           case 0:
             await this.getFeaturedCollections();
@@ -151,13 +152,13 @@ export default {
           case 1:
             await this.getDrops();
             break;
+          // case 2:
+          //   await this.getEditions();
+          //   break;
           case 2:
-            await this.getEditions();
-            break;
-          case 3:
             await this.getAuctions();
             break;
-          case 4:
+          case 3:
             await this.getLiveCollections();
             break;
           default:
