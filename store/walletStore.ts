@@ -293,7 +293,7 @@ export const actions = {
 
     const create_candy_machine = {
       type: "entry_function_payload",
-      function: process.env.CANDY_MACHINE_ID + "::candymachine::init_candy",
+      function: process.env.CANDY_MACHINE_V2 + "::candymachine::init_candy",
       type_arguments: [],
       arguments: [
         candyMachineArguments.collection_name,
@@ -312,6 +312,7 @@ export const actions = {
         candyMachineArguments.public_mint_limit,
         false,
         "" + makeId(5),
+        false,
       ],
     };
 
@@ -328,19 +329,18 @@ export const actions = {
     }
 
     let resourceAccount = null;
+
     getResourceAccount.changes.some((change: any) => {
+      console.log(change);
       if (
         change.type === "write_resource" &&
-        change.data.type ===
-          `${process.env.CANDY_MACHINE_ID}::candymachine::CandyMachine`
+        change.data &&
+        change.data.type === `0x1::object::ObjectCore`
       ) {
         resourceAccount = change.address;
       }
 
-      return (
-        change.data.type ===
-        `${process.env.CANDY_MACHINE_ID}::candymachine::CandyMachine`
-      );
+      return change.data && change.data.type === `0x1::object::ObjectCore`;
     });
 
     return {

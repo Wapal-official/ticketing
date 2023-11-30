@@ -1129,7 +1129,7 @@ export default {
         resource_account: "",
         txnhash: "",
         un: "",
-        candy_id: process.env.CANDY_MACHINE_V1,
+        candy_id: process.env.CANDY_MACHINE_V2,
         phases: [{ name: "", mint_time: null }],
         public_mint_limit: null,
       },
@@ -1393,7 +1393,7 @@ export default {
       };
 
       const res = await this.$store.dispatch(
-        "walletStore/createCandyMachine",
+        "walletStore/createCandyMachineV2",
         candyMachineArguments
       );
 
