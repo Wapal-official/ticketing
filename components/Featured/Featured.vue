@@ -151,7 +151,7 @@
               :to="`/nft/${collection.username}`"
               v-else-if="collection.mintDetails"
             >
-              Mint
+              {{ collection.status.sold_out ? "Soldout" : "Mint" }}
             </NuxtLink>
             <button-primary
               :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
