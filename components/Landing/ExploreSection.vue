@@ -144,7 +144,6 @@ export default {
           return;
         }
 
-        console.log(this.tabNumber);
         switch (this.tabNumber) {
           case 0:
             await this.getFeaturedCollections();
