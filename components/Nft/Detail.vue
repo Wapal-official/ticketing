@@ -423,7 +423,7 @@ export default {
         } else if (this.collection._id === "654c9afff8961c791c804cf1") {
           this.resource = {
             minted: this.resource.minted,
-            total_supply: 1337,
+            total_supply: 1350,
           };
         }
 
@@ -570,7 +570,7 @@ export default {
           } else if (this.collection._id === "654c9afff8961c791c804cf1") {
             res = {
               minted: this.resource.minted,
-              total_supply: 1337,
+              total_supply: 1350,
             };
           }
 
@@ -1025,7 +1025,7 @@ export default {
       } else if (this.collection._id === "654c9afff8961c791c804cf1") {
         this.resource = {
           minted: this.resource.minted,
-          total_supply: 1337,
+          total_supply: 1350,
         };
       }
 
@@ -1079,6 +1079,12 @@ export default {
       setTimeout(() => {
         if (!this.collection.status.sold_out && this.live) {
           this.showMintedProgress();
+        } else {
+          const resourceMintedPercent = document.querySelector(
+            "#resourceMintedPercent"
+          );
+
+          resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
         }
       }, 200);
     }
