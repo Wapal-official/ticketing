@@ -331,7 +331,6 @@ export const actions = {
     let resourceAccount = null;
 
     getResourceAccount.changes.some((change: any) => {
-      console.log(change);
       if (
         change.type === "write_resource" &&
         change.data &&

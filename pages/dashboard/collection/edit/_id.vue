@@ -338,10 +338,10 @@ export default {
 
       this.collection = res.collection[0];
 
-      const chainRes = await getCollectionDetails(
-        this.collection.candyMachine.candy_id,
-        this.collection.candyMachine.resource_account
-      );
+      const chainRes = await getCollectionDetails({
+        candyMachineId: this.collection.candyMachine.candy_id,
+        candyObject: this.collection.candyMachine.resource_account,
+      });
 
       this.editCollection.whitelistSaleTime = new Date(
         this.collection.candyMachine.whitelist_sale_time
@@ -395,10 +395,11 @@ export default {
     },
     async updateWhitelistSaleTime() {
       try {
-        await updateWhitelistSaleTime(
-          this.collection.candyMachine.resource_account,
-          this.editCollection.whitelistSaleTime
-        );
+        await updateWhitelistSaleTime({
+          candyObject: this.collection.candyMachine.resource_account,
+          pre_sale_mint_time: this.editCollection.whitelistSaleTime,
+          candy_machine_id: this.collection.candyMachine.candy_id,
+        });
 
         const candyMachine = this.collection.candyMachine;
 
@@ -412,20 +413,20 @@ export default {
         this.editingWhitelistSaleTime = false;
 
         this.$toast.showMessage({ message: "Collection Updated Successfully" });
-
-        this.fetchCollection();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.changeDialog = false;
+        this.editingWhitelistSaleTime = false;
       }
     },
     async updatePublicSaleTime() {
       try {
-        await updatePublicSaleTime(
-          this.collection.candyMachine.resource_account,
-          this.editCollection.publicSaleTime
-        );
+        await updatePublicSaleTime({
+          candyObject: this.collection.candyMachine.resource_account,
+          public_sale_time: this.editCollection.publicSaleTime,
+          candy_machine_id: this.collection.candyMachine.candy_id,
+        });
 
         const candyMachine = this.collection.candyMachine;
 
@@ -438,20 +439,20 @@ export default {
         this.editingPublicSaleTime = false;
 
         this.$toast.showMessage({ message: "Collection Updated Successfully" });
-
-        this.fetchCollection();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.changeDialog = false;
+        this.editingPublicSaleTime = false;
       }
     },
     async updateWhitelistSalePrice() {
       try {
-        await updateWhitelistSalePrice(
-          this.collection.candyMachine.resource_account,
-          this.editCollection.whitelistPrice
-        );
+        await updateWhitelistSalePrice({
+          candyObject: this.collection.candyMachine.resource_account,
+          pre_sale_price: this.editCollection.whitelistPrice,
+          candy_machine_id: this.collection.candyMachine.candy_id,
+        });
 
         const candyMachine = this.collection.candyMachine;
 
@@ -464,20 +465,20 @@ export default {
         this.editingWhitelistSalePrice = false;
 
         this.$toast.showMessage({ message: "Collection Updated Successfully" });
-
-        this.fetchCollection();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.changeDialog = false;
+        this.editingWhitelistSalePrice = false;
       }
     },
     async updatePublicSalePrice() {
       try {
-        await updatePublicSalePrice(
-          this.collection.candyMachine.resource_account,
-          this.editCollection.publicSalePrice
-        );
+        await updatePublicSalePrice({
+          candyObject: this.collection.candyMachine.resource_account,
+          public_sale_price: this.editCollection.publicSalePrice,
+          candy_machine_id: this.collection.candyMachine.candy_id,
+        });
 
         const candyMachine = this.collection.candyMachine;
 
@@ -490,20 +491,20 @@ export default {
         this.editingPublicSalePrice = false;
 
         this.$toast.showMessage({ message: "Collection Updated Successfully" });
-
-        this.fetchCollection();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.changeDialog = false;
+        this.editingPublicSalePrice = false;
       }
     },
     async updateTotalSupply() {
       try {
-        await updateTotalSupply(
-          this.collection.candyMachine.resource_account,
-          this.editCollection.totalSupply
-        );
+        await updateTotalSupply({
+          candyObject: this.collection.candyMachine.resource_account,
+          total_supply: this.editCollection.totalSupply,
+          candy_machine_id: this.collection.candyMachine.candy_id,
+        });
 
         const res = await updateCollection(this.collection._id, {
           supply: this.editCollection.totalSupply,
@@ -512,12 +513,11 @@ export default {
         this.editingTotalSupply = false;
 
         this.$toast.showMessage({ message: "Collection Updated Successfully" });
-
-        this.fetchCollection();
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.changeDialog = false;
+        this.editingTotalSupply = false;
       }
     },
   },

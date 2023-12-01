@@ -96,10 +96,10 @@ export default {
       const mappedCollections = await Promise.all(
         collections.map(async (collection: any) => {
           //Get Collection Detail
-          const resource = await getCollectionDetails(
-            collection.candyMachine.candy_id,
-            collection.candyMachine.resource_account
-          );
+          const resource = await getCollectionDetails({
+            candyMachineId: collection.candyMachine.candy_id,
+            candyObject: collection.candyMachine.resource_account,
+          });
 
           //Store minted and total supply of collection and calculate minted percent
           const collectionResource = {
@@ -142,7 +142,7 @@ export default {
       return collection.candyMachine.public_sale_price;
     },
     redirectToEditPage(collection: any) {
-      // this.$router.push(`/dashboard/collection/edit/${collection._id}`);
+      this.$router.push(`/dashboard/collection/edit/${collection._id}`);
     },
   },
   created() {

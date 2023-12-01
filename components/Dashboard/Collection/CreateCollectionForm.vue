@@ -1276,7 +1276,7 @@ export default {
 
         const sortedPhases = sortPhases(phases);
 
-        this.collection.phases = tempCollection.phases = sortedPhases;
+        tempCollection.phases = sortedPhases;
 
         if (this.tbd || this.saveAsDraft) {
           if (this.draft) {
@@ -1343,8 +1343,6 @@ export default {
       } catch (error: any) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
-
-        this.collection.phases.pop();
 
         this.submitting = false;
       }
@@ -1520,7 +1518,7 @@ export default {
 
         this.collection.baseURL = selectedFolder.metadata.baseURI;
 
-        const tempCollection = { ...this.collection };
+        const tempCollection = structuredClone(this.collection);
 
         await editDraft(this.$route.params.id, tempCollection);
 
