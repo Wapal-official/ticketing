@@ -106,6 +106,7 @@
               :required="true"
               @fileSelected="imageSelected"
               :file="collection.image"
+              fileSize="Upto 15 MB"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
               {{ imageErrorMessage }}
@@ -1205,6 +1206,10 @@ export default {
             return;
           }
 
+          if (this.imageError) {
+            return;
+          }
+
           this.stepNumber++;
           break;
         case 2:
@@ -1350,6 +1355,13 @@ export default {
 
     imageSelected(image: any) {
       this.image = image;
+
+      if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
     },
 
     async sendDataToCandyMachineCreator() {
