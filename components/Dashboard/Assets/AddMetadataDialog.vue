@@ -96,7 +96,7 @@
         </button-primary>
         <button-primary
           title="Save Changes"
-          @click="saveMetadata"
+          @click="saveChanges"
           :loading="saving"
         />
       </ValidationObserver>
@@ -104,11 +104,14 @@
   </div>
 </template>
 <script>
-import { ValidationObserver, ValidationProvider, extend } from "vee-validate";
-
+import { ValidationObserver, ValidationProvider } from "vee-validate";
+import { addMetadata, editMetadata } from "@/services/AssetsService";
 export default {
   props: {
     image: { type: String },
+    folderName: { type: String },
+    id: { type: [String, Number] },
+    propMetadata: { type: Object },
   },
   components: { ValidationObserver, ValidationProvider },
   data() {
@@ -117,8 +120,10 @@ export default {
         name: "",
         description: "",
         attributes: [{ trait_type: "", value: "" }],
+        image: this.image,
       },
       saving: false,
+      edit: false,
     };
   },
   methods: {
@@ -128,17 +133,118 @@ export default {
     deleteAttribute(index) {
       this.metadata.attributes.splice(index, 1);
     },
+    saveChanges() {
+      if (this.edit) {
+        this.editMetadata();
+      } else {
+        this.saveMetadata();
+      }
+    },
     async saveMetadata() {
       try {
+        this.saving = true;
+
         const validated = await this.$refs.metadataForm.validate();
 
         if (!validated) {
+          this.saving = false;
           return;
         }
 
-        this.saving = true;
+        const user_id = this.$store.state.userStore.user.user_id;
+
+        const folder_name = this.folderName;
+        const folder_id = this.$route.params.id;
+        const nftId = this.id;
+
+        const res = await addMetadata({
+          user_id,
+          folder_name,
+          nftId,
+          folder_id,
+          metadata: this.metadata,
+        });
+
+        if (res.data.data) {
+          this.saving = false;
+
+          this.$emit("closeModal", this.metadata);
+
+          this.$toast.showMessage({
+            message: "Metadata Added Successfully",
+            error: false,
+          });
+        } else {
+          throw new Error("Metadata Already Added");
+        }
       } catch (error) {
         this.saving = false;
+        this.$toast.showMessage({ message: error, error: true });
+      }
+    },
+    async editMetadata() {
+      try {
+        this.saving = true;
+
+        const validated = await this.$refs.metadataForm.validate();
+
+        if (!validated) {
+          this.saving = false;
+          return;
+        }
+
+        const user_id = this.$store.state.userStore.user.user_id;
+
+        const folder_name = this.folderName;
+        const folder_id = this.$route.params.id;
+        const nftId = this.id;
+
+        const res = await editMetadata({
+          user_id,
+          folder_name,
+          nftId,
+          folder_id,
+          metadata: this.metadata,
+        });
+
+        if (res.data.data) {
+          this.saving = false;
+
+          this.$emit("closeModal", this.metadata);
+
+          this.$toast.showMessage({
+            message: "Metadata Edited Successfully",
+            error: false,
+          });
+        } else {
+          throw new Error("Something Went Wrong Please Try Again");
+        }
+      } catch (error) {
+        this.saving = false;
+        this.$toast.showMessage({ message: error, error: true });
+      }
+    },
+  },
+  mounted() {
+    if (this.propMetadata) {
+      this.edit = true;
+      this.metadata = this.propMetadata;
+      this.metadata.image = this.image;
+    }
+  },
+  watch: {
+    id() {
+      if (this.propMetadata) {
+        this.edit = true;
+        this.metadata = this.propMetadata;
+        this.metadata.image = this.image;
+      }
+    },
+    propMetadata() {
+      if (this.propMetadata) {
+        this.edit = true;
+        this.metadata = this.propMetadata;
+        this.metadata.image = this.image;
       }
     },
   },

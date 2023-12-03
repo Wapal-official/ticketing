@@ -9,9 +9,11 @@
           @displayFileDetails="displayFileDetails"
           v-for="file in firstColumnFiles"
           :key="file._id"
-          :file="file"
+          :propFile="file"
           :type="type"
           :extension="extension"
+          :id="file._id"
+          :folderName="folderName"
         />
       </div>
       <div class="tw-flex tw-flex-col tw-gap-4">
@@ -19,9 +21,11 @@
           @displayFileDetails="displayFileDetails"
           v-for="file in secondColumnFiles"
           :key="file._id"
-          :file="file"
+          :propFile="file"
           :type="type"
           :extension="extension"
+          :id="file._id"
+          :folderName="folderName"
         />
       </div>
       <div class="tw-flex tw-flex-col tw-gap-4">
@@ -29,9 +33,11 @@
           @displayFileDetails="displayFileDetails"
           v-for="file in thirdColumnFiles"
           :key="file._id"
-          :file="file"
+          :propFile="file"
           :type="type"
           :extension="extension"
+          :id="file._id"
+          :folderName="folderName"
         />
       </div>
       <div class="tw-flex tw-flex-col tw-gap-4">
@@ -39,9 +45,11 @@
           @displayFileDetails="displayFileDetails"
           v-for="file in fourthColumnFiles"
           :key="file._id"
-          :file="file"
+          :propFile="file"
           :type="type"
           :extension="extension"
+          :id="file._id"
+          :folderName="folderName"
         />
       </div>
     </div>
@@ -52,7 +60,7 @@
       <dashboard-assets-file-card
         v-for="file in allMetadata"
         :key="file._id"
-        :file="file"
+        :propFile="file"
         :type="type"
         :extension="extension"
       />
@@ -65,6 +73,7 @@ export default {
     paginatedFiles: { type: Array },
     type: { type: String },
     extension: { type: String },
+    folderName: { type: String },
   },
   data() {
     return {

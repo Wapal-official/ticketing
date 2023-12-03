@@ -8,7 +8,7 @@
       'tw-text-sm 3xl:tw-text-base': small,
       'tw-bg-dark-6': dark,
     }"
-    @click="$emit('click')"
+    @click.stop="$emit('click')"
     :disabled="disabled || loading"
   >
     <v-progress-circular

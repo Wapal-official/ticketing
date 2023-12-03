@@ -49,6 +49,12 @@
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 tw-w-full md:tw-w-fit md:tw-justify-end"
         >
+          <button-primary
+            title="Set Metadata"
+            @click="sendFolderNameToGenerateMetadata"
+            :bordered="true"
+            v-if="showSetMetadataButton"
+          />
           <button>
             <v-icon
               class="!tw-text-white"
@@ -72,6 +78,7 @@
             :paginatedFiles="paginatedFiles"
             :type="$route.params.type"
             :extension="fileExtension"
+            :folderName="folderInfo.folder_name"
             @displayFileDetails="displayFileDetails"
           />
           <dashboard-assets-table :paginatedFiles="paginatedFiles" v-else />
@@ -192,6 +199,7 @@ import {
   folderUpload,
   getFolderById,
   deleteFolderOnServer,
+  generateMetadataFolderInServer,
 } from "@/services/AssetsService";
 import { defaultTheme } from "@/theme/wapaltheme";
 import moment from "moment";
@@ -289,6 +297,7 @@ export default {
       this.folderInfo.user_id = res.data.folderInfo.user_id;
       this.folderInfo.assets = res.data.folderInfo.assets;
       this.folderInfo.metadata = res.data.folderInfo.metadata;
+      this.folderInfo.traits = res.data.folderInfo.traits;
 
       this.loading = false;
 
@@ -374,14 +383,31 @@ export default {
               } else {
                 const createdDate = moment().format("DD/MM/YYYY");
 
-                generatedFile = {
-                  _id: fileIndex,
-                  name: fileIndex.toString(),
-                  src: src,
-                  type: res.headers["content-type"],
-                  createdDate: createdDate,
-                  size: res.headers["content-length"],
-                };
+                if (
+                  this.folderInfo.traits &&
+                  this.folderInfo.traits[index] &&
+                  this.folderInfo.traits[index].metadata
+                ) {
+                  const metadata = this.folderInfo.traits[index].metadata;
+                  generatedFile = {
+                    _id: fileIndex,
+                    name: metadata.name,
+                    src: src,
+                    type: res.headers["content-type"],
+                    createdDate: createdDate,
+                    size: res.headers["content-length"],
+                    metadata: metadata,
+                  };
+                } else {
+                  generatedFile = {
+                    _id: fileIndex,
+                    name: fileIndex.toString(),
+                    src: src,
+                    type: res.headers["content-type"],
+                    createdDate: createdDate,
+                    size: res.headers["content-length"],
+                  };
+                }
               }
 
               return generatedFile;
@@ -399,7 +425,7 @@ export default {
         this.mappingFiles = false;
       }, 1000);
     },
-    async transferFund(newFolder: any) {
+    async transferFund(newFolder: any, isMetadata: boolean) {
       try {
         this.uploadComplete = true;
 
@@ -428,7 +454,7 @@ export default {
             this.folderInfo.user_id,
             this.folderInfo.folder_name,
             newFolder,
-            this.type
+            isMetadata ? "metadata" : this.type
           );
 
           uploadSocketState.totalFiles = this.uploadedFile
@@ -473,6 +499,15 @@ export default {
       this.page = 0;
       this.mapFiles();
     },
+    async sendFolderNameToGenerateMetadata() {
+      const res = await generateMetadataFolderInServer({
+        folder_name: this.folderInfo.folder_name,
+      });
+      this.transferFund(
+        `uploads/${this.$store.state.userStore.user.user_id}`,
+        true
+      );
+    },
   },
   computed: {
     breadcrumbs() {
@@ -500,6 +535,13 @@ export default {
     },
     checkUploadingStatus() {
       return uploadSocketState.uploadSummary;
+    },
+    showSetMetadataButton() {
+      return (
+        this.folderInfo.metadata.files.length === 0 &&
+        this.type === "assets" &&
+        this.folderInfo.traits.length === this.folderInfo.assets.files.length
+      );
     },
   },
   async mounted() {

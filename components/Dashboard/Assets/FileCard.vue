@@ -47,7 +47,7 @@
             v-if="!this.file.name || !this.file.image"
           >
             <button-primary
-              title="Add Metadata"
+              :title="hasMetadata ? 'Edit Metadata' : 'Add Metadata'"
               @click="showAddMetadataDialog = true"
             >
               <template #prepend-icon>+ </template>
@@ -96,28 +96,45 @@
       v-model="showAddMetadataDialog"
       content-class="!tw-w-full md:!tw-w-1/2 1xl:!tw-w-1/3"
     >
-      <dashboard-assets-add-metadata-dialog :image="getAssetSrc" />
+      <dashboard-assets-add-metadata-dialog
+        :folderName="folderName"
+        :image="getAssetSrc"
+        :id="id"
+        :propMetadata="file.metadata"
+        @closeModal="addMetadataInFile"
+      />
     </v-dialog>
   </div>
 </template>
 <script lang="ts">
 export default {
   props: {
-    file: { type: Object },
+    propFile: { type: Object },
     type: { type: String },
     extension: { type: String },
+    folderName: { type: String },
+    id: { type: [String, Number] },
   },
   data() {
     return {
       loading: true,
       linkedAsset: { name: "", image: "" },
       showAddMetadataDialog: false,
+      file: { name: "", metadata: null },
+      hasMetadata: false,
     };
   },
   methods: {
     displayFileDetails() {
       this.linkedAsset.name = this.file.src;
-      this.linkedAsset.image = this.file.image;
+      this.linkedAsset.image = this.file.image
+        ? this.file.image
+        : this.file.metadata
+        ? this.file.metadata.image
+        : null;
+
+      this.linkedAsset.metadata = this.file.metadata;
+
       this.$emit("displayFileDetails", this.linkedAsset);
     },
     async downloadFile() {
@@ -149,6 +166,15 @@ export default {
         this.$toast.showMessage({ message: "Link Copied Successfully" });
       }
     },
+    addMetadataInFile(metadata: any) {
+      this.file.metadata = metadata;
+
+      this.file.name = metadata.name;
+
+      this.hasMetadata = true;
+
+      this.showAddMetadataDialog = false;
+    },
   },
   computed: {
     checkFileType() {
@@ -177,6 +203,12 @@ export default {
     },
   },
   async mounted() {
+    this.file = this.propFile;
+
+    if (this.file.metadata) {
+      this.hasMetadata = true;
+    }
+
     this.loading = false;
   },
 };

@@ -89,3 +89,63 @@ export const uploadMetadataCSV = async (formData: any) => {
 
   return res;
 };
+
+export const addMetadata = async ({
+  folder_id,
+  folder_name,
+  user_id,
+  nftId,
+  metadata,
+}: {
+  folder_id: string;
+  folder_name: string;
+  user_id: string;
+  nftId: number;
+  metadata: any;
+}) => {
+  const res = await publicRequest.post(`/api/folder/trait`, {
+    folder_id,
+    folder_name,
+    user_id,
+    nftId,
+    metadata,
+  });
+
+  return res;
+};
+
+export const editMetadata = async ({
+  folder_id,
+  folder_name,
+  user_id,
+  nftId,
+  metadata,
+}: {
+  folder_id: string;
+  folder_name: string;
+  user_id: string;
+  nftId: number;
+  metadata: any;
+}) => {
+  const res = await publicRequest.patch(`/api/folder/trait/${nftId}`, {
+    folder_id,
+    folder_name,
+    user_id,
+    nftId,
+    metadata,
+  });
+
+  return res;
+};
+
+export const generateMetadataFolderInServer = async ({
+  folder_name,
+}: {
+  folder_name: string;
+}) => {
+  const res = await publicRequest.post(`/api/folder/trait/genmetadata`, {
+    folder_name,
+  });
+
+  return res;
+};
