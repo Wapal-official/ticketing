@@ -74,20 +74,34 @@ export default {
     },
   },
   async mounted() {
-    const res = await this.$axios.get(this.file.name);
-    this.fileData = res.data;
-    if (this.fileData.attributes) {
-      this.attributes = this.fileData.attributes;
+    if (this.file.metadata) {
+      this.fileData = this.file.metadata;
+      if (this.fileData.attributes) {
+        this.attributes = this.fileData.attributes;
+      }
+    } else {
+      const res = await this.$axios.get(this.file.name);
+      this.fileData = res.data;
+      if (this.fileData.attributes) {
+        this.attributes = this.fileData.attributes;
+      }
     }
     this.loading = false;
   },
   watch: {
     async file(newFile: any) {
       this.loading = true;
-      const res = await this.$axios.get(newFile.name);
-      this.fileData = res.data;
-      if (this.fileData.attributes) {
-        this.attributes = this.fileData.attributes;
+      if (newFile.metadata) {
+        this.fileData = newFile.metadata;
+        if (this.fileData.attributes) {
+          this.attributes = this.fileData.attributes;
+        }
+      } else {
+        const res = await this.$axios.get(newFile.name);
+        this.fileData = res.data;
+        if (this.fileData.attributes) {
+          this.attributes = this.fileData.attributes;
+        }
       }
       this.loading = false;
     },
