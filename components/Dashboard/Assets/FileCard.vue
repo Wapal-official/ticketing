@@ -47,10 +47,22 @@
             v-if="!this.file.name || !this.file.image"
           >
             <button-primary
-              :title="hasMetadata ? 'Edit Metadata' : 'Add Metadata'"
+              title="Edit Metadata"
               @click="showAddMetadataDialog = true"
+              v-if="hasMetadata"
             >
-              <template #prepend-icon>+ </template>
+              <template #prepend-icon
+                ><i class="bx bx-edit tw-pr-2"></i>
+              </template>
+            </button-primary>
+            <button-primary
+              title="Add Metadata"
+              @click="showAddMetadataDialog = true"
+              v-else
+            >
+              <template #prepend-icon
+                ><i class="bx bx-plus tw-pr-1"></i>
+              </template>
             </button-primary>
           </div>
         </div>

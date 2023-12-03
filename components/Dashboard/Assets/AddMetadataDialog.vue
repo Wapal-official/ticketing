@@ -105,7 +105,11 @@
 </template>
 <script>
 import { ValidationObserver, ValidationProvider } from "vee-validate";
-import { addMetadata, editMetadata } from "@/services/AssetsService";
+import {
+  addMetadata,
+  editMetadata,
+  getFolderById,
+} from "@/services/AssetsService";
 export default {
   props: {
     image: { type: String },
@@ -124,6 +128,7 @@ export default {
       },
       saving: false,
       edit: false,
+      folderInfo: null,
     };
   },
   methods: {
@@ -174,6 +179,8 @@ export default {
             message: "Metadata Added Successfully",
             error: false,
           });
+
+          this.checkIfAllFilesHaveMetadata();
         } else {
           throw new Error("Metadata Already Added");
         }
@@ -216,6 +223,7 @@ export default {
             message: "Metadata Edited Successfully",
             error: false,
           });
+          this.checkIfAllFilesHaveMetadata();
         } else {
           throw new Error("Something Went Wrong Please Try Again");
         }
@@ -223,6 +231,22 @@ export default {
         this.saving = false;
         this.$toast.showMessage({ message: error, error: true });
       }
+    },
+    async checkIfAllFilesHaveMetadata() {
+      if (!this.showSetMetadataButton) {
+        await this.getFolderInfo();
+
+        if (
+          this.folderInfo.assets.files.length === this.folderInfo.traits.length
+        ) {
+          this.$store.commit("asset/setShowMetadataButton", true);
+        }
+      }
+    },
+    async getFolderInfo() {
+      const res = await getFolderById(this.$route.params.id);
+
+      this.folderInfo = res.data.folderInfo;
     },
   },
   mounted() {
@@ -246,6 +270,11 @@ export default {
         this.metadata = this.propMetadata;
         this.metadata.image = this.image;
       }
+    },
+  },
+  computed: {
+    showSetMetadataButton() {
+      return this.$store.state.asset.showSetMetadataButton;
     },
   },
 };

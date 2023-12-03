@@ -51,9 +51,9 @@
         >
           <button-primary
             title="Set Metadata"
-            @click="sendFolderNameToGenerateMetadata"
+            @click="showSetMetadataDialog = true"
             :bordered="true"
-            v-if="showSetMetadataButton"
+            v-if="showSetMetadataButton || showSetMetadataButtonFromStore"
           />
           <button>
             <v-icon
@@ -105,70 +105,7 @@
       >
         Please Upload Images in image folder first
       </div>
-      <v-dialog
-        v-model="showUploadingDialog"
-        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
-        :persistent="!uploadComplete"
-      >
-        <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-end"
-          v-if="uploadComplete || balanceNotEnoughError.error"
-        >
-          <v-icon class="!tw-text-dark-0" @click="showUploadingDialog = false"
-            >mdi-close</v-icon
-          >
-        </div>
-        <h2 class="tw-text-lg tw-font-semibold tw-text-dark-0">
-          {{
-            !uploadComplete ? "Sending Files To Server" : "Files Sent To Server"
-          }}
-        </h2>
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-          v-if="uploading"
-        >
-          <div
-            class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-2 tw-w-full"
-          >
-            <div
-              class="tw-relative tw-w-full tw-rounded-lg tw-py-1 tw-bg-wapal-gray"
-            >
-              <div
-                class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-primary-1 tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
-                :style="`width:${serverUploadPercent}%`"
-              ></div>
-            </div>
-            <span class="tw-text-sm">{{ this.serverUploadPercent }}%</span>
-          </div>
-        </div>
-        <div
-          class="tw-text-red-600 tw-flex tw-flex-col tw-gap-2 tw-w-full"
-          v-if="balanceNotEnoughError.error"
-        >
-          {{ balanceNotEnoughError.message }}
-          <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
-          >
-            <div>
-              Required Balance: {{ balanceNotEnoughError.requiredBalance }}
-            </div>
-            <div>Your Balance: {{ balanceNotEnoughError.yourBalance }}</div>
-          </div>
-        </div>
-      </v-dialog>
-      <v-dialog
-        v-model="showCSVUploadModal"
-        content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
-      >
-        <dashboard-assets-import-CSV-modal
-          :assetLength="folderInfo.assets.files.length"
-          :folderName="folderInfo.folder_name"
-          @csvUploaded="completeTransactionForMetadataUpload"
-          @closeImportCSVModal="showCSVUploadModal = false"
-        />
-      </v-dialog>
     </div>
-
     <div
       class="tw-py-16 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
       v-if="!loading"
@@ -185,9 +122,95 @@
         v-if="!end"
       >
       </v-card>
-
       <reusable-loading v-if="mappingFiles" />
     </div>
+    <v-dialog
+      v-model="showUploadingDialog"
+      content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
+      :persistent="!uploadComplete"
+    >
+      <div
+        class="tw-flex tw-flex-row tw-items-center tw-justify-end"
+        v-if="uploadComplete || balanceNotEnoughError.error"
+      >
+        <v-icon class="!tw-text-dark-0" @click="showUploadingDialog = false"
+          >mdi-close</v-icon
+        >
+      </div>
+      <h2 class="tw-text-lg tw-font-semibold tw-text-dark-0">
+        {{
+          !uploadComplete ? "Sending Files To Server" : "Files Sent To Server"
+        }}
+      </h2>
+      <div
+        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
+        v-if="uploading"
+      >
+        <div
+          class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-2 tw-w-full"
+        >
+          <div
+            class="tw-relative tw-w-full tw-rounded-lg tw-py-1 tw-bg-wapal-gray"
+          >
+            <div
+              class="tw-absolute tw-h-2 tw-top-0 tw-left-0 tw-bg-primary-1 tw-rounded-full tw-transition-all tw-duration-200 tw-ease-linear"
+              :style="`width:${serverUploadPercent}%`"
+            ></div>
+          </div>
+          <span class="tw-text-sm">{{ this.serverUploadPercent }}%</span>
+        </div>
+      </div>
+      <div
+        class="tw-text-red-600 tw-flex tw-flex-col tw-gap-2 tw-w-full"
+        v-if="balanceNotEnoughError.error"
+      >
+        {{ balanceNotEnoughError.message }}
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+        >
+          <div>
+            Required Balance: {{ balanceNotEnoughError.requiredBalance }}
+          </div>
+          <div>Your Balance: {{ balanceNotEnoughError.yourBalance }}</div>
+        </div>
+      </div>
+    </v-dialog>
+    <v-dialog
+      v-model="showCSVUploadModal"
+      content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <dashboard-assets-import-CSV-modal
+        :assetLength="folderInfo.assets.files.length"
+        :folderName="folderInfo.folder_name"
+        @csvUploaded="completeTransactionForMetadataUpload"
+        @closeImportCSVModal="showCSVUploadModal = false"
+      />
+    </v-dialog>
+    <v-dialog
+      v-model="showSetMetadataDialog"
+      content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
+      :persistent="generatingMetadata"
+    >
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
+      >
+        <div>Are you sure you want to set Metadata?</div>
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
+        >
+          <button-primary
+            title="Yes"
+            @click="sendFolderNameToGenerateMetadata"
+            :loading="generatingMetadata"
+          />
+          <button-primary
+            title="No"
+            :bordered="true"
+            @click="showSetMetadataDialog = false"
+          />
+        </div>
+      </div>
+    </v-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -259,6 +282,8 @@ export default {
       page: 0,
       debounce: null,
       fileExtension: "",
+      showSetMetadataDialog: false,
+      generatingMetadata: false,
       UploadIcon,
       defaultTheme,
     };
@@ -318,6 +343,8 @@ export default {
       } else if (this.type === "metadata") {
         this.fileExtension = ".json";
       }
+
+      this.checkIfUserGeneratedMetadataIsAlreadyUploaded();
     },
     async mapFiles() {
       this.mappingFiles = true;
@@ -472,6 +499,7 @@ export default {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.showUploadingDialog = false;
+        this.generatingMetadata = false;
         const res = await deleteFolderOnServer(
           this.$store.state.userStore.user.user_id
         );
@@ -501,13 +529,33 @@ export default {
       this.mapFiles();
     },
     async sendFolderNameToGenerateMetadata() {
-      const res = await generateMetadataFolderInServer({
-        folder_name: this.folderInfo.folder_name,
-      });
-      this.transferFund(
-        `uploads/${this.$store.state.userStore.user.user_id}`,
-        true
-      );
+      try {
+        this.generatingMetadata = true;
+        await generateMetadataFolderInServer({
+          folder_name: this.folderInfo.folder_name,
+        });
+        this.generatingMetadata = true;
+        this.showSetMetadataDialog = false;
+
+        this.transferFund(
+          `uploads/${this.$store.state.userStore.user.user_id}`,
+          true
+        );
+      } catch (error) {
+        this.generatingMetadata = false;
+        this.$toast.showMessage({ message: error, error: true });
+      }
+    },
+    checkIfUserGeneratedMetadataIsAlreadyUploaded() {
+      if (
+        this.folderInfo.assets.files.length === this.folderInfo.traits.length &&
+        this.folderInfo.assets.files.length !==
+          this.folderInfo.metadata.files.length
+      ) {
+        this.$store.commit("asset/setShowMetadataButton", true);
+      } else {
+        this.$store.commit("asset/setShowMetadataButton", false);
+      }
     },
   },
   computed: {
@@ -540,9 +588,12 @@ export default {
     showSetMetadataButton() {
       return (
         this.folderInfo.metadata.files.length === 0 &&
-        this.type === "assets" &&
+        this.folderInfo.assets.files.length > 0 &&
         this.folderInfo.traits.length === this.folderInfo.assets.files.length
       );
+    },
+    showSetMetadataButtonFromStore() {
+      return this.$store.state.asset.showSetMetadataButton;
     },
   },
   async mounted() {
