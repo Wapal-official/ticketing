@@ -267,7 +267,7 @@ import {
 } from "@/services/CollectionService";
 import { getProof, getMintLimit } from "@/services/WhitelistService";
 import { getWhitelistEntryById } from "@/services/WhitelistService";
-import { mintMany } from "~/services/AptosCollectionService";
+import { mintCollection } from "@/services/AptosCollectionService";
 import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: { collection: { type: Object } },
@@ -523,7 +523,7 @@ export default {
             mintLimit: this.mintLimit,
           });
         } else {
-          res = await mintMany({
+          res = await mintCollection({
             candy_machine_id: this.collection.candyMachine.candy_id,
             candy_object: this.collection.candyMachine.resource_account,
             amount: this.numberOfNft,
