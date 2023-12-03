@@ -384,6 +384,7 @@ export default {
                 const createdDate = moment().format("DD/MM/YYYY");
 
                 if (
+                  this.folderInfo.metadata.files.length === 0 &&
                   this.folderInfo.traits &&
                   this.folderInfo.traits[index] &&
                   this.folderInfo.traits[index].metadata
