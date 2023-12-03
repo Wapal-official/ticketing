@@ -58,6 +58,9 @@
             @click="checkChangeCondition('totalSupply')"
           />
         </div>
+        <div class="tw-text-red-600 tw-text-sm" v-if="supplyError.error">
+          {{ supplyError.message }}
+        </div>
       </div>
       <div>
         <div
@@ -250,7 +253,11 @@
   </div>
 </template>
 <script lang="ts">
-import { getCollection, updateCollection } from "@/services/CollectionService";
+import {
+  getCollection,
+  updateCollection,
+  getMetadataFromTokenURI,
+} from "@/services/CollectionService";
 import {
   getCollectionDetails,
   updateWhitelistSaleTime,
@@ -325,6 +332,10 @@ export default {
       editingWhitelistSaleTime: false,
       editingPublicSalePrice: false,
       editingPublicSaleTime: false,
+      supplyError: {
+        error: false,
+        message: "",
+      },
       aptIcon,
     };
   },
@@ -403,11 +414,22 @@ export default {
 
         const candyMachine = this.collection.candyMachine;
 
-        candyMachine.whitelist_sale_time =
-          this.editCollection.whitelistSaleTime;
+        const whitelist_sale_time =
+          this.editCollection.whitelistSaleTime.toISOString();
+
+        candyMachine.whitelist_sale_time = whitelist_sale_time;
+
+        const phases = this.collection.phases;
+
+        phases.map((phase: any) => {
+          if (phase.id === "whitelist") {
+            phase.mint_time = whitelist_sale_time;
+          }
+        });
 
         const res = await updateCollection(this.collection._id, {
           candyMachine,
+          phases,
         });
 
         this.editingWhitelistSaleTime = false;
@@ -458,8 +480,17 @@ export default {
 
         candyMachine.whitelist_price = this.editCollection.whitelistPrice;
 
+        const phases = this.collection.phases;
+
+        phases.map((phase: any) => {
+          if (phase.id === "whitelist") {
+            phase.mint_time = this.editCollection.whitelistPrice;
+          }
+        });
+
         const res = await updateCollection(this.collection._id, {
           candyMachine,
+          phases,
         });
 
         this.editingWhitelistSalePrice = false;
@@ -500,6 +531,20 @@ export default {
     },
     async updateTotalSupply() {
       try {
+        const supplyRes = await getMetadataFromTokenURI(
+          `${this.collection.baseURL}${
+            this.editCollection.totalSupply - 1
+          }.json`
+        );
+
+        if (!supplyRes) {
+          this.supplyError.error = true;
+          this.supplyError.message =
+            "Metadata For This supply does not exists please decrease supply";
+
+          return;
+        }
+
         await updateTotalSupply({
           candyObject: this.collection.candyMachine.resource_account,
           total_supply: this.editCollection.totalSupply,
@@ -510,7 +555,11 @@ export default {
           supply: this.editCollection.totalSupply,
         });
 
+        this.collection.supply = this.editCollection.totalSupply;
+
         this.editingTotalSupply = false;
+
+        this.supplyError.error = false;
 
         this.$toast.showMessage({ message: "Collection Updated Successfully" });
       } catch (error) {
@@ -518,6 +567,8 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
         this.changeDialog = false;
         this.editingTotalSupply = false;
+
+        this.supplyError.error = false;
       }
     },
   },
