@@ -336,24 +336,41 @@
                   rules="required|saleTime|phase_sale_time:@publicSaleTime"
                   v-slot="{ errors }"
                 >
+                  <input-date-picker
+                    v-model="phase.mint_time"
+                    type="datetime"
+                    placeholder="Select Mint Time"
+                    label="Mint Time"
+                    :required="true"
+                  ></input-date-picker>
+                  <div class="tw-text-red-600 tw-text-sm">
+                    {{ errors[0] }}
+                  </div>
+                </ValidationProvider>
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                  rules="required|number"
+                  v-slot="{ errors }"
+                >
                   <div
                     class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-full"
                   >
-                    <input-date-picker
-                      v-model="phase.mint_time"
-                      type="datetime"
-                      placeholder="Select Mint Time"
-                      label="Mint Time"
+                    <input-text-field
+                      v-model="phase.mint_price"
+                      placeholder="Mint Price"
+                      label="Mint Price"
                       :required="true"
-                    ></input-date-picker>
+                    >
+                      <template #append-icon>
+                        <img :src="aptIcon" alt="APT" />
+                      </template>
+                    </input-text-field>
 
                     <button @click="removeMintPhase(index)" class="tw-mt-8">
                       <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
                     </button>
                   </div>
-                  <div class="tw-text-red-600 tw-text-sm">
-                    {{ errors[0] }}
-                  </div>
+                  <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
                 </ValidationProvider>
               </div>
             </div>
@@ -485,7 +502,7 @@
             :phase="{
               name: phase.name,
               mint_time: phase.mint_time,
-              mint_price: collection.whitelist_price,
+              mint_price: phase.mint_price,
             }"
             :key="index"
             v-if="collection.phases.length > 0"
@@ -533,7 +550,7 @@ import {
   editImage,
 } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
-
+import { createCollectionV2 } from "@/services/AptosCollectionService";
 extend("required", {
   ...required,
   message: "This field is required",
@@ -662,7 +679,7 @@ export default {
         txnhash: "",
         un: "",
         candy_id: process.env.CANDY_MACHINE_V2,
-        phases: [{ name: "", mint_time: null }],
+        phases: [{ name: "", mint_time: null, mint_price: 0 }],
         public_mint_limit: null,
       },
       message: "",
@@ -798,6 +815,7 @@ export default {
             id: id,
             name: phase.name,
             mint_time: phase.mint_time,
+            mint_price: phase.mint_price,
           });
         });
 
@@ -904,19 +922,27 @@ export default {
       );
 
       whitelistTime = Math.floor(
-        new Date(this.collection.public_sale_time).getTime() / 1000
+        new Date(this.collection.whitelist_sale_time).getTime() / 1000
       );
-
-      if (this.collection.phases[0]) {
-        whitelistTime = Math.floor(
-          new Date(this.collection.phases[0].mint_time).getTime() / 1000
-        );
-      }
 
       if (!this.whitelistEnabled) {
         publicSaleTime += 1;
         whitelist_price = this.collection.public_sale_price;
       }
+
+      if (this.collection.phases[0]) {
+        whitelistTime = Math.floor(
+          new Date(this.collection.phases[0].mint_time).getTime() / 1000
+        );
+        whitelist_price = this.collection.phases[0].mint_price;
+      }
+
+      const pre_sale_price = parseFloat(
+        (whitelist_price * Math.pow(10, 8)).toFixed(4)
+      );
+      const public_sale_price = parseFloat(
+        (this.collection.public_sale_price * Math.pow(10, 8)).toFixed(4)
+      );
 
       const candyMachineArguments = {
         collection_name: this.collection.name,
@@ -927,16 +953,13 @@ export default {
         royalty_points_numerator: this.collection.royalty_percentage * 10,
         presale_mint_time: whitelistTime,
         public_sale_mint_time: publicSaleTime,
-        presale_mint_price: whitelist_price * 100000000,
-        public_sale_mint_price: this.collection.public_sale_price * 100000000,
+        presale_mint_price: pre_sale_price,
+        public_sale_mint_price: public_sale_price,
         total_supply: this.collection.supply,
         public_mint_limit: this.collection.public_mint_limit,
       };
 
-      const res = await this.$store.dispatch(
-        "walletStore/createCandyMachineV2",
-        candyMachineArguments
-      );
+      const res = await createCollectionV2(candyMachineArguments);
 
       this.collection.resource_account = res.resourceAccount;
       this.collection.txnhash = res.transactionHash;

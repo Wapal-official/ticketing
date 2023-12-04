@@ -62,7 +62,7 @@
           {{ supplyError.message }}
         </div>
       </div>
-      <div>
+      <div v-if="collection.phases.length === 1">
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
         >
@@ -154,6 +154,161 @@
           </div>
         </div>
       </div>
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5"
+        v-if="collection.phases.length > 1"
+      >
+        <div class="tw-w-full tw-flex tw-flex-row tw-justify-between">
+          <h3 class="">Mint Phases</h3>
+          <button
+            class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+            @click="editingPhases = true"
+            v-if="!editingPhases"
+          >
+            <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-2xl"></i>
+            <span>Edit</span>
+          </button>
+        </div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5"
+          v-if="!editingPhases"
+        >
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+            v-for="phase in collection.phases"
+            :key="phase.id"
+          >
+            <div class="tw-text-white tw-font-semibold tw-capitalize">
+              {{ phase.name }}
+            </div>
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-baseline tw-justify-between"
+            >
+              <div class="">
+                <div
+                  class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+                >
+                  {{ phase.name }} Time
+                </div>
+                <div
+                  class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+                >
+                  <span> {{ formatDateTime(phase.mint_time) }}</span>
+                </div>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
+                <div
+                  class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+                >
+                  Price
+                </div>
+                <div
+                  class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+                >
+                  <span>{{ phase.mint_price }}APT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ValidationObserver
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5"
+          ref="phaseForm"
+          v-else
+        >
+          <div
+            v-for="(phase, index) in editCollection.phases"
+            :key="index"
+            class="tw-w-full"
+          >
+            <div
+              class="tw-flex tw-flex-col tw-gap-4 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
+            >
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <input-text-field
+                  v-model="phase.name"
+                  placeholder="Phase Name"
+                  label="Phase Name"
+                  :required="true"
+                  :disabled="phase.id === 'whitelist'"
+                />
+                <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+              </ValidationProvider>
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                rules="required|saleTime|phase_sale_time:@publicSaleTime"
+                v-slot="{ errors }"
+              >
+                <input-date-picker
+                  v-model="phase.mint_time"
+                  type="datetime"
+                  placeholder="Select Mint Time"
+                  label="Mint Time"
+                  :required="true"
+                ></input-date-picker>
+                <div class="tw-text-red-600 tw-text-sm">
+                  {{ errors[0] }}
+                </div>
+              </ValidationProvider>
+              <ValidationProvider
+                rules="required|number"
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                v-slot="{ errors }"
+              >
+                <div
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-full"
+                >
+                  <input-text-field
+                    label="Mint Price"
+                    placeholder="Mint Price"
+                    v-model="phase.mint_price"
+                    :required="true"
+                  >
+                    <template #append-icon>
+                      <img :src="aptIcon" alt="apt icon" />
+                    </template>
+                  </input-text-field>
+
+                  <button
+                    @click="removeMintPhase(index)"
+                    class="tw-mt-8"
+                    v-if="index !== editCollection.phases.length - 1"
+                  >
+                    <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
+                  </button>
+                </div>
+
+                <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
+              </ValidationProvider>
+            </div>
+          </div>
+          <!-- <button-primary
+            title="Add Phase"
+            @click="addPhase"
+            :bordered="true"
+          /> -->
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+          >
+            <button-primary
+              title="Save Changes"
+              @click="editPhases"
+              :loading="savingChanges"
+            />
+            <button-primary
+              :bordered="true"
+              title="Cancel"
+              @click="cancelEditingPhases"
+            />
+          </div>
+        </ValidationObserver>
+      </div>
+
+      <h3 class="">Public Sale</h3>
       <div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
@@ -257,6 +412,7 @@ import {
   getCollection,
   updateCollection,
   getMetadataFromTokenURI,
+  sortPhases,
 } from "@/services/CollectionService";
 import {
   getCollectionDetails,
@@ -309,6 +465,7 @@ export default {
         },
         supply: "",
         isVerified: false,
+        phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
       },
       loading: true,
       whitelistSaleTime: "",
@@ -320,6 +477,7 @@ export default {
         publicSalePrice: "",
         totalSupply: "",
         royalty: "",
+        phases: [{ id: "", mint_time: "", mint_price: "", name: "" }],
       },
       changeDialog: false,
       changeDialogTitle: "",
@@ -336,6 +494,8 @@ export default {
         error: false,
         message: "",
       },
+      editingPhases: false,
+      savingChanges: false,
       aptIcon,
     };
   },
@@ -370,9 +530,11 @@ export default {
 
       this.editCollection.totalSupply = this.collection.supply;
 
-      this.editCollection.royalty =
-        (chainRes.royalty_points_numerator * 100) /
-        chainRes.royalty_points_denominator;
+      // this.editCollection.royalty =
+      //   (chainRes.royalty_points_numerator * 100) /
+      //   chainRes.royalty_points_denominator;
+
+      this.editCollection.phases = structuredClone(this.collection.phases);
 
       this.loading = false;
     },
@@ -484,7 +646,7 @@ export default {
 
         phases.map((phase: any) => {
           if (phase.id === "whitelist") {
-            phase.mint_time = this.editCollection.whitelistPrice;
+            phase.mint_price = this.editCollection.whitelistPrice;
           }
         });
 
@@ -570,6 +732,82 @@ export default {
 
         this.supplyError.error = false;
       }
+    },
+    async editPhases() {
+      try {
+        const validated = await this.$refs.phaseForm.validate();
+
+        if (!validated) {
+          return;
+        }
+
+        this.savingChanges = true;
+
+        const sortedPhases = sortPhases(this.editCollection.phases);
+
+        if (
+          new Date(
+            this.collection.candyMachine.whitelist_sale_time
+          ).getTime() !== new Date(sortedPhases[0].mint_time).getTime()
+        ) {
+          await updateWhitelistSaleTime({
+            candyObject: this.collection.candyMachine.resource_account,
+            candy_machine_id: this.collection.candyMachine.candy_id,
+            pre_sale_mint_time: sortedPhases[0].mint_time,
+          });
+        }
+
+        console.log(this.collection.candyMachine.whitelist_price);
+        console.log(sortedPhases[0].mint_price);
+
+        if (
+          this.collection.candyMachine.whitelist_price !=
+          sortedPhases[0].mint_price
+        ) {
+          await updateWhitelistSalePrice({
+            candyObject: this.collection.candyMachine.resource_account,
+            candy_machine_id: this.collection.candyMachine.candy_id,
+            pre_sale_price: sortedPhases[0].mint_price,
+          });
+        }
+
+        const tempCollection = structuredClone(this.collection);
+
+        tempCollection.candyMachine.whitelist_sale_time = new Date(
+          sortedPhases[0].mint_time
+        );
+        tempCollection.candyMachine.whitelist_price =
+          sortedPhases[0].mint_price;
+
+        tempCollection.phases = sortedPhases;
+
+        await updateCollection(this.collection._id, tempCollection);
+
+        this.editCollection.phases = sortedPhases;
+
+        this.collection = tempCollection;
+
+        this.$toast.showMessage({
+          message: "Collection Updated Successfully",
+          error: false,
+        });
+
+        this.savingChanges = false;
+        this.editingPhases = false;
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+        this.savingChanges = false;
+        this.editingPhases = false;
+      }
+    },
+    removeMintPhase(index: number) {
+      this.editCollection.phases.splice(index, 1);
+    },
+    cancelEditingPhases() {
+      this.editCollection.phases = structuredClone(this.collection.phases);
+
+      this.editingPhases = false;
     },
   },
 };

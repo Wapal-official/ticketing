@@ -356,3 +356,76 @@ export const executeTransactionAndGiveResult = async (payload: any) => {
 
   return result;
 };
+
+export const createCollectionV2 = async (candyMachineArguments: any) => {
+  checkWalletConnected();
+
+  checkNetwork();
+
+  const programId = process.env.CANDY_MACHINE_V2;
+
+  const create_candy_machine = {
+    type: "entry_function_payload",
+    function: programId + "::candymachine::init_candy",
+    type_arguments: [],
+    arguments: [
+      candyMachineArguments.collection_name,
+      candyMachineArguments.collection_description,
+      candyMachineArguments.baseuri,
+      candyMachineArguments.royalty_payee_address,
+      candyMachineArguments.royalty_points_denominator,
+      candyMachineArguments.royalty_points_numerator,
+      candyMachineArguments.presale_mint_time,
+      candyMachineArguments.public_sale_mint_time,
+      candyMachineArguments.presale_mint_price,
+      candyMachineArguments.public_sale_mint_price,
+      candyMachineArguments.total_supply,
+      [false, false, false],
+      [false, false, false, false, false],
+      candyMachineArguments.public_mint_limit,
+      false,
+      "" + makeId(5),
+      false,
+    ],
+  };
+
+  let transactionRes: any = await executeTransactionAndGiveResult(
+    create_candy_machine
+  );
+
+  if (!transactionRes.success) {
+    throw new Error("Transaction not Successful please try again");
+  }
+
+  let resourceAccount = null;
+
+  transactionRes.changes.some((change: any) => {
+    if (
+      change.type === "write_resource" &&
+      change.data &&
+      change.data.type === `${programId}::candymachine::CandyMachine`
+    ) {
+      resourceAccount = change.address;
+    }
+
+    return (
+      change.data &&
+      change.data.type === `${programId}::candymachine::CandyMachine`
+    );
+  });
+
+  return {
+    resourceAccount: resourceAccount,
+    transactionHash: transactionRes.hash,
+  };
+};
+
+const makeId = (length: number) => {
+  var result = "";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
