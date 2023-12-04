@@ -16,7 +16,7 @@
       >
         <div>
           <a
-            :href="`${MARKETPLACE_URL}/collection/${collection.username}`"
+            :href="MARKETPLACE_URL"
             class="!tw-text-primary-2 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium"
             target="_blank"
             v-if="!showLiveInTimer && resource.minted > 0"
@@ -151,7 +151,7 @@
               :to="`/nft/${collection.username}`"
               v-else-if="collection.mintDetails"
             >
-              Mint
+              {{ collection.status.sold_out ? "Soldout" : "Mint" }}
             </NuxtLink>
             <button-primary
               :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
@@ -503,7 +503,7 @@ export default {
             } else if (this.collection._id === "654c9afff8961c791c804cf1") {
               res = {
                 minted: this.resource.minted,
-                total_supply: 1300,
+                total_supply: 1350,
               };
             }
 
@@ -571,7 +571,7 @@ export default {
         if (this.collection._id === "654c9afff8961c791c804cf1") {
           this.resource = {
             minted: this.resource.minted,
-            total_supply: 1300,
+            total_supply: 1350,
           };
         }
 
@@ -755,7 +755,9 @@ export default {
       }
 
       if (this.collection.username === "proudlionsclub") {
-        this.collection.username = "proud-lions-club";
+        this.MARKETPLACE_URL = `${this.MARKETPLACE_URL}/collection/proud-lions-club`;
+      } else {
+        this.MARKETPLACE_URL = `${this.MARKETPLACE_URL}/collection/${this.collection.username}`;
       }
 
       this.setPhases();
@@ -797,7 +799,7 @@ export default {
       if (this.collection._id === "654c9afff8961c791c804cf1") {
         this.resource = {
           minted: this.resource.minted,
-          total_supply: 1300,
+          total_supply: 1350,
         };
       }
 
