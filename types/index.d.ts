@@ -7,5 +7,6 @@ declare global {
     clipboardData: any;
     intergramId: any;
     intergramCustomizations: any;
+    chatwootSDK: any;
   }
 }
