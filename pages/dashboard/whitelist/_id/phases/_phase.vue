@@ -241,6 +241,14 @@ export default {
           class: "default-data-table-header",
         },
         {
+          text: "Mint Limit",
+          align: "start",
+          value: "mint_limit",
+          width: "125px",
+          class: "default-data-table-header",
+          sortable: false,
+        },
+        {
           text: "Role",
           align: "start",
           sortable: true,
@@ -317,7 +325,6 @@ export default {
       this.loading = true;
 
       this.page++;
-
       const res = await getWhitelistEntryById(
         this.collection._id,
         100,
@@ -358,9 +365,10 @@ export default {
     },
     async handleIntersect(entries: any) {
       if (entries[0].isIntersecting) {
-        this.mappingData = true;
-
-        await this.mapWhitelistEntries();
+        if (this.collection._id) {
+          this.mappingData = true;
+          await this.mapWhitelistEntries();
+        }
       }
     },
   },

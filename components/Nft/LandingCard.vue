@@ -52,17 +52,23 @@
               v-if="collection?.isVerified"
             ></i>
           </h3>
-          <div
-            class="tw-text-white/70 tw-text-[0.875rem]"
-            v-if="getPrice != '0APT'"
-          >
-            {{
-              isCollection ? "Price" : getLiveStatus ? "Current Bid" : "Min Bid"
-            }}
-            {{ getPrice }}
-          </div>
-          <div class="tw-text-white/70 tw-text-[0.875rem]" v-else>
-            Free Mint
+          <div v-if="getPrice">
+            <div
+              class="tw-text-white/70 tw-text-[0.875rem]"
+              v-if="getPrice != '0APT'"
+            >
+              {{
+                isCollection
+                  ? "Price"
+                  : getLiveStatus
+                  ? "Current Bid"
+                  : "Min Bid"
+              }}
+              {{ getPrice }}
+            </div>
+            <div class="tw-text-white/70 tw-text-[0.875rem]" v-else>
+              Free Mint
+            </div>
           </div>
         </div>
       </div>

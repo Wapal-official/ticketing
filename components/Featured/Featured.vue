@@ -14,9 +14,20 @@
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
       >
-        <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
-          {{ collection.name }}
-        </h1>
+        <div>
+          <a
+            :href="MARKETPLACE_URL"
+            class="!tw-text-primary-2 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium"
+            target="_blank"
+            v-if="!showLiveInTimer && resource.minted > 0"
+          >
+            <span>List on Secondary</span>
+            <i class="bx bx-link-external"></i>
+          </a>
+          <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
+            {{ collection.name }}
+          </h1>
+        </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
@@ -93,7 +104,10 @@
             <h3 class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm">
               {{ currentSale.name }} Starts In
             </h3>
-            <count-down :startTime="currentSale.mint_time" />
+            <count-down
+              :startTime="currentSale.mint_time"
+              @countdownComplete="countdownComplete"
+            />
           </div>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
@@ -132,6 +146,13 @@
             >
               Mint
             </a>
+            <NuxtLink
+              class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+              :to="`/nft/${collection.username}`"
+              v-else-if="collection.mintDetails"
+            >
+              {{ collection.status.sold_out ? "Soldout" : "Mint" }}
+            </NuxtLink>
             <button-primary
               :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
               :fullWidth="true"
@@ -377,6 +398,7 @@ export default {
         mintDetails: {
           link: null,
         },
+        username: "",
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
@@ -393,12 +415,14 @@ export default {
       phaseCounter: 0,
       showShareBox: false,
       collectionLink: "",
+      MARKETPLACE_URL: process.env.MARKETPLACE_URL,
       imageNotFound,
     };
   },
   methods: {
     countdownComplete() {
-      this.showCountdown = false;
+      this.showPublicSaleTimer = false;
+      this.showWhitelistSaleTimer = false;
     },
     whitelistCountdownComplete() {
       this.showWhitelistSaleTimer = false;
@@ -476,6 +500,11 @@ export default {
                 minted: res.minted,
                 total_supply: 2333,
               };
+            } else if (this.collection._id === "654c9afff8961c791c804cf1") {
+              res = {
+                minted: this.resource.minted,
+                total_supply: 1350,
+              };
             }
 
             if (res.total_supply === res.minted) {
@@ -539,6 +568,13 @@ export default {
           );
         }
 
+        if (this.collection._id === "654c9afff8961c791c804cf1") {
+          this.resource = {
+            minted: this.resource.minted,
+            total_supply: 1350,
+          };
+        }
+
         this.resource.mintedPercent = Math.floor(
           (this.resource.minted / this.resource.total_supply) * 100
         );
@@ -554,16 +590,29 @@ export default {
       }, 5000);
     },
     setPhases() {
+      this.phases = [];
       this.phases = this.collection.phases ? this.collection.phases : [];
 
       if (!this.collection.phases) {
         if (
-          new Date(this.collection.candyMachine.public_sale_time).getTime() -
-            new Date(
-              this.collection.candyMachine.whitelist_sale_time
-            ).getTime() >
-          1000
+          !this.collection.mintDetails &&
+          !this.collection.mintDetails.all_mint_at_same_time
         ) {
+          if (
+            new Date(this.collection.candyMachine.public_sale_time).getTime() -
+              new Date(
+                this.collection.candyMachine.whitelist_sale_time
+              ).getTime() >
+            1000
+          ) {
+            this.phases.push({
+              name: "whitelist sale",
+              id: "whitelist",
+              mint_price: this.collection.candyMachine.whitelist_price,
+              mint_time: this.collection.candyMachine.whitelist_sale_time,
+            });
+          }
+        } else {
           this.phases.push({
             name: "whitelist sale",
             id: "whitelist",
@@ -583,6 +632,7 @@ export default {
         mint_price: this.collection.candyMachine.public_sale_price,
         mint_time: this.collection.candyMachine.public_sale_time,
       };
+
       this.phases.push(publicSale);
     },
     getCurrentSale() {
@@ -704,6 +754,12 @@ export default {
         delete this.collection.phases;
       }
 
+      if (this.collection.username === "proudlionsclub") {
+        this.MARKETPLACE_URL = `${this.MARKETPLACE_URL}/collection/proud-lions-club`;
+      } else {
+        this.MARKETPLACE_URL = `${this.MARKETPLACE_URL}/collection/${this.collection.username}`;
+      }
+
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();
@@ -738,6 +794,13 @@ export default {
             candyMachineId: this.collection.candyMachine.candy_id,
           }
         );
+      }
+
+      if (this.collection._id === "654c9afff8961c791c804cf1") {
+        this.resource = {
+          minted: this.resource.minted,
+          total_supply: 1350,
+        };
       }
 
       this.resource.mintedPercent = Math.floor(

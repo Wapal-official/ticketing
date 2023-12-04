@@ -114,11 +114,20 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .dashboard-data-table {
   min-width: 100% !important;
   max-width: 100% !important;
   overflow-x: auto !important;
   background: transparent !important;
+}
+
+::v-deep .dashboard-data-table .v-data-table__wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+::v-deep .dashboard-data-table .v-data-table__wrapper {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 </style>

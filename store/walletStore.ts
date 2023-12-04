@@ -791,7 +791,9 @@ export const actions = {
     }
 
     if (!publicMint && mintNumber !== 1) {
-      throw new Error("Bulk mint does not current support Whitelist mint");
+      throw new Error(
+        "Whitelist Mint does not support Bulk Minting. Please Mint one at a time"
+      );
     }
 
     try {
@@ -897,7 +899,11 @@ export const actions = {
       mintFunction,
       moduleName,
       programId,
-    }: { mintFunction: string; moduleName: string; programId: string }
+    }: {
+      mintFunction: string;
+      moduleName: string;
+      programId: string;
+    }
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
@@ -917,5 +923,66 @@ export const actions = {
     const res = await client.waitForTransactionWithResult(transaction.hash);
 
     return res;
+  },
+  async bulkExternalMint(
+    { state }: { state: any },
+    {
+      mintFunction,
+      moduleName,
+      programId,
+      numberOfNfts,
+    }: {
+      mintFunction: string;
+      moduleName: string;
+      programId: string;
+      numberOfNfts: number;
+    }
+  ) {
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
+
+    checkNetwork();
+
+    const payload = {
+      type: "entry_function_payload",
+      function: `${programId}::${moduleName}::${mintFunction}`,
+      type_arguments: [],
+      arguments: [numberOfNfts],
+    };
+
+    const transaction = await wallet.signAndSubmitTransaction(payload);
+
+    const res = await client.waitForTransactionWithResult(transaction.hash);
+
+    return res;
+  },
+  async checkIfWalletAddressIsWhitelisted(
+    context: any,
+    {
+      walletAddress,
+      programId,
+      moduleName,
+      viewFunction,
+    }: {
+      programId: string;
+      walletAddress: string;
+      moduleName: string;
+      viewFunction: string;
+    }
+  ) {
+    try {
+      const NODE_URL = process.env.NODE_URL ? process.env.NODE_URL : "";
+
+      const res = await axios.post(`${NODE_URL}/view`, {
+        arguments: [walletAddress],
+        function: `${programId}::${moduleName}::${viewFunction}`,
+        type_arguments: [],
+      });
+
+      return res.data;
+    } catch (error) {
+      throw new Error("Error getting whitelist proof");
+    }
   },
 };

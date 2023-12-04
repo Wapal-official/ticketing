@@ -31,9 +31,20 @@
             />
           </div>
         </div>
-        <h1 class="tw-text-white tw-text-[2.5em] tw-font-bold">
-          {{ collection.name }}
-        </h1>
+        <div>
+          <a
+            :href="`${MARKETPLACE_URL}/collection/${collection.username}`"
+            class="!tw-text-primary-2 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium"
+            target="_blank"
+            v-if="live && resource.minted > 0"
+          >
+            <span>List on Secondary</span>
+            <i class="bx bx-link-external"></i>
+          </a>
+          <h1 class="tw-text-white tw-text-[2.5rem] tw-font-bold">
+            {{ collection.name }}
+          </h1>
+        </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
@@ -107,6 +118,10 @@
         <div v-if="notWhitelisted" class="tw-pb-2 tw-text-red-600">
           You are not whitelisted in {{ currentSale.name }} for this collection
         </div>
+        <div v-if="externalWhitelisted">
+          Your Whitelist Mint Tokens:
+          {{ externalWhitelistMintNumber }} Remaining
+        </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
           v-if="live"
@@ -123,11 +138,11 @@
                 <div class="tw-text-white/70">
                   {{ resource.minted }}/{{ resource.total_supply }} Minted
                 </div>
-                <div v-if="currentSale.mint_price">
-                  <div v-if="currentSale.mint_price !== 0">
-                    Price {{ currentSale.mint_price }} APT
-                  </div>
-                  <div v-else>Free Mint</div>
+                <div v-if="currentSale.mint_price === 0">Free Mint</div>
+                <div
+                  v-if="currentSale.mint_price && currentSale.mint_price !== 0"
+                >
+                  Price {{ currentSale.mint_price }} APT
                 </div>
               </div>
               <div
@@ -148,6 +163,7 @@
                 <button
                   class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
                   @click="decreaseNumberOfNft"
+                  :disabled="externalWhitelisted"
                 >
                   -
                 </button>
@@ -155,10 +171,18 @@
                   class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
                   v-model="numberOfNft"
                   @input="checkNumberOfNft"
+                  v-if="!externalWhitelisted"
                 />
+                <div
+                  class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
+                  v-else
+                >
+                  {{ externalWhitelistMintNumber }}
+                </div>
                 <button
                   class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
                   @click="increaseNumberOfNft"
+                  :disabled="externalWhitelisted"
                 >
                   +
                 </button>
@@ -281,6 +305,9 @@ export default {
       live: false,
       showShareBox: false,
       phaseInterval: null,
+      externalWhitelisted: false,
+      externalWhitelistMintNumber: 0,
+      MARKETPLACE_URL: process.env.MARKETPLACE_URL,
       imageNotFound,
     };
   },
@@ -392,6 +419,11 @@ export default {
           this.resource = {
             minted: this.resource.minted,
             total_supply: 343,
+          };
+        } else if (this.collection._id === "654c9afff8961c791c804cf1") {
+          this.resource = {
+            minted: this.resource.minted,
+            total_supply: 1350,
           };
         }
 
@@ -530,6 +562,16 @@ export default {
               minted: res.minted,
               total_supply: 355,
             };
+          } else if (this.collection._id === "6466a09b6fee90eea757521c") {
+            res = {
+              minted: this.resource.minted,
+              total_supply: 343,
+            };
+          } else if (this.collection._id === "654c9afff8961c791c804cf1") {
+            res = {
+              minted: this.resource.minted,
+              total_supply: 1350,
+            };
           }
 
           if (res.total_supply === res.minted) {
@@ -640,18 +682,35 @@ export default {
 
       if (!this.collection.phases) {
         if (
-          new Date(this.collection.candyMachine.public_sale_time).getTime() -
-            new Date(
-              this.collection.candyMachine.whitelist_sale_time
-            ).getTime() >
-          1000
+          this.collection.mintDetails &&
+          this.collection.mintDetails.all_mint_at_same_time
         ) {
-          this.phases.push({
-            name: "whitelist sale",
-            id: "whitelist",
-            mint_price: this.collection.candyMachine.whitelist_price,
-            mint_time: this.collection.candyMachine.whitelist_sale_time,
-          });
+          if (
+            new Date(this.collection.candyMachine.whitelist_sale_time) >
+            new Date()
+          ) {
+            this.phases.push({
+              name: "whitelist sale",
+              id: "whitelist",
+              mint_price: this.collection.candyMachine.whitelist_price,
+              mint_time: this.collection.candyMachine.whitelist_sale_time,
+            });
+          }
+        } else {
+          if (
+            new Date(this.collection.candyMachine.public_sale_time).getTime() -
+              new Date(
+                this.collection.candyMachine.whitelist_sale_time
+              ).getTime() >
+            1000
+          ) {
+            this.phases.push({
+              name: "whitelist sale",
+              id: "whitelist",
+              mint_price: this.collection.candyMachine.whitelist_price,
+              mint_time: this.collection.candyMachine.whitelist_sale_time,
+            });
+          }
         }
       }
 
@@ -753,17 +812,98 @@ export default {
     },
     async mintCollectionExternally() {
       try {
-        const res = await this.$store.dispatch("walletStore/externalMint", {
-          mintFunction: this.collection.mintDetails.public_mint_function,
-          programId: this.collection.candyMachine.candy_id,
-          moduleName: this.collection.mintDetails.moduleName,
-        });
-        console.log(res);
+        if (this.externalWhitelisted) {
+          const res = await this.$store.dispatch("walletStore/externalMint", {
+            mintFunction: this.collection.mintDetails.whitelist_mint_function,
+            programId: this.collection.candyMachine.candy_id,
+            moduleName: this.collection.mintDetails.module_name,
+            numberOfNfts: this.numberOfNft,
+          });
+          this.minting = false;
+
+          const whitelistRes = await this.$store.dispatch(
+            "walletStore/checkIfWalletAddressIsWhitelisted",
+            {
+              walletAddress: this.getWalletAddress,
+              programId: this.collection.candyMachine.candy_id,
+              moduleName: this.collection.mintDetails.module_name,
+              viewFunction:
+                this.collection.mintDetails.check_whitelist_function,
+            }
+          );
+        } else {
+          this.publicMintCollectionExternally();
+        }
+      } catch (error) {
+        if (error.message === "Error getting whitelist proof") {
+          this.externalWhitelisted = false;
+          this.currentSale.mint_price =
+            this.collection.candyMachine.public_sale_price;
+        } else {
+          this.minting = false;
+          this.$toast.showMessage({ message: error, error: true });
+        }
+      }
+    },
+    async publicMintCollectionExternally() {
+      try {
+        this.currentSale.mint_price =
+          this.collection.candyMachine.public_sale_price;
+
+        if (!this.collection.mintDetails.many && this.numberOfNft > 1) {
+          throw new Error("Please Mint One NFT at a time");
+        }
+
+        if (this.numberOfNft > 1) {
+          const res = await this.$store.dispatch(
+            "walletStore/bulkExternalMint",
+            {
+              mintFunction:
+                this.collection.mintDetails.public_mint_many_function,
+              programId: this.collection.candyMachine.candy_id,
+              moduleName: this.collection.mintDetails.module_name,
+              numberOfNfts: this.numberOfNft,
+            }
+          );
+        } else {
+          const res = await this.$store.dispatch("walletStore/externalMint", {
+            mintFunction: this.collection.mintDetails.public_mint_function,
+            programId: this.collection.candyMachine.candy_id,
+            moduleName: this.collection.mintDetails.module_name,
+          });
+        }
         this.minting = false;
+        this.numberOfNft = 1;
       } catch (error) {
         console.log(error);
         this.minting = false;
         this.$toast.showMessage({ message: error, error: true });
+      }
+    },
+    async checkWhitelistForExternalMint() {
+      try {
+        const whitelistRes = await this.$store.dispatch(
+          "walletStore/checkIfWalletAddressIsWhitelisted",
+          {
+            walletAddress: this.getWalletAddress,
+            programId: this.collection.candyMachine.candy_id,
+            moduleName: this.collection.mintDetails.module_name,
+            viewFunction: this.collection.mintDetails.check_whitelist_function,
+          }
+        );
+
+        if (whitelistRes) {
+          this.currentSale.mint_price =
+            this.collection.candyMachine.whitelist_price;
+
+          this.externalWhitelistMintNumber = whitelistRes[0];
+        }
+
+        this.externalWhitelisted = true;
+      } catch (error) {
+        this.currentSale.mint_price =
+          this.collection.candyMachine.public_sale_price;
+        this.externalWhitelisted = false;
       }
     },
   },
@@ -815,6 +955,10 @@ export default {
   },
   async mounted() {
     if (this.collection) {
+      if (this.collection.username === "proudlionsclub") {
+        this.collection.username = "proud-lions-club";
+      }
+
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();
@@ -878,6 +1022,11 @@ export default {
           minted: this.resource.minted,
           total_supply: 343,
         };
+      } else if (this.collection._id === "654c9afff8961c791c804cf1") {
+        this.resource = {
+          minted: this.resource.minted,
+          total_supply: 1350,
+        };
       }
 
       this.resource.mintedPercent = Math.floor(
@@ -919,9 +1068,23 @@ export default {
         this.startPhaseInterval();
       }
 
+      if (
+        this.collection.mintDetails &&
+        this.collection.mintDetails.check_whitelist_function &&
+        this.collection.mintDetails.all_mint_at_same_time
+      ) {
+        await this.checkWhitelistForExternalMint();
+      }
+
       setTimeout(() => {
         if (!this.collection.status.sold_out && this.live) {
           this.showMintedProgress();
+        } else {
+          const resourceMintedPercent = document.querySelector(
+            "#resourceMintedPercent"
+          );
+
+          resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
         }
       }, 200);
     }
@@ -934,6 +1097,14 @@ export default {
       if (this.phases.length > 1 && this.showPublicSaleTimer) {
         await this.setProof();
         await this.getOwnedCollectionOfUser();
+      }
+
+      if (
+        this.collection.mintDetails &&
+        this.collection.mintDetails.check_whitelist_function &&
+        this.collection.mintDetails.all_mint_at_same_time
+      ) {
+        await this.checkWhitelistForExternalMint();
       }
     },
   },

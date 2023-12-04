@@ -14,7 +14,7 @@ export default {
     const name = params.name;
     let collection;
 
-    if (name === "aptos-monkeys-sanctuary") {
+    if (name === "monkkesanturies") {
       collection = {
         name: "Aptos Monkeys Sanctuary",
         description:
@@ -36,7 +36,7 @@ export default {
         status: {
           sold_out: true,
         },
-        username: "aptos-monkeys-sanctuary",
+        username: "monkkesanturies",
       };
       return { collection };
     }

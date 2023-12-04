@@ -1,12 +1,12 @@
 <template>
   <div
-    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-bg-dark-9 tw-py-4 tw-border-b tw-border-dark-6"
+    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-bg-dark-9 tw-py-4 tw-border-b tw-border-dark-6 tw-container tw-mx-auto"
   >
     <nav
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-max-h-[40px] lg:tw-gap-0 xl:tw-px-[3.75em]"
+      class="tw-w-full tw-grid tw-grid-cols-12 tw-px-6 tw-max-h-[40px] lg:tw-gap-0 1xl:tw-px-[3.75em]"
     >
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12 lg:tw-w-[224px]"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-12 tw-col-span-4 lg:tw-col-span-3 xl:tw-col-span-4"
       >
         <NuxtLink to="/" class="">
           <img
@@ -55,21 +55,13 @@
         </div>
       </div>
 
+      <div class="tw-hidden md:tw-flex tw-w-full tw-col-span-4">
+        <search-bar />
+      </div>
       <div
-        class="tw-hidden tw-w-full md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-end md:tw-w-4/5 lg:tw-w-[90%] xl:tw-w-4/5"
+        class="tw-w-full tw-hidden tw-col-span-4 lg:tw-flex lg:tw-col-span-5 xl:tw-col-span-4"
       >
-        <div
-          class="tw-w-4/5 tw-flex tw-flex-row tw-items-center tw-justify-between lg:tw-w-[90%] xl:tw-w-4/5"
-        >
-          <div
-            class="tw-hidden md:tw-flex md:tw-flex-row md:tw-items-center md:tw-justify-center lg:tw-w-[392px] xl:tw-w-[424px]"
-          >
-            <search-bar />
-          </div>
-          <div class="tw-w-fit tw-hidden lg:tw-flex">
-            <landing-menu />
-          </div>
-        </div>
+        <landing-menu />
       </div>
       <div
         class="tw-w-full tw-absolute tw-transition-all tw-duration-300 tw-ease-linear tw-z-50 tw-left-0 tw-top-0"
@@ -78,7 +70,19 @@
         <search-bar @closeSearchBar="closeSearchBar" />
       </div>
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4 md:tw-hidden"
+        class="tw-hidden tw-col-span-4 tw-w-full tw-flex-row tw-items-center tw-justify-end md:tw-flex lg:tw-hidden"
+      >
+        <button @click="toggleLandingMenu">
+          <i
+            class="bx bx-menu !tw-text-wapal-gray tw-text-2xl"
+            v-if="!landingMenuShowing"
+          ></i>
+          <i class="bx bx-x !tw-text-wapal-gray tw-text-2xl" v-else></i>
+        </button>
+      </div>
+
+      <div
+        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4 tw-col-span-8 md:tw-hidden"
       >
         <button @click="displaySearchBar" class="tw-flex md:tw-hidden">
           <i class="bx bx-search !tw-text-wapal-gray tw-text-2xl"></i>
