@@ -98,7 +98,7 @@ export default {
           //Get Collection Detail
           const resource = await getCollectionDetails({
             candyMachineId: collection.candyMachine.candy_id,
-            candyObject: collection.candyMachine.resource_account,
+            candy_object: collection.candyMachine.resource_account,
           });
 
           //Store minted and total supply of collection and calculate minted percent

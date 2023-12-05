@@ -3,11 +3,31 @@
     class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 xl:tw-flex-row xl:tw-items-start xl:tw-justify-start"
     v-if="!loading"
   >
-    <img
-      :src="collection.image"
-      :alt="collection.name"
-      class="tw-rounded tw-w-[421px] tw-h-[421px]"
-    />
+    <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5">
+      <img
+        :src="collection.image"
+        :alt="collection.name"
+        class="tw-rounded tw-w-[421px] tw-h-[421px]"
+        width="421px"
+        height="421px"
+      />
+      <div
+        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+      >
+        <button-primary
+          title="Start Next Phase"
+          @click="startNextPhase"
+          :bordered="true"
+          v-if="showStartNextPhaseButton"
+        />
+        <button-primary
+          title="Resume Mint"
+          @click="resumeMint"
+          v-if="mintingPaused"
+          :bordered="true"
+        />
+      </div>
+    </div>
 
     <ValidationObserver
       class="tw-w-full tw-flex tw-flex-col tw-gap-5 xl:tw-max-w-[534px]"
@@ -25,6 +45,8 @@
         </h2>
         <div class="">{{ collection.description }}</div>
       </div>
+
+      <h3 class="">Supply</h3>
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-text-sm tw-font-semibold tw-w-full"
         v-if="!editingTotalSupply"
@@ -402,6 +424,16 @@
         </div>
       </div>
     </ValidationObserver>
+    <reusable-progress-modal
+      :showProgressModal="showSettingUpNextPhaseModal"
+      :showClose="showCloseSettingUpNextPhaseModal"
+      name="Initiating Next Phase"
+      description="Please review and approve up to three transactions in your wallet window to start next mint phase."
+      :steps="steps"
+      :progress="settingUpNextPhaseProgress"
+      :error="settingUpNextPhaseError"
+      @closeProgressModal="showSettingUpNextPhaseModal = false"
+    />
   </div>
   <div class="py-16" v-else>
     <reusable-loading />
@@ -421,6 +453,7 @@ import {
   updateWhitelistSalePrice,
   updatePublicSalePrice,
   updateTotalSupply,
+  pauseOrResumeMinting,
 } from "@/services/AptosCollectionService";
 
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
@@ -496,6 +529,16 @@ export default {
       },
       editingPhases: false,
       savingChanges: false,
+      showSettingUpNextPhaseModal: false,
+      showCloseSettingUpNextPhaseModal: false,
+      steps: [
+        { step: 1, name: "Pausing Mint" },
+        { step: 2, name: "Changing Sale Price" },
+        { step: 3, name: "Resuming Mint" },
+      ],
+      settingUpNextPhaseProgress: 0,
+      settingUpNextPhaseError: false,
+      mintingPaused: false,
       aptIcon,
     };
   },
@@ -511,8 +554,10 @@ export default {
 
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,
-        candyObject: this.collection.candyMachine.resource_account,
+        candy_object: this.collection.candyMachine.resource_account,
       });
+
+      this.mintingPaused = chainRes.paused;
 
       this.editCollection.whitelistSaleTime = new Date(
         this.collection.candyMachine.whitelist_sale_time
@@ -530,9 +575,9 @@ export default {
 
       this.editCollection.totalSupply = this.collection.supply;
 
-      // this.editCollection.royalty =
-      //   (chainRes.royalty_points_numerator * 100) /
-      //   chainRes.royalty_points_denominator;
+      this.editCollection.royalty =
+        (chainRes.royalty_points_numerator * 100) /
+        chainRes.royalty_points_denominator;
 
       this.editCollection.phases = structuredClone(this.collection.phases);
 
@@ -569,7 +614,7 @@ export default {
     async updateWhitelistSaleTime() {
       try {
         await updateWhitelistSaleTime({
-          candyObject: this.collection.candyMachine.resource_account,
+          candy_object: this.collection.candyMachine.resource_account,
           pre_sale_mint_time: this.editCollection.whitelistSaleTime,
           candy_machine_id: this.collection.candyMachine.candy_id,
         });
@@ -607,7 +652,7 @@ export default {
     async updatePublicSaleTime() {
       try {
         await updatePublicSaleTime({
-          candyObject: this.collection.candyMachine.resource_account,
+          candy_object: this.collection.candyMachine.resource_account,
           public_sale_time: this.editCollection.publicSaleTime,
           candy_machine_id: this.collection.candyMachine.candy_id,
         });
@@ -633,7 +678,7 @@ export default {
     async updateWhitelistSalePrice() {
       try {
         await updateWhitelistSalePrice({
-          candyObject: this.collection.candyMachine.resource_account,
+          candy_object: this.collection.candyMachine.resource_account,
           pre_sale_price: this.editCollection.whitelistPrice,
           candy_machine_id: this.collection.candyMachine.candy_id,
         });
@@ -668,7 +713,7 @@ export default {
     async updatePublicSalePrice() {
       try {
         await updatePublicSalePrice({
-          candyObject: this.collection.candyMachine.resource_account,
+          candy_object: this.collection.candyMachine.resource_account,
           public_sale_price: this.editCollection.publicSalePrice,
           candy_machine_id: this.collection.candyMachine.candy_id,
         });
@@ -708,7 +753,7 @@ export default {
         }
 
         await updateTotalSupply({
-          candyObject: this.collection.candyMachine.resource_account,
+          candy_object: this.collection.candyMachine.resource_account,
           total_supply: this.editCollection.totalSupply,
           candy_machine_id: this.collection.candyMachine.candy_id,
         });
@@ -751,7 +796,7 @@ export default {
           ).getTime() !== new Date(sortedPhases[0].mint_time).getTime()
         ) {
           await updateWhitelistSaleTime({
-            candyObject: this.collection.candyMachine.resource_account,
+            candy_object: this.collection.candyMachine.resource_account,
             candy_machine_id: this.collection.candyMachine.candy_id,
             pre_sale_mint_time: sortedPhases[0].mint_time,
           });
@@ -765,7 +810,7 @@ export default {
           sortedPhases[0].mint_price
         ) {
           await updateWhitelistSalePrice({
-            candyObject: this.collection.candyMachine.resource_account,
+            candy_object: this.collection.candyMachine.resource_account,
             candy_machine_id: this.collection.candyMachine.candy_id,
             pre_sale_price: sortedPhases[0].mint_price,
           });
@@ -808,6 +853,119 @@ export default {
       this.editCollection.phases = structuredClone(this.collection.phases);
 
       this.editingPhases = false;
+    },
+    async startNextPhase() {
+      try {
+        if (this.mintingPaused) {
+          throw new Error("Please Resume Minting First");
+        }
+
+        this.settingUpNextPhaseError = false;
+        this.showSettingUpNextPhaseModal = true;
+        this.showCloseSettingUpNextPhaseModal = false;
+        this.settingUpNextPhaseProgress = 1;
+
+        const pauseRes: any = await pauseOrResumeMinting({
+          candy_machine_id: this.collection.candyMachine.candy_id,
+          candy_object: this.collection.candyMachine.resource_account,
+        });
+
+        if (pauseRes.success) {
+          this.mintingPaused = true;
+          this.settingUpNextPhaseProgress = 2;
+
+          let currentSalePrice = this.collection.candyMachine.whitelist_price;
+
+          let allPhaseCompleted = true;
+
+          for (let i = 0; i < this.collection.phases.length; i++) {
+            const now = new Date();
+
+            const phaseDate = new Date(this.collection.phases[i].mint_time);
+
+            if (phaseDate > now) {
+              currentSalePrice = this.collection.phases[i].mint_price;
+              allPhaseCompleted = false;
+              break;
+            }
+          }
+
+          if (!allPhaseCompleted) {
+            const updateWhitelistSalePriceRes: any =
+              await updateWhitelistSalePrice({
+                candy_machine_id: this.collection.candyMachine.candy_id,
+                candy_object: this.collection.candyMachine.resource_account,
+                pre_sale_price: currentSalePrice,
+              });
+
+            if (updateWhitelistSalePriceRes.success) {
+              this.settingUpNextPhaseProgress = 3;
+              const resumeRes: any = await pauseOrResumeMinting({
+                candy_machine_id: this.collection.candyMachine.candy_id,
+                candy_object: this.collection.candyMachine.resource_account,
+              });
+
+              if (resumeRes.success) {
+                this.mintingPaused = false;
+                this.settingUpNextPhaseProgress = 4;
+                this.showSettingUpNextPhaseModal = false;
+                this.$toast.showMessage({
+                  message: "Phase Started Successfully",
+                  error: false,
+                });
+              } else {
+                throw new Error("Error Resuming Mint");
+              }
+            } else {
+              throw new Error("Price in chain not updated");
+            }
+          } else {
+            throw new Error("All Phases are Over");
+          }
+        } else {
+          throw new Error("Error Pausing Mint");
+        }
+      } catch (error) {
+        console.log(error);
+        this.settingUpNextPhaseError = true;
+        this.showCloseSettingUpNextPhaseModal = true;
+        this.$toast.showMessage({ message: error, error: true });
+      }
+    },
+    async resumeMint() {
+      try {
+        const resumeRes: any = await pauseOrResumeMinting({
+          candy_machine_id: this.collection.candyMachine.candy_id,
+          candy_object: this.collection.candyMachine.resource_account,
+        });
+
+        this.mintingPaused = false;
+        this.$toast.showMessage({
+          message: "Minting Resumed Successfully",
+          error: false,
+        });
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+      }
+    },
+  },
+  computed: {
+    showStartNextPhaseButton() {
+      const phases = this.collection.phases;
+
+      let counter = 0;
+
+      for (let i = 0; i < phases.length; i++) {
+        const now = new Date().getTime();
+        const phaseDate = new Date(phases[i].mint_time).getTime();
+
+        if (now > phaseDate) {
+          counter++;
+        }
+      }
+
+      return counter !== phases.length;
     },
   },
 };

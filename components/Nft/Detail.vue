@@ -138,9 +138,9 @@
                 <div class="tw-text-white/70">
                   {{ resource.minted }}/{{ resource.total_supply }} Minted
                 </div>
-                <div v-if="currentSale.mint_price === 0">Free Mint</div>
+                <div v-if="currentSale.mint_price == 0">Free Mint</div>
                 <div
-                  v-if="currentSale.mint_price && currentSale.mint_price !== 0"
+                  v-if="currentSale.mint_price && currentSale.mint_price != 0"
                 >
                   Price {{ currentSale.mint_price }} APT
                 </div>
@@ -713,10 +713,6 @@ export default {
           }
         }
       }
-
-      this.phases.map((phase) => {
-        phase.mint_price = this.collection.candyMachine.whitelist_price;
-      });
 
       const publicSale = {
         name: "public sale",

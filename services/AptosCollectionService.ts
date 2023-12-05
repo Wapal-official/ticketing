@@ -17,12 +17,12 @@ const checkWalletConnected = async () => {
 
 export const getCollectionDetails = async ({
   candyMachineId,
-  candyObject,
+  candy_object,
 }: {
   candyMachineId: string;
-  candyObject: string;
+  candy_object: string;
 }) => {
-  const resources = await client.getAccountResources(candyObject);
+  const resources = await client.getAccountResources(candy_object);
 
   let resource: any = null;
   for (let i = 0; i < resources.length; i++) {
@@ -36,11 +36,11 @@ export const getCollectionDetails = async ({
 };
 
 export const updateWhitelistSaleTime = async ({
-  candyObject,
+  candy_object,
   pre_sale_mint_time,
   candy_machine_id,
 }: {
-  candyObject: string;
+  candy_object: string;
   pre_sale_mint_time: string;
   candy_machine_id: string;
 }) => {
@@ -55,7 +55,7 @@ export const updateWhitelistSaleTime = async ({
   const update_whitelist_sale_time_script = {
     function: `${candy_machine_id}::candymachine::update_wl_sale_time`,
     type: "entry_function_payload",
-    arguments: [candyObject, pre_sale_seconds],
+    arguments: [candy_object, pre_sale_seconds],
     type_arguments: [],
   };
 
@@ -75,11 +75,11 @@ export const updateWhitelistSaleTime = async ({
 };
 
 export const updatePublicSaleTime = async ({
-  candyObject,
+  candy_object,
   public_sale_time,
   candy_machine_id,
 }: {
-  candyObject: string;
+  candy_object: string;
   public_sale_time: string;
   candy_machine_id: string;
 }) => {
@@ -93,7 +93,7 @@ export const updatePublicSaleTime = async ({
   const update_public_sale_time_script = {
     function: `${candy_machine_id}::candymachine::update_public_sale_time`,
     type: "entry_function_payload",
-    arguments: [candyObject, public_sale_seconds],
+    arguments: [candy_object, public_sale_seconds],
     type_arguments: [],
   };
 
@@ -113,11 +113,11 @@ export const updatePublicSaleTime = async ({
 };
 
 export const updatePublicSalePrice = async ({
-  candyObject,
+  candy_object,
   public_sale_price,
   candy_machine_id,
 }: {
-  candyObject: string;
+  candy_object: string;
   public_sale_price: number;
   candy_machine_id: string;
 }) => {
@@ -129,7 +129,7 @@ export const updatePublicSalePrice = async ({
   const update_public_sale_price_script = {
     function: `${candy_machine_id}::candymachine::update_public_sale_price`,
     type: "entry_function_payload",
-    arguments: [candyObject, public_sale_lamports],
+    arguments: [candy_object, public_sale_lamports],
     type_arguments: [],
   };
 
@@ -149,11 +149,11 @@ export const updatePublicSalePrice = async ({
 };
 
 export const updateWhitelistSalePrice = async ({
-  candyObject,
+  candy_object,
   pre_sale_price,
   candy_machine_id,
 }: {
-  candyObject: string;
+  candy_object: string;
   pre_sale_price: number;
   candy_machine_id: string;
 }) => {
@@ -165,7 +165,7 @@ export const updateWhitelistSalePrice = async ({
   const update_pre_sale_price_script = {
     function: `${candy_machine_id}::candymachine::update_wl_sale_price`,
     type: "entry_function_payload",
-    arguments: [candyObject, whitelist_sale_lamports],
+    arguments: [candy_object, whitelist_sale_lamports],
     type_arguments: [],
   };
 
@@ -185,11 +185,11 @@ export const updateWhitelistSalePrice = async ({
 };
 
 export const updateTotalSupply = async ({
-  candyObject,
+  candy_object,
   total_supply,
   candy_machine_id,
 }: {
-  candyObject: string;
+  candy_object: string;
   total_supply: string;
   candy_machine_id: string;
 }) => {
@@ -199,7 +199,7 @@ export const updateTotalSupply = async ({
   const update_total_supply_script = {
     function: `${candy_machine_id}::candymachine::update_total_supply`,
     type: "entry_function_payload",
-    arguments: [candyObject, total_supply],
+    arguments: [candy_object, total_supply],
     type_arguments: [],
   };
 
@@ -313,7 +313,7 @@ export const merkleMintSingleNft = async ({
   try {
     const merkle_mint_script = {
       type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_script_merkle`,
+      function: `${candy_machine_id}::candymachine::mint_from_merkle`,
       type_arguments: [],
       arguments: [candy_object, proof, mint_limit],
     };
@@ -428,4 +428,20 @@ const makeId = (length: number) => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+};
+
+export const pauseOrResumeMinting = async ({
+  candy_object,
+  candy_machine_id,
+}: MintCollectionInterface) => {
+  const pause_resume_script = {
+    type: "entry_function_payload",
+    function: `${candy_machine_id}::candymachine::pause_resume_mint`,
+    arguments: [candy_object],
+    type_arguments: [],
+  };
+
+  const res = executeTransactionAndGiveResult(pause_resume_script);
+
+  return res;
 };
