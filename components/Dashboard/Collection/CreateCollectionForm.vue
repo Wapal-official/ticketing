@@ -926,6 +926,7 @@ export default {
       );
 
       if (!this.whitelistEnabled) {
+        whitelistTime = publicSaleTime;
         publicSaleTime += 1;
         whitelist_price = this.collection.public_sale_price;
       }
