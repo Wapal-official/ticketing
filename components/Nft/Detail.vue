@@ -41,6 +41,9 @@
             <span>List on Secondary</span>
             <i class="bx bx-link-external"></i>
           </a>
+          <div class="tw-text-red-600 tw-pt-2" v-if="resource.paused">
+            Minting is currently paused for this collection
+          </div>
           <h1 class="tw-text-white tw-text-[2.5rem] tw-font-bold">
             {{ collection.name }}
           </h1>
@@ -164,6 +167,10 @@
                   class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
                   @click="decreaseNumberOfNft"
                   :disabled="externalWhitelisted"
+                  @mouseup="stopDecrement"
+                  @mousedown="startDecrement"
+                  @touchstart="startDecrement"
+                  @touchend="stopDecrement"
                 >
                   -
                 </button>
@@ -183,6 +190,10 @@
                   class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
                   @click="increaseNumberOfNft"
                   :disabled="externalWhitelisted"
+                  @mouseup="stopIncrement"
+                  @mousedown="startIncrement"
+                  @touchstart="startIncrement"
+                  @touchend="stopIncrement"
                 >
                   +
                 </button>
@@ -197,14 +208,10 @@
               </a>
               <button-primary
                 :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
-                :disabled="
-                  minting ||
-                  collection.status.sold_out ||
-                  gettingProof ||
-                  notWhitelisted
-                "
+                :disabled="getMintButtonDisabledStatus"
                 @click="mintBulkCollection"
                 :fullWidth="true"
+                :loading="minting"
                 v-else
               />
             </div>
@@ -308,6 +315,9 @@ export default {
       externalWhitelisted: false,
       externalWhitelistMintNumber: 0,
       MARKETPLACE_URL: process.env.MARKETPLACE_URL,
+      maxNumberOfNft: 35,
+      holdingIncreaseButtonInterval: null,
+      holdingDecreaseButtonInterval: null,
       imageNotFound,
     };
   },
@@ -399,31 +409,37 @@ export default {
           this.resource = {
             minted: this.resource.minted,
             total_supply: 239,
+            paused: this.resource.paused,
           };
         } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
           this.resource = {
             minted: this.resource.minted,
             total_supply: 222,
+            paused: this.resource.paused,
           };
         } else if (this.collection._id === "64686db77db14461740bab0f") {
           this.resource = {
             minted: this.resource.minted,
             total_supply: 355,
+            paused: this.resource.paused,
           };
         } else if (this.collection._id === "64625d957c7212d927559962") {
           this.resource = {
             minted: this.resource.minted,
             total_supply: 2333,
+            paused: this.resource.paused,
           };
         } else if (this.collection._id === "6466a09b6fee90eea757521c") {
           this.resource = {
             minted: this.resource.minted,
             total_supply: 343,
+            paused: this.resource.paused,
           };
         } else if (this.collection._id === "654c9afff8961c791c804cf1") {
           this.resource = {
             minted: this.resource.minted,
             total_supply: 1350,
+            paused: this.resource.paused,
           };
         }
 
@@ -452,8 +468,8 @@ export default {
       ) {
         return;
       } else {
-        if (this.numberOfNft >= 500) {
-          this.numberOfNft = 500;
+        if (this.numberOfNft >= this.maxNumberOfNft) {
+          this.numberOfNft = this.maxNumberOfNft;
           return;
         }
         this.numberOfNft++;
@@ -465,6 +481,22 @@ export default {
       } else {
         this.numberOfNft--;
       }
+    },
+    startDecrement() {
+      this.holdingDecreaseButtonInterval = setInterval(() => {
+        this.decreaseNumberOfNft();
+      }, 100);
+    },
+    stopDecrement() {
+      clearInterval(this.holdingDecreaseButtonInterval);
+    },
+    startIncrement() {
+      this.holdingIncreaseButtonInterval = setInterval(() => {
+        this.increaseNumberOfNft();
+      }, 100);
+    },
+    stopIncrement() {
+      clearInterval(this.holdingIncreaseButtonInterval);
     },
     checkNumberOfNft() {
       if (isNaN(this.numberOfNft)) {
@@ -482,11 +514,14 @@ export default {
       }
 
       if (
-        this.numberOfNft > 500 ||
+        this.numberOfNft > this.maxNumberOfNft ||
         this.numberOfNft >= this.resource.total_supply - this.resource.minted
       ) {
-        if (this.resource.total_supply - this.resource.minted >= 500) {
-          this.numberOfNft = 500;
+        if (
+          this.resource.total_supply - this.resource.minted >=
+          this.maxNumberOfNft
+        ) {
+          this.numberOfNft = this.maxNumberOfNft;
         } else {
           this.numberOfNft = this.resource.total_supply - this.resource.minted;
         }
@@ -551,26 +586,31 @@ export default {
             res = {
               minted: res.minted,
               total_supply: 239,
+              paused: this.resource.paused,
             };
           } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
             res = {
               minted: res.minted,
               total_supply: 222,
+              paused: this.resource.paused,
             };
           } else if (this.collection._id === "64686db77db14461740bab0f") {
             res = {
               minted: res.minted,
               total_supply: 355,
+              paused: this.resource.paused,
             };
           } else if (this.collection._id === "6466a09b6fee90eea757521c") {
             res = {
               minted: this.resource.minted,
               total_supply: 343,
+              paused: this.resource.paused,
             };
           } else if (this.collection._id === "654c9afff8961c791c804cf1") {
             res = {
               minted: this.resource.minted,
               total_supply: 1350,
+              paused: this.resource.paused,
             };
           }
 
@@ -948,6 +988,15 @@ export default {
 
       return false;
     },
+    getMintButtonDisabledStatus() {
+      return (
+        this.minting ||
+        this.collection.status.sold_out ||
+        this.gettingProof ||
+        this.notWhitelisted ||
+        this.resource.paused
+      );
+    },
   },
   async mounted() {
     if (this.collection) {
@@ -997,31 +1046,37 @@ export default {
         this.resource = {
           minted: this.resource.minted,
           total_supply: 239,
+          paused: this.resource.paused,
         };
       } else if (this.collection._id === "644fd55dafc9fe9c6277aad7") {
         this.resource = {
           minted: this.resource.minted,
           total_supply: 222,
+          paused: this.resource.paused,
         };
       } else if (this.collection._id === "64686db77db14461740bab0f") {
         this.resource = {
           minted: this.resource.minted,
           total_supply: 355,
+          paused: this.resource.paused,
         };
       } else if (this.collection._id === "64625d957c7212d927559962") {
         this.resource = {
           minted: this.resource.minted,
           total_supply: 2333,
+          paused: this.resource.paused,
         };
       } else if (this.collection._id === "6466a09b6fee90eea757521c") {
         this.resource = {
           minted: this.resource.minted,
           total_supply: 343,
+          paused: this.resource.paused,
         };
       } else if (this.collection._id === "654c9afff8961c791c804cf1") {
         this.resource = {
           minted: this.resource.minted,
           total_supply: 1350,
+          paused: this.resource.paused,
         };
       }
 

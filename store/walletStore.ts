@@ -516,6 +516,7 @@ export const actions = {
     return {
       total_supply: resource.total_supply,
       minted: resource.minted,
+      paused: resource.paused,
       v2: v2,
     };
   },

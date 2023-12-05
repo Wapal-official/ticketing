@@ -230,7 +230,7 @@ export const mintCollection = async ({
   checkNetwork();
 
   if (publicMint) {
-    if (amount === 1) {
+    if (amount == 1) {
       const res = await mintSingleNft({
         candy_machine_id,
         candy_object,
@@ -242,7 +242,7 @@ export const mintCollection = async ({
       return res;
     }
   } else {
-    if (amount === 1) {
+    if (amount == 1) {
       const res = await merkleMintSingleNft({
         candy_machine_id,
         candy_object,
