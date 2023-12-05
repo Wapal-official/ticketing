@@ -18,7 +18,7 @@
           title="Start Next Phase"
           @click="startNextPhase"
           :bordered="true"
-          v-if="showStartNextPhaseButton"
+          v-if="showStartNextPhaseButton && collection.phases.length > 1"
         />
         <button-primary
           title="Resume Mint"
