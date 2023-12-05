@@ -51,7 +51,7 @@ export default {
     script.onload = () => {
       // Once the script is loaded, execute the desired functionality
       window.chatwootSDK.run({
-        websiteToken: "5JbXqHBZBesGHhoMUPinK8ix",
+        websiteToken: "GyVMVFjjqQ4rEVcNfAe8v94z",
         baseUrl: "https://app.chatwoot.com",
       });
     };
