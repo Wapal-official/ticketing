@@ -259,6 +259,8 @@ export const mintCollection = async ({
         mint_limit,
         amount,
       });
+
+      return res;
     }
   }
 };
