@@ -481,6 +481,16 @@ extend("number", {
   message: "This field must be a number",
 });
 
+extend("saleTime", {
+  validate(value) {
+    if (new Date(value).getTime() <= Date.now()) {
+      return false;
+    }
+    return true;
+  },
+  message: "Sale time should be greater than current time",
+});
+
 export default {
   components: { ValidationProvider, ValidationObserver },
   data() {

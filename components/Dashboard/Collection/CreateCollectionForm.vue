@@ -386,7 +386,7 @@
             </button-primary>
             <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-              name="publicSalePrice"
+              name="mintLimit"
               :rules="'required|number'"
               v-slot="{ errors }"
             >
