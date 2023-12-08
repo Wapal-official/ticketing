@@ -262,7 +262,7 @@
               </ValidationProvider>
               <ValidationProvider
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
-                rules="required|saleTime|phase_sale_time:@publicSaleTime"
+                rules="required|saleTime"
                 v-slot="{ errors }"
               >
                 <input-date-picker
