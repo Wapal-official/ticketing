@@ -142,7 +142,7 @@ export default {
       return collection.candyMachine.public_sale_price;
     },
     redirectToEditPage(collection: any) {
-      this.$router.push(`/dashboard/collection/edit/${collection._id}`);
+      //this.$router.push(`/dashboard/collection/edit/${collection._id}`);
     },
   },
   created() {

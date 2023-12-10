@@ -347,7 +347,7 @@
                     {{ errors[0] }}
                   </div>
                 </ValidationProvider>
-                <ValidationProvider
+                <!-- <ValidationProvider
                   class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
                   rules="required|number"
                   v-slot="{ errors }"
@@ -371,7 +371,7 @@
                     </button>
                   </div>
                   <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-                </ValidationProvider>
+                </ValidationProvider> -->
               </div>
             </div>
 
@@ -502,7 +502,7 @@
             :phase="{
               name: phase.name,
               mint_time: phase.mint_time,
-              mint_price: phase.mint_price,
+              mint_price: collection.whitelist_price,
             }"
             :key="index"
             v-if="collection.phases.length > 0"
@@ -679,7 +679,7 @@ export default {
         txnhash: "",
         un: "",
         candy_id: process.env.CANDY_MACHINE_V2,
-        phases: [{ name: "", mint_time: null, mint_price: 0 }],
+        phases: [{ name: "", mint_time: null }],
         public_mint_limit: null,
       },
       message: "",
@@ -815,7 +815,7 @@ export default {
             id: id,
             name: phase.name,
             mint_time: phase.mint_time,
-            mint_price: phase.mint_price,
+            mint_price: this.collection.whitelist_price,
           });
         });
 
@@ -935,7 +935,7 @@ export default {
         whitelistTime = Math.floor(
           new Date(this.collection.phases[0].mint_time).getTime() / 1000
         );
-        whitelist_price = this.collection.phases[0].mint_price;
+        whitelist_price = this.collection.whitelist_price;
       }
 
       const pre_sale_price = parseFloat(
