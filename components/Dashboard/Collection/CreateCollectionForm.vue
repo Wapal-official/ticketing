@@ -336,13 +336,20 @@
                   rules="required|saleTime|phase_sale_time:@publicSaleTime"
                   v-slot="{ errors }"
                 >
-                  <input-date-picker
-                    v-model="phase.mint_time"
-                    type="datetime"
-                    placeholder="Select Mint Time"
-                    label="Mint Time"
-                    :required="true"
-                  ></input-date-picker>
+                  <div
+                    class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-full"
+                  >
+                    <input-date-picker
+                      v-model="phase.mint_time"
+                      type="datetime"
+                      placeholder="Select Mint Time"
+                      label="Mint Time"
+                      :required="true"
+                    ></input-date-picker>
+                    <button @click="removeMintPhase(index)" class="tw-mt-8">
+                      <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
+                    </button>
+                  </div>
                   <div class="tw-text-red-600 tw-text-sm">
                     {{ errors[0] }}
                   </div>
