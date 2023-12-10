@@ -42,7 +42,7 @@
               <i class="bx bx-download tw-text-white tw-text-xl"></i>
             </button>
           </div>
-          <div
+          <!-- <div
             class="tw-h-full tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
             v-if="!this.file.name || !this.file.image"
           >
@@ -64,7 +64,7 @@
                 ><i class="bx bx-plus tw-pr-1"></i>
               </template>
             </button-primary>
-          </div>
+          </div> -->
         </div>
       </div>
       <div

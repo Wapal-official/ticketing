@@ -49,12 +49,12 @@
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 tw-w-full md:tw-w-fit md:tw-justify-end"
         >
-          <button-primary
+          <!-- <button-primary
             title="Set Metadata"
             @click="showSetMetadataDialog = true"
             :bordered="true"
             v-if="showSetMetadataButton || showSetMetadataButtonFromStore"
-          />
+          /> -->
           <button>
             <v-icon
               class="!tw-text-white"
