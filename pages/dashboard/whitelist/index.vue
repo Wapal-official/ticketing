@@ -219,21 +219,37 @@ export default {
 
       const mappedCollections = await Promise.all(
         collections.map(async (collection: any) => {
-          //Get Collection Detail
-          const resource = await getCollectionDetails(
-            collection.candyMachine.candy_id,
-            collection.candyMachine.resource_account
-          );
+          let collectionResource = null;
+          try {
+            //Get Collection Detail
+            const resource = await getCollectionDetails({
+              candyMachineId: collection.candyMachine.candy_id,
+              candy_object: collection.candyMachine.resource_account,
+            });
 
-          //Store minted and total supply of collection and calculate minted percent
-          const collectionResource = {
-            minted: resource.minted,
-            total: resource.total_supply,
-            progressPercent: Math.floor(
-              (resource.minted / resource.total_supply) * 100
-            ),
-            text: `${resource.minted}/${resource.total_supply} Minted`,
-          };
+            //Store minted and total supply of collection and calculate minted percent
+            collectionResource = {
+              minted: resource.minted,
+              total: resource.total_supply,
+              progressPercent: Math.floor(
+                (resource.minted / resource.total_supply) * 100
+              ),
+              text: `${resource.minted}/${resource.total_supply} Minted`,
+            };
+          } catch {
+            const resource = {
+              minted: 0,
+              total_supply: 0,
+            };
+            collectionResource = {
+              minted: resource.minted,
+              total: resource.total_supply,
+              progressPercent: Math.floor(
+                (resource.minted / resource.total_supply) * 100
+              ),
+              text: `${resource.minted}/${resource.total_supply} Minted`,
+            };
+          }
 
           collection.price = this.getPrice(collection);
 

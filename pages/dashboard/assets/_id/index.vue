@@ -43,7 +43,7 @@ export default {
   data() {
     return {
       folders: [
-        { name: "images", type: "assets" },
+        { name: "assets", type: "assets" },
         { name: "metadata", type: "metadata" },
       ],
       vault: null,

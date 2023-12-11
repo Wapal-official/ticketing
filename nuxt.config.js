@@ -8,7 +8,8 @@ const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const APTOS_API_KEY = process.env.APTOS_API_KEY;
 const PID = process.env.PID;
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
-const CANDY_MACHINE_V2 = process.env.CANDY_MACHINE_V2;
+const CANDY_MACHINE_V2 =
+  "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac";
 const CANDY_MACHINE_V1 =
   "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0";
 
@@ -44,6 +45,7 @@ export default {
     },
     meta: [
       {
+        hid: "description",
         name: "description",
         content: "Wapal is a No Code NFT Creator Studio on Aptos",
       },

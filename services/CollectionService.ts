@@ -207,3 +207,13 @@ export const updateCollection = async (collectionId: string, data: any) => {
 
   return res;
 };
+
+export const getMetadataFromTokenURI = async (URI: string) => {
+  try {
+    const res = await axios.get(URI);
+
+    return res.data;
+  } catch (error) {
+    return null;
+  }
+};

@@ -47,7 +47,7 @@ export default {
         return "TBD";
       }
 
-      return this.phase?.mint_price === 0
+      return this.phase?.mint_price == 0
         ? "Free Mint"
         : this.phase?.mint_price + "APT";
     },

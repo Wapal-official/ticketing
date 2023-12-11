@@ -65,6 +65,7 @@ export default {
       progressPercent: 0,
       preparingFiles: 0,
       deployingFiles: 0,
+      showedMessage: false,
     };
   },
   computed: {
@@ -79,7 +80,10 @@ export default {
 
         this.uploadComplete = true;
 
-        this.$toast.showMessage({ message: this.getUploadSummary });
+        if (!this.showedMessage) {
+          this.$toast.showMessage({ message: this.getUploadSummary });
+          this.showedMessage = true;
+        }
       }
       return uploadSocketState.uploading;
     },

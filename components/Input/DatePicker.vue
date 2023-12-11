@@ -83,6 +83,10 @@ export default {
   computed: {
     internalValue: {
       get() {
+        if (this.value) {
+          return new Date(this.value);
+        }
+
         return this.value;
       },
       set(newValue: any) {
@@ -108,7 +112,7 @@ export default {
 </script>
 <style scoped>
 ::v-deep .mx-input {
-  @apply !tw-h-[44px] !tw-bg-dark-6;
+  @apply !tw-h-[40px] !tw-bg-dark-6;
   padding: 6px 30px !important;
   padding-right: 10px !important;
 }
@@ -116,8 +120,7 @@ export default {
 ::v-deep .mx-icon-calendar {
   display: none;
 }
-</style>
-<style>
+
 .mx-datepicker-main,
 .mx-time {
   @apply !tw-bg-dark-6 tw-rounded tw-border-solid !tw-border-dark-4 !tw-text-base;

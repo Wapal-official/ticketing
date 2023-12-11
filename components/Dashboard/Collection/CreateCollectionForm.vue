@@ -106,6 +106,7 @@
               :required="true"
               @fileSelected="imageSelected"
               :file="collection.image"
+              fileSize="Upto 15 MB"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
               {{ imageErrorMessage }}
@@ -332,7 +333,7 @@
                 </ValidationProvider>
                 <ValidationProvider
                   class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
-                  rules="required|saleTime"
+                  rules="required|saleTime|phase_sale_time:@publicSaleTime"
                   v-slot="{ errors }"
                 >
                   <div
@@ -345,7 +346,6 @@
                       label="Mint Time"
                       :required="true"
                     ></input-date-picker>
-
                     <button @click="removeMintPhase(index)" class="tw-mt-8">
                       <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
                     </button>
@@ -354,6 +354,31 @@
                     {{ errors[0] }}
                   </div>
                 </ValidationProvider>
+                <!-- <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                  rules="required|number"
+                  v-slot="{ errors }"
+                >
+                  <div
+                    class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-full"
+                  >
+                    <input-text-field
+                      v-model="phase.mint_price"
+                      placeholder="Mint Price"
+                      label="Mint Price"
+                      :required="true"
+                    >
+                      <template #append-icon>
+                        <img :src="aptIcon" alt="APT" />
+                      </template>
+                    </input-text-field>
+
+                    <button @click="removeMintPhase(index)" class="tw-mt-8">
+                      <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
+                    </button>
+                  </div>
+                  <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+                </ValidationProvider> -->
               </div>
             </div>
 
@@ -368,7 +393,7 @@
             </button-primary>
             <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-              name="publicSalePrice"
+              name="mintLimit"
               :rules="'required|number'"
               v-slot="{ errors }"
             >
@@ -516,486 +541,6 @@
         </div>
       </v-stepper-content>
     </stepper>
-    <!-- <ValidationObserver ref="form" v-slot="{ handleSubmit }" v-if="!loading">
-      <form
-        class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[60%]"
-        @submit.prevent="handleSubmit(submitCollection)"
-        novalidate
-      >
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="name"
-          rules="required"
-          v-slot="{ errors }"
-        >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Collection Name</label
-          >
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.name"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="description"
-          rules="required|descriptionLength"
-          v-slot="{ errors }"
-        >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Collection Description</label
-          >
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-textarea
-              v-model="collection.description"
-              class="dashboard-input"
-              background-color="transparent"
-              color="#fff"
-              outlined
-              single-line
-            ></v-textarea>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
-        >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Image Collection</label
-          >
-          <div
-            class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 tw-w-full md:tw-flex-row md:tw-justify-start dashboard-text-field-group"
-            ref="imageSelect"
-          >
-            <label
-              class="dashboard-text-field-border tw-cursor-pointer tw-w-full md:tw-w-fit"
-            >
-              <div
-                class="tw-bg-wapal-background tw-px-4 tw-py-2 tw-rounded-lg tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
-                v-if="!image.name"
-              >
-                <v-icon class="!tw-text-wapal-gray">mdi-image</v-icon>
-                {{ !draft ? "Select Image" : "Change Image" }}
-              </div>
-              <div
-                class="tw-bg-wapal-background tw-px-4 tw-py-2 tw-rounded-lg tw-max-w-4/5 tw-overflow-hidden"
-                v-else
-              >
-                {{ image.name }}
-              </div>
-              <input
-                type="file"
-                class="image-collection"
-                accept="image/*"
-                @change="imageSelected"
-              />
-            </label>
-          </div>
-          <div class="tw-text-red-600" v-if="imageError">
-            {{ imageErrorMessage }}
-          </div>
-        </div>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="royaltyPayeeAddress"
-          rules="required"
-          v-slot="{ errors }"
-        >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Royalty Payee Address</label
-          >
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.royalty_payee_address"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="royaltyPercentage"
-          rules="required|number|percentage"
-          v-slot="{ errors }"
-        >
-          <label
-            class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-            >Royalty Percentage</label
-          >
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.royalty_percentage"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              inputmode="numeric"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="baseurl"
-          :rules="!tbd ? 'required' : ''"
-          v-slot="{ errors }"
-        >
-          <label>Assets</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-autocomplete
-              v-model="baseURL"
-              :items="folders"
-              outlined
-              color="#fff"
-              class="dashboard-input"
-              placeholder="Select your NFT Vault"
-              item-text="folder_name"
-              @change="setSupply"
-              hide-details
-              clearable
-            >
-            </v-autocomplete>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="supply"
-          v-slot="{ errors }"
-        >
-          <label>Supply</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.supply"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              inputmode="numeric"
-              disabled
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <div
-          class="tw-flex tw-flex-row tw-gap-4 tw-items-center tw-w-full md:tw-w-1/2"
-        >
-          <label>Whitelist Sale</label>
-          <v-switch v-model="whitelistEnabled"></v-switch>
-        </div>
-        <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-start"
-        >
-          <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
-            v-if="whitelistEnabled"
-          >
-            <ValidationProvider
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group"
-              name="whitelistSaleTime"
-              rules="saleTime"
-              v-slot="{ errors }"
-              v-if="whitelistEnabled"
-            >
-              <label>Whitelist Sale Time</label>
-              <div class="dashboard-text-field-border tw-w-full">
-                <date-picker
-                  v-model="collection.whitelist_sale_time"
-                  type="datetime"
-                  placeholder="Select Whitelist Sale time"
-                  :disabled="whitelistTBD"
-                ></date-picker>
-              </div>
-              <div class="tw-text-red-600">{{ errors[0] }}</div>
-            </ValidationProvider>
-          </div>
-          <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
-          >
-            <ValidationProvider
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group"
-              name="publicSaleTime"
-              :rules="
-                !tbd
-                  ? 'required|saleTime|public_sale_time:@whitelistSaleTime'
-                  : 'saleTime|public_sale_time:@whitelistSaleTime'
-              "
-              v-slot="{ errors }"
-            >
-              <label>Public Sale Time</label>
-              <div class="dashboard-text-field-border tw-w-full">
-                <date-picker
-                  v-model="collection.public_sale_time"
-                  type="datetime"
-                  placeholder="Select Public Sale time"
-                  :disabled="publicSaleTBD"
-                ></date-picker>
-              </div>
-              <div class="tw-text-red-600">{{ errors[0] }}</div>
-            </ValidationProvider>
-          </div>
-        </div>
-        <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-start"
-        >
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="whitelistSalePrice"
-            rules="number"
-            v-slot="{ errors }"
-            v-if="whitelistEnabled"
-            ><label>Whitelist Sale Price in Apt</label>
-            <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field
-                v-model="collection.whitelist_price"
-                placeholder="eg: 0.1"
-                outlined
-                single-line
-                color="#fff"
-                hide-details
-                clearable
-                class="dashboard-input"
-                inputmode="numeric"
-                :disabled="!whitelistEnabled"
-              >
-              </v-text-field>
-            </div>
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
-
-            <v-checkbox v-model="whitelistTBD" label="TBD"></v-checkbox>
-          </ValidationProvider>
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-            name="publicSalePrice"
-            :rules="!tbd ? 'required|number' : 'number'"
-            v-slot="{ errors }"
-          >
-            <label>Public Sale Price in Apt</label>
-            <div class="dashboard-text-field-border tw-w-full">
-              <v-text-field
-                v-model="collection.public_sale_price"
-                placeholder="eg: 0.1"
-                outlined
-                single-line
-                color="#fff"
-                hide-details
-                clearable
-                class="dashboard-input"
-                inputmode="numeric"
-              >
-              </v-text-field>
-            </div>
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
-
-            <v-checkbox v-model="publicSaleTBD" label="TBD"></v-checkbox>
-          </ValidationProvider>
-        </div>
-        <label>Mint Phases</label>
-        <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
-        >
-          <div v-for="(phase, index) in collection.phases" :key="index">
-            <div
-              class="tw-flex tw-flex-col tw-gap-4 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
-            >
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <div class="dashboard-text-field-border tw-w-full">
-                  <v-text-field
-                    v-model="phase.name"
-                    placeholder="Phase Name"
-                    outlined
-                    single-line
-                    color="#fff"
-                    hide-details
-                    clearable
-                    class="dashboard-input"
-                  >
-                  </v-text-field>
-                </div>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full dashboard-text-field-group md:tw-w-1/2"
-                rules="required|saleTime"
-                v-slot="{ errors }"
-              >
-                <div class="dashboard-text-field-border tw-w-full">
-                  <date-picker
-                    v-model="phase.mint_time"
-                    type="datetime"
-                    placeholder="Select Mint Time"
-                  ></date-picker>
-                </div>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-            </div>
-            <div class="tw-flex tw-flex-row tw-w-full tw-justify-end">
-              <button
-                class="tw-bg-[#A0A0A0] tw-rounded tw-py-2 tw-px-6 tw-text-white tw-my-2"
-                @click.prevent="removeMintPhase(index)"
-              >
-                Remove Phase
-              </button>
-            </div>
-          </div>
-          <button
-            class="tw-bg-[#A0A0A0] tw-rounded tw-py-2 tw-px-6 tw-text-white"
-            @click.prevent="addMintPhase"
-          >
-            Add Phase
-          </button>
-        </div>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="twitter"
-          rules="link"
-          v-slot="{ errors }"
-        >
-          <label>Twitter Link</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.twitter"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              type="url"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="discord"
-          rules="link"
-          v-slot="{ errors }"
-        >
-          <label>Discord Link</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.discord"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              type="url"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="instagram"
-          rules="link"
-          v-slot="{ errors }"
-        >
-          <label>Instagram Link</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.instagram"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              type="url"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-          name="website"
-          rules="link"
-          v-slot="{ errors }"
-        >
-          <label ref="social">Website</label>
-          <div class="dashboard-text-field-border tw-w-full">
-            <v-text-field
-              v-model="collection.website"
-              outlined
-              single-line
-              color="#fff"
-              hide-details
-              clearable
-              class="dashboard-input"
-              type="url"
-            >
-            </v-text-field>
-          </div>
-          <div class="tw-text-red-600">{{ errors[0] }}</div>
-          <div class="tw-text-red-600" v-if="socialError">
-            {{ socialErrorMessage }}
-          </div>
-        </ValidationProvider>
-        <v-checkbox
-          v-model="saveAsDraft"
-          label="Save as Draft"
-          v-if="!draft"
-        ></v-checkbox>
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center tw-py-4 tw-gap-4"
-        >
-          <gradient-border-button
-            @click.native.prevent="saveDraft"
-            :disabled="submitting"
-            v-if="draft"
-          >
-            Save Changes
-          </gradient-border-button>
-          <gradient-border-button
-            @click.native.prevent="submitCollection"
-            type="submit"
-            :disabled="submitting"
-          >
-            <v-progress-circular
-              indeterminate
-              color="white"
-              v-if="submitting"
-            ></v-progress-circular>
-            Create Collection
-          </gradient-border-button>
-        </div>
-      </form>
-    </ValidationObserver>
-    <reusable-loading v-else /> -->
   </div>
   <reusable-loading v-else />
 </template>
@@ -1012,7 +557,7 @@ import {
   editImage,
 } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
-
+import { createCollectionV2 } from "@/services/AptosCollectionService";
 extend("required", {
   ...required,
   message: "This field is required",
@@ -1033,7 +578,7 @@ extend("link", {
 extend("public_sale_time", {
   params: ["target"],
   validate(value, target: any) {
-    if (value < target.target) {
+    if (value <= target.target) {
       return false;
     }
 
@@ -1044,12 +589,23 @@ extend("public_sale_time", {
 
 extend("saleTime", {
   validate(value) {
-    if (new Date(value).getTime() < Date.now()) {
+    if (new Date(value).getTime() <= Date.now()) {
       return false;
     }
     return true;
   },
   message: "Sale time should be greater than current time",
+});
+
+extend("phase_sale_time", {
+  params: ["target"],
+  validate(value, target: any) {
+    if (new Date(value).getTime() >= new Date(target.target).getTime()) {
+      return false;
+    }
+    return true;
+  },
+  message: "Sale time in phase should be less than Public Sale Time",
 });
 
 extend("percentage", {
@@ -1129,7 +685,7 @@ export default {
         resource_account: "",
         txnhash: "",
         un: "",
-        candy_id: process.env.CANDY_MACHINE_V1,
+        candy_id: process.env.CANDY_MACHINE_V2,
         phases: [{ name: "", mint_time: null }],
         public_mint_limit: null,
       },
@@ -1205,6 +761,10 @@ export default {
             return;
           }
 
+          if (this.imageError) {
+            return;
+          }
+
           this.stepNumber++;
           break;
         case 2:
@@ -1262,6 +822,7 @@ export default {
             id: id,
             name: phase.name,
             mint_time: phase.mint_time,
+            mint_price: this.collection.whitelist_price,
           });
         });
 
@@ -1276,7 +837,7 @@ export default {
 
         const sortedPhases = sortPhases(phases);
 
-        this.collection.phases = tempCollection.phases = sortedPhases;
+        tempCollection.phases = sortedPhases;
 
         if (this.tbd || this.saveAsDraft) {
           if (this.draft) {
@@ -1344,14 +905,19 @@ export default {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
 
-        this.collection.phases.pop();
-
         this.submitting = false;
       }
     },
 
     imageSelected(image: any) {
       this.image = image;
+
+      if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
     },
 
     async sendDataToCandyMachineCreator() {
@@ -1363,19 +929,28 @@ export default {
       );
 
       whitelistTime = Math.floor(
-        new Date(this.collection.public_sale_time).getTime() / 1000
+        new Date(this.collection.whitelist_sale_time).getTime() / 1000
       );
+
+      if (!this.whitelistEnabled) {
+        whitelistTime = publicSaleTime;
+        publicSaleTime += 1;
+        whitelist_price = this.collection.public_sale_price;
+      }
 
       if (this.collection.phases[0]) {
         whitelistTime = Math.floor(
           new Date(this.collection.phases[0].mint_time).getTime() / 1000
         );
+        whitelist_price = this.collection.whitelist_price;
       }
 
-      if (!this.whitelistEnabled) {
-        publicSaleTime += 1;
-        whitelist_price = this.collection.public_sale_price;
-      }
+      const pre_sale_price = parseFloat(
+        (whitelist_price * Math.pow(10, 8)).toFixed(4)
+      );
+      const public_sale_price = parseFloat(
+        (this.collection.public_sale_price * Math.pow(10, 8)).toFixed(4)
+      );
 
       const candyMachineArguments = {
         collection_name: this.collection.name,
@@ -1386,16 +961,13 @@ export default {
         royalty_points_numerator: this.collection.royalty_percentage * 10,
         presale_mint_time: whitelistTime,
         public_sale_mint_time: publicSaleTime,
-        presale_mint_price: whitelist_price * 100000000,
-        public_sale_mint_price: this.collection.public_sale_price * 100000000,
+        presale_mint_price: pre_sale_price,
+        public_sale_mint_price: public_sale_price,
         total_supply: this.collection.supply,
         public_mint_limit: this.collection.public_mint_limit,
       };
 
-      const res = await this.$store.dispatch(
-        "walletStore/createCandyMachine",
-        candyMachineArguments
-      );
+      const res = await createCollectionV2(candyMachineArguments);
 
       this.collection.resource_account = res.resourceAccount;
       this.collection.txnhash = res.transactionHash;
@@ -1520,7 +1092,7 @@ export default {
 
         this.collection.baseURL = selectedFolder.metadata.baseURI;
 
-        const tempCollection = { ...this.collection };
+        const tempCollection = structuredClone(this.collection);
 
         await editDraft(this.$route.params.id, tempCollection);
 

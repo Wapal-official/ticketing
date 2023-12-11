@@ -14,6 +14,11 @@
         :alt="this.fileData?.name"
         class="tw-max-w-[300px] tw-max-h-[300px]"
         draggable="false"
+        v-if="checkFileType() === 'image'"
+      />
+      <video-player
+        v-else-if="checkFileType() === 'video'"
+        :source="this.fileData?.image"
       />
       <h3 class="tw-text-white tw-font-medium tw-uppercase tw-text-sm">
         {{ this.fileData?.name }}
@@ -37,7 +42,7 @@
 </template>
 <script lang="ts">
 export default {
-  props: { file: { type: Object } },
+  props: { file: { type: Object }, extension: { type: String } },
   data() {
     return {
       loading: true,
@@ -49,22 +54,54 @@ export default {
     close() {
       this.$emit("close");
     },
+    checkFileType() {
+      if (this.extension === ".json") {
+        return "json";
+      }
+
+      const imageRegex = /\.((jpg|jpeg|png|gif|bmp|svg|webp|ico|tiff?))$/i;
+
+      const videoRegex =
+        /\.((mp4|avi|mov|mkv|wmv|flv|webm|3gp|ogv|mpeg|mpg|m4v|divx|rm|asf|vob|ts|m2ts?))$/i;
+
+      if (imageRegex.test(this.extension)) {
+        return "image";
+      } else if (videoRegex.test(this.extension)) {
+        return "video";
+      }
+
+      return "json";
+    },
   },
   async mounted() {
-    const res = await this.$axios.get(this.file.name);
-    this.fileData = res.data;
-    if (this.fileData.attributes) {
-      this.attributes = this.fileData.attributes;
+    if (this.file.metadata) {
+      this.fileData = this.file.metadata;
+      if (this.fileData.attributes) {
+        this.attributes = this.fileData.attributes;
+      }
+    } else {
+      const res = await this.$axios.get(this.file.name);
+      this.fileData = res.data;
+      if (this.fileData.attributes) {
+        this.attributes = this.fileData.attributes;
+      }
     }
     this.loading = false;
   },
   watch: {
     async file(newFile: any) {
       this.loading = true;
-      const res = await this.$axios.get(newFile.name);
-      this.fileData = res.data;
-      if (this.fileData.attributes) {
-        this.attributes = this.fileData.attributes;
+      if (newFile.metadata) {
+        this.fileData = newFile.metadata;
+        if (this.fileData.attributes) {
+          this.attributes = this.fileData.attributes;
+        }
+      } else {
+        const res = await this.$axios.get(newFile.name);
+        this.fileData = res.data;
+        if (this.fileData.attributes) {
+          this.attributes = this.fileData.attributes;
+        }
       }
       this.loading = false;
     },

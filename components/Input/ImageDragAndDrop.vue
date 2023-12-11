@@ -32,6 +32,9 @@
       <label class="tw-text-xs tw-font-medium tw-text-dark-2"
         >Size: 400x400px</label
       >
+      <label class="tw-text-xs tw-font-medium tw-text-dark-2" v-if="fileSize"
+        >File Size: {{ fileSize }}</label
+      >
       <input
         type="file"
         accept=".png, .jpg, .jpeg, .gif, .webp"
@@ -79,6 +82,7 @@ export default {
     file: {
       type: [String],
     },
+    fileSize: { type: String },
   },
   data() {
     return {
