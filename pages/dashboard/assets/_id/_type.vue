@@ -548,6 +548,7 @@ export default {
     },
     checkIfUserGeneratedMetadataIsAlreadyUploaded() {
       if (
+        this.folderInfo.traits &&
         this.folderInfo.assets.files.length === this.folderInfo.traits.length &&
         this.folderInfo.assets.files.length !==
           this.folderInfo.metadata.files.length
