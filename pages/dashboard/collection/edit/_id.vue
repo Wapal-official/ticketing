@@ -3,7 +3,7 @@
     class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 xl:tw-flex-row xl:tw-items-start xl:tw-justify-start"
     v-if="!loading"
   >
-    <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5">
+    <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6">
       <img
         :src="collection.image"
         :alt="collection.name"
@@ -30,7 +30,7 @@
     </div>
 
     <ValidationObserver
-      class="tw-w-full tw-flex tw-flex-col tw-gap-5 xl:tw-max-w-[534px]"
+      class="tw-w-full tw-flex tw-flex-col tw-gap-6 xl:tw-max-w-[534px]"
       ref="editForm"
     >
       <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2">
@@ -46,12 +46,13 @@
         <div class="">{{ collection.description }}</div>
       </div>
 
-      <h3 class="">Supply</h3>
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-text-sm tw-font-semibold tw-w-full"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-font-semibold tw-w-full"
         v-if="!editingTotalSupply"
       >
-        <div class="">Total Supply: {{ collection.supply }}</div>
+        <div class="tw-text-sm tw-font-semibold">
+          Total Supply: {{ collection.supply }}
+        </div>
         <button
           class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
           @click="editingTotalSupply = true"
@@ -61,30 +62,50 @@
         </button>
       </div>
       <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-text-sm tw-gap-2"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-text-sm tw-gap-2"
         v-else
       >
         <div class="tw-font-medium">Total Supply</div>
         <div
-          class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-3"
+          class="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-items-start tw-justify-start tw-gap-3"
         >
-          <ValidationProvider rules="required|number" v-slot="{ errors }">
+          <ValidationProvider
+            class="tw-w-full"
+            rules="required|number"
+            v-slot="{ errors }"
+          >
             <input-text-field
               placeholder="Total Supply"
               v-model="editCollection.totalSupply"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-          <button-primary
-            title="Save Changes"
-            @click="checkChangeCondition('totalSupply')"
-          />
+          <div
+            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 md:tw-justify-start"
+          >
+            <button-primary
+              title="Cancel"
+              @click="editingTotalSupply = false"
+              :bordered="true"
+            />
+            <button-primary
+              title="Save Changes"
+              @click="checkChangeCondition('totalSupply')"
+              :loading="savingChanges"
+            />
+          </div>
         </div>
         <div class="tw-text-red-600 tw-text-sm" v-if="supplyError.error">
           {{ supplyError.message }}
         </div>
       </div>
-      <div v-if="collection.phases.length === 1">
+      <div
+        v-if="collection.phases.length === 1"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-p-4"
+      >
+        <div class="tw-text-white tw-font-semibold tw-capitalize tw-text-sm">
+          Whitelist Sale
+        </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
         >
@@ -92,17 +113,17 @@
             Whitelist Sale
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-baseline tw-justify-between"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-flex-row md:tw-items-baseline md:tw-justify-between"
             v-if="!editingWhitelistSaleTime && !editingWhitelistSalePrice"
           >
-            <div class="">
+            <div class="tw-w-full">
               <div
                 class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
               >
                 Whitelist Sale Time
               </div>
               <div
-                class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+                class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-start"
               >
                 <span>
                   {{
@@ -118,14 +139,16 @@
                 </button>
               </div>
             </div>
-            <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
+            <div
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-items-end"
+            >
               <div
                 class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
               >
                 Price
               </div>
               <div
-                class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+                class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-end"
               >
                 <span>{{ collection.candyMachine.whitelist_price }}APT</span>
                 <button
@@ -139,26 +162,44 @@
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-start tw-justify-between"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
             v-if="editingWhitelistSaleTime"
           >
-            <ValidationProvider rules="required|date" v-slot="{ errors }">
+            <ValidationProvider
+              class="tw-w-full md:tw-w-[60%]"
+              rules="required|date"
+              v-slot="{ errors }"
+            >
               <input-date-picker
                 placeholder="Select Whitelist Sale Time"
                 v-model="editCollection.whitelistSaleTime"
               />
               <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
             </ValidationProvider>
-            <button-primary
-              title="Save Changes"
-              @click="checkChangeCondition('whitelist_sale_time')"
-            />
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between md:tw-justify-end md:tw-gap-4"
+            >
+              <button-primary
+                title="Cancel"
+                @click="editingWhitelistSaleTime = false"
+                :bordered="true"
+              />
+              <button-primary
+                title="Save Changes"
+                @click="checkChangeCondition('whitelist_sale_time')"
+                :loading="savingChanges"
+              />
+            </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-start tw-justify-between"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
             v-if="editingWhitelistSalePrice"
           >
-            <ValidationProvider rules="required|number" v-slot="{ errors }">
+            <ValidationProvider
+              class="tw-w-full md:tw-w-[60%]"
+              rules="required|number"
+              v-slot="{ errors }"
+            >
               <input-text-field
                 placeholder="Whitelist Sale Price"
                 v-model="editCollection.whitelistPrice"
@@ -169,19 +210,30 @@
               </input-text-field>
               <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
             </ValidationProvider>
-            <button-primary
-              title="Save Changes"
-              @click="checkChangeCondition('whitelist_sale_price')"
-            />
+
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between md:tw-justify-end md:tw-gap-4"
+            >
+              <button-primary
+                title="Cancel"
+                @click="editingWhitelistSalePrice = false"
+                :bordered="true"
+              />
+              <button-primary
+                title="Save Changes"
+                @click="checkChangeCondition('whitelist_sale_price')"
+                :loading="savingChanges"
+              />
+            </div>
           </div>
         </div>
       </div>
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-p-4"
         v-if="collection.phases.length > 1"
       >
         <div class="tw-w-full tw-flex tw-flex-row tw-justify-between">
-          <h3 class="">Mint Phases</h3>
+          <h3 class="tw-text-sm tw-font-semibold">Mint Phases</h3>
           <button
             class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
             @click="editingPhases = true"
@@ -192,7 +244,7 @@
           </button>
         </div>
         <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5"
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
           v-if="!editingPhases"
         >
           <div
@@ -234,20 +286,20 @@
           </div>
         </div>
         <ValidationObserver
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5"
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
           ref="phaseForm"
           v-else
         >
           <div
             v-for="(phase, index) in editCollection.phases"
             :key="index"
-            class="tw-w-full"
+            class="tw-w-full tw-rounded-lg tw-border tw-border-dark-6 tw-px-4 tw-py-5"
           >
             <div
-              class="tw-flex tw-flex-col tw-gap-4 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
+              class="tw-flex tw-flex-col tw-gap-4 tw-items-start tw-justify-between tw-w-full"
             >
               <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
                 rules="required"
                 v-slot="{ errors }"
               >
@@ -260,52 +312,56 @@
                 />
                 <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
               </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
-                rules="required|saleTime"
-                v-slot="{ errors }"
+              <div
+                class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
               >
-                <input-date-picker
-                  v-model="phase.mint_time"
-                  type="datetime"
-                  placeholder="Select Mint Time"
-                  label="Mint Time"
-                  :required="true"
-                ></input-date-picker>
-                <div class="tw-text-red-600 tw-text-sm">
-                  {{ errors[0] }}
-                </div>
-              </ValidationProvider>
-              <ValidationProvider
-                rules="required|number"
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
-                v-slot="{ errors }"
-              >
-                <div
-                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-full"
+                <ValidationProvider
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                  rules="required|saleTime"
+                  v-slot="{ errors }"
                 >
-                  <input-text-field
-                    label="Mint Price"
-                    placeholder="Mint Price"
-                    v-model="phase.mint_price"
+                  <input-date-picker
+                    v-model="phase.mint_time"
+                    type="datetime"
+                    placeholder="Select Mint Time"
+                    label="Mint Time"
                     :required="true"
+                  ></input-date-picker>
+                  <div class="tw-text-red-600 tw-text-sm">
+                    {{ errors[0] }}
+                  </div>
+                </ValidationProvider>
+                <ValidationProvider
+                  rules="required|number"
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                  v-slot="{ errors }"
+                >
+                  <div
+                    class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-full"
                   >
-                    <template #append-icon>
-                      <img :src="aptIcon" alt="apt icon" />
-                    </template>
-                  </input-text-field>
+                    <input-text-field
+                      label="Mint Price"
+                      placeholder="Mint Price"
+                      v-model="phase.mint_price"
+                      :required="true"
+                    >
+                      <template #append-icon>
+                        <img :src="aptIcon" alt="apt icon" />
+                      </template>
+                    </input-text-field>
 
-                  <button
+                    <!-- <button
                     @click="removeMintPhase(index)"
                     class="tw-mt-8"
                     v-if="index !== editCollection.phases.length - 1"
                   >
                     <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
-                  </button>
-                </div>
+                  </button> -->
+                  </div>
 
-                <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
+                  <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
+                </ValidationProvider>
+              </div>
             </div>
           </div>
           <!-- <button-primary
@@ -314,24 +370,29 @@
             :bordered="true"
           /> -->
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-row md:tw-items-center md:tw-justify-between"
           >
-            <button-primary
-              title="Save Changes"
-              @click="editPhases"
-              :loading="savingChanges"
-            />
             <button-primary
               :bordered="true"
               title="Cancel"
               @click="cancelEditingPhases"
+              :fullWidth="true"
+            />
+            <button-primary
+              title="Save Changes"
+              @click="editPhases"
+              :loading="savingChanges"
+              :fullWidth="true"
             />
           </div>
         </ValidationObserver>
       </div>
-
-      <h3 class="">Public Sale</h3>
-      <div>
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-p-4"
+      >
+        <div class="tw-text-white tw-font-semibold tw-capitalize tw-text-sm">
+          Public Sale
+        </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
         >
@@ -339,17 +400,17 @@
             Public Sale
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-baseline tw-justify-between"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-flex-row md:tw-items-baseline md:tw-justify-between"
             v-if="!editingPublicSaleTime && !editingPublicSalePrice"
           >
-            <div class="">
+            <div class="tw-w-full">
               <div
                 class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
               >
                 Public Sale Time
               </div>
               <div
-                class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+                class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-start"
               >
                 <span>
                   {{
@@ -365,14 +426,16 @@
                 </button>
               </div>
             </div>
-            <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
+            <div
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-items-end"
+            >
               <div
                 class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
               >
                 Price
               </div>
               <div
-                class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+                class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-end"
               >
                 <span>{{ collection.candyMachine.public_sale_price }}APT</span>
                 <button
@@ -386,28 +449,46 @@
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-start tw-justify-between"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
             v-if="editingPublicSaleTime"
           >
-            <ValidationProvider rules="required|date" v-slot="{ errors }">
+            <ValidationProvider
+              class="tw-w-full md:tw-w-[60%]"
+              rules="required|date"
+              v-slot="{ errors }"
+            >
               <input-date-picker
                 placeholder="Select Whitelist Sale Time"
                 v-model="editCollection.publicSaleTime"
               />
               <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
             </ValidationProvider>
-            <button-primary
-              title="Save Changes"
-              @click="checkChangeCondition('public_sale_time')"
-            />
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between md:tw-justify-end md:tw-gap-4"
+            >
+              <button-primary
+                title="Cancel"
+                @click="editingPublicSaleTime = false"
+                :bordered="true"
+              />
+              <button-primary
+                title="Save Changes"
+                @click="checkChangeCondition('public_sale_time')"
+                :loading="savingChanges"
+              />
+            </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-start tw-justify-between"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
             v-if="editingPublicSalePrice"
           >
-            <ValidationProvider rules="required|number" v-slot="{ errors }">
+            <ValidationProvider
+              class="tw-w-full md:tw-w-[60%]"
+              rules="required|number"
+              v-slot="{ errors }"
+            >
               <input-text-field
-                placeholder="Public Sale Price"
+                placeholder="Whitelist Sale Price"
                 v-model="editCollection.publicSalePrice"
               >
                 <template #append-icon>
@@ -416,10 +497,21 @@
               </input-text-field>
               <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
             </ValidationProvider>
-            <button-primary
-              title="Save Changes"
-              @click="checkChangeCondition('public_sale_price')"
-            />
+
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between md:tw-justify-end md:tw-gap-4"
+            >
+              <button-primary
+                title="Cancel"
+                @click="editingPublicSalePrice = false"
+                :bordered="true"
+              />
+              <button-primary
+                title="Save Changes"
+                @click="checkChangeCondition('public_sale_price')"
+                :loading="savingChanges"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -601,25 +693,30 @@ export default {
       if (!validate) {
         return;
       }
+
+      this.savingChanges = true;
+
       switch (type) {
         case "whitelist_sale_time":
-          this.updateWhitelistSaleTime();
+          await this.updateWhitelistSaleTime();
           break;
         case "public_sale_time":
-          this.updatePublicSaleTime();
+          await this.updatePublicSaleTime();
           break;
         case "whitelist_sale_price":
-          this.updateWhitelistSalePrice();
+          await this.updateWhitelistSalePrice();
           break;
         case "public_sale_price":
-          this.updatePublicSalePrice();
+          await this.updatePublicSalePrice();
           break;
         case "totalSupply":
-          this.updateTotalSupply();
+          await this.updateTotalSupply();
           break;
         default:
           break;
       }
+
+      this.savingChanges = false;
     },
     async updateWhitelistSaleTime() {
       try {
