@@ -981,6 +981,10 @@ export default {
         new Date(tempCollection.public_sale_time).getTime() / 1000
       );
 
+      const mint_price = parseFloat(
+        (tempCollection.public_sale_price * Math.pow(10, 8)).toFixed(4)
+      );
+
       const candyMachineArguments = {
         collection_name: this.collection.name,
         collection_description: this.collection.description,
@@ -990,8 +994,8 @@ export default {
         royalty_points_numerator: this.collection.royalty_percentage * 10,
         presale_mint_time: mintTime,
         public_sale_mint_time: mintTime + 1,
-        presale_mint_price: this.collection.public_sale_price,
-        public_sale_mint_price: this.collection.public_sale_price,
+        presale_mint_price: mint_price,
+        public_sale_mint_price: mint_price,
         total_supply: 1,
         public_mint_limit: 0,
         is_open_edition: true,
