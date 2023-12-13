@@ -1045,8 +1045,11 @@ export default {
 
       const draftRes = await getDraftById(this.$route.params.id);
 
-      this.collection = draftRes.data.draft.data;
-      this.collection.candy_id = this.candy_id;
+      const draftData = draftRes.data.draft.data;
+
+      draftData.candy_id = this.collection.candy_id;
+
+      this.collection = draftData;
 
       try {
         this.collection.phases = this.collection.phases
