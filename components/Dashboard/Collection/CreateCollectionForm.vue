@@ -346,15 +346,12 @@
                       label="Mint Time"
                       :required="true"
                     ></input-date-picker>
-                    <button @click="removeMintPhase(index)" class="tw-mt-8">
-                      <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
-                    </button>
                   </div>
                   <div class="tw-text-red-600 tw-text-sm">
                     {{ errors[0] }}
                   </div>
                 </ValidationProvider>
-                <!-- <ValidationProvider
+                <ValidationProvider
                   class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
                   rules="required|number"
                   v-slot="{ errors }"
@@ -378,7 +375,7 @@
                     </button>
                   </div>
                   <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-                </ValidationProvider> -->
+                </ValidationProvider>
               </div>
             </div>
 
@@ -509,7 +506,7 @@
             :phase="{
               name: phase.name,
               mint_time: phase.mint_time,
-              mint_price: collection.whitelist_price,
+              mint_price: phase.mint_price,
             }"
             :key="index"
             v-if="collection.phases.length > 0"
@@ -686,7 +683,7 @@ export default {
         txnhash: "",
         un: "",
         candy_id: process.env.CANDY_MACHINE_V2,
-        phases: [{ name: "", mint_time: null }],
+        phases: [{ name: "", mint_time: null, mint_price: null }],
         public_mint_limit: null,
       },
       message: "",
@@ -822,7 +819,7 @@ export default {
             id: id,
             name: phase.name,
             mint_time: phase.mint_time,
-            mint_price: this.collection.whitelist_price,
+            mint_price: phase.mint_price,
           });
         });
 
@@ -1045,8 +1042,11 @@ export default {
 
       const draftRes = await getDraftById(this.$route.params.id);
 
-      this.collection = draftRes.data.draft.data;
-      this.collection.candy_id = this.candy_id;
+      const draftData = draftRes.data.draft.data;
+
+      draftData.candy_id = this.collection.candy_id;
+
+      this.collection = draftData;
 
       try {
         this.collection.phases = this.collection.phases
