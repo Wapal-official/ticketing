@@ -109,7 +109,9 @@ export default {
         this.end = true;
       }
     },
-    redirectToMintPage() {},
+    redirectToMintPage(edition: any) {
+      this.$router.push(`/editions/${edition.username}`);
+    },
   },
 };
 </script>

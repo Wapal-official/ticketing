@@ -137,6 +137,7 @@
             >
               <div
                 class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+                v-if="!collection.isEdition"
               >
                 <div class="tw-text-white/70">
                   {{ resource.minted }}/{{ resource.total_supply }} Minted
@@ -149,7 +150,20 @@
                 </div>
               </div>
               <div
+                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+                v-else
+              >
+                <div class="tw-text-white/70">Price</div>
+                <div v-if="currentSale.mint_price == 0">Free Mint</div>
+                <div
+                  v-if="currentSale.mint_price && currentSale.mint_price != 0"
+                >
+                  {{ currentSale.mint_price }} APT
+                </div>
+              </div>
+              <div
                 class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+                v-if="!collection.isEdition"
               >
                 <div
                   class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
@@ -1127,17 +1141,20 @@ export default {
         await this.checkWhitelistForExternalMint();
       }
 
-      setTimeout(() => {
-        if (!this.collection.status.sold_out && this.live) {
-          this.showMintedProgress();
-        } else {
-          const resourceMintedPercent = document.querySelector(
-            "#resourceMintedPercent"
-          );
+      if (!this.collection.isEdition) {
+        setTimeout(() => {
+          if (!this.collection.status.sold_out && this.live) {
+            this.showMintedProgress();
+          } else {
+            const resourceMintedPercent = document.querySelector(
+              "#resourceMintedPercent"
+            );
 
-          resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
-        }
-      }, 200);
+            resourceMintedPercent.style.width =
+              this.resource.mintedPercent + "%";
+          }
+        }, 200);
+      }
     }
   },
   beforeDestroy() {
