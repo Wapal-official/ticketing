@@ -15,3 +15,17 @@ export const getOpenEditionsOfUser = async ({
 
   return res.data.data;
 };
+
+export const getAllEditions = async ({
+  page,
+  limit,
+}: {
+  page: number;
+  limit: number;
+}) => {
+  const res = await publicRequest.get(
+    `/api/collection/editions?page=${page}&limit=${limit}&edition=open-edition&approved=true`
+  );
+
+  return res.data.data;
+};

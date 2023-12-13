@@ -21,13 +21,14 @@ import {
   getFeaturedCollection,
   getLiveCollections,
 } from "@/services/CollectionService";
-import { getUpcomingAuctions } from "~/services/AuctionService";
+import { getUpcomingAuctions } from "@/services/AuctionService";
 
 import sanctuary from "@/assets/img/199.png";
+import { getAllEditions } from "@/services/EditionService";
 export default {
   data() {
     return {
-      tabs: ["Featured", "Drops", "Auctions"],
+      tabs: ["Featured", "Drops", "Editions", "Auctions"],
       tabNumber: 0,
       collections: [],
       loading: true,
@@ -61,13 +62,13 @@ export default {
         case 1:
           await this.getDrops();
           break;
-        // case 2:
-        //   await this.getEditions();
-        //   break;
         case 2:
-          await this.getAuctions();
+          await this.getEditions();
           break;
         case 3:
+          await this.getAuctions();
+          break;
+        case 4:
           await this.getLiveCollections();
           break;
         default:
@@ -157,7 +158,17 @@ export default {
       this.collections.push(...res);
     },
     async getEditions() {
+      this.page++;
+
       this.collections = [];
+
+      const res = await getAllEditions({ page: this.page, limit: this.limit });
+
+      this.collections.push(...res);
+
+      if (res.length === 0) {
+        this.end = true;
+      }
 
       this.end = true;
     },
@@ -183,13 +194,13 @@ export default {
           case 1:
             await this.getDrops();
             break;
-          // case 2:
-          //   await this.getEditions();
-          //   break;
           case 2:
-            await this.getAuctions();
+            await this.getEditions();
             break;
           case 3:
+            await this.getAuctions();
+            break;
+          case 4:
             await this.getLiveCollections();
             break;
           default:

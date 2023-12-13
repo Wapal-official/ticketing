@@ -185,6 +185,11 @@ export default {
 
         return;
       }
+
+      if (this.collection.isEdition) {
+        this.$router.push(`/editions/${this.collection.username}`);
+        return;
+      }
       this.$router.push(`/nft/${this.collection.username}`);
     },
   },
