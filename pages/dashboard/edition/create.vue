@@ -253,7 +253,7 @@
             Attributes
           </h2>
           <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-items-center md:tw-justify-center lg:tw-flex-row lg:tw-justify-start"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-items-start md:tw-justify-start lg:tw-flex-row lg:tw-justify-start"
           >
             <div
               id="image-preview"
