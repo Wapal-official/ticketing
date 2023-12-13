@@ -366,6 +366,10 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
 
   const programId = process.env.CANDY_MACHINE_V2;
 
+  const isOpenEdition = candyMachineArguments.is_open_edition
+    ? candyMachineArguments.is_open_edition
+    : false;
+
   const create_candy_machine = {
     type: "entry_function_payload",
     function: programId + "::candymachine::init_candy",
@@ -387,7 +391,7 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
       candyMachineArguments.public_mint_limit,
       false,
       "" + makeId(5),
-      false,
+      isOpenEdition,
     ],
   };
 
