@@ -901,6 +901,7 @@ export default {
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify(tempCollection.phases));
+        formData.append("isEdition", JSON.stringify(false));
 
         const draft_id = this.$route.params.id;
 
@@ -1034,6 +1035,7 @@ export default {
       formData.append("candy_id", tempCollection.candy_id);
       formData.append("phases", JSON.stringify(tempCollection.phases));
       formData.append("isApproved", "false");
+      formData.append("isEdition", JSON.stringify(false));
 
       if (this.image.name) {
         formData.append("image", this.image);

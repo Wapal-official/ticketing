@@ -24,7 +24,7 @@ export const getAllEditions = async ({
   limit: number;
 }) => {
   const res = await publicRequest.get(
-    `/api/collection/editions?page=${page}&limit=${limit}&edition=open-edition&approved=true`
+    `/api/collection/editions?page=${page}&limit=${limit}&edition=open-edition&isApproved=true`
   );
 
   return res.data.data;
