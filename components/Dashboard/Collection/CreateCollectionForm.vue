@@ -379,15 +379,38 @@
               </div>
             </div>
 
-            <button-primary
-              title="Add Phase"
-              :bordered="true"
-              @click="addMintPhase"
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
             >
-              <template #prepend-icon>
-                <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
-              </template>
-            </button-primary>
+              <button-primary
+                title="Add Phase"
+                :bordered="true"
+                @click="addMintPhase"
+              >
+                <template #prepend-icon>
+                  <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
+                </template>
+              </button-primary>
+              <tool-tip>
+                <template #text>
+                  <i class="bx bx-info-circle tw-text-xl"></i>
+                </template>
+                <template #tip>
+                  <div
+                    class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
+                  >
+                    <div class="tw-font-semibold">Caution</div>
+                    <div>
+                      Click 'Start Next Phase' 3 minutes before the start
+                    </div>
+                    <div>
+                      of each phase if you have set the different prices for
+                    </div>
+                    <div>different phases. No need for public mint.</div>
+                  </div>
+                </template>
+              </tool-tip>
+            </div>
             <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               name="mintLimit"

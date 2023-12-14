@@ -40,15 +40,36 @@
       ref="editForm"
     >
       <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2">
-        <h2
-          class="tw-text-[1.375rem] tw-font-semibold tw-leading-7 tw-tracking-[0.01375rem] tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
         >
-          <span> {{ collection.name }}</span>
-          <i
-            class="bx bxs-badge-check tw-text-primary-1 tw-text-lg"
-            v-if="collection.isVerified"
-          ></i>
-        </h2>
+          <h2
+            class="tw-text-[1.375rem] tw-font-semibold tw-leading-7 tw-tracking-[0.01375rem] tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+          >
+            <span> {{ collection.name }}</span>
+            <i
+              class="bx bxs-badge-check tw-text-primary-1 tw-text-lg"
+              v-if="collection.isVerified"
+            ></i>
+          </h2>
+          <tool-tip>
+            <template #text>
+              <i class="bx bx-info-circle tw-text-xl"></i>
+            </template>
+            <template #tip>
+              <div
+                class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
+              >
+                <div class="tw-font-semibold">Caution</div>
+                <div>Click 'Start Next Phase' 3 minutes before the start</div>
+                <div>
+                  of each phase if you have set the different prices for
+                </div>
+                <div>different phases. No need for public mint.</div>
+              </div>
+            </template>
+          </tool-tip>
+        </div>
         <div class="">{{ collection.description }}</div>
       </div>
 
