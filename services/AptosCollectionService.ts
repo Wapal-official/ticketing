@@ -440,6 +440,10 @@ export const pauseOrResumeMinting = async ({
   candy_object,
   candy_machine_id,
 }: MintCollectionInterface) => {
+  checkWalletConnected();
+
+  checkNetwork();
+
   const pause_resume_script = {
     type: "entry_function_payload",
     function: `${candy_machine_id}::candymachine::pause_resume_mint`,

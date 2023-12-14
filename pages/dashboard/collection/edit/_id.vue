@@ -1085,7 +1085,9 @@ export default {
 
         this.mintingPaused = !this.mintingPaused;
         this.$toast.showMessage({
-          message: "Minting Resumed Successfully",
+          message: `Minting ${
+            this.mintingPaused ? "Paused" : "Resumed"
+          } Successfully`,
           error: false,
         });
       } catch (error) {

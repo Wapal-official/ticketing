@@ -41,9 +41,6 @@
             <span>List on Secondary</span>
             <i class="bx bx-link-external"></i>
           </a>
-          <div class="tw-text-red-600 tw-pt-2" v-if="resource.paused">
-            Minting is currently paused for this collection
-          </div>
           <h1 class="tw-text-white tw-text-[2.5rem] tw-font-bold">
             {{ collection.name }}
           </h1>
@@ -124,6 +121,18 @@
         <div v-if="externalWhitelisted">
           Your Whitelist Mint Tokens:
           {{ externalWhitelistMintNumber }} Remaining
+        </div>
+        <div
+          class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-col"
+          v-if="resource.paused"
+        >
+          <h2
+            class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-3 tw-text-dark-0"
+          >
+            <i class="bx bx-pause-circle tw-text-2xl"></i>
+            <span class="tw-font-semibold">Paused</span>
+          </h2>
+          <div class="tw-text-dark-0">Creator has paused the mint.</div>
         </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
