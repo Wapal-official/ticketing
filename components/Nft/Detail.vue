@@ -137,7 +137,21 @@
             >
               <div
                 class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
-                v-if="!collection.isEdition"
+                v-if="
+                  collection.isEdition && collection.edition === 'open-edition'
+                "
+              >
+                <div class="tw-text-white/70">Price</div>
+                <div v-if="currentSale.mint_price == 0">Free Mint</div>
+                <div
+                  v-if="currentSale.mint_price && currentSale.mint_price != 0"
+                >
+                  {{ currentSale.mint_price }} APT
+                </div>
+              </div>
+              <div
+                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+                v-else
               >
                 <div class="tw-text-white/70">
                   {{ resource.minted }}/{{ resource.total_supply }} Minted
@@ -150,20 +164,8 @@
                 </div>
               </div>
               <div
-                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
-                v-else
-              >
-                <div class="tw-text-white/70">Price</div>
-                <div v-if="currentSale.mint_price == 0">Free Mint</div>
-                <div
-                  v-if="currentSale.mint_price && currentSale.mint_price != 0"
-                >
-                  {{ currentSale.mint_price }} APT
-                </div>
-              </div>
-              <div
                 class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
-                v-if="!collection.isEdition"
+                v-if="collection.edition !== 'open-edition'"
               >
                 <div
                   class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
@@ -1141,7 +1143,12 @@ export default {
         await this.checkWhitelistForExternalMint();
       }
 
-      if (!this.collection.isEdition) {
+      if (
+        this.collection.isEdition &&
+        this.collection.edition === "open-edition"
+      ) {
+        return;
+      } else {
         setTimeout(() => {
           if (!this.collection.status.sold_out && this.live) {
             this.showMintedProgress();

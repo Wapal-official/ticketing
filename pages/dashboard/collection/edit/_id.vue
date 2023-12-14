@@ -52,57 +52,59 @@
         <div class="">{{ collection.description }}</div>
       </div>
 
-      <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-font-semibold tw-w-full"
-        v-if="!editingTotalSupply"
-      >
-        <div class="tw-text-sm tw-font-semibold">
-          Total Supply: {{ collection.supply }}
-        </div>
-        <button
-          class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
-          @click="editingTotalSupply = true"
-        >
-          <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-2xl"></i>
-          <span>Edit</span>
-        </button>
-      </div>
-      <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-text-sm tw-gap-2"
-        v-else
-      >
-        <div class="tw-font-medium">Total Supply</div>
+      <div class="tw-w-full" v-if="!collection.isEdition">
         <div
-          class="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-items-start tw-justify-start tw-gap-3"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-font-semibold tw-w-full"
+          v-if="!editingTotalSupply"
         >
-          <ValidationProvider
-            class="tw-w-full"
-            rules="required|number"
-            v-slot="{ errors }"
-          >
-            <input-text-field
-              placeholder="Total Supply"
-              v-model="editCollection.totalSupply"
-            />
-            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-          </ValidationProvider>
-          <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 md:tw-justify-start"
-          >
-            <button-primary
-              title="Cancel"
-              @click="editingTotalSupply = false"
-              :bordered="true"
-            />
-            <button-primary
-              title="Save Changes"
-              @click="checkChangeCondition('totalSupply')"
-              :loading="savingChanges"
-            />
+          <div class="tw-text-sm tw-font-semibold">
+            Total Supply: {{ collection.supply }}
           </div>
+          <button
+            class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+            @click="editingTotalSupply = true"
+          >
+            <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-2xl"></i>
+            <span>Edit</span>
+          </button>
         </div>
-        <div class="tw-text-red-600 tw-text-sm" v-if="supplyError.error">
-          {{ supplyError.message }}
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-text-sm tw-gap-2"
+          v-else
+        >
+          <div class="tw-font-medium">Total Supply</div>
+          <div
+            class="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-items-start tw-justify-start tw-gap-3"
+          >
+            <ValidationProvider
+              class="tw-w-full"
+              rules="required|number"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                placeholder="Total Supply"
+                v-model="editCollection.totalSupply"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 md:tw-justify-start"
+            >
+              <button-primary
+                title="Cancel"
+                @click="editingTotalSupply = false"
+                :bordered="true"
+              />
+              <button-primary
+                title="Save Changes"
+                @click="checkChangeCondition('totalSupply')"
+                :loading="savingChanges"
+              />
+            </div>
+          </div>
+          <div class="tw-text-red-600 tw-text-sm" v-if="supplyError.error">
+            {{ supplyError.message }}
+          </div>
         </div>
       </div>
       <div
@@ -660,6 +662,8 @@ export default {
       const res = await getCollection(this.$route.params.id);
 
       this.collection = res.collection[0];
+
+      console.log(this.collection);
 
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,
