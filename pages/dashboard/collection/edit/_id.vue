@@ -22,8 +22,14 @@
         />
         <button-primary
           title="Resume Mint"
-          @click="resumeMint"
-          v-if="mintingPaused"
+          @click="pauseOrResumeMint"
+          v-if="mintingPaused && !collection.isEdition"
+          :bordered="true"
+        />
+        <button-primary
+          :title="mintingPaused ? 'Resume Mint' : 'Pause Mint'"
+          @click="pauseOrResumeMint"
+          v-if="collection.isEdition"
           :bordered="true"
         />
       </div>
@@ -601,6 +607,7 @@ export default {
         supply: "",
         isVerified: false,
         phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
+        isEdition: false,
       },
       loading: true,
       whitelistSaleTime: "",
@@ -845,18 +852,20 @@ export default {
     },
     async updateTotalSupply() {
       try {
-        const supplyRes = await getMetadataFromTokenURI(
-          `${this.collection.baseURL}${
-            this.editCollection.totalSupply - 1
-          }.json`
-        );
+        if (!this.collection.isEdition) {
+          const supplyRes = await getMetadataFromTokenURI(
+            `${this.collection.baseURL}${
+              this.editCollection.totalSupply - 1
+            }.json`
+          );
 
-        if (!supplyRes) {
-          this.supplyError.error = true;
-          this.supplyError.message =
-            "Metadata For This supply does not exists please decrease supply";
+          if (!supplyRes) {
+            this.supplyError.error = true;
+            this.supplyError.message =
+              "Metadata For This supply does not exists please decrease supply";
 
-          return;
+            return;
+          }
         }
 
         await updateTotalSupply({
@@ -865,9 +874,15 @@ export default {
           candy_machine_id: this.collection.candyMachine.candy_id,
         });
 
-        const res = await updateCollection(this.collection._id, {
+        const editParameters: any = {
           supply: this.editCollection.totalSupply,
-        });
+        };
+
+        if (this.collection.isEdition) {
+          editParameters.edition = "limited-edition";
+        }
+
+        const res = await updateCollection(this.collection._id, editParameters);
 
         this.collection.supply = this.editCollection.totalSupply;
 
@@ -908,9 +923,6 @@ export default {
             pre_sale_mint_time: sortedPhases[0].mint_time,
           });
         }
-
-        console.log(this.collection.candyMachine.whitelist_price);
-        console.log(sortedPhases[0].mint_price);
 
         if (
           this.collection.candyMachine.whitelist_price !=
@@ -1039,14 +1051,14 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
       }
     },
-    async resumeMint() {
+    async pauseOrResumeMint() {
       try {
         const resumeRes: any = await pauseOrResumeMinting({
           candy_machine_id: this.collection.candyMachine.candy_id,
           candy_object: this.collection.candyMachine.resource_account,
         });
 
-        this.mintingPaused = false;
+        this.mintingPaused = !this.mintingPaused;
         this.$toast.showMessage({
           message: "Minting Resumed Successfully",
           error: false,

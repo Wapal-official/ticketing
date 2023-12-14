@@ -110,7 +110,7 @@ export default {
       }
     },
     redirectToMintPage(edition: any) {
-      this.$router.push(`/editions/${edition.username}`);
+      this.$router.push(`/dashboard/collection/edit/${edition._id}`);
     },
   },
 };
