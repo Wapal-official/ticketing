@@ -39,6 +39,27 @@
           title="
           Set Whitelist"
         />
+        <tool-tip>
+          <template #text>
+            <i class="bx bx-info-circle tw-text-xl"></i>
+          </template>
+          <template #tip>
+            <div
+              class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
+            >
+              <div class="tw-font-semibold">Caution</div>
+              <p>
+              <div>If a user/address participates in different</div>
+              <div>mint phases with different mint limits, kindly</div>
+              <div>use separate addresses for each phase's</div>
+              <div>mint limit for the same user.</div>
+              </p>
+              <div>If a user/address has the same limit at</div>
+              <div>all the phases, using the same</div>
+              <div>address is acceptable in each phase</div>
+            </div>
+          </template>
+        </tool-tip>
       </div>
     </div>
     <table class="tw-w-full tw-text-wapal-gray" v-if="!loading">

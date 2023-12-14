@@ -105,27 +105,52 @@
             placeholder="Search Wallet Address"
           />
         </div> -->
-        <form @submit.prevent="" class="tw-w-full md:tw-w-fit">
-          <label
-            class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
-          >
-            <input
-              type="file"
-              class="tw-invisible tw-w-0 tw-h-0 disabled:tw-cursor-not-allowed"
-              @change="setCSVFile"
-              ref="csv"
-            />
-            <button-primary
-              :bordered="true"
-              title="Import CSV"
-              @click="showFileSelectionDialog"
+        <div
+          class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
+        >
+          <form @submit.prevent="" class="tw-w-full md:tw-w-fit">
+            <label
+              class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
             >
-              <template #prepend-icon>
-                <i class="bx bx-import tw-text-xl tw-text-white tw-pr-2"></i>
-              </template>
-            </button-primary>
-          </label>
-        </form>
+              <input
+                type="file"
+                class="tw-invisible tw-w-0 tw-h-0 disabled:tw-cursor-not-allowed"
+                @change="setCSVFile"
+                ref="csv"
+              />
+              <button-primary
+                :bordered="true"
+                title="Import CSV"
+                @click="showFileSelectionDialog"
+              >
+                <template #prepend-icon>
+                  <i class="bx bx-import tw-text-xl tw-text-white tw-pr-2"></i>
+                </template>
+              </button-primary>
+            </label>
+          </form>
+          <tool-tip>
+            <template #text>
+              <i class="bx bx-info-circle tw-text-xl"></i>
+            </template>
+            <template #tip>
+              <div
+                class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
+              >
+                <div class="tw-font-semibold">Caution</div>
+              <p>
+              <div>If a user/address participates in different</div>
+              <div>mint phases with different mint limits, kindly</div>
+              <div>use separate addresses for each phase's</div>
+              <div>mint limit for the same user.</div>
+              </p>
+              <div>If a user/address has the same limit at</div>
+              <div>all the phases, using the same</div>
+              <div>address is acceptable in each phase</div>
+              </div>
+            </template>
+          </tool-tip>
+        </div>
       </div>
     </div>
     <div class="tw-rounded tw-w-full tw-py-4 tw-my-4">
