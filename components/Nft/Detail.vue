@@ -41,9 +41,6 @@
             <span>List on Secondary</span>
             <i class="bx bx-link-external"></i>
           </a>
-          <div class="tw-text-red-600 tw-pt-2" v-if="resource.paused">
-            Minting is currently paused for this collection
-          </div>
           <h1 class="tw-text-white tw-text-[2.5rem] tw-font-bold">
             {{ collection.name }}
           </h1>
@@ -126,6 +123,18 @@
           {{ externalWhitelistMintNumber }} Remaining
         </div>
         <div
+          class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-col"
+          v-if="resource.paused"
+        >
+          <h2
+            class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-3 tw-text-dark-0"
+          >
+            <i class="bx bx-pause-circle tw-text-2xl"></i>
+            <span class="tw-font-semibold">Paused</span>
+          </h2>
+          <div class="tw-text-dark-0">Creator has paused the mint.</div>
+        </div>
+        <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
           v-if="live"
         >
@@ -137,6 +146,21 @@
             >
               <div
                 class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+                v-if="
+                  collection.isEdition && collection.edition === 'open-edition'
+                "
+              >
+                <div class="tw-text-white/70">Price</div>
+                <div v-if="currentSale.mint_price == 0">Free Mint</div>
+                <div
+                  v-if="currentSale.mint_price && currentSale.mint_price != 0"
+                >
+                  {{ currentSale.mint_price }} APT
+                </div>
+              </div>
+              <div
+                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+                v-else
               >
                 <div class="tw-text-white/70">
                   {{ resource.minted }}/{{ resource.total_supply }} Minted
@@ -150,6 +174,7 @@
               </div>
               <div
                 class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+                v-if="collection.edition !== 'open-edition'"
               >
                 <div
                   class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
@@ -1127,17 +1152,25 @@ export default {
         await this.checkWhitelistForExternalMint();
       }
 
-      setTimeout(() => {
-        if (!this.collection.status.sold_out && this.live) {
-          this.showMintedProgress();
-        } else {
-          const resourceMintedPercent = document.querySelector(
-            "#resourceMintedPercent"
-          );
+      if (
+        this.collection.isEdition &&
+        this.collection.edition === "open-edition"
+      ) {
+        return;
+      } else {
+        setTimeout(() => {
+          if (!this.collection.status.sold_out && this.live) {
+            this.showMintedProgress();
+          } else {
+            const resourceMintedPercent = document.querySelector(
+              "#resourceMintedPercent"
+            );
 
-          resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
-        }
-      }, 200);
+            resourceMintedPercent.style.width =
+              this.resource.mintedPercent + "%";
+          }
+        }, 200);
+      }
     }
   },
   beforeDestroy() {

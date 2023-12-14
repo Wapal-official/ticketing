@@ -22,7 +22,7 @@
             <input-text-field
               label="Collection Name"
               :required="true"
-              v-model="mint.colName"
+              v-model="collection.name"
               placeholder="Collection Name"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
@@ -36,7 +36,7 @@
             <input-text-area
               label="Collection Description"
               :required="true"
-              v-model="mint.colDesc"
+              v-model="collection.description"
               placeholder="Collection Description"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
@@ -49,8 +49,36 @@
           >
             <input-text-field
               label="Twitter Link"
-              v-model="mint.twitter"
+              v-model="collection.twitter"
               placeholder="Twitter Link"
+            />
+            <div class="tw-text-red-600 tw-text-sm">
+              {{ errors[0] }}
+            </div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="discord"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Discord Link"
+              v-model="collection.discord"
+              placeholder="Discord Link"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="website"
+            rules="link"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Website Link"
+              v-model="collection.website"
+              placeholder="Website Link"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
@@ -62,7 +90,7 @@
           >
             <input-text-field
               label="Instagram Link"
-              v-model="mint.instagram"
+              v-model="collection.instagram"
               placeholder="Instagram Link"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
@@ -94,7 +122,7 @@
             <input-text-field
               :required="true"
               label="Token Name"
-              v-model="mint.tokenName"
+              v-model="collection.tokenName"
               placeholder="Token Name"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
@@ -108,7 +136,7 @@
             <input-text-area
               :required="true"
               label="Token Description"
-              v-model="mint.tokenDesc"
+              v-model="collection.tokenDesc"
               placeholder="Token Description"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
@@ -125,7 +153,7 @@
               <input-auto-complete
                 :required="true"
                 label="NFT Type"
-                v-model="mint.type"
+                v-model="collection.type"
                 placeholder="Select NFT Type"
                 :items="nftType"
                 text="name"
@@ -142,9 +170,42 @@
               <input-text-field
                 :required="true"
                 label="Royalty Percentage"
-                v-model="mint.royalty"
+                v-model="collection.royalty_percentage"
                 placeholder="Eg. 4"
                 :showPercentage="true"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
+            v-if="collection.type !== '1-1'"
+          >
+            <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="mint_time"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <input-date-picker
+                :required="true"
+                label="Mint Date"
+                v-model="collection.public_sale_time"
+                placeholder="Select Mint Time"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="mint_price"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                :required="true"
+                label="Mint Price"
+                v-model="collection.public_sale_price"
+                placeholder="Eg. 1"
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
@@ -153,10 +214,10 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
             rules="required"
             v-slot="{ errors }"
-            v-if="mint.type === 'limited-edition'"
+            v-if="collection.type === 'limited-edition'"
           >
             <input-text-field
-              v-model="mint.supply"
+              v-model="collection.supply"
               label="Supply"
               :required="true"
               placeholder="Eg. 2"
@@ -169,7 +230,7 @@
             <input-image-drag-and-drop
               :required="true"
               label="Image"
-              :file="mint.colImage"
+              :file="collection.image"
               @fileSelected="selectImage"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
@@ -192,7 +253,7 @@
             Attributes
           </h2>
           <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-items-center md:tw-justify-center lg:tw-flex-row lg:tw-justify-start"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-items-start md:tw-justify-start lg:tw-flex-row lg:tw-justify-start"
           >
             <div
               id="image-preview"
@@ -202,7 +263,7 @@
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
             >
               <div
-                v-for="(attribute, index) in mint.attributes"
+                v-for="(attribute, index) in collection.attributes"
                 :key="index"
                 class="tw-w-full"
               >
@@ -288,18 +349,18 @@
               <h1
                 class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium tw-pb-2"
               >
-                {{ mint.colName }}
+                {{ collection.name }}
                 <i class="bx bxs-badge-check tw-text-xl tw-text-primary-1"></i>
               </h1>
               <h2 class="tw-text-white tw-text-[1.375em] tw-font-medium">
-                {{ mint.tokenName }}
+                {{ collection.tokenName }}
               </h2>
               <div class="tw-pb-4 tw-text-dark-0 tw-text-sm">
-                {{ mint.tokenDesc }}
+                {{ collection.tokenDesc }}
               </div>
 
               <div
-                class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5 tw-flex tw-flex-row tw-items-start tw-justify-between"
+                class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5 tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-start md:tw-justify-between"
               >
                 <div
                   class="tw-w-full tw-flex tw-flex-col tw-items-stat tw-justify-start tw-gap-3"
@@ -313,10 +374,33 @@
                     <div
                       class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
                     >
-                      {{ mint.royalty }}%
+                      {{ collection.royalty_percentage }}%
                     </div>
                   </div>
                 </div>
+                <div
+                  class="tw-w-full tw-flex tw-flex-col tw-items-stat tw-justify-start md:tw-items-end md:tw-justify-end"
+                >
+                  <div
+                    class="tw-text-dark-2 tw-text-xs tw-font-semibold tw-uppercase tw-leading-5"
+                  >
+                    Edition
+                  </div>
+                  <div
+                    class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
+                  >
+                    {{ getSelectedType }}
+                  </div>
+                </div>
+              </div>
+              <div class="tw-w-full tw-pt-2">
+                <nft-mint-phase-box
+                  :phase="{
+                    name: 'Public Sale',
+                    mint_time: collection.public_sale_time,
+                    mint_price: collection.public_sale_price,
+                  }"
+                />
               </div>
 
               <div
@@ -345,6 +429,10 @@
 <script>
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import { uploadAndCreateFile } from "@/services/AuctionService";
+import { createCollectionV2 } from "@/services/AptosCollectionService";
+import { createCollection } from "@/services/CollectionService";
+
+import axios from "axios";
 
 extend("percentage", {
   validate(value) {
@@ -379,20 +467,35 @@ export default {
   data() {
     return {
       step: 1,
-      mint: {
-        colName: "",
-        colDesc: "",
+      collection: {
+        name: "",
+        description: "",
+        image: "",
+        baseURL: "",
+        royalty_payee_address:
+          this.$store.state.walletStore.wallet.walletAddress,
+        royalty_percentage: "",
+        whitelist_sale_time: null,
+        public_sale_time: null,
+        public_sale_price: "",
+        whitelist_price: "",
+        supply: "",
+        twitter: "",
+        discord: "",
+        website: "",
+        instagram: "",
+        resource_account: "",
+        txnhash: "",
+        un: "",
+        candy_id: process.env.CANDY_MACHINE_V2,
         tokenName: "",
         tokenDesc: "",
-        royalty: "",
-        colImage: "",
-        nftName: "",
-        nftDesc: "",
         attributes: [{ trait_type: "", value: "" }],
         twitter: "",
-        type: "",
-        supply: "",
         instagram: "",
+        discord: "",
+        website: "",
+        type: "",
       },
       attribute: "",
       value: "",
@@ -414,11 +517,17 @@ export default {
         { step: 2, name: "Creating Collection" },
         { step: 3, name: "Minting Collection" },
       ],
-      limitedEditionSteps: [],
-      openEditionSteps: [],
+      limitedEditionSteps: [
+        { step: 1, name: "Uploading Image and Metadata" },
+        { step: 2, name: "Creating Collection" },
+      ],
+      openEditionSteps: [
+        { step: 1, name: "Uploading Image and Metadata" },
+        { step: 2, name: "Creating Collection" },
+      ],
       nftType: [
-        { name: "One on One", id: "1/1" },
-        { name: "Limited Edition", id: "limited-edition" },
+        { name: "One on One", id: "1-1" },
+        // { name: "Limited Edition", id: "limited-edition" },
         { name: "Open Edition", id: "open-edition" },
       ],
       socialError: false,
@@ -447,9 +556,9 @@ export default {
       return this.$store.state.auction.selectedNft;
     },
     getSteps() {
-      if (this.mint.type === "1/1") {
+      if (this.collection.type === "one-one") {
         return this.oneOnOneSteps;
-      } else if (this.mint.type === "limited-edition") {
+      } else if (this.collection.type === "limited-edition") {
         return this.limitedEditionSteps;
       } else {
         return this.openEditionSteps;
@@ -459,7 +568,26 @@ export default {
       return "Create Edition";
     },
     getDescription() {
-      return "Please review and approve up to four transactions in your wallet window to create your edition.";
+      return `Please review and approve up to ${this.getSteps.length} transactions in your wallet window to create your edition.`;
+    },
+    getSelectedType() {
+      let selectedType = "1/1";
+
+      switch (this.collection.type) {
+        case "1-1":
+          selectedType = "1/1";
+          break;
+        case "open-edition":
+          selectedType = "Open Edition";
+          break;
+        case "limited-edition":
+          selectedType = "Limited Edition";
+          break;
+        default:
+          break;
+      }
+
+      return selectedType;
     },
   },
   async mounted() {},
@@ -478,25 +606,39 @@ export default {
         return;
       }
 
-      if (!this.mint.twitter && !this.mint.instagram) {
-        this.socialError = true;
-        this.socialErrorMessage =
-          "Please provide a twitter link or instagram link";
+      this.socialError = false;
 
-        this.$refs["social"].scrollIntoView({ behavior: "smooth" });
+      const socials = [
+        this.collection.twitter,
+        this.collection.discord,
+        this.collection.website,
+        this.collection.instagram,
+      ];
+      let counter = 0;
+
+      socials.map((social) => {
+        if (social) {
+          counter++;
+        }
+      });
+
+      if (counter <= 1) {
+        this.socialError = true;
+        this.socialErrorMessage = "Please Fill up at least 2 social links";
 
         return;
       }
+
       this.step = 2;
     },
     addAttribute() {
-      this.mint.attributes.push({
+      this.collection.attributes.push({
         trait_type: "",
         value: "",
       });
     },
     removeAttribute(index) {
-      this.mint.attributes.splice(index, 1);
+      this.collection.attributes.splice(index, 1);
     },
     displayImage() {
       const previewImgElement = document.createElement("img");
@@ -542,14 +684,23 @@ export default {
       if (!validate) {
         return;
       }
-
-      if (this.mint.type === "1/1") {
-        await this.createOneOnOneCollection();
+      switch (this.collection.type) {
+        case "1-1":
+          await this.createOneOnOneCollection();
+          break;
+        case "open-edition":
+          await this.createOpenEdition();
+          break;
+        case "limited-edition":
+          await this.createLimitedEdition();
+          break;
+        default:
+          break;
       }
     },
     async createOneOnOneCollection() {
       try {
-        if (!this.mint.attributes.length > 0) {
+        if (!this.collection.attributes.length > 0) {
           throw new Error("Please provide at least one attribute");
         }
 
@@ -573,12 +724,9 @@ export default {
         }
 
         //uploading and creating metadata file
-        const metaUri =
-          (await uploadAndCreateFile(this.file, {
-            name: this.mint.tokenName,
-            description: this.mint.tokenDesc,
-            attributes: this.mint.attributes,
-          })) + "/";
+        const metaUri = await this.uploadImageAndMetadata();
+
+        this.collection.baseURL = metaUri;
 
         let mintTime = Math.floor(new Date().getTime() / 1000) + 10;
 
@@ -589,12 +737,12 @@ export default {
         this.progress = 2;
 
         const candyMachineArguments = {
-          collection_name: this.mint.colName,
-          collection_description: this.mint.colDesc,
-          baseuri: metaUri,
-          royalty_payee_address: this.walletAddress,
+          collection_name: this.collection.name,
+          collection_description: this.collection.description,
+          baseuri: this.collection.baseURL,
+          royalty_payee_address: this.collection.royalty_payee_address,
           royalty_points_denominator: 1000,
-          royalty_points_numerator: this.mint.royalty * 10,
+          royalty_points_numerator: this.collection.royalty_percentage * 10,
           presale_mint_time: mintTime,
           public_sale_mint_time: mintTime + 1,
           presale_mint_price: 0,
@@ -630,7 +778,7 @@ export default {
               message: "1/1 Collection Minted Successfully",
             });
 
-            this.$router.push("/dashboard/edition");
+            this.$router.push("/dashboard/edition/one-one");
           } catch (error) {
             console.log(error);
             this.loading = false;
@@ -661,16 +809,32 @@ export default {
 
           this.socialError = false;
 
-          if (!this.mint.twitter && !this.mint.instagram) {
+          this.socialError = false;
+
+          const socials = [
+            this.collection.twitter,
+            this.collection.discord,
+            this.collection.website,
+            this.collection.instagram,
+          ];
+          let counter = 0;
+
+          socials.map((social) => {
+            if (social) {
+              counter++;
+            }
+          });
+
+          if (counter <= 1) {
             this.socialError = true;
-            this.socialErrorMessage =
-              "Please provide a twitter link or instagram link";
+            this.socialErrorMessage = "Please Fill up at least 2 social links";
 
             break;
           }
 
           this.formStepNumber++;
           break;
+
         case 2:
           const tokenValidated = await this.$refs.tokenDetailForm.validate();
 
@@ -687,7 +851,7 @@ export default {
           this.formStepNumber++;
           break;
         case 3:
-          if (this.mint.attributes.length < 1) {
+          if (this.collection.attributes.length < 1) {
             this.attributeError = true;
             break;
           }
@@ -708,6 +872,139 @@ export default {
     },
     formatDate(date) {
       return date;
+    },
+    async createOpenEdition() {
+      try {
+        this.error = false;
+        this.loading = true;
+        this.createEditionModal = true;
+
+        this.progress = 1;
+
+        await this.createOpenEditionInChain();
+
+        const tempCollection = structuredClone(this.collection);
+
+        tempCollection.public_sale_time = new Date(
+          tempCollection.public_sale_time
+        ).toISOString();
+
+        const metadataRes = await axios.get(this.collection.baseURL);
+
+        const metadata = metadataRes.data;
+
+        const imageUrl = metadata.image;
+
+        const formData = new FormData();
+
+        formData.append("name", tempCollection.name);
+        formData.append("description", tempCollection.description);
+        formData.append(
+          "royalty_percentage",
+          tempCollection.royalty_percentage
+        );
+        formData.append(
+          "royalty_payee_address",
+          tempCollection.royalty_payee_address
+        );
+        formData.append(
+          "whitelist_sale_time",
+          tempCollection.public_sale_mint_time
+        );
+        formData.append("public_sale_time", tempCollection.public_sale_time);
+        formData.append("public_sale_price", tempCollection.public_sale_price);
+        formData.append("whitelist_price", tempCollection.public_sale_price);
+        formData.append("supply", tempCollection.supply);
+        formData.append("twitter", tempCollection.twitter);
+        formData.append("discord", tempCollection.discord);
+        formData.append("website", tempCollection.website);
+        formData.append("instagram", tempCollection.instagram);
+        formData.append("resource_account", tempCollection.resource_account);
+        formData.append("txnhash", tempCollection.txnhash);
+        formData.append("candy_id", tempCollection.candy_id);
+        formData.append("phases", JSON.stringify([]));
+
+        formData.append("image", imageUrl);
+
+        formData.append("isEdition", true);
+        formData.append("edition", tempCollection.type);
+
+        const res = await createCollection(formData);
+        this.$toast.showMessage({
+          message: "Open Edition Created Successfully",
+          error: false,
+        });
+
+        this.$router.push("/dashboard/edition/open-edition");
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
+        this.loading = false;
+        this.error = true;
+        this.showCloseModal = true;
+      }
+    },
+    async uploadImageAndMetadata() {
+      const aptRes = await this.$store.dispatch(
+        "walletStore/getAptForFileUpload"
+      );
+
+      const transactionRes = await this.$store.dispatch(
+        "walletStore/signTransactionForFileUpload",
+        aptRes.requiredBalance
+      );
+
+      if (!transactionRes.success) {
+        throw new Error("Transaction Not Successful Please Try Again");
+      }
+
+      //uploading and creating metadata file
+      const metaUri =
+        (await uploadAndCreateFile(this.file, {
+          name: this.collection.tokenName,
+          description: this.collection.tokenDesc,
+          attributes: this.collection.attributes,
+        })) + "/";
+
+      return metaUri;
+    },
+    async createOpenEditionInChain() {
+      const metadataUri = await this.uploadImageAndMetadata();
+
+      this.progress = 2;
+
+      this.collection.baseURL = metadataUri;
+
+      const tempCollection = structuredClone(this.collection);
+
+      const mintTime = Math.floor(
+        new Date(tempCollection.public_sale_time).getTime() / 1000
+      );
+
+      const mint_price = parseFloat(
+        (tempCollection.public_sale_price * Math.pow(10, 8)).toFixed(4)
+      );
+
+      const candyMachineArguments = {
+        collection_name: this.collection.name,
+        collection_description: this.collection.description,
+        baseuri: this.collection.baseURL,
+        royalty_payee_address: this.collection.royalty_payee_address,
+        royalty_points_denominator: 1000,
+        royalty_points_numerator: this.collection.royalty_percentage * 10,
+        presale_mint_time: mintTime,
+        public_sale_mint_time: mintTime + 1,
+        presale_mint_price: mint_price,
+        public_sale_mint_price: mint_price,
+        total_supply: 1,
+        public_mint_limit: 0,
+        is_open_edition: true,
+      };
+
+      const res = await createCollectionV2(candyMachineArguments);
+
+      this.collection.resource_account = res.resourceAccount;
+      this.collection.txnhash = res.transactionHash;
     },
   },
 };

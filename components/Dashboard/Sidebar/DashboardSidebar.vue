@@ -69,6 +69,7 @@ export default {
         { path: "/dashboard/collection", name: "Collection" },
         { path: "/dashboard/whitelist", name: "Whitelist" },
         { path: "/dashboard/auction", name: "Auction" },
+        { path: "/dashboard/edition", name: "Edition" },
       ],
     };
   },

@@ -118,6 +118,19 @@
             >
               <div
                 class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
+                v-if="
+                  collection.isEdition && collection.edition === 'open-edition'
+                "
+              >
+                <div>Price</div>
+                <div v-if="getCurrentPrice !== 0">
+                  {{ getCurrentPrice }} APT
+                </div>
+                <div v-else>Free Mint</div>
+              </div>
+              <div
+                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
+                v-else
               >
                 <div class="tw-text-white/70">
                   {{ resource.minted }}/{{ resource.total_supply }} Minted
@@ -129,8 +142,12 @@
                   <div v-else>Free Mint</div>
                 </div>
               </div>
+
               <div
                 class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+                v-if="
+                  !collection.isEdition || collection.edition === 'open-edition'
+                "
               >
                 <div
                   class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
@@ -399,6 +416,8 @@ export default {
           link: null,
         },
         username: "",
+        isEdition: false,
+        edition: "",
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
@@ -817,9 +836,16 @@ export default {
         await setSoldOut(this.collection._id);
       }
 
-      setTimeout(() => {
-        this.showMintedProgress();
-      }, 200);
+      if (
+        !this.collection.isEdition &&
+        this.collection.edition === "open-edition"
+      ) {
+        return;
+      } else {
+        setTimeout(() => {
+          this.showMintedProgress();
+        }, 200);
+      }
     } catch (error) {
       console.log(error);
       this.loading = true;
