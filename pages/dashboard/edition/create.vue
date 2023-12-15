@@ -210,20 +210,38 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
-            rules="required"
-            v-slot="{ errors }"
-            v-if="collection.type === 'limited-edition'"
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
+            v-if="collection.type !== '1-1'"
           >
-            <input-text-field
-              v-model="collection.supply"
-              label="Supply"
-              :required="true"
-              placeholder="Eg. 2"
-            />
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
-          </ValidationProvider>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                v-model="collection.public_mint_limit"
+                label="Mint Limit (0 for unlimited mint)"
+                :required="true"
+                placeholder="Eg. 10"
+              />
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+              rules="required"
+              v-slot="{ errors }"
+              v-if="collection.type === 'limited-edition'"
+            >
+              <input-text-field
+                v-model="collection.supply"
+                label="Supply"
+                :required="true"
+                placeholder="Eg. 2"
+              />
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
@@ -499,6 +517,7 @@ export default {
         discord: "",
         website: "",
         type: "",
+        public_mint_limit: "",
       },
       attribute: "",
       value: "",
@@ -982,7 +1001,7 @@ export default {
         presale_mint_price: mint_price,
         public_sale_mint_price: mint_price,
         total_supply: 1,
-        public_mint_limit: 0,
+        public_mint_limit: this.collection.public_mint_limit,
         is_open_edition: true,
       };
 
