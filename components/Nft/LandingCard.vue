@@ -32,7 +32,7 @@
               'tw-bg-utility-yellow': !getLiveStatus,
             }"
           ></div>
-          <div class="tw-font-medium">
+          <div class="tw-font-medium !tw-text-white">
             {{ getLiveStatus ? "Live" : "Upcoming" }}
           </div>
         </div>
@@ -42,7 +42,7 @@
           <h3
             class="tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
           >
-            <span>
+            <span class="!tw-text-white">
               {{
                 isCollection ? collection?.name : collection?.nft.meta.name
               }}</span
@@ -66,7 +66,7 @@
               }}
               {{ getPrice }}
             </div>
-            <div class="tw-text-white/70 tw-text-[0.875rem]" v-else>
+            <div class="!tw-text-white/70 tw-text-[0.875rem]" v-else>
               Free Mint
             </div>
           </div>
