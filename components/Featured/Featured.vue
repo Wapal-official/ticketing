@@ -95,7 +95,18 @@
         <div class="tw-text-dark-0 tw-pb-4">
           {{ collection.description }}
         </div>
-
+        <div
+          class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-col"
+          v-if="resource.paused"
+        >
+          <h2
+            class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-3 tw-text-dark-0"
+          >
+            <i class="bx bx-pause-circle tw-text-2xl"></i>
+            <span class="tw-font-semibold">Paused</span>
+          </h2>
+          <div class="tw-text-dark-0">Creator has paused the mint.</div>
+        </div>
         <div class="tw-w-full">
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
@@ -424,7 +435,7 @@ export default {
       showEndInTimer: false,
       minting: false,
       showConnectWalletModal: false,
-      resource: { minted: 0, total_supply: 0 },
+      resource: { minted: 0, total_supply: 0, paused: false },
       progressInterval: null,
       phases: [],
       currentSale: { name: "", mint_time: "", mint_price: 0 },
