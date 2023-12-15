@@ -122,9 +122,11 @@
                   collection.isEdition && collection.edition === 'open-edition'
                 "
               >
-                <div>Price</div>
+                <div class="tw-text-white/70">
+                  Total Minted: {{ resource.minted }}
+                </div>
                 <div v-if="getCurrentPrice !== 0">
-                  {{ getCurrentPrice }} APT
+                  Price {{ getCurrentPrice }} APT
                 </div>
                 <div v-else>Free Mint</div>
               </div>
@@ -135,19 +137,15 @@
                 <div class="tw-text-white/70">
                   {{ resource.minted }}/{{ resource.total_supply }} Minted
                 </div>
-                <div v-if="getCurrentPrice">
-                  <div v-if="getCurrentPrice !== 0">
-                    Price {{ getCurrentPrice }} APT
-                  </div>
-                  <div v-else>Free Mint</div>
+                <div v-if="getCurrentPrice !== 0">
+                  {{ getCurrentPrice }} APT
                 </div>
+                <div v-else>Free Mint</div>
               </div>
 
               <div
                 class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
-                v-if="
-                  !collection.isEdition || collection.edition === 'open-edition'
-                "
+                v-if="collection.edition !== 'open-edition'"
               >
                 <div
                   class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
@@ -594,11 +592,17 @@ export default {
           };
         }
 
-        this.resource.mintedPercent = Math.floor(
-          (this.resource.minted / this.resource.total_supply) * 100
-        );
+        if (
+          !this.collection.isEdition ||
+          this.collection.edition !== "open-edition"
+        ) {
+          this.resource.mintedPercent = Math.floor(
+            (this.resource.minted / this.resource.total_supply) * 100
+          );
 
-        this.$refs.mintProgress.style.width = this.resource.mintedPercent + "%";
+          this.$refs.mintProgress.style.width =
+            this.resource.mintedPercent + "%";
+        }
 
         if (
           this.resource.minted == this.resource.total_supply &&
@@ -821,12 +825,16 @@ export default {
           total_supply: 1350,
         };
       }
+      if (
+        !this.collection.isEdition ||
+        this.collection.edition !== "open-edition"
+      ) {
+        this.resource.mintedPercent = Math.floor(
+          (this.resource.minted / this.resource.total_supply) * 100
+        );
 
-      this.resource.mintedPercent = Math.floor(
-        (this.resource.minted / this.resource.total_supply) * 100
-      );
-
-      this.$refs.mintProgress.style.width = this.resource.mintedPercent + "%";
+        this.$refs.mintProgress.style.width = this.resource.mintedPercent + "%";
+      }
 
       if (
         this.resource.minted == this.resource.total_supply &&
@@ -836,16 +844,9 @@ export default {
         await setSoldOut(this.collection._id);
       }
 
-      if (
-        !this.collection.isEdition &&
-        this.collection.edition === "open-edition"
-      ) {
-        return;
-      } else {
-        setTimeout(() => {
-          this.showMintedProgress();
-        }, 200);
-      }
+      setTimeout(() => {
+        this.showMintedProgress();
+      }, 200);
     } catch (error) {
       console.log(error);
       this.loading = true;

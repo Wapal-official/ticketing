@@ -150,12 +150,14 @@
                   collection.isEdition && collection.edition === 'open-edition'
                 "
               >
-                <div class="tw-text-white/70">Price</div>
+                <div class="tw-text-white/70">
+                  Total Minted: {{ resource.minted }}
+                </div>
                 <div v-if="currentSale.mint_price == 0">Free Mint</div>
                 <div
                   v-if="currentSale.mint_price && currentSale.mint_price != 0"
                 >
-                  {{ currentSale.mint_price }} APT
+                  Price {{ currentSale.mint_price }} APT
                 </div>
               </div>
               <div
@@ -479,11 +481,18 @@ export default {
           (this.resource.minted / this.resource.total_supply) * 100
         );
 
-        const resourceMintedPercent = document.querySelector(
-          "#resourceMintedPercent"
-        );
+        if (
+          this.collection.isEdition &&
+          this.collection.edition === "open-edition"
+        ) {
+          return;
+        } else {
+          const resourceMintedPercent = document.querySelector(
+            "#resourceMintedPercent"
+          );
 
-        resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
+          resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
+        }
       }, 5000);
     },
     increaseNumberOfNft() {
@@ -1152,15 +1161,15 @@ export default {
         await this.checkWhitelistForExternalMint();
       }
 
-      if (
-        this.collection.isEdition &&
-        this.collection.edition === "open-edition"
-      ) {
-        return;
-      } else {
-        setTimeout(() => {
-          if (!this.collection.status.sold_out && this.live) {
-            this.showMintedProgress();
+      setTimeout(() => {
+        if (!this.collection.status.sold_out && this.live) {
+          this.showMintedProgress();
+        } else {
+          if (
+            this.collection.isEdition &&
+            this.collection.edition === "open-edition"
+          ) {
+            return;
           } else {
             const resourceMintedPercent = document.querySelector(
               "#resourceMintedPercent"
@@ -1169,8 +1178,8 @@ export default {
             resourceMintedPercent.style.width =
               this.resource.mintedPercent + "%";
           }
-        }, 200);
-      }
+        }
+      }, 200);
     }
   },
   beforeDestroy() {
