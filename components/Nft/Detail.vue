@@ -342,7 +342,6 @@ export default {
       externalWhitelisted: false,
       externalWhitelistMintNumber: 0,
       MARKETPLACE_URL: process.env.MARKETPLACE_URL,
-      maxNumberOfNft: 35,
       holdingIncreaseButtonInterval: null,
       holdingDecreaseButtonInterval: null,
       imageNotFound,
@@ -1030,6 +1029,13 @@ export default {
         this.notWhitelisted ||
         this.resource.paused
       );
+    },
+    maxNumberOfNft() {
+      if (this.collection.isEdition) {
+        return 200;
+      }
+
+      return 35;
     },
   },
   async mounted() {
