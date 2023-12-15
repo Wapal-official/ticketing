@@ -393,7 +393,7 @@
                   </div>
                 </div>
               </div>
-              <div class="tw-w-full tw-pt-2">
+              <div class="tw-w-full tw-pt-2" v-if="collection.type !== '1-1'">
                 <nft-mint-phase-box
                   :phase="{
                     name: 'Public Sale',
@@ -429,7 +429,10 @@
 <script>
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import { uploadAndCreateFile } from "@/services/AuctionService";
-import { createCollectionV2 } from "@/services/AptosCollectionService";
+import {
+  createCollectionV2,
+  mintCollection,
+} from "@/services/AptosCollectionService";
 import { createCollection } from "@/services/CollectionService";
 
 import axios from "axios";
@@ -556,7 +559,7 @@ export default {
       return this.$store.state.auction.selectedNft;
     },
     getSteps() {
-      if (this.collection.type === "one-one") {
+      if (this.collection.type === "1-1") {
         return this.oneOnOneSteps;
       } else if (this.collection.type === "limited-edition") {
         return this.limitedEditionSteps;
@@ -710,25 +713,12 @@ export default {
 
         this.progress = 1;
 
-        const aptRes = await this.$store.dispatch(
-          "walletStore/getAptForFileUpload"
-        );
-
-        const transactionRes = await this.$store.dispatch(
-          "walletStore/signTransactionForFileUpload",
-          aptRes.requiredBalance
-        );
-
-        if (!transactionRes.success) {
-          throw new Error("Transaction Not Successful Please Try Again");
-        }
-
         //uploading and creating metadata file
         const metaUri = await this.uploadImageAndMetadata();
 
         this.collection.baseURL = metaUri;
 
-        let mintTime = Math.floor(new Date().getTime() / 1000) + 10;
+        let mintTime = Math.floor(new Date().getTime() / 1000) + 5;
 
         if (this.$store.state.walletStore.wallet.wallet === "Martian") {
           mintTime += 20;
@@ -749,30 +739,25 @@ export default {
           public_sale_mint_price: 0,
           total_supply: 1,
           public_mint_limit: 0,
+          is_open_edition: false,
         };
 
-        //creating collection
-        const candymachine = await this.$store.dispatch(
-          "walletStore/createCandyMachine",
-          candyMachineArguments
-        );
+        const res = await createCollectionV2(candyMachineArguments);
 
-        const resource_account = candymachine.resourceAccount;
-        const txnhash = candymachine.transactionHash;
+        const resource_account = res.resourceAccount;
+        const txnhash = res.transactionHash;
 
         //mint
         setTimeout(async () => {
           try {
             this.progress = 3;
 
-            const mint = await this.$store.dispatch(
-              "walletStore/mintCollection",
-              {
-                resourceAccount: resource_account,
-                publicMint: true,
-                candyMachineId: process.env.CANDY_MACHINE_ID,
-              }
-            );
+            const mint = await mintCollection({
+              candy_machine_id: this.collection.candy_id,
+              candy_object: resource_account,
+              amount: 1,
+              publicMint: true,
+            });
 
             this.$toast.showMessage({
               message: "1/1 Collection Minted Successfully",
