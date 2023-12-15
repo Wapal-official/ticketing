@@ -1,7 +1,7 @@
 <template>
-  <div
+  <NuxtLink
     class="!tw-w-full !tw-h-[338px] !tw-max-h-[338px] tw-cursor-pointer tw-group/landing-card md:!tw-w-[312px] md:!tw-h-[312px]"
-    @click="redirectToCollection"
+    :to="getRedirectLink"
   >
     <div
       class="tw-relative tw-w-full tw-h-full tw-rounded-lg md:!tw-w-[312px] md:!tw-h-[312px]"
@@ -32,7 +32,7 @@
               'tw-bg-utility-yellow': !getLiveStatus,
             }"
           ></div>
-          <div class="tw-font-medium">
+          <div class="tw-font-medium !tw-text-white">
             {{ getLiveStatus ? "Live" : "Upcoming" }}
           </div>
         </div>
@@ -42,7 +42,7 @@
           <h3
             class="tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
           >
-            <span>
+            <span class="!tw-text-white">
               {{
                 isCollection ? collection?.name : collection?.nft.meta.name
               }}</span
@@ -66,14 +66,14 @@
               }}
               {{ getPrice }}
             </div>
-            <div class="tw-text-white/70 tw-text-[0.875rem]" v-else>
+            <div class="!tw-text-white/70 tw-text-[0.875rem]" v-else>
               Free Mint
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>
 <script lang="ts">
 import imageNotFound from "@/utils/imageNotFound";
@@ -177,20 +177,15 @@ export default {
         return this.collection.candyMachine.public_sale_price + "APT";
       }
     },
-  },
-  methods: {
-    redirectToCollection() {
+    getRedirectLink() {
       if (this.type === "auction") {
-        this.$router.push(`/auctions/${this.collection.auction_name}`);
-
-        return;
+        return `/auctions/${this.collection.auction_name}`;
       }
 
       if (this.collection.isEdition) {
-        this.$router.push(`/editions/${this.collection.username}`);
-        return;
+        return `/editions/${this.collection.username}`;
       }
-      this.$router.push(`/nft/${this.collection.username}`);
+      return `/nft/${this.collection.username}`;
     },
   },
 };
