@@ -112,6 +112,9 @@
         <div class="tw-pb-2 tw-text-dark-0">
           {{ collection.description }}
         </div>
+        <div v-if="collection._id === '65803e82022bc90954ea3ea4'" class="tw-pb-2 tw-text-dark-0">
+          1 NFT Per Wallet
+        </div>
         <div class="tw-pb-2 tw-text-red-600" v-if="gettingProof">
           Getting Proof for {{ currentSale.name }}
         </div>

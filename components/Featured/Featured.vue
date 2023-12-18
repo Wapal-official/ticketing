@@ -96,6 +96,12 @@
           {{ collection.description }}
         </div>
         <div
+          v-if="collection._id === '65803e82022bc90954ea3ea4'"
+          class="tw-pb-2 tw-text-dark-0"
+        >
+          1 NFT Per Wallet
+        </div>
+        <div
           class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-col"
           v-if="resource.paused"
         >
