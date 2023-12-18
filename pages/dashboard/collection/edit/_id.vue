@@ -1084,6 +1084,7 @@ export default {
         });
 
         this.mintingPaused = !this.mintingPaused;
+
         this.$toast.showMessage({
           message: `Minting ${
             this.mintingPaused ? "Paused" : "Resumed"

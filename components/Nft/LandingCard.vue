@@ -28,12 +28,19 @@
             <div
               class="tw-rounded-full tw-w-2.5 tw-h-2.5"
               :class="{
-                'tw-bg-utility-green': getLiveStatus,
-                'tw-bg-utility-yellow': !getLiveStatus,
+                'tw-bg-utility-green': getLiveStatus === 1,
+                'tw-bg-utility-yellow': getLiveStatus === 0,
+                'tw-bg-utility-red': getLiveStatus === -1,
               }"
             ></div>
             <div class="tw-font-medium !tw-text-white">
-              {{ getLiveStatus ? "Live" : "Upcoming" }}
+              {{
+                getLiveStatus === -1
+                  ? "Paused"
+                  : getLiveStatus === 0
+                  ? "Upcoming"
+                  : "Live"
+              }}
             </div>
           </div>
           <div
@@ -85,6 +92,7 @@ export default {
   },
   data() {
     return {
+      resource: { minted: 0, total_supply: 0, paused: false },
       imageNotFound,
     };
   },
@@ -93,21 +101,25 @@ export default {
       return this.type === "collection";
     },
     getLiveStatus() {
+      if (this.resource.paused) {
+        return -1;
+      }
+
       if (this.type === "auction") {
         if (new Date(this.collection.startAt) > new Date()) {
-          return false;
+          return 0;
         }
 
-        return true;
+        return 1;
       }
       if (!this.collection.candyMachine) {
         if (
           !this.collection.public_sale_time &&
           !this.collection.whitelist_sale_time
         ) {
-          return true;
+          return 1;
         }
-        return false;
+        return 0;
       }
 
       const whiteListDate = this.collection.candyMachine.whitelist_sale_time
@@ -121,15 +133,15 @@ export default {
 
       if (!whiteListDate) {
         if (date > publicSaleDate) {
-          return true;
+          return 1;
         }
       } else {
         if (date > whiteListDate || date > publicSaleDate) {
-          return true;
+          return 1;
         }
       }
 
-      return false;
+      return 0;
     },
     getPrice() {
       if (this.type === "auction") {
@@ -188,6 +200,22 @@ export default {
       }
       return `/nft/${this.collection.username}`;
     },
+  },
+  async mounted() {
+    try {
+      if (this.type === "collection") {
+        this.resource = await this.$store.dispatch(
+          "walletStore/getSupplyAndMintedOfCollection",
+          {
+            resourceAccountAddress:
+              this.collection.candyMachine.resource_account,
+            candyMachineId: this.collection.candyMachine.candy_id,
+          }
+        );
+      }
+    } catch (error) {
+      this.resource = { paused: false, total_supply: 0, minted: 0 };
+    }
   },
 };
 </script>
