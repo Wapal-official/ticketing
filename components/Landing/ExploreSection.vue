@@ -28,7 +28,7 @@ import { getAllEditions } from "@/services/EditionService";
 export default {
   data() {
     return {
-      tabs: ["Featured", "Drops", "Editions", "Auctions"],
+      tabs: ["Featured", "Editions", "Auctions"],
       tabNumber: 0,
       collections: [],
       loading: true,
@@ -60,16 +60,10 @@ export default {
           await this.getFeaturedCollections();
           break;
         case 1:
-          await this.getDrops();
-          break;
-        case 2:
           await this.getEditions();
           break;
-        case 3:
+        case 2:
           await this.getAuctions();
-          break;
-        case 4:
-          await this.getLiveCollections();
           break;
         default:
           await this.getFeaturedCollections();
@@ -192,16 +186,10 @@ export default {
             await this.getFeaturedCollections();
             break;
           case 1:
-            await this.getDrops();
-            break;
-          case 2:
             await this.getEditions();
             break;
-          case 3:
+          case 2:
             await this.getAuctions();
-            break;
-          case 4:
-            await this.getLiveCollections();
             break;
           default:
             await this.getFeaturedCollections();
