@@ -179,7 +179,11 @@
               <div
                 class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-end"
               >
-                <span>{{ collection.candyMachine.whitelist_price }}APT</span>
+                <span>{{ collection.candyMachine.whitelist_price }} {{
+                    collection.seed && collection.seed.coin_type
+                      ? collection.seed.coin_type
+                      : "APT"
+                  }}</span>
                 <button
                   class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
                   @click="editingWhitelistSalePrice = true"
@@ -308,7 +312,11 @@
                 <div
                   class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
                 >
-                  <span>{{ phase.mint_price }}APT</span>
+                  <span>{{ phase.mint_price }} {{
+                    collection.seed && collection.seed.coin_type
+                      ? collection.seed.coin_type
+                      : "APT"
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -466,7 +474,11 @@
               <div
                 class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-end"
               >
-                <span>{{ collection.candyMachine.public_sale_price }}APT</span>
+                <span>{{ collection.candyMachine.public_sale_price }} {{
+                    collection.seed && collection.seed.coin_type
+                      ? collection.seed.coin_type
+                      : "APT"
+                  }}</span>
                 <button
                   class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
                   @click="editingPublicSalePrice = true"
@@ -631,6 +643,10 @@ export default {
         isVerified: false,
         phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
         isEdition: false,
+        seed:{
+          seedz:false,
+          coin_type:"APT"
+        }
       },
       loading: true,
       whitelistSaleTime: "",

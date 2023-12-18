@@ -210,6 +210,39 @@
         @walletConnected="displayWalletConnectedMessage"
       />
     </v-dialog>
+    <v-dialog
+      v-model="showShareModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+      :persistent="true"
+    >
+      <div
+        class="tw-w-full tw-bg-dark-9 tw-text-white tw-px-4 tw-py-4 tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+      >
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+        >
+          <button @click="showShareModal = false">
+            <i class="bx bx-x tw-text-xl"></i>
+          </button>
+        </div>
+        <div class="tw-w-full h-full tw-rounded">
+          <img
+            :src="collection.image"
+            class="tw-w-full tw-h-full tw-rounded"
+            :alt="collection.name"
+          />
+        </div>
+        <button-primary
+          :fullWidth="true"
+          title="Share On Twitter"
+          :bordered="true"
+          @click="shareOnTwitterAfterMinting"
+        >
+          <template #prepend-icon>
+            <i class="bx bxl-twitter tw-text-xl tw-pr-4"></i> </template
+        ></button-primary>
+      </div>
+    </v-dialog>
   </div>
   <!-- <div
     class="tw-w-full tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-px-8 tw-pb-8 tw-pt-4 lg:tw-gap-16 lg:tw-flex-row lg:tw-justify-start xl:tw-w-4/5"
@@ -462,6 +495,7 @@ export default {
       showShareBox: false,
       collectionLink: "",
       MARKETPLACE_URL: process.env.MARKETPLACE_URL,
+      showShareModal: false,
       imageNotFound,
     };
   },
@@ -547,6 +581,10 @@ export default {
             this.$toast.showMessage({
               message: `${this.collection.name} Minted Successfully`,
             });
+
+            if (this.collection._id === "65803e82022bc90954ea3ea4") {
+              this.showShareModal = true;
+            }
 
             let res = await this.$store.dispatch(
               "walletStore/getSupplyAndMintedOfCollection",
@@ -749,7 +787,9 @@ export default {
 
       const text = "Check out this collection on Wapal";
 
-      const link = `${baseURL}/nft/${this.collection.username}`;
+      const link = `${baseURL}/${
+        this.collection.isEdition ? "editions" : "nft"
+      }/${this.collection.username}`;
 
       const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}&via=wapal_official`;
 
@@ -758,6 +798,31 @@ export default {
       this.showShareBox = false;
     },
     hideShareBox() {
+      this.showShareBox = false;
+    },
+    shareOnTwitterAfterMinting() {
+      const baseURL = process.env.baseURL?.includes("staging")
+        ? "https://staging.wapal.io"
+        : "https://launchpad.wapal.io";
+
+      const twitterURL = "https://twitter.com";
+
+      const link = `${baseURL}/${
+        this.collection.isEdition ? "editions" : "nft"
+      }/${this.collection.username}`;
+
+      const text = `Just snagged "Aptos Cool Kids" from $SEEDZ thanks to the  @wapal_official, made possible on @aptos_network. 🚀
+
+Echoing it out loud – THIS MIGHT MEAN MORE ! 📣
+
+Get yours - ${link} 
+
+@EchoAptos @AptosMonkeys @wapal_official`;
+
+      const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}`;
+
+      window.open(twitterShareLink, "_blank");
+
       this.showShareBox = false;
     },
   },
