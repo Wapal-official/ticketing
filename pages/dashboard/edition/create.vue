@@ -250,7 +250,7 @@
             <input-auto-complete
               :required="true"
               label="Coin Type"
-              v-model="coinType"
+              v-model="collection.coinType"
               placeholder="Select Coin Type"
               :items="coinTypes"
               text="name"
@@ -593,19 +593,6 @@ export default {
       const container = document.getElementById("container");
       container?.scrollTo(0, 0);
     },
-    coinType(coinTypeValue) {
-      this.collection.coinType = coinTypeValue;
-
-      if (this.collection.coinType === "Seedz") {
-        this.collection.candy_id = process.env.SEEDZ_CANDY_MACHINE;
-
-        this.collection.seedz = true;
-      } else {
-        this.collection.candy_id = process.env.CANDY_MACHINE_V2;
-
-        this.collection.seedz = false;
-      }
-    },
   },
   computed: {
     walletAddress() {
@@ -743,6 +730,9 @@ export default {
       if (!validate) {
         return;
       }
+
+      this.checkCoinType();
+
       switch (this.collection.type) {
         case "1-1":
           await this.createOneOnOneCollection();
@@ -1052,6 +1042,17 @@ export default {
 
       this.collection.resource_account = res.resourceAccount;
       this.collection.txnhash = res.transactionHash;
+    },
+    checkCoinType() {
+      if (this.collection.coinType === "Seedz") {
+        this.collection.candy_id = process.env.SEEDZ_CANDY_MACHINE;
+
+        this.collection.seedz = true;
+      } else {
+        this.collection.candy_id = process.env.CANDY_MACHINE_V2;
+
+        this.collection.seedz = false;
+      }
     },
   },
 };
