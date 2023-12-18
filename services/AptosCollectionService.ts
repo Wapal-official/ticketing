@@ -364,7 +364,11 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
 
   checkNetwork();
 
-  const programId = process.env.CANDY_MACHINE_V2;
+  let programId = process.env.CANDY_MACHINE_V2;
+
+  if (candyMachineArguments.seedz) {
+    programId = process.env.SEEDZ_CANDY_MACHINE;
+  }
 
   const isOpenEdition = candyMachineArguments.is_open_edition
     ? candyMachineArguments.is_open_edition
@@ -454,4 +458,149 @@ export const pauseOrResumeMinting = async ({
   const res = executeTransactionAndGiveResult(pause_resume_script);
 
   return res;
+};
+
+export const seedzMintCollection = async ({
+  candy_machine_id,
+  candy_object,
+  amount,
+  publicMint,
+  proof,
+  mint_limit,
+}: MintCollectionInterface) => {
+  await checkWalletConnected();
+  checkNetwork();
+
+  if (publicMint) {
+    if (amount == 1) {
+      const res = await seedzMintSingleNft({
+        candy_machine_id,
+        candy_object,
+      });
+
+      return res;
+    } else {
+      const res = await seedzMintManyNft({
+        candy_machine_id,
+        candy_object,
+        amount,
+      });
+      return res;
+    }
+  } else {
+    if (amount == 1) {
+      const res = await seedzMerkleMintSingleNft({
+        candy_machine_id,
+        candy_object,
+        proof,
+        mint_limit,
+      });
+
+      return res;
+    } else {
+      const res = await seedzMerkleMintManyNft({
+        candy_machine_id,
+        candy_object,
+        proof,
+        mint_limit,
+        amount,
+      });
+
+      return res;
+    }
+  }
+};
+
+export const seedzMintSingleNft = async ({
+  candy_machine_id,
+  candy_object,
+}: MintCollectionInterface) => {
+  try {
+    const mint_script = {
+      type: "entry_function_payload",
+      function: `${candy_machine_id}::candymachine::mint_script`,
+      type_arguments: [
+        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
+      ],
+      arguments: [candy_object],
+    };
+
+    const res = await executeTransactionAndGiveResult(mint_script);
+
+    return res;
+  } catch (error) {
+    throw new Error("Could not Mint Nft");
+  }
+};
+
+export const seedzMintManyNft = async ({
+  candy_machine_id,
+  candy_object,
+  amount,
+}: MintCollectionInterface) => {
+  try {
+    const mint_script_many = {
+      type: "entry_function_payload",
+      function: `${candy_machine_id}::candymachine::mint_script_many`,
+      type_arguments: [
+        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
+      ],
+      arguments: [candy_object, amount],
+    };
+
+    const res = await executeTransactionAndGiveResult(mint_script_many);
+
+    return res;
+  } catch (error) {
+    throw new Error("Could not Mint Nft");
+  }
+};
+
+export const seedzMerkleMintSingleNft = async ({
+  candy_machine_id,
+  candy_object,
+  proof,
+  mint_limit,
+}: MintCollectionInterface) => {
+  try {
+    const merkle_mint_script = {
+      type: "entry_function_payload",
+      function: `${candy_machine_id}::candymachine::mint_from_merkle`,
+      type_arguments: [
+        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
+      ],
+      arguments: [candy_object, proof, mint_limit],
+    };
+
+    const res = await executeTransactionAndGiveResult(merkle_mint_script);
+
+    return res;
+  } catch (error) {
+    throw new Error("Could not Mint Nft");
+  }
+};
+
+export const seedzMerkleMintManyNft = async ({
+  candy_machine_id,
+  candy_object,
+  proof,
+  mint_limit,
+  amount,
+}: MintCollectionInterface) => {
+  try {
+    const merkle_mint_script_many = {
+      type: "entry_function_payload",
+      function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
+      type_arguments: [
+        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
+      ],
+      arguments: [candy_object, proof, mint_limit, amount],
+    };
+
+    const res = await executeTransactionAndGiveResult(merkle_mint_script_many);
+
+    return res;
+  } catch (error) {
+    throw new Error("Could not Mint Nft");
+  }
 };

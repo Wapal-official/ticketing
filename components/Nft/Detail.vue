@@ -157,7 +157,12 @@
                 <div
                   v-if="currentSale.mint_price && currentSale.mint_price != 0"
                 >
-                  Price {{ currentSale.mint_price }} APT
+                  Price {{ currentSale.mint_price }}
+                  {{
+                    collection.seed && collection.seed.coin_type
+                      ? collection.seed.coin_type
+                      : "APT"
+                  }}
                 </div>
               </div>
               <div
@@ -171,7 +176,12 @@
                 <div
                   v-if="currentSale.mint_price && currentSale.mint_price != 0"
                 >
-                  Price {{ currentSale.mint_price }} APT
+                  Price {{ currentSale.mint_price }}
+                  {{
+                    collection.seed && collection.seed.coin_type
+                      ? collection.seed.coin_type
+                      : "APT"
+                  }}
                 </div>
               </div>
               <div
@@ -266,6 +276,7 @@
               :key="index"
               :phase="phase"
               v-if="!checkIfPhaseStarted(phase.mint_time)"
+              :coinType="collection.seed ? collection.seed.coin_type : 'APT'"
             />
           </div>
         </div>
@@ -301,7 +312,10 @@ import {
 } from "@/services/CollectionService";
 import { getProof, getMintLimit } from "@/services/WhitelistService";
 import { getWhitelistEntryById } from "@/services/WhitelistService";
-import { mintCollection } from "@/services/AptosCollectionService";
+import {
+  mintCollection,
+  seedzMintCollection,
+} from "@/services/AptosCollectionService";
 import imageNotFound from "@/utils/imageNotFound";
 export default {
   props: { collection: { type: Object } },
@@ -591,14 +605,25 @@ export default {
             mintLimit: this.mintLimit,
           });
         } else {
-          res = await mintCollection({
-            candy_machine_id: this.collection.candyMachine.candy_id,
-            candy_object: this.collection.candyMachine.resource_account,
-            amount: this.numberOfNft,
-            publicMint: !this.checkPublicSaleTimer(),
-            proof: this.proof,
-            mint_limit: this.mintLimit,
-          });
+          if (this.collection.seed && this.collection.seed.seedz) {
+            res = await seedzMintCollection({
+              candy_machine_id: this.collection.candyMachine.candy_id,
+              candy_object: this.collection.candyMachine.resource_account,
+              amount: this.numberOfNft,
+              publicMint: !this.checkPublicSaleTimer(),
+              proof: this.proof,
+              mint_limit: this.mintLimit,
+            });
+          } else {
+            res = await mintCollection({
+              candy_machine_id: this.collection.candyMachine.candy_id,
+              candy_object: this.collection.candyMachine.resource_account,
+              amount: this.numberOfNft,
+              publicMint: !this.checkPublicSaleTimer(),
+              proof: this.proof,
+              mint_limit: this.mintLimit,
+            });
+          }
         }
 
         if (res.success) {

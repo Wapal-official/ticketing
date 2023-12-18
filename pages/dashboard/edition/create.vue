@@ -243,6 +243,22 @@
             </ValidationProvider>
           </div>
           <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-auto-complete
+              :required="true"
+              label="Coin Type"
+              v-model="coinType"
+              placeholder="Select Coin Type"
+              :items="coinTypes"
+              text="name"
+              itemValue="id"
+            />
+            <div class="tw-text-red-600">{{ errors[0] }}</div>
+          </ValidationProvider>
+          <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
             <input-image-drag-and-drop
@@ -418,6 +434,7 @@
                     mint_time: collection.public_sale_time,
                     mint_price: collection.public_sale_price,
                   }"
+                  :coinType="collection.coinType"
                 />
               </div>
 
@@ -518,6 +535,8 @@ export default {
         website: "",
         type: "",
         public_mint_limit: "",
+        seedz: this.seedz,
+        coinType: this.coinType,
       },
       attribute: "",
       value: "",
@@ -552,6 +571,11 @@ export default {
         // { name: "Limited Edition", id: "limited-edition" },
         { name: "Open Edition", id: "open-edition" },
       ],
+      coinTypes: [
+        { name: "APT", value: "apt" },
+        { name: "Seedz", value: "seedz" },
+      ],
+      coinType: "APT",
       socialError: false,
       socialErrorMessage: "",
       formSteps: ["Details", "Token", "Attributes", "Review"],
@@ -568,6 +592,19 @@ export default {
     formStepNumber() {
       const container = document.getElementById("container");
       container?.scrollTo(0, 0);
+    },
+    coinType(coinTypeValue) {
+      this.collection.coinType = coinTypeValue;
+
+      if (this.collection.coinType === "Seedz") {
+        this.collection.candy_id = process.env.SEEDZ_CANDY_MACHINE;
+
+        this.collection.seedz = true;
+      } else {
+        this.collection.candy_id = process.env.CANDY_MACHINE_V2;
+
+        this.collection.seedz = false;
+      }
     },
   },
   computed: {
@@ -759,6 +796,7 @@ export default {
           total_supply: 1,
           public_mint_limit: 0,
           is_open_edition: false,
+          seedz: this.collection.seedz,
         };
 
         const res = await createCollectionV2(candyMachineArguments);
@@ -933,7 +971,11 @@ export default {
         formData.append("isEdition", true);
         formData.append("edition", tempCollection.type);
 
+        formData.append("seedz", JSON.stringify(tempCollection.seedz));
+        formData.append("coin_type", tempCollection.coinType);
+
         const res = await createCollection(formData);
+
         this.$toast.showMessage({
           message: "Open Edition Created Successfully",
           error: false,
@@ -1003,6 +1045,7 @@ export default {
         total_supply: 1,
         public_mint_limit: this.collection.public_mint_limit,
         is_open_edition: true,
+        seedz: this.collection.seedz,
       };
 
       const res = await createCollectionV2(candyMachineArguments);
