@@ -137,7 +137,12 @@
                   Total Minted: {{ resource.minted }}
                 </div>
                 <div v-if="getCurrentPrice !== 0">
-                  Price {{ getCurrentPrice }} APT
+                  Price {{ getCurrentPrice }}
+                  {{
+                    collection.seed && collection.seed.coin_type
+                      ? collection.seed.coin_type
+                      : "APT"
+                  }}
                 </div>
                 <div v-else>Free Mint</div>
               </div>
@@ -149,7 +154,12 @@
                   {{ resource.minted }}/{{ resource.total_supply }} Minted
                 </div>
                 <div v-if="getCurrentPrice !== 0">
-                  {{ getCurrentPrice }} APT
+                  {{ getCurrentPrice }}
+                  {{
+                    collection.seed && collection.seed.coin_type
+                      ? collection.seed.coin_type
+                      : "APT"
+                  }}
                 </div>
                 <div v-else>Free Mint</div>
               </div>
@@ -397,6 +407,10 @@
 <script lang="ts">
 import { setSoldOut } from "@/services/CollectionService";
 import imageNotFound from "@/utils/imageNotFound";
+import {
+  mintCollection,
+  seedzMintCollection,
+} from "@/services/AptosCollectionService";
 export default {
   props: {
     propCollection: { type: Object },
@@ -427,6 +441,10 @@ export default {
         username: "",
         isEdition: false,
         edition: "",
+        seedz: {
+          seedz: false,
+          coin_type: "APT",
+        },
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
@@ -502,12 +520,28 @@ export default {
         }
         if (this.$store.state.walletStore.wallet.wallet) {
           this.minting = true;
-          const res = await this.$store.dispatch("walletStore/mintCollection", {
-            resourceAccount: this.collection.candyMachine.resource_account,
-            publicMint: !this.checkPublicSaleTimer(),
-            collectionId: this.collection._id,
-            candyMachineId: this.collection.candyMachine.candy_id,
-          });
+
+          let res: any = null;
+
+          if (this.collection.seed && this.collection.seed.seedz) {
+            res = await seedzMintCollection({
+              candy_machine_id: this.collection.candyMachine.candy_id,
+              candy_object: this.collection.candyMachine.resource_account,
+              amount: 1,
+              publicMint: !this.checkPublicSaleTimer(),
+              proof: this.proof,
+              mint_limit: this.mintLimit,
+            });
+          } else {
+            res = await mintCollection({
+              candy_machine_id: this.collection.candyMachine.candy_id,
+              candy_object: this.collection.candyMachine.resource_account,
+              amount: 1,
+              publicMint: !this.checkPublicSaleTimer(),
+              proof: this.proof,
+              mint_limit: this.mintLimit,
+            });
+          }
 
           if (res.success) {
             this.$toast.showMessage({
