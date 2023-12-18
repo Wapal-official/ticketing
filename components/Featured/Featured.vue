@@ -441,7 +441,7 @@ export default {
         username: "",
         isEdition: false,
         edition: "",
-        seedz: {
+        seed: {
           seedz: false,
           coin_type: "APT",
         },
