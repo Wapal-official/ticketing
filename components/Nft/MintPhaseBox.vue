@@ -34,7 +34,10 @@
 <script lang="ts">
 import moment from "moment";
 export default {
-  props: { phase: { type: Object } },
+  props: {
+    phase: { type: Object },
+    coinType: { type: String, default: "APT" },
+  },
   computed: {
     getFormattedMintDate() {
       if (!this.phase.mint_time) {
@@ -49,7 +52,7 @@ export default {
 
       return this.phase?.mint_price == 0
         ? "Free Mint"
-        : this.phase?.mint_price + "APT";
+        : this.phase?.mint_price + this.coinType;
     },
   },
 };

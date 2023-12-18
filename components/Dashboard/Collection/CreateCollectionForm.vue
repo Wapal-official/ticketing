@@ -902,6 +902,8 @@ export default {
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify(tempCollection.phases));
         formData.append("isEdition", JSON.stringify(false));
+        formData.append("seedz", JSON.stringify(false));
+        formData.append("coin_type", "APT");
 
         const draft_id = this.$route.params.id;
 

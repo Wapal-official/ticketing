@@ -143,24 +143,29 @@ export default {
 
       return 0;
     },
+    getCoinType() {
+      return this.collection.seed && this.collection.seed.coin_type
+        ? this.collection.seed.coin_type
+        : "APT";
+    },
     getPrice() {
       if (this.type === "auction") {
         if (this.collection.biddings.length > 0) {
           return (
             this.collection.biddings[this.collection.biddings.length - 1].bid +
-            "APT"
+            this.getCoinType
           );
         }
 
-        return this.collection.min_bid + "APT";
+        return this.collection.min_bid + this.getCoinType;
       }
 
       if (!this.collection.candyMachine) {
         if (this.collection.whitelist_price) {
-          return this.collection.whitelist_price + "APT";
+          return this.collection.whitelist_price + this.getCoinType;
         }
         if (this.collection.public_sale_price) {
-          return this.collection.public_sale_price + "APT";
+          return this.collection.public_sale_price + this.getCoinType;
         }
 
         return "TBD";
@@ -177,17 +182,23 @@ export default {
         this.collection.candyMachine.public_sale_price ==
         this.collection.candyMachine.whitelist_price
       ) {
-        return this.collection.candyMachine.public_sale_price + "APT";
+        return (
+          this.collection.candyMachine.public_sale_price + this.getCoinType
+        );
       }
 
       if (now > publicSaleDate) {
-        return this.collection.candyMachine.public_sale_price + "APT";
+        return (
+          this.collection.candyMachine.public_sale_price + this.getCoinType
+        );
       }
 
       if (whiteListDate && publicSaleDate > now) {
-        return this.collection.candyMachine.whitelist_price + "APT";
+        return this.collection.candyMachine.whitelist_price + this.getCoinType;
       } else {
-        return this.collection.candyMachine.public_sale_price + "APT";
+        return (
+          this.collection.candyMachine.public_sale_price + this.getCoinType
+        );
       }
     },
     getRedirectLink() {
