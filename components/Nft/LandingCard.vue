@@ -1,73 +1,81 @@
 <template>
-  <NuxtLink
-    class="!tw-w-full !tw-h-[338px] !tw-max-h-[338px] tw-cursor-pointer tw-group/landing-card md:!tw-w-[312px] md:!tw-h-[312px]"
-    :to="getRedirectLink"
-  >
+  <NuxtLink :to="getRedirectLink">
     <div
-      class="tw-relative tw-w-full tw-h-full tw-rounded-lg md:!tw-w-[312px] md:!tw-h-[312px]"
+      class="!tw-w-full !tw-h-[338px] !tw-max-h-[338px] tw-cursor-pointer tw-group/landing-card md:!tw-w-[312px] md:!tw-h-[312px]"
     >
       <div
-        class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative md:!tw-w-[312px] md:!tw-h-[312px]"
-      >
-        <img
-          :src="isCollection ? collection?.image : collection?.nft.meta.image"
-          :alt="isCollection ? collection?.name : collection?.nft.meta.name"
-          :onerror="imageNotFound()"
-          class="tw-w-full tw-h-full tw-object-cover tw-rounded-lg tw-absolute tw-top-0 tw-transition-all tw-ease-linear tw-duration-300 tw-transform group-hover/landing-card:tw-scale-110"
-        />
-      </div>
-      <div
-        class="tw-absolute tw-w-full tw-h-1/2 tw-bottom-[-1px] gradient tw-rounded-lg"
-      ></div>
-      <div
-        class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-flex tw-flex-col tw-items-start tw-justify-between tw-px-4"
+        class="tw-relative tw-w-full tw-h-full tw-rounded-lg md:!tw-w-[312px] md:!tw-h-[312px]"
       >
         <div
-          class="tw-rounded-full tw-bg-black/20 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2.5 tw-px-3.5 tw-py-1.5 tw-mt-4 tw-backdrop-blur-[2px]"
+          class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative md:!tw-w-[312px] md:!tw-h-[312px]"
         >
-          <div
-            class="tw-rounded-full tw-w-2.5 tw-h-2.5"
-            :class="{
-              'tw-bg-utility-green': getLiveStatus,
-              'tw-bg-utility-yellow': !getLiveStatus,
-            }"
-          ></div>
-          <div class="tw-font-medium !tw-text-white">
-            {{ getLiveStatus ? "Live" : "Upcoming" }}
-          </div>
+          <img
+            :src="isCollection ? collection?.image : collection?.nft.meta.image"
+            :alt="isCollection ? collection?.name : collection?.nft.meta.name"
+            :onerror="imageNotFound()"
+            class="tw-w-full tw-h-full tw-object-cover tw-rounded-lg tw-absolute tw-top-0 tw-transition-all tw-ease-linear tw-duration-300 tw-transform group-hover/landing-card:tw-scale-110"
+          />
         </div>
         <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-pb-4"
+          class="tw-absolute tw-w-full tw-h-1/2 tw-bottom-[-1px] gradient tw-rounded-lg"
+        ></div>
+        <div
+          class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-flex tw-flex-col tw-items-start tw-justify-between tw-px-4"
         >
-          <h3
-            class="tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
+          <div
+            class="tw-rounded-full tw-bg-black/20 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2.5 tw-px-3.5 tw-py-1.5 tw-mt-4 tw-backdrop-blur-[2px]"
           >
-            <span class="!tw-text-white">
-              {{
-                isCollection ? collection?.name : collection?.nft.meta.name
-              }}</span
-            >
-            <i
-              class="bx bxs-badge-check tw-text-primary-1"
-              v-if="collection?.isVerified"
-            ></i>
-          </h3>
-          <div v-if="getPrice">
             <div
-              class="tw-text-white/70 tw-text-[0.875rem]"
-              v-if="getPrice != '0APT'"
-            >
+              class="tw-rounded-full tw-w-2.5 tw-h-2.5"
+              :class="{
+                'tw-bg-utility-green': getLiveStatus === 1,
+                'tw-bg-utility-yellow': getLiveStatus === 0,
+                'tw-bg-utility-red': getLiveStatus === -1,
+              }"
+            ></div>
+            <div class="tw-font-medium !tw-text-white">
               {{
-                isCollection
-                  ? "Price"
-                  : getLiveStatus
-                  ? "Current Bid"
-                  : "Min Bid"
+                getLiveStatus === -1
+                  ? "Paused"
+                  : getLiveStatus === 0
+                  ? "Upcoming"
+                  : "Live"
               }}
-              {{ getPrice }}
             </div>
-            <div class="!tw-text-white/70 tw-text-[0.875rem]" v-else>
-              Free Mint
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-pb-4"
+          >
+            <h3
+              class="tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
+            >
+              <span class="!tw-text-white">
+                {{
+                  isCollection ? collection?.name : collection?.nft.meta.name
+                }}</span
+              >
+              <i
+                class="bx bxs-badge-check tw-text-primary-1"
+                v-if="collection?.isVerified"
+              ></i>
+            </h3>
+            <div v-if="getPrice">
+              <div
+                class="tw-text-white/70 tw-text-[0.875rem]"
+                v-if="getPrice != '0APT'"
+              >
+                {{
+                  isCollection
+                    ? "Price"
+                    : getLiveStatus
+                    ? "Current Bid"
+                    : "Min Bid"
+                }}
+                {{ getPrice }}
+              </div>
+              <div class="!tw-text-white/70 tw-text-[0.875rem]" v-else>
+                Free Mint
+              </div>
             </div>
           </div>
         </div>
@@ -84,6 +92,7 @@ export default {
   },
   data() {
     return {
+      resource: { minted: 0, total_supply: 0, paused: false },
       imageNotFound,
     };
   },
@@ -92,21 +101,25 @@ export default {
       return this.type === "collection";
     },
     getLiveStatus() {
+      if (this.resource.paused) {
+        return -1;
+      }
+
       if (this.type === "auction") {
         if (new Date(this.collection.startAt) > new Date()) {
-          return false;
+          return 0;
         }
 
-        return true;
+        return 1;
       }
       if (!this.collection.candyMachine) {
         if (
           !this.collection.public_sale_time &&
           !this.collection.whitelist_sale_time
         ) {
-          return true;
+          return 1;
         }
-        return false;
+        return 0;
       }
 
       const whiteListDate = this.collection.candyMachine.whitelist_sale_time
@@ -120,15 +133,15 @@ export default {
 
       if (!whiteListDate) {
         if (date > publicSaleDate) {
-          return true;
+          return 1;
         }
       } else {
         if (date > whiteListDate || date > publicSaleDate) {
-          return true;
+          return 1;
         }
       }
 
-      return false;
+      return 0;
     },
     getPrice() {
       if (this.type === "auction") {
@@ -187,6 +200,22 @@ export default {
       }
       return `/nft/${this.collection.username}`;
     },
+  },
+  async mounted() {
+    try {
+      if (this.type === "collection") {
+        this.resource = await this.$store.dispatch(
+          "walletStore/getSupplyAndMintedOfCollection",
+          {
+            resourceAccountAddress:
+              this.collection.candyMachine.resource_account,
+            candyMachineId: this.collection.candyMachine.candy_id,
+          }
+        );
+      }
+    } catch (error) {
+      this.resource = { paused: false, total_supply: 0, minted: 0 };
+    }
   },
 };
 </script>
