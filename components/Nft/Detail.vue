@@ -1135,8 +1135,6 @@ Get yours - ${link}
         this.collection.username = "proud-lions-club";
       }
 
-      console.log(this.collection);
-
       this.setPhases();
 
       this.currentSale = this.getCurrentSale();
