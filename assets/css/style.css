@@ -445,3 +445,13 @@ input:disabled {
 .default-data-table-header span {
   text-transform: uppercase;
 }
+
+/* Description */
+.description {
+  white-space: pre-line;
+  word-break: break-word;
+}
+
+.description:first-line {
+  line-height: 0;
+}
