@@ -483,6 +483,17 @@ export default {
               collectionId: this.collection.candyMachine.resource_account,
             }
           );
+
+          if (this.resource.total_supply === 0) {
+            this.resource = await this.$store.dispatch(
+              "walletStore/getSupplyAndMintedOfCollection",
+              {
+                resourceAccountAddress:
+                  this.collection.candyMachine.resource_account,
+                candyMachineId: this.collection.candyMachine.candy_id,
+              }
+            );
+          }
         } else {
           this.resource = await this.$store.dispatch(
             "walletStore/getSupplyAndMintedOfCollection",
@@ -756,6 +767,17 @@ Get yours - ${link}
             collectionId: this.collection.candyMachine.resource_account,
           }
         );
+
+        if (this.resource.total_supply === 0) {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfCollection",
+            {
+              resourceAccountAddress:
+                this.collection.candyMachine.resource_account,
+              candyMachineId: this.collection.candyMachine.candy_id,
+            }
+          );
+        }
       } else {
         this.resource = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfCollection",
