@@ -9,11 +9,18 @@
         <div
           class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative md:!tw-w-[312px] md:!tw-h-[312px]"
         >
+          <div
+            class="tw-w-full tw-h-full tw-object-cover tw-rounded-lg tw-absolute tw-top-0 tw-transition-all tw-ease-linear tw-duration-300 tw-transform group-hover/landing-card:tw-scale-110"
+            v-if="video"
+          >
+            <video-player-featured :source="video" />
+          </div>
           <img
             :src="isCollection ? collection?.image : collection?.nft.meta.image"
             :alt="isCollection ? collection?.name : collection?.nft.meta.name"
             :onerror="imageNotFound()"
             class="tw-w-full tw-h-full tw-object-cover tw-rounded-lg tw-absolute tw-top-0 tw-transition-all tw-ease-linear tw-duration-300 tw-transform group-hover/landing-card:tw-scale-110"
+            v-else
           />
         </div>
         <div
@@ -85,6 +92,7 @@
 </template>
 <script lang="ts">
 import imageNotFound from "@/utils/imageNotFound";
+import santa from "@/assets/video/wapal-santa.mp4";
 export default {
   props: {
     collection: { type: Object },
@@ -93,6 +101,7 @@ export default {
   data() {
     return {
       resource: { minted: 0, total_supply: 0, paused: false },
+      video: "",
       imageNotFound,
     };
   },
@@ -168,6 +177,13 @@ export default {
         return this.collection.min_bid + this.getCoinType;
       }
 
+      if (
+        !this.collection.candyMachine.whitelist_price &&
+        !this.collection.candyMachine.public_sale_price
+      ) {
+        return "";
+      }
+
       if (!this.collection.candyMachine) {
         if (this.collection.whitelist_price) {
           return this.collection.whitelist_price + this.getCoinType;
@@ -222,6 +238,10 @@ export default {
   },
   async mounted() {
     try {
+      if (this.collection.username === "wapal-santa") {
+        this.video = santa;
+      }
+
       if (this.type === "collection") {
         this.resource = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfCollection",
@@ -231,6 +251,10 @@ export default {
             candyMachineId: this.collection.candyMachine.candy_id,
           }
         );
+      }
+
+      if (this.collection.username === "wapal-santa") {
+        this.video = santa;
       }
     } catch (error) {
       this.resource = { paused: false, total_supply: 0, minted: 0 };

@@ -6,11 +6,19 @@
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
+      <div
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+        v-if="collection.video"
+      >
+        <video-player-featured :source="collection.video" />
+      </div>
+
       <img
         :src="collection.image"
         :alt="collection.name"
         :onerror="imageNotFound()"
         class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+        v-else
       />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
@@ -112,7 +120,10 @@
         <div class="tw-pb-2 tw-text-dark-0">
           {{ collection.description }}
         </div>
-        <div v-if="collection._id === '65803e82022bc90954ea3ea4'" class="tw-pb-2 tw-text-dark-0">
+        <div
+          v-if="collection._id === '65803e82022bc90954ea3ea4'"
+          class="tw-pb-2 tw-text-dark-0"
+        >
           1 NFT Per Wallet
         </div>
         <div class="tw-pb-2 tw-text-red-600" v-if="gettingProof">
@@ -354,6 +365,7 @@ import {
   seedzMintCollection,
 } from "@/services/AptosCollectionService";
 import imageNotFound from "@/utils/imageNotFound";
+import santa from "@/assets/video/wapal-santa.mp4";
 export default {
   props: { collection: { type: Object } },
   data() {
@@ -1136,6 +1148,10 @@ Get yours - ${link}
     if (this.collection) {
       if (this.collection.username === "proudlionsclub") {
         this.collection.username = "proud-lions-club";
+      }
+
+      if (this.collection.username === "wapal-santa") {
+        this.collection.video = santa;
       }
 
       this.setPhases();
