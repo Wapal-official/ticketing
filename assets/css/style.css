@@ -445,3 +445,8 @@ input:disabled {
 .default-data-table-header span {
   text-transform: uppercase;
 }
+
+/* Description */
+.description {
+  white-space: pre-line;
+}

@@ -99,7 +99,7 @@
             </div>
           </div>
         </div>
-        <div class="tw-text-dark-0 tw-pb-4">
+        <div class="tw-text-dark-0 tw-pb-4 description">
           {{ collection.description }}
         </div>
         <div
