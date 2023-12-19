@@ -449,4 +449,9 @@ input:disabled {
 /* Description */
 .description {
   white-space: pre-line;
+  word-break: break-word;
+}
+
+.description:first-line {
+  line-height: 0;
 }
