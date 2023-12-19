@@ -178,8 +178,10 @@ export default {
       }
 
       if (
-        !this.collection.candyMachine.whitelist_price &&
-        !this.collection.candyMachine.public_sale_price
+        (this.collection.candyMachine.whitelist_price === undefined ||
+          this.collection.candyMachine.whitelist_price === null) &&
+        (this.collection.candyMachine.public_sale_price === undefined ||
+          this.collection.candyMachine.public_sale_price === null)
       ) {
         return "";
       }
