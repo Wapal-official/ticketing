@@ -131,6 +131,14 @@ export default {
 
       const date = new Date();
 
+      if (this.collection.edition) {
+        if (date > publicSaleDate) {
+          return 1;
+        }
+
+        return 0;
+      }
+
       if (!whiteListDate) {
         if (date > publicSaleDate) {
           return 1;
