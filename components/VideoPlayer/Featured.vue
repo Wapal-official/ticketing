@@ -1,12 +1,11 @@
 <template>
   <div>
     <video
-      controls
-      controlslist="nodownload"
+      no-controls
       loop
-      playsinline
+      autoplay
       preload="metadata"
-      class="tw-w-full tw-h-full tw-object-cover"
+      class="tw-w-full tw-h-full tw-object-cover tw-rounded-xl"
     >
       <source :src="videoSource" />
     </video>
@@ -15,7 +14,6 @@
 
 <script lang="ts">
 export default {
-  name: "VideoPlayer",
   props: {
     source: { type: String },
   },
@@ -26,8 +24,7 @@ export default {
     };
   },
   mounted() {
-    const uncachedSource = this.source + "?refreshCache=true";
-    this.videoSource = uncachedSource;
+    this.videoSource = this.source;
   },
 };
 </script>

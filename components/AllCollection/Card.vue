@@ -4,11 +4,18 @@
     class="!tw-text-white tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
   >
     <div class="tw-text-sm tw-font-semibold">{{ collectionNumber }}.</div>
+    <div
+      class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
+      v-if="video"
+    >
+      <video-player-featured :source="video" />
+    </div>
     <img
       class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
       :src="collection?.image"
       :onerror="imageNotFound()"
       :alt="collection?.name"
+      v-else
     />
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1">
       <div class="tw-font-medium">{{ collection?.name }}</div>
@@ -38,6 +45,7 @@
 <script lang="ts">
 import { getCollection } from "@/services/CollectionService";
 import imageNotFound from "@/utils/imageNotFound";
+import santa from "@/assets/video/wapal-santa.MP4";
 export default {
   props: {
     collection: { type: Object },
@@ -47,14 +55,20 @@ export default {
     return {
       totalSupply: 0,
       minted: 0,
-      imageNotFound,
       soldOut: false,
+      video: "",
+      imageNotFound,
     };
   },
   async mounted() {
     try {
+      if (this.collection.username === "wapal-santa") {
+        this.video = santa;
+      }
+
       const collectionRes = await getCollection(this.collection._id);
       const collection = collectionRes.collection[0];
+
       const res = await this.$store.dispatch(
         "walletStore/getSupplyAndMintedOfCollection",
         {
