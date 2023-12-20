@@ -6,6 +6,7 @@
       autoplay
       preload="metadata"
       class="tw-w-full tw-h-full tw-object-cover tw-rounded-xl"
+      muted
     >
       <source :src="videoSource" />
     </video>
