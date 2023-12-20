@@ -195,7 +195,11 @@
               target="_blank"
               v-if="collection.mintDetails && collection.mintDetails.link"
             >
-              Mint
+              {{
+                collection.username === "wapal-santa"
+                  ? "Get Your Present 🎁"
+                  : "Mint"
+              }}
             </a>
             <NuxtLink
               class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
