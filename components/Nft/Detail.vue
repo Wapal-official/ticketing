@@ -255,7 +255,11 @@
                 target="_blank"
                 v-if="collection.mintDetails && collection.mintDetails.link"
               >
-                Mint
+                {{
+                  collection.username === "wapal-santa"
+                    ? "Get Your Present 🎁"
+                    : "Mint"
+                }}
               </a>
               <button-primary
                 :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
