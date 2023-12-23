@@ -9,7 +9,7 @@ const APTOS_API_KEY = process.env.APTOS_API_KEY;
 const PID = process.env.PID;
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
 const CANDY_MACHINE_V2 =
-  "0xc72952110d38e26a3b5308558460c577f3793f9647699cd5b1dae08ee79698a5";
+  "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac";
 const CANDY_MACHINE_V1 =
   "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0";
 
