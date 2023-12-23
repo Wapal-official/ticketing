@@ -105,7 +105,7 @@ export default {
         isVerified: true,
       };
 
-      // this.collections.push(monkeysCollection);
+      this.collections.push(monkeysCollection);
 
       const res = await getFeaturedCollection();
       this.collections.push(...res);

@@ -87,9 +87,7 @@ export default {
       },
       username: "monkkesanturies",
     };
-
-    // this.featuredCollections.push(collection);
-
+    this.featuredCollections.push(collection);
     const auctionRes = await getFeaturedAuctions();
 
     this.featuredAuctions.push(...auctionRes);
@@ -102,6 +100,9 @@ export default {
       centeredSlides: true,
       rewind: true,
       slidesPerView: 1,
+      autoplay: {
+        delay: 6000,
+      },
     });
   },
   methods: {
