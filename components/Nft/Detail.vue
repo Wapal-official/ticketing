@@ -369,7 +369,7 @@ import {
   seedzMintCollection,
 } from "@/services/AptosCollectionService";
 import imageNotFound from "@/utils/imageNotFound";
-import santa from "@/assets/video/wapal-santa.mp4";
+import santa from "@/assets/video/wapal-santa.MP4";
 export default {
   props: { collection: { type: Object } },
   data() {
