@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tw-w-full tw-h-full tw-rounded-xl">
     <video
       no-controls
       loop

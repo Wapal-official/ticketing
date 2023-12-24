@@ -197,7 +197,7 @@
             >
               {{
                 collection.username === "wapal-santa"
-                  ? "Get Your Present 🎁"
+                  ? "Reveal Your Present 🎁"
                   : "Mint"
               }}
             </a>
@@ -272,7 +272,7 @@ import {
   seedzMintCollection,
 } from "@/services/AptosCollectionService";
 
-import santa from "@/assets/video/wapal-santa.MP4";
+import santa from "@/assets/video/wapal-santa.mp4";
 export default {
   props: {
     propCollection: { type: Object },

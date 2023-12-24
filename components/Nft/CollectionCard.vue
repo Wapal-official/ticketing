@@ -95,7 +95,7 @@
 <script lang="ts">
 import aptIcon from "@/assets/img/apt.svg";
 import imageNotFound from "@/utils/imageNotFound";
-import santa from "@/assets/video/wapal-santa.MP4";
+import santa from "@/assets/video/wapal-santa.mp4";
 export default {
   props: {
     collection: { type: Object },
