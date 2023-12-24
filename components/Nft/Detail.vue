@@ -156,56 +156,62 @@
             class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-col md:tw-items-start md:tw-justify-start"
           >
             <div
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+              class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-col md:tw-items-start md:tw-justify-start tw-w-full"
+              v-if="collection.username !== 'wapal-santa'"
             >
               <div
-                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
-                v-if="
-                  collection.isEdition && collection.edition === 'open-edition'
-                "
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               >
-                <div class="tw-text-white/70">
-                  Total Minted: {{ resource.minted }}
-                </div>
-                <div v-if="currentSale.mint_price == 0">Free Mint</div>
                 <div
-                  v-if="currentSale.mint_price && currentSale.mint_price != 0"
+                  class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+                  v-if="
+                    collection.isEdition &&
+                    collection.edition === 'open-edition'
+                  "
                 >
-                  Price {{ currentSale.mint_price }}
-                  {{
-                    collection.seed && collection.seed.coin_type
-                      ? collection.seed.coin_type
-                      : "APT"
-                  }}
+                  <div class="tw-text-white/70">
+                    Total Minted: {{ resource.minted }}
+                  </div>
+                  <div v-if="currentSale.mint_price == 0">Free Mint</div>
+                  <div
+                    v-if="currentSale.mint_price && currentSale.mint_price != 0"
+                  >
+                    Price {{ currentSale.mint_price }}
+                    {{
+                      collection.seed && collection.seed.coin_type
+                        ? collection.seed.coin_type
+                        : "APT"
+                    }}
+                  </div>
                 </div>
-              </div>
-              <div
-                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
-                v-else
-              >
-                <div class="tw-text-white/70">
-                  {{ resource.minted }}/{{ resource.total_supply }} Minted
-                </div>
-                <div v-if="currentSale.mint_price == 0">Free Mint</div>
                 <div
-                  v-if="currentSale.mint_price && currentSale.mint_price != 0"
+                  class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+                  v-else
                 >
-                  Price {{ currentSale.mint_price }}
-                  {{
-                    collection.seed && collection.seed.coin_type
-                      ? collection.seed.coin_type
-                      : "APT"
-                  }}
+                  <div class="tw-text-white/70">
+                    {{ resource.minted }}/{{ resource.total_supply }} Minted
+                  </div>
+                  <div v-if="currentSale.mint_price == 0">Free Mint</div>
+                  <div
+                    v-if="currentSale.mint_price && currentSale.mint_price != 0"
+                  >
+                    Price {{ currentSale.mint_price }}
+                    {{
+                      collection.seed && collection.seed.coin_type
+                        ? collection.seed.coin_type
+                        : "APT"
+                    }}
+                  </div>
                 </div>
-              </div>
-              <div
-                class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
-                v-if="collection.edition !== 'open-edition'"
-              >
                 <div
-                  class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
-                  id="resourceMintedPercent"
-                ></div>
+                  class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+                  v-if="collection.edition !== 'open-edition'"
+                >
+                  <div
+                    class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
+                    id="resourceMintedPercent"
+                  ></div>
+                </div>
               </div>
             </div>
             <div

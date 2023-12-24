@@ -137,8 +137,10 @@
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
             v-else
           >
+          <div class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6">
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+              v-if="collection.username !== 'wapal-santa'"
             >
               <div
                 class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
@@ -189,6 +191,7 @@
                 ></div>
               </div>
             </div>
+          </div>
             <a
               class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
               :href="collection.mintDetails.link"
