@@ -14,6 +14,7 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
 import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
+import { OKXWallet } from "@okwallet/aptos-wallet-adapter";
 import { AptosClient, HexString, TxnBuilderTypes } from "aptos";
 import axios from "axios";
 
@@ -44,6 +45,7 @@ const wallets = [
     network: network,
     bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
   }),
+  new OKXWallet(),
 ];
 
 export const wallet = new WalletCore(wallets);

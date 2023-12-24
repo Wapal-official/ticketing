@@ -257,7 +257,7 @@
               >
                 {{
                   collection.username === "wapal-santa"
-                    ? "Get Your Present 🎁"
+                    ? "Reveal Your Present 🎁"
                     : "Mint"
                 }}
               </a>
