@@ -1,16 +1,26 @@
 <template>
-  <div class="tw-w-full tw-container tw-mx-auto tw-px-4 tw-pt-20 tw-pb-14">
-    <h1 class="tw-text-xl tw-font-semibold tw-py-4">Auctions</h1>
-    <p v-if="auctions.length === 0 && !loading" class="tw-py-4 tw-text-lg">
-      No nfts in auction
-    </p>
+  <div class="tw-container tw-mx-auto">
+    <landing-section-heading heading="Auctions" class="tw-pb-8" />
     <div
-      class="tw-grid tw-w-full tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2 md:tw-grid-rows-2 lg:tw-grid-cols-3 lg:grid-rows-1 1xl:tw-grid-cols-4 lg:tw-grid-rows-1 lg:tw-gap-12"
-      v-else
+      class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-x-6 tw-gap-y-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 1xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
+      v-if="auctions.length > 0"
     >
-      <AuctionCard v-for="(item, i) in auctions" :key="i" :auction="item" />
+      <auction-landing-card
+        v-for="(auction, index) in auctions"
+        :key="index"
+        :auction="auction"
+      />
     </div>
-    <ReusableLoading v-if="!allEnd" />
+    <div class="py-16" v-if="!allEnd">
+      <reusable-loading />
+    </div>
+
+    <div
+      v-if="allEnd && auctions.length === 0"
+      class="tw-w-full tw-text-center tw-text-xl tw-text-primary-1"
+    >
+      No Auction
+    </div>
     <v-card
       color="transparent"
       v-if="!allEnd"
@@ -31,6 +41,7 @@ import {
   getEndedAuctions,
 } from "@/services/AuctionService";
 export default {
+  layout: "all-collection",
   data() {
     return {
       allEnd: false,
@@ -49,8 +60,8 @@ export default {
     },
   },
   async created() {
+    this.loading = true;
     await this.fetchAuctions();
-    this.loading = false;
   },
   methods: {
     async fetchAuctions() {
@@ -63,6 +74,8 @@ export default {
         if (resp.length == 0) {
           this.liveEnd = true;
           this.page = 0;
+
+          this.fetchAuctions();
         } else {
           this.auctions.push(...resp);
         }

@@ -1,110 +1,34 @@
 <template>
-  <div
-    class="tw-container tw-mx-auto tw-px-4 tw-pt-20 tw-pb-14 md:tw-px-8 tw-min-h-screen"
-  >
-    <h1 class="tw-text-white tw-text-3xl tw-pb-6">Fastest Soldout</h1>
-    <v-data-table
-      :headers="headers"
-      :items="paginatedCollections"
-      :items-per-page="5"
-      class="whitelist-data-table"
-      mobile-breakpoint="0"
-      :hide-default-footer="true"
-      disable-pagination
-      v-if="!loading || paginatedCollections.length > 0"
+  <div class="tw-container tw-mx-auto">
+    <landing-section-heading heading="Soldout Collection" class="tw-pb-8" />
+    <div
+      v-if="!loading && collections.length === 0"
+      class="tw-w-full tw-text-center tw-text-xl tw-text-primary-1"
     >
-      <template v-slot:body="{ items }">
-        <tbody>
-          <tr
-            v-for="item in items"
-            :key="item._id"
-            class="tw-cursor-pointer hover:!tw-bg-black/60"
-            @click="redirectToCollection(item.username)"
-          >
-            <td class="!tw-border-none">
-              {{ item.rank }}
-            </td>
-            <td
-              class="!tw-border-none tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-8"
-            >
-              <img
-                :src="item.image"
-                :alt="item.name"
-                class="tw-w-[50px] tw-h-[50px] tw-object-cover"
-              />{{ item.name }}
-            </td>
-            <td class="!tw-border-none">
-              {{ getFormattedTimeForSoldOutIn(item.soldOutIn) }}
-            </td>
-            <td class="!tw-border-none">{{ item.price }} APT</td>
-            <td class="!tw-border-none">
-              {{ item.supply }}
-            </td>
-          </tr>
-        </tbody>
-      </template>
-    </v-data-table>
-    <div v-if="loading">
-      <loading />
+      No Collections
+    </div>
+    <div
+      class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-x-6 tw-gap-y-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 1xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
+      v-else
+    >
+      <nft-collection-card
+        v-for="(collection, index) in collections"
+        :key="index"
+        :collection="collection"
+      />
+    </div>
+    <div class="py-16" v-if="loading">
+      <reusable-loading />
     </div>
   </div>
 </template>
 <script lang="ts">
-import Loading from "@/components/Reusable/Loading.vue";
-
 import { getCollections } from "@/services/CollectionService";
 
 export default {
-  components: { Loading },
+  layout: "all-collection",
   data() {
     return {
-      headers: [
-        {
-          text: "Rank",
-          align: "start",
-          sortable: true,
-          value: "rank",
-          width: "100px",
-          class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
-        },
-        {
-          text: "Collection Name",
-          align: "start",
-          sortable: true,
-          value: "name",
-          width: "300px",
-          class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
-        },
-        {
-          text: "Soldout In",
-          align: "start",
-          sortable: true,
-          value: "soldOutIn",
-          width: "100px",
-          class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
-        },
-        {
-          text: "Price",
-          align: "start",
-          sortable: true,
-          value: "price",
-          width: "100px",
-          class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
-        },
-        {
-          text: "Items",
-          align: "start",
-          sortable: true,
-          value: "supply",
-          width: "100px",
-          class:
-            "!tw-text-white !tw-border-b-wapal-pink !tw-text-base tw-font-normal",
-        },
-      ],
       collections: [],
       paginatedCollections: [],
       loading: true,
@@ -136,22 +60,9 @@ export default {
             soldOutIn = Math.floor((soldOutTime - publicSaleTime) / 1000);
           }
 
-          this.collections.push({
-            _id: collection._id,
-            rank: 1,
-            name: collection.name,
-            image: collection.image,
-            soldOutIn: soldOutIn,
-            supply: collection.supply,
-            price: collection.candyMachine.public_sale_price,
-            username: collection.username,
-          });
+          this.collections.push(collection);
         }
       });
-
-      this.sortCollectionBasedOnSoldOutTime();
-
-      this.rankCollectionBasedOnSoldOutTime();
 
       this.paginatedCollections = this.collections;
 

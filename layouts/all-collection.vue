@@ -22,7 +22,13 @@ export default {
       collection: null,
       loading: true,
       tab: 0,
-      tabs: ["Latest Collection", "Upcoming Collection"],
+      tabs: [
+        "Latest Collection",
+        "Upcoming Collection",
+        "Soldout Collections",
+        "Editions",
+        "Auctions",
+      ],
     };
   },
   async asyncData({ from }: { from: any }) {
@@ -44,6 +50,12 @@ export default {
       this.tab = 0;
     } else if (this.$route.path === "/upcoming-collection") {
       this.tab = 1;
+    } else if (this.$route.path === "/fastest-soldout") {
+      this.tab = 2;
+    } else if (this.$route.path === "/editions") {
+      this.tab = 3;
+    } else if (this.$route.path === "/auctions") {
+      this.tab = 4;
     }
 
     this.loading = false;
@@ -59,6 +71,15 @@ export default {
         case 1:
           this.$router.push("/upcoming-collection");
           break;
+        case 2:
+          this.$router.push("/fastest-soldout");
+          break;
+        case 3:
+          this.$router.push("/editions");
+          break;
+        case 4:
+          this.$router.push("/auctions");
+          break;
         default:
           this.$router.push("/latest-collection");
           break;
@@ -72,6 +93,12 @@ export default {
           this.tab = 0;
         } else if (this.$route.path === "/upcoming-collection") {
           this.tab = 1;
+        } else if (this.$route.path === "/fastest-soldout") {
+          this.tab = 2;
+        } else if (this.$route.path === "/editions") {
+          this.tab = 3;
+        } else if (this.$route.path === "/auctions") {
+          this.tab = 4;
         }
 
         this.$refs.tab.scrollIntoView({ behavior: "smooth" });

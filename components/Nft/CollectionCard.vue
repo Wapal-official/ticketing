@@ -28,7 +28,7 @@
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5"
         >
           <h2 class="tw-font-medium tw-text-lg">
-            {{ collection?.name }}
+            {{ getDisplayName }}
           </h2>
           <i
             class="bx bxs-badge-check !tw-text-primary-1"
@@ -51,7 +51,18 @@
           </div>
           <div class="tw-text-white tw-font-normal" v-else>Free Mint</div>
         </div>
-        <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
+        <div
+          class="tw-flex tw-flex-col tw-items-end tw-justify-end"
+          v-if="collection?.isEdition"
+        >
+          <div class="tw-uppercase tw-text-xs tw-font-semibold tw-text-dark-2">
+            Status
+          </div>
+          <div class="tw-text-white tw-font-normal">
+            {{ this.resource.paused ? "Paused" : "Live" }}
+          </div>
+        </div>
+        <div class="tw-flex tw-flex-col tw-items-end tw-justify-end" v-else>
           <div class="tw-uppercase tw-text-xs tw-font-semibold tw-text-dark-2">
             Item
           </div>
@@ -105,6 +116,7 @@ export default {
     return {
       status: true,
       video: "",
+      resource: { paused: false },
       aptIcon,
       imageNotFound,
     };
@@ -185,6 +197,13 @@ export default {
 
       return `/nft/draft/${this.collection._id}`;
     },
+    getDisplayName() {
+      if (this.collection.name.length > 23) {
+        return this.collection.name.slice(0, 23) + "...";
+      }
+
+      return this.collection.name;
+    },
   },
   methods: {
     countdownComplete() {
@@ -226,11 +245,21 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
     this.status = this.live;
 
     if (this.collection.username === "wapal-santa") {
       this.video = santa;
+    }
+
+    if (this.collection.isEdition) {
+      this.resource = await this.$store.dispatch(
+        "walletStore/getSupplyAndMintedOfCollection",
+        {
+          resourceAccountAddress: this.collection.candyMachine.resource_account,
+          candyMachineId: this.collection.candyMachine.candy_id,
+        }
+      );
     }
   },
 };
