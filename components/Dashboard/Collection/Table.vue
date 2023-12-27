@@ -55,7 +55,11 @@
               >
                 <span>{{ item[header.value] }}</span>
                 <span v-if="item[header.value] !== 'TBD'">
-                  <img :src="aptIcon" alt="apt"
+                  <img
+                    :src="getCoinTypeOfCollection(item).imageDark"
+                    alt="coin type"
+                    width="14px"
+                    height="14px"
                 /></span>
               </div>
               <div
@@ -104,6 +108,7 @@
 <script>
 import aptIcon from "@/assets/img/aptBlack.svg";
 import imageNotFound from "@/utils/imageNotFound";
+import { getCoinType } from "~/utils/getCoinType";
 export default {
   props: { headers: { type: Array }, items: { type: Array } },
   data() {
@@ -111,6 +116,16 @@ export default {
       aptIcon,
       imageNotFound,
     };
+  },
+  methods: {
+    getCoinTypeOfCollection(collection) {
+      console.log(collection);
+      return getCoinType(
+        collection.seed && collection.seed.coin_type
+          ? collection.seed.coin_type
+          : ""
+      );
+    },
   },
 };
 </script>

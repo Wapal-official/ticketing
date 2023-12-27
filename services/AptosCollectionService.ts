@@ -366,7 +366,7 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
 
   let programId = process.env.CANDY_MACHINE_V2;
 
-  if (candyMachineArguments.seedz) {
+  if (candyMachineArguments.coinType === "SEEDZ") {
     programId = process.env.SEEDZ_CANDY_MACHINE;
   }
 
