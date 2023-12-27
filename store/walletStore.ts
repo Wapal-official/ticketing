@@ -34,6 +34,8 @@ export const client = new AptosClient(process.env.NODE_URL || "");
 
 const wallets = [
   new PetraWallet(),
+  new OKXWallet(),
+  new RiseWallet(),
   new PontemWallet(),
   new MartianWallet(),
   new FewchaWallet(),
@@ -45,7 +47,6 @@ const wallets = [
     network: network,
     bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
   }),
-  new OKXWallet(),
 ];
 
 export const wallet = new WalletCore(wallets);
