@@ -237,8 +237,13 @@
                 placeholder="Whitelist Sale Price"
                 v-model="editCollection.whitelistPrice"
               >
-                <template #append-icon>
-                  <img :src="aptIcon" alt="apt icon" />
+              <template #append-icon>
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
                 </template>
               </input-text-field>
               <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
@@ -382,9 +387,14 @@
                       v-model="phase.mint_price"
                       :required="true"
                     >
-                      <template #append-icon>
-                        <img :src="aptIcon" alt="apt icon" />
-                      </template>
+                    <template #append-icon>
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
+                </template>
                     </input-text-field>
 
                     <!-- <button
@@ -532,8 +542,13 @@
                 placeholder="Whitelist Sale Price"
                 v-model="editCollection.publicSalePrice"
               >
-                <template #append-icon>
-                  <img :src="aptIcon" alt="apt icon" />
+              <template #append-icon>
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
                 </template>
               </input-text-field>
               <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
@@ -593,6 +608,7 @@ import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import moment from "moment";
 
 import aptIcon from "@/assets/img/aptBlack.svg";
+import { getCoinType } from "@/utils/getCoinType";
 
 extend("date", {
   validate(value) {
@@ -1130,6 +1146,9 @@ export default {
 
       return counter !== phases.length;
     },
+    selectedCoinType(){
+      return getCoinType(this.collection.seed && this.collection.seed.coin_type ? this.collection.seed.coin_type  :'');
+    }
   },
 };
 </script>

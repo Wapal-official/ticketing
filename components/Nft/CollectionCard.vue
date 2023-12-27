@@ -111,7 +111,6 @@
   </NuxtLink>
 </template>
 <script lang="ts">
-import aptIcon from "@/assets/img/apt.svg";
 import imageNotFound from "@/utils/imageNotFound";
 import santa from "@/assets/video/wapal-santa.MP4";
 import { getCoinType } from "@/utils/getCoinType";
@@ -125,7 +124,6 @@ export default {
       status: true,
       video: "",
       resource: { paused: false },
-      aptIcon,
       imageNotFound,
     };
   },
