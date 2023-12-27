@@ -137,40 +137,25 @@
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
             v-else
           >
-          <div class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6">
             <div
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-              v-if="collection.username !== 'wapal-santa'"
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
             >
               <div
-                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
-                v-if="
-                  collection.isEdition && collection.edition === 'open-edition'
-                "
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+                v-if="collection.username !== 'wapal-santa'"
               >
-                <div class="tw-text-white/70">
-                  Total Minted: {{ resource.minted }}
-                </div>
-                <div v-if="getCurrentPrice !== 0">
-                  Price {{ getCurrentPrice }}
-                  {{
-                    collection.seed && collection.seed.coin_type
-                      ? collection.seed.coin_type
-                      : "APT"
-                  }}
-                </div>
-                <div v-else>Free Mint</div>
-              </div>
-              <div
-                class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
-                v-else
-              >
-                <div class="tw-text-white/70">
-                  {{ resource.minted }}/{{ resource.total_supply }} Minted
-                </div>
-                <div v-if="getCurrentPrice !== undefined">
+                <div
+                  class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
+                  v-if="
+                    collection.isEdition &&
+                    collection.edition === 'open-edition'
+                  "
+                >
+                  <div class="tw-text-white/70">
+                    Total Minted: {{ resource.minted }}
+                  </div>
                   <div v-if="getCurrentPrice !== 0">
-                    {{ getCurrentPrice }}
+                    Price {{ getCurrentPrice }}
                     {{
                       collection.seed && collection.seed.coin_type
                         ? collection.seed.coin_type
@@ -179,19 +164,37 @@
                   </div>
                   <div v-else>Free Mint</div>
                 </div>
-              </div>
-
-              <div
-                class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
-                v-if="collection.edition !== 'open-edition'"
-              >
                 <div
-                  class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
-                  ref="mintProgress"
-                ></div>
+                  class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
+                  v-else
+                >
+                  <div class="tw-text-white/70">
+                    {{ resource.minted }}/{{ resource.total_supply }} Minted
+                  </div>
+                  <div v-if="getCurrentPrice !== undefined">
+                    <div v-if="getCurrentPrice !== 0">
+                      {{ getCurrentPrice }}
+                      {{
+                        collection.seed && collection.seed.coin_type
+                          ? collection.seed.coin_type
+                          : "APT"
+                      }}
+                    </div>
+                    <div v-else>Free Mint</div>
+                  </div>
+                </div>
+
+                <div
+                  class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+                  v-if="collection.edition !== 'open-edition'"
+                >
+                  <div
+                    class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
+                    ref="mintProgress"
+                  ></div>
+                </div>
               </div>
             </div>
-          </div>
             <a
               class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
               :href="collection.mintDetails.link"
@@ -390,7 +393,10 @@ export default {
 
           let res: any = null;
 
-          if (this.collection.seed && this.collection.seed.seedz) {
+          if (
+            this.collection.seed &&
+            this.collection.seed.coin_type === "SEEDZ"
+          ) {
             res = await seedzMintCollection({
               candy_machine_id: this.collection.candyMachine.candy_id,
               candy_object: this.collection.candyMachine.resource_account,

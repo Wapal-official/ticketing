@@ -676,7 +676,10 @@ export default {
             mintLimit: this.mintLimit,
           });
         } else {
-          if (this.collection.seed && this.collection.seed.seedz) {
+          if (
+            this.collection.seed &&
+            this.collection.seed.coin_type === "SEEDZ"
+          ) {
             res = await seedzMintCollection({
               candy_machine_id: this.collection.candyMachine.candy_id,
               candy_object: this.collection.candyMachine.resource_account,

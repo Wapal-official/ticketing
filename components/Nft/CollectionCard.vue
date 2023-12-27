@@ -47,7 +47,14 @@
             class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
             v-if="getPrice !== 0"
           >
-            {{ getPrice }}<span><img :src="aptIcon" alt="apt" /></span>
+            {{ getPrice
+            }}<span
+              ><img
+                :src="selectedCoinType.imageWhite"
+                alt="coinType"
+                width="14px"
+                height="14px"
+            /></span>
           </div>
           <div class="tw-text-white tw-font-normal" v-else>Free Mint</div>
         </div>
@@ -107,6 +114,7 @@
 import aptIcon from "@/assets/img/apt.svg";
 import imageNotFound from "@/utils/imageNotFound";
 import santa from "@/assets/video/wapal-santa.MP4";
+import { getCoinType } from "@/utils/getCoinType";
 export default {
   props: {
     collection: { type: Object },
@@ -203,6 +211,13 @@ export default {
       }
 
       return this.collection.name;
+    },
+    selectedCoinType() {
+      return getCoinType(
+        this.collection.seed && this.collection.seed.coin_type
+          ? this.collection.seed.coin_type
+          : ""
+      );
     },
   },
   methods: {
