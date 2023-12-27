@@ -206,7 +206,16 @@
                 label="Mint Price"
                 v-model="collection.public_sale_price"
                 placeholder="Eg. 1"
-              />
+              >
+                <template #append-icon>
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
+                </template>
+              </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
@@ -471,6 +480,7 @@ import {
 import { createCollection } from "@/services/CollectionService";
 
 import axios from "axios";
+import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
 
 extend("percentage", {
   validate(value) {
@@ -571,10 +581,7 @@ export default {
         // { name: "Limited Edition", id: "limited-edition" },
         { name: "Open Edition", id: "open-edition" },
       ],
-      coinTypes: [
-        { name: "APT", value: "apt" },
-        { name: "Seedz", value: "seedz" },
-      ],
+      coinTypes: getAvailableCoinTypes(),
       coinType: "APT",
       socialError: false,
       socialErrorMessage: "",
@@ -634,6 +641,9 @@ export default {
       }
 
       return selectedType;
+    },
+    selectedCoinType() {
+      return getCoinType(this.collection.coinType);
     },
   },
   async mounted() {},
@@ -786,7 +796,7 @@ export default {
           total_supply: 1,
           public_mint_limit: 0,
           is_open_edition: false,
-          seedz: this.collection.seedz,
+          coinType: this.collection.coinType,
         };
 
         const res = await createCollectionV2(candyMachineArguments);
@@ -1035,7 +1045,7 @@ export default {
         total_supply: 1,
         public_mint_limit: this.collection.public_mint_limit,
         is_open_edition: true,
-        seedz: this.collection.seedz,
+        coinType: this.collection.coinType,
       };
 
       const res = await createCollectionV2(candyMachineArguments);
@@ -1044,14 +1054,10 @@ export default {
       this.collection.txnhash = res.transactionHash;
     },
     checkCoinType() {
-      if (this.collection.coinType === "Seedz") {
+      if (this.collection.coinType === "SEEDZ") {
         this.collection.candy_id = process.env.SEEDZ_CANDY_MACHINE;
-
-        this.collection.seedz = true;
       } else {
         this.collection.candy_id = process.env.CANDY_MACHINE_V2;
-
-        this.collection.seedz = false;
       }
     },
   },

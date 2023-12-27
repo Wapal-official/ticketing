@@ -187,6 +187,22 @@
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
 
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="coinType"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-auto-complete
+              v-model="collection.coinType"
+              :items="coinTypes"
+              placeholder="Select Coin Type"
+              label="Coin Type"
+              :required="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+
           <div
             class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
           >
@@ -252,7 +268,12 @@
                 :disabled="!whitelistEnabled"
               >
                 <template #append-icon>
-                  <img :src="aptIcon" alt="APT" />
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
                 </template>
               </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
@@ -301,7 +322,12 @@
                 :required="!publicSaleTBD"
               >
                 <template #append-icon>
-                  <img :src="aptIcon" alt="APT" />
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
                 </template>
               </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
@@ -366,7 +392,12 @@
                       :required="true"
                     >
                       <template #append-icon>
-                        <img :src="aptIcon" alt="APT" />
+                        <img
+                          :src="selectedCoinType.imageWhite"
+                          alt="Coin Type"
+                          width="14px"
+                          height="14px"
+                        />
                       </template>
                     </input-text-field>
 
@@ -532,6 +563,7 @@
               mint_price: phase.mint_price,
             }"
             :key="index"
+            :coinType="collection.coinType"
             v-if="collection.phases.length > 0"
           />
           <nft-mint-phase-box
@@ -540,6 +572,7 @@
               mint_time: collection.whitelist_sale_time,
               mint_price: collection.whitelist_price,
             }"
+            :coinType="collection.coinType"
             v-if="whitelistEnabled"
           />
           <nft-mint-phase-box
@@ -548,6 +581,7 @@
               mint_time: collection.public_sale_time,
               mint_price: collection.public_sale_price,
             }"
+            :coinType="collection.coinType"
           />
           <div
             class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
@@ -567,7 +601,7 @@
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
-import aptIcon from "@/assets/img/aptBlack.svg";
+import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
 import {
   createCollection,
   createDraft,
@@ -705,9 +739,9 @@ export default {
         resource_account: "",
         txnhash: "",
         un: "",
-        candy_id: process.env.CANDY_MACHINE_V2,
         phases: [{ name: "", mint_time: null, mint_price: null }],
         public_mint_limit: null,
+        coinType: "APT",
       },
       message: "",
       image: { name: null },
@@ -736,7 +770,7 @@ export default {
       publicSaleTBD: false,
       loading: false,
       saveAsDraft: false,
-      aptIcon,
+      coinTypes: getAvailableCoinTypes(),
     };
   },
   methods: {
@@ -823,6 +857,8 @@ export default {
 
         this.collection.baseURL = selectedFolder.metadata.baseURI;
 
+        this.checkCoinType();
+
         const tempCollection = { ...this.collection };
 
         tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
@@ -902,8 +938,7 @@ export default {
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify(tempCollection.phases));
         formData.append("isEdition", JSON.stringify(false));
-        formData.append("seedz", JSON.stringify(false));
-        formData.append("coin_type", "APT");
+        formData.append("coin_type", tempCollection.coinType);
 
         const draft_id = this.$route.params.id;
 
@@ -988,6 +1023,7 @@ export default {
         public_sale_mint_price: public_sale_price,
         total_supply: this.collection.supply,
         public_mint_limit: this.collection.public_mint_limit,
+        coinType: this.collection.coinType,
       };
 
       const res = await createCollectionV2(candyMachineArguments);
@@ -1038,6 +1074,7 @@ export default {
       formData.append("phases", JSON.stringify(tempCollection.phases));
       formData.append("isApproved", "false");
       formData.append("isEdition", JSON.stringify(false));
+      formData.append("coin_type", tempCollection.coinType);
 
       if (this.image.name) {
         formData.append("image", this.image);
@@ -1141,10 +1178,20 @@ export default {
         });
       }
     },
+    checkCoinType() {
+      if (this.collection.coinType === "SEEDZ") {
+        this.collection.candy_id = process.env.SEEDZ_CANDY_MACHINE;
+      } else {
+        this.collection.candy_id = process.env.CANDY_MACHINE_V2;
+      }
+    },
   },
   computed: {
     tbd() {
       return this.whitelistTBD || this.publicSaleTBD;
+    },
+    selectedCoinType() {
+      return getCoinType(this.collection.coinType);
     },
   },
   async mounted() {
