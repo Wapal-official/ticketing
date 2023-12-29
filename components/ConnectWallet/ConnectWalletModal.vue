@@ -18,20 +18,13 @@
       </button>
     </div>
     <div
-      class="tw-w-full tw-bg-primary-1 tw-text-white tw-my-2 tw-px-4 tw-py-2 tw-flex tw-text-xs lg:tw-hidden"
-    >
-      Please use Kiwi Browser for wallet connection if you are using mobile
-      devices
-    </div>
-    <div
       class="tw-bg-dark-8 tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-h-[500px] tw-overflow-auto no-scrollbar"
     >
       <button
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-py-4 tw-px-8 tw-transition-all tw-duration-200 tw-ease-linear tw-relative before:tw-w-full before:tw-h-full before:tw-absolute before:tw-opacity-0 before:tw-left-0 before:tw-bg-white hover:before:tw-opacity-[0.08] disabled:hover:before:tw-opacity-0"
         v-for="wallet in wallets"
         :key="wallet.name"
-        @click="connectWallet(wallet.name)"
-        :disabled="wallet.readyState === 'NotDetected'"
+        @click="connectWallet(wallet)"
       >
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
@@ -85,11 +78,16 @@ export default {
     };
   },
   methods: {
-    async connectWallet(wallet: string) {
+    async connectWallet(wallet: any) {
       try {
+        if (wallet.readyState === "NotDetected") {
+          window.open(wallet.url, "_blank");
+          return;
+        }
+
         const res = await this.$store.dispatch(
           "walletStore/connectWallet",
-          wallet
+          wallet.name
         );
         if (res) {
           this.$emit("walletConnected");

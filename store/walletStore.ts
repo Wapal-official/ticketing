@@ -41,7 +41,6 @@ const wallets = [
   new MartianWallet(),
   new FewchaWallet(),
   new SpikaWallet(),
-  new RiseWallet(),
   new TrustWallet(),
   new MSafeWalletAdapter(),
   new BloctoWallet({
