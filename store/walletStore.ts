@@ -19,6 +19,7 @@ import { AptosClient, HexString, TxnBuilderTypes } from "aptos";
 import axios from "axios";
 
 import { getPrice } from "@/services/AssetsService";
+import { aptToUsd, arToUsd } from "~/services/UtilityService";
 
 const GRAPHQL_URL = process.env.GRAPHQL_URL ? process.env.GRAPHQL_URL : "";
 
@@ -40,7 +41,6 @@ const wallets = [
   new MartianWallet(),
   new FewchaWallet(),
   new SpikaWallet(),
-  new RiseWallet(),
   new TrustWallet(),
   new MSafeWalletAdapter(),
   new BloctoWallet({
@@ -426,24 +426,19 @@ export const actions = {
   },
 
   async checkBalanceForFolderUpload() {
-    const arweaveRate = await this.$axios.get(
-      "https://api.coinconvert.net/convert/ar/usd?amount=1"
-    );
-    const aptosRate = await this.$axios.get(
-      "https://api.coinconvert.net/convert/apt/usd?amount=1"
-    );
+    const arweaveRate = await arToUsd();
+    const aptosRate = await aptToUsd();
 
     const res = await getPrice();
 
     const price = res.data.price;
 
-    const totalAR = (price / Math.pow(10, 12)) * arweaveRate.data.USD;
+    const totalAR = (price / Math.pow(10, 12)) * arweaveRate;
 
     const uploadMultiplier = 1.091;
     const oracleFee = 1.1;
 
-    const totalAPT =
-      (totalAR / aptosRate.data.USD) * uploadMultiplier * oracleFee;
+    const totalAPT = (totalAR / aptosRate) * uploadMultiplier * oracleFee;
 
     return {
       requiredBalance: totalAPT.toFixed(8),
@@ -840,24 +835,19 @@ export const actions = {
     }
   },
   async getAptForFileUpload() {
-    const arweaveRate = await this.$axios.get(
-      "https://api.coinconvert.net/convert/ar/usd?amount=1"
-    );
-    const aptosRate = await this.$axios.get(
-      "https://api.coinconvert.net/convert/apt/usd?amount=1"
-    );
+    const arweaveRate = await arToUsd();
+    const aptosRate = await aptToUsd();
 
     // const res = await getPrice();
 
     const price = 0.005 * Math.pow(10, 12);
 
-    const totalAR = (price / Math.pow(10, 12)) * arweaveRate.data.USD;
+    const totalAR = (price / Math.pow(10, 12)) * arweaveRate;
 
     const uploadMultiplier = 1.091;
     const oracleFee = 1.1;
 
-    const totalAPT =
-      (totalAR / aptosRate.data.USD) * uploadMultiplier * oracleFee;
+    const totalAPT = (totalAR / aptosRate) * uploadMultiplier * oracleFee;
 
     return {
       requiredBalance: totalAPT.toFixed(8),
