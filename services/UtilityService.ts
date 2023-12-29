@@ -7,8 +7,6 @@ export const aptToUsd = async () => {
     );
     const value = usd.data.value.toFixed(2);
 
-    console.log(value);
-
     return value;
   } catch (e) {
     console.log(e);
