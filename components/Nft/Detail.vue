@@ -555,7 +555,7 @@ export default {
         } else if (this.collection._id === "654e26260a58324d3465b4cb") {
           this.resource = {
             minted: this.resource.minted,
-            total_supply: 950,
+            total_supply: 955,
             paused: this.resource.paused,
           };
         }
@@ -757,7 +757,7 @@ export default {
           } else if (this.collection._id === "654e26260a58324d3465b4cb") {
             res = {
               minted: this.resource.minted,
-              total_supply: 950,
+              total_supply: 955,
               paused: this.resource.paused,
             };
           }
@@ -1278,7 +1278,7 @@ Get yours - ${link}
       } else if (this.collection._id === "654e26260a58324d3465b4cb") {
         this.resource = {
           minted: this.resource.minted,
-          total_supply: 950,
+          total_supply: 955,
           paused: this.resource.paused,
         };
       }
