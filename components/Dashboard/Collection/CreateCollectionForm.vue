@@ -98,6 +98,19 @@
               {{ socialErrorMessage }}
             </div>
           </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="tweetLength"
+            rules="tweetLength"
+            v-slot="{ errors }"
+          >
+            <input-text-area
+              label="Tweet Template"
+              v-model="collection.tweet"
+              placeholder="Tweet Template"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
           >
@@ -696,6 +709,15 @@ extend("descriptionLength", {
   },
   message: "This field must not exceed 200 characters",
 });
+extend("tweetLength", {
+  validate(value) {
+    if (value.length > 256) {
+      return false;
+    }
+    return true;
+  },
+  message: "This field must not exceed 256 characters",
+});
 
 extend("social", {
   params: ["twitter", "discord"],
@@ -742,6 +764,7 @@ export default {
         phases: [{ name: "", mint_time: null, mint_price: null }],
         public_mint_limit: null,
         coinType: "APT",
+        tweet: "",
       },
       message: "",
       image: { name: null },
@@ -939,6 +962,7 @@ export default {
         formData.append("phases", JSON.stringify(tempCollection.phases));
         formData.append("isEdition", JSON.stringify(false));
         formData.append("coin_type", tempCollection.coinType);
+        formData.append("tweet", tempCollection.tweet);
 
         const draft_id = this.$route.params.id;
 
@@ -1075,6 +1099,7 @@ export default {
       formData.append("isApproved", "false");
       formData.append("isEdition", JSON.stringify(false));
       formData.append("coin_type", tempCollection.coinType);
+      formData.append("tweet", tempCollection.tweet);
 
       if (this.image.name) {
         formData.append("image", this.image);
