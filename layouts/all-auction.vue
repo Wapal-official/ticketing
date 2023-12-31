@@ -1,9 +1,13 @@
 <template>
   <default-layout>
-    <auction-detail :propAuctionName="featuredAuctionName" v-if="!loading" />
-    <loading-collection v-else />
+    <auction-detail
+      :propAuctionName="featuredAuctionName"
+      v-if="!loading && featuredAuctionName"
+    />
+    <loading-collection v-else-if="loading" />
     <div
       class="tw-container tw-mx-auto tw-px-8 tw-pb-24 lg:tw-px-[3.75em]"
+      :class="{ 'tw-pt-8': !loading }"
       ref="tab"
     >
       <Tab :tab="tab" :tabs="tabs" @tabChanged="tabChanged" class="tw-mb-10" />
@@ -29,9 +33,11 @@ export default {
   async mounted() {
     const auctionRes = await getFeaturedAuctions();
 
-    const auction = auctionRes[0];
+    if (auctionRes.length > 0) {
+      const auction = auctionRes[0];
 
-    this.featuredAuctionName = auction.auction_name;
+      this.featuredAuctionName = auction.auction_name;
+    }
 
     if (this.$route.path === "/live-auction") {
       this.tab = 0;

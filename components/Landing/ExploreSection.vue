@@ -1,5 +1,8 @@
 <template>
-  <section class="tw-w-full tw-bg-dark-8 tw-py-10 tw-px-8 md:tw-px-0">
+  <section
+    class="tw-w-full tw-bg-dark-8 tw-py-10 tw-px-8 md:tw-px-0"
+    id="explore"
+  >
     <div class="tw-container tw-mx-auto md:tw-px-8 xl:tw-px-[3.75rem]">
       <tab
         :tab="tabNumber"

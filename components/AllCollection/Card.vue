@@ -19,7 +19,14 @@
     />
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1">
       <div class="tw-font-medium">{{ collection?.name }}</div>
-      <div class="tw-text-dark-2 tw-text-sm tw-font-medium">
+      <div
+        class="tw-text-dark-2 tw-text-sm tw-font-medium"
+        v-if="collection?.isEdition"
+      >
+        {{ minted }}
+        Minted
+      </div>
+      <div class="tw-text-dark-2 tw-text-sm tw-font-medium" v-else>
         {{ minted }}/{{ totalSupply }}
         Minted
       </div>
@@ -31,13 +38,18 @@
           :class="{
             'tw-bg-utility-green': getLiveStatus,
             'tw-bg-utility-yellow': !getLiveStatus,
-            '!tw-bg-utility-red': soldOut,
+            '!tw-bg-utility-red': soldOut || paused,
           }"
         ></div>
-        <div class="tw-font-medium tw-text-[0.875rem]" v-if="!soldOut">
+        <div
+          class="tw-font-medium tw-text-[0.875rem]"
+          v-if="!soldOut && !paused"
+        >
           {{ getLiveStatus ? "Live" : "Upcoming" }}
         </div>
-        <div class="tw-font-medium tw-text-[0.875rem]" v-else>Soldout</div>
+        <div class="tw-font-medium tw-text-[0.875rem]" v-else>
+          {{ soldOut ? "Soldout" : "Paused" }}
+        </div>
       </div>
     </div>
   </NuxtLink>
@@ -57,6 +69,7 @@ export default {
       minted: 0,
       soldOut: false,
       video: "",
+      paused: false,
       imageNotFound,
     };
   },
@@ -79,6 +92,7 @@ export default {
 
       this.totalSupply = res.total_supply;
       this.minted = res.minted;
+      this.paused = res.paused;
 
       if (this.collection._id === "642bf277c10560ca41e179fa") {
         this.totalSupply = 239;
