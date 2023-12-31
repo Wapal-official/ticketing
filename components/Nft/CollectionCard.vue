@@ -39,7 +39,10 @@
       <div
         class="tw-px-4 tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
       >
-        <div class="tw-flex tw-flex-col tw-items-start tw-justify-start">
+        <div
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start"
+          v-if="getPrice"
+        >
           <div class="tw-uppercase tw-text-xs tw-font-semibold tw-text-dark-2">
             Price
           </div>
@@ -58,6 +61,7 @@
           </div>
           <div class="tw-text-white tw-font-normal" v-else>Free Mint</div>
         </div>
+        <div v-else></div>
         <div
           class="tw-flex tw-flex-col tw-items-end tw-justify-end"
           v-if="collection?.isEdition"
