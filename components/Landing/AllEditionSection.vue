@@ -35,7 +35,7 @@
         v-else
       >
         <div
-          class="!tw-w-full !tw-h-[96px] tw-rounded-lg tw-cursor-pointer tw-bg-wapal-gray tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
+          class="!tw-w-full !tw-h-[96px] tw-rounded-lg tw-cursor-pointer tw-bg-dark-4 tw-transition-all tw-duration-100 tw-ease-linear tw-animate-pulse"
           v-for="index in 16"
           :key="index"
         ></div>
