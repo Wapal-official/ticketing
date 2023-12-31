@@ -1,11 +1,11 @@
 <template>
   <div class="tw-container tw-mx-auto">
-    <landing-section-heading heading="Latest Collection" class="tw-pb-8" />
+    <landing-section-heading heading="Live Editions" class="tw-pb-8" />
     <div
       v-if="!loading && collections.length === 0"
       class="tw-w-full tw-text-center tw-text-xl tw-text-primary-1"
     >
-      No Collections
+      No Editions
     </div>
     <div
       class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-x-6 tw-gap-y-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 1xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
@@ -35,10 +35,10 @@
   </div>
 </template>
 <script lang="ts">
-import { getLiveCollections } from "@/services/CollectionService";
-import sanctuary from "@/assets/img/199.png";
+import { getAllEditions } from "@/services/EditionService";
+
 export default {
-  layout: "all-collection",
+  layout: "all-edition",
   data() {
     return {
       collections: [],
@@ -50,42 +50,33 @@ export default {
   },
   async created() {
     this.collections = [];
-
-    const monkeySanctuary = {
-      name: "Aptos Monkeys Sanctuary",
-      description:
-        "Sanctuaries are homes to the fighting Monkeys who stood their ground to protect their lands and fortunes.",
-      image: sanctuary,
-      twitter: "https://twitter.com/AptosMonkeys",
-      website: "https://www.aptosmonkeys.club/",
-      discord: "https://discord.com/invite/sFfe75BHQ3",
-      mintDetails: {
-        link: "https://monkeys.wapal.io",
-      },
-      candyMachine: {
-        public_sale_time: "2023-10-31T06:23:35.216Z",
-        resource_account:
-          "0x39f1338e6b69c3ed2f0caa95876e898dbe4c9b272d721626d577554015d033b8",
-        candy_id:
-          "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0",
-      },
-      status: {
-        sold_out: false,
-      },
-      username: "monkkesanturies",
-      supply: 500,
-    };
-
-    this.collections.push(monkeySanctuary);
   },
   methods: {
     async mapAllCollections() {
       this.page++;
       this.loading = true;
 
-      const collections = await getLiveCollections(this.page, 10);
+      const collections = await getAllEditions({ page: this.page, limit: 10 });
 
-      this.collections.push(...collections);
+      const pausedRes = await Promise.all(
+        collections.map(async (collection: any) => {
+          const res = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfCollection",
+            {
+              resourceAccountAddress: collection.candyMachine.resource_account,
+              candyMachineId: collection.candyMachine.candy_id,
+            }
+          );
+
+          collection.paused = res.paused;
+        })
+      );
+
+      const activeEditions = collections.filter(
+        (collection: any) => !collection.paused
+      );
+
+      this.collections.push(...activeEditions);
 
       if (collections.length === 0) {
         this.end = true;
