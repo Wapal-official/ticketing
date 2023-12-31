@@ -3,6 +3,7 @@
     <landing-featured-slider />
     <landing-explore-section />
     <landing-all-collection-section />
+    <landing-all-edition-section />
     <landing-auction-section />
     <landing-whitelist-opportunities />
   </div>
