@@ -98,6 +98,19 @@
               {{ socialErrorMessage }}
             </div>
           </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="tweetLength"
+            rules="tweetLength"
+            v-slot="{ errors }"
+          >
+            <input-text-area
+              label="Tweet Template"
+              v-model="collection.tweet"
+              placeholder="Tweet Template"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
           <div
             class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
           >
@@ -509,6 +522,16 @@ extend("link", {
   message: "Please enter a valid link",
 });
 
+extend("tweetLength", {
+  validate(value) {
+    if (value.length > 256) {
+      return false;
+    }
+    return true;
+  },
+  message: "This field must not exceed 256 characters",
+});
+
 export default {
   layout: "dashboard",
   components: { ValidationObserver, ValidationProvider },
@@ -547,6 +570,7 @@ export default {
         public_mint_limit: "",
         seedz: false,
         coinType: "APT",
+        tweet: "",
       },
       attribute: "",
       value: "",
@@ -965,6 +989,7 @@ export default {
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify([]));
+        formData.append("tweet", tempCollection.tweet);
 
         formData.append("image", imageUrl);
 

@@ -342,6 +342,9 @@
             <i class="bx bx-x tw-text-xl"></i>
           </button>
         </div>
+        <div class="tw-w-full tw-text-base">
+          <h3 class="tw-text-center">{{ collection.name }} Minted</h3>
+        </div>
         <div class="tw-w-full h-full tw-rounded">
           <img
             :src="collection.image"
@@ -351,12 +354,18 @@
         </div>
         <button-primary
           :fullWidth="true"
-          title="Share On Twitter"
+          title="Share on Twitter"
           :bordered="true"
           @click="shareOnTwitterAfterMinting"
         >
           <template #prepend-icon>
-            <i class="bx bxl-twitter tw-text-xl tw-pr-4"></i> </template
+            <img
+              :src="xLogo"
+              alt="X"
+              width="32px"
+              height="32px"
+              class="tw-pr-4"
+            /> </template
         ></button-primary>
       </div>
     </v-dialog>
@@ -376,6 +385,7 @@ import {
 } from "@/services/AptosCollectionService";
 import imageNotFound from "@/utils/imageNotFound";
 import santa from "@/assets/video/wapal-santa.MP4";
+import xLogo from "@/assets/img/x-logo.svg";
 export default {
   props: { collection: { type: Object } },
   data() {
@@ -419,6 +429,7 @@ export default {
       holdingDecreaseButtonInterval: null,
       showShareModal: false,
       imageNotFound,
+      xLogo,
     };
   },
   methods: {
@@ -711,7 +722,7 @@ export default {
             message: `${this.collection.name} Minted Successfully`,
           });
 
-          if (this.collection._id === "65803e82022bc90954ea3ea4") {
+          if (this.collection.tweet) {
             this.showShareModal = true;
           }
 
@@ -1103,15 +1114,9 @@ export default {
         this.collection.isEdition ? "editions" : "nft"
       }/${this.collection.username}`;
 
-      const text = `Just snagged "Aptos Cool Kids" from $SEEDZ thanks to the  @wapal_official, made possible on @aptos_network. 🚀
+      const text = encodeURIComponent(this.collection.tweet);
 
-Echoing it out loud – THIS MIGHT MEAN MORE ! 📣
-
-Get yours - ${link} 
-
-@EchoAptos @AptosMonkeys @wapal_official`;
-
-      const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}`;
+      const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}`;
 
       window.open(twitterShareLink, "_blank");
 
