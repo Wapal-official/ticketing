@@ -251,7 +251,7 @@
           </button>
         </div>
         <div class="tw-w-full tw-text-base">
-          <h3>{{ collection.name }} Minted</h3>
+          <h3 class="tw-text-center">{{ collection.name }} Minted</h3>
         </div>
         <div class="tw-w-full h-full tw-rounded">
           <img
@@ -262,7 +262,7 @@
         </div>
         <button-primary
           :fullWidth="true"
-          title="Share on X"
+          title="Share on Twitter"
           :bordered="true"
           @click="shareOnTwitterAfterMinting"
         >
