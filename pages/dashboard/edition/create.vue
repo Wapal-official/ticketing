@@ -105,9 +105,9 @@
             v-slot="{ errors }"
           >
             <input-text-area
-              label="Tweet Template"
+              label="Tweet Template (Optional)"
               v-model="collection.tweet"
-              placeholder="Tweet Template"
+              placeholder="Craft your tweetable moment! It's shareable on Twitter after minting your NFT."
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
