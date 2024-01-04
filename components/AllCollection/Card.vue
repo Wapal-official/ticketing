@@ -48,7 +48,7 @@
           {{ getLiveStatus ? "Live" : "Upcoming" }}
         </div>
         <div class="tw-font-medium tw-text-[0.875rem]" v-else>
-          {{ soldOut ? "Soldout" : "Paused" }}
+          {{ soldOut ? "Soldout" : "Ended" }}
         </div>
       </div>
     </div>

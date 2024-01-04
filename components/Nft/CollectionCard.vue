@@ -70,7 +70,7 @@
             Status
           </div>
           <div class="tw-text-white tw-font-normal">
-            {{ this.resource.paused ? "Paused" : "Live" }}
+            {{ this.resource.paused ? "Ended" : "Live" }}
           </div>
         </div>
         <div class="tw-flex tw-flex-col tw-items-end tw-justify-end" v-else>

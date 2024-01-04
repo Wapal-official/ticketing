@@ -143,10 +143,10 @@
           <h2
             class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-3 tw-text-dark-0"
           >
-            <i class="bx bx-pause-circle tw-text-2xl"></i>
-            <span class="tw-font-semibold">Paused</span>
+            <i class="bx bx-stop-circle tw-text-2xl"></i>
+            <span class="tw-font-semibold">Ended</span>
           </h2>
-          <div class="tw-text-dark-0">Creator has paused the mint.</div>
+          <div class="tw-text-dark-0">Creator has ended the mint.</div>
         </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"

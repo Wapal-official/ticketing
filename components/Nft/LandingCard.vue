@@ -43,7 +43,7 @@
             <div class="tw-font-medium !tw-text-white">
               {{
                 getLiveStatus === -1
-                  ? "Paused"
+                  ? "Ended"
                   : getLiveStatus === 0
                   ? "Upcoming"
                   : "Live"
