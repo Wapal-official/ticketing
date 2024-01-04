@@ -157,7 +157,9 @@ export default {
     async getEditions() {
       this.page++;
 
-      this.collections = [];
+      if (this.page === 1) {
+        this.collections = [];
+      }
 
       const res = await getAllEditions({ page: this.page, limit: this.limit });
 
@@ -166,8 +168,6 @@ export default {
       if (res.length === 0) {
         this.end = true;
       }
-
-      this.end = true;
     },
     async getDrops() {
       this.collections = [];
@@ -198,7 +198,7 @@ export default {
             await this.getFeaturedCollections();
             break;
         }
-      }, 10000);
+      }, 6000);
     },
   },
   async mounted() {
