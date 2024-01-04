@@ -23,7 +23,7 @@ export default {
       collection: null,
       loading: true,
       tab: 0,
-      tabs: ["Live Editions", "Paused Editions"],
+      tabs: ["Live Editions", "Ended Editions"],
     };
   },
   async asyncData({ from }: { from: any }) {
