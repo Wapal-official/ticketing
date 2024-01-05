@@ -132,6 +132,9 @@
         <div v-if="notWhitelisted" class="tw-pb-2 tw-text-red-600">
           You are not whitelisted in {{ currentSale.name }} for this collection
         </div>
+        <div v-if="whitelisted" class="tw-pb-2 tw-text-green-600">
+          You are eligible to mint for this phase
+        </div>
         <div v-if="externalWhitelisted">
           Your Whitelist Mint Tokens:
           {{ externalWhitelistMintNumber }} Remaining
@@ -413,6 +416,7 @@ export default {
       currentlyOwned: 0,
       gettingProof: true,
       notWhitelisted: false,
+      whitelisted: false,
       currentSale: null,
       phases: [],
       phaseCounter: 0,
@@ -840,11 +844,13 @@ export default {
 
         this.gettingProof = false;
         this.notWhitelisted = false;
+        this.whitelisted = true;
       } catch (error) {
         console.log(error);
 
         if (error.response.status === 400) {
           this.notWhitelisted = true;
+          this.whitelisted = false;
         }
 
         this.gettingProof = false;
