@@ -132,6 +132,9 @@
         <div v-if="notWhitelisted" class="tw-pb-2 tw-text-red-600">
           You are not whitelisted in {{ currentSale.name }} for this collection
         </div>
+        <div v-if="whitelisted" class="tw-pb-2 tw-text-green-600">
+          You are eligible to mint for this phase
+        </div>
         <div v-if="externalWhitelisted">
           Your Whitelist Mint Tokens:
           {{ externalWhitelistMintNumber }} Remaining
@@ -381,7 +384,7 @@ import { getProof, getMintLimit } from "@/services/WhitelistService";
 import { getWhitelistEntryById } from "@/services/WhitelistService";
 import {
   mintCollection,
-  seedzMintCollection,
+  anotherCoinMintCollection,
 } from "@/services/AptosCollectionService";
 import imageNotFound from "@/utils/imageNotFound";
 import santa from "@/assets/video/wapal-santa.MP4";
@@ -413,6 +416,7 @@ export default {
       currentlyOwned: 0,
       gettingProof: true,
       notWhitelisted: false,
+      whitelisted: false,
       currentSale: null,
       phases: [],
       phaseCounter: 0,
@@ -695,15 +699,16 @@ export default {
         } else {
           if (
             this.collection.seed &&
-            this.collection.seed.coin_type === "SEEDZ"
+            this.collection.seed.coin_type !== "APT"
           ) {
-            res = await seedzMintCollection({
+            res = await anotherCoinMintCollection({
               candy_machine_id: this.collection.candyMachine.candy_id,
               candy_object: this.collection.candyMachine.resource_account,
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
               mint_limit: this.mintLimit,
+              coinType: this.collection.seed.coin_type,
             });
           } else {
             res = await mintCollection({
@@ -839,11 +844,13 @@ export default {
 
         this.gettingProof = false;
         this.notWhitelisted = false;
+        this.whitelisted = true;
       } catch (error) {
         console.log(error);
 
         if (error.response.status === 400) {
           this.notWhitelisted = true;
+          this.whitelisted = false;
         }
 
         this.gettingProof = false;
@@ -1362,6 +1369,8 @@ export default {
   watch: {
     async getWalletAddress() {
       if (this.phases.length > 1 && this.showPublicSaleTimer) {
+        this.whitelisted = false;
+        this.notWhitelisted = false;
         await this.setProof();
         await this.getOwnedCollectionOfUser();
       }

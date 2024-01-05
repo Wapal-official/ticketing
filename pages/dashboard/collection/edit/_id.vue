@@ -179,11 +179,14 @@
               <div
                 class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-end"
               >
-                <span>{{ collection.candyMachine.whitelist_price }} {{
+                <span
+                  >{{ collection.candyMachine.whitelist_price }}
+                  {{
                     collection.seed && collection.seed.coin_type
                       ? collection.seed.coin_type
                       : "APT"
-                  }}</span>
+                  }}</span
+                >
                 <button
                   class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
                   @click="editingWhitelistSalePrice = true"
@@ -237,7 +240,7 @@
                 placeholder="Whitelist Sale Price"
                 v-model="editCollection.whitelistPrice"
               >
-              <template #append-icon>
+                <template #append-icon>
                   <img
                     :src="selectedCoinType.imageWhite"
                     alt="Coin Type"
@@ -317,11 +320,14 @@
                 <div
                   class="tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
                 >
-                  <span>{{ phase.mint_price }} {{
-                    collection.seed && collection.seed.coin_type
-                      ? collection.seed.coin_type
-                      : "APT"
-                  }}</span>
+                  <span
+                    >{{ phase.mint_price }}
+                    {{
+                      collection.seed && collection.seed.coin_type
+                        ? collection.seed.coin_type
+                        : "APT"
+                    }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -387,14 +393,14 @@
                       v-model="phase.mint_price"
                       :required="true"
                     >
-                    <template #append-icon>
-                  <img
-                    :src="selectedCoinType.imageWhite"
-                    alt="Coin Type"
-                    width="14px"
-                    height="14px"
-                  />
-                </template>
+                      <template #append-icon>
+                        <img
+                          :src="selectedCoinType.imageWhite"
+                          alt="Coin Type"
+                          width="14px"
+                          height="14px"
+                        />
+                      </template>
                     </input-text-field>
 
                     <!-- <button
@@ -484,11 +490,14 @@
               <div
                 class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-end"
               >
-                <span>{{ collection.candyMachine.public_sale_price }} {{
+                <span
+                  >{{ collection.candyMachine.public_sale_price }}
+                  {{
                     collection.seed && collection.seed.coin_type
                       ? collection.seed.coin_type
                       : "APT"
-                  }}</span>
+                  }}</span
+                >
                 <button
                   class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
                   @click="editingPublicSalePrice = true"
@@ -542,7 +551,7 @@
                 placeholder="Whitelist Sale Price"
                 v-model="editCollection.publicSalePrice"
               >
-              <template #append-icon>
+                <template #append-icon>
                   <img
                     :src="selectedCoinType.imageWhite"
                     alt="Coin Type"
@@ -659,10 +668,10 @@ export default {
         isVerified: false,
         phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
         isEdition: false,
-        seed:{
-          seedz:false,
-          coin_type:"APT"
-        }
+        seed: {
+          seedz: false,
+          coin_type: "APT",
+        },
       },
       loading: true,
       whitelistSaleTime: "",
@@ -852,6 +861,7 @@ export default {
           candy_object: this.collection.candyMachine.resource_account,
           pre_sale_price: this.editCollection.whitelistPrice,
           candy_machine_id: this.collection.candyMachine.candy_id,
+          coinType: this.collection.seed ? this.collection.seed.coin_type : "",
         });
 
         const candyMachine = this.collection.candyMachine;
@@ -887,6 +897,7 @@ export default {
           candy_object: this.collection.candyMachine.resource_account,
           public_sale_price: this.editCollection.publicSalePrice,
           candy_machine_id: this.collection.candyMachine.candy_id,
+          coinType: this.collection.seed ? this.collection.seed.coin_type : "",
         });
 
         const candyMachine = this.collection.candyMachine;
@@ -989,6 +1000,9 @@ export default {
             candy_object: this.collection.candyMachine.resource_account,
             candy_machine_id: this.collection.candyMachine.candy_id,
             pre_sale_price: sortedPhases[0].mint_price,
+            coinType: this.collection.seed
+              ? this.collection.seed.coin_type
+              : "",
           });
         }
 
@@ -1072,6 +1086,9 @@ export default {
                 candy_machine_id: this.collection.candyMachine.candy_id,
                 candy_object: this.collection.candyMachine.resource_account,
                 pre_sale_price: currentSalePrice,
+                coinType: this.collection.seed
+                  ? this.collection.seed.coin_type
+                  : "",
               });
 
             if (updateWhitelistSalePriceRes.success) {
@@ -1146,9 +1163,13 @@ export default {
 
       return counter !== phases.length;
     },
-    selectedCoinType(){
-      return getCoinType(this.collection.seed && this.collection.seed.coin_type ? this.collection.seed.coin_type  :'');
-    }
+    selectedCoinType() {
+      return getCoinType(
+        this.collection.seed && this.collection.seed.coin_type
+          ? this.collection.seed.coin_type
+          : ""
+      );
+    },
   },
 };
 </script>

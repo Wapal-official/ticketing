@@ -18,6 +18,9 @@ const CANDY_MACHINE_V1 =
 const SEEDZ_CANDY_MACHINE =
   "0x2a0a53ec605a88e7eb7ad46b47bebbf5708cd6ae4bdd4812c8b9ed5779d4babd";
 
+const GUI_CANDY_MACHINE =
+  "0xf5be2c27aba7c90943ba5ca5d15571b756a564337e8ae78f6a64264123a02ebb";
+
 let MARKETPLACE_URL = "https://wapal.io";
 
 let discordRedirectURI = "http://staging.wapal.io/discord/token";
@@ -167,6 +170,7 @@ export default {
     MARKETPLACE_URL: MARKETPLACE_URL,
     SEEDZ_CANDY_MACHINE: SEEDZ_CANDY_MACHINE,
     MARKETPLACE_API_URL: MARKETPLACE_API_URL,
+    GUI_CANDY_MACHINE: GUI_CANDY_MACHINE,
   },
   privateRuntimeConfig: {
     DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
