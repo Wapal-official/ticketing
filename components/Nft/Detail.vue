@@ -1369,6 +1369,8 @@ export default {
   watch: {
     async getWalletAddress() {
       if (this.phases.length > 1 && this.showPublicSaleTimer) {
+        this.whitelisted = false;
+        this.notWhitelisted = false;
         await this.setProof();
         await this.getOwnedCollectionOfUser();
       }
