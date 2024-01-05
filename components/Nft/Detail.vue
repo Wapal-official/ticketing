@@ -381,7 +381,7 @@ import { getProof, getMintLimit } from "@/services/WhitelistService";
 import { getWhitelistEntryById } from "@/services/WhitelistService";
 import {
   mintCollection,
-  seedzMintCollection,
+  anotherCoinMintCollection,
 } from "@/services/AptosCollectionService";
 import imageNotFound from "@/utils/imageNotFound";
 import santa from "@/assets/video/wapal-santa.MP4";
@@ -695,15 +695,16 @@ export default {
         } else {
           if (
             this.collection.seed &&
-            this.collection.seed.coin_type === "SEEDZ"
+            this.collection.seed.coin_type !== "APT"
           ) {
-            res = await seedzMintCollection({
+            res = await anotherCoinMintCollection({
               candy_machine_id: this.collection.candyMachine.candy_id,
               candy_object: this.collection.candyMachine.resource_account,
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
               mint_limit: this.mintLimit,
+              coinType: this.collection.seed.coin_type,
             });
           } else {
             res = await mintCollection({

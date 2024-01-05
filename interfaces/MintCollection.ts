@@ -5,4 +5,6 @@ export default interface MintCollectionInterface {
   publicMint?: boolean;
   proof?: string;
   mint_limit?: number;
+  coinType?: string;
+  coinObject?: string;
 }

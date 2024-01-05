@@ -108,7 +108,7 @@
 <script>
 import aptIcon from "@/assets/img/aptBlack.svg";
 import imageNotFound from "@/utils/imageNotFound";
-import { getCoinType } from "~/utils/getCoinType";
+import { getCoinType } from "@/utils/getCoinType";
 export default {
   props: { headers: { type: Array }, items: { type: Array } },
   data() {
@@ -119,7 +119,6 @@ export default {
   },
   methods: {
     getCoinTypeOfCollection(collection) {
-      console.log(collection);
       return getCoinType(
         collection.seed && collection.seed.coin_type
           ? collection.seed.coin_type

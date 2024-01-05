@@ -1,6 +1,7 @@
 import { client, wallet, checkNetwork } from "@/store/walletStore";
 import Cookies from "js-cookie";
 import MintCollectionInterface from "@/interfaces/MintCollection";
+import { getCoinType } from "@/utils/getCoinType";
 let walletName: any = "";
 if (process.client) {
   if (Cookies.get("wallet")) {
@@ -364,11 +365,9 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
 
   checkNetwork();
 
-  let programId = process.env.CANDY_MACHINE_V2;
+  const coinTypeObject = getCoinType(candyMachineArguments.coinType);
 
-  if (candyMachineArguments.coinType === "SEEDZ") {
-    programId = process.env.SEEDZ_CANDY_MACHINE;
-  }
+  let programId = coinTypeObject.candy_id;
 
   const isOpenEdition = candyMachineArguments.is_open_edition
     ? candyMachineArguments.is_open_edition
@@ -460,50 +459,59 @@ export const pauseOrResumeMinting = async ({
   return res;
 };
 
-export const seedzMintCollection = async ({
+export const anotherCoinMintCollection = async ({
   candy_machine_id,
   candy_object,
   amount,
   publicMint,
   proof,
   mint_limit,
+  coinType,
 }: MintCollectionInterface) => {
   await checkWalletConnected();
   checkNetwork();
 
+  const coinTypeObject = getCoinType(coinType || "");
+
+  const coinObject = coinTypeObject.coinObject;
+
   if (publicMint) {
     if (amount == 1) {
-      const res = await seedzMintSingleNft({
+      const res = await anotherCoinMintSingleNft({
         candy_machine_id,
         candy_object,
+        coinObject,
       });
 
       return res;
     } else {
-      const res = await seedzMintManyNft({
+      const res = await anotherCoinMintManyNft({
         candy_machine_id,
         candy_object,
         amount,
+        coinObject,
       });
       return res;
     }
   } else {
     if (amount == 1) {
-      const res = await seedzMerkleMintSingleNft({
+      const res = await anotherCoinMerkleMintSingleNft({
         candy_machine_id,
         candy_object,
         proof,
         mint_limit,
+        coinObject,
       });
 
       return res;
     } else {
-      const res = await seedzMerkleMintManyNft({
+      const res = await anotherCoinMerkleMintManyNft({
         candy_machine_id,
         candy_object,
         proof,
         mint_limit,
         amount,
+        coinObject,
       });
 
       return res;
@@ -511,17 +519,16 @@ export const seedzMintCollection = async ({
   }
 };
 
-export const seedzMintSingleNft = async ({
+export const anotherCoinMintSingleNft = async ({
   candy_machine_id,
   candy_object,
+  coinObject,
 }: MintCollectionInterface) => {
   try {
     const mint_script = {
       type: "entry_function_payload",
       function: `${candy_machine_id}::candymachine::mint_script`,
-      type_arguments: [
-        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
-      ],
+      type_arguments: [coinObject],
       arguments: [candy_object],
     };
 
@@ -533,18 +540,17 @@ export const seedzMintSingleNft = async ({
   }
 };
 
-export const seedzMintManyNft = async ({
+export const anotherCoinMintManyNft = async ({
   candy_machine_id,
   candy_object,
   amount,
+  coinObject,
 }: MintCollectionInterface) => {
   try {
     const mint_script_many = {
       type: "entry_function_payload",
       function: `${candy_machine_id}::candymachine::mint_script_many`,
-      type_arguments: [
-        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
-      ],
+      type_arguments: [coinObject],
       arguments: [candy_object, amount],
     };
 
@@ -556,19 +562,18 @@ export const seedzMintManyNft = async ({
   }
 };
 
-export const seedzMerkleMintSingleNft = async ({
+export const anotherCoinMerkleMintSingleNft = async ({
   candy_machine_id,
   candy_object,
   proof,
   mint_limit,
+  coinObject,
 }: MintCollectionInterface) => {
   try {
     const merkle_mint_script = {
       type: "entry_function_payload",
       function: `${candy_machine_id}::candymachine::mint_from_merkle`,
-      type_arguments: [
-        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
-      ],
+      type_arguments: [coinObject],
       arguments: [candy_object, proof, mint_limit],
     };
 
@@ -580,20 +585,19 @@ export const seedzMerkleMintSingleNft = async ({
   }
 };
 
-export const seedzMerkleMintManyNft = async ({
+export const anotherCoinMerkleMintManyNft = async ({
   candy_machine_id,
   candy_object,
   proof,
   mint_limit,
   amount,
+  coinObject,
 }: MintCollectionInterface) => {
   try {
     const merkle_mint_script_many = {
       type: "entry_function_payload",
       function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
-      type_arguments: [
-        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
-      ],
+      type_arguments: [coinObject],
       arguments: [candy_object, proof, mint_limit, amount],
     };
 
