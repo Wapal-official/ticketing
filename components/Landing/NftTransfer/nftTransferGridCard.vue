@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row class="justify-center ms:justify-start" no-gutters>
+    <v-row class="justify-center md:justify-start" no-gutters>
       <v-col
         dense
         v-for="(item, index) in items"

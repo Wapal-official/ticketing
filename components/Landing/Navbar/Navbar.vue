@@ -6,7 +6,7 @@
       class="tw-w-full tw-grid tw-grid-cols-12 tw-px-6 tw-max-h-[40px] lg:tw-gap-0 1xl:tw-px-[3.75em]"
     >
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-6 tw-col-span-4 lg:tw-col-span-3 xl:tw-col-span-4"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-3 tw-col-span-4 lg:tw-col-span-3 xl:tw-col-span-4"
       >
         <NuxtLink to="/" class="">
           <img
@@ -62,17 +62,22 @@
         </div>
       </div>
 
-      <div class="tw-hidden md:tw-flex tw-w-full tw-pr-10 tw-col-span-4">
+      <div
+        v-if="ForMdScreenSize == false"
+        class="tw-hidden md:tw-flex tw-w-full tw-pr-10 tw-col-span-4"
+      >
         <search-bar />
       </div>
-
+      <div v-else class="tw-hidden md:tw-flex tw-pr-6 tw-w-full tw-col-span-3">
+        <search-bar />
+      </div>
       <div
         class="tw-w-full tw-hidden tw-col-span-4 lg:tw-flex lg:tw-col-span-5 xl:tw-col-span-4"
       >
         <div
           @click="$store.commit('dialog/setNftTransferDialog', true)"
-          class="mr-2 mr-lg-3 d-flex align-center"
-          style="cursor: pointer"
+          class="tw-mr-3 lg:mr-0 d-flex align-center"
+          style="cursor: pointer; min-width: 46px"
         >
           <img src="~/assets/img/transfer.svg" alt="nft transfer" />
           <p

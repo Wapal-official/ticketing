@@ -4,14 +4,14 @@
       class="tw-mx-3"
       style="max-height: 60vh; min-height: 60vh; overflow: auto"
     >
-      <nft-transfer-card class="tw-my-2 sm:my-3 md:my-4" :items="nfts" />
+      <nft-transfer-card class="tw-my-2 sm:my-3 md:my-4" :items="userNfts" />
     </div>
     <div
       class="destination-bottom tw-px-5 tw-pt-4"
       style="border-top: 1px solid #25262b"
     >
-      <v-row align="center" justify="center" no-gutters>
-        <v-col cols="12" sm="8" class=" ">
+      <v-row align="center" justify="space-between" no-gutters>
+        <v-col cols="12" sm="8" class="tw-pr-0 md:tw-pr-5">
           <div>
             <label
               class="text-uppercase text-start font-bold"
@@ -29,7 +29,11 @@
             </v-text-field>
           </div>
         </v-col>
-        <v-col cols="8" sm="4" class="d-flex align-start md:justify-end">
+        <v-col
+          cols="12"
+          sm="4"
+          class="tw-flex align-start tw-justify-center md:tw-justify-end"
+        >
           <button-primary
             title="Send"
             :small="false"
@@ -48,7 +52,10 @@
 
 <script>
 import nftTransferCard from "~/components/Landing/NftTransfer/nftTransferGridCard.vue";
-
+import {
+  getTokenOfNftTransfer,
+  getFloorPrice,
+} from "~/services/nftTransferService";
 import {
   getOwnedCollectionsOfUser,
   getNumberOfTokensInOwnedCollectionOfUser,
@@ -59,48 +66,13 @@ export default {
   },
   data() {
     return {
-      nftTransferGridData: [
-        {
-          name: "nft",
-          image: "nft8.svg",
-          rarity: 52,
-          listedPrice: 256,
-        },
-        {
-          name: "nft",
-          image: "nft7.svg",
-          rarity: 52,
-          listedPrice: 256,
-        },
-        {
-          name: "nft",
-          image: "nft3.svg",
-          rarity: 52,
-          listedPrice: 256,
-        },
-        {
-          name: "nft",
-          image: "nft2.svg",
-          rarity: 52,
-          listedPrice: 256,
-        },
-        {
-          name: "nft",
-          image: "nft4.svg",
-          rarity: 52,
-          listedPrice: 256,
-        },
-      ],
       end: false,
       nfts: [],
       metadata: [],
       offset: 0,
       page: 0,
       limit: 20,
-      userNfts: [],
-      allLoaded: false,
-      userCollectionData: [],
-      collectionPage: 1,
+      ///
       userNfts: [],
       allLoaded: false,
       userCollectionData: [],
@@ -115,8 +87,8 @@ export default {
     },
   },
   async mounted() {
-    // await this.currentUserNfts();
-    this.fetchNfts();
+    await this.currentUserNfts();
+    // this.fetchNfts();
     // console.log("fetched nfts", this.fetchNfts());
   },
   computed: {
@@ -125,47 +97,48 @@ export default {
     },
   },
   methods: {
-    // async currentUserNfts() {
-    //   try {
-    //     const currentNfts = await getTokenOfNftTransfer({
-    //       page: 1,
-    //       limit: 100,
-    //       walletAddress: this.walletAddress,
-    //     });
-    //     const uniqueCollectionIDs = [
-    //       ...new Set(currentNfts.map((item) => item.collectionId)),
-    //     ];
+    async currentUserNfts() {
+      try {
+        const currentNfts = await getTokenOfNftTransfer({
+          page: 1,
+          limit: 100,
+          walletAddress: this.walletAddress,
+        });
+        const uniqueCollectionIDs = [
+          ...new Set(currentNfts.map((item) => item.collectionId)),
+        ];
 
-    //     const floorPrices = await Promise.all(
-    //       uniqueCollectionIDs.map((collectionId) =>
-    //         this.extractFloorPrice(collectionId)
-    //       )
-    //     );
+        const floorPrices = await Promise.all(
+          uniqueCollectionIDs.map((collectionId) =>
+            this.extractFloorPrice(collectionId)
+          )
+        );
 
-    //     currentNfts.forEach((item, index) => {
-    //       item.floorPrice = floorPrices[index];
-    //     });
+        currentNfts.forEach((item, index) => {
+          item.floorPrice = floorPrices[index];
+        });
 
-    //     this.userNfts.push(...currentNfts);
+        this.userNfts.push(...currentNfts);
 
-    //     if (currentNfts.length < this.limit) {
-    //       this.allLoaded = true;
-    //     }
-    //   } catch (err) {
-    //     console.log("error:", err);
-    //     this.allLoaded = true;
-    //   }
-    // },
+        if (currentNfts.length < this.limit) {
+          this.allLoaded = true;
+        }
+      } catch (err) {
+        console.log("error:", err);
+        this.allLoaded = true;
+      }
+    },
 
-    // async extractFloorPrice(collectionId) {
-    //   try {
-    //     const floorPrice = await getFloorPrice(collectionId);
-    //     return floorPrice;
-    //   } catch (error) {
-    //     console.error("Error fetching floor price:", error);
-    //     return 0;
-    //   }
-    // },
+    async extractFloorPrice(collectionId) {
+      try {
+        const floorPrice = await getFloorPrice(collectionId);
+        return floorPrice;
+      } catch (error) {
+        console.error("Error fetching floor price:", error);
+        return 0;
+      }
+    },
+
     async fetchNfts() {
       this.loading = true;
       this.offset = this.page * this.limit;
