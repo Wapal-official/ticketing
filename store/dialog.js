@@ -6,6 +6,9 @@ export const state = () => ({
     selectedCollection: {},
     selectAll: false,
     singleCheck: false,
+    selectedCollection: {
+      name: null,
+    },
 })
 
 export const mutations = {
@@ -27,5 +30,8 @@ export const mutations = {
       },
       setSingleCheck(state, payload) {
         state.singleCheck = payload;
+      },
+      selectCollection(state, payload) {
+        state.selectedCollection = payload;
       },
 }

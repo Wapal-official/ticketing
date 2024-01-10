@@ -76,9 +76,8 @@
                       <nft-send-tbl
                         class="tw-px-2"
                         :headers="headers"
-                        :items="boardsData"
+                        :items="userCollectionData"
                         :GridView="true"
-                        :nftTransferGridData="nftTransferGridData"
                       />
                     </div>
                   </v-tab-item>
@@ -94,16 +93,19 @@
 
 <script>
 import NftSendTbl from "~/components/Landing/NftTransfer/nftSendTbl.vue";
+
 import {
-  getCurrentUserNfts,
+  getPortfolioSummaryOfUser,
   getCollectionsOfUser,
 } from "~/services/nftTransferService";
+
 import {
   getOwnedCollectionsOfUser,
   getNumberOfTokensInOwnedCollectionOfUser,
 } from "@/services/AuctionService";
 
 export default {
+  props: { propCollections: { type: Array, default: () => [] } },
   components: { NftSendTbl },
   data() {
     return {
@@ -112,10 +114,10 @@ export default {
       tabs: 0,
       selectAll: false,
       headers: [
-        { text: "Collection", value: "collection" },
+        { text: "Collection", value: "name" },
         { text: "Count", value: "count" },
-        { text: "Floor", value: "floor" },
-        { text: "Value", value: "value" },
+        { text: "Floor", value: "floorPrice" },
+        { text: "Value", value: "valuePrice" },
       ],
       boardsData: [
         {
@@ -235,10 +237,12 @@ export default {
           tooltipDate: "tooltipDate",
         },
       ],
+      collectionPage: 0,
       userCollectionData: [],
-      collectionPage: 15,
       limit: 100,
       allLoaded: false,
+      collections: [],
+      userCollections: [],
     };
   },
   mounted() {
@@ -254,8 +258,15 @@ export default {
         this.nftTransferDrawer = true;
       }
     },
+    walletAddress() {
+      if (this.walletAddress) {
+        this.currentUserCollection();
+      }
+    },
   },
-
+  async mounted() {
+    await this.currentUserCollection();
+  },
   computed: {
     walletAddress() {
       return this.$store.state.walletStore.wallet.walletAddress;
@@ -275,6 +286,12 @@ export default {
         return this.$store.commit("dialog/setNftTransferDialog", value);
       },
     },
+    walletStore() {
+      return this.$store.state.walletStore.wallet;
+    },
+    selectedData() {
+      return this.$store.state.nft.selectedData;
+    },
   },
   methods: {
     async fetchUserCollections() {
@@ -290,9 +307,9 @@ export default {
         console.error("Failed to fetch user collections:", error.message);
       }
     },
+
     async currentUserCollection() {
       try {
-        console.log("Before fetching collections");
         this.collectionPage++;
 
         const collections = await getCollectionsOfUser({
@@ -300,8 +317,23 @@ export default {
           page: this.collectionPage,
           limit: this.limit,
         });
+        console.log(collections, "collections");
+        const uniqueCollectionIDs = [
+          ...new Set(collections.map((item) => item.collectionId)),
+        ];
 
-        console.log("Collections fetched:", collections);
+        console.log("collection id", uniqueCollectionIDs);
+
+        const nftCount = await Promise.all(
+          uniqueCollectionIDs.map((collectionId) =>
+            this.getCollectionsDetails(collectionId)
+          )
+        );
+
+        collections.forEach((item, index) => {
+          item.count = nftCount[index].totalCount;
+          item.valuePrice = this.valuation(collections, index);
+        });
 
         this.userCollectionData.push(...collections);
 
@@ -309,10 +341,33 @@ export default {
           this.allLoaded = true;
         }
       } catch (err) {
-        console.log("Error fetching collections:", err);
+        console.log("error:", err);
         this.allLoaded = true;
       }
     },
+    async getCollectionsDetails(collectionId) {
+      const data = await getPortfolioSummaryOfUser({
+        wallet_address: this.walletAddress,
+        collectionId: collectionId,
+      });
+      return data;
+    },
+    valuation(collections, index) {
+      let col = collections[index];
+      let value = parseFloat(col.floorPrice) * parseFloat(col.count);
+      return value;
+    },
+  },
+  showAllCollection() {
+    this.$store.commit("dialog/setSelectedData", []);
+    this.$store.commit("dialog/selectCollection", {
+      name: null,
+      creatorAddress: "all-collection",
+    });
+  },
+  changeSelectedCollection(e) {
+    this.$store.commit("dialog/setSelectedData", []);
+    this.$store.commit("dialog/selectCollection", e);
   },
 };
 </script>

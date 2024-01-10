@@ -1,6 +1,7 @@
-import { resolveUri, getCachedUrlOfImage } from "@/services/utilitieService";
+import { resolveUri, getCachedUrlOfImage, getFixedPrice } from "@/services/utilitieService";
 import axios from "axios";  
 
+const BASE_URL = 'https://marketplace-api.wapal.io'
 const RUST_INDEXER_URL = 'https://rust-mainnet.wapal.io/graphql'
 
 export const getTokenOfNftTransfer = async ({
@@ -109,4 +110,63 @@ export const getFloorPrice = async (collectionId) => {
     console.log(error);
     return 0;
   }
+};
+
+export const getPortfolioSummaryOfUser = async ({
+  collectionId,
+  wallet_address,
+}) => {
+  const res = await axios.get(`${BASE_URL}/user/pnl/${wallet_address}`, {
+    params: { collectionId: collectionId },
+  });
+
+  const data = res.data;
+
+  return {
+    costPrice: getFixedPrice(data.costPrice),
+    estimatedValue: getFixedPrice(data.estimatedPrice),
+    realizedPnl: getFixedPrice(data.realizedPNL),
+    unrealizedPnl: getFixedPrice(data.unrealizedPNL),
+    totalCount: data.totalCount,
+    listedCount: data.listedCount,
+  };
+};
+
+
+export const getCollectionsOfUser = async ({
+  walletAddress,
+  page,
+  limit,
+  type,
+  searchText,
+  signal,
+}) => {
+  const collectionType = type === "listed" ? type : null;
+
+  const res = await axios.get(`${BASE_URL}/user/collections/${walletAddress}`, {
+    params: {
+      page: page,
+      take: limit,
+      type: collectionType,
+      search: searchText,
+    },
+    signal: signal,
+  });
+
+  const collections = res.data;
+
+  const finalCollections = [];
+
+  collections.forEach((collection) => {
+    finalCollections.push({
+      collectionId: collection.collectionId,
+      name: collection.name,
+      image: getCachedUrlOfImage(collection.image),
+      floorPrice: formatPrice(collection.floorPrice),
+      isVerified: collection.isVerified,
+      listed: collection.listingCount,
+    });
+  });
+
+  return finalCollections;
 };

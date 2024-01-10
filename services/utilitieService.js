@@ -27,3 +27,17 @@ export const extractImageLinkFromCacheServerUrl = (url) => {
 
   return link;
 };
+
+
+export const formatPrice = (price) => {
+    if (price === null || price === undefined) {
+      return price;
+    }
+  
+    let formattedPrice = price / Math.pow(10, 8);
+  
+    if (formattedPrice - Math.floor(formattedPrice) !== 0) {
+      formattedPrice = parseFloat(formattedPrice.toFixed(4));
+    }
+    return formattedPrice;
+  };
