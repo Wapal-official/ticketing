@@ -70,14 +70,14 @@
               {{ socialErrorMessage }}
             </div>
           </ValidationProvider>
-          <!-- <ValidationProvider
+          <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="tweetLength"
             rules="tweetLength"
             v-slot="{ errors }"
           >
             <input-text-area
-              label="Tweet Template (Optional)"
+              label="Tweetable Template (Optional)"
               v-model="mint.tweet"
               placeholder="Craft your tweetable moment! It's shareable on Twitter after minting your NFT."
             />
@@ -87,7 +87,7 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
           >
             <input-image-drag-and-drop
-              label="POB (Proof Of Bid)"
+              label="Soulbound NFT for POB (Proof Of Bid)"
               :required="true"
               @fileSelected="imageSelected"
               :file="mint.POBImage"
@@ -96,7 +96,7 @@
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
               {{ imageErrorMessage }}
             </div>
-          </div> -->
+          </div>
           <div
             class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
           >
@@ -841,15 +841,15 @@ extend("link", {
   message: "Please enter a valid link",
 });
 
-// extend("tweetLength", {
-//   validate(value) {
-//     if (value.length > 256) {
-//       return false;
-//     }
-//     return true;
-//   },
-//   message: "This field must not exceed 256 characters",
-// });
+extend("tweetLength", {
+  validate(value) {
+    if (value.length > 256) {
+      return false;
+    }
+    return true;
+  },
+  message: "This field must not exceed 256 characters",
+});
 
 export default {
   layout: "dashboard",
