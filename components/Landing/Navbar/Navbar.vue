@@ -7,7 +7,7 @@
     >
       <div
         v-if="ForMdScreenSize == false"
-        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 tw-col-span-4 lg:tw-col-span-3 xl:tw-col-span-4"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 tw-col-span-3 lg:tw-col-span-3 xl:tw-col-span-4"
       >
         <NuxtLink to="/" class="">
           <img
@@ -261,7 +261,7 @@ export default {
   methods: {
     checkScreenSize() {
       const screenWidth = window.innerWidth;
-      this.ForMdScreenSize = screenWidth >= 1020 && screenWidth <= 1440;
+      this.ForMdScreenSize = screenWidth >= 1020 && screenWidth <= 1370;
     },
     toggleLandingMenu() {
       if (!this.landingMenuShowing) {
