@@ -84,12 +84,12 @@
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
           <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+            class="tw-flex tw-flex-col tw-items-end tw-justify-start tw-gap-2 tw-w-full"
           >
-            <input-image-drag-and-drop
+            <!-- <input-image-drag-and-drop
               label="Soulbound NFT for POB (Proof Of Bid)"
               :required="true"
-              @fileSelected="imageSelected"
+              @fileSelected="POBImageSelected"
               :file="mint.POBImage"
               fileSize="Upto 15 MB"
             />
@@ -100,6 +100,7 @@
           <div
             class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
           >
+            <button-primary title="Submit Auction" @click="submitAuction" /> -->
             <button-primary title="Next" @click="validateFormForNextStep" />
           </div>
         </ValidationObserver>
@@ -766,6 +767,7 @@ import { uploadAndCreateFile } from "../../services/AuctionService";
 import { createCollection } from "@/services/CollectionService";
 import { getWalletNFT } from "@/services/AuctionService";
 import { publicRequest } from "@/services/fetcher";
+import { singleFileUpload } from "@/services/AssetsService";
 
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
@@ -876,8 +878,8 @@ export default {
         attributes: [{ trait_type: null, value: null }],
         twitter: null,
         instagram: null,
-        // tweet: "",
-        // POBImage: null,
+        tweet: "",
+        POBImage: "",
       },
       attribute: "",
       value: "",
@@ -931,6 +933,24 @@ export default {
   },
   async mounted() {},
   methods: {
+    async POBUpload() {
+      const image = this.mint.POBImage;
+      const name = this.mint.tokenName;
+      const description = this.mint.tokenDesc;
+      const attributes = [];
+      console.log(image, "imageee");
+      const formData = new FormData();
+      formData.append("image", image);
+      // formData.append("name", name);
+      // formData.append("description", description);
+      formData.append("attributes", JSON.stringify(attributes));
+      try {
+        const response = await singleFileUpload(formData);
+        console.log(response);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    },
     saveStart(date) {
       this.$refs.startmenu.save(date);
     },
@@ -1135,6 +1155,7 @@ export default {
                         twitter: this.mint.twitter,
                         instagram: this.mint.instagram,
                         user_id: this.$store.state.userStore.user.user_id,
+                        tweet: this.mint.tweet,
                       });
 
                       this.$toast.showMessage({
@@ -1191,16 +1212,26 @@ export default {
     changeStep(step) {
       this.formStepNumber = step;
     },
-    // imageSelected(image) {
-    //   this.image = image;
+    imageSelected(image) {
+      this.image = image;
 
-    //   if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
-    //     this.imageError = true;
-    //     this.imageErrorMessage = "Please Upload Image less than 15MB";
-    //   } else {
-    //     this.imageError = false;
-    //   }
-    // },
+      if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
+    },
+    POBImageSelected(image) {
+      this.mint.POBImage = image;
+
+      if (Math.floor(image.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
+    },
     async validateFormForNextStep() {
       this.attributeError = false;
       this.socialError = false;
