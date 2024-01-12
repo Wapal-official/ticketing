@@ -142,8 +142,6 @@ export const updatePublicSalePrice = async ({
     type_arguments: [],
   };
 
-  console.log(update_public_sale_price_script);
-
   const transaction = await wallet.signAndSubmitTransaction(
     update_public_sale_price_script
   );
