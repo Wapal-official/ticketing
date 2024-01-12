@@ -226,7 +226,7 @@
                 <button
                   class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
                   @click="decreaseNumberOfNft"
-                  :disabled="externalWhitelisted"
+                  :disabled="externalWhitelisted || this.gettingProof"
                   @mouseup="stopDecrement"
                   @mousedown="startDecrement"
                   @touchstart="startDecrement"
@@ -238,7 +238,7 @@
                   class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
                   v-model="numberOfNft"
                   @input="checkNumberOfNft"
-                  v-if="!externalWhitelisted"
+                  v-if="!externalWhitelisted || this.gettingProof"
                 />
                 <div
                   class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
@@ -249,7 +249,7 @@
                 <button
                   class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
                   @click="increaseNumberOfNft"
-                  :disabled="externalWhitelisted"
+                  :disabled="externalWhitelisted || this.gettingProof"
                   @mouseup="stopIncrement"
                   @mousedown="startIncrement"
                   @touchstart="startIncrement"
@@ -413,6 +413,7 @@ export default {
       errorMessage: null,
       proof: [],
       mintLimit: 1,
+      totalMintLimit: 0,
       currentlyOwned: 0,
       gettingProof: true,
       notWhitelisted: false,
@@ -432,6 +433,7 @@ export default {
       holdingIncreaseButtonInterval: null,
       holdingDecreaseButtonInterval: null,
       showShareModal: false,
+      maxNumberOfNft: 35,
       imageNotFound,
       xLogo,
     };
@@ -683,7 +685,7 @@ export default {
 
         if (this.checkPublicSaleTimer()) {
           if (this.mintLimit <= this.currentlyOwned) {
-            throw new Error("Mint Limit Reached");
+            throw new Error("Mint Limit for this phase Exceeded");
           }
         }
         let res = null;
@@ -694,7 +696,7 @@ export default {
             candyMachineId: this.collection.candyMachine.candy_id,
             mintNumber: this.numberOfNft,
             proof: this.proof,
-            mintLimit: this.mintLimit,
+            mintLimit: this.totalMintLimit,
           });
         } else {
           if (
@@ -707,7 +709,7 @@ export default {
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
-              mint_limit: this.mintLimit,
+              mint_limit: this.totalMintLimit,
               coinType: this.collection.seed.coin_type,
             });
           } else {
@@ -717,7 +719,7 @@ export default {
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
-              mint_limit: this.mintLimit,
+              mint_limit: this.totalMintLimit,
             });
           }
         }
@@ -815,9 +817,12 @@ export default {
     async setProof() {
       if (!this.getWalletAddress) {
         this.gettingProof = false;
+        this.whitelisted = false;
         return;
       }
       try {
+        this.whitelisted = false;
+
         this.gettingProof = true;
 
         this.proof = [];
@@ -828,19 +833,18 @@ export default {
           phase: this.currentSale.id,
         };
 
-        // const mintLimitRes = await getMintLimit(proofParams);
-
         const res = await getProof(proofParams);
 
         const proofs = res.data.proofs;
+        this.totalMintLimit = res.data.mint_limit;
 
         proofs.map((proof) => {
           this.proof.push(proof.data);
         });
 
-        this.mintLimit = res.data.mint_limit;
+        await this.getMintLimitOfPreviousPhases();
 
-        await getOwnedCollectionOfUser();
+        await this.getOwnedCollectionOfUser();
 
         this.gettingProof = false;
         this.notWhitelisted = false;
@@ -853,6 +857,8 @@ export default {
           this.whitelisted = false;
         }
 
+        this.numberOfNft = 1;
+
         this.gettingProof = false;
       }
     },
@@ -862,7 +868,9 @@ export default {
         this.collection.name
       );
 
-      this.currentlyOwned = res.data.data.current_token_ownerships.length;
+      this.currentlyOwned = res;
+
+      this.setMaxNumberOfNfts();
     },
     getCurrentSale() {
       this.phases.map((phase) => {
@@ -1129,6 +1137,52 @@ export default {
 
       this.showShareBox = false;
     },
+
+    async getMintLimitOfPreviousPhases() {
+      let mintLimit = 0;
+      await Promise.all(
+        this.collection.phases.map(async (phase) => {
+          const date = new Date();
+
+          const phaseStartDate = new Date(phase.mint_time);
+
+          if (date > phaseStartDate) {
+            const mintLimitRes = await getMintLimit({
+              walletAddress: this.getWalletAddress,
+              collectionId: this.collection._id,
+              phase: phase.id,
+            });
+
+            const data = mintLimitRes.data.data;
+
+            if (data) {
+              mintLimit += data.mint_limit;
+            }
+          }
+        })
+      );
+
+      this.mintLimit = mintLimit;
+    },
+    setMaxNumberOfNfts() {
+      if (this.collection.isEdition) {
+        this.maxNumberOfNft = 200;
+        return;
+      }
+
+      if (!this.checkPublicSaleTimer()) {
+        this.maxNumberOfNft = 35;
+        return;
+      }
+
+      this.maxNumberOfNft = this.mintLimit - this.currentlyOwned;
+
+      if (this.maxNumberOfNft <= 0) {
+        this.maxNumberOfNft = 1;
+      }
+
+      this.numberOfNft = 1;
+    },
   },
   computed: {
     getCurrentPrice() {
@@ -1183,13 +1237,6 @@ export default {
         this.notWhitelisted ||
         this.resource.paused
       );
-    },
-    maxNumberOfNft() {
-      if (this.collection.isEdition) {
-        return 200;
-      }
-
-      return 35;
     },
   },
   async mounted() {
