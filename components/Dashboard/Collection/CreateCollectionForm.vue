@@ -625,6 +625,7 @@ import {
 } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 import { createCollectionV2 } from "@/services/AptosCollectionService";
+import generateName from "@/utils/generateName";
 extend("required", {
   ...required,
   message: "This field is required",
@@ -895,7 +896,7 @@ export default {
         const phases: any[] = [];
 
         tempCollection.phases.map((phase: any) => {
-          const id = phase.name.trim().replaceAll(" ", "-").toLowerCase();
+          const id = generateName(phase.name);
 
           phases.push({
             id: id,
