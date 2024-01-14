@@ -372,6 +372,41 @@
         ></button-primary>
       </div>
     </v-dialog>
+    <v-dialog
+      v-model="showAfterMintModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+      :persistent="true"
+    >
+      <div
+        class="tw-w-full tw-bg-dark-9 tw-text-white tw-px-4 tw-py-4 tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+      >
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+        >
+          <button @click="showAfterMintModal = false">
+            <i class="bx bx-x tw-text-xl"></i>
+          </button>
+        </div>
+        <div class="tw-w-full h-full tw-rounded">
+          <img
+            :src="collection.image"
+            class="tw-w-full tw-h-full tw-rounded"
+            :alt="collection.name"
+          />
+        </div>
+        <div class="tw-text-base">
+          <p>
+            Congratulations on minting your first $GUI NFT! Proud Lions thanks
+            you for your support and gifts you 50,000 Steak tokens for
+            Roarlinko, our rewards game.
+          </p>
+          <p>
+            Create your Roarlinko account, and receive your tokens within 72
+            hours after verification
+          </p>
+        </div>
+      </div>
+    </v-dialog>
   </div>
   <loading-collection v-else />
 </template>
@@ -432,6 +467,9 @@ export default {
       holdingIncreaseButtonInterval: null,
       holdingDecreaseButtonInterval: null,
       showShareModal: false,
+      showAfterMintModal: false,
+      proofSet: false,
+      getProofForAllPhase: false,
       imageNotFound,
       xLogo,
     };
@@ -598,6 +636,18 @@ export default {
 
           resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
         }
+
+        if (
+          this.resource.minted >= 1000 &&
+          this.collection.username === "gui-lions" &&
+          this.notWhitelisted &&
+          !this.proofSet
+        ) {
+          this.getProofForAllPhase = true;
+          this.setProof();
+
+          this.proofSet = true;
+        }
       }, 5000);
     },
     increaseNumberOfNft() {
@@ -727,8 +777,12 @@ export default {
             message: `${this.collection.name} Minted Successfully`,
           });
 
-          if (this.collection.tweet) {
-            this.showShareModal = true;
+          if (this.collection.username === "gui-lions") {
+            this.showAfterMintModal = true;
+          } else {
+            if (this.collection.tweet) {
+              this.showShareModal = true;
+            }
           }
 
           let res = await this.$store.dispatch(
@@ -819,32 +873,85 @@ export default {
       }
       try {
         this.gettingProof = true;
+        this.whitelisted = false;
+        this.notWhitelisted = false;
 
         this.proof = [];
 
-        const proofParams = {
-          walletAddress: this.getWalletAddress,
-          collectionId: this.collection._id,
-          phase: this.currentSale.id,
-        };
+        if (!this.getProofForAllPhase) {
+          const proofParams = {
+            walletAddress: this.getWalletAddress,
+            collectionId: this.collection._id,
+            phase: this.currentSale.id,
+          };
 
-        // const mintLimitRes = await getMintLimit(proofParams);
+          // const mintLimitRes = await getMintLimit(proofParams);
 
-        const res = await getProof(proofParams);
+          const res = await getProof(proofParams);
 
-        const proofs = res.data.proofs;
+          const proofs = res.data.proofs;
 
-        proofs.map((proof) => {
-          this.proof.push(proof.data);
-        });
+          proofs.map((proof) => {
+            this.proof.push(proof.data);
+          });
 
-        this.mintLimit = res.data.mint_limit;
+          this.mintLimit = res.data.mint_limit;
 
-        await getOwnedCollectionOfUser();
+          // await getOwnedCollectionOfUser();
 
-        this.gettingProof = false;
-        this.notWhitelisted = false;
-        this.whitelisted = true;
+          this.gettingProof = false;
+          this.notWhitelisted = false;
+          this.whitelisted = true;
+        } else {
+          const proofsRes = await Promise.all(
+            this.phases.map(async (phase) => {
+              try {
+                if (phase.id !== "public-sale") {
+                  if (this.proof.length > 0) {
+                    throw new Error("Proof Set");
+                  }
+
+                  const proofParams = {
+                    walletAddress: this.getWalletAddress,
+                    collectionId: this.collection._id,
+                    phase: phase.id,
+                  };
+
+                  const res = await getProof(proofParams);
+
+                  const proofs = res.data.proofs;
+
+                  this.proof = [];
+                  proofs.map((proof) => {
+                    this.proof.push(proof.data);
+                  });
+
+                  this.mintLimit = res.data.mint_limit;
+
+                  if (this.proof.length > 0) {
+                    throw new Error("Proof Set");
+                  }
+                }
+              } catch (error) {
+                console.log(error);
+              }
+            })
+          );
+
+          this.gettingProof = false;
+
+          if (this.proof.length > 0) {
+            this.notWhitelisted = false;
+            this.whitelisted = true;
+          } else {
+            this.notWhitelisted = true;
+            this.whitelisted = false;
+          }
+        }
+
+        if (this.whitelisted) {
+          this.proofSet = true;
+        }
       } catch (error) {
         console.log(error);
 
@@ -1381,6 +1488,13 @@ export default {
         this.collection.mintDetails.all_mint_at_same_time
       ) {
         await this.checkWhitelistForExternalMint();
+      }
+    },
+    showAfterMintModal(newVal) {
+      if (!newVal) {
+        if (this.collection.tweet) {
+          this.showShareModal = true;
+        }
       }
     },
   },
