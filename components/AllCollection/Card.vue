@@ -111,10 +111,6 @@ export default {
       if (this.totalSupply == this.minted) {
         this.soldOut = true;
       }
-
-      if (this.collection.username === "gui-lions") {
-        this.minted = 0;
-      }
     } catch {
       if (this.collection.mintDetails) {
         const res = await this.$store.dispatch(
