@@ -410,7 +410,7 @@
         >
           <button-primary
             :fullWidth="true"
-            title="Create An Account"
+            title="Create Roarlinko Account"
             :bordered="true"
             @click="createRoarLionAccount"
           />
