@@ -378,7 +378,7 @@
       :persistent="true"
     >
       <div
-        class="tw-w-full tw-bg-dark-9 tw-text-white tw-px-4 tw-py-4 tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+        class="tw-w-full tw-bg-dark-9 tw-text-white tw-px-4 tw-py-2 tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
       >
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
@@ -643,8 +643,10 @@ export default {
           this.notWhitelisted &&
           !this.proofSet
         ) {
-          this.getProofForAllPhase = true;
-          this.setProof();
+          if (this.phases.length > 1 && this.showPublicSaleTimer) {
+            this.getProofForAllPhase = true;
+            this.setProof();
+          }
 
           this.proofSet = true;
         }
