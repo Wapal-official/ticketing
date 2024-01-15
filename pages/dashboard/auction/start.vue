@@ -72,10 +72,32 @@
               v-model="apt"
             >
               <template #append-icon>
-                <img :src="aptIcon" alt="APT" />
+                <img
+                  :src="selectedCoinType.imageWhite"
+                  alt="Coin Type"
+                  width="14px"
+                  height="14px"
+                />
               </template>
             </input-text-field>
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-auto-complete
+              :required="true"
+              label="Coin Type"
+              v-model="coinType"
+              placeholder="Select Coin Type"
+              :items="coinTypes"
+              text="name"
+              itemValue="id"
+            />
+            <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
 
           <ValidationProvider
@@ -250,6 +272,7 @@ import { required } from "vee-validate/dist/rules";
 
 import imageNotFound from "@/utils/imageNotFound";
 import aptIcon from "@/assets/img/aptBlack.svg";
+import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
 extend("required", {
   ...required,
   message: "This field is required",
@@ -320,6 +343,8 @@ export default {
       instagram: "",
       socialError: false,
       socialErrorMessage: "",
+      coinTypes: getAvailableCoinTypes(),
+      coinType: "APT",
       imageNotFound,
       aptIcon,
     };
@@ -327,6 +352,9 @@ export default {
   computed: {
     selectedNft() {
       return this.$store.state.auction.selectedNft;
+    },
+    selectedCoinType() {
+      return getCoinType(this.coinType);
     },
   },
   mounted() {
@@ -349,12 +377,14 @@ export default {
           }
 
           this.loading = true;
+
           let auction = await this.$store.dispatch(
             "walletStore/createAuction",
             {
               start_date: this.start_date,
               end_date: this.end_date,
               min_bid: this.apt,
+              coinType: this.coinType,
             }
           );
 
@@ -371,6 +401,7 @@ export default {
               twitter: this.twitter,
               instagram: this.instagram,
               user_id: this.$store.state.userStore.user.user_id,
+              coin_type: this.coinType,
             })
             .then((res) => {
               this.$toast.showMessage({
@@ -386,6 +417,7 @@ export default {
             });
         }
       } catch (error) {
+        console.log(error);
         this.$toast.showMessage({ message: error, error: true });
         this.loading = false;
       }
