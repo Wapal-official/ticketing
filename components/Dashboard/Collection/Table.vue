@@ -26,12 +26,14 @@
                 v-if="header.showSerialNumber && header.showImage"
                 class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
               >
-                {{ itemIndex + 1 }}.<img
-                  :src="item.image"
-                  :alt="item[header.value]"
+                {{ itemIndex + 1 }}.
+                <utility-image
+                  :source="item.image"
                   :onerror="imageNotFound()"
+                  :alt="item[header.value]"
                   class="tw-w-[64px] tw-h-[64px] tw-object-cover tw-rounded"
-                />{{ item[header.value] }}
+                />
+                {{ item[header.value] }}
               </div>
               <div
                 v-else-if="header.progress"

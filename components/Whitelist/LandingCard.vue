@@ -7,11 +7,11 @@
     <div
       class="tw-w-full tw-h-[312px] tw-rounded-t-lg tw-overflow-hidden md:tw-w-[312px] md:tw-min-h-[312px]"
     >
-      <img
-        class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-min-w-[313px] md:tw-h-[312px] group-hover:tw-scale-110"
-        :src="collection.image"
-        :alt="collection.name"
+      <utility-image
+        :source="collection.image"
         :onerror="imageNotFound()"
+        :alt="collection.name"
+        class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-min-w-[313px] md:tw-h-[312px] group-hover:tw-scale-110"
       />
     </div>
     <div

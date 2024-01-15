@@ -38,11 +38,12 @@
               <div
                 class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
               >
-                <img
-                  :src="item.image"
+                <utility-image
+                  :source="item.image"
                   :alt="item.name"
                   class="tw-w-[50px] tw-h-[50px] tw-object-cover"
-                />{{ item.name }}
+                />
+                {{ item.name }}
               </div>
             </td>
             <td class="!tw-border-none tw-w-[80px] tw-py-2">
@@ -123,11 +124,12 @@
                 <div
                   class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
                 >
-                  <img
-                    :src="item.image"
+                  <utility-image
+                    :source="item.image"
                     :alt="item.name"
                     class="tw-w-[50px] tw-h-[50px] tw-object-cover"
-                  />{{ item.name }}
+                  />
+                  {{ item.name }}
                 </div>
               </td>
               <td class="!tw-border-none tw-w-[80px] tw-py-2">

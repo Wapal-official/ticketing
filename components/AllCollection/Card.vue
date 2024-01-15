@@ -10,12 +10,12 @@
     >
       <video-player-featured :source="video" />
     </div>
-    <img
-      class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
-      :src="collection?.image"
+    <utility-image
+      v-else
+      :source="collection?.image"
       :onerror="imageNotFound()"
       :alt="collection?.name"
-      v-else
+      class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
     />
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1">
       <div class="tw-font-medium">{{ collection?.name }}</div>

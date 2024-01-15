@@ -13,10 +13,10 @@
         <div
           class="tw-rounded-t tw-overflow-hidden tw-w-[250px] tw-max-w-[250px]"
         >
-          <img
-            :src="item.image"
-            :alt="item.name"
+          <utility-image
+            :source="item.image"
             :onerror="imageNotFound()"
+            :alt="item.name"
             class="tw-rounded-t tw-w-[250px] tw-h-[250px] tw-object-cover tw-transition-all tw-duration-200 tw-ease-linear tw-group group-hover:tw-scale-125"
           />
         </div>
