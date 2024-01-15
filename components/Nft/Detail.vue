@@ -133,7 +133,7 @@
           You are not whitelisted in {{ currentSale.name }} for this collection
         </div>
         <div v-if="whitelisted" class="tw-pb-2 tw-text-green-600">
-          You are eligible to mint for {{ currentSale.name }} phase
+          You are eligible to mint for this phase
         </div>
         <div v-if="externalWhitelisted">
           Your Whitelist Mint Tokens:
@@ -374,7 +374,7 @@
     </v-dialog>
     <v-dialog
       v-model="showAfterMintModal"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%] no-scrollbar"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
       :persistent="true"
     >
       <div
@@ -404,16 +404,6 @@
             Create your Roarlinko account, and receive your tokens within 72
             hours after verification
           </p>
-        </div>
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-        >
-          <button-primary
-            :fullWidth="true"
-            title="Create An Account"
-            :bordered="true"
-            @click="createRoarLionAccount"
-          />
         </div>
       </div>
     </v-dialog>
@@ -1100,11 +1090,6 @@ export default {
 
       this.showShareBox = false;
     },
-    createRoarLionAccount() {
-      window.open("https://roarlinko.proudlionsclub.com/", "_blank");
-
-      this.showAfterMintModal = false;
-    },
     hideShareBox() {
       this.showShareBox = false;
     },
@@ -1311,10 +1296,6 @@ export default {
     maxNumberOfNft() {
       if (this.collection.isEdition) {
         return 200;
-      }
-
-      if (this.mintLimit) {
-        return this.mintLimit;
       }
 
       return 35;
