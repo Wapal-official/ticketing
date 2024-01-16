@@ -101,7 +101,7 @@
                 Current Bid
               </div>
               <div class="tw-text-white tw-text-[1.75em] tw-font-medium">
-                {{ current_bid }} APT
+                {{ current_bid }} {{ selectedCoinType.coinType }}
               </div>
             </div>
             <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
@@ -125,7 +125,7 @@
             >
               <input-text-field
                 v-model="bid"
-                placeholder="Bid price(APT)"
+                :placeholder="`Bid price(${selectedCoinType.coinType})`"
                 class="tw-w-full"
               />
               <div class="tw-text-red-600">{{ errors[0] }}</div>
@@ -162,7 +162,7 @@
                 Final Bid
               </div>
               <div class="tw-text-white tw-text-[1.75em] tw-font-medium">
-                {{ current_bid }} APT
+                {{ current_bid }} {{ selectedCoinType.coinType }}
               </div>
             </div>
             <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
@@ -180,7 +180,7 @@
             >
               <input-text-field
                 v-model="bid"
-                placeholder="Bid price(APT)"
+                :placeholder="`Bid price(${selectedCoinType.coinType})`"
                 :disabled="true"
                 class="tw-w-full"
               />
@@ -266,8 +266,12 @@
                 <div
                   class="!tw-text-dark-0 tw-flex tw-flex-row tw-items-center tw-justify-start tw-w-full md:tw-w-[70%]"
                 >
-                  {{ item.displayName }}
-                  bid for {{ item.bid }} APT
+                  {{
+                    item.displayName
+                      ? item.displayName
+                      : sliceAddressForDisplay(item.wallet_address)
+                  }}
+                  bid for {{ item.bid }} {{ selectedCoinType.coinType }}
                 </div>
                 <div
                   class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full md:tw-w-[30%]"
@@ -552,6 +556,7 @@ import {
   getOwnerAndRoyaltyOfTokenInAuction,
 } from "@/services/AuctionService";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+import { getCoinType } from "@/utils/getCoinType";
 
 extend("bidAmount", {
   validate(value) {
@@ -632,6 +637,9 @@ export default {
         }
       }
       return false;
+    },
+    selectedCoinType() {
+      return getCoinType(this.auction.coin_type ? this.auction.coin_type : "");
     },
   },
   async mounted() {
@@ -742,6 +750,7 @@ export default {
         let resource = await this.$store.dispatch("walletStore/placeBid", {
           detail: this.auction,
           offer_price: Number(this.bid).toFixed(8),
+          coinType: this.selectedCoinType.coinType,
         });
 
         if (!resource) {
@@ -815,15 +824,20 @@ export default {
           this.loading = true;
           const increaseBidRes = await this.$store.dispatch(
             "walletStore/increaseAuctionBid",
-            { price: this.bid, auction_id: this.auction.id }
+            {
+              price: this.bid,
+              auction_id: this.auction.id,
+              coinType: this.selectedCoinType.coinType,
+            }
           );
 
           let creation_number = 0;
+
           if (increaseBidRes.success) {
             increaseBidRes.events.map((event) => {
               if (
                 event.type ===
-                `${process.env.PID}::marketplace_bid_utils::IncreaseBidEvent<0x1::aptos_coin::AptosCoin>`
+                `${process.env.PID}::marketplace_bid_utils::IncreaseBidEvent<${this.selectedCoinType.coinObject}>`
               ) {
                 creation_number = event.data.bid_id.listing_id.creation_num;
               }
@@ -923,6 +937,7 @@ export default {
         const res = await this.$store.dispatch("walletStore/withdrawBid", {
           lister_address: this.auction.nft.nft.owner_address,
           creation_number: creation_number,
+          coinType: this.selectedCoinType.coinType,
         });
 
         if (res.success) {
@@ -946,6 +961,7 @@ export default {
         this.loading = true;
         const res = await this.$store.dispatch("walletStore/completeAuction", {
           auction_id: Number(this.auction.id),
+          coinType: this.selectedCoinType.coinType,
         });
 
         if (res.success) {

@@ -189,7 +189,12 @@
                 placeholder="Eg. 0.5"
               >
                 <template #append-icon>
-                  <img :src="darkAptIcon" alt="APT" />
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
                 </template>
               </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
@@ -213,6 +218,22 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-auto-complete
+              :required="true"
+              label="Coin Type"
+              v-model="coinType"
+              placeholder="Select Coin Type"
+              :items="coinTypes"
+              text="name"
+              itemValue="id"
+            />
+            <div class="tw-text-red-600">{{ errors[0] }}</div>
+          </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
@@ -372,7 +393,13 @@
                     <div
                       class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
                     >
-                      {{ mint.minBid }} <img :src="aptIcon" />
+                      {{ mint.minBid }}
+                      <img
+                        :src="selectedCoinType.imageWhite"
+                        alt="Coin Type"
+                        width="14px"
+                        height="14px"
+                      />
                     </div>
                   </div>
                 </div>
@@ -763,7 +790,7 @@
 </template>
 
 <script>
-import { uploadAndCreateFile } from "../../services/AuctionService";
+import { uploadAndCreateFile } from "@/services/AuctionService";
 import { createCollection } from "@/services/CollectionService";
 import { getWalletNFT } from "@/services/AuctionService";
 import { publicRequest } from "@/services/fetcher";
@@ -777,6 +804,10 @@ import generateName from "@/utils/generateName";
 import aptIcon from "@/assets/img/apt.svg";
 import darkAptIcon from "@/assets/img/aptBlack.svg";
 import moment from "moment";
+import {
+  getAvailableCoinTypesForAuction,
+  getCoinType,
+} from "@/utils/getCoinType";
 
 extend("bidAmount", {
   validate(value) {
@@ -906,6 +937,8 @@ export default {
       ],
       formSteps: ["Details", "Token", "Attributes", "Review"],
       formStepNumber: 1,
+      coinTypes: getAvailableCoinTypesForAuction(),
+      coinType: "APT",
       defaultTheme,
       aptIcon,
       darkAptIcon,
@@ -929,6 +962,9 @@ export default {
     },
     selectedNft() {
       return this.$store.state.auction.selectedNft;
+    },
+    selectedCoinType() {
+      return getCoinType(this.coinType);
     },
   },
   async mounted() {},
@@ -1138,6 +1174,7 @@ export default {
                           start_date: this.mint.startDate,
                           end_date: this.mint.endDate,
                           min_bid: this.mint.minBid,
+                          coinType: this.coinType,
                         }
                       );
 
@@ -1155,6 +1192,7 @@ export default {
                         twitter: this.mint.twitter,
                         instagram: this.mint.instagram,
                         user_id: this.$store.state.userStore.user.user_id,
+                        coin_type: this.coinType,
                         tweet: this.mint.tweet,
                       });
 
