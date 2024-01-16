@@ -107,7 +107,7 @@
           <h4
             class="tw-text-white tw-uppercase tw-text-[1.75rem] tw-pt-4 tw-pb-6 tw-font-medium"
           >
-            {{ getBid }} Apt
+            {{ getBid }} {{ selectedCoinType.coinType }}
           </h4>
           <button-primary
             :title="!auctionEnded ? 'Place a Bid' : 'Auction Ended'"
@@ -121,6 +121,7 @@
 </template>
 <script lang="ts">
 import imageNotFound from "@/utils/imageNotFound";
+import { getCoinType } from "@/utils/getCoinType";
 export default {
   props: { auction: { type: Object } },
   data() {
@@ -186,6 +187,9 @@ export default {
       }
 
       return this.auction.min_bid;
+    },
+    selectedCoinType() {
+      return getCoinType(this.auction.coin_type ? this.auction.coin_type : "");
     },
   },
   async mounted() {
