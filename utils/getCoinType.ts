@@ -40,13 +40,13 @@ export const getCoinType = (coinType: string) => {
       coinTypeObject.candy_id = process.env.GUI_CANDY_MACHINE;
       coinTypeObject.coinObject = GUI_COIN_OBJECT;
       break;
-    // case "CLST":
-    //   coinTypeObject.coinType = "CLST";
-    //   coinTypeObject.imageDark = celestialWhite;
-    //   coinTypeObject.imageWhite = celestialWhite;
-    //   coinTypeObject.candy_id = process.env.CELESTIAL_CANDY_MACHINE;
-    //   coinTypeObject.coinObject = CELESTIAL_COIN_OBJECT;
-    //   break;
+    case "CLST":
+      coinTypeObject.coinType = "CLST";
+      coinTypeObject.imageDark = celestialWhite;
+      coinTypeObject.imageWhite = celestialWhite;
+      coinTypeObject.candy_id = process.env.CELESTIAL_CANDY_MACHINE;
+      coinTypeObject.coinObject = CELESTIAL_COIN_OBJECT;
+      break;
     default:
       break;
   }
@@ -55,7 +55,7 @@ export const getCoinType = (coinType: string) => {
 };
 
 export const getAvailableCoinTypes = () => {
-  return ["APT", "GUI", "SEEDZ"];
+  return ["APT", "GUI", "SEEDZ", "CLST"];
 };
 
 export const getAvailableCoinTypesForAuction = () => {
