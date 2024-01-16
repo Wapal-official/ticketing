@@ -119,6 +119,10 @@ export default {
   },
   methods: {
     getCoinTypeOfCollection(collection) {
+      if (collection.coin_type) {
+        return getCoinType(collection.coin_type);
+      }
+
       return getCoinType(
         collection.seed && collection.seed.coin_type
           ? collection.seed.coin_type

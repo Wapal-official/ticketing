@@ -125,7 +125,7 @@
             >
               <input-text-field
                 v-model="bid"
-                placeholder="Bid price(APT)"
+                :placeholder="`Bid price(${selectedCoinType.coinType})`"
                 class="tw-w-full"
               />
               <div class="tw-text-red-600">{{ errors[0] }}</div>
@@ -180,7 +180,7 @@
             >
               <input-text-field
                 v-model="bid"
-                placeholder="Bid price(APT)"
+                :placeholder="`Bid price(${selectedCoinType.coinType})`"
                 :disabled="true"
                 class="tw-w-full"
               />

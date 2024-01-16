@@ -272,7 +272,10 @@ import { required } from "vee-validate/dist/rules";
 
 import imageNotFound from "@/utils/imageNotFound";
 import aptIcon from "@/assets/img/aptBlack.svg";
-import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
+import {
+  getAvailableCoinTypesForAuction,
+  getCoinType,
+} from "@/utils/getCoinType";
 extend("required", {
   ...required,
   message: "This field is required",
@@ -343,7 +346,7 @@ export default {
       instagram: "",
       socialError: false,
       socialErrorMessage: "",
-      coinTypes: getAvailableCoinTypes(),
+      coinTypes: getAvailableCoinTypesForAuction(),
       coinType: "APT",
       imageNotFound,
       aptIcon,

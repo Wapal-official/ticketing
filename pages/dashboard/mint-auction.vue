@@ -775,7 +775,10 @@ import generateName from "@/utils/generateName";
 import aptIcon from "@/assets/img/apt.svg";
 import darkAptIcon from "@/assets/img/aptBlack.svg";
 import moment from "moment";
-import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
+import {
+  getAvailableCoinTypesForAuction,
+  getCoinType,
+} from "@/utils/getCoinType";
 
 extend("bidAmount", {
   validate(value) {
@@ -893,7 +896,7 @@ export default {
       ],
       formSteps: ["Details", "Token", "Attributes", "Review"],
       formStepNumber: 1,
-      coinTypes: getAvailableCoinTypes(),
+      coinTypes: getAvailableCoinTypesForAuction(),
       coinType: "APT",
       defaultTheme,
       aptIcon,
