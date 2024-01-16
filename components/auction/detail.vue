@@ -266,7 +266,11 @@
                 <div
                   class="!tw-text-dark-0 tw-flex tw-flex-row tw-items-center tw-justify-start tw-w-full md:tw-w-[70%]"
                 >
-                  {{ item.displayName }}
+                  {{
+                    item.displayName
+                      ? item.displayName
+                      : sliceAddressForDisplay(item.wallet_address)
+                  }}
                   bid for {{ item.bid }} {{ selectedCoinType.coinType }}
                 </div>
                 <div
