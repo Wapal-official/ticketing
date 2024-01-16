@@ -147,15 +147,26 @@ export const getOwnedCollectionOfUser = async (
 ) => {
   const res = await axios.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "SingleCollectionOfUser",
-    query: `query SingleCollectionOfUser {
-      current_token_ownerships(
+    query: `
+    query SingleCollectionOfUser {
+      current_collection_ownership_v2_view(
+        distinct_on: collection_id
+        limit: 1
         where: {owner_address: {_eq: "${owner_address}"}, collection_name: {_eq: "${collection_name}"}}
       ) {
-        amount
+        distinct_tokens
       }
-    }`,
+    }
+    `,
   });
-  return res;
+
+  const data = res.data.data.current_collection_ownership_v2_view;
+
+  if (data[0]) {
+    return data[0].distinct_tokens;
+  }
+
+  return 0;
 };
 
 export const sortPhases = (phases: any[]) => {
