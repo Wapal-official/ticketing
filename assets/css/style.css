@@ -455,3 +455,15 @@ input:disabled {
 .description:first-line {
   line-height: 0;
 }
+
+/* Chrome, Safari, Edge, Opera */
+.no-spin-button::-webkit-outer-spin-button,
+.no-spin-button::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.n-spin-buttonn[type="number"] {
+  -moz-appearance: textfield;
+}
