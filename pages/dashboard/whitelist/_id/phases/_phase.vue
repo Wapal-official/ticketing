@@ -106,8 +106,14 @@
           />
         </div> -->
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-3"
         >
+          <div
+            class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 tw-text-sm tw-font-medium tw-text-dark-2 tw-pr-8"
+          >
+            <div class="tw-uppercase">Total Addresses</div>
+            <div>{{ totalAddresses }}</div>
+          </div>
           <form @submit.prevent="" class="tw-w-full md:tw-w-fit">
             <label
               class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
@@ -138,15 +144,16 @@
                 class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
               >
                 <div class="tw-font-semibold">Caution</div>
-              <p>
-              <div>If a user/address participates in different</div>
-              <div>mint phases with different mint limits, kindly</div>
-              <div>use separate addresses for each phase's</div>
-              <div>mint limit for the same user.</div>
-              </p>
-              <div>If a user/address has the same limit at</div>
-              <div>all the phases, using the same</div>
-              <div>address is acceptable in each phase</div>
+
+                <div>If a user/address participates in different</div>
+                <div>mint phases with different mint limits, kindly</div>
+                <div>use separate addresses for each phase's</div>
+                <div>mint limit for the same user.</div>
+                <div class="tw-pt-2">
+                  If a user/address has the same limit at
+                </div>
+                <div>all the phases, using the same</div>
+                <div>address is acceptable in each phase</div>
               </div>
             </template>
           </tool-tip>
@@ -306,6 +313,7 @@ export default {
       role: null,
       showRoleFilter: false,
       loaded: false,
+      totalAddresses: 0,
     };
   },
   methods: {
@@ -356,6 +364,10 @@ export default {
         this.page,
         this.$route.params.phase
       );
+
+      if (this.whitelistEntries.length === 0) {
+        this.totalAddresses = res.data.spotsCount;
+      }
 
       if (res.data.whitelistEntries.length === 0) {
         this.loading = false;
