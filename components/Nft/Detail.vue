@@ -148,7 +148,7 @@
           v-if="live"
         >
           <div
-            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
+            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
           >
             <h2
               class="tw-text-base tw-text-white tw-font-semibold tw-capitalize"
@@ -222,10 +222,10 @@
                 </div>
               </div>
               <div
-                class="tw-w-full tw-rounded-lg tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+                class="tw-w-full tw-rounded-lg tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
               >
                 <div
-                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white tw-rounded tw-border tw-border-solid tw-border-dark-4 tw-bg-dark-6"
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white tw-rounded tw-border tw-border-solid tw-w-full md:tw-w-fit tw-border-dark-4 tw-bg-dark-6"
                 >
                   <button
                     class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
@@ -239,10 +239,11 @@
                     -
                   </button>
                   <input
-                    class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
+                    class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-full md:tw-w-20 disabled:tw-cursor-not-allowed"
                     v-model="numberOfNft"
                     @input="checkNumberOfNft"
                     v-if="!externalWhitelisted || this.gettingProof"
+                    type="number"
                   />
                   <div
                     class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
