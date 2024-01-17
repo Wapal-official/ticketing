@@ -721,6 +721,7 @@ export default {
             mintNumber: this.numberOfNft,
             proof: this.proof,
             mintLimit: this.totalMintLimit,
+            sender: this.getSender,
           });
         } else {
           if (
@@ -735,6 +736,7 @@ export default {
               proof: this.proof,
               mint_limit: this.totalMintLimit,
               coinType: this.collection.seed.coin_type,
+              sender: this.getSender,
             });
           } else {
             res = await mintCollection({
@@ -744,6 +746,7 @@ export default {
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
               mint_limit: this.totalMintLimit,
+              sender: this.getSender,
             });
           }
         }
@@ -1245,6 +1248,12 @@ export default {
     },
     getWalletAddress() {
       return this.$store.state.walletStore.wallet.walletAddress;
+    },
+    getSender() {
+      return {
+        walletAddress: this.$store.state.walletStore.wallet.walletAddress,
+        publicKey: this.$store.state.walletStore.wallet.publicKey,
+      };
     },
     generatedProof() {
       if (!this.checkPublicSaleTimer()) {
