@@ -126,15 +126,7 @@
         >
           1 NFT Per Wallet
         </div>
-        <div class="tw-pb-2 tw-text-red-600" v-if="gettingProof">
-          Getting Proof for {{ currentSale.name }}
-        </div>
-        <div v-if="notWhitelisted" class="tw-pb-2 tw-text-red-600">
-          You are not whitelisted in {{ currentSale.name }} for this collection
-        </div>
-        <div v-if="whitelisted" class="tw-pb-2 tw-text-green-600">
-          You are eligible to mint for this phase
-        </div>
+
         <div v-if="externalWhitelisted">
           Your Whitelist Mint Tokens:
           {{ externalWhitelistMintNumber }} Remaining
@@ -156,128 +148,160 @@
           v-if="live"
         >
           <div
-            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-col md:tw-items-start md:tw-justify-start"
+            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
           >
+            <h2
+              class="tw-text-base tw-text-white tw-font-semibold tw-capitalize"
+            >
+              {{ currentSale.name }}
+            </h2>
             <div
-              class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-col md:tw-items-start md:tw-justify-start tw-w-full"
-              v-if="collection.username !== 'wapal-santa'"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-w-full"
             >
               <div
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+                class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-col md:tw-items-start md:tw-justify-start tw-w-full"
+                v-if="collection.username !== 'wapal-santa'"
               >
                 <div
-                  class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
-                  v-if="
-                    collection.isEdition &&
-                    collection.edition === 'open-edition'
-                  "
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
                 >
-                  <div class="tw-text-white/70">
-                    Total Minted: {{ resource.minted }}
-                  </div>
-                  <div v-if="currentSale.mint_price == 0">Free Mint</div>
                   <div
-                    v-if="currentSale.mint_price && currentSale.mint_price != 0"
+                    class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+                    v-if="
+                      collection.isEdition &&
+                      collection.edition === 'open-edition'
+                    "
                   >
-                    Price {{ currentSale.mint_price }}
-                    {{
-                      collection.seed && collection.seed.coin_type
-                        ? collection.seed.coin_type
-                        : "APT"
-                    }}
+                    <div class="tw-text-white/70">
+                      Total Minted: {{ resource.minted }}
+                    </div>
+                    <div v-if="currentSale.mint_price == 0">Free Mint</div>
+                    <div
+                      v-if="
+                        currentSale.mint_price && currentSale.mint_price != 0
+                      "
+                    >
+                      Price {{ currentSale.mint_price }}
+                      {{
+                        collection.seed && collection.seed.coin_type
+                          ? collection.seed.coin_type
+                          : "APT"
+                      }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
-                  v-else
-                >
-                  <div class="tw-text-white/70">
-                    {{ resource.minted }}/{{ resource.total_supply }} Minted
-                  </div>
-                  <div v-if="currentSale.mint_price == 0">Free Mint</div>
                   <div
-                    v-if="currentSale.mint_price && currentSale.mint_price != 0"
+                    class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+                    v-else
                   >
-                    Price {{ currentSale.mint_price }}
-                    {{
-                      collection.seed && collection.seed.coin_type
-                        ? collection.seed.coin_type
-                        : "APT"
-                    }}
+                    <div class="tw-text-white/70">
+                      {{ resource.minted }}/{{ resource.total_supply }} Minted
+                    </div>
+                    <div v-if="currentSale.mint_price == 0">Free Mint</div>
+                    <div
+                      v-if="
+                        currentSale.mint_price && currentSale.mint_price != 0
+                      "
+                    >
+                      Price {{ currentSale.mint_price }}
+                      {{
+                        collection.seed && collection.seed.coin_type
+                          ? collection.seed.coin_type
+                          : "APT"
+                      }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
-                  v-if="collection.edition !== 'open-edition'"
-                >
                   <div
-                    class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
-                    id="resourceMintedPercent"
-                  ></div>
+                    class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+                    v-if="collection.edition !== 'open-edition'"
+                  >
+                    <div
+                      class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
+                      id="resourceMintedPercent"
+                    ></div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="tw-w-full tw-rounded-lg tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
-            >
               <div
-                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white tw-rounded tw-border tw-border-solid tw-border-dark-4 tw-bg-dark-6"
+                class="tw-w-full tw-rounded-lg tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
               >
-                <button
-                  class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
-                  @click="decreaseNumberOfNft"
-                  :disabled="externalWhitelisted || this.gettingProof"
-                  @mouseup="stopDecrement"
-                  @mousedown="startDecrement"
-                  @touchstart="startDecrement"
-                  @touchend="stopDecrement"
+                <div
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white tw-rounded tw-border tw-border-solid tw-w-full md:tw-w-fit tw-border-dark-4 tw-bg-dark-6"
                 >
-                  -
-                </button>
-                <input
-                  class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
-                  v-model="numberOfNft"
-                  @input="checkNumberOfNft"
-                  v-if="!externalWhitelisted || this.gettingProof"
+                  <button
+                    class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
+                    @click="decreaseNumberOfNft"
+                    :disabled="externalWhitelisted || this.gettingProof"
+                    @mouseup="stopDecrement"
+                    @mousedown="startDecrement"
+                    @touchstart="startDecrement"
+                    @touchend="stopDecrement"
+                  >
+                    -
+                  </button>
+                  <input
+                    class="no-spin-button tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-full md:tw-w-20 disabled:tw-cursor-not-allowed"
+                    v-model="numberOfNft"
+                    @input="checkNumberOfNft"
+                    v-if="!externalWhitelisted || this.gettingProof"
+                    type="number"
+                  />
+                  <div
+                    class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
+                    v-else
+                  >
+                    {{ externalWhitelistMintNumber }}
+                  </div>
+                  <button
+                    class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
+                    @click="increaseNumberOfNft"
+                    :disabled="externalWhitelisted || this.gettingProof"
+                    @mouseup="stopIncrement"
+                    @mousedown="startIncrement"
+                    @touchstart="startIncrement"
+                    @touchend="stopIncrement"
+                  >
+                    +
+                  </button>
+                </div>
+                <a
+                  class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+                  :href="collection.mintDetails.link"
+                  target="_blank"
+                  v-if="collection.mintDetails && collection.mintDetails.link"
+                >
+                  {{
+                    collection.username === "wapal-santa"
+                      ? "Reveal Your Present 🎁"
+                      : "Mint"
+                  }}
+                </a>
+                <button-primary
+                  :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
+                  :disabled="getMintButtonDisabledStatus"
+                  @click="mintBulkCollection"
+                  :fullWidth="true"
+                  :loading="minting"
+                  v-else
                 />
-                <div
-                  class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
-                  v-else
-                >
-                  {{ externalWhitelistMintNumber }}
-                </div>
-                <button
-                  class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
-                  @click="increaseNumberOfNft"
-                  :disabled="externalWhitelisted || this.gettingProof"
-                  @mouseup="stopIncrement"
-                  @mousedown="startIncrement"
-                  @touchstart="startIncrement"
-                  @touchend="stopIncrement"
-                >
-                  +
-                </button>
               </div>
-              <a
-                class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
-                :href="collection.mintDetails.link"
-                target="_blank"
-                v-if="collection.mintDetails && collection.mintDetails.link"
+              <div
+                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 tw-text-dark-0"
+                v-if="checkPublicSaleTimer() && getWalletAddress"
               >
-                {{
-                  collection.username === "wapal-santa"
-                    ? "Reveal Your Present 🎁"
-                    : "Mint"
-                }}
-              </a>
-              <button-primary
-                :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
-                :disabled="getMintButtonDisabledStatus"
-                @click="mintBulkCollection"
-                :fullWidth="true"
-                :loading="minting"
-                v-else
-              />
+                <i class="bx bx-info-circle tw-text-xl"></i>
+                <div class="tw-text-sm">
+                  <div v-if="gettingProof">
+                    Getting Proof for {{ currentSale.name }}
+                  </div>
+                  <div v-if="notWhitelisted">
+                    You are not whitelisted in {{ currentSale.name }} for this
+                    collection
+                  </div>
+                  <div v-if="whitelisted">
+                    You are eligible to mint for this phase
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1179,6 +1203,10 @@ export default {
 
       if (this.maxNumberOfNft <= 0) {
         this.maxNumberOfNft = 1;
+      }
+
+      if (this.maxNumberOfNft >= 35) {
+        this.maxNumberOfNft = 35;
       }
 
       this.numberOfNft = 1;
