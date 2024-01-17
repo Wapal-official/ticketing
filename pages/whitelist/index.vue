@@ -28,7 +28,7 @@
                 :source="item.image"
                 :onerror="imageNotFound()"
                 :alt="item.collectionName"
-                cclass="tw-w-[64px] tw-h-[64px] tw-object-cover tw-rounded"
+                class="tw-w-[64px] tw-h-[64px] tw-object-cover tw-rounded"
               />
               {{ item.collectionName }}
             </td>

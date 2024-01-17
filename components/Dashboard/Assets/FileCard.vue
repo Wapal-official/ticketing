@@ -119,6 +119,7 @@
   </div>
 </template>
 <script lang="ts">
+import { getCachedUrlOfImage } from "@/utils/imageCache";
 export default {
   props: {
     propFile: { type: Object },
@@ -139,16 +140,20 @@ export default {
   methods: {
     displayFileDetails() {
       this.linkedAsset.name = this.file.src;
+ 
       this.linkedAsset.image = this.file.image
-        ? this.file.image
+        ? getCachedUrlOfImage(this.file.image)
         : this.file.metadata
         ? this.file.metadata.image
+          ? getCachedUrlOfImage(this.file.metadata.image)
+          : null
         : null;
 
       this.linkedAsset.metadata = this.file.metadata;
 
       this.$emit("displayFileDetails", this.linkedAsset);
     },
+
     async downloadFile() {
       if (process.client) {
         const res = await this.$axios.get(this.file.src, {
