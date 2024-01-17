@@ -239,7 +239,7 @@
                     -
                   </button>
                   <input
-                    class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-full md:tw-w-20 disabled:tw-cursor-not-allowed"
+                    class="no-spin-button tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-full md:tw-w-20 disabled:tw-cursor-not-allowed"
                     v-model="numberOfNft"
                     @input="checkNumberOfNft"
                     v-if="!externalWhitelisted || this.gettingProof"
