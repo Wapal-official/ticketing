@@ -10,7 +10,7 @@ export const aptToUsd = async () => {
     return value;
   } catch (e) {
     console.log(e);
-    return 0;
+    return 10;
   }
 };
 
