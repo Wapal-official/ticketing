@@ -113,8 +113,7 @@ export default {
   },
   async mounted() {
     if (this.whitelist.collection_id) {
-      const res = await getCollection(this.whitelist.collection_id);
-      this.collection = res.collection[0];
+      this.collection = await getCollection(this.whitelist.collection_id);
 
       const spotRes = await getWhitelistEntryById(
         this.whitelist.collection_id,

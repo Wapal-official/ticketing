@@ -79,8 +79,7 @@ export default {
         this.video = santa;
       }
 
-      const collectionRes = await getCollection(this.collection._id);
-      const collection = collectionRes.collection[0];
+      const collection = await getCollection(this.collection._id);
 
       const res = await this.$store.dispatch(
         "walletStore/getSupplyAndMintedOfCollection",

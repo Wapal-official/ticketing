@@ -41,8 +41,7 @@ export default {
       return { collection };
     }
     try {
-      const res = await getCollectionByUsername(name);
-      collection = res.data.collection[0];
+      const collection = await getCollectionByUsername(name);
 
       if (collection) {
         if (collection._id === "651295af57079307bdb1cfe9") {
@@ -57,8 +56,7 @@ export default {
       }
     } catch {
       try {
-        const res = await getCollection(name);
-        collection = res.collection[0];
+        const collection = await getCollection(name);
 
         if (collection._id === "651295af57079307bdb1cfe9") {
           delete collection["candyMachine"].whitelist_sale_time;

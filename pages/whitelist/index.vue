@@ -166,9 +166,7 @@ export default {
       const collectionRes = await Promise.all(
         whitelists.map(async (whitelist: any) => {
           try {
-            const res = await getCollection(whitelist.collection_id);
-
-            const collection = res.collection[0];
+            const collection = await getCollection(whitelist.collection_id);
 
             const spotRes = await getWhitelistEntryById(
               whitelist.collection_id,

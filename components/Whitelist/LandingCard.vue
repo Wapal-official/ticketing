@@ -66,7 +66,7 @@ export default {
     };
   },
   async mounted() {
-    const res = await getCollection(this.whitelist.collection_id);
+    const collection = await getCollection(this.whitelist.collection_id);
     const whitelistRes = await getWhitelistEntryById(
       this.whitelist.collection_id,
       1,
@@ -74,12 +74,12 @@ export default {
       "whitelist"
     );
 
-    if (res.collection.length < 1) {
+    if (collection.length < 1) {
       this.loading = true;
       return;
     }
 
-    this.collection = res.collection[0];
+    this.collection = collection;
 
     this.totalSpots = this.whitelist.whitelist_spots;
     this.takenSpots = whitelistRes.data.spotsCount;

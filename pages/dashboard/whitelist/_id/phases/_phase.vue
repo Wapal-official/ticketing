@@ -426,9 +426,7 @@ export default {
     },
   },
   async mounted() {
-    const collectionRes = await getCollectionByUsername(this.$route.params.id);
-
-    this.collection = collectionRes.data.collection[0];
+    this.collection = await getCollectionByUsername(this.$route.params.id);
 
     await this.mapWhitelistEntries();
   },
