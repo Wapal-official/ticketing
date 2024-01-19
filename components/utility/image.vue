@@ -8,14 +8,18 @@
     :height="height"
     :onerror="onerror"
   />
-  <v-progress-circular
-    :size="24"
-    :width="2"
-    color="#fff"
-    indeterminate
-    class="progress-bar"
+  <div
+    class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center"
     v-else
-  ></v-progress-circular>
+  >
+    <v-progress-circular
+      :size="24"
+      :width="2"
+      color="#fff"
+      indeterminate
+      class="progress-bar"
+    ></v-progress-circular>
+  </div>
 </template>
 <script>
 import axios from "axios";
@@ -88,9 +92,3 @@ export default {
   },
 };
 </script>
-<style>
-.progress-bar {
-  margin: auto;
-  display: block;
-}
-</style>
