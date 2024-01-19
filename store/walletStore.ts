@@ -19,7 +19,9 @@ import { AptosClient, HexString, TxnBuilderTypes } from "aptos";
 import axios from "axios";
 
 import { getPrice } from "@/services/AssetsService";
-import { aptToUsd, arToUsd } from "~/services/UtilityService";
+import { aptToUsd, arToUsd } from "@/services/UtilityService";
+import { getCoinType } from "@/utils/getCoinType";
+import { convertPriceToSendInSmartContract } from "~/utils/price";
 
 const GRAPHQL_URL = process.env.GRAPHQL_URL ? process.env.GRAPHQL_URL : "";
 
@@ -593,13 +595,20 @@ export const actions = {
     let startSec = Math.floor(start.getTime() / 1000);
     let end = new Date(detail.end_date);
     let endSec = Math.floor(end.getTime() / 1000);
-    let min_bid = detail.min_bid * 100000000;
     let nft = rootState.auction.selectedNft;
+
+    const coinType = getCoinType(detail.coinType);
+
+    let min_bid = convertPriceToSendInSmartContract({
+      price: detail.min_bid,
+      isConverted: false,
+      coinType: detail.coinType,
+    });
 
     const create_auction = {
       type: "entry_function_payload",
       function: process.env.PID + "::auction::create_auction",
-      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      type_arguments: [coinType.coinObject],
       arguments: [
         nft.nft.current_token_data.creator_address,
         nft.nft.current_token_data.collection_name,
@@ -622,8 +631,9 @@ export const actions = {
     if (getResource.success) {
       for (var x = 0; x < getResource.changes.length; x++) {
         if (
+          getResource.changes[x].data &&
           getResource.changes[x].data.type ==
-          process.env.PID + "::auction::Auctions<0x1::aptos_coin::AptosCoin>"
+            process.env.PID + `::auction::Auctions<${coinType.coinObject}>`
         ) {
           return getResource.changes[x].data.data;
         }
@@ -645,17 +655,25 @@ export const actions = {
       let withdraw = new Date(auction.detail.endAt);
       let withdrawSec = Math.floor(withdraw.getTime() / 1000);
 
+      const offer_price = convertPriceToSendInSmartContract({
+        price: auction.offer_price,
+        isConverted: false,
+        coinType: auction.coinType,
+      });
+
+      const coinType = getCoinType(auction.coinType);
+
       const place_bid = {
         type: "entry_function_payload",
         function: process.env.PID + "::auction::bid",
-        type_arguments: ["0x1::aptos_coin::AptosCoin"],
+        type_arguments: [coinType.coinObject],
         arguments: [
           auction.detail.nft.nft.current_token_data.creator_address,
           auction.detail.nft.nft.current_token_data.collection_name,
           auction.detail.nft.nft.current_token_data.name,
           auction.detail.nft.nft.property_version,
           auction.detail.nft.nft.amount,
-          (auction.offer_price * Math.pow(10, 8)).toFixed(0),
+          offer_price,
           auction.detail.id,
           withdrawSec,
         ],
@@ -673,18 +691,30 @@ export const actions = {
   },
   async increaseAuctionBid(
     { state }: { state: any },
-    { price, auction_id }: { price: number; auction_id: number }
+    {
+      price,
+      auction_id,
+      coinType,
+    }: { price: number; auction_id: number; coinType: string }
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
     checkNetwork();
 
+    const offer_price = convertPriceToSendInSmartContract({
+      price: price,
+      isConverted: false,
+      coinType: coinType,
+    });
+
+    const coinTypeObject = getCoinType(coinType);
+
     const increase_bid = {
       type: "entry_function_payload",
       function: process.env.PID + "::auction::increase_bid",
-      type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [(price * Math.pow(10, 8)).toFixed(0), auction_id],
+      type_arguments: [coinTypeObject.coinObject],
+      arguments: [offer_price, auction_id],
     };
 
     const res = await wallet.signAndSubmitTransaction(increase_bid);
@@ -698,17 +728,20 @@ export const actions = {
     {
       lister_address,
       creation_number,
-    }: { lister_address: String; creation_number: Number }
+      coinType,
+    }: { lister_address: String; creation_number: Number; coinType: string }
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
     checkNetwork();
 
+    const coinTypeObject = getCoinType(coinType);
+
     const withdraw_coin_from_bid = {
       type: "entry_function_payload",
       function: process.env.PID + "::auction::withdraw_coin_from_bid",
-      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      type_arguments: [coinTypeObject.coinObject],
       arguments: [lister_address, creation_number],
     };
 
@@ -720,17 +753,19 @@ export const actions = {
   },
   async completeAuction(
     { state }: { state: any },
-    { auction_id }: { auction_id: Number }
+    { auction_id, coinType }: { auction_id: Number; coinType: string }
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
     }
     checkNetwork();
 
+    const coinTypeObject = getCoinType(coinType);
+
     const complete_auction = {
       type: "entry_function_payload",
       function: process.env.PID + "::auction::complete_auction",
-      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      type_arguments: [coinTypeObject.coinObject],
       arguments: [auction_id],
     };
 

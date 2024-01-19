@@ -1025,7 +1025,7 @@ export default {
         whitelistTime = Math.floor(
           new Date(this.collection.phases[0].mint_time).getTime() / 1000
         );
-        whitelist_price = this.collection.whitelist_price;
+        whitelist_price = this.collection.phases[0].mint_price;
       }
 
       const pre_sale_price = parseFloat(

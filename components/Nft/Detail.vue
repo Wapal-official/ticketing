@@ -125,15 +125,7 @@
         >
           1 NFT Per Wallet
         </div>
-        <div class="tw-pb-2 tw-text-red-600" v-if="gettingProof">
-          Getting Proof for {{ currentSale.name }}
-        </div>
-        <div v-if="notWhitelisted" class="tw-pb-2 tw-text-red-600">
-          You are not whitelisted in {{ currentSale.name }} for this collection
-        </div>
-        <div v-if="whitelisted" class="tw-pb-2 tw-text-green-600">
-          You are eligible to mint for {{ currentSale.name }} phase
-        </div>
+
         <div v-if="externalWhitelisted">
           Your Whitelist Mint Tokens:
           {{ externalWhitelistMintNumber }} Remaining
@@ -155,128 +147,160 @@
           v-if="live"
         >
           <div
-            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-col md:tw-items-start md:tw-justify-start"
+            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
           >
+            <h2
+              class="tw-text-base tw-text-white tw-font-semibold tw-capitalize"
+            >
+              {{ currentSale.name }}
+            </h2>
             <div
-              class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-col md:tw-items-start md:tw-justify-start tw-w-full"
-              v-if="collection.username !== 'wapal-santa'"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-w-full"
             >
               <div
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+                class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-col md:tw-items-start md:tw-justify-start tw-w-full"
+                v-if="collection.username !== 'wapal-santa'"
               >
                 <div
-                  class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
-                  v-if="
-                    collection.isEdition &&
-                    collection.edition === 'open-edition'
-                  "
+                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
                 >
-                  <div class="tw-text-white/70">
-                    Total Minted: {{ resource.minted }}
-                  </div>
-                  <div v-if="currentSale.mint_price == 0">Free Mint</div>
                   <div
-                    v-if="currentSale.mint_price && currentSale.mint_price != 0"
+                    class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+                    v-if="
+                      collection.isEdition &&
+                      collection.edition === 'open-edition'
+                    "
                   >
-                    Price {{ currentSale.mint_price }}
-                    {{
-                      collection.seed && collection.seed.coin_type
-                        ? collection.seed.coin_type
-                        : "APT"
-                    }}
+                    <div class="tw-text-white/70">
+                      Total Minted: {{ resource.minted }}
+                    </div>
+                    <div v-if="currentSale.mint_price == 0">Free Mint</div>
+                    <div
+                      v-if="
+                        currentSale.mint_price && currentSale.mint_price != 0
+                      "
+                    >
+                      Price {{ currentSale.mint_price }}
+                      {{
+                        collection.seed && collection.seed.coin_type
+                          ? collection.seed.coin_type
+                          : "APT"
+                      }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
-                  v-else
-                >
-                  <div class="tw-text-white/70">
-                    {{ resource.minted }}/{{ resource.total_supply }} Minted
-                  </div>
-                  <div v-if="currentSale.mint_price == 0">Free Mint</div>
                   <div
-                    v-if="currentSale.mint_price && currentSale.mint_price != 0"
+                    class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
+                    v-else
                   >
-                    Price {{ currentSale.mint_price }}
-                    {{
-                      collection.seed && collection.seed.coin_type
-                        ? collection.seed.coin_type
-                        : "APT"
-                    }}
+                    <div class="tw-text-white/70">
+                      {{ resource.minted }}/{{ resource.total_supply }} Minted
+                    </div>
+                    <div v-if="currentSale.mint_price == 0">Free Mint</div>
+                    <div
+                      v-if="
+                        currentSale.mint_price && currentSale.mint_price != 0
+                      "
+                    >
+                      Price {{ currentSale.mint_price }}
+                      {{
+                        collection.seed && collection.seed.coin_type
+                          ? collection.seed.coin_type
+                          : "APT"
+                      }}
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
-                  v-if="collection.edition !== 'open-edition'"
-                >
                   <div
-                    class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
-                    id="resourceMintedPercent"
-                  ></div>
+                    class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
+                    v-if="collection.edition !== 'open-edition'"
+                  >
+                    <div
+                      class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
+                      id="resourceMintedPercent"
+                    ></div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="tw-w-full tw-rounded-lg tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
-            >
               <div
-                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white tw-rounded tw-border tw-border-solid tw-border-dark-4 tw-bg-dark-6"
+                class="tw-w-full tw-rounded-lg tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
               >
-                <button
-                  class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
-                  @click="decreaseNumberOfNft"
-                  :disabled="externalWhitelisted"
-                  @mouseup="stopDecrement"
-                  @mousedown="startDecrement"
-                  @touchstart="startDecrement"
-                  @touchend="stopDecrement"
+                <div
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5 tw-text-white tw-rounded tw-border tw-border-solid tw-w-full md:tw-w-fit tw-border-dark-4 tw-bg-dark-6"
                 >
-                  -
-                </button>
-                <input
-                  class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
-                  v-model="numberOfNft"
-                  @input="checkNumberOfNft"
-                  v-if="!externalWhitelisted"
+                  <button
+                    class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
+                    @click="decreaseNumberOfNft"
+                    :disabled="externalWhitelisted || this.gettingProof"
+                    @mouseup="stopDecrement"
+                    @mousedown="startDecrement"
+                    @touchstart="startDecrement"
+                    @touchend="stopDecrement"
+                  >
+                    -
+                  </button>
+                  <input
+                    class="no-spin-button tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-full md:tw-w-20 disabled:tw-cursor-not-allowed"
+                    v-model="numberOfNft"
+                    @input="checkNumberOfNft"
+                    v-if="!externalWhitelisted || this.gettingProof"
+                    type="number"
+                  />
+                  <div
+                    class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
+                    v-else
+                  >
+                    {{ externalWhitelistMintNumber }}
+                  </div>
+                  <button
+                    class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
+                    @click="increaseNumberOfNft"
+                    :disabled="externalWhitelisted || this.gettingProof"
+                    @mouseup="stopIncrement"
+                    @mousedown="startIncrement"
+                    @touchstart="startIncrement"
+                    @touchend="stopIncrement"
+                  >
+                    +
+                  </button>
+                </div>
+                <a
+                  class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+                  :href="collection.mintDetails.link"
+                  target="_blank"
+                  v-if="collection.mintDetails && collection.mintDetails.link"
+                >
+                  {{
+                    collection.username === "wapal-santa"
+                      ? "Reveal Your Present 🎁"
+                      : "Mint"
+                  }}
+                </a>
+                <button-primary
+                  :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
+                  :disabled="getMintButtonDisabledStatus"
+                  @click="mintBulkCollection"
+                  :fullWidth="true"
+                  :loading="minting"
+                  v-else
                 />
-                <div
-                  class="tw-rounded tw-text-center tw-px-6 tw-py-2 tw-font-semibold tw-w-20 disabled:tw-cursor-not-allowed"
-                  v-else
-                >
-                  {{ externalWhitelistMintNumber }}
-                </div>
-                <button
-                  class="tw-rounded tw-text-center tw-px-4 tw-py-2 tw-font-semibold tw-text-lg disabled:tw-cursor-not-allowed"
-                  @click="increaseNumberOfNft"
-                  :disabled="externalWhitelisted"
-                  @mouseup="stopIncrement"
-                  @mousedown="startIncrement"
-                  @touchstart="startIncrement"
-                  @touchend="stopIncrement"
-                >
-                  +
-                </button>
               </div>
-              <a
-                class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
-                :href="collection.mintDetails.link"
-                target="_blank"
-                v-if="collection.mintDetails && collection.mintDetails.link"
+              <div
+                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 tw-text-dark-0"
+                v-if="checkPublicSaleTimer() && getWalletAddress"
               >
-                {{
-                  collection.username === "wapal-santa"
-                    ? "Reveal Your Present 🎁"
-                    : "Mint"
-                }}
-              </a>
-              <button-primary
-                :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
-                :disabled="getMintButtonDisabledStatus"
-                @click="mintBulkCollection"
-                :fullWidth="true"
-                :loading="minting"
-                v-else
-              />
+                <i class="bx bx-info-circle tw-text-xl"></i>
+                <div class="tw-text-sm">
+                  <div v-if="gettingProof">
+                    Getting Proof for {{ currentSale.name }}
+                  </div>
+                  <div v-if="notWhitelisted">
+                    You are not whitelisted in {{ currentSale.name }} for this
+                    collection
+                  </div>
+                  <div v-if="whitelisted">
+                    You are eligible to mint for this phase
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -372,51 +396,6 @@
         ></button-primary>
       </div>
     </v-dialog>
-    <v-dialog
-      v-model="showAfterMintModal"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%] no-scrollbar"
-      :persistent="true"
-    >
-      <div
-        class="tw-w-full tw-bg-dark-9 tw-text-white tw-px-4 tw-py-2 tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
-      >
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
-        >
-          <button @click="showAfterMintModal = false">
-            <i class="bx bx-x tw-text-xl"></i>
-          </button>
-        </div>
-        <div class="tw-w-full h-full tw-rounded">
-          <utility-image
-            :source="collection.image"
-            :alt="collection.name"
-            class="tw-w-full tw-h-full tw-rounded"
-          />
-        </div>
-        <div class="tw-text-base">
-          <p>
-            Congratulations on minting your first $GUI NFT! Proud Lions thanks
-            you for your support and gifts you 50,000 Steak tokens for
-            Roarlinko, our rewards game.
-          </p>
-          <p>
-            Create your Roarlinko account, and receive your tokens within 72
-            hours after verification
-          </p>
-        </div>
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
-        >
-          <button-primary
-            :fullWidth="true"
-            title="Create Roarlinko Account"
-            :bordered="true"
-            @click="createRoarLionAccount"
-          />
-        </div>
-      </div>
-    </v-dialog>
   </div>
   <loading-collection v-else />
 </template>
@@ -458,6 +437,7 @@ export default {
       errorMessage: null,
       proof: [],
       mintLimit: 1,
+      totalMintLimit: 0,
       currentlyOwned: 0,
       gettingProof: true,
       notWhitelisted: false,
@@ -477,9 +457,7 @@ export default {
       holdingIncreaseButtonInterval: null,
       holdingDecreaseButtonInterval: null,
       showShareModal: false,
-      showAfterMintModal: false,
-      proofSet: false,
-      getProofForAllPhase: false,
+      maxNumberOfNft: 35,
       imageNotFound,
       xLogo,
     };
@@ -646,20 +624,6 @@ export default {
 
           resourceMintedPercent.style.width = this.resource.mintedPercent + "%";
         }
-
-        if (
-          this.resource.minted >= 1000 &&
-          this.collection.username === "gui-lions" &&
-          this.notWhitelisted &&
-          !this.proofSet
-        ) {
-          if (this.phases.length > 1 && this.showPublicSaleTimer) {
-            this.getProofForAllPhase = true;
-            this.setProof();
-          }
-
-          this.proofSet = true;
-        }
       }, 5000);
     },
     increaseNumberOfNft() {
@@ -745,7 +709,7 @@ export default {
 
         if (this.checkPublicSaleTimer()) {
           if (this.mintLimit <= this.currentlyOwned) {
-            throw new Error("Mint Limit Reached");
+            throw new Error("Mint Limit for this phase Exceeded");
           }
         }
         let res = null;
@@ -756,7 +720,7 @@ export default {
             candyMachineId: this.collection.candyMachine.candy_id,
             mintNumber: this.numberOfNft,
             proof: this.proof,
-            mintLimit: this.mintLimit,
+            mintLimit: this.totalMintLimit,
           });
         } else {
           if (
@@ -769,7 +733,7 @@ export default {
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
-              mint_limit: this.mintLimit,
+              mint_limit: this.totalMintLimit,
               coinType: this.collection.seed.coin_type,
             });
           } else {
@@ -779,7 +743,7 @@ export default {
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
-              mint_limit: this.mintLimit,
+              mint_limit: this.totalMintLimit,
             });
           }
         }
@@ -789,12 +753,8 @@ export default {
             message: `${this.collection.name} Minted Successfully`,
           });
 
-          if (this.collection.username === "gui-lions") {
-            this.showAfterMintModal = true;
-          } else {
-            if (this.collection.tweet) {
-              this.showShareModal = true;
-            }
+          if (this.collection.tweet) {
+            this.showShareModal = true;
           }
 
           let res = await this.$store.dispatch(
@@ -881,89 +841,38 @@ export default {
     async setProof() {
       if (!this.getWalletAddress) {
         this.gettingProof = false;
+        this.whitelisted = false;
         return;
       }
       try {
-        this.gettingProof = true;
         this.whitelisted = false;
-        this.notWhitelisted = false;
+
+        this.gettingProof = true;
 
         this.proof = [];
 
-        if (!this.getProofForAllPhase) {
-          const proofParams = {
-            walletAddress: this.getWalletAddress,
-            collectionId: this.collection._id,
-            phase: this.currentSale.id,
-          };
+        const proofParams = {
+          walletAddress: this.getWalletAddress,
+          collectionId: this.collection._id,
+          phase: this.currentSale.id,
+        };
 
-          // const mintLimitRes = await getMintLimit(proofParams);
+        const res = await getProof(proofParams);
 
-          const res = await getProof(proofParams);
+        const proofs = res.data.proofs;
+        this.totalMintLimit = res.data.mint_limit;
 
-          const proofs = res.data.proofs;
+        proofs.map((proof) => {
+          this.proof.push(proof.data);
+        });
 
-          proofs.map((proof) => {
-            this.proof.push(proof.data);
-          });
+        await this.getMintLimitOfPreviousPhases();
 
-          this.mintLimit = res.data.mint_limit;
+        await this.getOwnedCollectionOfUser();
 
-          // await getOwnedCollectionOfUser();
-
-          this.gettingProof = false;
-          this.notWhitelisted = false;
-          this.whitelisted = true;
-        } else {
-          const proofsRes = await Promise.all(
-            this.phases.map(async (phase) => {
-              try {
-                if (phase.id !== "public-sale") {
-                  if (this.proof.length > 0) {
-                    throw new Error("Proof Set");
-                  }
-
-                  const proofParams = {
-                    walletAddress: this.getWalletAddress,
-                    collectionId: this.collection._id,
-                    phase: phase.id,
-                  };
-
-                  const res = await getProof(proofParams);
-
-                  const proofs = res.data.proofs;
-
-                  this.proof = [];
-                  proofs.map((proof) => {
-                    this.proof.push(proof.data);
-                  });
-
-                  this.mintLimit = res.data.mint_limit;
-
-                  if (this.proof.length > 0) {
-                    throw new Error("Proof Set");
-                  }
-                }
-              } catch (error) {
-                console.log(error);
-              }
-            })
-          );
-
-          this.gettingProof = false;
-
-          if (this.proof.length > 0) {
-            this.notWhitelisted = false;
-            this.whitelisted = true;
-          } else {
-            this.notWhitelisted = true;
-            this.whitelisted = false;
-          }
-        }
-
-        if (this.whitelisted) {
-          this.proofSet = true;
-        }
+        this.gettingProof = false;
+        this.notWhitelisted = false;
+        this.whitelisted = true;
       } catch (error) {
         console.log(error);
 
@@ -971,6 +880,8 @@ export default {
           this.notWhitelisted = true;
           this.whitelisted = false;
         }
+
+        this.numberOfNft = 1;
 
         this.gettingProof = false;
       }
@@ -981,7 +892,9 @@ export default {
         this.collection.name
       );
 
-      this.currentlyOwned = res.data.data.current_token_ownerships.length;
+      this.currentlyOwned = res;
+
+      this.setMaxNumberOfNfts();
     },
     getCurrentSale() {
       this.phases.map((phase) => {
@@ -1099,11 +1012,6 @@ export default {
       window.open(twitterShareLink, "_blank");
 
       this.showShareBox = false;
-    },
-    createRoarLionAccount() {
-      window.open("https://roarlinko.proudlionsclub.com/", "_blank");
-
-      this.showAfterMintModal = false;
     },
     hideShareBox() {
       this.showShareBox = false;
@@ -1253,6 +1161,56 @@ export default {
 
       this.showShareBox = false;
     },
+
+    async getMintLimitOfPreviousPhases() {
+      let mintLimit = 0;
+      await Promise.all(
+        this.collection.phases.map(async (phase) => {
+          const date = new Date();
+
+          const phaseStartDate = new Date(phase.mint_time);
+
+          if (date > phaseStartDate) {
+            const mintLimitRes = await getMintLimit({
+              walletAddress: this.getWalletAddress,
+              collectionId: this.collection._id,
+              phase: phase.id,
+            });
+
+            const data = mintLimitRes.data.data;
+
+            if (data) {
+              mintLimit += data.mint_limit;
+            }
+          }
+        })
+      );
+
+      this.mintLimit = mintLimit;
+    },
+    setMaxNumberOfNfts() {
+      if (this.collection.isEdition) {
+        this.maxNumberOfNft = 200;
+        return;
+      }
+
+      if (!this.checkPublicSaleTimer()) {
+        this.maxNumberOfNft = 35;
+        return;
+      }
+
+      this.maxNumberOfNft = this.mintLimit - this.currentlyOwned;
+
+      if (this.maxNumberOfNft <= 0) {
+        this.maxNumberOfNft = 1;
+      }
+
+      if (this.maxNumberOfNft >= 35) {
+        this.maxNumberOfNft = 35;
+      }
+
+      this.numberOfNft = 1;
+    },
   },
   computed: {
     getCurrentPrice() {
@@ -1307,17 +1265,6 @@ export default {
         this.notWhitelisted ||
         this.resource.paused
       );
-    },
-    maxNumberOfNft() {
-      if (this.collection.isEdition) {
-        return 200;
-      }
-
-      if (this.mintLimit) {
-        return this.mintLimit;
-      }
-
-      return 35;
     },
   },
   async mounted() {
@@ -1509,13 +1456,6 @@ export default {
         this.collection.mintDetails.all_mint_at_same_time
       ) {
         await this.checkWhitelistForExternalMint();
-      }
-    },
-    showAfterMintModal(newVal) {
-      if (!newVal) {
-        if (this.collection.tweet) {
-          this.showShareModal = true;
-        }
       }
     },
   },

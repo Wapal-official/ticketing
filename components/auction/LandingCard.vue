@@ -47,7 +47,13 @@
                 ? auction?.biddings[auction?.biddings.length - 1].bid
                 : auction?.min_bid
             }}
-            <span><img :src="aptIcon" alt="apt" /></span>
+            <span
+              ><img
+                :src="selectedCoinType.imageWhite"
+                alt="coinType"
+                width="14px"
+                height="14px"
+            /></span>
           </div>
         </div>
         <div class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-1">
@@ -89,6 +95,7 @@
 <script lang="ts">
 import aptIcon from "@/assets/img/apt.svg";
 import imageNotFound from "@/utils/imageNotFound";
+import { getCoinType } from "@/utils/getCoinType";
 export default {
   props: { auction: { type: Object } },
   data() {
@@ -99,7 +106,11 @@ export default {
       imageNotFound,
     };
   },
-  computed: {},
+  computed: {
+    selectedCoinType() {
+      return getCoinType(this.auction.coin_type ? this.auction.coin_type : "");
+    },
+  },
   methods: {
     getStartTime() {
       if (new Date(this.auction.startAt) < new Date()) {
