@@ -45,7 +45,6 @@ export default {
     width: { type: String, default: "" },
     height: { type: String, default: "" },
     imageClass: { type: String, default: "" },
-    onerror: { type: String, default: "" },
   },
   data() {
     return {
@@ -53,6 +52,7 @@ export default {
       imageSource: null,
       finalSource: null,
       error: false,
+      loadedSource: false,
     };
   },
   async mounted() {
