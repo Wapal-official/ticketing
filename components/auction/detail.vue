@@ -6,11 +6,11 @@
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
-      <img
-        :src="auction.nft.meta.image"
+      <utility-image
+        :source="auction.nft.meta.image"
         :alt="auction.nft.meta.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
         :onerror="imageNotFound()"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
       />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
@@ -73,7 +73,14 @@
           </div>
         </div>
         <div class="tw-pb-2 tw-text-dark-0">
-          {{ auction.nft.meta.description }}
+          {{ description }}
+          <button
+            class="tw-text-primary-1"
+            @click="toggleDescription"
+            v-if="auction.nft.meta.description.length > 200"
+          >
+            {{ description.length <= 203 ? "Read More" : "Read Less" }}
+          </button>
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
@@ -607,6 +614,7 @@ export default {
       showShareBox: false,
       royaltyPercentage: null,
       ownerAddress: "",
+      description: "",
       imageNotFound,
       showShareModal: false,
     };
@@ -644,6 +652,8 @@ export default {
   },
   async mounted() {
     await this.getAuctionDetails();
+
+    this.getDescription();
 
     this.auctionStarted = this.checkAuctionStarted();
     this.auctionEnded = this.checkAuctionEnded();
@@ -1085,6 +1095,22 @@ export default {
         "..." +
         ownerAddress.slice(-2, ownerAddress.length)
       );
+    },
+    getDescription() {
+      this.description = this.auction.nft.meta.description;
+      
+      if (this.auction.nft.meta.description.length > 200) {
+        this.description =
+          this.auction.nft.meta.description.slice(0, 200) + "...";
+      }
+    },
+    toggleDescription() {
+      if (this.description.length <= 203) {
+        this.description = this.auction.nft.meta.description;
+      } else {
+        this.description =
+          this.auction.nft.meta.description.slice(0, 200) + "...";
+      }
     },
   },
   watch: {

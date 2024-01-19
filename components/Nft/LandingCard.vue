@@ -15,12 +15,14 @@
           >
             <video-player-featured :source="video" />
           </div>
-          <img
-            :src="isCollection ? collection?.image : collection?.nft.meta.image"
+          <utility-image
+            v-else
+            :source="
+              isCollection ? collection?.image : collection?.nft.meta.image
+            "
             :alt="isCollection ? collection?.name : collection?.nft.meta.name"
             :onerror="imageNotFound()"
             class="tw-w-full tw-h-full tw-object-cover tw-rounded-lg tw-absolute tw-top-0 tw-transition-all tw-ease-linear tw-duration-300 tw-transform group-hover/landing-card:tw-scale-110"
-            v-else
           />
         </div>
         <div
@@ -161,6 +163,10 @@ export default {
       return 0;
     },
     getCoinType() {
+      if (this.type === "auction") {
+        return this.collection.coin_type ? this.collection.coin_type : "APT";
+      }
+
       return this.collection.seed && this.collection.seed.coin_type
         ? this.collection.seed.coin_type
         : "APT";
