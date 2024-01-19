@@ -6,10 +6,21 @@
     :class="imageClass"
     :width="width"
     :height="height"
-    :onerror="onerror"
+    loading="lazy"
   />
+
+  <div v-else-if="error">
+    <h2
+      :class="[
+        imageClass,
+        'tw-bg-white tw-w-full tw-h-full tw-text-black tw-flex tw-flex-col tw-items-center tw-justify-center',
+      ]"
+    >
+      {{ alt.slice(0, 1) }}
+    </h2>
+  </div>
   <div
-    class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center"
+    class="tw-w-full tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center"
     v-else
   >
     <v-progress-circular
@@ -41,6 +52,7 @@ export default {
       loading: true,
       imageSource: null,
       finalSource: null,
+      error: false,
     };
   },
   async mounted() {
@@ -55,16 +67,19 @@ export default {
 
         if (res.headers["content-type"].includes("image")) {
           this.finalSource = this.source;
+          this.loading = false;
         } else {
           const link = extractImageLinkFromCacheServerUrl(this.source);
 
           this.finalSource = link;
+          this.loading = false;
+
+          this.loadedSource = true;
         }
       } else {
-        this.finalSource = this.source;
+        this.loadedSource = true;
+        this.loadImage();
       }
-
-      this.loading = false;
     },
     loadImage() {
       const image = new Image();
@@ -77,7 +92,12 @@ export default {
       };
 
       image.onerror = () => {
-        this.loadSource();
+        if (!this.loadedSource) {
+          this.loadSource();
+        } else {
+          this.error = true;
+          this.loading = false;
+        }
       };
     },
   },
