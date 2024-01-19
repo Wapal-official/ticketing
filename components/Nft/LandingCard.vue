@@ -161,6 +161,10 @@ export default {
       return 0;
     },
     getCoinType() {
+      if (this.type === "auction") {
+        return this.collection.coin_type ? this.collection.coin_type : "APT";
+      }
+
       return this.collection.seed && this.collection.seed.coin_type
         ? this.collection.seed.coin_type
         : "APT";
