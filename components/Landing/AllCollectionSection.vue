@@ -49,7 +49,6 @@ import {
   getCollections,
 } from "@/services/CollectionService";
 import { getCachedUrlOfImage } from "@/utils/imageCache";
-import sanctuary from "@/assets/img/199.png";
 export default {
   data() {
     return { collections: [], loading: true };
@@ -67,7 +66,8 @@ export default {
         name: "Aptos Monkeys Sanctuary",
         description:
           "Sanctuaries are homes to the fighting Monkeys who stood their ground to protect their lands and fortunes.",
-        image: sanctuary, // Assuming sanctuary is an already cached image
+        image:
+          "https://arweave.net/z92BGaOGx-DYVTP_O8W31rAsu3PUO7uAQjzgXIoB2vc/199.png", // Assuming sanctuary is an already cached image
         twitter: "https://twitter.com/AptosMonkeys",
         website: "https://www.aptosmonkeys.club/",
         discord: "https://discord.com/invite/sFfe75BHQ3",
