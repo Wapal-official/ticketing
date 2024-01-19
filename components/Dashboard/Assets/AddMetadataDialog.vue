@@ -5,12 +5,12 @@
     <div
       class="tw-w-full tw-px-2 md:tw-px-8 tw-flex tw-flex-col tw-items-center tw-justify-center"
     >
-      <img
-        :src="image"
+      <utility-image
+        :source="image"
         alt="asset"
         width="300px"
         height="300px"
-        class="tw-max-w-[300px] tw-max-h-[300px]"
+        imageClass="tw-max-w-[300px] tw-max-h-[300px]"
       />
     </div>
     <form @submit.prevent="" class="tw-w-full">

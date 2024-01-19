@@ -6,10 +6,10 @@
       v-if="checkFileType !== 'json'"
     >
       <div class="tw-relative tw-w-full tw-overflow-hidden">
-        <img
-          :src="getAssetSrc"
+        <utility-image
+          :source="getAssetSrc"
           :alt="getAssetName"
-          class="tw-w-full tw-h-full tw-object-cover"
+          class="tw-w-full tw-h-full tw-object-cover tw-min-h-[300px]"
           v-if="checkFileType === 'image'"
         />
         <video-player
@@ -140,7 +140,7 @@ export default {
   methods: {
     displayFileDetails() {
       this.linkedAsset.name = this.file.src;
- 
+
       this.linkedAsset.image = this.file.image
         ? getCachedUrlOfImage(this.file.image)
         : this.file.metadata
