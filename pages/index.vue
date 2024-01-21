@@ -30,7 +30,7 @@ import {
   getLiveCollections,
   getUpcomingCollections,
 } from "@/services/CollectionService";
-import { getCachedUrlOfImage } from "@/utils/imageCache";
+
 export default {
   name: "IndexPage",
   components: {
@@ -60,7 +60,6 @@ export default {
       this.collections = [];
       this.upcomingCollections = [];
       this.liveCollections = [];
-      this.fastestSoldoutCollections = [];
 
       this.liveCollections = await getLiveCollections(1, 3);
       this.upcomingCollections = await getUpcomingCollections(1, 4);
@@ -78,7 +77,7 @@ export default {
             candy_id: draft.data.candy_id,
             description: draft.data.description,
             discord: draft.data.discord,
-            image: getCachedUrlOfImage(draft.data.image),
+            image: draft.data.image,
             instagram: draft.data.instagram,
             isApproved: draft.data.isApproved,
             name: draft.data.name,
@@ -105,10 +104,7 @@ export default {
         this.fastestSoldoutCollections.push(collection);
       });
 
-      this.collections = res.map((collection: any) => ({
-        ...collection,
-        image: getCachedUrlOfImage(collection.image),
-      }));
+      this.collections = res;
     },
   },
   async created() {

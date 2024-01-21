@@ -56,7 +56,6 @@
 <script>
 import { getTokensOfCollection } from "@/services/AuctionService";
 import imageNotFound from "@/utils/imageNotFound";
-import { getCachedUrlOfImage } from "@/utils/imageCache";
 export default {
   data() {
     return {
@@ -111,8 +110,11 @@ export default {
 
             let imageURL = meta.data.image;
 
-            // Apply caching function to the image URL
-            imageURL = getCachedUrlOfImage(imageURL);
+            if (imageURL.slice(0, 4) === "ipfs") {
+              const url = this.sliceIPFSUrl(imageURL);
+
+              imageURL = `https://cloudflare-ipfs.com/ipfs/${url}`;
+            }
 
             if (imageURL.includes("ipfs.apt.land")) {
               const index = imageURL.indexOf("ipfs.apt.land");
@@ -134,9 +136,7 @@ export default {
       } else {
         this.end = true;
       }
-      this.loading = false;
     },
-
     sliceIPFSUrl(url) {
       return url.slice(7, url.length);
     },

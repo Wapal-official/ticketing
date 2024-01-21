@@ -18,13 +18,12 @@
           <td
             class="!tw-border-none tw-uppercase tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-8"
           >
-            <utility-image
-              v-if="$route.params.type === 'assets'"
-              :source="item.image ? item.image : item.src"
+            <img
+              :src="item.image ? item.image : item.src"
               :alt="item.name"
               class="tw-w-[45px] tw-h-[45px] tw-object-cover"
-            />
-            {{ item.name }}
+              v-if="$route.params.type === 'assets'"
+            />{{ item.name }}
           </td>
           <td class="!tw-border-none">{{ item.createdDate }}</td>
           <td class="!tw-border-none">{{ getFileSize(item.size) }}</td>

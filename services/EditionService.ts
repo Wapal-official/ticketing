@@ -1,5 +1,4 @@
 import { publicRequest } from "@/services/fetcher";
-import { getCachedUrlOfImage } from "@/utils/imageCache";
 
 export const getOpenEditionsOfUser = async ({
   page,
@@ -14,13 +13,7 @@ export const getOpenEditionsOfUser = async ({
     `/api/collection/editions?user_id=${user_id}&edition=open-edition&page=${page}&limit=${limit}`
   );
 
-  const editions = res.data.data;
-
-  editions.map((edition: any) => {
-    edition.image = getCachedUrlOfImage(edition.image);
-  });
-
-  return editions;
+  return res.data.data;
 };
 
 export const getAllEditions = async ({
@@ -34,11 +27,5 @@ export const getAllEditions = async ({
     `/api/collection/editions?page=${page}&limit=${limit}&edition=open-edition&isApproved=true`
   );
 
-  const editions = res.data.data;
-
-  editions.map((edition: any) => {
-    edition.image = getCachedUrlOfImage(edition.image);
-  });
-
-  return editions;
+  return res.data.data;
 };

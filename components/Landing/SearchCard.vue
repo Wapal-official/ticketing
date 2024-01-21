@@ -4,8 +4,8 @@
     class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-px-4 tw-py-2 tw-w-full tw-transition-all tw-duration-150 tw-ease-linear hover:tw-bg-dark-8"
     @click.native="close"
   >
-    <utility-image
-      :source="collection?.image"
+    <img
+      :src="collection?.image"
       :alt="collection?.name"
       class="tw-object-fill tw-rounded tw-w-[40px] tw-h-[40px]"
     />
