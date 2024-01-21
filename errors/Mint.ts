@@ -7,6 +7,8 @@ export const handleMintError = ({
 }) => {
   let errorMessage: string = "Could Not Mint Nft";
 
+  console.log(error);
+  
   switch (error.message) {
     case `Move abort in ${candyMachine}::candymachine: 0x9`:
       errorMessage = "Mint Limit Reached. Please Decrease Number of Nft";
@@ -19,6 +21,9 @@ export const handleMintError = ({
       break;
     case "Move abort in 0x1::coin: EINSUFFICIENT_BALANCE(0x10006): Not enough coins to complete transaction":
       errorMessage = "Insufficient Balance To Mint Nft";
+      break;
+    case "Transaction Executed and Committed with Error INSUFFICIENT_BALANCE_FOR_TRANSACTION_FEE":
+      errorMessage = "Insufficient Gas Fees To Mint Nft";
       break;
     default:
       errorMessage = "Could Not Mint Nft";
