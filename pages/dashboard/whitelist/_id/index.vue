@@ -48,13 +48,11 @@
               class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
             >
               <div class="tw-font-semibold">Caution</div>
-              <p>
               <div>If a user/address participates in different</div>
               <div>mint phases with different mint limits, kindly</div>
               <div>use separate addresses for each phase's</div>
               <div>mint limit for the same user.</div>
-              </p>
-              <div>If a user/address has the same limit at</div>
+              <div class="tw-pt-2">If a user/address has the same limit at</div>
               <div>all the phases, using the same</div>
               <div>address is acceptable in each phase</div>
             </div>
@@ -228,9 +226,7 @@ export default {
 
     const whitelist = res.data.whitelist;
 
-    const collectionRes = await getCollectionByUsername(this.$route.params.id);
-
-    this.collection = collectionRes.data.collection[0];
+    this.collection = await getCollectionByUsername(this.$route.params.id);
 
     if (whitelist) {
       this.setupWhitelistStatus = false;
