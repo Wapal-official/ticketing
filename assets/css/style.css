@@ -464,6 +464,6 @@ input:disabled {
 }
 
 /* Firefox */
-.n-spin-buttonn[type="number"] {
+.no-spin-button[type="number"] {
   -moz-appearance: textfield;
 }
