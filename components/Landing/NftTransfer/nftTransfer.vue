@@ -5,7 +5,7 @@
       :fullscreen="isMobileSize"
       :scrim="false"
       persistent
-      max-width="900"
+      max-width="960"
       overlay-color="icon"
       :overlay-opacity="0.6"
     >
@@ -13,18 +13,13 @@
         <div>
           <v-row class="tw-p-3" align="center" justify="center" no-gutters>
             <v-col cols="6">
-              <div class="d-flex align-center">
-                <img
-                  class="tw-mr-2"
-                  src="~/assets/img/transfer.svg"
-                  alt="nft transfer"
-                />
-                <p
-                  class="tw-mr-1 transfer-text"
-                  style="margin-bottom: 0 !important"
-                >
-                  Nft Transfer
-                </p>
+              <div class="tw-mr-2 lg:tw-mr-3 d-flex align-center">
+                <box-icon
+                  class="icon-box tw-mr-1"
+                  name="transfer"
+                  color="#FFF"
+                ></box-icon>
+                <p class="tw-mb-0 tw-mr-1">Nft Transfer</p>
               </div>
             </v-col>
             <v-col cols="6" class="d-flex align-center justify-end">
@@ -44,42 +39,207 @@
               <div class="">
                 <v-tabs
                   v-model="tabs"
-                  class="tabs mx-3"
-                  color="#8759FF"
-                  style="
-                    position: relative;
-                    background-color: #101113 !important;
-                  "
+                  class="tabs mx-3 pr-10"
+                  style="position: relative"
                 >
-                  <v-tab> All Nfts </v-tab>
-                  <v-tab> NFTs by Collection </v-tab>
+                  <v-tab class="capitalize"> All Nfts </v-tab>
+                  <v-tab class="capitalize"> NFTs by Collection </v-tab>
+                  <v-tab class="capitalize"> Airdrop </v-tab>
+                  <v-spacer class="hidden-sm-and-down"></v-spacer>
+                  <div v-if="tabs == 0 || tabs == 1" class="d-flex mt-3">
+                    <input-checkbox
+                      v-if="blankBox"
+                      style="margin-right: 6px; margin-left: -4px"
+                      icon=""
+                      color="lightGrey"
+                      @click="checkAllSelection"
+                    />
+                    <input-checkbox
+                      v-else-if="minusBox"
+                      style="margin-right: 6px; margin-left: -6px"
+                      icon="mdi-minus-box"
+                      color="white"
+                      @click="disCheckAllSelection"
+                    />
+                    <input-checkbox
+                      v-else-if="markedBox"
+                      style="margin-right: 6px; margin-left: -6px"
+                      icon="mdi-checkbox-marked"
+                      color="white"
+                      @click="checkAllSelection"
+                    />
+                    <p class="mb-0 sellectAll-text">Select All</p>
+                  </div>
                 </v-tabs>
                 <v-divider></v-divider>
                 <v-tabs-items v-model="tabs" style="background: #101113">
                   <v-tab-item>
-                    <!-- <div v-if="nftTransferType == 'NftTransfer'">
-                      <SectionDialogsAllSingleNftTransfer />
-                    </div>
-                    <div v-else-if="nftTransferType == 'NftTransferCollection'">
-                      <CustomTablesNftSendTbl
-                        :headers="headers"
-                        :items="boardsData"
-                        :listView="true"
-                      />
-                    </div> -->
                     <div>
-                      <LandingNftTransferAllMultipleNftTransfer />
+                      <SectionDialogsAllMultipleNftTransfer />
                     </div>
                   </v-tab-item>
                   <v-tab-item>
-                    <div style="min-height: 75vh; overflow: auto">
-                      <nft-send-tbl
-                        class="tw-px-2"
-                        :headers="headers"
-                        :items="boardsData"
-                        :GridView="true"
-                        :nftTransferGridData="nftTransferGridData"
-                      />
+                    <div>
+                      <v-row dense>
+                        <v-col cols="12" lg="3" md="3" sm="3">
+                          <nft-transfer-drawer :items="userCollectionData" />
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          lg="9"
+                          md="9"
+                          sm="9"
+                          style="
+                            min-height: 65vh;
+                            max-height: 75vh;
+                            overflow: scroll;
+                          "
+                        >
+                          <div v-if="userCollectionData.length > 0">
+                            <nft-send-tbl
+                              class="px-3"
+                              :headers="headers"
+                              :items="selectedTransferCollection"
+                              :GridView="true"
+                              :collectionsData="userCollectionData"
+                            />
+                          </div>
+                          <v-row justify="center" no-gutters>
+                            <v-col align="center">
+                              <div
+                                v-if="userCollectionData.length == 0"
+                                class="mt-4"
+                              >
+                                <!-- loader need to added -->
+                                <!-- <CustomLoaderRowSkeleton
+                                  imageShape="rounded"
+                                  nameClass="mr-10 ml-n3"
+                                  class="mx-3"
+                                  :nameWidth="200"
+                                  dynamicClass="tw-mr-2"
+                                  :row="1"
+                                  :cols="3"
+                                  :width="95"
+                                  :height="24"
+                                  :nameHeight="24"
+                                  :imageSize="45"
+                                />
+                                <div class="mx-1">
+                                  <CustomLoaderNftTransferGridSkeleton
+                                    :cols="8"
+                                  />
+                                </div> -->
+                                <!-- loader need to add -->
+                              </div>
+                              <!-- <div
+                                v-else
+                                class="caption text-capitalize font14-semi-bold text--disabled my-10"
+                              >
+                                <span v-if="userCollectionData.length == 0"
+                                  >No Collections</span
+                                >
+                                <span v-if="userCollectionData.length > 0"
+                                  >No Collections nfts</span
+                                >
+                              </div> -->
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                      </v-row>
+                    </div>
+                  </v-tab-item>
+                  <v-tab-item>
+                    <div>
+                      <v-row dense>
+                        <v-col cols="12" lg="3" md="3" sm="3">
+                          <nft-transfer-drawer :items="userCollectionData" />
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          lg="9"
+                          md="9"
+                          sm="9"
+                          style="
+                            min-height: 65vh;
+                            max-height: 75vh;
+                            overflow: scroll;
+                          "
+                        >
+                          <div v-if="userCollectionData.length > 0">
+                            <airdrop-transfer-tbl
+                              class="px-3"
+                              :headers="headers"
+                              :items="selectedTransferCollection"
+                              :GridView="true"
+                              :collectionsData="userCollectionData"
+                            />
+                          </div>
+                          <v-row class="mx-3" justify="center">
+                            <v-col align="center">
+                              <div
+                                v-if="userCollectionData.length == 0"
+                                class="mt-4"
+                              >
+                                <!-- loader needd tooo addddd -->
+
+                                <!-- <CustomLoaderRowSkeleton
+                                  imageShape="rounded"
+                                  nameClass="mr-10 ml-n3"
+                                  class="mx-3"
+                                  :nameWidth="200"
+                                  dynamicClass="tw-mr-2"
+                                  :row="1"
+                                  :cols="3"
+                                  :width="95"
+                                  :height="24"
+                                  :nameHeight="24"
+                                  :imageSize="45"
+                                />
+                                <div>
+                                  <div class="skeleton-border px-5">
+                                    <CustomLoaderRowSkeleton
+                                      :row="6"
+                                      :cols="2"
+                                      :width="260"
+                                      :height="18"
+                                      :name="false"
+                                    />
+                                  </div>
+                                  <div class="skeleton-border px-5 py-3 mt-5">
+                                    <CustomLoaderSkeleton
+                                      :height="30"
+                                      :width="dynWidth()"
+                                    />
+
+                                    <CustomLoaderSkeleton
+                                      class="mt-5"
+                                      :height="15"
+                                      :width="dynWidth()"
+                                    />
+                                    <CustomLoaderSkeleton
+                                      class="mt-5"
+                                      :height="30"
+                                      :width="dynWidth()"
+                                    />
+                                  </div> 
+                              </div> -->
+                              </div>
+                              <!-- loader needd tooo addddd -->
+                              <!-- <div
+                                v-else
+                                class="caption text-capitalize font14-semi-bold text--disabled my-10"
+                              >
+                                <span v-if="userCollectionData.length == 0"
+                                  >No Collections</span
+                                >
+                                <span v-if="userCollectionData.length > 0"
+                                  >No Collections nfts</span
+                                >
+                              </div> -->
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                      </v-row>
                     </div>
                   </v-tab-item>
                 </v-tabs-items>
@@ -93,29 +253,31 @@
 </template>
 
 <script>
+import inputCheckbox from "~/components/Landing/NftTransfer/checkbox.vue";
 import NftSendTbl from "~/components/Landing/NftTransfer/nftSendTbl.vue";
+import nftTransferDrawer from "~/components/Landing/NftTransfer/nftTransferDrawer.vue";
+import airdropTransferTbl from "~/components/Landing/NftTransfer/airdropTransferTbl.vue";
 import {
-  getCurrentUserNfts,
-  getCollectionsOfUser,
+  getNftTransferCollectionsOfUser,
+  getPortfolioSummaryOfUser,
 } from "~/services/nftTransferService";
-import {
-  getOwnedCollectionsOfUser,
-  getNumberOfTokensInOwnedCollectionOfUser,
-} from "@/services/AuctionService";
-
 export default {
-  components: { NftSendTbl },
+  components: {
+    NftSendTbl,
+    inputCheckbox,
+    nftTransferDrawer,
+    airdropTransferTbl,
+  },
+  props: { propCollections: { type: Array, default: () => [] } },
   data() {
     return {
       nftTransferType: "NftTransfer",
-      nftTransferDrawer: true,
-      tabs: 0,
       selectAll: false,
       headers: [
-        { text: "Collection", value: "collection" },
+        { text: "Collection", value: "name" },
         { text: "Count", value: "count" },
-        { text: "Floor", value: "floor" },
-        { text: "Value", value: "value" },
+        { text: "Floor", value: "floorPrice" },
+        { text: "Value", value: "valuePrice" },
       ],
       boardsData: [
         {
@@ -162,104 +324,83 @@ export default {
           costPrice: "256",
           tooltipDate: "tooltipDate",
         },
-        {
-          name: "nft",
-          image: "nft4.svg",
-          rarity: 52,
-          listedPrice: 256,
-          topBidPrice: "256",
-          costPrice: "256",
-          tooltipDate: "tooltipDate",
-        },
-        {
-          name: "nft",
-          image: "nft5.svg",
-          rarity: 52,
-          listedPrice: 256,
-          topBidPrice: "256",
-          costPrice: "256",
-          tooltipDate: "tooltipDate",
-        },
-        {
-          name: "nft",
-          image: "nft3.svg",
-          rarity: 52,
-          listedPrice: 256,
-          topBidPrice: "256",
-          costPrice: "256",
-          tooltipDate: "tooltipDate",
-        },
-        {
-          name: "nft",
-          image: "nft2.svg",
-          rarity: 52,
-          listedPrice: 256,
-          topBidPrice: "256",
-          costPrice: "256",
-          tooltipDate: "tooltipDate",
-        },
-        {
-          name: "nft",
-          image: "nft1.svg",
-          rarity: 52,
-          listedPrice: 256,
-          topBidPrice: "256",
-          costPrice: "256",
-          tooltipDate: "tooltipDate",
-        },
-        {
-          name: "nft",
-          image: "nft3.svg",
-          rarity: 52,
-          listedPrice: 256,
-          topBidPrice: "256",
-          costPrice: "256",
-          tooltipDate: "tooltipDate",
-        },
-        {
-          name: "nft",
-          image: "nft5.svg",
-          rarity: 52,
-          listedPrice: 256,
-          topBidPrice: "256",
-          costPrice: "256",
-          tooltipDate: "tooltipDate",
-        },
-        {
-          name: "nft",
-          image: "nft3.svg",
-          rarity: 52,
-          listedPrice: 256,
-          topBidPrice: "256",
-          costPrice: "256",
-          tooltipDate: "tooltipDate",
-        },
       ],
+      collectionPage: 0,
       userCollectionData: [],
-      collectionPage: 15,
+      airdropSelectedCollectionData: [],
       limit: 100,
       allLoaded: false,
+      collections: [],
+      userCollections: [],
+
+      markedBox: false,
+      minusBox: false,
+      blankBox: true,
     };
-  },
-  mounted() {
-    // this.fetchNfts();
-    // this.console.log("nft fetch", this.fetchNfts());
-    // this.currentUserCollection();
-    // console.log("Component mounted");
-    // console.log("mounting collections", this.currentUserCollection);
   },
   watch: {
     nftTransferDialog(newVal) {
       if (newVal == true) {
         this.nftTransferDrawer = true;
+      } else {
+        this.$store.commit("nftTransfer/setNftTransferTabs", 0);
+      }
+    },
+    tabs(newVal) {
+      if (newVal) {
+        this.$store.commit("nftTransfer/setCheckData", []);
+      }
+      if (this.walletAddress && newVal == 1) {
+        this.currentUserCollection();
+      } else if (this.walletAddress && newVal == 2) {
+        this.currentUserCollection();
+      }
+    },
+    selectedCheck(newVal) {
+      if (this.tabs == 0) {
+        if (
+          this.collectionsNfts.length > 0 &&
+          this.userNfts.length === newVal.length
+        ) {
+          this.markedBox = true;
+          this.minusBox = false;
+          this.blankBox = false;
+        } else if (
+          newVal.length > 0 &&
+          this.userNfts.length !== newVal.length
+        ) {
+          this.markedBox = false;
+          this.minusBox = true;
+          this.blankBox = false;
+        } else {
+          this.markedBox = false;
+          this.minusBox = false;
+          this.blankBox = true;
+        }
+      } else if (this.tabs == 1) {
+        if (
+          this.collectionsNfts.length > 0 &&
+          this.collectionsNfts.length === newVal.length
+        ) {
+          this.markedBox = true;
+          this.minusBox = false;
+          this.blankBox = false;
+        } else if (
+          newVal.length > 0 &&
+          this.collectionsNfts.length !== newVal.length
+        ) {
+          this.markedBox = false;
+          this.minusBox = true;
+          this.blankBox = false;
+        } else {
+          this.markedBox = false;
+          this.minusBox = false;
+          this.blankBox = true;
+        }
       }
     },
   },
-
   computed: {
-    walletAddress() {
-      return this.$store.state.walletStore.wallet.walletAddress;
-    },
     isMobileSize() {
       if (this.$vuetify.breakpoint.smAndDown) {
         return true;
@@ -275,33 +416,93 @@ export default {
         return this.$store.commit("dialog/setNftTransferDialog", value);
       },
     },
+    walletAddress() {
+      return this.$store.state.walletStore.wallet.walletAddress;
+    },
+    userNfts() {
+      return this.$store.state.nftTransfer.allTransferableNfts;
+    },
+    selectedTransferCollection() {
+      return this.$store.state.nftTransfer.selectedCollection;
+    },
+    selectedCheck() {
+      return this.$store.state.nftTransfer.selectedCheck;
+    },
+    selectedData() {
+      return this.$store.state.nftTransfer.selectedData;
+    },
+    collectionsNfts() {
+      return this.$store.state.nftTransfer.collectionsNfts;
+    },
+    tabs: {
+      get() {
+        return this.$store.state.nftTransfer.tabs;
+      },
+      set(value) {
+        return this.$store.commit("nftTransfer/setNftTransferTabs", value);
+      },
+    },
+  },
+  created() {
+    this.blankBox = true;
   },
   methods: {
-    async fetchUserCollections() {
-      try {
-        const walletAddress = this.walletAddress;
-        const collections = await getUserCollections(walletAddress);
-
-        collections.forEach((collection) => {
-          console.log("Collection ID:", collection.collectionId);
-          console.log("Collection Name:", collection.name);
-        });
-      } catch (error) {
-        console.error("Failed to fetch user collections:", error.message);
+    checkAllSelection() {
+      if (this.tabs == 0) {
+        if (this.userNfts.length == this.selectedCheck.length) {
+          this.$store.commit("nftTransfer/setCheckData", []);
+        } else if (
+          this.userNfts.length !== this.selectedCheck.length &&
+          this.selectedCheck > 0
+        ) {
+        } else {
+          this.$store.commit("nftTransfer/setCheckData", this.userNfts);
+        }
+      } else if (this.tabs == 1) {
+        if (this.collectionsNfts.length === this.selectedCheck.length) {
+          this.$store.commit("nftTransfer/setCheckData", []);
+        } else if (
+          this.collectionsNfts.length !== this.selectedCheck.length &&
+          this.selectedCheck > 0
+        ) {
+        } else {
+          this.$store.commit("nftTransfer/setCheckData", this.collectionsNfts);
+        }
       }
     },
+    disCheckAllSelection() {
+      this.$store.commit("nftTransfer/setCheckData", []);
+    },
+
+    getTabIconColor(tabIndex) {
+      return this.tab === tabIndex ? "#9D80FF" : "#5D5F65";
+    },
+
     async currentUserCollection() {
       try {
-        console.log("Before fetching collections");
         this.collectionPage++;
 
-        const collections = await getCollectionsOfUser({
+        const collections = await getNftTransferCollectionsOfUser({
           walletAddress: this.walletAddress,
           page: this.collectionPage,
           limit: this.limit,
         });
 
-        console.log("Collections fetched:", collections);
+        const uniqueCollectionIDs = [
+          ...new Set(collections.map((item) => item.collectionId)),
+        ];
+
+        const nftCount = await Promise.all(
+          uniqueCollectionIDs.map((collectionId) =>
+            this.getCollectionsDetails(collectionId)
+          )
+        );
+
+        collections.forEach((item, index) => {
+          item.count = nftCount[index].totalCount;
+          item.valuePrice = this.valuation(collections, index);
+        });
+        this.$store.commit("nftTransfer/setNftCount", nftCount);
 
         this.userCollectionData.push(...collections);
 
@@ -309,26 +510,44 @@ export default {
           this.allLoaded = true;
         }
       } catch (err) {
-        console.log("Error fetching collections:", err);
+        console.log("error:", err);
         this.allLoaded = true;
       }
+    },
+    async getCollectionsDetails(collectionId) {
+      const data = await getPortfolioSummaryOfUser({
+        wallet_address: this.walletAddress,
+        collectionId: collectionId,
+      });
+      return data;
+    },
+    valuation(collections, index) {
+      let col = collections[index];
+      let value = parseFloat(col.floorPrice) * parseFloat(col.count);
+      let nanValue = 0;
+      let parsedValue = isNaN(value) == false ? value : nanValue;
+      return parsedValue;
+    },
+    dynWidth() {
+      if (
+        this.$vuetify.breakpoint.name == "lg" ||
+        this.$vuetify.breakpoint.name == "xl"
+      ) {
+        return 750;
+      } else if (this.$vuetify.breakpoint.name == "md") {
+        return 600;
+      } else {
+        return 700 / 2;
+      }
+    },
+    selectFile() {
+      this.$refs.input.click();
     },
   },
 };
 </script>
 
 <style lang="css">
-.transfer-text {
-  color: #8759ff;
-  cursor: pointer;
-  fill: var(--primary-primary, #8759ff);
-  filter: drop-shadow(2px 2px 4px rgba(198, 189, 255, 0.2))
-    drop-shadow(-2px -2px 4px rgba(198, 189, 255, 0.2));
-}
-
-.theme--dark.v-tabs > .v-tabs-bar {
-  background-color: #101113 !important;
-}
 .icon-hex {
   width: 32px;
   height: 32px;
@@ -380,7 +599,30 @@ export default {
 
 .transfer-border {
   border: 1px solid #25262b;
-  border: 1px solid #25262b;
   padding: 30px 24px 0 24px;
+}
+
+.skeleton-border {
+  border: 1px solid #25262b;
+}
+
+.sellectAll-text {
+  color: #5d5f65;
+  margin-top: 2px;
+  font-family: "Inter-Regular", sans-serif !important;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.v-tabs:not(.v-tabs--vertical):not(.v-tabs--right)
+  > .v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(
+    .v-slide-group--has-affixes
+  )
+  .v-slide-group__prev {
+  display: inline;
+  display: none;
+  visibility: hidden;
 }
 </style>

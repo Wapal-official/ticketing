@@ -3,6 +3,107 @@ import axios from "axios";
 
 const RUST_INDEXER_URL = 'https://rust-mainnet.wapal.io/graphql'
 
+export const getTokenDetails = async (tokens) => {
+  if (tokens.length === 0) {
+    return [];
+  }
+
+  const queryTemplate = `query--index: current_token_ownerships_v2(
+      limit: 1
+      where: {
+              current_token_data: {
+                collection_id: {_eq: $COLLECTION_ID_--index}, 
+                token_data_id: {_eq: $TOKEN_DATA_ID_--index}
+              }
+            }
+    ) {
+        property_version_v1
+        current_token_data {
+          current_collection {
+            creator_address
+            collection_name
+          }
+        }
+    }`;
+
+  const queryVariables = [
+    { name: "$COLLECTION_ID_", type: "String" },
+    { name: "$TOKEN_DATA_ID_", type: "String" },
+  ];
+
+  const duplicatedQuery = duplicateQueryWithMultipleVariables({
+    queryTemplate: queryTemplate,
+    variables: queryVariables,
+    length: tokens.length,
+  });
+
+  const getTokenDetailsOfListedTokenVariables = {
+    COLLECTION_ID_1: "",
+    TOKEN_DATA_ID_1: "",
+  };
+
+  tokens.map((token, index) => {
+    getTokenDetailsOfListedTokenVariables[`COLLECTION_ID_${index + 1}`] =
+      token.collectionId;
+
+    getTokenDetailsOfListedTokenVariables[`TOKEN_DATA_ID_${index + 1}`] =
+      token.tokenDataId;
+  });
+
+  const getTokenDetailsOfListedToken = {
+    operationName: "GetTokenDetailsOfListedToken",
+    query: `query GetTokenDetailsOfListedToken(${duplicatedQuery.variables}){
+        ${duplicatedQuery.query}
+      }`,
+    variables: getTokenDetailsOfListedTokenVariables,
+  };
+
+  const res = await axios.post(GRAPHQL_URL, getTokenDetailsOfListedToken);
+
+  const data = res.data.data;
+
+  const tokenDetails = [];
+
+  for (let i = 0; i < tokens.length; i++) {
+    const token = data[`query${i + 1}`][0];
+
+    const tokenData = token.current_token_data;
+
+    const propertyVersion = token.property_version_v1;
+    const creatorAddress = tokenData.current_collection.creator_address;
+    const collectionName = tokenData.current_collection.collection_name;
+
+    tokenDetails.push({
+      creatorAddress: creatorAddress,
+      propertyVersion: propertyVersion,
+      collectionName: collectionName,
+    });
+  }
+
+  return tokenDetails;
+};
+
+export const getPortfolioSummaryOfUser = async ({
+  collectionId,
+  wallet_address,
+}) => {
+  const res = await axios.get(`https://marketplace-api.wapal.io/user/pnl/${wallet_address}`, {
+    params: { collectionId: collectionId },
+  });
+
+  const data = res.data;
+
+  return {
+    costPrice: getFixedPrice(data.costPrice),
+    estimatedValue: getFixedPrice(data.estimatedPrice),
+    realizedPnl: getFixedPrice(data.realizedPNL),
+    unrealizedPnl: getFixedPrice(data.unrealizedPNL),
+    totalCount: data.totalCount,
+    listedCount: data.listedCount,
+  };
+};
+
+
 export const getTokenOfNftTransfer = async ({
   page,
   limit,

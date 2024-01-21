@@ -1,42 +1,47 @@
 <template>
   <div class="main-container">
     <v-divider></v-divider>
-    <table class="tw-py-2">
+    <table class="py-2">
       <thead>
-        <th
-          class="tw-py-3 tw-px-3"
-          v-for="(header, index) in headers"
-          :key="index"
-        >
-          <div
-            class="d-flex justify-end nft-table-header"
-            :class="headerAlign(header, index)"
-            v-if="header.text === 'Count'"
-          >
-            {{ header.text }}
-          </div>
-          <div
-            class="d-flex justify-center nft-table-header"
-            :class="headerAlign(header, index)"
-            v-else-if="header.text === 'Floor'"
-          >
-            {{ header.text }}
-          </div>
-          <div
-            v-else
-            class="text-center name-width nft-table-header"
-            :class="headerAlign(header, index)"
-          >
-            {{ header.text }}
-          </div>
-        </th>
+        <tr class="mx-3">
+          <th class="py- px-3" v-for="(header, index) in headers" :key="index">
+            <div
+              class="d-flex justify-end nft-table-header"
+              :class="headerAlign(header, index)"
+              v-if="header.text === 'Count'"
+            >
+              {{ header.text }}
+            </div>
+            <div
+              class="d-flex justify-end nft-table-header"
+              :class="headerAlign(header, index)"
+              v-else-if="header.text === 'Limit'"
+            >
+              {{ header.text }}
+            </div>
+            <div
+              class="d-flex justify-center nft-table-header"
+              :class="headerAlign(header, index)"
+              v-else-if="header.text === 'Floor'"
+            >
+              {{ header.text }}
+            </div>
+            <div
+              v-else
+              class="text-center name-width nft-table-header"
+              :class="headerAlign(header, index)"
+            >
+              {{ header.text }}
+            </div>
+          </th>
+        </tr>
       </thead>
       <tbody v-for="(item, index2) in items" :key="index2">
         <tr class="main-tr mx-3">
           <td
             v-for="(column, columnIndex) in headers"
             :key="columnIndex"
-            class="px-3 py-3"
+            class="px-3 py-1"
             :class="dynamicTd(column, item, columnIndex)"
             @click="expandClick(item, index2)"
             style="cursor: pointer"
@@ -54,8 +59,6 @@
                   alt="nfts"
                   height="40"
                   width="40"
-                  :ref="`image${index}`"
-                  @error="getUncachedImageUrl(index)"
                   style="
                     max-width: 40px;
                     max-height: 40px;
@@ -125,7 +128,7 @@
             </div>
 
             <div
-              v-if="column.value === 'floorPrice'"
+              v-else-if="column.value === 'floorPrice'"
               class="d-flex justify-center"
               style="align-items: flex-end"
             >
@@ -165,6 +168,7 @@
                   v-if="listView == true || GridView == true"
                   style="font-size: 14px; margin-left: 3px; margin-right: -4px"
                   @click.stop="expandClick(item, index2)"
+                  small
                 >
                   {{
                     isExpandedIcon ? "mdi-chevron-down" : "mdi-chevron-up"
@@ -172,102 +176,143 @@
                 ></span
               >
             </div>
+
+            <div v-else>
+              {{
+                getValue(column, item) != null ? getValue(column, item) : "-"
+              }}
+            </div>
           </td>
         </tr>
-        <tr v-if="selectedExpand.includes(item.collectionId) && GridView">
-          <td :colspan="headers.length" class="pa-0" style="position: relative">
-            <div
-              class="align-center justify-center"
-              style="
-                max-height: 42vh;
-                overflow: scroll;
-                justify-content: center;
-                align-items: center;
-              "
-            >
-              <div v-if="collectionsNfts.length > 0">
-                <nft-Transfer-Card
-                  :items="collectionsNfts"
-                  @checkboxSelect="checkboxSelect"
-                  class="my-2 my-sm-3 my-md-4"
-                />
-              </div>
-              <div class="align-center justify-center">
-                <v-row justify="center">
-                  <v-col cols="12" align="center">
-                    <div
-                      v-if="
-                        collectionsNfts.length == 0 && isCollectionNfts == true
-                      "
-                      class="mt-4"
-                    >
-                      <!-- <CustomLoaderNftTransferGridSkeleton
-                        :cols="8"
-                        class="my-2 my-sm-3 my-md-4"
-                      /> -->
-                    </div>
-                    <span
-                      v-else
-                      class="caption text-capitalize font14-semi-bold text--disabled my-10"
-                    >
-                      <span
-                        v-if="
-                          collectionsNfts.length == 0 &&
-                          isCollectionNfts == false
-                        "
-                        >No nfts For Transfer</span
-                      >
-                      <span
-                        v-if="
-                          collectionsNfts.length == 0 &&
-                          isCollectionNfts == true
-                        "
-                        >No nfts</span
-                      >
-                      <span v-if="collectionsNfts.length > 0"
-                        >No more nfts</span
-                      >
-                    </span>
+
+        <tr
+          v-if="selectedExpand.includes(item.collectionId) && GridView == true"
+        >
+          <td
+            :colspan="headers.length"
+            class="px-0 pt-3"
+            style="position: relative"
+          >
+            <div class="td-border">
+              <v-form ref="form">
+                <v-row justify="space-between" align="center" no-gutters>
+                  <v-col cols="9">
+                    <CustomUiSearchBar
+                      class="mr-5"
+                      v-model="searchQuery"
+                      placeholder="search address..."
+                      @input="handleInput"
+                    />
+                  </v-col>
+                  <v-col cols="3" class="d-flex flex-column align-end">
+                    <span>Limit Count</span>
+                    <span>{{ totalLimitCount }}</span>
                   </v-col>
                 </v-row>
-              </div>
-            </div>
-            <div
-              v-if="collectionsNfts.length > 0 && isCollectionNfts == true"
-              class="destination-bottom px-5"
-            >
-              <v-row align="end" justify="center" no-gutters>
-                <v-col cols="12" lg="8" md="8" sm="8" align="start">
-                  <div>
-                    <label
-                      class="text-uppercase text-start font-bold"
-                      for="amountInput"
-                      style="color: #c1c2c5"
-                      >Destination Address</label
-                    >
-                    <v-text-field
-                      v-model="wallet_address"
-                      placeholder="Enter wallet address"
-                      type="string"
-                      hide-details="true"
-                      dense
-                      outlined
-                      class="custom-text-field mt-2"
-                    >
-                    </v-text-field>
-                  </div>
-                </v-col>
-                <v-col cols="12" lg="4" md="4" sm="4" align="end">
-                  <primary-button
-                    title="Send"
-                    :small="false"
-                    :disabled="sendDisabled()"
-                    min-width="110px"
-                    style="width: 100%; max-width: 200px"
-                    @click="sendNfts"
+                <div
+                  class="airdrop-expand-table-border"
+                  style="min-height: 26vh; max-height: 28vh; overflow: scroll"
+                >
+                  <CustomTablesAirdropTransferTbl
+                    class="px-3"
+                    :headers="airdropHeaders"
+                    :items="filteredAirdropData"
                   />
-                </v-col>
-              </v-row>
+                </div>
+                <div class=" ">
+                  <div class="mb-6 mt-3">
+                    <v-row
+                      v-if="inputAddressDialog == true"
+                      no-gutters
+                      align="start"
+                    >
+                      <v-col cols="5" class="px-1">
+                        <v-text-field
+                          v-model="inputWallet"
+                          placeholder="Wallet Address"
+                          type="string"
+                          dense
+                          outlined
+                          hide-details="true"
+                          class="custom-text-field mt-2"
+                        >
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="5" class="px-1">
+                        <v-text-field
+                          v-model="inputLimit"
+                          placeholder="Limit"
+                          type="number"
+                          dense
+                          outlined
+                          hide-details="true"
+                          class="custom-text-field mt-2"
+                        >
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="2" class="px-1">
+                        <CustomButtonsThemBtn
+                          class="mt-2"
+                          title="add"
+                          :small="false"
+                          :disabled="addDisabled()"
+                          @click="handleAddAddress"
+                          style="width: 100%"
+                        />
+                      </v-col>
+                    </v-row>
+                    <v-row align="center" justify="center">
+                      <v-col cols="6" align="center" style="position: relative">
+                        <input
+                          class="import-csv"
+                          type="file"
+                          id="fileInput"
+                          @change="handleFileUpload"
+                          accept=".csv"
+                        />
+                        <v-btn
+                          class="outlined-btn"
+                          outlined
+                          style="width: 100%"
+                        >
+                          Import CSV
+                          <box-icon
+                            name="import"
+                            class="icon-box ml-2"
+                            color="#fff"
+                          ></box-icon>
+                        </v-btn>
+                      </v-col>
+                      <v-col cols="6">
+                        <div>
+                          <v-btn
+                            class="mx-2 outlined-btn"
+                            outlined
+                            style="width: 100%"
+                            @click="openInputField()"
+                          >
+                            <box-icon
+                              name="plus-circle"
+                              class="icon-box mr-2"
+                              color="#fff"
+                            ></box-icon>
+                            Add Address
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </div>
+                  <div class="d-flex align-center justify-center">
+                    <CustomButtonsThemBtn
+                      title="Send"
+                      :small="false"
+                      style="width: 100%; max-width: 250px"
+                      @click="sendNfts()"
+                      :disabled="checkDisable()"
+                    />
+                  </div>
+                </div>
+              </v-form>
             </div>
           </td>
         </tr>
@@ -277,36 +322,30 @@
 </template>
 
 <script>
-import PrimaryButton from "@/components/Button/PrimaryButton.vue";
-import nftTransferCard from "~/components/Landing/NftTransfer/nftTransferGridCard.vue";
-
-import {
-  checkIfImageIsFromCacheServer,
-  extractImageLinkFromCacheServerUrl,
-} from "@/utils/imageCache";
-
-import { getFloorPrice } from "@/services/nftTransferService";
 import {
   getTokenOfNftTransfer,
   nftTransfer,
 } from "~/services/nftTransferService";
 
 export default {
-  components: {
-    nftTransferCard,
-    PrimaryButton,
-  },
   data() {
     return {
-      allNftsPage: 0,
-      allNftsLimit: 1500,
-      wallet_address: "",
       expand: false,
+      per_page: null,
       selectedExpand: [],
       isExpandedIcon: false,
-      isCollectionNfts: true,
       userNft: [],
       allLoaded: false,
+      airdropHeaders: [
+        { text: "Wallet Address", value: "Wallet" },
+        { text: "Limit", value: "Limit" },
+      ],
+      // airdropData: [],
+      inputAddressDialog: false,
+      inputWallet: "",
+      inputLimit: "",
+      additionalInput: [],
+      searchQuery: "",
     };
   },
   props: {
@@ -336,6 +375,11 @@ export default {
     },
   },
   watch: {
+    walletAddress() {
+      if (this.walletAddress) {
+        this.currentUserCollection();
+      }
+    },
     items(newVal) {
       if (newVal.length > 0) {
         const selectedIndex = 0;
@@ -345,9 +389,8 @@ export default {
     },
     selectedData(newVal, oldVal) {
       if (newVal != oldVal) {
-        this.wallet_address = "";
-        this.$store.commit("nftTransfer/setCheckData", []);
-        this.$store.dispatch("nftTransfer/setCollectionsNftTransfer", []);
+        this.searchQuery = "";
+        this.$store.commit("nftTransfer/setAirdropData", []);
       }
     },
   },
@@ -355,8 +398,21 @@ export default {
     walletAddress() {
       return this.$store.state.walletStore.wallet.walletAddress;
     },
-    selectedCheck() {
-      return this.$store.state.nftTransfer.selectedCheck;
+    airdropData() {
+      return this.$store.state.nftTransfer.airdropData;
+    },
+    filteredAirdropData() {
+      return this.airdropData.filter((item) =>
+        Object.values(item).some((value) =>
+          value.toLowerCase().includes(this.searchQuery.toLowerCase())
+        )
+      );
+    },
+    totalLimitCount() {
+      return this.filteredAirdropData.reduce((total, item) => {
+        const limit = Number(item.Limit) || 0;
+        return total + limit;
+      }, 0);
     },
     selectedData() {
       return this.$store.state.nftTransfer.selectedData;
@@ -366,7 +422,7 @@ export default {
     },
   },
   mounted() {
-    if (this.collectionsData.length > 0) {
+    if (this.collectionsData && this.collectionsData.length > 0) {
       this.$store.commit("nftTransfer/selectTransferCollection", []);
       this.$store.commit("nftTransfer/selectCollection", []);
       this.$store.commit(
@@ -419,43 +475,101 @@ export default {
         this.allLoaded = true;
       }
     },
-    async extractFloorPrice(collectionId) {
-      try {
-        const floorPrice = await getFloorPrice(collectionId);
-        return floorPrice;
-      } catch (error) {
-        console.error("Error fetching floor price:", error);
-        return 0;
+    checkDisable() {
+      if (this.items.length > 0) {
+        if (this.items[0].count <= this.totalLimitCount) {
+          this.$toast.showMessage({
+            message: `Wallet Address Must be equal to or less than Nft Count.`,
+          });
+          return true;
+        }
       }
     },
-    checkboxSelect(e) {
-      console.log("checkBoxxxxxxxxxx:", this.selectedCheck);
-    },
-    sendDisabled() {
-      if (this.wallet_address != "" && this.selectedCheck.length > 0) {
+    addDisabled() {
+      if (this.inputLimit != "" && this.inputWallet != "") {
         return false;
       } else {
         return true;
       }
     },
+    openInputField() {
+      this.inputAddressDialog = true;
+    },
+    handleAddAddress() {
+      // Validate input before adding to the list
+      if (this.inputWallet.trim() && this.inputLimit.trim()) {
+        this.$store.commit("nftTransfer/pushAirdropData", {
+          Wallet: this.inputWallet.trim(),
+          Limit: this.inputLimit.trim(),
+        });
+
+        // Clear input fields
+        this.inputWallet = "";
+        this.inputLimit = "";
+        this.inputAddressDialog = false; // Close the input dialog if needed
+      }
+    },
+    handleFileUpload(event) {
+      const fileInput = event.target;
+      const file = fileInput.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          const csv = reader.result;
+          this.parseCSVToJson(csv);
+          fileInput.value = null;
+        };
+
+        reader.readAsText(file);
+      }
+    },
+    parseCSVToJson(csv) {
+      const rows = csv.split("\n");
+      const headers = rows[0].split(",");
+      const jsonData = [];
+
+      for (let i = 1; i < rows.length; i++) {
+        const values = rows[i].split(",");
+
+        if (values.length === headers.length) {
+          const entry = {};
+          for (let j = 0; j < headers.length; j++) {
+            entry[headers[j].trim()] = values[j].trim();
+          }
+          jsonData.push(entry);
+        }
+      }
+      this.$store.commit(
+        "nftTransfer/setAirdropData",
+        this.airdropData.concat(jsonData)
+      );
+    },
+
     async sendNfts() {
-      // this.$toast.showMessage({
-      //   message: `Nft Transfred to ${this.wallet_address}.`,
-      // });
-      // this.wallet_address = "";
-      // this.$store.commit("nftTransfer/setCheckData", []);
-      const destinationAddress = this.wallet_address;
-      if (!destinationAddress) {
-        console.error("Please enter a destination address.");
+      const walletAddressesRes = this.airdropData.reduce((acc, item) => {
+        let limit = parseInt(item.Limit);
+        return acc.concat(Array.from({ length: limit }, () => item.Wallet));
+      }, []);
+
+      // const sendableNfts = this.userNft
+      // if (limit >= sendableNfts) {
+      //   //display only limited datas here
+      // }
+
+      const sendableNfts = this.userNft.slice(0, this.totalLimitCount);
+
+      const nftTransferRes = await nftTransfer(
+        sendableNfts,
+        walletAddressesRes
+      );
+    },
+
+    handleInput() {
+      if (!this.searchQuery) {
         return;
       }
-
-      const nftTransferRes = await nftTransfer(this.selectedCheck, [
-        this.wallet_address,
-      ]);
-      //   this.$toast.showMessage({
-      //     message: `Nft Transfred to ${this.wallet_address}.`,
-      //   });
     },
     expandClick(item, index2) {
       this.isExpandedIcon = !this.isExpandedIcon;
@@ -471,8 +585,7 @@ export default {
     },
 
     expandFunction(item, colIndex) {
-      this.$store.dispatch("nftTransfer/setCollectionsNftTransfer", []);
-      // this.collectionsNfts = [];
+      this.userNfts = [];
       if (this.selectedExpand.includes(item.collectionId)) {
         const indexToRemove = this.selectedExpand.indexOf(item.collectionId);
         this.selectedExpand.splice(indexToRemove, 1);
@@ -493,22 +606,13 @@ export default {
       let key = keys.find((keyItem) => keyItem == column.value);
       return item[key];
     },
-    nameClass(column, item, columnIndex) {
-      if (columnIndex == 0) {
-        return "text-start";
-      } else if (columnIndex == 1) {
-        return "text-start";
-      } else if (columnIndex == 2) {
-        return "text-end";
-      } else if (columnIndex == 3) {
-        return "text-end";
-      }
-    },
     dynamicTd(column, item, columnIndex) {
       if (columnIndex == 0) {
         // return "width-40";
       } else if (columnIndex == 3) {
         return "width-80";
+      } else {
+        return "text-end";
       }
     },
     headerAlign(header, index) {
@@ -524,25 +628,12 @@ export default {
         return "text-end";
       } else if (index == 3) {
         return "text-end";
-      }
-    },
-    async getUncachedImageUrl(index) {
-      const image = this.items[index].image;
-
-      if (this.items) {
-        if (checkIfImageIsFromCacheServer(image)) {
-          const res = await this.$axios.get(image);
-
-          if (res.headers["content-type"].includes("image")) {
-            this.$refs[`image${index}`][0].image.src = image;
-          } else {
-            const link = extractImageLinkFromCacheServerUrl(image);
-
-            this.$refs[`image${index}`][0].image.src = link;
-          }
-        } else {
-          this.$refs[`image${index}`][0].image.src = image;
-        }
+      } else if (header.value === "wallet_address") {
+        return "text-start";
+      } else if (header.value === "limit") {
+        return "text-end";
+      } else {
+        return "text-end";
       }
     },
   },
@@ -557,8 +648,6 @@ export default {
 
 .main-tr {
   background-color: #101113;
-  border-top: 1px solid #383a3f;
-  border-bottom: 1px solid #383a3f;
 }
 
 table {
@@ -613,7 +702,7 @@ td {
 }
 
 .nft-table-header {
-  color: var(--dark-dark--2, #909296);
+  color: #909296;
   font-family: "Inter";
   font-size: 12px;
   font-style: normal;
@@ -625,5 +714,46 @@ td {
 
 .cards-min-width {
   min-width: 960px;
+}
+
+.airdrop-expand-table-border {
+  padding: 0;
+  margin: 12px 0 0 0;
+  border-radius: 5px;
+  border: 1px solid #383a3f;
+}
+
+.airdrop-expand-border {
+  padding: 20px 16px;
+  margin: 12px 0 0 0;
+  border-radius: 5px;
+  border: 1px solid #383a3f;
+}
+
+.td-border {
+  border-radius: 8px !important;
+  border: 1px solid #383a3f;
+  padding: 16px !important;
+}
+
+.csv-border {
+  display: flex;
+  height: 40px;
+  padding: 0px 24px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  align-self: stretch;
+  border-radius: 4px;
+  border: 1px solid var(--dark-dark--4, #383a3f);
+}
+
+.import-csv {
+  position: absolute;
+  z-index: 2;
+  opacity: 0;
+  cursor: pointer !important;
+  width: 100%;
+  min-height: 40px;
 }
 </style>
