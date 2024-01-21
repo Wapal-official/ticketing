@@ -73,7 +73,14 @@
           </div>
         </div>
         <div class="tw-pb-2 tw-text-dark-0">
-          {{ auction.nft.meta.description }}
+          {{ description }}
+          <button
+            class="tw-text-primary-1"
+            @click="toggleDescription"
+            v-if="auction.nft.meta.description.length > 200"
+          >
+            {{ description.length <= 203 ? "Read More" : "Read Less" }}
+          </button>
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
@@ -563,6 +570,7 @@ export default {
       showShareBox: false,
       royaltyPercentage: null,
       ownerAddress: "",
+      description: "",
       imageNotFound,
     };
   },
@@ -599,6 +607,8 @@ export default {
   },
   async mounted() {
     await this.getAuctionDetails();
+
+    this.getDescription();
 
     this.auctionStarted = this.checkAuctionStarted();
     this.auctionEnded = this.checkAuctionEnded();
@@ -1020,6 +1030,22 @@ export default {
         "..." +
         ownerAddress.slice(-2, ownerAddress.length)
       );
+    },
+    getDescription() {
+      this.description = this.auction.nft.meta.description;
+      
+      if (this.auction.nft.meta.description.length > 200) {
+        this.description =
+          this.auction.nft.meta.description.slice(0, 200) + "...";
+      }
+    },
+    toggleDescription() {
+      if (this.description.length <= 203) {
+        this.description = this.auction.nft.meta.description;
+      } else {
+        this.description =
+          this.auction.nft.meta.description.slice(0, 200) + "...";
+      }
     },
   },
   watch: {

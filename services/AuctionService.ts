@@ -285,7 +285,7 @@ export const setCompleteAuction = async (auctionId: string) => {
 };
 
 export const getFeaturedAuctions = async () => {
-  const res = await publicRequest.get(`/api/auction/featured`);
+  const res = await publicRequest.get(`/api/auction/featured?page=1&limit=5`);
 
   return res.data.auctions;
 };
