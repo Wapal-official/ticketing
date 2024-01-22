@@ -6,11 +6,11 @@
     <div
       class="tw-w-full tw-h-[312px] tw-rounded-t-lg tw-overflow-hidden md:tw-w-[312px] md:tw-h-[312px]"
     >
-      <img
-        class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-min-w-[313px] md:tw-h-[312px] group-hover:tw-scale-110"
-        :src="auction?.nft.meta.image"
-        :alt="auction?.nft.meta.name"
+      <utility-image
+        :source="auction?.nft.meta.image"
         :onerror="imageNotFound()"
+        :alt="auction?.nft.meta.name"
+        class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-min-w-[313px] md:tw-h-[312px] group-hover:tw-scale-110"
       />
     </div>
     <div
@@ -47,7 +47,13 @@
                 ? auction?.biddings[auction?.biddings.length - 1].bid
                 : auction?.min_bid
             }}
-            <span><img :src="aptIcon" alt="apt" /></span>
+            <span
+              ><img
+                :src="selectedCoinType.imageWhite"
+                alt="coinType"
+                width="14px"
+                height="14px"
+            /></span>
           </div>
         </div>
         <div class="tw-flex tw-flex-col tw-items-end tw-justify-end tw-gap-1">
@@ -89,6 +95,7 @@
 <script lang="ts">
 import aptIcon from "@/assets/img/apt.svg";
 import imageNotFound from "@/utils/imageNotFound";
+import { getCoinType } from "@/utils/getCoinType";
 export default {
   props: { auction: { type: Object } },
   data() {
@@ -99,7 +106,11 @@ export default {
       imageNotFound,
     };
   },
-  computed: {},
+  computed: {
+    selectedCoinType() {
+      return getCoinType(this.auction.coin_type ? this.auction.coin_type : "");
+    },
+  },
   methods: {
     getStartTime() {
       if (new Date(this.auction.startAt) < new Date()) {

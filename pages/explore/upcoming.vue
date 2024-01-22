@@ -31,7 +31,7 @@ import {
   getApprovedDrafts,
   getUpcomingCollections,
 } from "@/services/CollectionService";
-
+import { getCachedUrlOfImage } from "@/utils/imageCache";
 export default {
   data() {
     return {
@@ -66,7 +66,8 @@ export default {
             candy_id: draft.data.candy_id,
             description: draft.data.description,
             discord: draft.data.discord,
-            image: draft.data.image,
+            image: getCachedUrlOfImage(draft.data.image),
+            // Apply caching function to the image URL
             instagram: draft.data.instagram,
             isApproved: draft.data.isApproved,
             name: draft.data.name,

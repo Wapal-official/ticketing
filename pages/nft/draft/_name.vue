@@ -249,7 +249,7 @@
   </div> -->
 </template>
 <script>
-import { getCollection, getDraftById } from "@/services/CollectionService";
+import { getDraftById } from "@/services/CollectionService";
 import CountDown from "@/components/Reusable/CountDown.vue";
 import Loading from "@/components/Reusable/Loading.vue";
 

@@ -70,36 +70,37 @@
               {{ socialErrorMessage }}
             </div>
           </ValidationProvider>
-          <!-- <ValidationProvider
+          <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="tweetLength"
             rules="tweetLength"
             v-slot="{ errors }"
           >
             <input-text-area
-              label="Tweet Template (Optional)"
+              label="Tweetable Template (Optional)"
               v-model="mint.tweet"
               placeholder="Craft your tweetable moment! It's shareable on Twitter after minting your NFT."
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
           <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+            class="tw-flex tw-flex-col tw-items-end tw-justify-start tw-gap-2 tw-w-full"
           >
-            <input-image-drag-and-drop
-              label="POB (Proof Of Bid)"
+            <!-- <input-image-drag-and-drop
+              label="Soulbound NFT for POB (Proof Of Bid)"
               :required="true"
-              @fileSelected="imageSelected"
+              @fileSelected="POBImageSelected"
               :file="mint.POBImage"
               fileSize="Upto 15 MB"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
               {{ imageErrorMessage }}
             </div>
-          </div> -->
+          </div>
           <div
             class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
           >
+            <button-primary title="Submit Auction" @click="submitAuction" /> -->
             <button-primary title="Next" @click="validateFormForNextStep" />
           </div>
         </ValidationObserver>
@@ -188,7 +189,12 @@
                 placeholder="Eg. 0.5"
               >
                 <template #append-icon>
-                  <img :src="darkAptIcon" alt="APT" />
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
                 </template>
               </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
@@ -212,6 +218,22 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-auto-complete
+              :required="true"
+              label="Coin Type"
+              v-model="coinType"
+              placeholder="Select Coin Type"
+              :items="coinTypes"
+              text="name"
+              itemValue="id"
+            />
+            <div class="tw-text-red-600">{{ errors[0] }}</div>
+          </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
@@ -371,7 +393,13 @@
                     <div
                       class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
                     >
-                      {{ mint.minBid }} <img :src="aptIcon" />
+                      {{ mint.minBid }}
+                      <img
+                        :src="selectedCoinType.imageWhite"
+                        alt="Coin Type"
+                        width="14px"
+                        height="14px"
+                      />
                     </div>
                   </div>
                 </div>
@@ -762,10 +790,11 @@
 </template>
 
 <script>
-import { uploadAndCreateFile } from "../../services/AuctionService";
+import { uploadAndCreateFile } from "@/services/AuctionService";
 import { createCollection } from "@/services/CollectionService";
 import { getWalletNFT } from "@/services/AuctionService";
 import { publicRequest } from "@/services/fetcher";
+import { singleFileUpload } from "@/services/AssetsService";
 
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
@@ -775,6 +804,10 @@ import generateName from "@/utils/generateName";
 import aptIcon from "@/assets/img/apt.svg";
 import darkAptIcon from "@/assets/img/aptBlack.svg";
 import moment from "moment";
+import {
+  getAvailableCoinTypesForAuction,
+  getCoinType,
+} from "@/utils/getCoinType";
 
 extend("bidAmount", {
   validate(value) {
@@ -841,15 +874,15 @@ extend("link", {
   message: "Please enter a valid link",
 });
 
-// extend("tweetLength", {
-//   validate(value) {
-//     if (value.length > 256) {
-//       return false;
-//     }
-//     return true;
-//   },
-//   message: "This field must not exceed 256 characters",
-// });
+extend("tweetLength", {
+  validate(value) {
+    if (value.length > 256) {
+      return false;
+    }
+    return true;
+  },
+  message: "This field must not exceed 256 characters",
+});
 
 export default {
   layout: "dashboard",
@@ -876,8 +909,8 @@ export default {
         attributes: [{ trait_type: null, value: null }],
         twitter: null,
         instagram: null,
-        // tweet: "",
-        // POBImage: null,
+        tweet: "",
+        POBImage: "",
       },
       attribute: "",
       value: "",
@@ -904,6 +937,8 @@ export default {
       ],
       formSteps: ["Details", "Token", "Attributes", "Review"],
       formStepNumber: 1,
+      coinTypes: getAvailableCoinTypesForAuction(),
+      coinType: "APT",
       defaultTheme,
       aptIcon,
       darkAptIcon,
@@ -928,9 +963,30 @@ export default {
     selectedNft() {
       return this.$store.state.auction.selectedNft;
     },
+    selectedCoinType() {
+      return getCoinType(this.coinType);
+    },
   },
   async mounted() {},
   methods: {
+    async POBUpload() {
+      const image = this.mint.POBImage;
+      const name = this.mint.tokenName;
+      const description = this.mint.tokenDesc;
+      const attributes = [];
+      console.log(image, "imageee");
+      const formData = new FormData();
+      formData.append("image", image);
+      // formData.append("name", name);
+      // formData.append("description", description);
+      formData.append("attributes", JSON.stringify(attributes));
+      try {
+        const response = await singleFileUpload(formData);
+        console.log(response);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    },
     saveStart(date) {
       this.$refs.startmenu.save(date);
     },
@@ -1118,6 +1174,7 @@ export default {
                           start_date: this.mint.startDate,
                           end_date: this.mint.endDate,
                           min_bid: this.mint.minBid,
+                          coinType: this.coinType,
                         }
                       );
 
@@ -1135,6 +1192,8 @@ export default {
                         twitter: this.mint.twitter,
                         instagram: this.mint.instagram,
                         user_id: this.$store.state.userStore.user.user_id,
+                        coin_type: this.coinType,
+                        tweet: this.mint.tweet,
                       });
 
                       this.$toast.showMessage({
@@ -1191,16 +1250,26 @@ export default {
     changeStep(step) {
       this.formStepNumber = step;
     },
-    // imageSelected(image) {
-    //   this.image = image;
+    imageSelected(image) {
+      this.image = image;
 
-    //   if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
-    //     this.imageError = true;
-    //     this.imageErrorMessage = "Please Upload Image less than 15MB";
-    //   } else {
-    //     this.imageError = false;
-    //   }
-    // },
+      if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
+    },
+    POBImageSelected(image) {
+      this.mint.POBImage = image;
+
+      if (Math.floor(image.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
+    },
     async validateFormForNextStep() {
       this.attributeError = false;
       this.socialError = false;

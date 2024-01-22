@@ -625,6 +625,7 @@ import {
 } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 import { createCollectionV2 } from "@/services/AptosCollectionService";
+import generateName from "@/utils/generateName";
 extend("required", {
   ...required,
   message: "This field is required",
@@ -895,7 +896,7 @@ export default {
         const phases: any[] = [];
 
         tempCollection.phases.map((phase: any) => {
-          const id = phase.name.trim().replaceAll(" ", "-").toLowerCase();
+          const id = generateName(phase.name);
 
           phases.push({
             id: id,
@@ -1024,7 +1025,7 @@ export default {
         whitelistTime = Math.floor(
           new Date(this.collection.phases[0].mint_time).getTime() / 1000
         );
-        whitelist_price = this.collection.whitelist_price;
+        whitelist_price = this.collection.phases[0].mint_price;
       }
 
       const pre_sale_price = parseFloat(
@@ -1204,11 +1205,9 @@ export default {
       }
     },
     checkCoinType() {
-      if (this.collection.coinType === "SEEDZ") {
-        this.collection.candy_id = process.env.SEEDZ_CANDY_MACHINE;
-      } else {
-        this.collection.candy_id = process.env.CANDY_MACHINE_V2;
-      }
+      const coinTypeObject = getCoinType(this.collection.coinType);
+
+      this.collection.candy_id = coinTypeObject.candy_id;
     },
   },
   computed: {

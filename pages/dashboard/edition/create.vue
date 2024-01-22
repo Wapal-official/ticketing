@@ -1079,11 +1079,9 @@ export default {
       this.collection.txnhash = res.transactionHash;
     },
     checkCoinType() {
-      if (this.collection.coinType === "SEEDZ") {
-        this.collection.candy_id = process.env.SEEDZ_CANDY_MACHINE;
-      } else {
-        this.collection.candy_id = process.env.CANDY_MACHINE_V2;
-      }
+      const coinTypeObject = getCoinType(this.collection.coinType);
+
+      this.collection.candy_id = coinTypeObject.candy_id;
     },
   },
 };

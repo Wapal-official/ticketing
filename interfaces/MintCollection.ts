@@ -3,6 +3,9 @@ export default interface MintCollectionInterface {
   candy_object: string;
   amount?: number;
   publicMint?: boolean;
-  proof?: string;
+  proof?: Uint8Array[];
   mint_limit?: number;
+  coinType?: string;
+  coinObject?: string;
+  sender?: string;
 }

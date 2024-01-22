@@ -4,18 +4,14 @@
   </div>
 </template>
 <script lang="ts">
-import {
-  getCollection,
-  getCollectionByUsername,
-} from "@/services/CollectionService";
+import { getCollectionByUsername } from "@/services/CollectionService";
 export default {
   async asyncData({ params }: { params: any }) {
     const name = params.name;
     let collection;
 
     try {
-      const res = await getCollectionByUsername(name);
-      collection = res.data.collection[0];
+      collection = await getCollectionByUsername(name);
 
       return { collection };
     } catch {

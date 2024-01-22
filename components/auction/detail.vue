@@ -6,11 +6,11 @@
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
-      <img
-        :src="auction.nft.meta.image"
+      <utility-image
+        :source="auction.nft.meta.image"
         :alt="auction.nft.meta.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
         :onerror="imageNotFound()"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
       />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
@@ -73,7 +73,14 @@
           </div>
         </div>
         <div class="tw-pb-2 tw-text-dark-0">
-          {{ auction.nft.meta.description }}
+          {{ description }}
+          <button
+            class="tw-text-primary-1"
+            @click="toggleDescription"
+            v-if="auction.nft.meta.description.length > 200"
+          >
+            {{ description.length <= 203 ? "Read More" : "Read Less" }}
+          </button>
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
@@ -101,7 +108,7 @@
                 Current Bid
               </div>
               <div class="tw-text-white tw-text-[1.75em] tw-font-medium">
-                {{ current_bid }} APT
+                {{ current_bid }} {{ selectedCoinType.coinType }}
               </div>
             </div>
             <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
@@ -125,7 +132,7 @@
             >
               <input-text-field
                 v-model="bid"
-                placeholder="Bid price(APT)"
+                :placeholder="`Bid price(${selectedCoinType.coinType})`"
                 class="tw-w-full"
               />
               <div class="tw-text-red-600">{{ errors[0] }}</div>
@@ -162,7 +169,7 @@
                 Final Bid
               </div>
               <div class="tw-text-white tw-text-[1.75em] tw-font-medium">
-                {{ current_bid }} APT
+                {{ current_bid }} {{ selectedCoinType.coinType }}
               </div>
             </div>
             <div class="tw-flex tw-flex-col tw-items-end tw-justify-end">
@@ -180,7 +187,7 @@
             >
               <input-text-field
                 v-model="bid"
-                placeholder="Bid price(APT)"
+                :placeholder="`Bid price(${selectedCoinType.coinType})`"
                 :disabled="true"
                 class="tw-w-full"
               />
@@ -266,8 +273,12 @@
                 <div
                   class="!tw-text-dark-0 tw-flex tw-flex-row tw-items-center tw-justify-start tw-w-full md:tw-w-[70%]"
                 >
-                  {{ item.displayName }}
-                  bid for {{ item.bid }} APT
+                  {{
+                    item.displayName
+                      ? item.displayName
+                      : sliceAddressForDisplay(item.wallet_address)
+                  }}
+                  bid for {{ item.bid }} {{ selectedCoinType.coinType }}
                 </div>
                 <div
                   class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-w-full md:tw-w-[30%]"
@@ -288,6 +299,50 @@
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
     >
       <connect-wallet-modal @closeModal="showConnectWalletDialog = false" />
+    </v-dialog>
+    <v-dialog
+      v-model="showShareModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+      :persistent="true"
+    >
+      <div
+        class="tw-w-full tw-bg-dark-9 tw-text-white tw-px-4 tw-py-4 tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+      >
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+        >
+          <button @click="showShareModal = false">
+            <i class="bx bx-x tw-text-xl"></i>
+          </button>
+        </div>
+        <div class="tw-w-full tw-text-base">
+          <h3 class="tw-text-center">
+            Placed Bid on {{ auction.nft.meta.name }}
+          </h3>
+        </div>
+        <div class="tw-w-full h-full tw-rounded">
+          <img
+            :src="auction.nft.meta.image"
+            class="tw-w-full tw-h-full tw-rounded"
+            :alt="auction.nft.meta.name"
+          />
+        </div>
+        <button-primary
+          :fullWidth="true"
+          title="Share on Twitter"
+          :bordered="true"
+          @click="shareOnTwitterAfterBid"
+        >
+          <template #prepend-icon>
+            <img
+              :src="xLogo"
+              alt="X"
+              width="32px"
+              height="32px"
+              class="tw-pr-4"
+            /> </template
+        ></button-primary>
+      </div>
     </v-dialog>
   </div>
   <!-- <div v-if="!loadingAuction">
@@ -508,6 +563,7 @@ import {
   getOwnerAndRoyaltyOfTokenInAuction,
 } from "@/services/AuctionService";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+import { getCoinType } from "@/utils/getCoinType";
 
 extend("bidAmount", {
   validate(value) {
@@ -558,7 +614,9 @@ export default {
       showShareBox: false,
       royaltyPercentage: null,
       ownerAddress: "",
+      description: "",
       imageNotFound,
+      showShareModal: false,
     };
   },
   watch: {
@@ -588,9 +646,14 @@ export default {
       }
       return false;
     },
+    selectedCoinType() {
+      return getCoinType(this.auction.coin_type ? this.auction.coin_type : "");
+    },
   },
   async mounted() {
     await this.getAuctionDetails();
+
+    this.getDescription();
 
     this.auctionStarted = this.checkAuctionStarted();
     this.auctionEnded = this.checkAuctionEnded();
@@ -697,6 +760,7 @@ export default {
         let resource = await this.$store.dispatch("walletStore/placeBid", {
           detail: this.auction,
           offer_price: Number(this.bid).toFixed(8),
+          coinType: this.selectedCoinType.coinType,
         });
 
         if (!resource) {
@@ -721,6 +785,9 @@ export default {
           this.auction.biddings.unshift(...res.data.newBid.biddings);
 
           this.$toast.showMessage({ message: "Bid Placed Successfully" });
+          if (this.auction.tweet) {
+            this.showShareModal = true;
+          }
           this.loading = false;
           this.showPlaceBidButton = false;
           this.current_bid = getCurrentBid(this.auction);
@@ -767,15 +834,20 @@ export default {
           this.loading = true;
           const increaseBidRes = await this.$store.dispatch(
             "walletStore/increaseAuctionBid",
-            { price: this.bid, auction_id: this.auction.id }
+            {
+              price: this.bid,
+              auction_id: this.auction.id,
+              coinType: this.selectedCoinType.coinType,
+            }
           );
 
           let creation_number = 0;
+
           if (increaseBidRes.success) {
             increaseBidRes.events.map((event) => {
               if (
                 event.type ===
-                `${process.env.PID}::marketplace_bid_utils::IncreaseBidEvent<0x1::aptos_coin::AptosCoin>`
+                `${process.env.PID}::marketplace_bid_utils::IncreaseBidEvent<${this.selectedCoinType.coinObject}>`
               ) {
                 creation_number = event.data.bid_id.listing_id.creation_num;
               }
@@ -791,6 +863,9 @@ export default {
             this.auction.biddings.unshift(...res.data.newBid.biddings);
 
             this.$toast.showMessage({ message: "Bid Increased Successfully" });
+            if (this.auction.tweet) {
+              this.showShareModal = true;
+            }
             this.loading = false;
             this.bid = 0;
             this.current_bid = getCurrentBid(this.auction);
@@ -872,6 +947,7 @@ export default {
         const res = await this.$store.dispatch("walletStore/withdrawBid", {
           lister_address: this.auction.nft.nft.owner_address,
           creation_number: creation_number,
+          coinType: this.selectedCoinType.coinType,
         });
 
         if (res.success) {
@@ -895,6 +971,7 @@ export default {
         this.loading = true;
         const res = await this.$store.dispatch("walletStore/completeAuction", {
           auction_id: Number(this.auction.id),
+          coinType: this.selectedCoinType.coinType,
         });
 
         if (res.success) {
@@ -959,6 +1036,20 @@ export default {
 
       this.showShareBox = false;
     },
+    shareOnTwitterAfterBid() {
+      const baseURL = process.env.baseURL?.includes("staging")
+        ? "https://staging.wapal.io"
+        : "https://launchpad.wapal.io";
+      const twitterURL = "https://twitter.com";
+      const link = `${baseURL}/auctions/${this.auction.auction_name}`;
+      const text = encodeURIComponent(this.auction.tweet);
+
+      const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}`;
+
+      window.open(twitterShareLink, "_blank");
+
+      this.showShareBox = false;
+    },
     hideShareBox() {
       this.showShareBox = false;
     },
@@ -1004,6 +1095,22 @@ export default {
         "..." +
         ownerAddress.slice(-2, ownerAddress.length)
       );
+    },
+    getDescription() {
+      this.description = this.auction.nft.meta.description;
+      
+      if (this.auction.nft.meta.description.length > 200) {
+        this.description =
+          this.auction.nft.meta.description.slice(0, 200) + "...";
+      }
+    },
+    toggleDescription() {
+      if (this.description.length <= 203) {
+        this.description = this.auction.nft.meta.description;
+      } else {
+        this.description =
+          this.auction.nft.meta.description.slice(0, 200) + "...";
+      }
     },
   },
   watch: {

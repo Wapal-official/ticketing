@@ -1,6 +1,12 @@
 import { client, wallet, checkNetwork } from "@/store/walletStore";
 import Cookies from "js-cookie";
 import MintCollectionInterface from "@/interfaces/MintCollection";
+import { getCoinType } from "@/utils/getCoinType";
+import { convertPriceToSendInSmartContract } from "@/utils/price";
+import { simulateTransaction } from "@/utils/simulateTransaction";
+import { HexString } from "aptos";
+import { handleMintError } from "~/errors/Mint";
+
 let walletName: any = "";
 if (process.client) {
   if (Cookies.get("wallet")) {
@@ -116,20 +122,26 @@ export const updatePublicSalePrice = async ({
   candy_object,
   public_sale_price,
   candy_machine_id,
+  coinType,
 }: {
   candy_object: string;
   public_sale_price: number;
   candy_machine_id: string;
+  coinType: string;
 }) => {
   await checkWalletConnected();
   checkNetwork();
 
-  const public_sale_lamports = (public_sale_price * Math.pow(10, 8)).toFixed(0);
+  const converted_public_sale_price = convertPriceToSendInSmartContract({
+    price: public_sale_price,
+    isConverted: false,
+    coinType: coinType,
+  });
 
   const update_public_sale_price_script = {
     function: `${candy_machine_id}::candymachine::update_public_sale_price`,
     type: "entry_function_payload",
-    arguments: [candy_object, public_sale_lamports],
+    arguments: [candy_object, converted_public_sale_price],
     type_arguments: [],
   };
 
@@ -152,20 +164,26 @@ export const updateWhitelistSalePrice = async ({
   candy_object,
   pre_sale_price,
   candy_machine_id,
+  coinType,
 }: {
   candy_object: string;
   pre_sale_price: number;
   candy_machine_id: string;
+  coinType: string;
 }) => {
   await checkWalletConnected();
   checkNetwork();
 
-  const whitelist_sale_lamports = (pre_sale_price * Math.pow(10, 8)).toFixed(0);
+  const converted_whitelist_sale_price = convertPriceToSendInSmartContract({
+    price: pre_sale_price,
+    isConverted: false,
+    coinType: coinType,
+  });
 
   const update_pre_sale_price_script = {
     function: `${candy_machine_id}::candymachine::update_wl_sale_price`,
     type: "entry_function_payload",
-    arguments: [candy_object, whitelist_sale_lamports],
+    arguments: [candy_object, converted_whitelist_sale_price],
     type_arguments: [],
   };
 
@@ -225,6 +243,7 @@ export const mintCollection = async ({
   publicMint,
   proof,
   mint_limit,
+  sender,
 }: MintCollectionInterface) => {
   await checkWalletConnected();
   checkNetwork();
@@ -234,11 +253,17 @@ export const mintCollection = async ({
       const res = await mintSingleNft({
         candy_machine_id,
         candy_object,
+        sender,
       });
 
       return res;
     } else {
-      const res = await mintManyNft({ candy_machine_id, candy_object, amount });
+      const res = await mintManyNft({
+        candy_machine_id,
+        candy_object,
+        amount,
+        sender,
+      });
       return res;
     }
   } else {
@@ -248,6 +273,7 @@ export const mintCollection = async ({
         candy_object,
         proof,
         mint_limit,
+        sender,
       });
 
       return res;
@@ -258,6 +284,7 @@ export const mintCollection = async ({
         proof,
         mint_limit,
         amount,
+        sender,
       });
 
       return res;
@@ -268,6 +295,7 @@ export const mintCollection = async ({
 export const mintSingleNft = async ({
   candy_machine_id,
   candy_object,
+  sender,
 }: MintCollectionInterface) => {
   try {
     const mint_script = {
@@ -277,11 +305,20 @@ export const mintSingleNft = async ({
       arguments: [candy_object],
     };
 
+    const simulateRes = await simulateTransaction({
+      sender: sender,
+      transactionPayload: mint_script,
+    });
+
+    if (simulateRes.error) {
+      throw new Error(simulateRes.message);
+    }
+
     const res = await executeTransactionAndGiveResult(mint_script);
 
     return res;
   } catch (error) {
-    throw new Error("Could not Mint Nft");
+    throw handleMintError({ error: error, candyMachine: candy_machine_id });
   }
 };
 
@@ -289,20 +326,30 @@ export const mintManyNft = async ({
   candy_machine_id,
   candy_object,
   amount,
+  sender,
 }: MintCollectionInterface) => {
   try {
     const mint_script_many = {
       type: "entry_function_payload",
       function: `${candy_machine_id}::candymachine::mint_script_many`,
       type_arguments: [],
-      arguments: [candy_object, amount],
+      arguments: [candy_object, amount?.toString()],
     };
+
+    const simulateRes = await simulateTransaction({
+      sender: sender,
+      transactionPayload: mint_script_many,
+    });
+
+    if (simulateRes.error) {
+      throw new Error(simulateRes.message);
+    }
 
     const res = await executeTransactionAndGiveResult(mint_script_many);
 
     return res;
   } catch (error) {
-    throw new Error("Could not Mint Nft");
+    throw handleMintError({ error: error, candyMachine: candy_machine_id });
   }
 };
 
@@ -311,8 +358,37 @@ export const merkleMintSingleNft = async ({
   candy_object,
   proof,
   mint_limit,
+  sender,
 }: MintCollectionInterface) => {
   try {
+    const proofsAsHex = proof?.map((tempProof) => {
+      // Convert proof into Buffer
+      const proofBuffer = Buffer.from(tempProof);
+
+      //Convert proof from buffer to hex
+      const proofAsHex = HexString.fromBuffer(proofBuffer);
+
+      return proofAsHex.hex();
+    });
+
+    const simulateMintLimit = mint_limit?.toString();
+
+    const merkle_mint_simulate_script = {
+      type: "entry_function_payload",
+      function: `${candy_machine_id}::candymachine::mint_from_merkle`,
+      type_arguments: [],
+      arguments: [candy_object, proofsAsHex, simulateMintLimit],
+    };
+
+    const simulateRes = await simulateTransaction({
+      sender: sender,
+      transactionPayload: merkle_mint_simulate_script,
+    });
+
+    if (simulateRes.error) {
+      throw new Error(simulateRes.message);
+    }
+
     const merkle_mint_script = {
       type: "entry_function_payload",
       function: `${candy_machine_id}::candymachine::mint_from_merkle`,
@@ -324,7 +400,7 @@ export const merkleMintSingleNft = async ({
 
     return res;
   } catch (error) {
-    throw new Error("Could not Mint Nft");
+    throw handleMintError({ error: error, candyMachine: candy_machine_id });
   }
 };
 
@@ -334,8 +410,38 @@ export const merkleMintManyNft = async ({
   proof,
   mint_limit,
   amount,
+  sender,
 }: MintCollectionInterface) => {
   try {
+    const proofsAsHex = proof?.map((tempProof) => {
+      // Convert proof into Buffer
+      const proofBuffer = Buffer.from(tempProof);
+
+      //Convert proof from buffer to hex
+      const proofAsHex = HexString.fromBuffer(proofBuffer);
+
+      return proofAsHex.hex();
+    });
+
+    const simulateMintLimit = mint_limit?.toString();
+    const simulateAmount = amount?.toString();
+
+    const merkle_mint_many_simulate_script = {
+      type: "entry_function_payload",
+      function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
+      type_arguments: [],
+      arguments: [candy_object, proofsAsHex, simulateMintLimit, simulateAmount],
+    };
+
+    const simulateRes = await simulateTransaction({
+      sender: sender,
+      transactionPayload: merkle_mint_many_simulate_script,
+    });
+
+    if (simulateRes.error) {
+      throw new Error(simulateRes.message);
+    }
+
     const merkle_mint_script_many = {
       type: "entry_function_payload",
       function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
@@ -347,7 +453,7 @@ export const merkleMintManyNft = async ({
 
     return res;
   } catch (error) {
-    throw new Error("Could not Mint Nft");
+    throw handleMintError({ error: error, candyMachine: candy_machine_id });
   }
 };
 
@@ -364,15 +470,25 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
 
   checkNetwork();
 
-  let programId = process.env.CANDY_MACHINE_V2;
+  const coinTypeObject = getCoinType(candyMachineArguments.coinType);
 
-  if (candyMachineArguments.coinType === "SEEDZ") {
-    programId = process.env.SEEDZ_CANDY_MACHINE;
-  }
+  let programId = coinTypeObject.candy_id;
 
   const isOpenEdition = candyMachineArguments.is_open_edition
     ? candyMachineArguments.is_open_edition
     : false;
+
+  const pre_sale_price = convertPriceToSendInSmartContract({
+    price: candyMachineArguments.presale_mint_price,
+    isConverted: true,
+    coinType: candyMachineArguments.coinType,
+  });
+
+  const public_sale_price = convertPriceToSendInSmartContract({
+    price: candyMachineArguments.public_sale_mint_price,
+    isConverted: true,
+    coinType: candyMachineArguments.coinType,
+  });
 
   const create_candy_machine = {
     type: "entry_function_payload",
@@ -387,8 +503,8 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
       candyMachineArguments.royalty_points_numerator,
       candyMachineArguments.presale_mint_time,
       candyMachineArguments.public_sale_mint_time,
-      candyMachineArguments.presale_mint_price,
-      candyMachineArguments.public_sale_mint_price,
+      pre_sale_price,
+      public_sale_price,
       candyMachineArguments.total_supply,
       [false, false, false],
       [false, false, false, false, false],
@@ -460,50 +576,64 @@ export const pauseOrResumeMinting = async ({
   return res;
 };
 
-export const seedzMintCollection = async ({
+export const anotherCoinMintCollection = async ({
   candy_machine_id,
   candy_object,
   amount,
   publicMint,
   proof,
   mint_limit,
+  coinType,
+  sender,
 }: MintCollectionInterface) => {
   await checkWalletConnected();
   checkNetwork();
 
+  const coinTypeObject = getCoinType(coinType || "");
+
+  const coinObject = coinTypeObject.coinObject;
+
   if (publicMint) {
     if (amount == 1) {
-      const res = await seedzMintSingleNft({
+      const res = await anotherCoinMintSingleNft({
         candy_machine_id,
         candy_object,
+        coinObject,
+        sender,
       });
 
       return res;
     } else {
-      const res = await seedzMintManyNft({
+      const res = await anotherCoinMintManyNft({
         candy_machine_id,
         candy_object,
         amount,
+        coinObject,
+        sender,
       });
       return res;
     }
   } else {
     if (amount == 1) {
-      const res = await seedzMerkleMintSingleNft({
+      const res = await anotherCoinMerkleMintSingleNft({
         candy_machine_id,
         candy_object,
         proof,
         mint_limit,
+        coinObject,
+        sender,
       });
 
       return res;
     } else {
-      const res = await seedzMerkleMintManyNft({
+      const res = await anotherCoinMerkleMintManyNft({
         candy_machine_id,
         candy_object,
         proof,
         mint_limit,
         amount,
+        coinObject,
+        sender,
       });
 
       return res;
@@ -511,64 +641,110 @@ export const seedzMintCollection = async ({
   }
 };
 
-export const seedzMintSingleNft = async ({
+export const anotherCoinMintSingleNft = async ({
   candy_machine_id,
   candy_object,
+  coinObject,
+  sender,
 }: MintCollectionInterface) => {
   try {
     const mint_script = {
       type: "entry_function_payload",
       function: `${candy_machine_id}::candymachine::mint_script`,
-      type_arguments: [
-        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
-      ],
+      type_arguments: [coinObject],
       arguments: [candy_object],
     };
+
+    const simulateRes = await simulateTransaction({
+      sender: sender,
+      transactionPayload: mint_script,
+    });
+
+    if (simulateRes.error) {
+      throw new Error(simulateRes.message);
+    }
 
     const res = await executeTransactionAndGiveResult(mint_script);
 
     return res;
   } catch (error) {
-    throw new Error("Could not Mint Nft");
+    throw handleMintError({ error: error, candyMachine: candy_machine_id });
   }
 };
 
-export const seedzMintManyNft = async ({
+export const anotherCoinMintManyNft = async ({
   candy_machine_id,
   candy_object,
   amount,
+  coinObject,
+  sender,
 }: MintCollectionInterface) => {
   try {
     const mint_script_many = {
       type: "entry_function_payload",
       function: `${candy_machine_id}::candymachine::mint_script_many`,
-      type_arguments: [
-        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
-      ],
-      arguments: [candy_object, amount],
+      type_arguments: [coinObject],
+      arguments: [candy_object, amount?.toString()],
     };
+
+    const simulateRes = await simulateTransaction({
+      sender: sender,
+      transactionPayload: mint_script_many,
+    });
+
+    if (simulateRes.error) {
+      throw new Error(simulateRes.message);
+    }
 
     const res = await executeTransactionAndGiveResult(mint_script_many);
 
     return res;
   } catch (error) {
-    throw new Error("Could not Mint Nft");
+    throw handleMintError({ error: error, candyMachine: candy_machine_id });
   }
 };
 
-export const seedzMerkleMintSingleNft = async ({
+export const anotherCoinMerkleMintSingleNft = async ({
   candy_machine_id,
   candy_object,
   proof,
   mint_limit,
+  coinObject,
+  sender,
 }: MintCollectionInterface) => {
   try {
+    const proofsAsHex = proof?.map((tempProof) => {
+      // Convert proof into Buffer
+      const proofBuffer = Buffer.from(tempProof);
+
+      //Convert proof from buffer to hex
+      const proofAsHex = HexString.fromBuffer(proofBuffer);
+
+      return proofAsHex.hex();
+    });
+
+    const simulateMintLimit = mint_limit?.toString();
+
+    const merkle_mint_simulate_script = {
+      type: "entry_function_payload",
+      function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
+      type_arguments: [coinObject],
+      arguments: [candy_object, proofsAsHex, simulateMintLimit],
+    };
+
+    const simulateRes = await simulateTransaction({
+      sender: sender,
+      transactionPayload: merkle_mint_simulate_script,
+    });
+
+    if (simulateRes.error) {
+      throw new Error(simulateRes.message);
+    }
+
     const merkle_mint_script = {
       type: "entry_function_payload",
       function: `${candy_machine_id}::candymachine::mint_from_merkle`,
-      type_arguments: [
-        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
-      ],
+      type_arguments: [coinObject],
       arguments: [candy_object, proof, mint_limit],
     };
 
@@ -576,24 +752,53 @@ export const seedzMerkleMintSingleNft = async ({
 
     return res;
   } catch (error) {
-    throw new Error("Could not Mint Nft");
+    throw handleMintError({ error: error, candyMachine: candy_machine_id });
   }
 };
 
-export const seedzMerkleMintManyNft = async ({
+export const anotherCoinMerkleMintManyNft = async ({
   candy_machine_id,
   candy_object,
   proof,
   mint_limit,
   amount,
+  coinObject,
+  sender,
 }: MintCollectionInterface) => {
   try {
+    const proofsAsHex = proof?.map((tempProof) => {
+      // Convert proof into Buffer
+      const proofBuffer = Buffer.from(tempProof);
+
+      //Convert proof from buffer to hex
+      const proofAsHex = HexString.fromBuffer(proofBuffer);
+
+      return proofAsHex.hex();
+    });
+
+    const simulateMintLimit = mint_limit?.toString();
+    const simulateAmount = amount?.toString();
+
+    const merkle_mint_many_simulate_script = {
+      type: "entry_function_payload",
+      function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
+      type_arguments: [],
+      arguments: [candy_object, proofsAsHex, simulateMintLimit, simulateAmount],
+    };
+
+    const simulateRes = await simulateTransaction({
+      sender: sender,
+      transactionPayload: merkle_mint_many_simulate_script,
+    });
+
+    if (simulateRes.error) {
+      throw new Error(simulateRes.message);
+    }
+
     const merkle_mint_script_many = {
       type: "entry_function_payload",
       function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
-      type_arguments: [
-        "0x5d410456c28307fd31439c1658b5e6b41f4ba868d63e03598c1ddb4a7b29449::asset::SeedzCoin",
-      ],
+      type_arguments: [coinObject],
       arguments: [candy_object, proof, mint_limit, amount],
     };
 
@@ -601,6 +806,6 @@ export const seedzMerkleMintManyNft = async ({
 
     return res;
   } catch (error) {
-    throw new Error("Could not Mint Nft");
+    throw handleMintError({ error: error, candyMachine: candy_machine_id });
   }
 };

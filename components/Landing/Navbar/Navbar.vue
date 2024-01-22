@@ -6,6 +6,66 @@
       class="tw-w-full tw-grid tw-grid-cols-12 tw-px-6 tw-max-h-[40px] lg:tw-gap-0 1xl:tw-px-[3.75em]"
     >
       <div
+        v-if="ForMdScreenSize == false"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-8 tw-col-span-3 lg:tw-col-span-3 xl:tw-col-span-4"
+      >
+        <NuxtLink to="/" class="">
+          <img
+            :src="logo"
+            alt="logo"
+            class="tw-min-w-[106px] tw-max-w-[106px] tw-min-h-[28px] tw-max-h-[28px]"
+          />
+        </NuxtLink>
+        <div class="tw-hidden lg:tw-flex">
+          <v-menu offset-y open-on-hover>
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <NuxtLink
+                  to="/latest-collection"
+                  class="!tw-text-[#A6A7AB] tw-transition tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-center tw-gap-0.5 tw-justify-start hover:!tw-text-primary-1"
+                >
+                  <span>Explore</span>
+                  <i class="bx bx-chevron-down !tw-text-[#A6A7AB]"></i>
+                </NuxtLink>
+              </div>
+            </template>
+            <v-list class="tw-bg-dark-7 !tw-min-w-[240px]">
+              <explore-list-item
+                name="All NFT"
+                link="/latest-collection"
+                @close="close"
+              />
+              <explore-list-item
+                name="Live"
+                link="/latest-collection"
+                @close="close"
+              />
+              <explore-list-item
+                name="Upcoming"
+                link="/upcoming-collection"
+                @close="close"
+              />
+              <explore-list-item
+                name="Domain Name"
+                link="/domain-name"
+                :last="true"
+                @close="close"
+              />
+            </v-list>
+          </v-menu>
+        </div>
+
+        <div
+          class="tw-hidden sm:tw-flex"
+          @click="$store.commit('dialog/setWhatsNew', true)"
+          style="cursor: pointer; min-width: 40px !important"
+        >
+          <img src="~/assets/img/star.svg" alt="new feature start" />
+        </div>
+      </div>
+
+      <div
+        v-else
         class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-3 tw-col-span-4 lg:tw-col-span-3 xl:tw-col-span-4"
       >
         <NuxtLink to="/" class="">
@@ -53,6 +113,7 @@
             </v-list>
           </v-menu>
         </div>
+
         <div
           class="tw-hidden sm:tw-flex"
           @click="$store.commit('dialog/setWhatsNew', true)"
@@ -200,7 +261,7 @@ export default {
   methods: {
     checkScreenSize() {
       const screenWidth = window.innerWidth;
-      this.ForMdScreenSize = screenWidth >= 1020 && screenWidth <= 1440;
+      this.ForMdScreenSize = screenWidth >= 1020 && screenWidth <= 1370;
     },
     toggleLandingMenu() {
       if (!this.landingMenuShowing) {

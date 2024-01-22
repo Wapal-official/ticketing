@@ -6,7 +6,6 @@ const NETWORK = process.env.NETWORK;
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const APTOS_API_KEY = process.env.APTOS_API_KEY;
-const PID = process.env.PID;
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
 const MARKETPLACE_API_URL = process.env.MARKETPLACE_API_URL;
 
@@ -17,6 +16,14 @@ const CANDY_MACHINE_V1 =
 
 const SEEDZ_CANDY_MACHINE =
   "0x2a0a53ec605a88e7eb7ad46b47bebbf5708cd6ae4bdd4812c8b9ed5779d4babd";
+
+const GUI_CANDY_MACHINE =
+  "0xf5be2c27aba7c90943ba5ca5d15571b756a564337e8ae78f6a64264123a02ebb";
+const CELESTIAL_CANDY_MACHINE =
+  "0xe5968b1c8966a2d2eaf10db480fc65d69a0f16935ec9810bc52ec14d893a62c";
+
+const PID =
+  "0xe743f11e73711a90bc76d5ed3df5a6d979a06b2fce194d8b0ca8faf697f4f5f4";
 
 let MARKETPLACE_URL = "https://wapal.io";
 
@@ -38,6 +45,7 @@ if (NETWORK === "mainnet") {
 }
 
 export default {
+  ssr: false,
   // Global page headers: https://go.nuxtjs.dev/config-head
   server: {
     port: process.env.PORT,
@@ -167,6 +175,8 @@ export default {
     MARKETPLACE_URL: MARKETPLACE_URL,
     SEEDZ_CANDY_MACHINE: SEEDZ_CANDY_MACHINE,
     MARKETPLACE_API_URL: MARKETPLACE_API_URL,
+    GUI_CANDY_MACHINE: GUI_CANDY_MACHINE,
+    CELESTIAL_CANDY_MACHINE: CELESTIAL_CANDY_MACHINE,
   },
   privateRuntimeConfig: {
     DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,

@@ -36,7 +36,6 @@
 </template>
 <script lang="ts">
 import { getLiveCollections } from "@/services/CollectionService";
-import sanctuary from "@/assets/img/199.png";
 export default {
   layout: "all-collection",
   data() {
@@ -55,7 +54,8 @@ export default {
       name: "Aptos Monkeys Sanctuary",
       description:
         "Sanctuaries are homes to the fighting Monkeys who stood their ground to protect their lands and fortunes.",
-      image: sanctuary,
+      image:
+        "https://arweave.net/z92BGaOGx-DYVTP_O8W31rAsu3PUO7uAQjzgXIoB2vc/199.png",
       twitter: "https://twitter.com/AptosMonkeys",
       website: "https://www.aptosmonkeys.club/",
       discord: "https://discord.com/invite/sFfe75BHQ3",
