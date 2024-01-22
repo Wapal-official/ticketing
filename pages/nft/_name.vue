@@ -8,6 +8,7 @@ import {
   getCollection,
   getCollectionByUsername,
 } from "@/services/CollectionService";
+import sanctuary from "@/assets/img/199.png";
 export default {
   async asyncData({ params }: { params: any }) {
     const name = params.name;
@@ -18,8 +19,7 @@ export default {
         name: "Aptos Monkeys Sanctuary",
         description:
           "Sanctuaries are homes to the fighting Monkeys who stood their ground to protect their lands and fortunes.",
-        image:
-          "https://arweave.net/z92BGaOGx-DYVTP_O8W31rAsu3PUO7uAQjzgXIoB2vc/199.png",
+        image: sanctuary,
         twitter: "https://twitter.com/AptosMonkeys",
         website: "https://www.aptosmonkeys.club/",
         discord: "https://discord.com/invite/sFfe75BHQ3",
@@ -41,7 +41,8 @@ export default {
       return { collection };
     }
     try {
-      const collection = await getCollectionByUsername(name);
+      const res = await getCollectionByUsername(name);
+      collection = res.data.collection[0];
 
       if (collection) {
         if (collection._id === "651295af57079307bdb1cfe9") {
@@ -56,7 +57,8 @@ export default {
       }
     } catch {
       try {
-        const collection = await getCollection(name);
+        const res = await getCollection(name);
+        collection = res.collection[0];
 
         if (collection._id === "651295af57079307bdb1cfe9") {
           delete collection["candyMachine"].whitelist_sale_time;

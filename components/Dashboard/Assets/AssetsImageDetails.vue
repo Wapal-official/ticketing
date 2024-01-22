@@ -9,10 +9,10 @@
     <div
       class="tw-w-full tw-min-h-full tw-border tw-border-transparent tw-px-4 tw-py-16 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-border-primary-tint md:tw-py-8"
     >
-      <utility-image
-        :source="this.fileData?.image"
+      <img
+        :src="this.fileData?.image"
         :alt="this.fileData?.name"
-        imageClass="tw-max-w-[300px] tw-max-h-[300px]"
+        class="tw-max-w-[300px] tw-max-h-[300px]"
         draggable="false"
         v-if="checkFileType() === 'image'"
       />
@@ -41,8 +41,6 @@
   <div v-else></div>
 </template>
 <script lang="ts">
-import { getCachedUrlOfImage } from "@/utils/imageCache";
-
 export default {
   props: { file: { type: Object }, extension: { type: String } },
   data() {
@@ -84,7 +82,6 @@ export default {
     } else {
       const res = await this.$axios.get(this.file.name);
       this.fileData = res.data;
-      this.fileData.image = getCachedUrlOfImage(this.fileData.image);
       if (this.fileData.attributes) {
         this.attributes = this.fileData.attributes;
       }
@@ -102,7 +99,6 @@ export default {
       } else {
         const res = await this.$axios.get(newFile.name);
         this.fileData = res.data;
-        this.fileData.image = getCachedUrlOfImage(this.fileData.image);
         if (this.fileData.attributes) {
           this.attributes = this.fileData.attributes;
         }

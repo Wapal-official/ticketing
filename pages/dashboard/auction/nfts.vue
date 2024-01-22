@@ -13,10 +13,10 @@
         <div
           class="tw-rounded-t tw-overflow-hidden tw-w-[250px] tw-max-w-[250px]"
         >
-          <utility-image
-            :source="item.image"
-            :onerror="imageNotFound()"
+          <img
+            :src="item.image"
             :alt="item.name"
+            :onerror="imageNotFound()"
             class="tw-rounded-t tw-w-[250px] tw-h-[250px] tw-object-cover tw-transition-all tw-duration-200 tw-ease-linear tw-group group-hover:tw-scale-125"
           />
         </div>
@@ -62,7 +62,6 @@ import {
   getNumberOfTokensInOwnedCollectionOfUser,
 } from "@/services/AuctionService";
 import imageNotFound from "@/utils/imageNotFound";
-import { getCachedUrlOfImage } from "@/utils/imageCache";
 export default {
   data() {
     return {
@@ -121,7 +120,11 @@ export default {
 
             let imageURL = meta.data.image;
 
-            imageURL = getCachedUrlOfImage(imageURL);
+            if (imageURL.slice(0, 4) === "ipfs") {
+              const url = this.sliceIPFSUrl(imageURL);
+
+              imageURL = `https://cloudflare-ipfs.com/ipfs/${url}`;
+            }
 
             if (imageURL.includes("ipfs.apt.land")) {
               const index = imageURL.indexOf("ipfs.apt.land");
@@ -146,9 +149,7 @@ export default {
       } else {
         this.end = true;
       }
-      this.loading = false;
     },
-
     sliceIPFSUrl(url) {
       return url.slice(7, url.length);
     },

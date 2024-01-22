@@ -39,7 +39,7 @@ import {
   getApprovedDrafts,
   getUpcomingCollections,
 } from "@/services/CollectionService";
-import { getCachedUrlOfImage } from "@/utils/imageCache";
+
 export default {
   layout: "all-collection",
   data() {
@@ -61,12 +61,7 @@ export default {
 
       const collections = await getUpcomingCollections(this.page, 10);
 
-      const cachedCollections = collections.map((collection: any) => ({
-        ...collection,
-        image: getCachedUrlOfImage(collection.image),
-      }));
-
-      this.collections.push(...cachedCollections);
+      this.collections.push(...collections);
 
       if (
         !this.collectionEnd &&
@@ -86,7 +81,7 @@ export default {
             candy_id: draft.data.candy_id,
             description: draft.data.description,
             discord: draft.data.discord,
-            image: getCachedUrlOfImage(draft.data.image),
+            image: draft.data.image,
             instagram: draft.data.instagram,
             isApproved: draft.data.isApproved,
             name: draft.data.name,
@@ -104,12 +99,7 @@ export default {
           });
         });
 
-        const cachedDrafts = drafts.map((draft: any) => ({
-          ...draft,
-          image: getCachedUrlOfImage(draft.image),
-        }));
-
-        this.collections.push(...cachedDrafts);
+        this.collections.push(...drafts);
 
         if (drafts.length === 0) {
           this.end = true;

@@ -10,12 +10,12 @@
     >
       <video-player-featured :source="video" />
     </div>
-    <utility-image
-      v-else
-      :source="collection?.image"
+    <img
+      class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
+      :src="collection?.image"
       :onerror="imageNotFound()"
       :alt="collection?.name"
-      class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
+      v-else
     />
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1">
       <div class="tw-font-medium">{{ collection?.name }}</div>
@@ -79,7 +79,8 @@ export default {
         this.video = santa;
       }
 
-      const collection = await getCollection(this.collection._id);
+      const collectionRes = await getCollection(this.collection._id);
+      const collection = collectionRes.collection[0];
 
       const res = await this.$store.dispatch(
         "walletStore/getSupplyAndMintedOfCollection",

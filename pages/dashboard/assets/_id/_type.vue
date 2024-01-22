@@ -227,7 +227,6 @@ import {
 import { defaultTheme } from "@/theme/wapaltheme";
 import moment from "moment";
 import { socket, uploadSocketState } from "@/sockets/socket";
-import { getCachedUrlOfImage } from "@/utils/imageCache";
 export default {
   layout: "dashboard",
   components: {
@@ -406,7 +405,7 @@ export default {
                   type: res.headers["content-type"],
                   createdDate: createdDate,
                   size: res.headers["content-length"],
-                  image: getCachedUrlOfImage(tempFile.image),
+                  image: tempFile.image,
                 };
               } else {
                 const createdDate = moment().format("DD/MM/YYYY");
@@ -431,7 +430,7 @@ export default {
                   generatedFile = {
                     _id: fileIndex,
                     name: fileIndex.toString(),
-                    src: getCachedUrlOfImage(src),
+                    src: src,
                     type: res.headers["content-type"],
                     createdDate: createdDate,
                     size: res.headers["content-length"],

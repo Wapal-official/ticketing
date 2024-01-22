@@ -14,7 +14,10 @@ export default {
   components: {},
   async asyncData({ redirect, params }: { redirect: any; params: any }) {
     try {
-      const collection = await getCollectionByUsername(params.name);
+      const res = await getCollectionByUsername(params.name);
+
+      const collection = res.data.collection[0];
+
       return { collection };
     } catch {
       redirect("/");

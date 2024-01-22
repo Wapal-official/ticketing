@@ -12,12 +12,12 @@
       >
         <video-player-featured :source="video" />
       </div>
-      <utility-image
-        v-else
-        :source="collection?.image"
-        :onerror="imageNotFound()"
-        :alt="collection?.name"
+      <img
         class="tw-w-full tw-h-[312px] tw-object-cover tw-rounded-t-lg tw-transition-all tw-duration-200 tw-ease-linear tw-transform md:tw-w-[312px] md:tw-h-[312px] group-hover:tw-scale-110"
+        :src="collection?.image"
+        :alt="collection?.name"
+        :onerror="imageNotFound()"
+        v-else
       />
     </div>
     <div
