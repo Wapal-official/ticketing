@@ -23,12 +23,14 @@
             <td
               class="!tw-border-b-dark-6 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-12 tw-font-medium !tw-text-base"
             >
-              {{ index + 1 }}.<img
-                :src="item.image"
+              {{ index + 1 }}.
+              <utility-image
+                :source="item.image"
+                :onerror="imageNotFound()"
                 :alt="item.collectionName"
                 class="tw-w-[64px] tw-h-[64px] tw-object-cover tw-rounded"
-                :onerror="imageNotFound()"
-              />{{ item.collectionName }}
+              />
+              {{ item.collectionName }}
             </td>
             <td
               class="!tw-border-b-dark-6 !tw-py-4 tw-font-medium !tw-text-base"
@@ -164,9 +166,7 @@ export default {
       const collectionRes = await Promise.all(
         whitelists.map(async (whitelist: any) => {
           try {
-            const res = await getCollection(whitelist.collection_id);
-
-            const collection = res.collection[0];
+            const collection = await getCollection(whitelist.collection_id);
 
             const spotRes = await getWhitelistEntryById(
               whitelist.collection_id,

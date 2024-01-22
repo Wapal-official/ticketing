@@ -10,10 +10,10 @@
   >
     <div class="tw-rounded tw-relative tw-w-full tw-h-full">
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
-        <img
-          :src="collection.image"
-          :alt="collection.name"
+        <utility-image
+          :source="collection.image"
           loading="lazy"
+          :alt="collection.name"
           class="tw-w-full tw-h-full tw-object-fill tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
         />
       </div>
@@ -113,8 +113,7 @@ export default {
   },
   async mounted() {
     if (this.whitelist.collection_id) {
-      const res = await getCollection(this.whitelist.collection_id);
-      this.collection = res.collection[0];
+      this.collection = await getCollection(this.whitelist.collection_id);
 
       const spotRes = await getWhitelistEntryById(
         this.whitelist.collection_id,

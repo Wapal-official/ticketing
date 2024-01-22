@@ -1,6 +1,7 @@
 import axios from "axios";
 
-import { publicRequest } from "./fetcher";
+import { publicRequest } from "@/services/fetcher";
+import { getCachedUrlOfImage } from "@/utils/imageCache";
 
 const filterApprovedCollections = (collections: any[]) => {
   const tempCollections = collections.filter((collection: any) => {
@@ -17,12 +18,21 @@ export const getCollections = async (page: number, limit: number) => {
 
   const collections = res.data.data;
 
+  collections.map((collection: any) => {
+    collection.image = getCachedUrlOfImage(collection.image);
+  });
+
   return collections;
 };
 
 export const getCollection = async (collectionId: string) => {
   const res = await publicRequest.get(`/api/collection/${collectionId}`);
-  return res.data;
+
+  const collection = res.data.collection[0];
+
+  collection.image = getCachedUrlOfImage(collection.image);
+
+  return collection;
 };
 
 export const createCollection = async (formData: any) => {
@@ -69,12 +79,23 @@ export const getCollectionByUsername = async (username: string) => {
     `${process.env.baseURL}/api/collection/username/${username}`
   );
 
-  return res;
+  const collection = res.data.collection[0];
+
+  collection.image = getCachedUrlOfImage(collection.image);
+
+  return collection;
 };
 
 export const getFeaturedCollection = async () => {
   const res = await axios.get(`${process.env.baseURL}/api/collection/featured`);
-  return res.data.collection;
+
+  const collections = res.data.collection;
+
+  collections.map((collection: any) => {
+    collection.image = getCachedUrlOfImage(collection.image);
+  });
+
+  return collections;
 };
 
 export const getLiveCollections = async (page: number, limit: number) => {
@@ -83,6 +104,10 @@ export const getLiveCollections = async (page: number, limit: number) => {
   );
 
   const collections = res.data.data;
+
+  collections.map((collection: any) => {
+    collection.image = getCachedUrlOfImage(collection.image);
+  });
 
   return collections;
 };
@@ -93,6 +118,10 @@ export const getUpcomingCollections = async (page: number, limit: number) => {
   );
 
   const collections = res.data.data;
+
+  collections.map((collection: any) => {
+    collection.image = getCachedUrlOfImage(collection.image);
+  });
 
   return collections;
 };
@@ -121,7 +150,13 @@ export const getApprovedCollectionsOfUser = async (
     `/api/collection/approved?user_id=${userId}&limit=10&page=${page}`
   );
 
-  return res.data.data;
+  const collections = res.data.data;
+
+  collections.map((collection: any) => {
+    collection.image = getCachedUrlOfImage(collection.image);
+  });
+
+  return collections;
 };
 
 export const getUnderReviewCollectionsOfUser = async (
@@ -132,13 +167,25 @@ export const getUnderReviewCollectionsOfUser = async (
     `/api/collection/under-review?user_id=${userId}&limit=10&page=${page}`
   );
 
-  return res.data.data;
+  const collections = res.data.data;
+
+  collections.map((collection: any) => {
+    collection.image = getCachedUrlOfImage(collection.image);
+  });
+
+  return collections;
 };
 
 export const getDraftsOfUser = async (page: number) => {
   const res = await publicRequest.get(`/api/draft?limit=10&page=${page}`);
 
-  return res.data.data;
+  const collections = res.data.data;
+
+  collections.map((collection: any) => {
+    collection.image = getCachedUrlOfImage(collection.image);
+  });
+
+  return collections;
 };
 
 export const getOwnedCollectionOfUser = async (
@@ -185,7 +232,13 @@ export const getApprovedDrafts = async (page: number, limit: number) => {
     `/api/draft/approved?limit=${limit}&page=${page}`
   );
 
-  return res.data.data;
+  const collections = res.data.data;
+
+  collections.map((collection: any) => {
+    collection.image = getCachedUrlOfImage(collection.image);
+  });
+
+  return collections;
 };
 
 export const editDraft = async (draftId: string, data: any) => {
