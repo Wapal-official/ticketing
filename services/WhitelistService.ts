@@ -106,8 +106,10 @@ export const getProof = async ({
   collectionId: string;
   phase: string;
 }) => {
-  const res = await publicRequest.get(
-    `/api/whitelist/proof?wallet_address=${walletAddress}&collection_id=${collectionId}&phase=${phase}`
+  const PROOF_API_URL = process.env.PROOF_API_URL;
+
+  const res = await axios.get(
+    `${PROOF_API_URL}/api/whitelist/proof?wallet_address=${walletAddress}&collection_id=${collectionId}&phase=${phase}`
   );
 
   return res;
