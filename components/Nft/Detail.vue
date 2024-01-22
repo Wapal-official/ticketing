@@ -316,10 +316,11 @@
           </h2>
           <div
             class="tw-w-full tw-overflow-auto no-scrollbar tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-rounded-lg"
-            :class="{
-              'tw-h-[250px]': phaseCounter !== phases.length - 1,
-              'tw-h-[125px]': phaseCounter === phases.length - 1,
-            }"
+            :style="`height:${
+              phases.length - phaseCounter >= 3
+                ? 377
+                : 126 * (phases.length - phaseCounter)
+            }px`"
           >
             <nft-mint-phase-box
               v-for="(phase, index) in phases"
