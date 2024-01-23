@@ -111,7 +111,7 @@ export const getPortfolioSummaryOfUser = async ({
     listedCount: data.listedCount,
   };
 };
-
+ 
 
 export const getTokenOfNftTransfer = async ({
   page,

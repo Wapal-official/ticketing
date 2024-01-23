@@ -14,9 +14,6 @@
             <p class="d-flex align-center tw-mb-0">
               <span>
                 <!-- <box-icon
-                  name="collection"
-                  size="20"
-                  color="white"
                   class="icon-box15"
                 ></box-icon> -->
               </span>

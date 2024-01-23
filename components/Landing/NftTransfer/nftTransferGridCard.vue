@@ -1,8 +1,7 @@
 <template>
   <div>
-    <v-row class="justify-center md:justify-start" no-gutters>
+    <v-row justify="center" no-gutters>
       <v-col
-        dense
         v-for="(item, index) in items"
         :key="index"
         class="grid-col-styling tw-p-0"
@@ -29,7 +28,7 @@
                 <p
                   v-if="item.name"
                   class="black--text"
-                  style="font-size: 110px"
+                  style="font-size: 100px"
                 >
                   <b>{{ item.name.substring(0, 1) }}</b>
                 </p>

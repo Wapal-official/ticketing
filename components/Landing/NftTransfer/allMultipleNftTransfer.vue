@@ -38,11 +38,11 @@
       </div>
     </div>
     <div
-      class="destination-bottom tw-px-5 tw-pt-4"
+      class="destination-bottom px-5 pt-4"
       style="border-top: 1px solid #25262b"
     >
-      <v-row align="center" justify="space-between" no-gutters>
-        <v-col cols="12" sm="8" class="tw-pr-0 md:tw-pr-5">
+      <v-row align="center" justify="center" no-gutters>
+        <v-col cols="12" lg="8" md="8" sm="8">
           <div>
             <label
               class="text-uppercase text-start font-bold"
@@ -56,7 +56,7 @@
               type="string"
               dense
               outlined
-              class="custom-text-field tw-mt-2"
+              class="custom-text-field mt-2"
             >
             </v-text-field>
           </div>
@@ -66,7 +66,7 @@
           lg="4"
           md="4"
           sm="4"
-          class="tw-flex align-start tw-justify-center md:tw-justify-end"
+          class="d-flex align-start justify-end"
         >
           <button-primary
             title="Send"
@@ -85,6 +85,7 @@
 <script>
 import nftTransferSkeleton from "~/components/Landing/NftTransfer/loader/nftTransferGridSkeleton.vue";
 import nftTransferCard from "~/components/Landing/NftTransfer/nftTransferGridCard.vue";
+import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 import {
   getTokenOfNftTransfer,
   nftTransfer,
@@ -219,7 +220,6 @@ export default {
           });
       }
     },
-
     async extractFloorPrice(collectionId) {
       try {
         const floorPrice = await getFloorPrice(collectionId);

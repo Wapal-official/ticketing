@@ -565,17 +565,6 @@ export default {
 </script>
 
 <style lang="css">
-.transfer-text {
-  color: #8759ff;
-  cursor: pointer;
-  fill: var(--primary-primary, #8759ff);
-  filter: drop-shadow(2px 2px 4px rgba(198, 189, 255, 0.2))
-    drop-shadow(-2px -2px 4px rgba(198, 189, 255, 0.2));
-}
-
-.theme--dark.v-tabs > .v-tabs-bar {
-  background-color: #101113 !important;
-}
 .icon-hex {
   width: 32px;
   height: 32px;

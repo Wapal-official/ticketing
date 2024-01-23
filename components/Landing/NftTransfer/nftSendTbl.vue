@@ -32,7 +32,7 @@
         </th>
       </thead>
       <tbody v-for="(item, index2) in items" :key="index2">
-        <tr class="main-tr tw-mx-3">
+        <tr class="main-tr mx-3">
           <td
             v-for="(column, columnIndex) in headers"
             :key="columnIndex"
@@ -158,11 +158,8 @@
                   class="tw-mr-1"
                   src="~/assets/img/aptos-grey.svg"
                   alt="aptos icon"
-                  style="vertical-align: text-bottom"
                 />
-                <span v-else>-</span>
                 <v-icon
-                  v-if="listView == true || GridView == true"
                   style="
                     font-size: 14px;
                     margin-left: 3px;
@@ -302,6 +299,7 @@
 </template>
 
 <script>
+import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 import nftTransferCard from "~/components/Landing/NftTransfer/nftTransferGridCard.vue";
 import nftTransferSkeleton from "~/components/Landing/NftTransfer/loader/nftTransferGridSkeleton.vue";
 
