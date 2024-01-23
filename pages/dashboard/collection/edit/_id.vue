@@ -721,11 +721,7 @@ export default {
   methods: {
     async fetchCollection() {
       this.loading = true;
-      const res = await getCollection(this.$route.params.id);
-
-      this.collection = res.collection[0];
-
-      console.log(this.collection);
+      this.collection = await getCollection(this.$route.params.id);
 
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,

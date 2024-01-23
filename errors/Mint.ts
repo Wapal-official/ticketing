@@ -8,7 +8,7 @@ export const handleMintError = ({
   let errorMessage: string = "Could Not Mint Nft";
 
   console.log(error);
-
+  
   switch (error.message) {
     case `Move abort in ${candyMachine}::candymachine: 0x9`:
       errorMessage = "Mint Limit Reached. Please Decrease Number of Nft";

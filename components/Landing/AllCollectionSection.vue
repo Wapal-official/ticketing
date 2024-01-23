@@ -48,8 +48,7 @@ import {
   getApprovedDrafts,
   getCollections,
 } from "@/services/CollectionService";
-
-import sanctuary from "@/assets/img/199.png";
+import { getCachedUrlOfImage } from "@/utils/imageCache";
 export default {
   data() {
     return { collections: [], loading: true };
@@ -67,7 +66,8 @@ export default {
         name: "Aptos Monkeys Sanctuary",
         description:
           "Sanctuaries are homes to the fighting Monkeys who stood their ground to protect their lands and fortunes.",
-        image: sanctuary,
+        image:
+          "https://cache.wapal.io/api/cache?l=https://arweave.net/z92BGaOGx-DYVTP_O8W31rAsu3PUO7uAQjzgXIoB2vc/199.png", // Assuming sanctuary is an already cached image
         twitter: "https://twitter.com/AptosMonkeys",
         website: "https://www.aptosmonkeys.club/",
         discord: "https://discord.com/invite/sFfe75BHQ3",
@@ -97,12 +97,12 @@ export default {
         const drafts: any[] = [];
 
         draftRes.map((draft: any) => {
-          drafts.push({
+          const draftCollection = {
             baseURL: draft.data.baseURL,
             candy_id: draft.data.candy_id,
             description: draft.data.description,
             discord: draft.data.discord,
-            image: draft.data.image,
+            image: getCachedUrlOfImage(draft.data.image),
             instagram: draft.data.instagram,
             isApproved: draft.data.isApproved,
             name: draft.data.name,
@@ -117,7 +117,13 @@ export default {
             whitelist_price: draft.data.whitelist_price,
             redirectTo: "landingDraft",
             _id: draft._id,
-          });
+          };
+          drafts.push(draftCollection);
+        });
+
+        // Apply caching function to all draft images
+        drafts.forEach((draft) => {
+          draft.image = getCachedUrlOfImage(draft.image);
         });
 
         this.collections.push(...drafts);

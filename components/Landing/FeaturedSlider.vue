@@ -49,7 +49,6 @@ import Swiper from "swiper/swiper-bundle.min";
 import "swiper/swiper-bundle.min.css";
 import { getFeaturedCollection } from "@/services/CollectionService";
 import { getFeaturedAuctions } from "@/services/AuctionService";
-import sanctuary from "@/assets/img/199.png";
 export default {
   data() {
     return {
@@ -68,7 +67,8 @@ export default {
       name: "Aptos Monkeys Sanctuary",
       description:
         "Sanctuaries are homes to the fighting Monkeys who stood their ground to protect their lands and fortunes.",
-      image: sanctuary,
+      image:
+        "https://cache.wapal.io/api/cache?l=https://arweave.net/z92BGaOGx-DYVTP_O8W31rAsu3PUO7uAQjzgXIoB2vc/199.png",
       twitter: "https://twitter.com/AptosMonkeys",
       website: "https://www.aptosmonkeys.club/",
       discord: "https://discord.com/invite/sFfe75BHQ3",

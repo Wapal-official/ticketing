@@ -6,7 +6,6 @@ const NETWORK = process.env.NETWORK;
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const APTOS_API_KEY = process.env.APTOS_API_KEY;
-const PID = process.env.PID;
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
 const MARKETPLACE_API_URL = process.env.MARKETPLACE_API_URL;
 const PROOF_API_URL = process.env.PROOF_API_URL;
@@ -23,6 +22,9 @@ const GUI_CANDY_MACHINE =
   "0xf5be2c27aba7c90943ba5ca5d15571b756a564337e8ae78f6a64264123a02ebb";
 const CELESTIAL_CANDY_MACHINE =
   "0xe5968b1c8966a2d2eaf10db480fc65d69a0f16935ec9810bc52ec14d893a62c";
+
+const PID =
+  "0xe743f11e73711a90bc76d5ed3df5a6d979a06b2fce194d8b0ca8faf697f4f5f4";
 
 let MARKETPLACE_URL = "https://wapal.io";
 
