@@ -1,11 +1,10 @@
 <template>
   <div>
-    <v-row class="justify-center md:justify-start" no-gutters>
+    <v-row justify="center" no-gutters>
       <v-col
-        dense
         v-for="(item, index) in items"
         :key="index"
-        class="grid-col-styling tw-pa-0"
+        class="grid-col-styling tw-p-0"
         align="center"
       >
         <v-card
@@ -13,7 +12,7 @@
           @mouseenter="(hovered = item), checkBorder(item)"
           @mouseleave="(hovered = ''), checkBorder(item)"
           @click="toggleSelectionCard(item)"
-          class="bulk-card my-2"
+          class="bulk-card tw-my-2"
         >
           <v-img
             v-if="item.image == '' || item.image == null"
@@ -29,12 +28,12 @@
                 <p
                   v-if="item.name"
                   class="black--text"
-                  style="font-size: 110px"
+                  style="font-size: 100px"
                 >
                   <b>{{ item.name.substring(0, 1) }}</b>
                 </p>
               </v-row>
-              <v-row class="fill-height ma-0" align="center" justify="center">
+              <v-row class="fill-height tw-m-0" align="center" justify="center">
                 <v-progress-circular
                   indeterminate
                   color="grey lighten-5"
@@ -64,6 +63,7 @@
               />
             </div>
           </v-img>
+
           <v-img
             v-else
             :src="item.image"
@@ -71,9 +71,11 @@
             height="120"
             width="154"
             class="bulk-card-image"
+            :ref="`image${index}`"
+            @error="getUncachedImageUrl(index)"
           >
             <template v-slot:placeholder>
-              <v-row class="fill-height ma-0" align="center" justify="center">
+              <v-row class="fill-height tw-m-0" align="center" justify="center">
                 <v-progress-circular
                   indeterminate
                   color="grey lighten-5"
@@ -104,31 +106,25 @@
               />
             </div>
           </v-img>
-          <div
-            class="d-flex align-center tw-py-3 tw-px-2"
-            style="
-              display: flex;
-              justify-content: space-between !important;
-              width: 100%;
-            "
-          >
-            <div><p class="transfer-value tw:mr-12">Floor</p></div>
-            <!-- <v-spacer></v-spacer> -->
-            <div>
-              <p
-                class="transfer-value-price nft-table-font d-flex align-center"
-              >
-                {{ decimal_fixed(item.listedPrice) }}
-                <img
-                  v-if="item.listedPrice != null"
-                  :src="require('@/assets/img/aptos-grey.svg')"
-                  alt="icon"
-                  height="14"
-                  width="14"
-                  style="margin-left: 2px !important"
-                />
-              </p>
-            </div>
+          <div class="d-flex align-center tw-py-3 tw-px-2">
+            <p class="transfer-value tw-mb-0 tw-mr-12">Floor</p>
+            <v-spacer></v-spacer>
+            <p
+              v-if="item.floorPrice != null"
+              class="transfer-value-price nft-table-font tw-mb-0 d-flex align-center"
+            >
+              {{ decimal_fixed(item.floorPrice) }}
+              <img
+                class="tw-ml-0"
+                v-if="item.floorPrice != null"
+                :src="require('@/assets/img/aptos-grey.svg')"
+                alt="icon"
+                height="14"
+                width="14"
+                style="margin-left: 2px"
+              />
+            </p>
+            <p v-else class="tw-ml-10">-</p>
           </div>
         </v-card>
       </v-col>
@@ -137,7 +133,12 @@
 </template>
 
 <script>
+import {
+  checkIfImageIsFromCacheServer,
+  extractImageLinkFromCacheServerUrl,
+} from "@/utils/imageCache";
 import inputCheckbox from "~/components/Landing/NftTransfer/checkbox.vue";
+
 export default {
   components: {
     inputCheckbox,
@@ -156,30 +157,9 @@ export default {
       offerPrice: null,
     };
   },
-  watch: {
-    selectedData(newVal, oldVal) {
-      if (newVal.length == 0) {
-        this.$store.commit("dialog/setSelectedCheck", []);
-      }
-    },
-    items(newVal) {
-      console.log("newVAl:", newVal);
-    },
-  },
   computed: {
-    selectAll: {
-      get() {
-        return this.$store.state.dialog.selectAll;
-      },
-      set(newVal) {
-        return this.$store.commit("dialog/setSelection", newVal);
-      },
-    },
-    selectedData() {
-      return this.$store.state.dialog.selectedData;
-    },
     selectedCheck() {
-      return this.$store.state.dialog.selectedCheck;
+      return this.$store.state.nftTransfer.selectedCheck;
     },
   },
   methods: {
@@ -190,28 +170,21 @@ export default {
       }
     },
     toggleSelectionCard(item) {
-      console.log("item:", item);
       const selectedCopy = [...this.selectedCheck];
       if (selectedCopy.includes(item)) {
-        this.$store.commit("dialog/setSingleCheck", true);
+        this.$store.commit("nftTransfer/setSingleCheck", true);
         selectedCopy.splice(selectedCopy.indexOf(item), 1);
       } else {
-        this.$store.commit("dialog/setSingleCheck", true);
+        this.$store.commit("nftTransfer/setSingleCheck", true);
         selectedCopy.push(item);
       }
-      this.$store.commit("dialog/setSelectedCheck", selectedCopy);
-      if (this.items.length === this.selectedCheck.length) {
-        this.selectAll = true;
-      } else {
-        this.selectAll = false;
-      }
+      this.$store.commit("nftTransfer/setCheckData", selectedCopy);
       this.$emit("checkboxSelect", this.selectedCheck);
     },
     rarity(item) {
       if (item != null) {
         let rarity = parseFloat(item);
         return Math.round(rarity);
-        // return rarity.toFixed(2)
       } else {
         return "-";
       }
@@ -231,35 +204,6 @@ export default {
         }
       }
     },
-    toggleSelection(item) {
-      const selectedCopy = [...this.selectedCheck];
-      if (selectedCopy.includes(item)) {
-        this.$store.commit("dialog/setSingleCheck", true);
-        selectedCopy.splice(selectedCopy.indexOf(item), 1);
-      } else {
-        this.$store.commit("dialog/setSingleCheck", false);
-        selectedCopy.push(item);
-      }
-      this.$store.commit("dialog/setSelectedCheck", selectedCopy);
-      if (this.items.length == this.selectedCheck.length) {
-        this.selectAll = true;
-      } else {
-        this.selectAll = false;
-      }
-      this.$emit("checkboxSelect", this.selectedCheck);
-    },
-    handleClick(index) {
-      this.$emit("nameClick", this.items[index]);
-    },
-    toggleAllSelection() {
-      if (this.items.length == this.selectedCheck.length) {
-        this.$store.commit("dialog/setSelectedCheck", []);
-      } else {
-        this.$store.commit("dialog/setSelectedCheck", this.items);
-      }
-      this.checkBorder();
-      this.$emit("checkboxSelectAll", this.selectedCheck);
-    },
     rarityColor(rarity) {
       if (rarity <= 100) {
         return "top1Rarity";
@@ -269,6 +213,25 @@ export default {
         return "top25Rarity";
       } else {
         return "normalRarity";
+      }
+    },
+    async getUncachedImageUrl(index) {
+      const image = this.items[index].image;
+
+      if (this.items) {
+        if (checkIfImageIsFromCacheServer(image)) {
+          const res = await this.$axios.get(image);
+
+          if (res.headers["content-type"].includes("image")) {
+            this.$refs[`image${index}`][0].image.src = image;
+          } else {
+            const link = extractImageLinkFromCacheServerUrl(image);
+
+            this.$refs[`image${index}`][0].image.src = link;
+          }
+        } else {
+          this.$refs[`image${index}`][0].image.src = image;
+        }
       }
     },
   },
@@ -361,7 +324,6 @@ export default {
 }
 
 .transfer-value {
-  margin-bottom: 0 !important;
   color: #909296;
   font-family: "Inter-Regular", sans-serif !important;
   font-size: 12px;
@@ -374,7 +336,6 @@ export default {
 
 .transfer-value-price {
   color: #fff;
-  margin-bottom: 0 !important;
   font-family: "JetBrains-Regular", sans-serif !important;
   font-size: 14px;
   font-style: normal;
