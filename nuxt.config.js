@@ -33,7 +33,7 @@ let discordRedirectURI = "http://staging.wapal.io/discord/token";
 if (API_URL.includes("staging")) {
   discordRedirectURI = "https://staging.wapal.io/discord/token";
   MARKETPLACE_URL = "https://staging-marketplace.wapal.io";
-  PROOF_API_URL = "https://staging-api.wapal.io";
+  PROOF_API_URL = API_URL;
 } else {
   discordRedirectURI = "https://launchpad.wapal.io/discord/token";
   MARKETPLACE_URL = "https://wapal.io";
@@ -120,7 +120,7 @@ export default {
       dark: true,
       themes: {
         dark: {
-          primary: colors.blue.darken2,
+          primary: "#8759FF",
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
