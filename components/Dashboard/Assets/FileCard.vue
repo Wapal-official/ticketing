@@ -140,13 +140,11 @@ export default {
   methods: {
     displayFileDetails() {
       this.linkedAsset.name = this.file.src;
- 
+
       this.linkedAsset.image = this.file.image
-        ? getCachedUrlOfImage(this.file.image)
+        ? this.file.image
         : this.file.metadata
         ? this.file.metadata.image
-          ? getCachedUrlOfImage(this.file.metadata.image)
-          : null
         : null;
 
       this.linkedAsset.metadata = this.file.metadata;
