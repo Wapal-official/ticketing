@@ -107,12 +107,33 @@ export const actions = {
     state,
     dispatch,
     commit,
+    rootState,
   }: {
     state: any;
     dispatch: any;
     commit: any;
+    rootState: any;
   }) {
-    const walletInState = JSON.parse(localStorage.getItem("wallet") ?? "");
+    const walletInState = JSON.parse(
+      localStorage.getItem("wallet") ?? JSON.stringify({ wallet: "" })
+    );
+
+    const userInStorage = JSON.parse(
+      localStorage.getItem("user") ?? JSON.stringify({ user_id: "" })
+    );
+
+    const userInState = rootState.userStore.user;
+
+    if (!userInState.user_id && userInStorage.user_id) {
+      dispatch("userStore/setUser", userInStorage, { root: true });
+    }
+
+    const now = new Date().getTime();
+    const tokenExpiryDate = new Date(userInStorage.expiresIn).getTime();
+
+    if (now > tokenExpiryDate) {
+      dispatch("userStore/disconnectUser", null, { root: true });
+    }
 
     commit("setWallet", walletInState);
 
