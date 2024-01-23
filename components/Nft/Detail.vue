@@ -880,10 +880,13 @@ export default {
       } catch (error) {
         console.log(error);
 
-        if (error.response.status === 400) {
+        if (error.response && error.response.status === 400) {
           this.notWhitelisted = true;
           this.whitelisted = false;
         }
+
+        this.notWhitelisted = true;
+        this.whitelisted = false;
 
         this.numberOfNft = 1;
 

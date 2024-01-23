@@ -8,7 +8,7 @@ const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const APTOS_API_KEY = process.env.APTOS_API_KEY;
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
 const MARKETPLACE_API_URL = process.env.MARKETPLACE_API_URL;
-const PROOF_API_URL = process.env.PROOF_API_URL;
+let PROOF_API_URL = process.env.PROOF_API_URL;
 
 const CANDY_MACHINE_V2 =
   "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac";
@@ -33,6 +33,7 @@ let discordRedirectURI = "http://staging.wapal.io/discord/token";
 if (API_URL.includes("staging")) {
   discordRedirectURI = "https://staging.wapal.io/discord/token";
   MARKETPLACE_URL = "https://staging-marketplace.wapal.io";
+  PROOF_API_URL = "https://staging-api.wapal.io";
 } else {
   discordRedirectURI = "https://launchpad.wapal.io/discord/token";
   MARKETPLACE_URL = "https://wapal.io";
