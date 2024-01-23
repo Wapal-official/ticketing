@@ -124,15 +124,38 @@
       </div>
 
       <div
-        v-if="ForMdScreenSize == false"
-        class="tw-hidden md:tw-flex tw-w-full tw-pr-10 tw-col-span-4"
+        v-if="ForMdScreenSize == true"
+        class="tw-hidden md:tw-flex tw-pr-6 tw-w-full tw-col-span-3"
       >
         <search-bar />
       </div>
-      <div v-else class="tw-hidden md:tw-flex tw-pr-6 tw-w-full tw-col-span-3">
+      <div
+        v-else
+        class="tw-hidden md:tw-flex tw-w-full tw-pr-0 lg:tw-pr-10 tw-col-span-4"
+      >
         <search-bar />
       </div>
       <div
+        v-if="ForMdScreenSize == true"
+        class="tw-w-full tw-hidden tw-col-span-4 lg:tw-flex lg:tw-col-span-6 xl:tw-col-span-4"
+      >
+        <div
+          @click="$store.commit('dialog/setNftTransferDialog', true)"
+          class="tw-mr-3 lg:mr-0 d-flex align-center"
+          style="cursor: pointer; min-width: 46px"
+        >
+          <img src="~/assets/img/transfer.svg" alt="nft transfer" />
+          <p
+            class="transfer-text"
+            style="margin-left: 4px !important; margin-bottom: 0 !important"
+          >
+            Nft
+          </p>
+        </div>
+        <landing-menu />
+      </div>
+      <div
+        v-else
         class="tw-w-full tw-hidden tw-col-span-4 lg:tw-flex lg:tw-col-span-5 xl:tw-col-span-4"
       >
         <div
@@ -157,7 +180,7 @@
         <search-bar @closeSearchBar="closeSearchBar" />
       </div>
       <div
-        class="tw-hidden tw-col-span-4 tw-w-full tw-flex-row tw-items-center tw-justify-end md:tw-flex lg:tw-hidden tw-gap-4"
+        class="tw-hidden tw-col-span-5 tw-w-full tw-flex-row tw-items-center tw-justify-end md:tw-flex lg:tw-hidden tw-gap-4"
       >
         <div
           @click="$store.commit('dialog/setNftTransferDialog', true)"
@@ -182,7 +205,7 @@
       </div>
 
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-3 tw-col-span-8 md:tw-hidden"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-3 tw-col-span-9 md:tw-hidden"
       >
         <div
           class="tw-flex sm:tw-hidden"
