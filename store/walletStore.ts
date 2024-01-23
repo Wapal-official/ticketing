@@ -1,5 +1,3 @@
-import WalletAddress from "@/interfaces/walletAddress";
-import Cookies from "js-cookie";
 import {
   WalletCore,
   WalletName,
@@ -109,11 +107,36 @@ export const actions = {
     state,
     dispatch,
     commit,
+    rootState,
   }: {
     state: any;
     dispatch: any;
     commit: any;
+    rootState: any;
   }) {
+    const walletInState = JSON.parse(
+      localStorage.getItem("wallet") ?? JSON.stringify({ wallet: "" })
+    );
+
+    const userInStorage = JSON.parse(
+      localStorage.getItem("user") ?? JSON.stringify({ user_id: "" })
+    );
+
+    const userInState = rootState.userStore.user;
+
+    if (!userInState.user_id && userInStorage.user_id) {
+      dispatch("userStore/setUser", userInStorage, { root: true });
+    }
+
+    const now = new Date().getTime();
+    const tokenExpiryDate = new Date(userInStorage.expiresIn).getTime();
+
+    if (now > tokenExpiryDate) {
+      dispatch("userStore/disconnectUser", null, { root: true });
+    }
+
+    commit("setWallet", walletInState);
+
     if (!wallet.isConnected() && state.wallet.wallet) {
       dispatch("connectWallet", state.wallet.wallet);
     }
@@ -141,7 +164,7 @@ export const actions = {
           initializedAccountChange: true,
         });
 
-        Cookies.set(
+        localStorage.setItem(
           "wallet",
           JSON.stringify({
             wallet: state.wallet.wallet,
@@ -149,10 +172,7 @@ export const actions = {
             publicKey: Array.isArray(newAccount.publicKey)
               ? newAccount?.publicKey[0]
               : newAccount?.publicKey,
-          }),
-          {
-            expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
-          }
+          })
         );
 
         dispatch("userStore/disconnectUser", null, { root: true });
@@ -182,7 +202,7 @@ export const actions = {
         initializedAccountChange: true,
       });
 
-      Cookies.set(
+      localStorage.setItem(
         "wallet",
         JSON.stringify({
           wallet: wallet.wallet?.name,
@@ -190,10 +210,7 @@ export const actions = {
           publicKey: Array.isArray(wallet.account?.publicKey)
             ? wallet.account?.publicKey[0]
             : wallet.account?.publicKey,
-        }),
-        {
-          expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
-        }
+        })
       );
 
       return true;
@@ -213,14 +230,8 @@ export const actions = {
         ? state.wallet.initializedAccountChange
         : false,
     });
-    Cookies.set(
-      "wallet",
-      JSON.stringify({
-        wallet: "",
-        walletAddress: "",
-        publicKey: "",
-      })
-    );
+
+    localStorage.removeItem("wallet");
   },
   async getProof(
     { commit }: { commit: any },

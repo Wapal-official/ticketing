@@ -41,7 +41,6 @@ import Verification from "@/components/Landing/Verification.vue";
 import tourMixin from "@/mixins/tourMixin.js";
 import { uploadSocketState } from "@/sockets/socket";
 export default {
-  middleware: "signup",
   components: {
     DashboardNavbar,
     DashboardFooter,
@@ -103,10 +102,16 @@ export default {
       return this.$route.fullPath;
     },
   },
-  mounted() {
+  created() {
     // this.startTour({ store: this.$store });
 
     if (process.client) {
+      this.$store.dispatch("walletStore/initializeWallet");
+
+      if (!this.userId) {
+        this.$router.push("/");
+        return;
+      }
       if (this.getVerifiedStatus) {
         if (localStorage.getItem("seen_asset_tour") === null) {
           this.startTour({ store: this.$store });
@@ -114,7 +119,6 @@ export default {
           localStorage.setItem("seen_asset_tour", "true");
         }
       }
-      this.$store.dispatch("walletStore/initializeWallet");
 
       window.addEventListener("dragenter", (e) => e.preventDefault());
       window.addEventListener("dragover", (e) => {
@@ -169,6 +173,9 @@ export default {
     },
     path() {
       this.$refs.container.scrollTo(0, 0);
+      if (!this.userId) {
+        this.$router.push("/");
+      }
     },
   },
 };
