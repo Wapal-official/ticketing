@@ -1,9 +1,8 @@
-
 const checkImageExtension = (filename) => {
-    const extensionRegex = /\.(png|jpe?g)$/i;
-  
-    return extensionRegex.test(filename);
-  };
+  const extensionRegex = /\.(png|jpe?g)$/i;
+
+  return extensionRegex.test(filename);
+};
 
 export const getCachedUrlOfImage = (url) => {
   if (checkImageExtension(url)) {
