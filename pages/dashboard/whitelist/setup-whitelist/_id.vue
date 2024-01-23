@@ -321,9 +321,8 @@ export default {
   },
   async mounted() {
     this.phases = [];
-    const res = await getCollection(this.$route.params.id);
 
-    this.collection = res.collection[0];
+    this.collection = await getCollection(this.$route.params.id);
 
     this.phases = this.collection.phases ? this.collection.phases : [];
   },

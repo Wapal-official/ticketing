@@ -12,13 +12,12 @@
       >
         <video-player-featured :source="collection.video" />
       </div>
-
-      <img
-        :src="collection.image"
-        :alt="collection.name"
-        :onerror="imageNotFound()"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+      <utility-image
         v-else
+        :source="collection.image"
+        :onerror="imageNotFound()"
+        :alt="collection.name"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
       />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
@@ -374,10 +373,11 @@
           <h3 class="tw-text-center">{{ collection.name }} Minted</h3>
         </div>
         <div class="tw-w-full h-full tw-rounded">
-          <img
-            :src="collection.image"
-            class="tw-w-full tw-h-full tw-rounded"
+          <utility-image
+            :source="collection.image"
+            :onerror="imageNotFound()"
             :alt="collection.name"
+            class="tw-w-full tw-h-full tw-rounded"
           />
         </div>
         <button-primary

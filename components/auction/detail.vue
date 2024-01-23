@@ -6,11 +6,11 @@
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
-      <img
-        :src="auction.nft.meta.image"
+      <utility-image
+        :source="auction.nft.meta.image"
         :alt="auction.nft.meta.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
         :onerror="imageNotFound()"
+        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
       />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
@@ -300,6 +300,50 @@
     >
       <connect-wallet-modal @closeModal="showConnectWalletDialog = false" />
     </v-dialog>
+    <v-dialog
+      v-model="showShareModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+      :persistent="true"
+    >
+      <div
+        class="tw-w-full tw-bg-dark-9 tw-text-white tw-px-4 tw-py-4 tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+      >
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+        >
+          <button @click="showShareModal = false">
+            <i class="bx bx-x tw-text-xl"></i>
+          </button>
+        </div>
+        <div class="tw-w-full tw-text-base">
+          <h3 class="tw-text-center">
+            Placed Bid on {{ auction.nft.meta.name }}
+          </h3>
+        </div>
+        <div class="tw-w-full h-full tw-rounded">
+          <img
+            :src="auction.nft.meta.image"
+            class="tw-w-full tw-h-full tw-rounded"
+            :alt="auction.nft.meta.name"
+          />
+        </div>
+        <button-primary
+          :fullWidth="true"
+          title="Share on Twitter"
+          :bordered="true"
+          @click="shareOnTwitterAfterBid"
+        >
+          <template #prepend-icon>
+            <img
+              :src="xLogo"
+              alt="X"
+              width="32px"
+              height="32px"
+              class="tw-pr-4"
+            /> </template
+        ></button-primary>
+      </div>
+    </v-dialog>
   </div>
   <!-- <div v-if="!loadingAuction">
     <div
@@ -572,6 +616,7 @@ export default {
       ownerAddress: "",
       description: "",
       imageNotFound,
+      showShareModal: false,
     };
   },
   watch: {
@@ -740,6 +785,9 @@ export default {
           this.auction.biddings.unshift(...res.data.newBid.biddings);
 
           this.$toast.showMessage({ message: "Bid Placed Successfully" });
+          if (this.auction.tweet) {
+            this.showShareModal = true;
+          }
           this.loading = false;
           this.showPlaceBidButton = false;
           this.current_bid = getCurrentBid(this.auction);
@@ -815,6 +863,9 @@ export default {
             this.auction.biddings.unshift(...res.data.newBid.biddings);
 
             this.$toast.showMessage({ message: "Bid Increased Successfully" });
+            if (this.auction.tweet) {
+              this.showShareModal = true;
+            }
             this.loading = false;
             this.bid = 0;
             this.current_bid = getCurrentBid(this.auction);
@@ -980,6 +1031,20 @@ export default {
       const link = `${baseURL}/auctions/${this.auction.auction_name}`;
 
       const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}&via=wapal_official`;
+
+      window.open(twitterShareLink, "_blank");
+
+      this.showShareBox = false;
+    },
+    shareOnTwitterAfterBid() {
+      const baseURL = process.env.baseURL?.includes("staging")
+        ? "https://staging.wapal.io"
+        : "https://launchpad.wapal.io";
+      const twitterURL = "https://twitter.com";
+      const link = `${baseURL}/auctions/${this.auction.auction_name}`;
+      const text = encodeURIComponent(this.auction.tweet);
+
+      const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}`;
 
       window.open(twitterShareLink, "_blank");
 
