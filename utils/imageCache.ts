@@ -6,7 +6,8 @@ export const getCachedUrlOfImage = (url: any) => {
   }
 
   return url;
-}; 
+};
+
 export const checkIfImageIsFromCacheServer = (url: any) => {
   const cacheServerRegex = /https:\/\/cache\.wapal\.io\/api\/cache/;
 
