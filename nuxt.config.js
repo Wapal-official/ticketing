@@ -46,6 +46,7 @@ if (NETWORK === "mainnet") {
 }
 
 export default {
+  ssr: false,
   // Global page headers: https://go.nuxtjs.dev/config-head
   server: {
     port: process.env.PORT,
