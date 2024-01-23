@@ -38,7 +38,7 @@
       </div>
     </div>
     <div
-      class="destination-bottom px-5 pt-4"
+      class="destination-bottom tw-px-5 tw-pt-4"
       style="border-top: 1px solid #25262b"
     >
       <v-row align="center" justify="center" no-gutters>
@@ -56,7 +56,7 @@
               type="string"
               dense
               outlined
-              class="custom-text-field mt-2"
+              class="custom-text-field tw-mt-2"
             >
             </v-text-field>
           </div>
