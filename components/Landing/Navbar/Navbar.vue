@@ -319,7 +319,9 @@ export default {
 .mobile-menu {
   height: calc(100vh - 95px);
 }
-
+.transfer-text {
+  color: #8759ff;
+}
 ::v-deep .v-list-item {
   padding: 0rem 0.375rem !important;
 }

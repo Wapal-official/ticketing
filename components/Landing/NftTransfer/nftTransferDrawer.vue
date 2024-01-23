@@ -16,6 +16,10 @@
                 <!-- <box-icon
                   class="icon-box15"
                 ></box-icon> -->
+                <img
+                  src="~/assets/img/collection-icon.svg"
+                  alt="colleciton Icon"
+                />
               </span>
               <span class="nav-paragraph2 tw-ml-2">COLLECTIONS</span>
             </p>
