@@ -180,8 +180,6 @@ export default {
     GUI_CANDY_MACHINE: GUI_CANDY_MACHINE,
     CELESTIAL_CANDY_MACHINE: CELESTIAL_CANDY_MACHINE,
     PROOF_API_URL: PROOF_API_URL,
-  },
-  privateRuntimeConfig: {
     DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
   },
   auth: {
@@ -189,13 +187,7 @@ export default {
       discord: {
         scheme: "oauth2",
         clientId: DISCORD_CLIENT_ID,
-        scope: [
-          "identify",
-          "email",
-          "connections",
-          "guilds",
-          "guilds.members.read",
-        ],
+        scope: ["identify", "email", "guilds", "guilds.members.read"],
         endpoints: {
           authorization: "https://discord.com/oauth2/authorize",
           token: "https://discord.com/api/oauth2/token",

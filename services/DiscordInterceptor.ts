@@ -8,7 +8,7 @@ export const discordRequest = axios.create({
 
 discordRequest.interceptors.request.use(function (config) {
   if (process.browser) {
-    const jsonToken = JSON.parse(Cookies.get("discord") || "");
+    const jsonToken = JSON.parse(localStorage.getItem("discord") || "");
     const TOKEN = jsonToken.token;
 
     if (TOKEN) {
