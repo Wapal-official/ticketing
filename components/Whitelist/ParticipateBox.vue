@@ -336,8 +336,10 @@ export default {
     },
     watchCookies() {
       const interval = setInterval(() => {
-        const discord = Cookies.get("discord");
-        if (discord) {
+        const discord = JSON.parse(
+          localStorage.getItem("discord") ?? JSON.stringify({ token: "" })
+        );
+        if (discord.token) {
           this.discordStatus = true;
           clearInterval(interval);
         }
@@ -529,6 +531,25 @@ export default {
       }
       return;
     },
+    getDiscordStatus() {
+      const discord = JSON.parse(
+        localStorage.getItem("discord") ?? JSON.stringify({ token: "" })
+      );
+
+      if (discord.token) {
+        const date = Date.now();
+
+        const expireDate = new Date(discord.expiresIn).getTime();
+
+        if (date > expireDate) {
+          localStorage.removeItem("discord");
+          this.$store.dispatch("discordStore/setDiscordToken", "");
+          return;
+        }
+
+        this.discordStatus = true;
+      }
+    },
   },
   computed: {
     getWalletStatus() {
@@ -573,22 +594,22 @@ export default {
     },
   },
   async mounted() {
-    if (!this.whitelist.twitter) {
-      this.followedTwitter = true;
-    }
+    if (process.client) {
+      if (!this.whitelist.twitter) {
+        this.followedTwitter = true;
+      }
 
-    if (!this.whitelist.discord_server_id) {
-      this.joinedDiscordServer = true;
-    }
+      if (!this.whitelist.discord_server_id) {
+        this.joinedDiscordServer = true;
+      }
 
-    if (this.getDiscordStatus) {
-      this.discordStatus = true;
-    }
+      this.getDiscordStatus();
 
-    await this.checkIfUserHasJoinedDiscordServer(true);
+      await this.checkIfUserHasJoinedDiscordServer(true);
 
-    if (this.joinedDiscordServer) {
-      this.showDiscordOptions = false;
+      if (this.joinedDiscordServer) {
+        this.showDiscordOptions = false;
+      }
     }
   },
 };

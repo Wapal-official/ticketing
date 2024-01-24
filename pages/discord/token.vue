@@ -21,7 +21,9 @@ export default {
     try {
       const discordOptions = $auth.strategies.discord.options;
 
-      const DISCORD_CLIENT_SECRET = $config.DISCORD_CLIENT_SECRET;
+      const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET
+        ? process.env.DISCORD_CLIENT_SECRET
+        : "";
 
       const data = {
         client_id: process.env.DISCORD_CLIENT_ID
