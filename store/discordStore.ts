@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 export const state = () => ({
   discord: {
     token: "",
@@ -14,14 +13,12 @@ export const mutations = {
 export const actions = {
   setDiscordToken({ commit }: { commit: any }, token: string) {
     commit("setDiscordToken", { token: token });
-    Cookies.set(
+    localStorage.setItem(
       "discord",
       JSON.stringify({
         token: token,
-      }),
-      {
-        expires: new Date(new Date().getTime() + 1000 * 3600 * 24 * 7),
-      }
+        expiresIn: new Date(new Date().getTime() + 1000 * 3600 * 24 * 7),
+      })
     );
   },
 };

@@ -8,7 +8,7 @@ const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const APTOS_API_KEY = process.env.APTOS_API_KEY;
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
 const MARKETPLACE_API_URL = process.env.MARKETPLACE_API_URL;
-const PROOF_API_URL = process.env.PROOF_API_URL;
+let PROOF_API_URL = process.env.PROOF_API_URL;
 
 const CANDY_MACHINE_V2 =
   "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac";
@@ -33,6 +33,7 @@ let discordRedirectURI = "http://staging.wapal.io/discord/token";
 if (API_URL.includes("staging")) {
   discordRedirectURI = "https://staging.wapal.io/discord/token";
   MARKETPLACE_URL = "https://staging-marketplace.wapal.io";
+  PROOF_API_URL = API_URL;
 } else {
   discordRedirectURI = "https://launchpad.wapal.io/discord/token";
   MARKETPLACE_URL = "https://wapal.io";
@@ -46,6 +47,7 @@ if (NETWORK === "mainnet") {
 }
 
 export default {
+  ssr: false,
   // Global page headers: https://go.nuxtjs.dev/config-head
   server: {
     port: process.env.PORT,
@@ -118,7 +120,7 @@ export default {
       dark: true,
       themes: {
         dark: {
-          primary: colors.blue.darken2,
+          primary: "#8759FF",
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
@@ -178,8 +180,6 @@ export default {
     GUI_CANDY_MACHINE: GUI_CANDY_MACHINE,
     CELESTIAL_CANDY_MACHINE: CELESTIAL_CANDY_MACHINE,
     PROOF_API_URL: PROOF_API_URL,
-  },
-  privateRuntimeConfig: {
     DISCORD_CLIENT_SECRET: DISCORD_CLIENT_SECRET,
   },
   auth: {
@@ -187,13 +187,7 @@ export default {
       discord: {
         scheme: "oauth2",
         clientId: DISCORD_CLIENT_ID,
-        scope: [
-          "identify",
-          "email",
-          "connections",
-          "guilds",
-          "guilds.members.read",
-        ],
+        scope: ["identify", "email", "guilds", "guilds.members.read"],
         endpoints: {
           authorization: "https://discord.com/oauth2/authorize",
           token: "https://discord.com/api/oauth2/token",
