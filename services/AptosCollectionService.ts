@@ -9,8 +9,8 @@ import { handleMintError } from "~/errors/Mint";
 
 let walletName: any = "";
 if (process.client) {
-  if (Cookies.get("wallet")) {
-    const wallet = JSON.parse(Cookies.get("wallet")!);
+  if (localStorage.getItem("wallet")) {
+    const wallet = JSON.parse(localStorage.getItem("wallet")!);
     walletName = wallet.wallet;
   }
 }
