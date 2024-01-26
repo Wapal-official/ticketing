@@ -437,15 +437,17 @@ export default {
           //   "nftTransfer/setUserCollectionDataDisplay",
           //   currentNfts
           // );
+          this.$store.dispatch(
+            "nftTransfer/setCollectionsNftTransfer",
+            currentNfts
+          );
+
           currentNfts.forEach((item, index) => {
             if (this.items[colIndex]) {
               item.floorPrice = this.items[colIndex].floorPrice;
             }
           });
-          this.$store.dispatch(
-            "nftTransfer/setCollectionsNftTransfer",
-            currentNfts
-          );
+
           this.fetching = false;
 
           // if (currentNfts.length == 0) {
