@@ -106,12 +106,17 @@
               />
             </div>
           </v-img>
-          <div class="d-flex align-center tw-py-3 tw-px-2">
-            <p class="transfer-value tw-mb-0 tw-mr-12">Floor</p>
-            <v-spacer></v-spacer>
+          <div
+            class="d-flex tw-justify-between align-center tw-py-3 tw-px-2"
+            style="width: 100%"
+          >
+            <p class="transfer-value" style="margin-bottom: 0 !important">
+              Floor
+            </p>
             <p
               v-if="item.floorPrice != null"
-              class="transfer-value-price nft-table-font tw-mb-0 d-flex align-center"
+              class="transfer-value-price nft-table-font d-flex align-center"
+              style="margin-bottom: 0 !important"
             >
               {{ decimal_fixed(item.floorPrice) }}
               <img

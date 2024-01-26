@@ -159,7 +159,9 @@
                   src="~/assets/img/aptos-grey.svg"
                   alt="aptos icon"
                 />
+                <span v-else>-</span>
                 <v-icon
+                  v-if="listView == true || GridView == true"
                   style="
                     font-size: 14px;
                     margin-left: 3px;
@@ -186,8 +188,8 @@
             <div
               class="align-center custom-scrollbar justify-center"
               style="
-                min-height: 46vh;
-                max-height: 46vh;
+                min-height: 42vh;
+                max-height: 44vh;
                 overflow: auto;
                 justify-content: center;
                 align-items: center;
@@ -203,18 +205,19 @@
               <div class="align-center justify-center">
                 <v-row justify="center">
                   <v-col cols="12" align="center">
-                    <div
-                      v-if="
-                        collectionsNfts.length == 0 && isCollectionNfts == true
-                      "
-                      class="mt-4"
-                    >
+                    <div class="tw-mt-4" v-if="!allLoaded">
                       <nft-transfer-skeleton
-                        :cols="8"
+                        :cols="collectionsNfts.length == 0 ? 8 : 4"
                         class="tw-my-2 sm:tw-my-3 md:tw-my-4"
+                        v-intersect.quiet="{
+                          handler: onIntersect,
+                          options: {
+                            threshold: [],
+                          },
+                        }"
                       />
                     </div>
-                    <span
+                    <!-- <span
                       v-else
                       class="caption text-capitalize font14-semi-bold text--disabled my-10"
                     >
@@ -235,7 +238,7 @@
                       <span v-if="collectionsNfts.length > 0"
                         >No more nfts</span
                       >
-                    </span>
+                    </span> -->
                   </v-col>
                 </v-row>
               </div>
@@ -255,7 +258,7 @@
                 >
                   <div>
                     <label
-                      class="text-uppercase text-start font-bold"
+                      class="text-uppercase label-text text-start font-bold"
                       for="amountInput"
                       style="color: #c1c2c5"
                       >Destination Address</label
@@ -302,12 +305,10 @@
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 import nftTransferCard from "~/components/Landing/NftTransfer/nftTransferGridCard.vue";
 import nftTransferSkeleton from "~/components/Landing/NftTransfer/loader/nftTransferGridSkeleton.vue";
-
 import {
   checkIfImageIsFromCacheServer,
   extractImageLinkFromCacheServerUrl,
 } from "@/utils/imageCache";
-
 import { getFloorPrice } from "@/services/nftTransferService";
 import {
   getTokenOfNftTransfer,
@@ -322,7 +323,7 @@ export default {
   data() {
     return {
       allNftsPage: 0,
-      allNftsLimit: 1500,
+      allNftsLimit: 48,
       wallet_address: "",
       expand: false,
       selectedExpand: [],
@@ -330,6 +331,9 @@ export default {
       isCollectionNfts: true,
       userNft: [],
       allLoaded: false,
+      collectionPage: 1,
+      fetching: false,
+      debounce: null,
     };
   },
   props: {
@@ -362,15 +366,19 @@ export default {
     items(newVal) {
       if (newVal.length > 0) {
         const selectedIndex = 0;
-        this.currentUserNfts(newVal[0].collectionId, selectedIndex);
+        // this.currentUserNfts(newVal[0].collectionId, selectedIndex);
         this.selectedExpand.push(newVal[0].collectionId);
       }
     },
     selectedData(newVal, oldVal) {
       if (newVal != oldVal) {
         this.wallet_address = "";
+        this.allNftsPage = 0;
+        this.allLoaded = false;
         this.$store.commit("nftTransfer/setCheckData", []);
-        this.$store.dispatch("nftTransfer/setCollectionsNftTransfer", []);
+        // this.$store.dispatch("nftTransfer/setUserCollectionDataDisplay", []);
+        this.$store.commit("nftTransfer/setCollectionsNftTransfer", []);
+        this.currentUserNfts(newVal[0].collectionId, 0);
       }
     },
   },
@@ -404,42 +412,58 @@ export default {
   },
   methods: {
     async currentUserNfts(collectionId, colIndex) {
-      try {
-        this.isCollectionNfts = true;
-        this.$store.dispatch("nftTransfer/setCollectionsNftTransfer", []);
-        this.userNft = [];
-        // this.collectionsNfts = [];
-        // this.allNftsPage++
-        const currentNfts = await getTokenOfNftTransfer({
-          // page: this.allNftsPage,
-          // limit: this.allNftsLimit,
-          page: 1,
-          limit: 500,
-          walletAddress: this.walletAddress,
-          collectionId: collectionId,
-          type: "non_listed",
-        });
+      if (!collectionId) {
+        return;
+      }
+      if (!this.fetching) {
+        this.fetching = true;
+        try {
+          this.isCollectionNfts = true;
+          this.$store.dispatch("nftTransfer/setCollectionsNftTransfer", []);
+          this.userNft = [];
+          // this.collectionsNfts = [];
+          this.allNftsPage++;
 
-        currentNfts.forEach((item, index) => {
-          item.floorPrice = this.items[colIndex].floorPrice;
-        });
+          const currentNfts = await getTokenOfNftTransfer({
+            // page: this.allNftsPage,
+            // limit: this.allNftsLimit,
+            page: this.allNftsPage,
+            limit: this.allNftsLimit,
+            walletAddress: this.walletAddress,
+            collectionId: collectionId,
+            type: "non_listed",
+          });
+          // this.$store.commit(
+          //   "nftTransfer/setUserCollectionDataDisplay",
+          //   currentNfts
+          // );
+          currentNfts.forEach((item, index) => {
+            if (this.items[colIndex]) {
+              item.floorPrice = this.items[colIndex].floorPrice;
+            }
+          });
+          this.$store.dispatch(
+            "nftTransfer/setCollectionsNftTransfer",
+            currentNfts
+          );
+          this.fetching = false;
 
-        this.userNft.push(...currentNfts);
-        this.$store.dispatch(
-          "nftTransfer/setCollectionsNftTransfer",
-          this.userNft
-        );
+          // if (currentNfts.length == 0) {
+          //   this.allLoaded = true;
+          // }
 
-        if (this.collectionsNfts.length == 0) {
-          this.isCollectionNfts = false;
+          if (currentNfts.length < this.allNftsLimit) {
+            this.allLoaded = true;
+          }
+        } catch (err) {
+          this.fetching = false;
+          console.log("error:", err);
         }
-
-        if (currentNfts.length < this.limit) {
-          this.allLoaded = true;
-        }
-      } catch (err) {
-        console.log("error:", err);
-        this.allLoaded = true;
+      } else {
+        clearTimeout(this.debounce);
+        this.debounce = setTimeout(() => {
+          this.currentUserNfts(collectionId, 0);
+        }, 50);
       }
     },
     async extractFloorPrice(collectionId) {
@@ -451,9 +475,7 @@ export default {
         return 0;
       }
     },
-    checkboxSelect(e) {
-      console.log("checkBoxxxxxxxxxx:", this.selectedCheck);
-    },
+    checkboxSelect(e) {},
     sendDisabled() {
       if (this.wallet_address != "" && this.selectedCheck.length > 0) {
         return false;
@@ -469,13 +491,23 @@ export default {
       // this.$store.commit("nftTransfer/setCheckData", []);
       const destinationAddress = this.wallet_address;
       if (!destinationAddress) {
-        console.error("Please enter a destination address.");
-        return;
+        this.$toast.showMessage({
+          error: true,
+          message: `Please, Enter the wallet`,
+        });
       }
 
       const nftTransferRes = await nftTransfer(this.selectedCheck, [
         this.wallet_address,
       ]);
+      this.$toast.showMessage({
+        message: `Nft Transferred to ${this.wallet_address.slice(
+          0,
+          4
+        )}.....${this.wallet_address.slice(-4)}`,
+      });
+      this.$store.commit("nftTransfer/removeNftTransfer", this.selectedCheck);
+      this.$store.commit("nftTransfer/setCheckData", []);
       //   this.$toast.showMessage({
       //     message: `Nft Transfred to ${this.wallet_address}.`,
       //   });
@@ -501,7 +533,7 @@ export default {
         this.selectedExpand.splice(indexToRemove, 1);
       } else {
         this.selectedExpand.push(item.collectionId);
-        this.currentUserNfts(item.collectionId, colIndex);
+        // this.currentUserNfts(item.collectionId, colIndex);
       }
     },
     decimal_fixed(value) {
@@ -568,11 +600,22 @@ export default {
         }
       }
     },
+    onIntersect(entries) {
+      if (entries[0].isIntersecting) {
+        this.currentUserNfts(this.items[0].collectionId, 0);
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
+.label-text {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
 .main-container {
   overflow-x: auto;
   background: #101113;

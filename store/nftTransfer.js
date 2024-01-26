@@ -15,13 +15,43 @@ export const state = () => ({
     collectionId: [],
     floorPrice: []
   },
+  userCollection: [], 
 });
 
-export const mutations = {
-  setFloorPrice(state, payload) {
-    state.floorPrices, 
-    payload.collectionId,
-    payload.floorPrice;
+export const mutations = { 
+  setCollectionNftCount(state, payload) {
+    state.selectedData[0].count = payload
+  }, 
+  setUserCollection(state, payload) {
+    state.userCollection = payload
+  }, 
+  setFloorPrice(state, payload) { 
+    state.floorPrices[payload.collectionId] = payload.floorPrice;
+  },
+  setFloorPriceOfToken(state, payload) {
+    payload.token.floorPrice = payload.floorPrice;
+  },
+  addNftTransfer(state, nfts) {
+    state.allTransferableNfts.push(...nfts); 
+  },
+  addCollectionNftTransfer(state, payload) {
+    state.collectionsNfts.push(...payload)
+  },
+  removeNftTransfer(state, nfts) {
+    nfts.forEach((nft) => { 
+       state.allTransferableNfts = state.allTransferableNfts.filter((payloadNft) => {
+        return payloadNft.tokenDataId !== nft.tokenDataId
+      })
+
+      state.collectionsNfts = state.collectionsNfts.filter((payloadNft) => {
+        return payloadNft.tokenDataId !== nft.tokenDataId
+      }) 
+      if(state.selectedData[0] && state.selectedData[0].collectionId == nft.collectionId) {
+        state.selectedData[0].count--
+        state.selectedData[0].valuePrice = 
+        parseFloat(state.selectedData[0].floorPrice) * parseFloat(state.selectedData[0].count)
+      }
+    });
   },
   setNftTransfer(state, paylod) {
     state.allTransferableNfts = paylod;
@@ -29,6 +59,14 @@ export const mutations = {
   setCollectionsNftTransfer(state, paylod) {
     state.collectionsNfts = paylod;
   }, 
+  removeCollectionsNftTransfer(state, paylod) {
+    paylod.forEach((paylod) => {
+      const index = state.collectionsNfts.indexOf(paylod)
+      if(index >= 0) {
+        state.collectionsNfts.splice(index, 1);
+      }
+    }); 
+  },
   setNftTransferTabs(state, paylod) {
     state.tabs = paylod;
   },
@@ -100,12 +138,14 @@ export const actions = {
   },
 
   setNftTransfer(context, payload) {
-    context.commit('setNftTransfer', payload);
+    context.commit('addNftTransfer', payload);
     context.dispatch('getTokenDetailsOfTokens', payload); 
   },
 
   setCollectionsNftTransfer(context, payload) {
-    context.commit('setCollectionsNftTransfer', payload);
+    context.commit('addCollectionNftTransfer', payload);
     context.dispatch('getTokenDetailsOfTokens', payload); 
-  }
+  },
+  
 };
+

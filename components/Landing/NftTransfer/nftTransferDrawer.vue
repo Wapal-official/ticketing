@@ -8,8 +8,8 @@
       :height="drawerHeight()"
       :key="nftTransferDrawer"
     >
-      <div class="tw-py-4 tw-px-3">
-        <v-row class="sticky">
+      <div class="tw-py-4 tw-px-3 custom-scrollbar">
+        <v-row class="sticky" style="border-right: 2px solid #383a3f">
           <v-col>
             <p class="d-flex align-center tw-mb-0">
               <span>
@@ -25,9 +25,9 @@
             </p>
           </v-col>
         </v-row>
-        <v-list v-if="items.length > 0" class="tw-mt-n" dense>
+        <v-list v-if="items.length > 0" dense>
           <v-list-item v-for="(item, i) in items" :key="i">
-            <v-list-item-icon>
+            <v-list-item-icon class="tw-mr-1">
               <input-checkbox
                 v-if="selectedData.includes(item)"
                 style="margin-right: 6px; margin-left: -6px"
@@ -85,19 +85,19 @@
 
         <div v-else>
           <v-row v-for="(item, i) in 13" :key="i" no-gutters>
-            <div class="d-flex align-center tw-my-1">
-              <!-- <CustomLoaderSkeleton
+            <div class="d-flex align-center tw-mt-3">
+              <loader-skeleton
                 dynamicClass="rounded"
                 class="tw-pl-2 tw-pr-2"
                 :height="17"
                 :width="17"
               />
-              <CustomLoaderSkeleton
+              <loader-skeleton
                 class="tw-pr-2 tw-pl-2"
                 :height="25"
                 :width="25"
-              /> -->
-              <!-- <CustomLoaderSkeleton :height="15" :width="115" /> -->
+              />
+              <loader-skeleton :height="15" :width="115" />
             </div>
           </v-row>
         </div>
@@ -108,10 +108,12 @@
 
 <script>
 import inputCheckbox from "~/components/Landing/NftTransfer/checkbox.vue";
+import loaderSkeleton from "~/components/Landing/NftTransfer/loader/skeleton.vue";
 
 export default {
   components: {
     inputCheckbox,
+    loaderSkeleton,
   },
   props: {
     items: {
