@@ -14,7 +14,7 @@
       <div>
         <v-row justify="center">
           <v-col cols="12" align="center">
-            <div v-if="userNfts.length == 0" class="tw-mt-4">
+            <div class="tw-mt-4" v-if="!allLoaded">
               <nft-transfer-skeleton
                 v-intersect.quiet="{
                   handler: onIntersect,
@@ -22,16 +22,18 @@
                     threshold: [],
                   },
                 }"
-                :cols="10"
+                :cols="userNfts.length == 0 ? 10 : 5"
                 class="my-2 my-sm-3"
               />
             </div>
             <span
-              v-else
               class="caption text-capitalize font14-semi-bold text--disabled my-10"
             >
-              <span v-if="userNfts.length == 0">No nfts</span>
-              <span v-if="userNfts.length > 0">No more nfts</span>
+              <span v-if="!allLoaded"> loading </span>
+              <span v-else-if="userNfts.length > 0">no more nfts</span>
+              <span v-else-if="userNfts.length > 0 && allLoaded == true"
+                >No more nfts</span
+              >
             </span>
           </v-col>
         </v-row>
@@ -45,7 +47,7 @@
         <v-col cols="12" lg="8" md="8" sm="8">
           <div>
             <label
-              class="text-uppercase text-start font-bold"
+              class="text-uppercase text-start font-bold label-text"
               for="amountInput"
               style="color: #c1c2c5"
               >Destination Address</label
@@ -66,7 +68,7 @@
           lg="4"
           md="4"
           sm="4"
-          class="d-flex align-start justify-end"
+          class="d-flex align-start justify-center sm:justify-end"
         >
           <button-primary
             title="Send"
@@ -89,6 +91,8 @@ import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 import {
   getTokenOfNftTransfer,
   nftTransfer,
+  getDetailCollection,
+  getCollectionById,
 } from "~/services/nftTransferService";
 import { getFloorPrice } from "@/services/nftTransferService";
 
@@ -114,11 +118,11 @@ export default {
     };
   },
   watch: {
-    // walletAddress() {
-    //   if (this.walletAddress) {
-    //     this.currentUserCollection();
-    //   }
-    // },
+    walletAddress() {
+      if (this.walletAddress) {
+        this.currentUserCollection();
+      }
+    },
   },
   async mounted() {
     await this.currentUserNfts();
@@ -135,35 +139,38 @@ export default {
     },
   },
   methods: {
-    checkboxSelect(e) {
-      console.log("selectedCheck:", this.selectedCheck);
-    },
+    checkboxSelect(e) {},
     sendDisabled() {
-      // if (this.wallet_address != "" && this.selectedCheck.length > 0) {
-      //   return false;
-      // } else {
-      //   return true;
-      // }
+      if (this.wallet_address != "" && this.selectedCheck.length > 0) {
+        return false;
+      } else {
+        return true;
+      }
     },
 
     async sendNfts() {
       const destinationAddress = this.wallet_address;
       if (!destinationAddress) {
-        console.error("Please enter a destination address.");
-        return;
+        this.$toast.showMessage({
+          error: true,
+          message: `Please, Enter the wallet`,
+        });
       }
-
-      console.log("select checc valu", this.selectedCheck);
       const nftTransferRes = await nftTransfer(this.selectedCheck, [
         this.wallet_address,
       ]);
-      console.log("resajsdasd", nftTransferRes);
       this.$toast.showMessage({
-        message: `Nft Transfred to ${this.wallet_address}.`,
+        message: `Nft Transferred to ${this.wallet_address.slice(
+          0,
+          4
+        )}.....${this.wallet_address.slice(-4)}`,
       });
-      // this.wallet_address = "";
-      // this.$store.commit("nftTransfer/setCheckData", []);
+
+      this.$store.commit("nftTransfer/removeNftTransfer", this.selectedCheck);
+      this.wallet_address = "";
+      this.$store.commit("nftTransfer/setCheckData", []);
     },
+    // In the currentUserNfts method
     async currentUserNfts() {
       if (!this.fetching) {
         this.fetching = true;
@@ -176,19 +183,18 @@ export default {
             type: "non_listed",
           });
 
-          console.log("currentNfts", currentNfts);
-          await this.collectionIDFloor(currentNfts);
+          // Commit a mutation to update userNft state in Vuex store
+          this.$store.dispatch("nftTransfer/setNftTransfer", currentNfts);
 
-          this.userNft.push(...currentNfts);
-          console.log("console unser", this.userNft);
-          this.$store.dispatch("nftTransfer/setNftTransfer", this.userNft);
           this.fetching = false;
           if (currentNfts.length === 0) {
-            this.allloaded = true;
-          }
-          if (currentNfts.length < this.limit) {
             this.allLoaded = true;
           }
+          if (currentNfts.length < this.allNftsLimit) {
+            this.allLoaded = true;
+          }
+
+          await this.collectionIDFloor(currentNfts);
         } catch (err) {
           console.log("error:", err);
           this.allLoaded = true;
@@ -207,7 +213,13 @@ export default {
       ];
 
       for (const collectionId of uniqueCollectionIDs) {
-        const floorPrice = await this.extractFloorPrice(collectionId);
+        const filteredCollectionId =
+          currentNfts.find((item) => item.collectionId === collectionId)
+            .tokenStandard === "v1"
+            ? collectionId.slice(2)
+            : collectionId;
+
+        const floorPrice = await this.extractFloorPrice(filteredCollectionId);
 
         this.$store.commit("nftTransfer/setFloorPrice", {
           collectionId: collectionId,
@@ -216,17 +228,45 @@ export default {
         currentNfts
           .filter((item) => item.collectionId === collectionId)
           .forEach((item) => {
-            item.floorPrice = floorPrice;
+            this.$store.commit("nftTransfer/setFloorPriceOfToken", {
+              token: item,
+              floorPrice,
+            });
           });
       }
     },
     async extractFloorPrice(collectionId) {
       try {
-        const floorPrice = await getFloorPrice(collectionId);
-        return floorPrice;
+        let collectionDetailRes = await getCollectionById(collectionId);
+
+        const getFloor = await getDetailCollection(
+          collectionDetailRes.data.slug
+        );
+
+        return getFloor.floorPrice;
       } catch (error) {
         console.error("Error fetching floor price:", error);
         return 0;
+      }
+    },
+    async currentUserCollection() {
+      try {
+        this.collectionPage++;
+
+        const collections = await getCollectionsOfUser({
+          walletAddress: this.walletAddress,
+          page: this.collectionPage,
+          limit: this.limit,
+        });
+
+        this.userCollectionData.push(...collections);
+        console.Console("collectiondeta", this.userCollectionData);
+        if (collections.length < this.limit) {
+          this.allLoaded = true;
+        }
+      } catch (err) {
+        console.log("error:", err);
+        this.allLoaded = true;
       }
     },
     onIntersect(entries) {
@@ -234,30 +274,16 @@ export default {
         this.currentUserNfts();
       }
     },
-    // async currentUserCollection() {
-    //   try {
-    //     this.collectionPage++;
-
-    //     const collections = await getCollectionsOfUser({
-    //       walletAddress: this.walletAddress,
-    //       page: this.collectionPage,
-    //       limit: this.limit,
-    //     });
-
-    //     this.userCollectionData.push(...collections);
-    //     console.Console("collectiondeta", this.userCollectionData);
-    //     if (collections.length < this.limit) {
-    //       this.allLoaded = true;
-    //     }
-    //   } catch (err) {
-    //     console.log("error:", err);
-    //     this.allLoaded = true;
-    //   }
-    // },
   },
 };
 </script>
 <style class="css">
+.label-text {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
 .destination-bottom {
   background-color: #101113;
 }

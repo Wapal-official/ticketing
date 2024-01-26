@@ -51,25 +51,30 @@
                   <v-tab class="capitalize"> All Nfts </v-tab>
                   <v-tab class="capitalize"> NFTs by Collection </v-tab>
                   <!-- <v-tab class="capitalize"> Airdrop </v-tab> -->
-                  <v-spacer class="hidden-xs-and-down"></v-spacer>
-                  <div v-if="tabs == 0 || tabs == 1" class="d-flex tw-mt-3">
+                  <v-spacer
+                    v-if="$vuetify.breakpoint.smAndUp == true"
+                  ></v-spacer>
+                  <div
+                    v-if="tabs == 0 || tabs == 1"
+                    class="d-flex align-center"
+                  >
                     <input-checkbox
                       v-if="blankBox"
-                      style="margin-right: 6px; margin-left: -4px"
+                      style="margin-right: 6px"
                       icon=""
                       color="lightGrey"
                       @click="checkAllSelection"
                     />
                     <input-checkbox
                       v-else-if="minusBox"
-                      style="margin-right: 6px; margin-left: -6px"
+                      style="margin-right: 6px"
                       icon="mdi-minus-box"
                       color="white"
                       @click="disCheckAllSelection"
                     />
                     <input-checkbox
                       v-else-if="markedBox"
-                      style="margin-right: 6px; margin-left: -6px"
+                      style="margin-right: 6px"
                       icon="mdi-checkbox-marked"
                       color="white"
                       @click="checkAllSelection"
@@ -123,10 +128,10 @@
                                 class="tw-mt-4"
                               >
                                 <!-- loader need to added -->
-                                <CustomLoaderRowSkeleton
+                                <loader-row-skeleton
                                   imageShape="rounded"
-                                  nameClass="mr-10 ml-n3"
-                                  class="mx-3"
+                                  nameClass="tw-mr-10 tw-ml-n3"
+                                  class="tw-mx-3 tw-mt-6 tw-mb-6"
                                   :nameWidth="200"
                                   dynamicClass="tw-mr-2"
                                   :row="1"
@@ -136,7 +141,7 @@
                                   :nameHeight="24"
                                   :imageSize="45"
                                 />
-                                <div class="mx-1">
+                                <div class="tw-mx-1">
                                   <nft-transfer-skeleton :cols="8" />
                                 </div>
                                 <!-- loader need to add -->
@@ -158,100 +163,6 @@
                       </v-row>
                     </div>
                   </v-tab-item>
-                  <!-- <v-tab-item>
-                    <div>
-                      <v-row dense>
-                        <v-col cols="12" lg="3" md="3" sm="3">
-                          <nft-transfer-drawer :items="userCollectionData" />
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          lg="9"
-                          md="9"
-                          sm="9"
-                          style="
-                            min-height: 65vh;
-                            max-height: 75vh;
-                            overflow: auto;
-                          "
-                        >
-                          <div v-if="userCollectionData.length > 0">
-                            <nft-send-tbl
-                              class="tw-px-1"
-                              :headers="headers"
-                              :items="selectedTransferCollection"
-                              :GridView="true"
-                              :collectionsData="userCollectionData"
-                            />
-                          </div>
-                          <v-row class="tw-mx-3" justify="center">
-                            <v-col align="center">
-                              <div
-                                v-if="userCollectionData.length == 0"
-                                class="tw-mt-4" -->
-
-                  <!-- loader needd tooo addddd -->
-
-                  <!-- <CustomLoaderRowSkeleton
-                                  imageShape="rounded"
-                                  nameClass="mr-10 ml-n3"
-                                  class="mx-3"
-                                  :nameWidth="200"
-                                  dynamicClass="tw-mr-2"
-                                  :row="1"
-                                  :cols="3"
-                                  :width="95"
-                                  :height="24"
-                                  :nameHeight="24"
-                                  :imageSize="45"
-                                />
-                                <div>
-                                  <div class="skeleton-border px-5">
-                                    <CustomLoaderRowSkeleton
-                                      :row="6"
-                                      :cols="2"
-                                      :width="260"
-                                      :height="18"
-                                      :name="false"
-                                    />
-                                  </div>
-                                  <div class="skeleton-border px-5 py-3 mt-5">
-                                    <CustomLoaderSkeleton
-                                      :height="30"
-                                      :width="dynWidth()"
-                                    />
-
-                                    <CustomLoaderSkeleton
-                                      class="mt-5"
-                                      :height="15"
-                                      :width="dynWidth()"
-                                    />
-                                    <CustomLoaderSkeleton
-                                      class="mt-5"
-                                      :height="30"
-                                      :width="dynWidth()"
-                                    />
-                                  </div> 
-                              </div> -->
-                  <!-- </div> -->
-                  <!-- loader needd tooo addddd -->
-                  <!-- <div
-                                v-else
-                                class="caption text-capitalize font14-semi-bold text--disabled my-10"
-                              >
-                                <span v-if="userCollectionData.length == 0"
-                                  >No Collections</span
-                                >
-                                <span v-if="userCollectionData.length > 0"
-                                  >No Collections nfts</span
-                                >
-                              </div> -->
-                  <!-- </v-col>
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                    </div>
-                  </v-tab-item> -->
                 </v-tabs-items>
               </div>
             </v-col>
@@ -269,9 +180,10 @@ import nftSendTbl from "~/components/Landing/NftTransfer/nftSendTbl.vue";
 import multipleNftTransfer from "~/components/Landing/NftTransfer/allMultipleNftTransfer.vue";
 import nftTransferDrawer from "~/components/Landing/NftTransfer/nftTransferDrawer.vue";
 import airdropTransferTbl from "~/components/Landing/NftTransfer/airdropTransferTbl.vue";
+import loaderRowSkeleton from "~/components/Landing/NftTransfer/loader/rowSkeleton.vue";
 import {
   getNftTransferCollectionsOfUser,
-  getPortfolioSummaryOfUser,
+  getNftCount,
 } from "~/services/nftTransferService";
 import skeletonLoader from "~/components/Landing/NftTransfer/loader/skeleton.vue";
 
@@ -284,6 +196,7 @@ export default {
     airdropTransferTbl,
     nftTransferSkeleton,
     skeletonLoader,
+    loaderRowSkeleton,
   },
   props: { propCollections: { type: Array, default: () => [] } },
   data() {
@@ -505,6 +418,7 @@ export default {
           limit: this.limit,
         });
 
+        this.userCollectionData.push(...collections);
         const uniqueCollectionIDs = [
           ...new Set(collections.map((item) => item.collectionId)),
         ];
@@ -516,12 +430,10 @@ export default {
         );
 
         collections.forEach((item, index) => {
-          item.count = nftCount[index].totalCount;
+          item.count = nftCount[index].count;
           item.valuePrice = this.valuation(collections, index);
         });
         this.$store.commit("nftTransfer/setNftCount", nftCount);
-
-        this.userCollectionData.push(...collections);
 
         if (collections.length < this.limit) {
           this.allLoaded = true;
@@ -532,7 +444,7 @@ export default {
       }
     },
     async getCollectionsDetails(collectionId) {
-      const data = await getPortfolioSummaryOfUser({
+      const data = await getNftCount({
         wallet_address: this.walletAddress,
         collectionId: collectionId,
       });
@@ -622,7 +534,6 @@ export default {
 .skeleton-border {
   border: 1px solid #25262b;
 }
-
 .transfer-text {
   color: #8759ff;
 }

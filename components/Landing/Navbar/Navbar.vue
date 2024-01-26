@@ -140,7 +140,7 @@
         class="tw-w-full tw-hidden tw-col-span-4 lg:tw-flex lg:tw-col-span-6 xl:tw-col-span-4"
       >
         <div
-          @click="$store.commit('dialog/setNftTransferDialog', true)"
+          @click="nftTransferAction()"
           class="tw-mr-3 lg:mr-0 d-flex align-center"
           style="cursor: pointer; min-width: 46px"
         >
@@ -159,7 +159,7 @@
         class="tw-w-full tw-hidden tw-col-span-4 lg:tw-flex lg:tw-col-span-5 xl:tw-col-span-4"
       >
         <div
-          @click="$store.commit('dialog/setNftTransferDialog', true)"
+          @click="nftTransferAction()"
           class="tw-mr-3 lg:mr-0 d-flex align-center"
           style="cursor: pointer; min-width: 46px"
         >
@@ -183,7 +183,7 @@
         class="tw-hidden tw-col-span-5 tw-w-full tw-flex-row tw-items-center tw-justify-end md:tw-flex lg:tw-hidden tw-gap-4"
       >
         <div
-          @click="$store.commit('dialog/setNftTransferDialog', true)"
+          @click="nftTransferAction()"
           class="tw-mr-2 lg:mr-3 tw-align-center tw-flex"
           style="cursor: pointer"
         >
@@ -215,7 +215,7 @@
           <img src="~/assets/img/star.svg" alt="new feature start" />
         </div>
         <div
-          @click="$store.commit('dialog/setNftTransferDialog', true)"
+          @click="nftTransferAction()"
           class="mr-2 mr-lg-3 d-flex align-center"
           style="cursor: pointer"
         >
@@ -248,6 +248,15 @@
     </div>
     <whats-new />
     <nft-transfer />
+    <v-dialog
+      v-model="showConnectWalletModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <connect-wallet-modal
+        @closeModal="showConnectWalletModal = false"
+        @walletConnected="displayWalletConnectedMessage"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -275,13 +284,33 @@ export default {
       searchBarClass: "tw--translate-y-full",
       logo,
       ForMdScreenSize: false,
+      showConnectWalletModal: false,
     };
+  },
+  computed: {
+    getWalletStatus() {
+      return this.$store.state.walletStore.wallet.walletAddress ? true : false;
+    },
   },
   mounted() {
     this.checkScreenSize();
     window.addEventListener("resize", this.checkScreenSize);
   },
   methods: {
+    async nftTransferAction() {
+      if (!this.getWalletStatus) {
+        this.showConnectWalletModal = true;
+      } else {
+        this.$store.commit("dialog/setNftTransferDialog", true);
+      }
+    },
+    displayWalletConnectedMessage() {
+      this.showConnectWalletModal = false;
+
+      this.$toast.showMessage({
+        message: `${this.$store.state.walletStore.wallet.wallet} Wallet Connected Successfully`,
+      });
+    },
     checkScreenSize() {
       const screenWidth = window.innerWidth;
       this.ForMdScreenSize = screenWidth >= 1020 && screenWidth <= 1370;
