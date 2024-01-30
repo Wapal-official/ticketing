@@ -178,7 +178,7 @@
       <a
         href="https://www.google.com/policies/privacy/partners/"
         target="_blank"
-        class="tw-underline"
+        class="!tw-text-blue-800 tw-underline"
       >
         Google Privacy Policy</a
       >, and opt-out of them by downloading the Google Analytics opt-out browser
@@ -186,7 +186,7 @@
       <a
         href="https://tools.google.com/dlpage/gaoptout"
         target="_blank"
-        class="tw-underline"
+        class="!tw-text-blue-800 tw-underline"
       >
         Google Analytics Opt-out Browser Add-on</a
       >.
@@ -245,7 +245,9 @@
       and no part of our Services are directed to children. If you learn that a
       child has provided us with personal information in violation of this
       Privacy Policy, then you may alert us at
-      <a href="mailto:info@wapal.io"> info@wapal.io</a>.
+      <a href="mailto:info@wapal.io" class="!tw-text-blue-800 tw-underline">
+        info@wapal.io</a
+      >.
     </p>
     <p>
       <strong>(v) Changes to this Privacy Policy</strong> We will post any
@@ -260,9 +262,11 @@
     <p>
       If you have any questions, comments, or concerns about our processing
       activities, please email us at
-      <a href="mailto:info@wapal.io"> info@wapal.io</a>.
+      <a href="mailto:info@wapal.io" class="!tw-text-blue-800 tw-underline">
+        info@wapal.io</a
+      >.
     </p>
-    <p>Last Updated: 01/29/2024</p>
+    <p>Last Updated: 01/30/2024</p>
   </section>
 </template>
 <scripts lang="ts">
