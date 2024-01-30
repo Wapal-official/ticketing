@@ -214,8 +214,16 @@ export default {
 
         this.uploading = false;
         this.uploadedFolder = null;
-      } catch (error) {
-        this.$toast.showMessage({ message: error, error: true });
+      } catch (error: any) {
+        if (error.response && error.response.data && error.response.data.msg) {
+          this.$toast.showMessage({
+            message: error.response.data.msg,
+            error: true,
+          });
+        } else {
+          this.$toast.showMessage({ message: error, error: true });
+        }
+
         this.uploading = false;
       }
     },
