@@ -10,10 +10,11 @@
       explains how we collect, use, and share information from or about Wapal
       users (“Users”) or their devices. Wapal provides services (the “Services”)
       that use and support a permissionless on-chain protocol for creators to
-      Launch non-fungible tokens (NFTs) natively on the Aptos blockchain. By
-      using our Services, you agree to the collection, use, disclosure, and
-      procedures this Privacy Policy describes. Beyond the Privacy Policy, your
-      use of our Services is also subject to our Terms of Service.
+      Launch non-fungible tokens (NFTs) natively and List/Buy/Sell/Bid NFT
+      collection on the Aptos blockchain. By using our Services, you agree to
+      the collection, use, disclosure, and procedures this Privacy Policy
+      describes. Beyond the Privacy Policy, your use of our Services is also
+      subject to our Terms of Service.
     </p>
     <h2 class="tw-pb-4">
       <strong>Information We Collect </strong>
@@ -27,10 +28,11 @@
       <strong>(i) Registration and Profile Information </strong>You may need to
       register an account with us by connecting a third-party supported
       electronic wallet of Aptos Network (e.g., Martian, Petra) to access
-      certain Services like Creator Studio. We may also ask you for information
-      like your email address and social media addresses.
+      certain Services like Launchpad and Marketplace. We may also ask you for
+      information like your email address and social media addresses for and
+      only certain background verifications.
     </p>
-    <p>For KYC Verification, we may also ask you for information like</p>
+    <p>For Verification, we may also ask you for information like</p>
     <ul class="tw-pb-4">
       <li>Personal Information such as Full name, Date of birth, Gender</li>
       <li>Other Information such as Occupation and Email Address</li>
@@ -42,8 +44,9 @@
       <li>Valid ID Document Upload (Citizenship, Passport)</li>
     </ul>
     <p>
-      <strong> (ii) NFT Content</strong> If you launch NFTs using our Creator
-      Studio, we will receive any content you post including NFTs that you mint.
+      <strong> (ii) NFT Content</strong> If you launch NFTs using our Launchpad,
+      buy/sell/bid on any NFT collections we will receive any content you post
+      including NFTs that you mint, buy, sell and bid.
     </p>
     <p>
       <strong>(iii) Notifications</strong> When you sign up for notifications or
@@ -72,9 +75,9 @@
     </h3>
 
     <p>
-      <strong>(i) Blockchain Payment Information</strong> When you make a
-      purchase or sell an NFT, we may receive public blockchain data related to
-      that purchase or sale.
+      <strong>(i) Blockchain Payment Information</strong> When you make a mint,
+      purchase, sell or bid an NFT, we may receive public blockchain data
+      related to that mint, purchase, sale or bid.
     </p>
     <p>
       <strong>(ii) Location Information</strong> When you use our Services, we
@@ -175,7 +178,7 @@
       <a
         href="https://www.google.com/policies/privacy/partners/"
         target="_blank"
-        class="tw-underline"
+        class="!tw-text-blue-800 tw-underline"
       >
         Google Privacy Policy</a
       >, and opt-out of them by downloading the Google Analytics opt-out browser
@@ -183,7 +186,7 @@
       <a
         href="https://tools.google.com/dlpage/gaoptout"
         target="_blank"
-        class="tw-underline"
+        class="!tw-text-blue-800 tw-underline"
       >
         Google Analytics Opt-out Browser Add-on</a
       >.
@@ -242,7 +245,9 @@
       and no part of our Services are directed to children. If you learn that a
       child has provided us with personal information in violation of this
       Privacy Policy, then you may alert us at
-      <a href="mailto:info@wapal.io"> info@wapal.io</a>.
+      <a href="mailto:info@wapal.io" class="!tw-text-blue-800 tw-underline">
+        info@wapal.io</a
+      >.
     </p>
     <p>
       <strong>(v) Changes to this Privacy Policy</strong> We will post any
@@ -257,9 +262,11 @@
     <p>
       If you have any questions, comments, or concerns about our processing
       activities, please email us at
-      <a href="mailto:info@wapal.io"> info@wapal.io</a>.
+      <a href="mailto:info@wapal.io" class="!tw-text-blue-800 tw-underline">
+        info@wapal.io</a
+      >.
     </p>
-    <p>Last Updated: 3/31/2023</p>
+    <p>Last Updated: 01/30/2024</p>
   </section>
 </template>
 <scripts lang="ts">
