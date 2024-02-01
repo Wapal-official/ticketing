@@ -107,6 +107,10 @@ export default {
         this.totalSupply = 955;
       }
 
+      if (this.collection.username === "boomers") {
+        this.minted = 0;
+      }
+
       if (this.totalSupply == this.minted) {
         this.soldOut = true;
       }
