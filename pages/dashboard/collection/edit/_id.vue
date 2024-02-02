@@ -828,6 +828,14 @@ export default {
 
         const candyMachine = this.collection.candyMachine;
 
+        if (
+          new Date(candyMachine.public_sale_time).getTime() -
+            new Date(candyMachine.whitelist_sale_time).getTime() <=
+          1000
+        ) {
+          candyMachine.whitelist_sale_time = this.editCollection.publicSaleTime;
+        }
+
         candyMachine.public_sale_time = this.editCollection.publicSaleTime;
 
         const res = await updateCollection(this.collection._id, {
