@@ -798,11 +798,7 @@ export default {
 
         this.collection.baseURL = metaUri;
 
-        let mintTime = Math.floor(new Date().getTime() / 1000) + 5;
-
-        if (this.$store.state.walletStore.wallet.wallet === "Martian") {
-          mintTime += 20;
-        }
+        let mintTime = Math.floor(new Date().getTime() / 1000) + 30;
 
         this.progress = 2;
 
@@ -852,7 +848,7 @@ export default {
             this.showCloseModal = true;
             this.$toast.showMessage({ message: error, error: true });
           }
-        });
+        }, 30000);
       } catch (error) {
         console.log(error);
         this.loading = false;
