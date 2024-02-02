@@ -21,15 +21,8 @@
           v-if="showStartNextPhaseButton && collection.phases.length > 1"
         />
         <button-primary
-          title="Resume Mint"
-          @click="pauseOrResumeMint"
-          v-if="mintingPaused && !collection.isEdition"
-          :bordered="true"
-        />
-        <button-primary
           :title="mintingPaused ? 'Resume Mint' : 'Pause Mint'"
           @click="pauseOrResumeMint"
-          v-if="collection.isEdition"
           :bordered="true"
         />
       </div>
