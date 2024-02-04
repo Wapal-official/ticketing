@@ -81,7 +81,14 @@
           </div>
         </div>
         <div class="tw-text-dark-0 tw-pb-4">
-          {{ auction?.nft.meta.description }}
+          {{ description }}
+          <button
+            class="tw-text-primary-1"
+            @click="toggleDescription"
+            v-if="auction?.nft.meta.description.length > 200"
+          >
+            {{ description.length <= 203 ? "Read More" : "Read Less" }}
+          </button>
         </div>
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
@@ -130,6 +137,7 @@ export default {
       auctionEnded: false,
       auctionStarted: false,
       showShareBox: false,
+      description: "",
       imageNotFound,
     };
   },
@@ -179,6 +187,22 @@ export default {
     hideShareBox() {
       this.showShareBox = false;
     },
+    getDescription() {
+      this.description = this.auction.nft.meta.description;
+
+      if (this.auction.nft.meta.description.length > 200) {
+        this.description =
+          this.auction.nft.meta.description.slice(0, 200) + "...";
+      }
+    },
+    toggleDescription() {
+      if (this.description.length <= 203) {
+        this.description = this.auction.nft.meta.description;
+      } else {
+        this.description =
+          this.auction.nft.meta.description.slice(0, 200) + "...";
+      }
+    },
   },
   computed: {
     getBid() {
@@ -200,6 +224,8 @@ export default {
     if (new Date(this.auction.endAt) < new Date()) {
       this.auctionEnded = true;
     }
+
+    this.getDescription();
   },
 };
 </script>

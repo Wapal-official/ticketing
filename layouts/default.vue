@@ -4,6 +4,7 @@
       <Navbar @landingMenuToggled="toggleMainContainer" />
       <Nuxt :class="mainClass" v-if="!$slots.default" />
       <slot></slot>
+      <chat />
       <wapal-footer :class="mainClass" />
     </div>
     <toast />
@@ -38,31 +39,6 @@ export default {
         error: this.$store.state.toast.error,
       });
     }
-
-    // Create a script element
-    const script = document.createElement("script");
-
-    // Set attributes for the script
-    script.src = "https://app.chatwoot.com/packs/js/sdk.js";
-    script.defer = true;
-    script.async = true;
-
-    // Attach onload event listener
-    script.onload = () => {
-      // Once the script is loaded, execute the desired functionality
-      window.chatwootSDK.run({
-        websiteToken: "GyVMVFjjqQ4rEVcNfAe8v94z",
-        baseUrl: "https://app.chatwoot.com",
-      });
-    };
-
-    // Attach onerror event listener
-    script.onerror = () => {
-      console.error("Failed to load external script");
-    };
-
-    // Append the script to the document body
-    document.body.appendChild(script);
   },
 };
 </script>
