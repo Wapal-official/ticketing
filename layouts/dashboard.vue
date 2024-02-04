@@ -27,6 +27,7 @@
         v-if="getUploadingStatus && getUploadingBar"
         @close="closeUploadProgress"
       />
+      <chat />
     </div>
     <toast />
   </v-app>
