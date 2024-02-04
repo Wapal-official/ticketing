@@ -133,7 +133,7 @@ export default {
   right: 0;
   bottom: 0;
   width: 100%;
-  height: calc(100vh - 55px);
+  height: calc(100dvh - 55px);
   z-index: 999;
 }
 
