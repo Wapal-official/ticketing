@@ -242,6 +242,7 @@
             </div>
             <div
               class="tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-2"
+              v-if="royaltyPercentage"
             >
               <span
                 class="tw-uppercase tw-text-xs tw-font-semibold tw-text-dark-2 tw-tracking-[0.015rem]"
@@ -1058,39 +1059,45 @@ export default {
       this.showShareBox = false;
     },
     async setRoyaltyAndOwnerOfToken() {
-      const creatorAddress =
-        this.auction.nft.nft.current_token_data.creator_address;
+      try {
+        const creatorAddress =
+          this.auction.nft.nft.current_token_data.creator_address;
 
-      const tokenDataId =
-        this.auction.nft.nft.current_token_data.token_data_id_hash;
+        const tokenDataId =
+          this.auction.nft.nft.current_token_data.token_data_id_hash;
 
-      const royaltyAndOwnerAddressRes =
-        await getOwnerAndRoyaltyOfTokenInAuction({
-          creatorAddress,
-          tokenDataId,
-        });
+        const royaltyAndOwnerAddressRes =
+          await getOwnerAndRoyaltyOfTokenInAuction({
+            creatorAddress,
+            tokenDataId,
+          });
 
-      this.royaltyPercentage = royaltyAndOwnerAddressRes.royalty;
+        this.royaltyPercentage = royaltyAndOwnerAddressRes.royalty;
 
-      if (royaltyAndOwnerAddressRes.owner) {
-        const ownerNameRes = await getDomainNameFromWalletAddress(
-          royaltyAndOwnerAddressRes.owner
-        );
-
-        if (ownerNameRes.name) {
-          this.ownerAddress = ownerNameRes.name + ".apt";
-        } else {
-          this.ownerAddress = this.sliceAddressForDisplay(
+        if (royaltyAndOwnerAddressRes.owner) {
+          const ownerNameRes = await getDomainNameFromWalletAddress(
             royaltyAndOwnerAddressRes.owner
           );
-        }
-      } else {
-        if (this.auction.biddings[0]) {
-          this.ownerAddress = this.auction.biddings[0].displayName;
+
+          if (ownerNameRes.name) {
+            this.ownerAddress = ownerNameRes.name + ".apt";
+          } else {
+            this.ownerAddress = this.sliceAddressForDisplay(
+              royaltyAndOwnerAddressRes.owner
+            );
+          }
         } else {
-          const ownerAddress = this.auction.nft.nft.owner_address;
-          this.ownerAddress = this.sliceAddressForDisplay(ownerAddress);
+          if (this.auction.biddings[0]) {
+            this.ownerAddress = this.auction.biddings[0].displayName;
+          } else {
+            const ownerAddress = this.auction.nft.nft.owner_address;
+            this.ownerAddress = this.sliceAddressForDisplay(ownerAddress);
+          }
         }
+      } catch (error) {
+        this.ownerAddress = this.sliceAddressForDisplay(
+          this.auction.nft.owner_address
+        );
       }
     },
     sliceAddressForDisplay(ownerAddress) {
