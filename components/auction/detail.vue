@@ -992,13 +992,17 @@ export default {
       }
     },
     async getFormattedWalletAddress(walletAddress) {
-      const res = await getDomainNameFromWalletAddress(walletAddress);
+      try {
+        const res = await getDomainNameFromWalletAddress(walletAddress);
 
-      if (res.name) {
-        return res.name + ".apt";
+        if (res.name) {
+          return res.name + ".apt";
+        }
+
+        return this.sliceAddressForDisplay(walletAddress);
+      } catch {
+        return this.sliceAddressForDisplay(walletAddress);
       }
-
-      return this.sliceAddressForDisplay(walletAddress);
     },
     async copyLink(event) {
       const clipboardData =
@@ -1098,7 +1102,7 @@ export default {
     },
     getDescription() {
       this.description = this.auction.nft.meta.description;
-      
+
       if (this.auction.nft.meta.description.length > 200) {
         this.description =
           this.auction.nft.meta.description.slice(0, 200) + "...";
