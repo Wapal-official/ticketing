@@ -1,0 +1,615 @@
+<template>
+  <v-row justify="center">
+    <v-dialog
+      v-model="nftTransferDialog"
+      :fullscreen="isMobileSize"
+      :scrim="false"
+      persistent
+      max-width="960"
+      overlay-color="icon"
+      :overlay-opacity="0.6"
+    >
+      <v-card style="overflow: hidden; background-color: #101113">
+        <div>
+          <v-row class="tw-p-3" align="center" justify="center" no-gutters>
+            <v-col cols="6">
+              <div class="tw-mr-2 lg:tw-mr-3 tw-flex tw-align-center">
+                <img
+                  class="tw-mr-2"
+                  src="~/assets/img/transfer.svg"
+                  alt="nft transfer"
+                />
+                <p
+                  class="tw-mr-1 transfer-text"
+                  style="margin-bottom: 0 !important"
+                >
+                  Nft Transfer
+                </p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="d-flex align-center justify-end">
+              <v-icon
+                class="mdi mdi-close"
+                color="white"
+                @click="$store.commit('dialog/setNftTransferDialog', false)"
+              >
+              </v-icon>
+            </v-col>
+          </v-row>
+        </div>
+        <v-divider></v-divider>
+        <div>
+          <v-row no-gutters>
+            <v-col cols="12" dense align="start">
+              <div class="">
+                <v-tabs
+                  v-model="tabs"
+                  class="tabs tw-mx-3 tw-pr-10"
+                  color="#8759FF"
+                  style="position: relative"
+                >
+                  <v-tab class="capitalize"> All Nfts </v-tab>
+                  <v-tab class="capitalize tw-mr-2"> NFTs by Collection </v-tab>
+                  <!-- <v-tab class="capitalize"> Airdrop </v-tab> -->
+                  <v-spacer
+                    v-if="$vuetify.breakpoint.smAndUp == true"
+                  ></v-spacer>
+                  <div
+                    v-if="tabs == 0 || tabs == 1"
+                    class="d-flex align-center"
+                  >
+                    <input-checkbox
+                      v-if="blankBox"
+                      style="margin-right: 6px"
+                      icon=""
+                      color="lightGrey"
+                      @click="checkAllSelection"
+                    />
+                    <input-checkbox
+                      v-else-if="minusBox"
+                      style="margin-right: 6px"
+                      icon="mdi-minus-box"
+                      color="white"
+                      @click="disCheckAllSelection"
+                    />
+                    <input-checkbox
+                      v-else-if="markedBox"
+                      style="margin-right: 6px"
+                      icon="mdi-checkbox-marked"
+                      color="white"
+                      @click="checkAllSelection"
+                    />
+                    <p
+                      class="sellectAll-text"
+                      style="margin-bottom: 0 !important"
+                    >
+                      Select All
+                    </p>
+                  </div>
+                </v-tabs>
+                <v-divider></v-divider>
+                <v-tabs-items v-model="tabs" style="background: #101113">
+                  <v-tab-item>
+                    <div>
+                      <multiple-nft-transfer />
+                    </div>
+                  </v-tab-item>
+                  <v-tab-item>
+                    <div>
+                      <v-row dense>
+                        <v-col cols="12" lg="3" md="3" sm="3">
+                          <nft-transfer-drawer :items="userCollectionData" />
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          lg="9"
+                          md="9"
+                          sm="9"
+                          class="custom-scrollbar"
+                          style="
+                            min-height: 65vh;
+                            max-height: 72vh;
+                            overflow: scroll;
+                          "
+                        >
+                          <div v-if="userCollectionData.length > 0">
+                            <nft-send-tbl
+                              class="tw-px-3"
+                              :headers="headers"
+                              :items="selectedTransferCollection"
+                              :GridView="true"
+                              :collectionsData="userCollectionData"
+                            />
+                          </div>
+                          <v-row justify="center" no-gutters>
+                            <v-col align="center">
+                              <div
+                                v-if="userCollectionData.length == 0"
+                                class="tw-mt-4"
+                              >
+                                <loader-row-skeleton
+                                  imageShape="rounded"
+                                  nameClass="tw-mr-10 tw-ml-n3"
+                                  class="tw-mx-3 tw-mt-6 tw-mb-6"
+                                  :nameWidth="200"
+                                  dynamicClass="tw-mr-2"
+                                  :row="1"
+                                  :cols="3"
+                                  :width="95"
+                                  :height="24"
+                                  :nameHeight="24"
+                                  :imageSize="45"
+                                />
+                                <div class="tw-mx-1">
+                                  <nft-transfer-skeleton :cols="8" />
+                                </div>
+                              </div>
+                              <!-- <div
+                                v-else
+                                class="caption text-capitalize font14-semi-bold text--disabled my-10"
+                              >
+                                <span v-if="userCollectionData.length == 0"
+                                  >No Collections</span
+                                >
+                                <span v-if="userCollectionData.length > 0"
+                                  >No Collections nfts</span
+                                >
+                              </div> -->
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                      </v-row>
+                    </div>
+                  </v-tab-item>
+                </v-tabs-items>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
+      </v-card>
+    </v-dialog>
+  </v-row>
+</template>
+
+<script>
+import nftTransferSkeleton from "~/components/Landing/NftTransfer/loader/nftTransferGridSkeleton.vue";
+import inputCheckbox from "~/components/Landing/NftTransfer/checkbox.vue";
+import nftSendTbl from "~/components/Landing/NftTransfer/nftSendTbl.vue";
+import multipleNftTransfer from "~/components/Landing/NftTransfer/allMultipleNftTransfer.vue";
+import nftTransferDrawer from "~/components/Landing/NftTransfer/nftTransferDrawer.vue";
+import airdropTransferTbl from "~/components/Landing/NftTransfer/airdropTransferTbl.vue";
+import loaderRowSkeleton from "~/components/Landing/NftTransfer/loader/rowSkeleton.vue";
+import {
+  getNftTransferCollectionsOfUser,
+  getNftCount,
+} from "~/services/nftTransferService";
+import skeletonLoader from "~/components/Landing/NftTransfer/loader/skeleton.vue";
+
+export default {
+  components: {
+    nftSendTbl,
+    multipleNftTransfer,
+    inputCheckbox,
+    nftTransferDrawer,
+    airdropTransferTbl,
+    nftTransferSkeleton,
+    skeletonLoader,
+    loaderRowSkeleton,
+  },
+  props: { propCollections: { type: Array, default: () => [] } },
+  data() {
+    return {
+      nftTransferType: "NftTransfer",
+      selectAll: false,
+      headers: [
+        { text: "Collection", value: "name" },
+        { text: "Count", value: "count" },
+        { text: "Floor", value: "floorPrice" },
+        { text: "Value", value: "valuePrice" },
+      ],
+      boardsData: [
+        {
+          id: 1,
+          collection: "bruh bears",
+          image: "nft1.svg",
+          count: "2",
+          floor: "65",
+          value: "130",
+        },
+        {
+          id: 2,
+          collection: "Aptomingos",
+          image: "nft2.svg",
+          count: "4",
+          floor: "6",
+          value: "24",
+        },
+        {
+          id: 3,
+          collection: "minos",
+          image: "nft3.svg",
+          count: "100",
+          floor: "10",
+          value: "1000",
+        },
+      ],
+      nftTransferGridData: [
+        {
+          name: "nft",
+          rarity: 52,
+          image: "nft6.svg",
+          listedPrice: 256,
+          topBidPrice: "256",
+          costPrice: "256",
+          tooltipDate: "tooltipDate",
+        },
+        {
+          name: "nft",
+          image: "nft5.svg",
+          rarity: 52,
+          listedPrice: 256,
+          topBidPrice: "256",
+          costPrice: "256",
+          tooltipDate: "tooltipDate",
+        },
+      ],
+      collectionPage: 0,
+      userCollectionData: [],
+      airdropSelectedCollectionData: [],
+      limit: 100,
+      allLoaded: false,
+      collections: [],
+      userCollections: [],
+
+      markedBox: false,
+      minusBox: false,
+      blankBox: true,
+    };
+  },
+  watch: {
+    nftTransferDialog(newVal) {
+      if (newVal == true) {
+        this.nftTransferDrawer = true;
+      } else {
+        this.$store.commit("nftTransfer/setNftTransferTabs", 0);
+      }
+    },
+    tabs(newVal) {
+      if (newVal) {
+        this.$store.commit("nftTransfer/setCheckData", []);
+      }
+      if (this.walletAddress && newVal == 1) {
+        this.currentUserCollection();
+      } else if (this.walletAddress && newVal == 2) {
+        this.currentUserCollection();
+      }
+    },
+    selectedCheck(newVal) {
+      if (this.tabs == 0) {
+        if (
+          this.nftsAllLoaded == true &&
+          this.userNfts.length === newVal.length
+        ) {
+          this.markedBox = true;
+          this.minusBox = false;
+          this.blankBox = false;
+        } else if (
+          newVal.length > 0 &&
+          (this.userNfts.length != newVal.length ||
+            this.userNfts.length == newVal.length)
+        ) {
+          this.markedBox = false;
+          this.minusBox = true;
+          this.blankBox = false;
+        } else {
+          this.markedBox = false;
+          this.minusBox = false;
+          this.blankBox = true;
+        }
+      } else if (this.tabs == 1) {
+        if (
+          this.collectionsNfts.length > 0 &&
+          this.collectionsNfts.length === newVal.length
+        ) {
+          this.markedBox = true;
+          this.minusBox = false;
+          this.blankBox = false;
+        } else if (
+          newVal.length > 0 &&
+          this.collectionsNfts.length !== newVal.length
+        ) {
+          this.markedBox = false;
+          this.minusBox = true;
+          this.blankBox = false;
+        } else {
+          this.markedBox = false;
+          this.minusBox = false;
+          this.blankBox = true;
+        }
+      }
+    },
+  },
+  computed: {
+    isMobileSize() {
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    nftTransferDialog: {
+      get() {
+        return this.$store.state.dialog.isNftTransferDialog;
+      },
+      set(value) {
+        return this.$store.commit("dialog/setNftTransferDialog", value);
+      },
+    },
+    walletAddress() {
+      return this.$store.state.walletStore.wallet.walletAddress;
+    },
+    userNfts() {
+      return this.$store.state.nftTransfer.allTransferableNfts;
+    },
+    selectedTransferCollection() {
+      return this.$store.state.nftTransfer.selectedCollection;
+    },
+    selectedCheck() {
+      return this.$store.state.nftTransfer.selectedCheck;
+    },
+    selectedData() {
+      return this.$store.state.nftTransfer.selectedData;
+    },
+    collectionsNfts() {
+      return this.$store.state.nftTransfer.collectionsNfts;
+    },
+    tabs: {
+      get() {
+        return this.$store.state.nftTransfer.tabs;
+      },
+      set(value) {
+        return this.$store.commit("nftTransfer/setNftTransferTabs", value);
+      },
+    },
+    nftsAllLoaded() {
+      return this.$store.state.nftTransfer.allNftsLoaded;
+    },
+  },
+  created() {
+    this.blankBox = true;
+  },
+  methods: {
+    checkAllSelection() {
+      if (this.selectedCheck.length <= 100) {
+        if (this.tabs == 0) {
+          if (this.userNfts.length == this.selectedCheck.length) {
+            this.$store.commit("nftTransfer/setCheckData", []);
+          } else if (
+            this.userNfts.length !== this.selectedCheck.length &&
+            this.selectedCheck > 0
+          ) {
+          } else {
+            const version1Nfts = this.userNfts.filter(
+              (obj) => obj.tokenStandard === "v1"
+            );
+            const version2Nfts = this.userNfts.filter(
+              (obj) => obj.tokenStandard === "v2"
+            );
+            if (version2Nfts.length > 10) {
+              this.$toast.showMessage({
+                message: `Max 10 NFTs per transfer in V2!`,
+                error: true,
+              });
+            }
+
+            const filteredArray = version2Nfts
+              .slice(0, 10)
+              .concat(version1Nfts);
+
+            this.$store.commit(
+              "nftTransfer/setCheckData",
+              filteredArray.slice(0, 100)
+            );
+          }
+        } else if (this.tabs == 1) {
+          if (this.collectionsNfts.length === this.selectedCheck.length) {
+            this.$store.commit("nftTransfer/setCheckData", []);
+          } else if (
+            this.collectionsNfts.length !== this.selectedCheck.length &&
+            this.selectedCheck > 0
+          ) {
+          } else {
+            const version1Nfts = this.collectionsNfts.filter(
+              (obj) => obj.tokenStandard === "v1"
+            );
+            const version2Nfts = this.collectionsNfts.filter(
+              (obj) => obj.tokenStandard === "v2"
+            );
+
+            const filteredArray = version2Nfts
+              .slice(0, 10)
+              .concat(version1Nfts);
+
+            this.$store.commit(
+              "nftTransfer/setCheckData",
+              filteredArray.slice(0, 100)
+            );
+          }
+        }
+      } else {
+        this.$toast.showMessage({
+          message: `Selected Value must be less than 100.`,
+          error: true,
+        });
+      }
+    },
+    disCheckAllSelection() {
+      this.$store.commit("nftTransfer/setCheckData", []);
+    },
+
+    getTabIconColor(tabIndex) {
+      return this.tab === tabIndex ? "#9D80FF" : "#5D5F65";
+    },
+
+    async currentUserCollection() {
+      try {
+        this.collectionPage++;
+
+        const collections = await getNftTransferCollectionsOfUser({
+          walletAddress: this.walletAddress,
+          page: this.collectionPage,
+          limit: this.limit,
+        });
+
+        const uniqueCollectionIDs = [
+          ...new Set(collections.map((item) => item.collectionId)),
+        ];
+
+        const nftCounts = await Promise.all(
+          uniqueCollectionIDs.map((collectionId) =>
+            this.getCollectionsDetails(collectionId)
+          )
+        );
+        const filteredCollections = collections.filter((item, index) => {
+          const count = nftCounts[index].count;
+          return count > 0;
+        });
+
+        const filteredNftCount = nftCounts.filter((item, index) => {
+          return item.count > 0;
+        });
+
+        filteredCollections.forEach((item, index) => {
+          item.count = filteredNftCount[index].count;
+          item.valuePrice = this.valuation(filteredCollections, index);
+        });
+
+        this.userCollectionData.push(...filteredCollections);
+
+        this.$store.commit("nftTransfer/setNftCount", nftCounts);
+
+        if (filteredCollections.length < this.limit) {
+          this.allLoaded = true;
+        }
+      } catch (err) {
+        console.log("error:", err);
+        this.allLoaded = true;
+      }
+    },
+    async getCollectionsDetails(collectionId) {
+      const data = await getNftCount({
+        wallet_address: this.walletAddress,
+        collectionId: collectionId,
+      });
+      return data;
+    },
+    valuation(collections, index) {
+      let col = collections[index];
+      let value = parseFloat(col.floorPrice) * parseFloat(col.count);
+      let nanValue = 0;
+      let parsedValue = isNaN(value) == false ? value : nanValue;
+      return parsedValue;
+    },
+    dynWidth() {
+      if (
+        this.$vuetify.breakpoint.name == "lg" ||
+        this.$vuetify.breakpoint.name == "xl"
+      ) {
+        return 750;
+      } else if (this.$vuetify.breakpoint.name == "md") {
+        return 600;
+      } else {
+        return 700 / 2;
+      }
+    },
+    selectFile() {
+      this.$refs.input.click();
+    },
+  },
+};
+</script>
+
+<style lang="css">
+.icon-hex {
+  width: 32px;
+  height: 32px;
+}
+
+.icon-text {
+  font-size: 10px;
+  margin-left: 2px;
+}
+
+.right-arrow-alt {
+  max-width: 16px;
+}
+
+.arrow-back {
+  max-width: 24px;
+}
+
+.icon-arrows {
+  position: relative;
+  height: 30px;
+  width: 24px;
+}
+
+.icon-arrows .arrow1 {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  margin: 0 auto;
+  transform: rotate(-20deg);
+}
+
+.icon-arrows .arrow2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  margin: 0 auto;
+  transform: rotate(180deg);
+}
+
+.icon-arrows .arrow3 {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  margin: 0 auto;
+  transform: rotate(20deg);
+}
+
+.transfer-border {
+  border: 1px solid #25262b;
+  padding: 30px 24px 0 24px;
+}
+
+.skeleton-border {
+  border: 1px solid #25262b;
+}
+.transfer-text {
+  color: #8759ff;
+}
+
+.sellectAll-text {
+  color: #5d5f65;
+  margin-top: 2px;
+  font-family: "Inter-Regular", sans-serif !important;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+}
+.theme--dark.v-tabs > .v-tabs-bar {
+  background-color: #101113 !important;
+}
+.v-tabs:not(.v-tabs--vertical):not(.v-tabs--right)
+  > .v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(
+    .v-slide-group--has-affixes
+  )
+  .v-slide-group__prev {
+  display: inline;
+  display: none;
+  visibility: hidden;
+}
+</style>

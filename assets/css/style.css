@@ -1,6 +1,10 @@
 * {
   box-sizing: border-box !important;
 }
+@font-face {
+  font-family: "JetBrains-Regular";
+  src: url("~/assets/fonts/JetBrainsMono-Regular.ttf") format('truetype');
+}
 /* Landing */
 * {
   box-sizing: border-box;
