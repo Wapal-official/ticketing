@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="custom-scrollbar">
     <v-navigation-drawer
       class="custom-scrollbar max-height"
       v-model="nftTransferDrawer"
@@ -11,7 +11,10 @@
       <div class="tw-py-4 tw-px-3 custom-scrollbar">
         <v-row class="sticky" style="border-right: 2px solid #383a3f">
           <v-col>
-            <p class="d-flex align-center tw-mb-0">
+            <p
+              class="d-flex align-center tw-mb-0"
+              style="margin-bottom: 0 !important"
+            >
               <span>
                 <!-- <box-icon
                   class="icon-box15"
@@ -181,7 +184,11 @@ export default {
 
 @media (max-width: 600px) {
   .max-height {
-    max-height: 190px !important;
+    max-height: 122px !important;
   }
+}
+
+.custom-scrollbar .v-navigation-drawer__content {
+  scrollbar-width: none !important;
 }
 </style>

@@ -106,10 +106,11 @@
                     </v-row>
                   </template>
                 </v-img>
-                {{ item.name }}
+                {{ filterName(item.name) }}
                 <i
                   class="bx bxs-badge-check verified-icon verified-icon-small tw-pl-1"
                   v-if="item.isVerified"
+                  style="color: #8759ff !important"
                 ></i>
               </span>
             </div>
@@ -186,14 +187,7 @@
             style="position: relative"
           >
             <div
-              class="align-center custom-scrollbar justify-center"
-              style="
-                min-height: 42vh;
-                max-height: 44vh;
-                overflow: auto;
-                justify-content: center;
-                align-items: center;
-              "
+              class="align-center custom-scrollbar expanded-height justify-center"
             >
               <div v-if="collectionsNfts.length > 0">
                 <nft-Transfer-Card
@@ -276,7 +270,7 @@
                   </div>
                 </v-col>
                 <v-col
-                  class="tw-flex tw-justify-center"
+                  class="tw-flex tw-justify-center tw-mb-3 sm:tw-mb-0"
                   cols="12"
                   lg="4"
                   md="4"
@@ -284,7 +278,7 @@
                   align="end"
                 >
                   <button-primary
-                    title="Send"
+                    :title="sendNftsTitle()"
                     :small="false"
                     :disabled="sendDisabled()"
                     min-width="110px"
@@ -441,10 +435,12 @@ export default {
             "nftTransfer/setCollectionsNftTransfer",
             currentNfts
           );
-
           currentNfts.forEach((item, index) => {
             if (this.items[colIndex]) {
-              item.floorPrice = this.items[colIndex].floorPrice;
+              this.$store.commit("nftTransfer/setFloorPriceOfItem", {
+                item,
+                floorPrice: this.items[colIndex].floorPrice,
+              });
             }
           });
 
@@ -485,6 +481,10 @@ export default {
         return true;
       }
     },
+    sendNftsTitle() {
+      let text = this.selectedCheck.length <= 1 ? "Item" : "Items";
+      return `Send ${this.selectedCheck.length} ${text}`;
+    },
     async sendNfts() {
       // this.$toast.showMessage({
       //   message: `Nft Transfred to ${this.wallet_address}.`,
@@ -498,10 +498,7 @@ export default {
           message: `Please, Enter the wallet`,
         });
       }
-
-      const nftTransferRes = await nftTransfer(this.selectedCheck, [
-        this.wallet_address,
-      ]);
+      await nftTransfer(this.selectedCheck, [this.wallet_address]);
       this.$toast.showMessage({
         message: `Nft Transferred to ${this.wallet_address.slice(
           0,
@@ -510,9 +507,7 @@ export default {
       });
       this.$store.commit("nftTransfer/removeNftTransfer", this.selectedCheck);
       this.$store.commit("nftTransfer/setCheckData", []);
-      //   this.$toast.showMessage({
-      //     message: `Nft Transfred to ${this.wallet_address}.`,
-      //   });
+      this.wallet_address = "";
     },
     expandClick(item, index2) {
       this.isExpandedIcon = !this.isExpandedIcon;
@@ -607,6 +602,84 @@ export default {
         this.currentUserNfts(this.items[0].collectionId, 0);
       }
     },
+    filterName(value) {
+      if (!value) {
+        return "";
+      }
+      if (value && value.includes("#")) {
+        return value.match(/#([^#]*)$/)[0].trim();
+      } else {
+        if (this.$route.name == "index") {
+          if (this.$vuetify.breakpoint.smAndDown) {
+            if (value.length > 9) {
+              let name = value.slice(0, 9) + "...";
+              return name;
+            } else {
+              return value;
+            }
+          } else if (
+            this.$vuetify.breakpoint.width >= 960 &&
+            this.$vuetify.breakpoint.width < 1180
+          ) {
+            if (value.length > 10) {
+              let name = value.slice(0, 9) + "...";
+              return name;
+            } else {
+              return value;
+            }
+          } else if (
+            this.$vuetify.breakpoint.width >= 1180 &&
+            this.$vuetify.breakpoint.width < 1280
+          ) {
+            if (value.length > 16) {
+              let name = value.slice(0, 12) + "...";
+              return name;
+            } else {
+              return value;
+            }
+          } else if (
+            this.$vuetify.breakpoint.width >= 1280 &&
+            this.$vuetify.breakpoint.width < 1480
+          ) {
+            if (value.length > 20) {
+              let name = value.slice(0, 20) + "...";
+              return name;
+            } else {
+              return value;
+            }
+          } else if (
+            this.$vuetify.breakpoint.width >= 1480 &&
+            this.$vuetify.breakpoint.width < 1580
+          ) {
+            if (value.length > 28) {
+              let name = value.slice(0, 28) + "...";
+              return name;
+            } else {
+              return value;
+            }
+          } else if (
+            this.$vuetify.breakpoint.width >= 1580 &&
+            this.$vuetify.breakpoint.width < 1960
+          ) {
+            if (value.length > 32) {
+              let name = value.slice(0, 32) + "...";
+              return name;
+            } else {
+              return value;
+            }
+          } else if (this.$vuetify.breakpoint.width >= 1960) {
+            if (value.length > 32) {
+              let name = value.slice(0, 32) + "...";
+              return name;
+            } else {
+              return value;
+            }
+          }
+        } else {
+          return value;
+        }
+      }
+    },
   },
 };
 </script>
@@ -615,7 +688,7 @@ export default {
 .label-text {
   font-size: 12px;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   display: block;
 }
 .main-container {
@@ -693,5 +766,20 @@ td {
 
 .cards-min-width {
   min-width: 960px;
+}
+
+.expanded-height {
+  min-height: 42vh;
+  max-height: 46vh;
+  overflow: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .expanded-height {
+    min-height: 26vh;
+    max-height: 28vh;
+  }
 }
 </style>
