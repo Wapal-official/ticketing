@@ -127,7 +127,6 @@
                                 v-if="userCollectionData.length == 0"
                                 class="tw-mt-4"
                               >
-                                <!-- loader need to added -->
                                 <loader-row-skeleton
                                   imageShape="rounded"
                                   nameClass="tw-mr-10 tw-ml-n3"
@@ -144,7 +143,6 @@
                                 <div class="tw-mx-1">
                                   <nft-transfer-skeleton :cols="8" />
                                 </div>
-                                <!-- loader need to add -->
                               </div>
                               <!-- <div
                                 v-else
@@ -289,7 +287,7 @@ export default {
     selectedCheck(newVal) {
       if (this.tabs == 0) {
         if (
-          this.collectionsNfts.length > 0 &&
+          this.nftsAllLoaded == true &&
           this.userNfts.length === newVal.length
         ) {
           this.markedBox = true;
@@ -297,7 +295,8 @@ export default {
           this.blankBox = false;
         } else if (
           newVal.length > 0 &&
-          this.userNfts.length !== newVal.length
+          (this.userNfts.length != newVal.length ||
+            this.userNfts.length == newVal.length)
         ) {
           this.markedBox = false;
           this.minusBox = true;
@@ -372,32 +371,76 @@ export default {
         return this.$store.commit("nftTransfer/setNftTransferTabs", value);
       },
     },
+    nftsAllLoaded() {
+      return this.$store.state.nftTransfer.allNftsLoaded;
+    },
   },
   created() {
     this.blankBox = true;
   },
   methods: {
     checkAllSelection() {
-      if (this.tabs == 0) {
-        if (this.userNfts.length == this.selectedCheck.length) {
-          this.$store.commit("nftTransfer/setCheckData", []);
-        } else if (
-          this.userNfts.length !== this.selectedCheck.length &&
-          this.selectedCheck > 0
-        ) {
-        } else {
-          this.$store.commit("nftTransfer/setCheckData", this.userNfts);
+      if (this.selectedCheck.length <= 100) {
+        if (this.tabs == 0) {
+          if (this.userNfts.length == this.selectedCheck.length) {
+            this.$store.commit("nftTransfer/setCheckData", []);
+          } else if (
+            this.userNfts.length !== this.selectedCheck.length &&
+            this.selectedCheck > 0
+          ) {
+          } else {
+            const version1Nfts = this.userNfts.filter(
+              (obj) => obj.tokenStandard === "v1"
+            );
+            const version2Nfts = this.userNfts.filter(
+              (obj) => obj.tokenStandard === "v2"
+            );
+            if (version2Nfts.length > 10) {
+              this.$toast.showMessage({
+                message: `Max 10 NFTs per transfer in V2!`,
+                error: true,
+              });
+            }
+
+            const filteredArray = version2Nfts
+              .slice(0, 10)
+              .concat(version1Nfts);
+
+            this.$store.commit(
+              "nftTransfer/setCheckData",
+              filteredArray.slice(0, 100)
+            );
+          }
+        } else if (this.tabs == 1) {
+          if (this.collectionsNfts.length === this.selectedCheck.length) {
+            this.$store.commit("nftTransfer/setCheckData", []);
+          } else if (
+            this.collectionsNfts.length !== this.selectedCheck.length &&
+            this.selectedCheck > 0
+          ) {
+          } else {
+            const version1Nfts = this.collectionsNfts.filter(
+              (obj) => obj.tokenStandard === "v1"
+            );
+            const version2Nfts = this.collectionsNfts.filter(
+              (obj) => obj.tokenStandard === "v2"
+            );
+
+            const filteredArray = version2Nfts
+              .slice(0, 10)
+              .concat(version1Nfts);
+
+            this.$store.commit(
+              "nftTransfer/setCheckData",
+              filteredArray.slice(0, 100)
+            );
+          }
         }
-      } else if (this.tabs == 1) {
-        if (this.collectionsNfts.length === this.selectedCheck.length) {
-          this.$store.commit("nftTransfer/setCheckData", []);
-        } else if (
-          this.collectionsNfts.length !== this.selectedCheck.length &&
-          this.selectedCheck > 0
-        ) {
-        } else {
-          this.$store.commit("nftTransfer/setCheckData", this.collectionsNfts);
-        }
+      } else {
+        this.$toast.showMessage({
+          message: `Selected Value must be less than 100.`,
+          error: true,
+        });
       }
     },
     disCheckAllSelection() {
@@ -418,24 +461,34 @@ export default {
           limit: this.limit,
         });
 
-        this.userCollectionData.push(...collections);
         const uniqueCollectionIDs = [
           ...new Set(collections.map((item) => item.collectionId)),
         ];
 
-        const nftCount = await Promise.all(
+        const nftCounts = await Promise.all(
           uniqueCollectionIDs.map((collectionId) =>
             this.getCollectionsDetails(collectionId)
           )
         );
-
-        collections.forEach((item, index) => {
-          item.count = nftCount[index].count;
-          item.valuePrice = this.valuation(collections, index);
+        const filteredCollections = collections.filter((item, index) => {
+          const count = nftCounts[index].count;
+          return count > 0;
         });
-        this.$store.commit("nftTransfer/setNftCount", nftCount);
 
-        if (collections.length < this.limit) {
+        const filteredNftCount = nftCounts.filter((item, index) => {
+          return item.count > 0;
+        });
+
+        filteredCollections.forEach((item, index) => {
+          item.count = filteredNftCount[index].count;
+          item.valuePrice = this.valuation(filteredCollections, index);
+        });
+
+        this.userCollectionData.push(...filteredCollections);
+
+        this.$store.commit("nftTransfer/setNftCount", nftCounts);
+
+        if (filteredCollections.length < this.limit) {
           this.allLoaded = true;
         }
       } catch (err) {

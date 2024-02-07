@@ -63,7 +63,6 @@
               />
             </div>
           </v-img>
-
           <v-img
             v-else
             :src="item.image"
@@ -73,8 +72,18 @@
             class="bulk-card-image"
             :ref="`image${index}`"
             @error="getUncachedImageUrl(index)"
+            style="background-color: #fff"
           >
             <template v-slot:placeholder>
+              <v-row align="center" justify="center" no-gutters>
+                <p
+                  v-if="item.name"
+                  class="black--text"
+                  style="font-size: 100px"
+                >
+                  <b>{{ item.name.substring(0, 1) }}</b>
+                </p>
+              </v-row>
               <v-row class="fill-height tw-m-0" align="center" justify="center">
                 <v-progress-circular
                   indeterminate
@@ -82,6 +91,14 @@
                 ></v-progress-circular>
               </v-row>
             </template>
+            <!-- <template v-slot:placeholder>
+              <v-row class="fill-height ma-0" align="center" justify="center">
+                <v-progress-circular
+                  indeterminate
+                  color="grey lighten-5"
+                ></v-progress-circular>
+              </v-row>
+            </template> -->
             <div class="grid-nft-rarity text-center">
               <span
                 class="grid-nft-rarity-value"
@@ -183,8 +200,28 @@ export default {
         this.$store.commit("nftTransfer/setSingleCheck", true);
         selectedCopy.push(item);
       }
-      this.$store.commit("nftTransfer/setCheckData", selectedCopy);
-      this.$emit("checkboxSelect", this.selectedCheck);
+      if (selectedCopy.length <= 100) {
+        const version1Nfts = selectedCopy.filter(
+          (obj) => obj.tokenStandard === "v1"
+        );
+        const version2Nfts = selectedCopy.filter(
+          (obj) => obj.tokenStandard === "v2"
+        );
+        if (version2Nfts.length > 10) {
+          this.$toast.showMessage({
+            message: `Max 10 NFTs per transfer in V2!`,
+            error: true,
+          });
+        } else {
+          this.$store.commit("nftTransfer/setCheckData", selectedCopy);
+          this.$emit("checkboxSelect", this.selectedCheck);
+        }
+      } else {
+        this.$toast.showMessage({
+          message: `Selected Value must be less than 100.`,
+          error: true,
+        });
+      }
     },
     rarity(item) {
       if (item != null) {
@@ -221,21 +258,28 @@ export default {
       }
     },
     async getUncachedImageUrl(index) {
-      const image = this.items[index].image;
+      if (this.items && this.items[index]) {
+        const image = this.items[index].image;
 
-      if (this.items) {
         if (checkIfImageIsFromCacheServer(image)) {
-          const res = await this.$axios.get(image);
+          try {
+            const res = await this.$axios.get(image);
+            const contentType = res.headers["content-type"];
 
-          if (res.headers["content-type"].includes("image")) {
-            this.$refs[`image${index}`][0].image.src = image;
-          } else {
-            const link = extractImageLinkFromCacheServerUrl(image);
-
-            this.$refs[`image${index}`][0].image.src = link;
+            if (contentType && contentType.includes("image")) {
+              this.$refs[`image${index}`][0] &&
+                (this.$refs[`image${index}`][0].image.src = image);
+            } else {
+              const link = extractImageLinkFromCacheServerUrl(image);
+              this.$refs[`image${index}`][0] &&
+                (this.$refs[`image${index}`][0].image.src = link);
+            }
+          } catch (error) {
+            console.error("Error loading uncached image:", error);
           }
         } else {
-          this.$refs[`image${index}`][0].image.src = image;
+          this.$refs[`image${index}`][0] &&
+            (this.$refs[`image${index}`][0].image.src = image);
         }
       }
     },

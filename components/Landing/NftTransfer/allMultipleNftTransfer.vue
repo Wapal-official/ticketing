@@ -47,7 +47,7 @@
         <v-col cols="12" lg="8" md="8" sm="8">
           <div>
             <label
-              class="text-uppercase text-start font-bold label-text"
+              class="text-uppercase text-start font-bold label-text tw-mb-0 sm:tw-mb-1"
               for="amountInput"
               style="color: #c1c2c5"
               >Destination Address</label
@@ -71,7 +71,7 @@
           class="d-flex align-start justify-center sm:justify-end"
         >
           <button-primary
-            title="Send"
+            :title="sendNftsTitle()"
             :small="false"
             :disabled="sendDisabled()"
             min-width="110px"
@@ -95,7 +95,6 @@ import {
   getCollectionById,
 } from "~/services/nftTransferService";
 import { getFloorPrice } from "@/services/nftTransferService";
-
 export default {
   components: {
     nftTransferCard,
@@ -108,7 +107,7 @@ export default {
       allNftsLimit: 50,
       wallet_address: "",
       userNft: [],
-      allLoaded: false,
+      // allLoaded: false,
       userCollectionData: [],
       collectionPage: 1,
       fetching: false,
@@ -137,8 +136,15 @@ export default {
     selectedCheck() {
       return this.$store.state.nftTransfer.selectedCheck;
     },
+    allLoaded() {
+      return this.$store.state.nftTransfer.allNftsLoaded;
+    },
   },
   methods: {
+    sendNftsTitle() {
+      let text = this.selectedCheck.length <= 1 ? "Item" : "Items";
+      return `Send ${this.selectedCheck.length} ${text}`;
+    },
     checkboxSelect(e) {},
     sendDisabled() {
       if (this.wallet_address != "" && this.selectedCheck.length > 0) {
@@ -156,9 +162,7 @@ export default {
           message: `Please, Enter the wallet`,
         });
       }
-      const nftTransferRes = await nftTransfer(this.selectedCheck, [
-        this.wallet_address,
-      ]);
+      await nftTransfer(this.selectedCheck, [this.wallet_address]);
       this.$toast.showMessage({
         message: `Nft Transferred to ${this.wallet_address.slice(
           0,
@@ -188,16 +192,19 @@ export default {
 
           this.fetching = false;
           if (currentNfts.length === 0) {
-            this.allLoaded = true;
+            // this.allLoaded = true;
+            this.$store.commit("nftTransfer/setAllLoaded", true);
           }
           if (currentNfts.length < this.allNftsLimit) {
-            this.allLoaded = true;
+            // this.allLoaded = true;
+            this.$store.commit("nftTransfer/setAllLoaded", true);
           }
 
           await this.collectionIDFloor(currentNfts);
         } catch (err) {
           console.log("error:", err);
-          this.allLoaded = true;
+          this.$store.commit("nftTransfer/setAllLoaded", true);
+          // this.allLoaded = true;
         }
       } else {
         clearTimeout(this.debounce);
@@ -262,11 +269,13 @@ export default {
         this.userCollectionData.push(...collections);
         console.Console("collectiondeta", this.userCollectionData);
         if (collections.length < this.limit) {
-          this.allLoaded = true;
+          this.$store.commit("nftTransfer/setAllLoaded", true);
+          // this.allLoaded = true;
         }
       } catch (err) {
         console.log("error:", err);
-        this.allLoaded = true;
+        this.$store.commit("nftTransfer/setAllLoaded", true);
+        // this.allLoaded = true;
       }
     },
     onIntersect(entries) {
@@ -281,7 +290,7 @@ export default {
 .label-text {
   font-size: 12px;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   display: block;
 }
 .destination-bottom {

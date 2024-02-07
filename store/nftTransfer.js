@@ -1,5 +1,6 @@
 import { divideIntoBatches } from "@/utils/batches";
 import { getTokenDetails } from "@/services/nftTransferService";
+import { resolveUri, getCachedUrlOfImage } from "@/services/utilitieService";
 
 export const state = () => ({
   allTransferableNfts: [],
@@ -14,22 +15,29 @@ export const state = () => ({
   floorPrices: {
     collectionId: [],
     floorPrice: []
-  },
+  }, 
   userCollection: [], 
+  allNftsLoaded: false,
 });
 
-export const mutations = { 
+export const mutations = {  
   setCollectionNftCount(state, payload) {
     state.selectedData[0].count = payload
   }, 
-  setUserCollection(state, payload) {
+  setUserCollection(state, payload) { 
     state.userCollection = payload
-  }, 
+  },
+  setAllLoaded(state, payload) {
+    state.allNftsLoaded = payload 
+  },  
   setFloorPrice(state, payload) { 
     state.floorPrices[payload.collectionId] = payload.floorPrice;
   },
   setFloorPriceOfToken(state, payload) {
     payload.token.floorPrice = payload.floorPrice;
+  },
+  setFloorPriceOfItem(state, payload) {
+    payload.item.floorPrice = payload.floorPrice;
   },
   addNftTransfer(state, nfts) {
     state.allTransferableNfts.push(...nfts); 
@@ -37,7 +45,7 @@ export const mutations = {
   addCollectionNftTransfer(state, payload) {
     state.collectionsNfts.push(...payload)
   },
-  removeNftTransfer(state, nfts) {
+  removeNftTransfer(state, nfts) { 
     nfts.forEach((nft) => { 
        state.allTransferableNfts = state.allTransferableNfts.filter((payloadNft) => {
         return payloadNft.tokenDataId !== nft.tokenDataId
@@ -61,7 +69,7 @@ export const mutations = {
   }, 
   removeCollectionsNftTransfer(state, paylod) {
     paylod.forEach((paylod) => {
-      const index = state.collectionsNfts.indexOf(paylod)
+      const index = state.collectionsNfts.indexOf(paylod) 
       if(index >= 0) {
         state.collectionsNfts.splice(index, 1);
       }
@@ -120,6 +128,15 @@ export const mutations = {
       payload.data[i].collectionName = payload.tokenDetails[i].collectionName;
     }
   },
+  setMetadataOfTokens(state, payload) {
+    for (let i = 0; i < payload.metadata.length; i++) {
+      const index = payload.metadata[i].index;
+
+      payload.data[index].image = payload.metadata[i].image;
+      payload.data[index].attributes = payload.metadata[i].attributes;
+    } 
+    state.collectionsNfts.push();
+  },
 };
 export const actions = {
   async getTokenDetailsOfTokens(context, payload) {
@@ -135,8 +152,63 @@ export const actions = {
         tokenDetails: res,
       });
     }
-  },
 
+    
+      const batchLength = 10;
+    const payloadLoop = Math.ceil(payload.length / batchLength);
+
+    for (let i = 0; i < payloadLoop; i++) {
+      const firstIndex = i * batchLength;
+
+      const lastIndex = i * batchLength + batchLength;
+
+      const currentPayload = payload.slice(firstIndex, lastIndex);
+
+      const metadata = [];
+
+      const payloadRes = await Promise.all(
+        currentPayload.map(async (token, index) => {
+          const tokenUri = token.metadataUri; 
+          if(!token.image) {
+          try {
+            
+
+            const metadataRes = await resolveUri(tokenUri, "all");
+
+            const image = metadataRes.image ? metadataRes.image : metadataRes;
+
+            const cachedImage = getCachedUrlOfImage(image);
+
+            metadata.push({
+              image: cachedImage,
+              attributes: metadataRes.attributes ? metadataRes.attributes : [],
+              index: index,
+            });
+
+            if (!token.image) {
+              await addTokenImageToTokens({
+                tokenUri: tokenUri,
+                imageUri: image,
+              });
+            }
+          } catch (error) {
+            metadata.push({
+              image: null,
+              attributes: [],
+              index: index,
+            });
+          } 
+        } 
+        })
+      );
+
+      context.commit("setMetadataOfTokens", {
+        data: currentPayload,
+        metadata: metadata,
+      });
+    } 
+  },
+  
   setNftTransfer(context, payload) {
     context.commit('addNftTransfer', payload);
     context.dispatch('getTokenDetailsOfTokens', payload); 
@@ -146,6 +218,9 @@ export const actions = {
     context.commit('addCollectionNftTransfer', payload);
     context.dispatch('getTokenDetailsOfTokens', payload); 
   },
-  
+ 
+  // removeNftAfterSend(contex, payload) {
+  //   contex.commit('removeCollectionsNftTransfer', payload)
+  //   contex.dispatch('removeNftCollection', payload)
+  // }
 };
-
