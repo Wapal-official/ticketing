@@ -81,7 +81,7 @@ export default {
 }
 
 ::v-deep .v-stepper__step--active .v-stepper__step__step {
-  @apply !tw-border-white !tw-text-white;
+  @apply !tw-border-white !tw-text-white !tw-bg-transparent;
 }
 
 ::v-deep .v-stepper__step--active .v-stepper__label,

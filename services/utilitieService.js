@@ -1,9 +1,8 @@
-
 const checkImageExtension = (filename) => {
-    const extensionRegex = /\.(png|jpe?g)$/i;
-  
-    return extensionRegex.test(filename);
-  };
+  const extensionRegex = /\.(png|jpe?g)$/i;
+
+  return extensionRegex.test(filename);
+};
 
 export const getCachedUrlOfImage = (url) => {
   if (checkImageExtension(url)) {
@@ -26,8 +25,7 @@ export const extractImageLinkFromCacheServerUrl = (url) => {
   const link = params.get("l");
 
   return link;
-};
-
+}; 
 
 export const formatPrice = (price) => {
     if (price === null || price === undefined) {
@@ -105,3 +103,4 @@ export var resolveUri = async (uri, key) => {
     console.log(e);
   }
 };
+ 

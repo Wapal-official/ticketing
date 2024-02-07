@@ -17,7 +17,7 @@
     <div
       class="tw-p-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-w-full"
     >
-      <h3 class="tw-text-lg tw-font-bold">{{ collection.name }}</h3>
+      <h3 class="tw-text-lg tw-font-bold">{{ getDisplayName }}</h3>
       <div
         class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
       >
@@ -105,6 +105,13 @@ export default {
       return moment(this.collection.candyMachine.public_sale_time).format(
         "MMM DD, hh:MM A"
       );
+    },
+    getDisplayName() {
+      if (this.collection.name.length > 23) {
+        return this.collection.name.slice(0, 23) + "...";
+      }
+
+      return this.collection.name;
     },
   },
 };

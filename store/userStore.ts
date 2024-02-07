@@ -14,8 +14,8 @@ export const mutations = {
 };
 
 export const actions = {
-  setUser({ commit }: { commit: any }) {
-    commit("setUser");
+  setUser({ commit }: { commit: any }, user: any) {
+    commit("setUser", user);
   },
   loginUser({ commit }: { commit: any }, user: any) {
     commit("setUser", {
@@ -24,16 +24,13 @@ export const actions = {
       token: user.token,
     });
 
-    Cookies.set(
+    localStorage.setItem(
       "user",
       JSON.stringify({
         user_id: user.user_id,
-
         token: user.token,
-      }),
-      {
-        expires: new Date(new Date().getTime() + 1000 * 3600 * 24),
-      }
+        expiresIn: new Date(new Date().getTime() + 1000 * 3600 * 24),
+      })
     );
   },
   disconnectUser({ commit }: { commit: any }) {
@@ -43,12 +40,6 @@ export const actions = {
       token: "",
     });
 
-    Cookies.set(
-      "user",
-      JSON.stringify({
-        user_id: "",
-        token: "",
-      })
-    );
+    localStorage.removeItem("user");
   },
 };

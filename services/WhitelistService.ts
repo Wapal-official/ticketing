@@ -81,10 +81,8 @@ export const getWhitelistEntryById = async (
 };
 
 export const setRoot = async (rootData: any) => {
-  const res = await axios.post(
-    `${process.env.baseURL}/api/whitelist/root`,
-    rootData
-  );
+  const PROOF_API_URL = process.env.PROOF_API_URL;
+  const res = await axios.post(`${PROOF_API_URL}/api/whitelist/root`, rootData);
 
   return res;
 };
@@ -106,8 +104,10 @@ export const getProof = async ({
   collectionId: string;
   phase: string;
 }) => {
-  const res = await publicRequest.get(
-    `/api/whitelist/proof?wallet_address=${walletAddress}&collection_id=${collectionId}&phase=${phase}`
+  const PROOF_API_URL = process.env.PROOF_API_URL;
+
+  const res = await axios.get(
+    `${PROOF_API_URL}/api/whitelist/proof?wallet_address=${walletAddress}&collection_id=${collectionId}&phase=${phase}`
   );
 
   return res;

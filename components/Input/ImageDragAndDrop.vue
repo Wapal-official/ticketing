@@ -35,6 +35,10 @@
       <label class="tw-text-xs tw-font-medium tw-text-dark-2" v-if="fileSize"
         >File Size: {{ fileSize }}</label
       >
+      <label class="tw-text-xs tw-font-medium tw-text-dark-2"
+        >These are feature requirements. Rest assured, it won't compromise the
+        quality of your NFT.</label
+      >
       <input
         type="file"
         accept=".png, .jpg, .jpeg, .gif, .webp"

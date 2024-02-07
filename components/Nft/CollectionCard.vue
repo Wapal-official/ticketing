@@ -41,7 +41,7 @@
       >
         <div
           class="tw-flex tw-flex-col tw-items-start tw-justify-start"
-          v-if="getPrice"
+          v-if="getPrice !== null && getPrice !== undefined && getPrice !== ''"
         >
           <div class="tw-uppercase tw-text-xs tw-font-semibold tw-text-dark-2">
             Price

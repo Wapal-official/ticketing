@@ -2,25 +2,29 @@
   <section class="tw-w-full tw-mx-auto tw-px-4 tw-pt-20 tw-pb-14 md:tw-w-[80%]">
     <h1 class="tw-text-xl tw-pb-4">
       <strong
-        >Terms and Disclaimer for Wapal (No code NFT Creator Studio)</strong
-      >
+        >Terms of Service for Wapal (No code NFT Creator Studio and Marketplace)
+      </strong>
     </h1>
     <p>
-      Wapal is a No Code NFT Creator Studio on the Aptos Blockchain. Wapal
-      hereinafter referred as
-      <strong> “Platform” or “Service” or “we” or “us” </strong>is powered by
-      NFT Mint Candy Machine Smart Contract, an open-source and audited smart
-      contract developed by Mokshya Protocol.
+      Wapal is a No Code NFT Creator Studio and NFT Marketplace on the Aptos
+      Blockchain. Wapal hereinafter referred as<strong>
+        “Platform” or “Service” or “we” or “us”
+      </strong>
+      is powered by NFT Mint Candy Machine and Marketplace Smart Contract, an
+      open-source and audited smart contract developed by Mokshya Protocol.
     </p>
-    <h2 class="tw-pb-4"><strong>Platform Features </strong></h2>
+    <h2 class="tw-pb-4"><strong>Platform Features</strong></h2>
     <p>
       <strong>No Code Creator Studio</strong> Wapal's in-built tooling allows
       creators to convert images into meta-data and hash lists and mint on Aptos
       without any coding requirements.
     </p>
-
     <p>
-      <strong>On-Chain Randomness </strong> What's the point of a mint if it's
+      <strong>Marketplace</strong> Wapal’s Marketplace allows users to list,
+      buy, sell or bid into NFT collections on Aptos
+    </p>
+    <p>
+      <strong>On-Chain Randomness</strong> What's the point of a mint if it's
       not random? Wapal uses the pseudo-random generator to enable minting
       randomly and thus prevent attackers from predicting and minting all the
       rare NFTs.
@@ -30,7 +34,7 @@
       Collection on Aptos significantly by reducing the Gas Costs.
     </p>
     <p>
-      <strong>Unlimited Permanent Storage for NFTs </strong>Wapal will directly
+      <strong>Unlimited Permanent Storage for NFTs</strong> Wapal will directly
       enable unlimited permanent storage of NFTs in Arweave through payment in
       APT.
     </p>
@@ -78,11 +82,13 @@
     <p>
       <strong> A. Agreement to Terms </strong>
       By accessing or using the Platform (even just browsing
-      <a href="https://wapal.io">https://wapal.io/</a>), you agree that you have
-      read and understood, and, as a condition to your use of the “platform”,
-      you agree to be bound by the following terms and conditions, including our
-      privacy policy . If you don’t agree with these terms, you may not use the
-      “platform” including browsing our website.
+      <a href="https://wapal.io" class="!tw-text-blue-800 tw-underline"
+        >https://wapal.io/</a
+      >), you agree that you have read and understood, and, as a condition to
+      your use of the “platform”, you agree to be bound by the following terms
+      and conditions, including our privacy policy . If you don’t agree with
+      these terms, you may not use the “platform” including browsing our
+      website.
     </p>
     <p>
       Certain features of the Platform, including transactions and
@@ -93,22 +99,24 @@
     </p>
     <p>
       <strong> B. Use of Platform</strong> Wapal allows users to create and
-      launch NFT projects on the Aptos Blockchain without requiring any coding
-      knowledge. You agree to use Wapal only for lawful purposes and in
+      launch NFT projects, list, buy, sell and bid NFT collections on the Aptos
+      Blockchain. You agree to use Wapal only for lawful purposes and in
       accordance with the given Terms. The “Platform” includes a website that
-      serves as a launchpad for NFTs that helps users launch their NFTs
+      serves as a launchpad and marketplace for NFTs that helps creators launch
+      their NFTs collection and lets users to list, buy, sell or bid on NFTs
       collection by facilitating interactions with the “Platform” and the "Aptos
       Network". Through the “Platform”, individuals, artists and brands (each, a
       “Creator” or "Seller") may present artwork and other content
       (collectively, “Creator Content”) and offer NFTs for sale to potential
       "buyers". Creators, Sellers, potential buyers, and other users of the
       Service are, collectively, “Users” and, each, a “User” or “you”. While
-      Wapal offers Creator Studio as a platform to Launch NFTs, we do not buy,
-      sell or take custody or possession of any NFTs, nor do we act as an agent
-      or custodian for any User of Wapal or the Service. Wapal will have no
-      insight into or control over payments or transactions for NFTs made on the
-      Aptos Network. Accordingly, Wapal will not be responsible or liable to you
-      for any losses incurred as a result of your use of the Aptos Network.
+      Wapal offers Creator Studio as a platform to Launch NFTs, and Marketplace
+      to list, buy, sell or bid on NFTs we do not buy, sell or take custody or
+      possession of any NFTs, nor do we act as an agent or custodian for any
+      User of Wapal or the Service. Wapal will have no insight into or control
+      over payments or transactions for NFTs made on the Aptos Network.
+      Accordingly, Wapal will not be responsible or liable to you for any losses
+      incurred as a result of your use of the Aptos Network.
     </p>
     <p>
       <strong> C. User Content</strong> As between you and us, you will continue
@@ -127,7 +135,7 @@
       marketing and promoting the Service.
     </p>
     <p>
-      Wapal does not control and does not have any obligation to monitor: (a)
+      WWapal does not control and does not have any obligation to monitor: (a)
       Creator or Seller Content; (b) any content made available by third
       parties; or (c) the use of the Platform by its Users. You acknowledge and
       agree that Wapal reserves the right to, and may from time to time, monitor
@@ -189,10 +197,10 @@
       directly by you and no other person.
     </p>
     <p>
-      <strong> F. License </strong>The Service is licensed, not sold. Subject to
-      your compliance with these Terms and applicable law, we hereby grant you a
-      non-exclusive, limited, revocable right for you to use the Platform. At
-      the end of your license term, your license will expire as set forth in
+      <strong> F. License </strong> The Service is licensed, not sold. Subject
+      to your compliance with these Terms and applicable law, we hereby grant
+      you a non-exclusive, limited, revocable right for you to use the Platform.
+      At the end of your license term, your license will expire as set forth in
       these Terms.
     </p>
     <p>
@@ -217,7 +225,7 @@
       and use of the service (including blocking certain ip addresses), to any
       person for any reason or for no reason, including without limitation for
       breach of any representation, warranty, or covenant contained in these
-      terms or of any applicable law or regulation. we may terminate your use or
+      terms or of any applicable law or regulation. We may terminate your use or
       participation in the site at any time, without warning, at our sole
       discretion.
     </p>
@@ -255,7 +263,7 @@
       permitted by law, you may not use the Trademarks to disparage us or the
       applicable third party, our or a third party’s products or services, or in
       any manner (using commercially reasonable judgment) that may damage any
-      goodwill in the Trademarks.
+      goodwill in the Trademarks
     </p>
     <p>
       <strong> Launchpad and Mint Pages</strong>. If you are a Creator, you will
@@ -274,35 +282,9 @@
     </p>
     <p>
       <strong> H. Cost and Fees</strong> Our fees for the platform “Wapal - No
-      code NFT Creator Studio” is 3% defined as “Platform Fee”.
-    </p>
-    <p>
-      If you are using the Platform to mint NFTs, you are a “Buyer,” and if you
-      are using the Platform to launch NFTs, you are a “Seller.” “Revenue” means
-      the gross amount paid by the Buyer to the Seller of the NFTs using the
-      Platform.
-    </p>
-    <p>
-      (i) “Buyer” agrees to pay mint price and all other applicable fees,
-      including Aptos Network fees and wallet fees during mint.
-    </p>
-    <p>
-      (ii) “Seller” agrees to pay 3% of the Total Revenue to the “Platform” and
-      authorize us to automatically charge "Seller“ for any such fees or deduct
-      such fees (directly from amounts paid by the “Buyer”).
-    </p>
-    <p>
-      (iii) If you are a “Seller”, you will receive “Revenue” less the “Platform
-      Fee” for each sale of your NFT using the Platform. For eg: Seller list 1
-      NFt in the platform launchpad for Buyer to mint, 1 APT is the mint price
-      per NFT. Revenue is 1 APT. Therefore, Seller receives 0.97 APT, the
-      Platform receives 0.03 APT, Buyer receives 1 NFT.
-    </p>
-    <p>
-      All amounts payable under these Terms are non-refundable and without
-      set-off or counterclaim.  All Fees are exclusive of any taxes, levies, or
-      duties. You are wholly responsible for any taxes that may arise out of
-      these Terms or your licensing or use of the Service.
+      code NFT Creator Studio” is 3% of total mint proceeds defined as “Platform
+      Fee” charged to Creators and “Wapal NFT Marketplace” is 1.5% of total
+      transaction charged to buyers defined as “Marketplace Fee”.
     </p>
 
     <h2 class="tw-pb-4"><strong>I. Third-Party Terms</strong></h2>
@@ -373,9 +355,9 @@
       (vii) Attempt to access or search the the Platform or content available on
       the the Platform or download content from the the Platform through the use
       of any engine, software, tool, agent, device or mechanism (including
-      spiders, robots, crawlers, data mining, gathering, or extraction tools and
-      the like) other than the software and/or search agents provided by us or
-      other generally available third-party web browsers;
+      spiders, robots, crawlers, data mining, gathering, or extraction tools)
+      other than the software and/or search agents provided by us or other
+      generally available third-party web browsers;
     </p>
     <p>
       (viii) Perform any fraudulent activity including impersonating any person
@@ -403,14 +385,10 @@
       agents and partners shall not be liable for any indirect, incidental,
       special, consequential, or punitive damages, including without limitation,
       loss of profits, data, use, goodwill, or other intangible losses,
-      resulting from To the maximum extent permitted by law, the Platform and
-      its affiliates, officers, employees, agents and partners shall not be
-      liable for any indirect, incidental, special, consequential, or punitive
-      damages, including without limitation, loss of profits, data, use,
-      goodwill, or other intangible losses, resulting from (i) your access to or
-      use of or inability to access or use the service, (ii) any conduct or
-      content of any third party on the service, or (iii) unauthorized access,
-      use or alteration of your transmissions or content.
+      resulting from (i) your access to or use of or inability to access or use
+      the service, (ii) any conduct or content of any third party on the
+      service, or (iii) unauthorized access, use or alteration of your
+      transmissions or content.
     </p>
     <p>
       <strong>M. Indemnification</strong> To the fullest extent permitted by
@@ -469,17 +447,18 @@
     </p>
     <p>
       <strong> (ii) Governing Law </strong>The Platform is owned and operated by
-      Mokshya Protocol Association, Buechackerweg 2, 8234 Stetten, Switzerland.
-      You agree that these Terms and your use of the Platform are governed under
-      Swiss Legal System and any dispute related to the Platform must be brought
-      in a tribunal of competent jurisdiction located in or near Stetten. We
-      operate the Platform from our offices, and we make no representation that
-      Materials included in the Platform are appropriate or available for use in
-      other locations.
+      Mokshya Protocol, Switzerland. You agree that these Terms and your use of
+      the Platform are governed under the Swiss Legal System and any dispute
+      related to the Platform must be brought in a tribunal of competent
+      jurisdiction located in Switzerland. We operate the Platform from our
+      offices, and we make no representation that Materials included in the
+      Platform are appropriate or available for use in other locations.
     </p>
     <p>
       <strong>(iii) Privacy Policy</strong> Please read the
-      <a href="/privacy-policy">Privacy Policy</a>
+      <a href="/privacy-policy" class="!tw-text-blue-800 tw-underline"
+        >Privacy Policy</a
+      >
       carefully for information relating to our collection, use, storage, and
       disclosure of your personal information. The Wapal Privacy Policy is
       incorporated by this reference into, and made a part of, these Terms.
@@ -493,7 +472,10 @@
     </p>
     <p>
       <strong> (v) Contact Information</strong> You may contact us by emailing
-      us at <a href="mailto:info@wapal.io">info@wapal.io</a>.
+      us at
+      <a href="mailto:info@wapal.io" class="!tw-text-blue-800 tw-underline"
+        >info@wapal.io</a
+      >.
     </p>
     <p>
       <strong>(vi) No Support</strong> We are under no obligation to provide
@@ -506,7 +488,7 @@
       Access to the Platform from countries or territories or by individuals
       where such access is illegal is prohibited.
     </p>
-    <p>Last Updated: 3/31/2023</p>
+    <p class="tw-font-bold tw-text-red-600">Last Updated: 01/30/2024</p>
   </section>
 </template>
 <script lang="ts">

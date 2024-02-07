@@ -21,15 +21,8 @@
           v-if="showStartNextPhaseButton && collection.phases.length > 1"
         />
         <button-primary
-          title="Resume Mint"
-          @click="pauseOrResumeMint"
-          v-if="mintingPaused && !collection.isEdition"
-          :bordered="true"
-        />
-        <button-primary
           :title="mintingPaused ? 'Resume Mint' : 'Pause Mint'"
           @click="pauseOrResumeMint"
-          v-if="collection.isEdition"
           :bordered="true"
         />
       </div>
@@ -834,6 +827,14 @@ export default {
         });
 
         const candyMachine = this.collection.candyMachine;
+
+        if (
+          new Date(candyMachine.public_sale_time).getTime() -
+            new Date(candyMachine.whitelist_sale_time).getTime() <=
+          1000
+        ) {
+          candyMachine.whitelist_sale_time = this.editCollection.publicSaleTime;
+        }
 
         candyMachine.public_sale_time = this.editCollection.publicSaleTime;
 

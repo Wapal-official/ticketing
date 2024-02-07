@@ -68,7 +68,7 @@ export default {
       description:
         "Sanctuaries are homes to the fighting Monkeys who stood their ground to protect their lands and fortunes.",
       image:
-        "https://arweave.net/z92BGaOGx-DYVTP_O8W31rAsu3PUO7uAQjzgXIoB2vc/199.png",
+        "https://cache.wapal.io/api/cache?l=https://arweave.net/z92BGaOGx-DYVTP_O8W31rAsu3PUO7uAQjzgXIoB2vc/199.png",
       twitter: "https://twitter.com/AptosMonkeys",
       website: "https://www.aptosmonkeys.club/",
       discord: "https://discord.com/invite/sFfe75BHQ3",
