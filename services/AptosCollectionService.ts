@@ -465,6 +465,16 @@ export const executeTransactionAndGiveResult = async (payload: any) => {
   return result;
 };
 
+export const executeSmartContract = async (initParams: any) => {
+  const transaction = await wallet.signAndSubmitTransaction(initParams);
+
+  const result = await client.waitForTransactionWithResult(transaction.hash);
+
+  return result;
+};
+ 
+
+
 export const createCollectionV2 = async (candyMachineArguments: any) => {
   checkWalletConnected();
 
