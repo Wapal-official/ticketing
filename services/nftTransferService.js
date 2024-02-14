@@ -1,9 +1,9 @@
 import { resolveUri, getCachedUrlOfImage } from "@/services/utilitieService";
-import axios from "axios";  
+import axios from "axios";
 import { duplicateQueryWithMultipleVariables } from "@/utils/duplicate";
-import {executeSmartContract} from "@/services/AptosCollectionService"
-const RUST_INDEXER_URL = 'https://rust-mainnet.wapal.io/graphql'
-let GRAPHQL_URL = 'https://indexer.mainnet.aptoslabs.com/v1/graphql'
+import { executeSmartContract } from "@/services/AptosCollectionService";
+const RUST_INDEXER_URL = "https://rust-mainnet.wapal.io/graphql";
+let GRAPHQL_URL = "https://indexer.mainnet.aptoslabs.com/v1/graphql";
 
 export const getTokenDetails = async (tokens) => {
   if (tokens.length === 0) {
@@ -93,10 +93,13 @@ export const getFixedPrice = (price) => {
 
 export const addTokenImageToTokens = async ({ tokenUri, imageUri }) => {
   try {
-    const res = await axios.post(`https://marketplace-api.wapal.io/collection/tokens/image`, {
-      tokenUri: tokenUri,
-      imageUri: imageUri,
-    });
+    const res = await axios.post(
+      `https://marketplace-api.wapal.io/collection/tokens/image`,
+      {
+        tokenUri: tokenUri,
+        imageUri: imageUri,
+      }
+    );
   } catch (error) {}
 };
 
@@ -104,9 +107,12 @@ export const getPortfolioSummaryOfUser = async ({
   collectionId,
   wallet_address,
 }) => {
-  const res = await axios.get(`https://marketplace-api.wapal.io/user/pnl/${wallet_address}`, {
-    params: { collectionId: collectionId },
-  });
+  const res = await axios.get(
+    `https://marketplace-api.wapal.io/user/pnl/${wallet_address}`,
+    {
+      params: { collectionId: collectionId },
+    }
+  );
 
   const data = res.data;
 
@@ -119,7 +125,6 @@ export const getPortfolioSummaryOfUser = async ({
     listedCount: data.listedCount,
   };
 };
- 
 
 export const getTokenOfNftTransfer = async ({
   page,
@@ -189,7 +194,6 @@ export const formatPrice = (price) => {
   return formattedPrice;
 };
 
-
 export const getFloorPrice = async (collectionId) => {
   try {
     if (!collectionId.startsWith("0x")) {
@@ -239,15 +243,18 @@ export const getNftTransferCollectionsOfUser = async ({
 }) => {
   const collectionType = type === "listed" ? type : null;
 
-  const res = await axios.get(`https://marketplace-api.wapal.io/user/collections/${walletAddress}`, {
-    params: {
-      page: page,
-      take: limit,
-      type: collectionType,
-      search: searchText,
-    },
-    signal: signal,
-  });
+  const res = await axios.get(
+    `https://marketplace-api.wapal.io/user/collections/${walletAddress}`,
+    {
+      params: {
+        page: page,
+        take: limit,
+        type: collectionType,
+        search: searchText,
+      },
+      signal: signal,
+    }
+  );
 
   const collections = res.data;
 
@@ -265,20 +272,23 @@ export const getNftTransferCollectionsOfUser = async ({
   });
 
   return finalCollections;
-}; 
+};
 
 export const getNftCount = async ({ collectionId, wallet_address, type }) => {
   try {
-    const collectionType = 'non_listed'
-    const res = await axios.get(`https://marketplace-api.wapal.io/user/tokens/${wallet_address}/count`, {
-      params: { type: collectionType, collectionId: collectionId },
-    });
-    const data = res.data; 
+    const collectionType = "non_listed";
+    const res = await axios.get(
+      `https://marketplace-api.wapal.io/user/tokens/${wallet_address}/count`,
+      {
+        params: { type: collectionType, collectionId: collectionId },
+      }
+    );
+    const data = res.data;
     return {
-      count: data.count, 
+      count: data.count,
     };
   } catch (error) {
-    console.error('Error fetching NFT count:', error);
+    console.error("Error fetching NFT count:", error);
     throw error;
   }
 };
@@ -298,134 +308,134 @@ export const getDetailCollection = async (collectionId) => {
   return collection;
 };
 
-
 export const getCollectionById = async (collectionId) => {
-  const res = await axios.get(`https://marketplace-api.wapal.io/collection/${collectionId}`);
+  const res = await axios.get(
+    `https://marketplace-api.wapal.io/collection/${collectionId}`
+  );
 
   return res.data;
 };
 
-export const nftTransfer = async(tokens, receiverAddresses) => {
-  const tokensV1 = [] 
-  const tokensV2 = [] 
+export const nftTransfer = async (tokens, receiverAddresses) => {
+  const tokensV1 = [];
+  const tokensV2 = [];
   tokens.map((token) => {
-   if(token.tokenStandard == 'v1') {
-     tokensV1.push(token)
-   } else {
-     tokensV2.push(token)
-   }
+    if (token.tokenStandard == "v1") {
+      tokensV1.push(token);
+    } else {
+      tokensV2.push(token);
+    }
   });
-  
-  if(tokensV1.length > 0) {
-   if (tokensV1.length == 1) { 
-     await nftTransferV1(tokensV1, receiverAddresses)
-   } else {
-     await nftTransferManyV1(tokensV1, receiverAddresses) 
-   } 
+
+  if (tokensV1.length > 0) {
+    if (tokensV1.length == 1) {
+      await nftTransferV1(tokensV1, receiverAddresses);
+    } else {
+      await nftTransferManyV1(tokensV1, receiverAddresses);
+    }
   }
- if (tokensV2.length > 0) {
-   if (tokensV2.length == 1) { 
-     await nftTransferV2(tokensV2, receiverAddresses)
-   } else {
-     await nftTransferManyV2(tokensV2, receiverAddresses) 
-   } 
- }
-     
- }
- 
- export const nftTransferV1 = async (tokens, receiverAddresses) => {
-   const pid = "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37";
-   const func = pid + "::transfer::transfer_v1";  
-   
-   let initParams = {
-     type: "entry_function_payload",
-     type_arguments: [],
-     function: func,
-     arguments: [
-       tokens[0].creatorAddress,
-       tokens[0].collectionName,
-       tokens[0].tokenName,
-       tokens[0].propertyVersion,
-       receiverAddresses[0],
-     ],
-   };
-  
- 
-   const response = await executeSmartContract(initParams);
-   return response;
- };
- 
- export const nftTransferManyV1 = async (tokens, receiverAddresses) => {
-   const pid = "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37";
-   let func = null; 
-  
-     func = pid + "::transfer::transfer_many_v1";
- 
-     const collectionNames = [];
-     const creatorAddresses = [];
-     const tokenNames = [];
-     const propertyVersions = []; 
-   const payloadReceiverAddress = [];
-     tokens.map((token) => {
-       collectionNames.push(token.collectionName);
-       creatorAddresses.push(token.creatorAddress);
-       tokenNames.push(token.tokenName);
-       propertyVersions.push(token.propertyVersion); 
-       payloadReceiverAddress.push(receiverAddresses[0]);
-     });
- 
-   let initParams = {
-     type: "entry_function_payload",
-     type_arguments: [],
-     function: func,
-     arguments: [
-       creatorAddresses,
-       collectionNames,
-       tokenNames,
-       propertyVersions,
-       payloadReceiverAddress,
-     ],
-   };
- 
- 
-   const response = await executeSmartContract(initParams);
-   return response;
- };
- 
- 
- export const nftTransferV2 = async (tokens, receiverAddresses) => {
-   const pid = "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37";
-   const func = pid + "::transfer::transfer_v2"; 
-   let initParams = {
-     type: "entry_function_payload",
-     type_arguments: [],
-     function: func,
-     arguments: [tokens[0].tokenDataId, receiverAddresses[0]],
-   };
-   const response = await executeSmartContract(initParams);
-   return response;
- };
- 
- export const nftTransferManyV2 = async (tokens, receiverAddresses) => {
-   const pid = "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37";
-   let func = null; 
-     func = pid + "::transfer::transfer_many_v2"; 
- 
-     const tokenDataIds = []; 
-     const payloadReceiverAddress = [];
-     tokens.map((token) => {
-       tokenDataIds.push(token.tokenDataId); 
-       payloadReceiverAddress.push(receiverAddresses[0]);
-     });
- 
-   let initParams = {
-     type: "entry_function_payload",
-     type_arguments: [],
-     function: func,
-     arguments: [tokenDataIds, payloadReceiverAddress],
-   };
- 
-   const response = await executeSmartContract(initParams);
-   return response;
- };
- 
+  if (tokensV2.length > 0) {
+    if (tokensV2.length == 1) {
+      await nftTransferV2(tokensV2, receiverAddresses);
+    } else {
+      await nftTransferManyV2(tokensV2, receiverAddresses);
+    }
+  }
+};
+
+export const nftTransferV1 = async (tokens, receiverAddresses) => {
+  const pid =
+    "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37";
+  const func = pid + "::transfer::transfer_v1";
+
+  let initParams = {
+    type: "entry_function_payload",
+    type_arguments: [],
+    function: func,
+    arguments: [
+      tokens[0].creatorAddress,
+      tokens[0].collectionName,
+      tokens[0].tokenName,
+      tokens[0].propertyVersion,
+      receiverAddresses[0],
+    ],
+  };
+
+  const response = await executeSmartContract(initParams);
+  return response;
+};
+
+export const nftTransferManyV1 = async (tokens, receiverAddresses) => {
+  const pid =
+    "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37";
+  let func = null;
+
+  func = pid + "::transfer::transfer_many_v1";
+
+  const collectionNames = [];
+  const creatorAddresses = [];
+  const tokenNames = [];
+  const propertyVersions = [];
+  const payloadReceiverAddress = [];
+  tokens.map((token) => {
+    collectionNames.push(token.collectionName);
+    creatorAddresses.push(token.creatorAddress);
+    tokenNames.push(token.tokenName);
+    propertyVersions.push(token.propertyVersion);
+    payloadReceiverAddress.push(receiverAddresses[0]);
+  });
+
+  let initParams = {
+    type: "entry_function_payload",
+    type_arguments: [],
+    function: func,
+    arguments: [
+      creatorAddresses,
+      collectionNames,
+      tokenNames,
+      propertyVersions,
+      payloadReceiverAddress,
+    ],
+  };
+
+  const response = await executeSmartContract(initParams);
+  return response;
+};
+
+export const nftTransferV2 = async (tokens, receiverAddresses) => {
+  const pid =
+    "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37";
+  const func = pid + "::transfer::transfer_v2";
+  let initParams = {
+    type: "entry_function_payload",
+    type_arguments: [],
+    function: func,
+    arguments: [tokens[0].tokenDataId, receiverAddresses[0]],
+  };
+  const response = await executeSmartContract(initParams);
+  return response;
+};
+
+export const nftTransferManyV2 = async (tokens, receiverAddresses) => {
+  const pid =
+    "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37";
+  let func = null;
+  func = pid + "::transfer::transfer_many_v2";
+
+  const tokenDataIds = [];
+  const payloadReceiverAddress = [];
+  tokens.map((token) => {
+    tokenDataIds.push(token.tokenDataId);
+    payloadReceiverAddress.push(receiverAddresses[0]);
+  });
+
+  let initParams = {
+    type: "entry_function_payload",
+    type_arguments: [],
+    function: func,
+    arguments: [tokenDataIds, payloadReceiverAddress],
+  };
+
+  const response = await executeSmartContract(initParams);
+  return response;
+};
