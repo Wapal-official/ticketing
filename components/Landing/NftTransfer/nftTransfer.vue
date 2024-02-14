@@ -49,7 +49,7 @@
                   style="position: relative"
                 >
                   <v-tab class="capitalize"> All Nfts </v-tab>
-                  <v-tab class="capitalize"> NFTs by Collection </v-tab>
+                  <v-tab class="capitalize tw-mr-2"> NFTs by Collection </v-tab>
                   <!-- <v-tab class="capitalize"> Airdrop </v-tab> -->
                   <v-spacer
                     v-if="$vuetify.breakpoint.smAndUp == true"

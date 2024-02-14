@@ -169,7 +169,7 @@ export default {
 }
 .sticky {
   position: sticky;
-  top: 0;
+  top: -1;
   z-index: 1;
   background-color: #101113;
 }

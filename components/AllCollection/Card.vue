@@ -81,6 +81,15 @@ export default {
 
       const collection = await getCollection(this.collection._id);
 
+      if (
+        new Date(this.collection.candyMachine.whitelist_sale_time).getTime() >
+        Date.now()
+      ) {
+        this.totalSupply = this.collection.supply;
+        this.minted = 0;
+        return;
+      }
+
       const res = await this.$store.dispatch(
         "walletStore/getSupplyAndMintedOfCollection",
         {
@@ -105,14 +114,6 @@ export default {
         this.totalSupply = 343;
       } else if (this.collection._id === "654e26260a58324d3465b4cb") {
         this.totalSupply = 955;
-      }
-
-      if (this.collection.username === "boomers") {
-        this.minted = 0;
-      }
-
-      if (this.collection.username === "magical-potion") {
-        this.minted = 0;
       }
 
       if (this.totalSupply == this.minted) {

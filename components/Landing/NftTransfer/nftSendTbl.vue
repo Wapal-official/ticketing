@@ -163,6 +163,7 @@
                 <span v-else>-</span>
                 <v-icon
                   v-if="listView == true || GridView == true"
+                  color="#909296"
                   style="
                     font-size: 14px;
                     margin-left: 3px;
@@ -201,7 +202,7 @@
                   <v-col cols="12" align="center">
                     <div class="tw-mt-4" v-if="!allLoaded">
                       <nft-transfer-skeleton
-                        :cols="collectionsNfts.length == 0 ? 8 : 4"
+                        :cols="calculateColumns()"
                         class="tw-my-2 sm:tw-my-3 md:tw-my-4"
                         v-intersect.quiet="{
                           handler: onIntersect,
@@ -405,6 +406,17 @@ export default {
     }
   },
   methods: {
+    calculateColumns() {
+      if (this.collectionsNfts.length == 0) {
+        return 8;
+      } else {
+        if (this.$vuetify.breakpoint.smAndDown) {
+          return 2;
+        } else {
+          return 4;
+        }
+      }
+    },
     async currentUserNfts(collectionId, colIndex) {
       if (!collectionId) {
         return;

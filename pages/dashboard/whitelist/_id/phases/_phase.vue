@@ -135,28 +135,14 @@
               </button-primary>
             </label>
           </form>
-          <tool-tip>
-            <template #text>
-              <i class="bx bx-info-circle tw-text-xl"></i>
-            </template>
-            <template #tip>
-              <div
-                class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
-              >
-                <div class="tw-font-semibold">Caution</div>
-
-                <div>If a user/address participates in different</div>
-                <div>mint phases with different mint limits, kindly</div>
-                <div>use separate addresses for each phase's</div>
-                <div>mint limit for the same user.</div>
-                <div class="tw-pt-2">
-                  If a user/address has the same limit at
-                </div>
-                <div>all the phases, using the same</div>
-                <div>address is acceptable in each phase</div>
-              </div>
-            </template>
-          </tool-tip>
+          <a
+            href="https://drive.google.com/uc?export=download&id=1AUxzxn0Gl91UEHPYqG7TABBDK_JtMmNo"
+            download="Whitelist Addresses Sample"
+            class="tw-rounded-md !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm '!tw-border-solid tw-border tw-border-dark-4 tw-bg-transparent tw-py-2' disabled:tw-cursor-not-allowed"
+          >
+            <span>Sample CSV</span>
+            <i class="bx bxs-download"></i>
+          </a>
         </div>
       </div>
     </div>

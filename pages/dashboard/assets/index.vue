@@ -79,7 +79,11 @@
         v-model="newFolderName"
         class="tw-w-full tw-px-4 tw-py-2 tw-dark-0 tw-bg-transparent tw-rounded tw-border-solid tw-border-2 tw-border-wapal-gray focus:tw-outline-none"
         placeholder="Vault Name"
+        @input="validateVaultName"
       />
+      <div class="tw-text-red-600 tw-text-sm" v-if="vaultNameError">
+        Please remove spaces and special characters from vault name
+      </div>
       <div
         class="tw-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
       >
@@ -89,7 +93,7 @@
           @click="cancelCreatingNewFolder"
         />
         <button-primary
-          :disabled="!newFolderName"
+          :disabled="!newFolderName || vaultNameError"
           :title="currentFolder.folder_name ? 'Rename' : 'Create'"
           @click="createNewFolder"
         />
@@ -150,6 +154,7 @@ export default {
       deleteFolderDialog: false,
       breadcrumbs: [{ text: "Vaults" }],
       loading: true,
+      vaultNameError: false,
       defaultTheme,
     };
   },
@@ -192,6 +197,7 @@ export default {
       }
 
       this.newFolderDialog = false;
+      this.vaultNameError = false;
     },
     folderClicked(folderName: string | null) {
       this.$router.push(`/dashboard/assets/${folderName}`);
@@ -287,11 +293,21 @@ export default {
       this.newFolderDialog = false;
       this.currentFolder = { folder_name: "" };
     },
+    validateVaultName() {
+      const vaultNameRegex = /[^a-zA-Z0-9_]/g;
+      if (!vaultNameRegex.test(this.newFolderName)) {
+        this.vaultNameError = false;
+        return;
+      }
+
+      this.vaultNameError = true;
+    },
   },
   watch: {
     newFolderDialog(showNewFolderDialog: any) {
       if (!showNewFolderDialog) {
         this.newFolderName = "";
+        this.vaultNameError = false;
       }
     },
   },

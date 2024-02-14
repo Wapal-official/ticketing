@@ -1,5 +1,8 @@
 import { divideIntoBatches } from "@/utils/batches";
-import { getTokenDetails } from "@/services/nftTransferService";
+import {
+  addTokenImageToTokens,
+  getTokenDetails,
+} from "@/services/nftTransferService";
 import { resolveUri, getCachedUrlOfImage } from "@/services/utilitieService";
 
 export const state = () => ({
@@ -10,27 +13,27 @@ export const state = () => ({
   airdropData: [],
   nftCount: null,
   selectedCheck: [],
-  singleCheck: false, 
-  collectionsNfts: [], 
+  singleCheck: false,
+  collectionsNfts: [],
   floorPrices: {
     collectionId: [],
-    floorPrice: []
-  }, 
-  userCollection: [], 
+    floorPrice: [],
+  },
+  userCollection: [],
   allNftsLoaded: false,
 });
 
-export const mutations = {  
+export const mutations = {
   setCollectionNftCount(state, payload) {
-    state.selectedData[0].count = payload
-  }, 
-  setUserCollection(state, payload) { 
-    state.userCollection = payload
+    state.selectedData[0].count = payload;
+  },
+  setUserCollection(state, payload) {
+    state.userCollection = payload;
   },
   setAllLoaded(state, payload) {
-    state.allNftsLoaded = payload 
-  },  
-  setFloorPrice(state, payload) { 
+    state.allNftsLoaded = payload;
+  },
+  setFloorPrice(state, payload) {
     state.floorPrices[payload.collectionId] = payload.floorPrice;
   },
   setFloorPriceOfToken(state, payload) {
@@ -40,40 +43,46 @@ export const mutations = {
     payload.item.floorPrice = payload.floorPrice;
   },
   addNftTransfer(state, nfts) {
-    state.allTransferableNfts.push(...nfts); 
+    state.allTransferableNfts.push(...nfts);
   },
   addCollectionNftTransfer(state, payload) {
-    state.collectionsNfts.push(...payload)
+    state.collectionsNfts.push(...payload);
   },
-  removeNftTransfer(state, nfts) { 
-    nfts.forEach((nft) => { 
-       state.allTransferableNfts = state.allTransferableNfts.filter((payloadNft) => {
-        return payloadNft.tokenDataId !== nft.tokenDataId
-      })
+  removeNftTransfer(state, nfts) {
+    nfts.forEach((nft) => {
+      state.allTransferableNfts = state.allTransferableNfts.filter(
+        (payloadNft) => {
+          return payloadNft.tokenDataId !== nft.tokenDataId;
+        }
+      );
 
       state.collectionsNfts = state.collectionsNfts.filter((payloadNft) => {
-        return payloadNft.tokenDataId !== nft.tokenDataId
-      }) 
-      if(state.selectedData[0] && state.selectedData[0].collectionId == nft.collectionId) {
-        state.selectedData[0].count--
-        state.selectedData[0].valuePrice = 
-        parseFloat(state.selectedData[0].floorPrice) * parseFloat(state.selectedData[0].count)
+        return payloadNft.tokenDataId !== nft.tokenDataId;
+      });
+      if (
+        state.selectedData[0] &&
+        state.selectedData[0].collectionId == nft.collectionId
+      ) {
+        state.selectedData[0].count--;
+        state.selectedData[0].valuePrice =
+          parseFloat(state.selectedData[0].floorPrice) *
+          parseFloat(state.selectedData[0].count);
       }
     });
   },
   setNftTransfer(state, paylod) {
     state.allTransferableNfts = paylod;
-  }, 
+  },
   setCollectionsNftTransfer(state, paylod) {
     state.collectionsNfts = paylod;
-  }, 
+  },
   removeCollectionsNftTransfer(state, paylod) {
     paylod.forEach((paylod) => {
-      const index = state.collectionsNfts.indexOf(paylod) 
-      if(index >= 0) {
+      const index = state.collectionsNfts.indexOf(paylod);
+      if (index >= 0) {
         state.collectionsNfts.splice(index, 1);
       }
-    }); 
+    });
   },
   setNftTransferTabs(state, paylod) {
     state.tabs = paylod;
@@ -110,10 +119,7 @@ export const mutations = {
     state.selectedData.push(paylod);
   },
   removeSelectedCollection(state, paylod) {
-    state.selectedData.splice(
-      state.selectedData.indexOf(paylod),
-      1
-    );
+    state.selectedData.splice(state.selectedData.indexOf(paylod), 1);
   },
 
   setCheckData(state, payload) {
@@ -134,7 +140,7 @@ export const mutations = {
 
       payload.data[index].image = payload.metadata[i].image;
       payload.data[index].attributes = payload.metadata[i].attributes;
-    } 
+    }
     state.collectionsNfts.push();
   },
 };
@@ -153,8 +159,7 @@ export const actions = {
       });
     }
 
-    
-      const batchLength = 10;
+    const batchLength = 10;
     const payloadLoop = Math.ceil(payload.length / batchLength);
 
     for (let i = 0; i < payloadLoop; i++) {
@@ -168,37 +173,37 @@ export const actions = {
 
       const payloadRes = await Promise.all(
         currentPayload.map(async (token, index) => {
-          const tokenUri = token.metadataUri; 
-          if(!token.image) {
-          try {
-            
+          const tokenUri = token.metadataUri;
+          if (!token.image) {
+            try {
+              const metadataRes = await resolveUri(tokenUri, "all");
 
-            const metadataRes = await resolveUri(tokenUri, "all");
+              const image = metadataRes.image ? metadataRes.image : metadataRes;
 
-            const image = metadataRes.image ? metadataRes.image : metadataRes;
+              const cachedImage = getCachedUrlOfImage(image);
 
-            const cachedImage = getCachedUrlOfImage(image);
+              metadata.push({
+                image: cachedImage,
+                attributes: metadataRes.attributes
+                  ? metadataRes.attributes
+                  : [],
+                index: index,
+              });
 
-            metadata.push({
-              image: cachedImage,
-              attributes: metadataRes.attributes ? metadataRes.attributes : [],
-              index: index,
-            });
-
-            if (!token.image) {
-              await addTokenImageToTokens({
-                tokenUri: tokenUri,
-                imageUri: image,
+              if (!token.image) {
+                await addTokenImageToTokens({
+                  tokenUri: tokenUri,
+                  imageUri: image,
+                });
+              }
+            } catch (error) {
+              metadata.push({
+                image: null,
+                attributes: [],
+                index: index,
               });
             }
-          } catch (error) {
-            metadata.push({
-              image: null,
-              attributes: [],
-              index: index,
-            });
-          } 
-        } 
+          }
         })
       );
 
@@ -206,19 +211,19 @@ export const actions = {
         data: currentPayload,
         metadata: metadata,
       });
-    } 
+    }
   },
-  
+
   setNftTransfer(context, payload) {
-    context.commit('addNftTransfer', payload);
-    context.dispatch('getTokenDetailsOfTokens', payload); 
+    context.commit("addNftTransfer", payload);
+    context.dispatch("getTokenDetailsOfTokens", payload);
   },
 
   setCollectionsNftTransfer(context, payload) {
-    context.commit('addCollectionNftTransfer', payload);
-    context.dispatch('getTokenDetailsOfTokens', payload); 
+    context.commit("addCollectionNftTransfer", payload);
+    context.dispatch("getTokenDetailsOfTokens", payload);
   },
- 
+
   // removeNftAfterSend(contex, payload) {
   //   contex.commit('removeCollectionsNftTransfer', payload)
   //   contex.dispatch('removeNftCollection', payload)

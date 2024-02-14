@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const checkImageExtension = (filename) => {
   const extensionRegex = /\.(png|jpe?g)$/i;
 
@@ -25,22 +27,21 @@ export const extractImageLinkFromCacheServerUrl = (url) => {
   const link = params.get("l");
 
   return link;
-}; 
+};
 
 export const formatPrice = (price) => {
-    if (price === null || price === undefined) {
-      return price;
-    }
-  
-    let formattedPrice = price / Math.pow(10, 8);
-  
-    if (formattedPrice - Math.floor(formattedPrice) !== 0) {
-      formattedPrice = parseFloat(formattedPrice.toFixed(4));
-    }
-    return formattedPrice;
-  };
+  if (price === null || price === undefined) {
+    return price;
+  }
 
-  
+  let formattedPrice = price / Math.pow(10, 8);
+
+  if (formattedPrice - Math.floor(formattedPrice) !== 0) {
+    formattedPrice = parseFloat(formattedPrice.toFixed(4));
+  }
+  return formattedPrice;
+};
+
 export var resolveUri = async (uri, key) => {
   try {
     if (uri.slice(0, 7) == "ipfs://") {
@@ -103,4 +104,3 @@ export var resolveUri = async (uri, key) => {
     console.log(e);
   }
 };
- 
