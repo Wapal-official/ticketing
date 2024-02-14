@@ -219,9 +219,10 @@ export const actions = {
     }
   },
   async disconnectWallet({ commit, state }: { commit: any; state: any }) {
-    if (wallet.account) {
+    try {
       await wallet.disconnect();
-    }
+    } catch {}
+
     commit("setWallet", {
       wallet: "",
       walletAddress: "",
