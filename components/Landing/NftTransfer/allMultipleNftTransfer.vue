@@ -15,21 +15,21 @@
         <v-row justify="center">
           <v-col cols="12" align="center">
             <div class="tw-mt-4" v-if="!allLoaded">
-              <nft-transfer-skeleton v-intersect.quiet="{ handler: onIntersect,
-              options: { threshold: [], }, }" <<<<<<< HEAD
-              :cols="calculateColumns()" ======= :cols="userNfts.length == 0 ?
-              10 : 5" >>>>>>> 4a85434b8515286d4758d1c3171cfa5728338a4c
-              class="my-2 my-sm-3" />
+              <nft-transfer-skeleton
+                v-intersect.quiet="{
+                  handler: onIntersect,
+                  options: { threshold: [] },
+                }"
+                :cols="calculateColumns()"
+                class="my-2 my-sm-3"
+              />
             </div>
             <span
               class="caption text-capitalize font14-semi-bold text--disabled my-10"
             >
-              <<<<<<< HEAD
               <span v-if="!allLoaded"> loading nfts </span>
-              =======
-              <span v-if="!allLoaded"> loading </span>
-              >>>>>>> 4a85434b8515286d4758d1c3171cfa5728338a4c
               <span v-else-if="userNfts.length > 0">no more nfts</span>
+              <span v-if="userNfts.length > 0">no more nfts</span>
               <span v-else-if="userNfts.length > 0 && allLoaded == true"
                 >No more nfts</span
               >
