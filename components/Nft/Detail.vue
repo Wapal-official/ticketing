@@ -318,8 +318,8 @@
             class="tw-w-full tw-overflow-auto no-scrollbar tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-rounded-lg"
             :style="`height:${
               phases.length - phaseCounter >= 3
-                ? 377
-                : 126 * (phases.length - phaseCounter)
+                ? 440
+                : 146 * (phases.length - phaseCounter)
             }px`"
           >
             <nft-mint-phase-box
@@ -328,6 +328,7 @@
               :phase="phase"
               v-if="!checkIfPhaseStarted(phase.mint_time)"
               :coinType="collection.seed ? collection.seed.coin_type : 'APT'"
+              :showWhitelistText="phase.id !== 'public-sale'"
             />
           </div>
         </div>
@@ -923,6 +924,7 @@ export default {
     },
     setPhases() {
       this.phases = [];
+
       this.phases = this.collection.phases ? this.collection.phases : [];
 
       if (!this.collection.phases) {
@@ -1218,6 +1220,45 @@ export default {
 
       this.numberOfNft = 1;
     },
+    async checkWhitelistForPhases() {
+      if (!this.getWalletAddress) {
+        this.phases = this.phases.map((phase) => {
+          let tempPhase = structuredClone(phase);
+          tempPhase.whitelisted = false;
+
+          return tempPhase;
+        });
+        return;
+      }
+
+      this.phases = await Promise.all(
+        this.phases.map(async (phase) => {
+          let tempPhase = structuredClone(phase);
+          try {
+            if (tempPhase.id !== "public-sale") {
+              const res = await getMintLimit({
+                walletAddress: this.getWalletAddress,
+                collectionId: this.collection._id,
+                phase: tempPhase.id,
+              });
+
+              if (res.data.data) {
+                tempPhase.whitelisted = true;
+              } else {
+                tempPhase.whitelisted = false;
+              }
+            }
+
+            return tempPhase;
+          } catch (error) {
+            console.log(error);
+            tempPhase.whitelisted = false;
+
+            return tempPhase;
+          }
+        })
+      );
+    },
   },
   computed: {
     getCurrentPrice() {
@@ -1430,6 +1471,8 @@ export default {
         await this.checkWhitelistForExternalMint();
       }
 
+      this.checkWhitelistForPhases();
+
       setTimeout(() => {
         if (!this.collection.status.sold_out && this.live) {
           this.showMintedProgress();
@@ -1470,6 +1513,8 @@ export default {
       ) {
         await this.checkWhitelistForExternalMint();
       }
+
+      await this.checkWhitelistForPhases();
     },
   },
 };

@@ -29,6 +29,16 @@
         </div>
       </div>
     </div>
+    <div
+      class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 tw-text-sm tw-text-dark-0"
+      v-if="showWhitelistText"
+    >
+      <i class="bx bx-info-circle tw-text-xl"></i>
+      <div v-if="phase?.whitelisted">
+        You are eligible to mint for this phase
+      </div>
+      <div v-else>You are not whitelisted in this phase</div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -37,6 +47,7 @@ export default {
   props: {
     phase: { type: Object },
     coinType: { type: String, default: "APT" },
+    showWhitelistText: { type: Boolean, default: false },
   },
   computed: {
     getFormattedMintDate() {
