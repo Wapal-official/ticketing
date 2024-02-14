@@ -135,6 +135,14 @@
               </button-primary>
             </label>
           </form>
+          <a
+            href="https://drive.google.com/uc?export=download&id=1AUxzxn0Gl91UEHPYqG7TABBDK_JtMmNo"
+            download="Whitelist Addresses Sample"
+            class="tw-rounded-md !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm '!tw-border-solid tw-border tw-border-dark-4 tw-bg-transparent tw-py-2' disabled:tw-cursor-not-allowed"
+          >
+            <span>Sample CSV</span>
+            <i class="bx bxs-download"></i>
+          </a>
         </div>
       </div>
     </div>
