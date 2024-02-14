@@ -63,12 +63,22 @@ export default {
   methods: {
     async loadSource() {
       if (checkIfImageIsFromCacheServer(this.source)) {
-        const res = await axios.get(this.source);
+        try {
+          const res = await axios.get(this.source, { timeout: 5000 });
 
-        if (res.headers["content-type"].includes("image")) {
-          this.finalSource = this.source;
-          this.loading = false;
-        } else {
+          if (res.headers["content-type"].includes("image")) {
+            this.finalSource = this.source;
+            this.loading = false;
+          } else {
+            const link = extractImageLinkFromCacheServerUrl(this.source);
+
+            this.finalSource = link;
+            this.loading = false;
+
+            this.loadedSource = true;
+          }
+        } catch (error) {
+          console.log(error);
           const link = extractImageLinkFromCacheServerUrl(this.source);
 
           this.finalSource = link;
