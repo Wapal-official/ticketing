@@ -40,7 +40,20 @@
         />
       </v-list-group>
     </div>
-
+    <div
+      v-if="ForXlScreenSize == true"
+      @click="nftTransferAction()"
+      class="tw-mr-3 lg:mr-0 d-flex align-center"
+      style="cursor: pointer; min-width: 46px"
+    >
+      <img src="~/assets/img/transfer.svg" alt="nft transfer" />
+      <p
+        class="transfer-text"
+        style="margin-left: 4px !important; margin-bottom: 0 !important"
+      >
+        Nft
+      </p>
+    </div>
     <a
       :href="MARKETPLACE_URL"
       target="_blank"
@@ -94,9 +107,25 @@ export default {
       showConnectWalletModal: false,
       showSignupDialog: false,
       MARKETPLACE_URL: process.env.MARKETPLACE_URL,
+      ForXlScreenSize: false,
     };
   },
+  mounted() {
+    this.checkScreenSize();
+    window.addEventListener("resize", this.checkScreenSize);
+  },
   methods: {
+    checkScreenSize() {
+      const screenWidth = window.innerWidth;
+      this.ForXlScreenSize = screenWidth >= 1920;
+    },
+    async nftTransferAction() {
+      if (!this.getWalletStatus) {
+        this.showConnectWalletModal = true;
+      } else {
+        this.$store.commit("dialog/setNftTransferDialog", true);
+      }
+    },
     close() {
       this.showExploreMenu = false;
       this.$emit("close");

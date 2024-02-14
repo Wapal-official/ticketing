@@ -1325,6 +1325,8 @@ export default {
     if (this.collection) {
       if (this.collection.username === "proudlionsclub") {
         this.collection.username = "proud-lions-club";
+      } else if (this.collection.username === "squids-|-aptos") {
+        this.collection.username = "squid-aptos";
       }
 
       if (this.collection.username === "wapal-santa") {
