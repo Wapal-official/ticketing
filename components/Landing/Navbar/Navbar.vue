@@ -159,6 +159,7 @@
         class="tw-w-full tw-hidden tw-col-span-4 lg:tw-flex lg:tw-col-span-5 xl:tw-col-span-4"
       >
         <div
+          v-if="!afterXlScreenSize"
           @click="nftTransferAction()"
           class="tw-mr-3 lg:mr-0 d-flex align-center"
           style="cursor: pointer; min-width: 46px"
@@ -284,6 +285,7 @@ export default {
       searchBarClass: "tw--translate-y-full",
       logo,
       ForMdScreenSize: false,
+      afterXlScreenSize: false,
       showConnectWalletModal: false,
     };
   },
@@ -314,6 +316,7 @@ export default {
     checkScreenSize() {
       const screenWidth = window.innerWidth;
       this.ForMdScreenSize = screenWidth >= 1020 && screenWidth <= 1370;
+      this.afterXlScreenSize = screenWidth >= 1920;
     },
     toggleLandingMenu() {
       if (!this.landingMenuShowing) {
@@ -353,5 +356,11 @@ export default {
 }
 ::v-deep .v-list-item {
   padding: 0rem 0.375rem !important;
+}
+
+@media (max-width: 1920px) {
+  .nft-tansfer-2xl {
+    display: flex;
+  }
 }
 </style>
