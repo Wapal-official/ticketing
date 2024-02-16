@@ -319,7 +319,8 @@
             :style="`height:${
               phases.length - phaseCounter >= 3
                 ? 440
-                : 146 * (phases.length - phaseCounter)
+                : (phases.length === 2 ? 142 : 120) *
+                  (phases.length - phaseCounter)
             }px`"
           >
             <nft-mint-phase-box
