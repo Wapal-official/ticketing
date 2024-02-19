@@ -1,5 +1,9 @@
 export const checkIfCollectionIsSoldOut = (collection: any) => {
   switch (collection.username) {
+    case "furry-cayote":
+      return {
+        supply: 382,
+      };
     case "jewelry-animals":
       return {
         supply: 18,
