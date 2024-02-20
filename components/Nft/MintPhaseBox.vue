@@ -37,7 +37,7 @@
       <div v-if="phase?.whitelisted">
         You are eligible to mint for this phase
       </div>
-      <div v-else>You are not whitelisted in this phase</div>
+      <div v-else>You are not whitelisted for this phase</div>
     </div>
   </div>
 </template>

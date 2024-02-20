@@ -319,7 +319,8 @@
             :style="`height:${
               phases.length - phaseCounter >= 3
                 ? 440
-                : 146 * (phases.length - phaseCounter)
+                : (phases.length === 2 ? 142 : 120) *
+                  (phases.length - phaseCounter)
             }px`"
           >
             <nft-mint-phase-box
@@ -415,6 +416,7 @@ import {
 import imageNotFound from "@/utils/imageNotFound";
 import santa from "@/assets/video/wapal-santa.MP4";
 import xLogo from "@/assets/img/x-logo.svg";
+import { checkIfCollectionIsSoldOut } from "@/utils/soldoutCollections";
 export default {
   props: { collection: { type: Object } },
   data() {
@@ -601,6 +603,14 @@ export default {
             total_supply: 955,
             paused: this.resource.paused,
           };
+        }
+
+        const soldOutCollectionSupply = checkIfCollectionIsSoldOut(
+          this.collection
+        );
+
+        if (soldOutCollectionSupply) {
+          this.resource.total_supply = soldOutCollectionSupply.supply;
         }
 
         if (
@@ -1424,6 +1434,14 @@ export default {
           total_supply: 955,
           paused: this.resource.paused,
         };
+      }
+
+      const soldOutCollectionSupply = checkIfCollectionIsSoldOut(
+        this.collection
+      );
+
+      if (soldOutCollectionSupply) {
+        this.resource.total_supply = soldOutCollectionSupply.supply;
       }
 
       this.resource.mintedPercent = Math.floor(

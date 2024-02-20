@@ -58,6 +58,7 @@
 import { getCollection } from "@/services/CollectionService";
 import imageNotFound from "@/utils/imageNotFound";
 import santa from "@/assets/video/wapal-santa.MP4";
+import { checkIfCollectionIsSoldOut } from "@/utils/soldoutCollections";
 export default {
   props: {
     collection: { type: Object },
@@ -114,6 +115,14 @@ export default {
         this.totalSupply = 343;
       } else if (this.collection._id === "654e26260a58324d3465b4cb") {
         this.totalSupply = 955;
+      }
+
+      const soldOutCollectionSupply = checkIfCollectionIsSoldOut(
+        this.collection
+      );
+
+      if (soldOutCollectionSupply) {
+        this.totalSupply = soldOutCollectionSupply.supply;
       }
 
       if (this.totalSupply == this.minted) {
