@@ -8,7 +8,7 @@
           Edit your launchpad
         </h2>
       </v-col>
-      <v-col cols="12" align="start">
+      <v-col cols="12" align="start" class="tw-ml-1">
         <p class="p">
           This feature empowers you to customize and manage your launchpad
           according to your needs.
@@ -24,7 +24,7 @@
           mint, though there are currently some limitations on the phases.
         </p>
       </v-col>
-      <v-col cols="12" align="start">
+      <v-col cols="12" align="start" class="tw-ml-1">
         <img
           class="whats-new-img"
           src="~/assets/img/whatsNew/edit.jpeg"

@@ -310,6 +310,19 @@ export default {
     this.checkScreenSize();
     window.addEventListener("resize", this.checkScreenSize);
   },
+  watch: {
+    getWalletStatus: {
+      immediate: true,
+      handler(newVal: boolean) {
+        if (newVal) {
+          if (localStorage.getItem("whats_New") === null) {
+            this.$store.commit("dialog/setWhatsNew", true);
+            localStorage.setItem("whats_New", "true");
+          }
+        }
+      },
+    },
+  },
   methods: {
     async nftTransferAction() {
       if (!this.getWalletStatus) {
