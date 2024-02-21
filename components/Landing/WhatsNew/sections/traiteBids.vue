@@ -8,14 +8,14 @@
           Tweet sharing
         </h2>
       </v-col>
-      <v-col cols="12" align="start">
+      <v-col cols="12" align="start" class="tw-ml-1">
         <p class="p">
           We've introduced an option that lets you create customizable content
           for tweets. Users can easily tweet this content after execution of
           their mint.
         </p>
       </v-col>
-      <v-col cols="12" align="start">
+      <v-col cols="12" align="start" class="tw-ml-1">
         <img
           class="whats-new-img"
           src="~/assets/img/whatsNew/tweetable.jpeg"

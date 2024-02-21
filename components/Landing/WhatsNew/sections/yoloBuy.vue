@@ -8,18 +8,22 @@
           Multiple Token Mint
         </h2>
       </v-col>
-      <v-col cols="12" align="start">
+      <v-col cols="12" align="start" class="tw-ml-1">
         <p class="p">
           Wapal is the first launchpad on Aptos to enable multiple token mint.
           We currently have integrated the following:
         </p>
-        <ol class="pb-4">
-          <li>$GUI</li>
-          <li>$CLST</li>
-          <li>$SEEDZ</li>
+        <ol
+          :start="startIndex"
+          class="tw-pb-4"
+          style="padding-left: 0 !important"
+        >
+          <li>1. $GUI</li>
+          <li>2. $CLST</li>
+          <li>3. $SEEDZ</li>
         </ol>
       </v-col>
-      <v-col cols="12" align="start">
+      <v-col cols="12" align="start" class="tw-ml-1">
         <img
           class="whats-new-img"
           src="~/assets/img/whatsNew/multi-token.png"
@@ -29,6 +33,15 @@
     </v-row>
   </div>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      startIndex: 1, // Set the start index here dynamically
+    };
+  },
+};
+</script>
 <style>
 .whats-new-img {
   max-width: 700px;
