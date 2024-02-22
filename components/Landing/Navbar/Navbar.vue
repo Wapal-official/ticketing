@@ -315,9 +315,9 @@ export default {
       immediate: true,
       handler(newVal: boolean) {
         if (newVal) {
-          if (localStorage.getItem("whats_New") === null) {
+          if (localStorage.getItem("whats_New_launchpad") === null) {
             this.$store.commit("dialog/setWhatsNew", true);
-            localStorage.setItem("whats_New", "true");
+            localStorage.setItem("whats_New_launchpad", "true");
           }
         }
       },
