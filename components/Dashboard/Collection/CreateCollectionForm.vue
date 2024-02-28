@@ -128,7 +128,18 @@
           <div
             class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
           >
-            <button-primary title="Next" @click="validateFormForNextStep" />
+            <button-secondary
+              class="tw-mr-4"
+              :bordered="true"
+              title="Save As Draft"
+              @click="saveDraftBefore()"
+              style="color: #fff !important"
+            />
+            <button-primary
+              title="Next"
+              @click="validateFormForNextStep"
+              style="margin-bottom: 3px"
+            />
           </div>
         </ValidationObserver>
       </v-stepper-content>
@@ -219,7 +230,18 @@
           <div
             class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
           >
-            <button-primary title="Next" @click="validateFormForNextStep" />
+            <button-secondary
+              class="tw-mr-4"
+              :bordered="true"
+              title="Save As Draft"
+              @click="saveDraftBefore()"
+              style="color: #fff !important"
+            />
+            <button-primary
+              title="Next"
+              @click="validateFormForNextStep"
+              style="margin-bottom: 3px"
+            />
           </div>
         </ValidationObserver>
       </v-stepper-content>
@@ -485,6 +507,7 @@
                 @click="saveDraft"
                 v-if="draft"
               />
+
               <button-primary
                 title="Next"
                 :loading="submitting"
@@ -988,6 +1011,58 @@ export default {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
 
+        this.submitting = false;
+      }
+    },
+
+    async saveDraftBefore() {
+      try {
+        this.submitting = true;
+
+        const tempCollection = { ...this.collection };
+        console.log("cll", tempCollection);
+        const formData = new FormData();
+
+        formData.append("name", tempCollection.name);
+        formData.append("description", tempCollection.description);
+        formData.append("twitter", tempCollection.twitter || "");
+        formData.append("discord", tempCollection.discord || "");
+        formData.append("website", tempCollection.website || "");
+        formData.append("instagram", tempCollection.instagram || "");
+        formData.append("tweet", tempCollection.tweet || "");
+
+        const draft_id = this.$route.params.id;
+
+        if (draft_id) {
+          formData.append("draft_id", draft_id);
+        }
+
+        if (this.image.name) {
+          formData.append("image", this.image);
+        } else {
+          formData.append("image", tempCollection.image || "");
+        }
+        await this.sendDataToCreateDraft(tempCollection);
+
+        if (this.tbd || this.saveAsDraft) {
+          if (this.draft) {
+            await this.saveDraft(tempCollection);
+          } else {
+            await this.sendDataToCreateDraft(tempCollection);
+          }
+          return;
+        }
+
+        // await createCollection(formData);
+
+        this.submitting = false;
+
+        this.message = "Collection Created Successfully";
+        this.$toast.showMessage({ message: this.message, error: false });
+        this.$router.push("/dashboard/collection/under-review");
+      } catch (error: any) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
         this.submitting = false;
       }
     },

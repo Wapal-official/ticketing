@@ -48,7 +48,22 @@ export const checkIfCollectionIsSoldOut = (collection: any) => {
       return {
         supply: 20,
       };
-
+    case "gui-mirage":
+      return {
+        supply: 115,
+      };
+    case "aptos-scourge":
+      return {
+        supply: 944,
+      };
+    case "pixie-doodle":
+      return {
+        supply: 763,
+      };
+    case "hatched-aptos-eggs":
+      return {
+        supply: 842,
+      };
     default:
       return null;
   }

@@ -87,7 +87,7 @@ export default {
       },
       username: "monkkesanturies",
     };
-    this.featuredCollections.push(collection);
+    // this.featuredCollections.push(collection);
     const auctionRes = await getFeaturedAuctions();
 
     this.featuredAuctions.push(...auctionRes);

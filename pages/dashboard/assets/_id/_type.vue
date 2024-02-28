@@ -56,13 +56,10 @@
             v-if="showSetMetadataButton || showSetMetadataButtonFromStore"
           /> -->
           <button>
-            <v-icon
-              class="!tw-text-white"
-              v-if="!listView"
-              @click="showListView"
+            <v-icon class="!tw-text-white" @click="showListView"
               >mdi-view-list</v-icon
             >
-            <v-icon class="!tw-text-white" v-else @click="showGridView"
+            <v-icon class="!tw-text-white tw-ml-2" @click="showGridView"
               >mdi-view-grid</v-icon
             >
           </button>
