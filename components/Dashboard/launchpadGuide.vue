@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="d-flex tw-justify-end" style="width: 100%">
     <p
       @click="openLink(itemLink)"
@@ -43,4 +43,4 @@ export default {
 .guide-hover {
   cursor: pointer;
 }
-</style>
+</style> -->

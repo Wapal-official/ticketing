@@ -2,10 +2,10 @@
   <div class="tw-w-full">
     <div v-if="this.$route.path !== '/dashboard/edition/create'">
       <h1 class="tw-text-white tw-text-3xl">NFTs</h1>
-      <launchpad-guide
+      <!-- <launchpad-guide
         title="Edition Guide"
         itemLink="https://docs.wapal.io/launchpad-overall-guide/create-editions"
-      ></launchpad-guide>
+      ></launchpad-guide> -->
       <div
         class="tw-pb-6 tw-pt-3 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
       >
@@ -37,12 +37,12 @@
   </div>
 </template>
 <script lang="ts">
-import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
+// import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
 
 export default {
   layout: "dashboard",
   components: {
-    LaunchpadGuide,
+    // LaunchpadGuide,
   },
   data() {
     return {
