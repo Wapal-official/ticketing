@@ -18,14 +18,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   props: {
     title: { type: String, required: true },
     itemLink: { type: String, required: true },
   },
   methods: {
-    openLink(item) {
+    openLink(item: string | URL) {
       window.open(item, "_blank");
     },
   },
