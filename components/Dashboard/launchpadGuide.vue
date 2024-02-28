@@ -28,11 +28,11 @@ export default {
   },
   data() {
     return {
-      receipt: receipt,
+      receipt,
     };
   },
   methods: {
-    openLink(item: string | URL) {
+    openLink(item: string) {
       window.open(item, "_blank");
     },
   },
