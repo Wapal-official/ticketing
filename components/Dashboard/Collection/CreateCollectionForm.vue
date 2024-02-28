@@ -128,6 +128,14 @@
           <div
             class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
           >
+            <button-secondary
+              class="tw-mr-4"
+              :bordered="true"
+              :paddingTwoHalf="false"
+              title="Save As Draft"
+              @click="saveDraftBefore()"
+              style="color: #fff !important"
+            />
             <button-primary title="Next" @click="validateFormForNextStep" />
           </div>
         </ValidationObserver>
@@ -219,6 +227,14 @@
           <div
             class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
           >
+            <button-secondary
+              class="tw-mr-4"
+              :bordered="true"
+              :paddingTwoHalf="false"
+              title="Save As Draft"
+              @click="saveDraftBefore()"
+              style="color: #fff !important"
+            />
             <button-primary title="Next" @click="validateFormForNextStep" />
           </div>
         </ValidationObserver>
@@ -485,6 +501,7 @@
                 @click="saveDraft"
                 v-if="draft"
               />
+
               <button-primary
                 title="Next"
                 :loading="submitting"
@@ -988,6 +1005,73 @@ export default {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
 
+        this.submitting = false;
+      }
+    },
+
+    async saveDraftBefore() {
+      try {
+        this.submitting = true;
+        const selectedFolder = this.folders.find(
+          (folder: any) => folder.folder_name === this.baseURL
+        );
+        this.collection.baseURL = selectedFolder.metadata.baseURI;
+        this.checkCoinType();
+
+        const tempCollection = { ...this.collection };
+        console.log("cll", tempCollection);
+        const formData = new FormData();
+
+        formData.append("name", tempCollection.name);
+        formData.append("description", tempCollection.description);
+        formData.append(
+          "royalty_percentage",
+          tempCollection.royalty_percentage
+        );
+        formData.append(
+          "royalty_payee_address",
+          tempCollection.royalty_payee_address
+        );
+        formData.append("supply", tempCollection.supply);
+        formData.append("twitter", tempCollection.twitter || "");
+        formData.append("discord", tempCollection.discord || "");
+        formData.append("website", tempCollection.website || "");
+        formData.append("instagram", tempCollection.instagram || "");
+        formData.append("tweet", tempCollection.tweet || "");
+        formData.append("coin_type", tempCollection.coinType);
+
+        const draft_id = this.$route.params.id;
+
+        if (draft_id) {
+          formData.append("draft_id", draft_id);
+        }
+
+        if (this.image.name) {
+          formData.append("image", this.image);
+        } else {
+          formData.append("image", tempCollection.image || "");
+        }
+        await this.sendDataToCreateDraft(tempCollection);
+
+        if (this.tbd || this.saveAsDraft) {
+          if (this.draft) {
+            await this.saveDraft(tempCollection);
+          } else {
+            await this.sendDataToCreateDraft(tempCollection);
+          }
+          return;
+        }
+
+        // await createCollection(formData);
+
+        this.submitting = false;
+
+        this.message = "Collection Created Successfully";
+        this.$toast.showMessage({ message: this.message, error: false });
+        this.$router.push("/dashboard/collection/draft");
+      } catch (error: any) {
+        console.log(error);
+        this.$toast.showMessage({ message: error, error: true });
         this.submitting = false;
       }
     },
