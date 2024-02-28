@@ -10,7 +10,7 @@
     <img
       class="guide-hover"
       @click="openLink(itemLink)"
-      src="@/assets/img/receipt.svg"
+      :src="receipt"
       alt="receipt"
       width="20px"
       height="20px"
@@ -19,10 +19,17 @@
 </template>
 
 <script lang="ts">
+import receipt from "@/assets/img/receipt.svg";
+
 export default {
   props: {
     title: { type: String, required: true },
     itemLink: { type: String, required: true },
+  },
+  data() {
+    return {
+      receipt: receipt,
+    };
   },
   methods: {
     openLink(item: string | URL) {
