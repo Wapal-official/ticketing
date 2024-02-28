@@ -1,10 +1,10 @@
 <template>
   <div class="tw-w-full">
     <dashboard-page-heading heading="Whitelist" />
-    <launchpad-guide
+    <!-- <launchpad-guide
       title="Whitelist Guide"
       itemLink="https://docs.wapal.io/launchpad-overall-guide/create-a-collection/whitelist"
-    ></launchpad-guide>
+    ></launchpad-guide> -->
     <div
       class="tw-w-full tw-pb-6 tw-pt-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
     >
@@ -77,7 +77,7 @@ import { getCollectionDetails } from "@/services/AptosCollectionService";
 export default {
   layout: "dashboard",
   components: {
-    LaunchpadGuide,
+    // LaunchpadGuide,
   },
   data() {
     return {
