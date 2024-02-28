@@ -2,10 +2,10 @@
   <div>
     <div v-if="$route.fullPath !== '/dashboard/auction/start'">
       <dashboard-page-heading heading="Auction" />
-      <!-- <launchpad-guide
+      <launchpad-guide
         title="Auction Guide"
         itemLink="https://docs.wapal.io/launchpad-overall-guide/create-an-auction"
-      ></launchpad-guide> -->
+      ></launchpad-guide>
       <div
         class="tw-pt-2 tw-pb-6 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
       >
@@ -41,12 +41,12 @@
   </div>
 </template>
 <script>
-// import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
+import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
 
 export default {
   layout: "dashboard",
   components: {
-    // LaunchpadGuide,
+    LaunchpadGuide,
   },
   data() {
     return {
