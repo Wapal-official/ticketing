@@ -3,7 +3,7 @@
     <div
       class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 tw-pb-6 md:tw-grid-cols-2 2xl:tw-px-8"
     >
-      <!-- <div
+      <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
         v-for="(video, index) in videos"
         :key="index"
@@ -20,13 +20,13 @@
           </video>
         </div>
         <h3 class="tw-text-lg tw-font-bold tw-text-white">{{ video.title }}</h3>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import vault from "@/assets/video/vault.mp4";
-import collection from "@/assets/video/collection.mp4";
+import launchpad from "@/assets/video/Launchpad.mp4";
 import whitelist from "@/assets/video/whitelist.mp4";
 import auction from "@/assets/video/auction.mp4";
 
@@ -35,10 +35,8 @@ export default {
   data() {
     return {
       videos: [
-        { title: "Creating Vault", source: vault },
-        { title: "Creating a Collection", source: collection },
-        { title: "Creating a WL Campaign", source: whitelist },
-        { title: "Setting up an Auction", source: auction },
+        { title: "Create A Collection", source: launchpad },
+        { title: "Upload Whitelist Addresses", source: whitelist },
       ],
     };
   },
