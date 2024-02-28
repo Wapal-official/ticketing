@@ -18,7 +18,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import receipt from "@/assets/img/receipt.svg";
 
 export default {
@@ -32,7 +32,7 @@ export default {
     };
   },
   methods: {
-    openLink(item: string) {
+    openLink(item) {
       window.open(item, "_blank");
     },
   },
