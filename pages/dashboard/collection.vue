@@ -1,9 +1,12 @@
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
     <dashboard-page-heading heading="Collection" v-if="showTabs" />
-
+    <launchpad-guide
+      title="Collection Guide"
+      itemLink="https://docs.wapal.io/launchpad-overall-guide/create-a-collection"
+    ></launchpad-guide>
     <div
-      class="tw-w-full tw-py-6 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+      class="tw-w-full tw-pb-6 tw-pt-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
       v-if="showTabs"
     >
       <div class="tw-w-full">
@@ -33,8 +36,13 @@
   </div>
 </template>
 <script lang="ts">
+import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
+
 export default {
   layout: "dashboard",
+  components: {
+    LaunchpadGuide,
+  },
   data() {
     return {
       launchpadTabs: ["Live", "Under Review", "Draft"],

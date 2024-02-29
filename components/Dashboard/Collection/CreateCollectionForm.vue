@@ -131,15 +131,12 @@
             <button-secondary
               class="tw-mr-4"
               :bordered="true"
+              :paddingTwoHalf="false"
               title="Save As Draft"
               @click="saveDraftBefore()"
               style="color: #fff !important"
             />
-            <button-primary
-              title="Next"
-              @click="validateFormForNextStep"
-              style="margin-bottom: 3px"
-            />
+            <button-primary title="Next" @click="validateFormForNextStep" />
           </div>
         </ValidationObserver>
       </v-stepper-content>
@@ -233,15 +230,12 @@
             <button-secondary
               class="tw-mr-4"
               :bordered="true"
+              :paddingTwoHalf="false"
               title="Save As Draft"
               @click="saveDraftBefore()"
               style="color: #fff !important"
             />
-            <button-primary
-              title="Next"
-              @click="validateFormForNextStep"
-              style="margin-bottom: 3px"
-            />
+            <button-primary title="Next" @click="validateFormForNextStep" />
           </div>
         </ValidationObserver>
       </v-stepper-content>
@@ -1018,6 +1012,11 @@ export default {
     async saveDraftBefore() {
       try {
         this.submitting = true;
+        const selectedFolder = this.folders.find(
+          (folder: any) => folder.folder_name === this.baseURL
+        );
+        this.collection.baseURL = selectedFolder.metadata.baseURI;
+        this.checkCoinType();
 
         const tempCollection = { ...this.collection };
         console.log("cll", tempCollection);
@@ -1025,11 +1024,21 @@ export default {
 
         formData.append("name", tempCollection.name);
         formData.append("description", tempCollection.description);
+        formData.append(
+          "royalty_percentage",
+          tempCollection.royalty_percentage
+        );
+        formData.append(
+          "royalty_payee_address",
+          tempCollection.royalty_payee_address
+        );
+        formData.append("supply", tempCollection.supply);
         formData.append("twitter", tempCollection.twitter || "");
         formData.append("discord", tempCollection.discord || "");
         formData.append("website", tempCollection.website || "");
         formData.append("instagram", tempCollection.instagram || "");
         formData.append("tweet", tempCollection.tweet || "");
+        formData.append("coin_type", tempCollection.coinType);
 
         const draft_id = this.$route.params.id;
 
@@ -1059,7 +1068,7 @@ export default {
 
         this.message = "Collection Created Successfully";
         this.$toast.showMessage({ message: this.message, error: false });
-        this.$router.push("/dashboard/collection/under-review");
+        this.$router.push("/dashboard/collection/draft");
       } catch (error: any) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });

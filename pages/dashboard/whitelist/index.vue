@@ -1,7 +1,30 @@
 <template>
   <div class="tw-w-full">
-    <dashboard-page-heading heading="Whitelist" class="tw-pb-8" />
-    <tab-bordered :tabs="tabs" :tab="tab" @tabChanged="tabChanged" />
+    <dashboard-page-heading heading="Whitelist" />
+    <launchpad-guide
+      title="Whitelist Guide"
+      itemLink="https://docs.wapal.io/launchpad-overall-guide/create-a-collection/whitelist"
+    ></launchpad-guide>
+    <div
+      class="tw-w-full tw-pb-6 tw-pt-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+    >
+      <div class="tw-w-full">
+        <tab-bordered :tabs="tabs" :tab="tab" @tabChanged="tabChanged" />
+      </div>
+      <div
+        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start md:tw-justify-end"
+      >
+        <button-primary
+          :bordered="true"
+          title="Create New Collection"
+          @click="$router.push('/dashboard/create-collection')"
+        >
+          <template #prepend-icon>
+            <i class="bx bx-plus tw-text-xl tw-pr-2"></i>
+          </template>
+        </button-primary>
+      </div>
+    </div>
     <v-tabs-items
       v-model="tab"
       v-if="!loading"
@@ -40,6 +63,7 @@
   </div>
 </template>
 <script lang="ts">
+import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
 import {
   getCollection,
   getCollectionsOfUser,
@@ -52,7 +76,9 @@ import {
 import { getCollectionDetails } from "@/services/AptosCollectionService";
 export default {
   layout: "dashboard",
-  components: {},
+  components: {
+    LaunchpadGuide,
+  },
   data() {
     return {
       collections: [{ _id: null }],

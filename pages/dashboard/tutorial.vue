@@ -3,7 +3,7 @@
     <div
       class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 tw-pb-6 md:tw-grid-cols-2 2xl:tw-px-8"
     >
-      <div
+      <!-- <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
         v-for="(video, index) in videos"
         :key="index"
@@ -20,7 +20,7 @@
           </video>
         </div>
         <h3 class="tw-text-lg tw-font-bold tw-text-white">{{ video.title }}</h3>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

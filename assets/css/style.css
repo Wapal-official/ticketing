@@ -362,11 +362,15 @@
   width: 100% !important;
 }
 
+.mx-input-wrapper .mx-input {
+  padding-left: 30px;
+}
+
 .mx-input {
   width: 100% !important;
   background: transparent !important;
   border: none !important;
-  height: 50px !important;
+  height: 40px !important;
   color: #d9d9d9 !important;
   font-size: 1em;
   border-radius: 7px !important;
