@@ -25,15 +25,20 @@
       >
         <template v-slot:footer>
           <div
-            class="tw-flex tw-align-center tw-justify-between tw-pb-2 tw-px-2"
+            class="tw-flex tw-align-center tw-justify-between tw-pb-2 tw-px-3"
           >
             <p style="align-self: center; margin-bottom: 0 !important">Time</p>
             <div class="tw-flex tw-align-center">
               <button
-                class="mx-btn mx-btn-text pull-left"
+                class="mx-btn mx-btn-text pull-left hour12-time"
                 @click="showTimePanel"
+                style="
+                  background: #2c2e33 !important;
+                  margin-right: 8px !important;
+                  padding: 0 8px !important;
+                "
               >
-                {{ hour ? hour : "00" }} : {{ minute ? minute : "00 " }}
+                {{ hour ? hour : "00" }}:{{ minute ? minute : "00 " }}
               </button>
               <div class="hour12-tab">
                 <p class="hour12-tabs" :class="{ active: amActive }">AM</p>
@@ -116,11 +121,14 @@ export default {
       const element = document.querySelector(
         ".mx-datepicker-footer"
       ) as HTMLElement;
-      if (element) {
-        if (newValue) {
-          element.style.minWidth = "365px";
-        } else {
-          element.style.minWidth = "";
+      const screenSize = window.innerWidth;
+      if (screenSize > 768) {
+        if (element) {
+          if (newValue) {
+            element.style.minWidth = "365px";
+          } else {
+            element.style.minWidth = "";
+          }
         }
       }
     },
@@ -129,9 +137,12 @@ export default {
         const element = document.querySelector(
           ".mx-datepicker-footer"
         ) as HTMLElement;
-        if (element) {
-          if (newValue) {
-            element.style.minWidth = "365px";
+        const screenSize = window.innerWidth;
+        if (screenSize > 768) {
+          if (element) {
+            if (newValue) {
+              element.style.minWidth = "365px";
+            }
           }
         }
         const time = newValue.toLocaleTimeString([], {
@@ -172,7 +183,7 @@ export default {
         if (this.value) {
           return new Date(this.value);
         }
-        console.log("chec value", this.value);
+
         return this.value;
       },
       set(newValue: any) {
@@ -218,11 +229,14 @@ export default {
       const element = document.querySelector(
         ".mx-datepicker-footer"
       ) as HTMLElement;
-      if (element) {
-        if (this.showDatePickerTimePanel) {
-          element.style.minWidth = "365px";
-        } else {
-          element.style.minWidth = "";
+      const screenSize = window.innerWidth;
+      if (screenSize > 768) {
+        if (element) {
+          if (this.showDatePickerTimePanel) {
+            element.style.minWidth = "365px";
+          } else {
+            element.style.minWidth = "";
+          }
         }
       }
     },
@@ -230,6 +244,10 @@ export default {
 };
 </script>
 <style>
+.mx-table-date thead {
+  background: #1a1b1e !important;
+  border-radius: 4px !important;
+}
 .mx-time {
   padding-top: 12px;
 }
@@ -238,6 +256,11 @@ export default {
 }
 .mx-datepicker-footer {
   border-top: 1px solid #383a3f !important;
+}
+.hour12-time {
+  border-radius: 4px;
+  background: #2c2e33 !important;
+  padding: 4px;
 }
 .hour12-tab {
   border-radius: 4px;
