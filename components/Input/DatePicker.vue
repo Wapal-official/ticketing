@@ -18,7 +18,10 @@
         type="datetime"
         :show-time-panel="showDatePickerTimePanel"
         @update:show-time-panel="updateShowTimePanel"
+        :daysCustomDisplay="['S', 'M', 'T', 'W', 'T', 'F', 'S']"
         :placeholder="placeholder"
+        :use12h="true"
+        @change="handleChange"
         :disabled="disabled"
         class="wapal-input"
         format="YYYY:MM:DD hh:mm"
@@ -41,8 +44,20 @@
                 {{ hour ? hour : "00" }}:{{ minute ? minute : "00 " }}
               </button>
               <div class="hour12-tab">
-                <p class="hour12-tabs" :class="{ active: amActive }">AM</p>
-                <p class="hour12-tabs" :class="{ active: pmActive }">PM</p>
+                <p
+                  class="hour12-tabs"
+                  @click="toggleAM()"
+                  :class="{ active: amActive }"
+                >
+                  AM
+                </p>
+                <p
+                  class="hour12-tabs"
+                  @click="togglePM"
+                  :class="{ active: pmActive }"
+                >
+                  PM
+                </p>
               </div>
             </div>
           </div>
@@ -113,38 +128,12 @@ export default {
       amPm: "",
       amActive: true,
       pmActive: false,
+      open: false,
     };
   },
   watch: {
-    showDatePickerTimePanel(newValue: boolean) {
-      console.log("show", newValue);
-      const element = document.querySelector(
-        ".mx-datepicker-footer"
-      ) as HTMLElement;
-      const screenSize = window.innerWidth;
-      if (screenSize > 768) {
-        if (element) {
-          if (newValue) {
-            element.style.minWidth = "365px";
-          } else {
-            element.style.minWidth = "";
-          }
-        }
-      }
-    },
     internalValue(newValue: any) {
       if (newValue) {
-        const element = document.querySelector(
-          ".mx-datepicker-footer"
-        ) as HTMLElement;
-        const screenSize = window.innerWidth;
-        if (screenSize > 768) {
-          if (element) {
-            if (newValue) {
-              element.style.minWidth = "365px";
-            }
-          }
-        }
         const time = newValue.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
@@ -165,12 +154,6 @@ export default {
         }
       } else {
         this.showDatePickerTimePanel = false;
-        const element = document.querySelector(
-          ".mx-datepicker-footer"
-        ) as HTMLElement;
-        if (element) {
-          element.style.minWidth = "";
-        }
       }
     },
   },
@@ -201,13 +184,51 @@ export default {
     },
   },
   methods: {
+    handleChange(value: any, type: string) {
+      if (type === "date") {
+        console.log(value, "asd", type);
+        this.showDatePickerTimePanel = false;
+      }
+    },
     toggleAM() {
-      this.amActive = true;
-      this.pmActive = false;
+      if (!this.hour || (this.hour === "12" && this.amPm === "AM")) {
+        this.amActive = true;
+        this.pmActive = false;
+        this.amPm = "AM";
+        this.updateInternalValue();
+      } else if (this.amPm === "PM") {
+        this.amActive = true;
+        this.pmActive = false;
+        this.amPm = "AM";
+        this.updateInternalValue();
+      }
     },
     togglePM() {
-      this.amActive = false;
-      this.pmActive = true;
+      if (!this.hour || (this.hour === "12" && this.amPm === "PM")) {
+        this.amActive = false;
+        this.pmActive = true;
+        this.amPm = "PM";
+        this.updateInternalValue();
+      } else if (this.amPm === "AM") {
+        this.amActive = false;
+        this.pmActive = true;
+        this.amPm = "PM";
+        this.updateInternalValue();
+      }
+    },
+    updateInternalValue() {
+      // Update internalValue based on hour, minute, and amPm
+      let hours = parseInt(this.hour || 0, 10);
+      if (this.amPm === "PM" && hours !== 12) {
+        hours += 12;
+      } else if (this.amPm === "AM" && hours === 12) {
+        hours = 0;
+      }
+      const minutes = parseInt(this.minute || 0, 10);
+      const newDate = new Date(this.internalValue);
+      newDate.setHours(hours);
+      newDate.setMinutes(minutes);
+      this.internalValue = newDate;
     },
     updateShowTimePanel(value: any) {
       this.showDatePickerTimePanel = value;
@@ -224,21 +245,9 @@ export default {
         this.amPm = amPm; // Store AM or PM information
       }
     },
+
     showTimePanel() {
       this.showDatePickerTimePanel = !this.showDatePickerTimePanel;
-      const element = document.querySelector(
-        ".mx-datepicker-footer"
-      ) as HTMLElement;
-      const screenSize = window.innerWidth;
-      if (screenSize > 768) {
-        if (element) {
-          if (this.showDatePickerTimePanel) {
-            element.style.minWidth = "365px";
-          } else {
-            element.style.minWidth = "";
-          }
-        }
-      }
     },
   },
 };
@@ -294,15 +303,16 @@ export default {
 }
 
 .mx-time-columns > div:last-child {
-  /* display: none; */
+  display: none;
 }
 
 .mx-calendar-time {
+  background: #2c2e33 !important;
+  background-color: #2c2e33 !important;
   max-width: 120px;
-  border-left: 1px solid #383a3f !important;
 }
 .mx-time-column {
-  border-left: 1px solid #383a3f !important;
+  border-left: 1px solid transparent !important;
 }
 .mx-datepicker-main,
 .mx-time {
