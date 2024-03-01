@@ -431,7 +431,7 @@
 }
 
 .mx-table-date .today {
-    color: #C6BDFF
+    color: #9D80FF !important
 }
 
 .mx-table-date .cell.not-current-month {
@@ -440,11 +440,11 @@
 }
 
 .mx-time {
+    height: 170px !important;
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
-    width: 224px;
-    background: #25262B
+    width: 224px; 
 }
 
 .mx-time+.mx-time {
@@ -452,12 +452,12 @@
 }
 
 .mx-calendar-time {
-    position: absolute;
-    top: 0;
-    right: 0px;
+    position: absolute; 
+    top: 76px !important;
+    right:50px !important; 
     /* left: 0; */
     width: 100%;
-    height: 100%
+    height: 100%; 
 } 
 
  
@@ -467,7 +467,11 @@
 }
 
 .mx-time-content {
-    height: 258px;
+    border-radius: 4px !important;
+    padding: 12px 0 !important;
+    background: #2c2e33 !important;
+    background-color: #2c2e33 !important;
+    height: 184px !important;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     overflow: hidden
@@ -479,7 +483,7 @@
     display: flex;
     width: 100%;
     height: 100%;
-    overflow: hidden
+    overflow: hidden; 
 }
 
 .mx-time-column {
@@ -504,7 +508,7 @@
 .mx-time-column .mx-time-list::after {
     content: "";
     display: block;
-    height: 192px
+    height: 0 !important
 }
 
 .mx-time-column .mx-time-item {
