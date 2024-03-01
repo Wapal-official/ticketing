@@ -12,17 +12,56 @@
       "
       >{{ label }}</label
     >
-    <div class="tw-relative tw-w-full">
+    <div class="tw-relative tw-w-full" @click="showDatePickerTimePanel = false">
       <date-picker
         v-model="internalValue"
         type="datetime"
+        :show-time-panel="showDatePickerTimePanel"
+        @update:show-time-panel="updateShowTimePanel"
+        :daysCustomDisplay="['S', 'M', 'T', 'W', 'T', 'F', 'S']"
         :placeholder="placeholder"
+        :use12h="true"
+        @change="handleChange"
         :disabled="disabled"
         class="wapal-input"
         format="YYYY:MM:DD hh:mm"
       >
         <template v-slot:footer>
-          <div class="tw-w-full tw-text-xs tw-text-center">
+          <div
+            class="tw-flex tw-align-center tw-justify-between tw-pb-2 tw-px-3"
+          >
+            <p style="align-self: center; margin-bottom: 0 !important">Time</p>
+            <div class="tw-flex tw-align-center">
+              <button
+                class="mx-btn mx-btn-text pull-left hour12-time"
+                @click="showTimePanel"
+                style="
+                  background: #2c2e33 !important;
+                  margin-right: 8px !important;
+                  padding: 0 8px !important;
+                "
+              >
+                {{ hour ? hour : "00" }}:{{ minute ? minute : "00 " }}
+              </button>
+              <div class="hour12-tab">
+                <p
+                  class="hour12-tabs"
+                  @click="toggleAM()"
+                  :class="{ active: amActive }"
+                >
+                  AM
+                </p>
+                <p
+                  class="hour12-tabs"
+                  @click="togglePM"
+                  :class="{ active: pmActive }"
+                >
+                  PM
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="tw-w-full tw-text-xs tw-text-center tw-pb-2">
             <span>Time Zone: </span
             ><span class="tw-text-primary-1">{{ getTimeZone }}</span>
           </div>
@@ -37,7 +76,7 @@
 
 <script lang="ts">
 import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/index.css";
+import "~/assets/css/datePicker.css";
 import { defaultTheme } from "@/theme/wapaltheme";
 export default {
   components: { DatePicker },
@@ -80,6 +119,47 @@ export default {
       type: String,
     },
   },
+  data() {
+    return {
+      defaultTheme,
+      hour: "",
+      minute: "",
+      showDatePickerTimePanel: false,
+      amPm: "",
+      amActive: true,
+      pmActive: false,
+      open: false,
+    };
+  },
+  watch: {
+    internalValue(newValue: any) {
+      if (newValue) {
+        const time = newValue.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true, // Include AM/PM information
+        });
+        const [hours, minutes, amPm] = time.split(/:| /); // Split by colon or space
+        this.hour = hours;
+        this.minute = minutes;
+        this.amPm = amPm; // Store AM or PM information
+
+        // Set active tab based on AM/PM
+        if (amPm === "AM") {
+          this.amActive = true;
+          this.pmActive = false;
+        } else {
+          this.amActive = false;
+          this.pmActive = true;
+        }
+      } else {
+        this.showDatePickerTimePanel = false;
+      }
+    },
+  },
+  mounted() {
+    this.showDatePickerTimePanel = false;
+  },
   computed: {
     internalValue: {
       get() {
@@ -103,14 +183,112 @@ export default {
       return `${cityName} (${gmtTime})`;
     },
   },
-  data() {
-    return {
-      defaultTheme,
-    };
+  methods: {
+    handleChange(value: any, type: string) {
+      if (type === "date") {
+        console.log(value, "asd", type);
+        this.showDatePickerTimePanel = false;
+      }
+    },
+    toggleAM() {
+      if (!this.hour || (this.hour === "12" && this.amPm === "AM")) {
+        this.amActive = true;
+        this.pmActive = false;
+        this.amPm = "AM";
+        this.updateInternalValue();
+      } else if (this.amPm === "PM") {
+        this.amActive = true;
+        this.pmActive = false;
+        this.amPm = "AM";
+        this.updateInternalValue();
+      }
+    },
+    togglePM() {
+      if (!this.hour || (this.hour === "12" && this.amPm === "PM")) {
+        this.amActive = false;
+        this.pmActive = true;
+        this.amPm = "PM";
+        this.updateInternalValue();
+      } else if (this.amPm === "AM") {
+        this.amActive = false;
+        this.pmActive = true;
+        this.amPm = "PM";
+        this.updateInternalValue();
+      }
+    },
+    updateInternalValue() {
+      // Update internalValue based on hour, minute, and amPm
+      let hours = parseInt(this.hour || 0, 10);
+      if (this.amPm === "PM" && hours !== 12) {
+        hours += 12;
+      } else if (this.amPm === "AM" && hours === 12) {
+        hours = 0;
+      }
+      const minutes = parseInt(this.minute || 0, 10);
+      const newDate = new Date(this.internalValue);
+      newDate.setHours(hours);
+      newDate.setMinutes(minutes);
+      this.internalValue = newDate;
+    },
+    updateShowTimePanel(value: any) {
+      this.showDatePickerTimePanel = value;
+
+      if (this.internalValue) {
+        const time = this.internalValue.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true, // Include AM/PM information
+        });
+        const [hours, minutes, amPm] = time.split(/:| /); // Split by colon or space
+        this.hour = hours;
+        this.minute = minutes;
+        this.amPm = amPm; // Store AM or PM information
+      }
+    },
+
+    showTimePanel() {
+      this.showDatePickerTimePanel = !this.showDatePickerTimePanel;
+    },
   },
 };
 </script>
-<style scoped>
+<style>
+.mx-table-date thead {
+  background: #1a1b1e !important;
+  border-radius: 4px !important;
+}
+.mx-time {
+  padding-top: 12px;
+}
+.mx-time .mx-time-header {
+  display: none;
+}
+.mx-datepicker-footer {
+  border-top: 1px solid #383a3f !important;
+}
+.hour12-time {
+  border-radius: 4px;
+  background: #2c2e33 !important;
+  padding: 4px;
+}
+.hour12-tab {
+  border-radius: 4px;
+  background: #2c2e33;
+  display: flex;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.hour12-tabs {
+  color: #fff;
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: 14px;
+}
+
+.hour12-tabs.active {
+  background-color: #8759ff;
+}
 ::v-deep .mx-input {
   @apply !tw-h-[40px] !tw-bg-dark-6;
   padding: 6px 30px !important;
@@ -120,16 +298,39 @@ export default {
 ::v-deep .mx-icon-calendar {
   display: none;
 }
+.mx-time-columns > div:first-child {
+  /* display: none; */
+}
 
+.mx-time-columns > div:last-child {
+  display: none;
+}
+
+.mx-calendar-time {
+  background: #2c2e33 !important;
+  background-color: #2c2e33 !important;
+  max-width: 120px;
+}
+.mx-time-column {
+  border-left: 1px solid transparent !important;
+}
 .mx-datepicker-main,
 .mx-time {
-  @apply !tw-bg-dark-6 tw-rounded tw-border-solid !tw-border-dark-4 !tw-text-base;
+  @apply !tw-bg-dark-6 tw-rounded
+    tw-border-solid !tw-border-dark-4 !tw-text-base;
 }
 
 .mx-calendar-content .cell:hover,
 .mx-time-column .mx-time-item:hover,
 .mx-time-item.active {
-  @apply tw-bg-dark-7 !tw-text-white;
+  @apply active-color !tw-text-white;
+}
+
+.active-color {
+  background: #8759ff;
+  border-radius: 4px;
+  max-width: 40px;
+  margin: 0 auto;
 }
 
 .cell.active {
@@ -151,7 +352,7 @@ export default {
 }
 
 .mx-time-column .mx-time-item.active {
-  @apply !tw-bg-dark-7 !tw-text-white;
+  @apply active-color !tw-text-white;
 }
 
 .mx-time-column .mx-time-item {
