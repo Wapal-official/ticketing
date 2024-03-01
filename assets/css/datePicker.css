@@ -355,12 +355,13 @@
 
 .mx-calendar-content .cell:hover {
     color: #FFF;
-    background-color: #1A1B1E
+    background-color: #8759ff !important;
 }
 
 .mx-calendar-content .cell.active {
     color: #fff;
-    background-color: #1284e7
+    background-color: #8759ff !important;
+    border-radius: 4px;
 }
 
 .mx-calendar-content .cell.in-range,
@@ -457,7 +458,9 @@
     /* left: 0; */
     width: 100%;
     height: 100%
-}
+} 
+
+ 
 
 .mx-time-header {
     border-bottom: 1px solid #e8e8e8
@@ -514,12 +517,12 @@
 
 .mx-time-column .mx-time-item:hover {
     color: #FFF;
-    background-color: #1A1B1E
+    background-color: #8759ff !important;
 }
 
 .mx-time-column .mx-time-item.active {
-    color: #1284e7;
-    background-color: transparent;
+    color: #FFF;
+    background-color: #8759ff !important;
     font-weight: 700
 }
 
@@ -542,8 +545,8 @@
 }
 
 .mx-time-option.active {
-    color: #1284e7;
-    background-color: transparent;
+    color: #FFF;
+    background-color: #8759ff;
     font-weight: 700
 }
 
