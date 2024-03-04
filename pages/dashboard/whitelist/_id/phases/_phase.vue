@@ -377,13 +377,13 @@ export default {
         try {
           const collectionId = entry.collection_id;
           const walletAddress = entry.wallet_address;
+          const phase = entry.phase;
 
           const res = await deleteCSVInWhitelistEntry(
             collectionId,
-            walletAddress
+            walletAddress,
+            phase
           );
-
-          console.log("Response:", res);
 
           this.paginatedWhitelistEntries =
             this.paginatedWhitelistEntries.filter(
