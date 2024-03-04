@@ -111,7 +111,7 @@
           </input-text-field>
         </div>
         <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-3"
+          class="tw-flex tw-flex-row tw-items-center tw-justify-center sm:tw-justify-end tw-gap-3"
         >
           <div
             class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 tw-text-sm tw-font-medium tw-text-dark-2 tw-pr-8"
@@ -119,35 +119,44 @@
             <div class="tw-uppercase">Total Addresses</div>
             <div>{{ totalAddresses }}</div>
           </div>
-          <form @submit.prevent="" class="tw-w-full md:tw-w-fit">
-            <label
-              class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
+          <div class="tw-flex tw-flex-col sm:tw-flex-row">
+            <form
+              @submit.prevent=""
+              class="tw-w-full md:tw-w-fit tw-mb-2 sm:tw-mb-0"
+              style="min-width: 160px; min-height: 40px"
             >
-              <input
-                type="file"
-                class="tw-invisible tw-w-0 tw-h-0 disabled:tw-cursor-not-allowed"
-                @change="setCSVFile"
-                ref="csv"
-              />
-              <button-primary
-                :bordered="true"
-                title="Import CSV"
-                @click="showFileSelectionDialog"
+              <label
+                class="tw-cursor-pointer tw-flex tw-flex-row tw-items-start tw-justify-start"
               >
-                <template #prepend-icon>
-                  <i class="bx bx-import tw-text-xl tw-text-white tw-pr-2"></i>
-                </template>
-              </button-primary>
-            </label>
-          </form>
-          <a
-            href="https://drive.google.com/uc?export=download&id=1AUxzxn0Gl91UEHPYqG7TABBDK_JtMmNo"
-            download="Whitelist Addresses Sample"
-            class="tw-rounded-md !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm '!tw-border-solid tw-border tw-border-dark-4 tw-bg-transparent tw-py-2' disabled:tw-cursor-not-allowed"
-          >
-            <span>Sample CSV</span>
-            <i class="bx bxs-download"></i>
-          </a>
+                <input
+                  type="file"
+                  class="tw-invisible tw-w-0 tw-h-0 disabled:tw-cursor-not-allowed"
+                  @change="setCSVFile"
+                  ref="csv"
+                />
+                <button-primary
+                  :bordered="true"
+                  title="Import CSV"
+                  @click="showFileSelectionDialog"
+                >
+                  <template #prepend-icon>
+                    <i
+                      class="bx bx-import tw-text-xl tw-text-white tw-pr-2"
+                    ></i>
+                  </template>
+                </button-primary>
+              </label>
+            </form>
+            <a
+              href="https://drive.google.com/uc?export=download&id=1AUxzxn0Gl91UEHPYqG7TABBDK_JtMmNo"
+              download="Whitelist Addresses Sample"
+              class="tw-rounded-md !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm '!tw-border-solid tw-border tw-border-dark-4 tw-bg-transparent tw-py-2' disabled:tw-cursor-not-allowed"
+              style="min-width: 160px"
+            >
+              <span>Sample CSV</span>
+              <i class="bx bxs-download"></i>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -203,11 +212,12 @@
     </div>
     <div class="footer-delete-btn">
       <button-primary
+        :class="selectedData.length ? '' : 'btn-secondary'"
         class="delete-btn tw-w-[180px]"
         :title="`Delete ${selectedData.length} Address`"
         :fullWidth="true"
         :loading="loading"
-        @click="deleteAddress()"
+        @click="showCSVDeleteModal = true"
       />
       <button-primary
         class="cancel-btn"
@@ -234,6 +244,36 @@
         >
           <button-primary title="Yes" @click="uploadCSV" />
           <button-primary title="No" @click="resetCSV" :bordered="true" />
+        </div>
+        <div
+          class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-center"
+          v-else
+        >
+          <reusable-loading />
+        </div>
+      </div>
+    </v-dialog>
+    <v-dialog
+      v-model="showCSVDeleteModal"
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+    >
+      <div
+        class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-dark-7 tw-text-dark-0 tw-rounded"
+      >
+        <h3 class="tw-text-lg" v-if="!uploading">
+          Approve Whitelist address to delete?
+        </h3>
+        <h3 v-else>Uploading CSV File</h3>
+        <div
+          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
+          v-if="!uploading"
+        >
+          <button-primary title="Yes" @click="deleteAddress()" />
+          <button-primary
+            title="No"
+            @click="resetDeleteAddress"
+            :bordered="true"
+          />
         </div>
         <div
           class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-center"
@@ -314,6 +354,7 @@ export default {
       filterSearchEntries: [],
       selectedCSVFile: null,
       showCSVUploadModal: false,
+      showCSVDeleteModal: false,
       collection: {
         _id: null,
         phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
@@ -373,30 +414,36 @@ export default {
       if (selectedDeleteEntries.length === 0) {
         return;
       }
+
+      this.paginatedWhitelistEntries = this.paginatedWhitelistEntries.filter(
+        (entry: any) =>
+          selectedDeleteEntries.find(
+            (selectedDeleteEntry: { wallet_address: any }) =>
+              selectedDeleteEntry.wallet_address !== entry.wallet_address
+          )
+      );
+      this.showCSVDeleteModal = false;
+
+      this.loading = true;
+
       for (const entry of this.selectedData) {
         try {
           const collectionId = entry.collection_id;
           const walletAddress = entry.wallet_address;
           const phase = entry.phase;
 
-          const res = await deleteCSVInWhitelistEntry(
-            collectionId,
-            walletAddress,
-            phase
-          );
-
-          this.paginatedWhitelistEntries =
-            this.paginatedWhitelistEntries.filter(
-              (e: any) =>
-                !(
-                  e.collection_id === collectionId &&
-                  e.wallet_address === walletAddress
-                )
-            );
+          await deleteCSVInWhitelistEntry(collectionId, walletAddress, phase);
         } catch (error) {
           console.error("Error deleting entry:", error);
         }
       }
+      this.loading = false;
+      this.clearSelection();
+      this.showCSVDeleteModal = false;
+    },
+
+    resetDeleteAddress() {
+      this.showCSVDeleteModal = false;
       this.clearSelection();
     },
 
@@ -544,6 +591,13 @@ export default {
 
 .delete-btn {
   max-height: 40px;
+  transition: 0.3s ease-in-out;
+}
+
+.btn-secondary {
+  transition: 0.3s ease-in-out;
+  color: hsla(0, 0%, 100%, 0.3) !important;
+  background-color: hsla(0, 0%, 100%, 0.12) !important;
 }
 .cancel-btn {
   max-height: 40px;
