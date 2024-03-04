@@ -13,7 +13,7 @@
           ref="container"
           id="container"
         >
-          <Nuxt class="!tw-px-6 !tw-py-8 tw-h-screen" />
+          <Nuxt class="!tw-px-6 !tw-py-8 height-view" />
         </div>
       </div>
       <div
@@ -189,6 +189,15 @@ export default {
 .dashboard-container {
   width: calc(100vw - 230px);
   height: calc(100vh - 75px);
+}
+.height-view {
+  height: 100dvh;
+}
+
+@media only screen and (max-width: 600px) {
+  .height-view {
+    height: 90dvh;
+  }
 }
 
 @media only screen and (max-width: 1024px) {

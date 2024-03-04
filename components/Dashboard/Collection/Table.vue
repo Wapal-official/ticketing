@@ -27,13 +27,11 @@
                 class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
               >
                 <v-checkbox
-                  v-model="selectedItems"
-                  :value="item"
+                  v-model="item.checkbox"
                   :label="`${itemIndex + 1}.`"
-                  :ripple="false"
                   class="!tw-text-dark-2 check-box"
                   style="font-size: 16px !important"
-                  @click="selectedItem()"
+                  @change="selectedItem(item, item.checkbox)"
                 ></v-checkbox>
               </div>
               <div
@@ -143,7 +141,8 @@ export default {
   },
   watch: {
     selectedData(newValue) {
-      this.selectedItems = newValue;
+      this.selectedItems = [...newValue];
+      console.log("asd0", this.selectedItems, newValue);
     },
   },
   computed: {
@@ -159,8 +158,21 @@ export default {
     // },
   },
   methods: {
-    selectedItem() {
-      this.$store.commit("general/setSelectedItem", [...this.selectedItems]);
+    selectedItem(item, value) {
+      if (value) {
+        this.$store.commit("general/setSelectedItem", [
+          ...this.selectedData,
+          structuredClone(item),
+        ]);
+      } else {
+        this.$store.commit("general/removeSelectedItem", item);
+      }
+    },
+    handleHeaderClick(header) {
+      if (header.text === "Wallet Address") {
+        this.selectedItems = [];
+        this.$store.commit("general/setSelectedItem", []);
+      }
     },
     handleClearSelection() {
       this.$emit("clearSelection");
@@ -205,7 +217,7 @@ export default {
   .v-input__slot
   .v-input--selection-controls__input
   .mdi-checkbox-blank-outline {
-  font-size: 16px !important;
+  font-size: 18px !important;
 }
 .check-box
   .v-input__control
