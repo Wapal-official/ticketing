@@ -66,7 +66,7 @@
         </div>
       </v-menu> -->
       <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center md:tw-justify-end"
+        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full md:tw-flex-row md:tw-items-center md:tw-justify-between"
       >
         <!-- <div class="tw-relative tw-w-full md:tw-w-fit">
           <button-primary
@@ -98,13 +98,18 @@
               </button>
             </div>
           </div>
-        </div>
+        </div>  -->
         <div class="tw-w-full md:tw-w-[380px] xl:tw-w-[424px]">
           <input-text-field
             v-model="search"
             placeholder="Search Wallet Address"
-          />
-        </div> -->
+            @input="searchAddress"
+          >
+            <template #prepend-icon>
+              <i class="bx bx-search tw-text-dark-2 tw-text-lg"></i>
+            </template>
+          </input-text-field>
+        </div>
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-3"
         >
@@ -146,10 +151,13 @@
         </div>
       </div>
     </div>
-    <div class="tw-rounded tw-w-full tw-py-4 tw-my-4">
+    <div
+      class="tw-rounded tw-w-full tw-py-4 tw-my-4 wl-table-container custom-scrollbar"
+    >
       <dashboard-collection-table
         :headers="headers"
         :items="paginatedWhitelistEntries"
+        :isCheckbox="true"
       />
       <!-- <v-data-table
         :headers="headers"
@@ -193,6 +201,22 @@
       ></div>
       <reusable-loading v-if="loading" />
     </div>
+    <div class="footer-delete-btn">
+      <button-primary
+        class="delete-btn tw-w-[180px]"
+        :title="`Delete ${selectedData.length} Address`"
+        :fullWidth="true"
+        :loading="loading"
+        @click="deleteAddress()"
+      />
+      <button-primary
+        class="cancel-btn"
+        @click="clearSelection()"
+        :bordered="true"
+        title="Cancel"
+      >
+      </button-primary>
+    </div>
     <v-dialog
       v-model="showCSVUploadModal"
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
@@ -225,6 +249,7 @@
 import {
   getWhitelistEntryById,
   uploadCSVInWhitelistEntry,
+  deleteCSVInWhitelistEntry,
 } from "@/services/WhitelistService";
 
 import moment from "moment";
@@ -283,8 +308,10 @@ export default {
           width: "165px",
         },
       ],
+      originalWhitelistEntries: [],
       whitelistEntries: [],
       paginatedWhitelistEntries: [],
+      filterSearchEntries: [],
       selectedCSVFile: null,
       showCSVUploadModal: false,
       collection: {
@@ -295,14 +322,87 @@ export default {
       page: 0,
       mappingData: false,
       uploading: false,
-      search: null,
+      search: "",
       role: null,
       showRoleFilter: false,
       loaded: false,
       totalAddresses: 0,
     };
   },
+  watch: {
+    async search(newSearch: any) {
+      if (!newSearch) {
+        this.paginatedWhitelistEntries = this.originalWhitelistEntries;
+        await this.mapWhitelistEntries();
+      } else {
+        await this.searchAddress();
+      }
+    },
+  },
   methods: {
+    async searchAddress() {
+      if (!this.search) {
+        this.paginatedWhitelistEntries = this.originalWhitelistEntries;
+        this.clearSelection();
+        return;
+      }
+      this.loading = true;
+
+      try {
+        this.filterSearchEntries = this.originalWhitelistEntries.filter(
+          (entry: { [s: string]: unknown } | ArrayLike<unknown>) => {
+            return Object.values(entry).some((value) => {
+              if (typeof value === "string") {
+                return value.toLowerCase().includes(this.search.toLowerCase());
+              }
+              return false;
+            });
+          }
+        );
+        this.paginatedWhitelistEntries = this.filterSearchEntries;
+        this.clearSelection();
+      } catch (error) {
+        console.error("Error searching whitelist entries:", error);
+      }
+
+      this.loading = false;
+    },
+
+    async deleteAddress() {
+      const selectedDeleteEntries = this.selectedData;
+      if (selectedDeleteEntries.length === 0) {
+        return;
+      }
+      for (const entry of this.selectedData) {
+        try {
+          const collectionId = entry.collection_id;
+          const walletAddress = entry.wallet_address;
+
+          const res = await deleteCSVInWhitelistEntry(
+            collectionId,
+            walletAddress
+          );
+
+          console.log("Response:", res);
+
+          this.paginatedWhitelistEntries =
+            this.paginatedWhitelistEntries.filter(
+              (e: any) =>
+                !(
+                  e.collection_id === collectionId &&
+                  e.wallet_address === walletAddress
+                )
+            );
+        } catch (error) {
+          console.error("Error deleting entry:", error);
+        }
+      }
+      this.clearSelection();
+    },
+
+    clearSelection() {
+      this.$store.commit("general/setSelectedItem", []);
+    },
     getFormattedDate(date: any) {
       return moment(date).format("MMM DD, YYYY");
     },
@@ -360,8 +460,8 @@ export default {
         this.mappingData = true;
         return;
       }
-
-      this.whitelistEntries = res.data.whitelistEntries;
+      this.originalWhitelistEntries = res.data.whitelistEntries;
+      this.paginatedWhitelistEntries = [...this.originalWhitelistEntries];
 
       this.whitelistEntries.map((whitelistEntry: any) => {
         whitelistEntry.date_joined = this.getFormattedDate(whitelistEntry.date);
@@ -379,6 +479,7 @@ export default {
       });
 
       this.paginatedWhitelistEntries.push(...this.whitelistEntries);
+      this.clearSelection();
 
       this.loading = false;
       this.mappingData = false;
@@ -410,6 +511,9 @@ export default {
         return true;
       }
     },
+    selectedData() {
+      return this.$store.state.general.selectedItem;
+    },
   },
   async mounted() {
     this.collection = await getCollectionByUsername(this.$route.params.id);
@@ -419,9 +523,32 @@ export default {
 };
 </script>
 <style scoped>
+.wl-table-container {
+  overflow: auto;
+}
 .v-menu__content {
   box-shadow: none;
   border: 1px solid #ff36ab;
   border-radius: 0px 0px 10px 10px;
 }
+.footer-delete-btn {
+  height: 80px;
+  background-color: #141517;
+  width: 80%;
+  position: absolute;
+  bottom: 0px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.delete-btn {
+  max-height: 40px;
+}
+.cancel-btn {
+  max-height: 40px;
+  position: absolute;
+  right: 0;
+}
 </style>
+: any: any(: any)(: any): any: any(: any)(: any)

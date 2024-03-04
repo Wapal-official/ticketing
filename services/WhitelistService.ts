@@ -54,6 +54,19 @@ export const uploadCSVInWhitelistEntry = async (formData: any) => {
   return res;
 };
 
+export const deleteCSVInWhitelistEntry = async (collectionId: any,walletAddress: any) => {
+  const config = {
+    headers: { "content-type": "multipart/form-data" },
+  };
+
+  const res = await publicRequest.delete(
+    `${process.env.baseURL}/api/whitelist/entry?collection_id=${collectionId}&wallet_address=${walletAddress}`,
+    config
+  );
+
+  return res;
+}
+
 export const getWhitelistEntryById = async (
   collection_id: string,
   limit: number,
