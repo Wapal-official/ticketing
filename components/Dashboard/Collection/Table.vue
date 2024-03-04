@@ -18,10 +18,24 @@
             @click="$emit('rowClicked', item)"
           >
             <td
-              class="!tw-border-b-dark-6 !tw-py-4 tw-font-medium !tw-text-base"
+              class="!tw-border-b-dark-6 tw-font-medium !tw-text-base"
               v-for="(header, index) in headers"
               :key="index"
             >
+              <div
+                v-if="isCheckbox && header.text == 'Discord Username'"
+                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+              >
+                <v-checkbox
+                  v-model="selectedItems"
+                  :value="item"
+                  :label="`${itemIndex + 1}.`"
+                  :ripple="false"
+                  class="!tw-text-dark-2 check-box"
+                  style="font-size: 16px !important"
+                  @click="selectedItem()"
+                ></v-checkbox>
+              </div>
               <div
                 v-if="header.showSerialNumber && header.showImage"
                 class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
@@ -112,14 +126,45 @@ import aptIcon from "@/assets/img/aptBlack.svg";
 import imageNotFound from "@/utils/imageNotFound";
 import { getCoinType } from "@/utils/getCoinType";
 export default {
-  props: { headers: { type: Array }, items: { type: Array } },
+  props: {
+    headers: { type: Array },
+    items: { type: Array },
+    isCheckbox: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       aptIcon,
       imageNotFound,
+      selectedItems: [],
     };
   },
+  watch: {
+    selectedData(newValue) {
+      this.selectedItems = newValue;
+    },
+  },
+  computed: {
+    selectedData() {
+      return this.$store.state.general.selectedItem;
+    },
+    // displayedItems() {
+    //   if (this.selectedItems.length > 0) {
+    //     return this.items.filter((item) => this.selectedItems.includes(item));
+    //   } else {
+    //     return this.items;
+    //   }
+    // },
+  },
   methods: {
+    selectedItem() {
+      this.$store.commit("general/setSelectedItem", [...this.selectedItems]);
+    },
+    handleClearSelection() {
+      this.$emit("clearSelection");
+    },
     getCoinTypeOfCollection(collection) {
       if (collection.coin_type) {
         return getCoinType(collection.coin_type);
@@ -134,7 +179,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
 .dashboard-data-table {
   min-width: 100% !important;
   max-width: 100% !important;
@@ -149,5 +194,23 @@ export default {
 ::v-deep .dashboard-data-table .v-data-table__wrapper {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.dashboard-data-table .v-data-table__wrapper {
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+.check-box
+  .v-input__control
+  .v-input__slot
+  .v-input--selection-controls__input
+  .mdi-checkbox-blank-outline {
+  font-size: 16px !important;
+}
+.check-box
+  .v-input__control
+  .v-input__slot
+  .v-input--selection-controls__input {
+  margin-right: 4px !important;
 }
 </style>
