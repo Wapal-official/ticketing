@@ -260,9 +260,7 @@
       <div
         class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-dark-7 tw-text-dark-0 tw-rounded"
       >
-        <h3 class="tw-text-lg" v-if="!uploading">
-          Approve Whitelist address to delete?
-        </h3>
+        <h3 class="tw-text-lg" v-if="!uploading">Proceed to delete?</h3>
         <h3 v-else>Uploading CSV File</h3>
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
@@ -415,31 +413,30 @@ export default {
         return;
       }
 
-      this.paginatedWhitelistEntries = this.paginatedWhitelistEntries.filter(
-        (entry: any) =>
-          selectedDeleteEntries.find(
-            (selectedDeleteEntry: { wallet_address: any }) =>
-              selectedDeleteEntry.wallet_address !== entry.wallet_address
-          )
-      );
-      this.showCSVDeleteModal = false;
-
       this.loading = true;
+      try {
+        this.paginatedWhitelistEntries = this.paginatedWhitelistEntries.filter(
+          (entry: { wallet_address: any }) =>
+            !selectedDeleteEntries.some(
+              (selectedEntry: { wallet_address: any }) =>
+                selectedEntry.wallet_address === entry.wallet_address
+            )
+        );
+        this.showCSVDeleteModal = false;
 
-      for (const entry of this.selectedData) {
-        try {
-          const collectionId = entry.collection_id;
-          const walletAddress = entry.wallet_address;
-          const phase = entry.phase;
-
-          await deleteCSVInWhitelistEntry(collectionId, walletAddress, phase);
-        } catch (error) {
-          console.error("Error deleting entry:", error);
+        for (const entry of selectedDeleteEntries) {
+          const { collection_id, wallet_address, phase } = entry;
+          await deleteCSVInWhitelistEntry(collection_id, wallet_address, phase);
         }
+        this.totalAddresses -= selectedDeleteEntries.length;
+
+        this.clearSelection();
+        this.showCSVDeleteModal = false;
+      } catch (error) {
+        console.error("Error deleting entries:", error);
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
-      this.clearSelection();
-      this.showCSVDeleteModal = false;
     },
 
     resetDeleteAddress() {

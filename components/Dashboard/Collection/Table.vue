@@ -9,6 +9,31 @@
       :hide-default-footer="true"
       disable-pagination
     >
+      <!-- <template v-slot:header="{ props }">
+        <thead class="header-template" v-if="isCheckbox">
+          <tr>
+            <th v-for="(header, index) in props.headers" :key="index">
+              <div
+                v-if="header.text === 'Discord Username'"
+                class="tw-flex tw-justify-start"
+                style="align-items: center; min-width: 180px"
+              >
+                <v-checkbox
+                  v-model="selectAll"
+                  class="!tw-text-dark-2 check-box"
+                  @change="selectAllItems"
+                  style="font-size: 16px"
+                ></v-checkbox>
+
+                <span>{{ header.text }}</span>
+              </div>
+              <div v-else>
+                <span>{{ header.text }}</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+      </template> -->
       <template v-slot:body="{ items }">
         <tbody>
           <tr
@@ -137,6 +162,8 @@ export default {
       aptIcon,
       imageNotFound,
       selectedItems: [],
+      selectAll: false, // Initialize selectAll model
+      selectedAddresses: [],
     };
   },
   watch: {
@@ -158,6 +185,16 @@ export default {
     // },
   },
   methods: {
+    // selectAllItems() {
+    //   if (this.selectAll) {
+    //     this.selectedAddresses = this.items.map((item) => item.wallet_address);
+    //     console.log("iem as", this.selectedAddresses);
+    //     this.$store.commit("general/setSelectedItem", [...this.items]);
+    //   } else {
+    //     this.selectedAddresses = [];
+    //     this.$store.commit("general/setSelectedItem", []);
+    //   }
+    // },
     selectedItem(item, value) {
       if (value) {
         this.$store.commit("general/setSelectedItem", [
@@ -192,6 +229,27 @@ export default {
 };
 </script>
 <style>
+/* table thead {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+}
+.header-template {
+  position: relative !important;
+  visibility: visible !important;
+  opacity: 1 !important; 
+}
+
+.header-template tr th {
+  color: #909296 !important;
+  font-size: 14px !important;
+  min-width: 130px !important;
+}
+
+.header-template tr th div span {
+  font-family: "inter";
+  text-transform: uppercase !important;
+} */
 .dashboard-data-table {
   min-width: 100% !important;
   max-width: 100% !important;
@@ -225,4 +283,11 @@ export default {
   .v-input--selection-controls__input {
   margin-right: 4px !important;
 }
+/* .check-box-select-all {
+  margin-top: 0 !important;
+  position: absolute;
+  top: -20px;
+  left: 10px;
+  z-index: 2;
+} */
 </style>
