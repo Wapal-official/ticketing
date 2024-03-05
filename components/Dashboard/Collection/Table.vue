@@ -9,7 +9,7 @@
       :hide-default-footer="true"
       disable-pagination
     >
-      <!-- <template v-slot:header="{ props }">
+      <template v-slot:header="{ props }">
         <thead class="header-template" v-if="isCheckbox">
           <tr>
             <th v-for="(header, index) in props.headers" :key="index">
@@ -33,7 +33,7 @@
             </th>
           </tr>
         </thead>
-      </template> -->
+      </template>
       <template v-slot:body="{ items }">
         <tbody>
           <tr
@@ -229,7 +229,7 @@ export default {
 };
 </script>
 <style>
-/* table thead {
+table thead {
   position: absolute;
   opacity: 0;
   visibility: hidden;
@@ -237,7 +237,7 @@ export default {
 .header-template {
   position: relative !important;
   visibility: visible !important;
-  opacity: 1 !important; 
+  opacity: 1 !important;
 }
 
 .header-template tr th {
@@ -249,7 +249,7 @@ export default {
 .header-template tr th div span {
   font-family: "inter";
   text-transform: uppercase !important;
-} */
+}
 .dashboard-data-table {
   min-width: 100% !important;
   max-width: 100% !important;
