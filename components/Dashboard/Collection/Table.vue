@@ -5,8 +5,10 @@
       :items="items"
       :items-per-page="5"
       class="dashboard-data-table"
+      :class="{ 'with-checkbox': isCheckbox }"
       mobile-breakpoint="0"
       :hide-default-footer="true"
+      :hide-default-header="isCheckbox ? true : false"
       disable-pagination
     >
       <template v-slot:header="{ props }">
@@ -21,10 +23,25 @@
                 <v-checkbox
                   v-model="selectAll"
                   class="!tw-text-dark-2 check-box"
+                  :ripple="false"
                   @change="selectAllItems"
-                  style="font-size: 16px"
+                  style="font-size: 16px; margin-right: 2px"
                 ></v-checkbox>
 
+                <span>{{ header.text }}</span>
+              </div>
+              <div
+                v-else-if="header.text === 'Mint Limit'"
+                class="tw-flex tw-justify-start"
+                style="align-items: center; min-width: 80px"
+              >
+                <span>{{ header.text }}</span>
+              </div>
+              <div
+                v-else-if="header.text === 'Date Joined'"
+                class="tw-flex tw-justify-start"
+                style="align-items: center; min-width: 100px"
+              >
                 <span>{{ header.text }}</span>
               </div>
               <div v-else>
@@ -53,11 +70,22 @@
               >
                 <v-checkbox
                   v-model="item.checkbox"
-                  :label="`${itemIndex + 1}.`"
+                  :ripple="false"
                   class="!tw-text-dark-2 check-box"
                   style="font-size: 16px !important"
                   @change="selectedItem(item, item.checkbox)"
-                ></v-checkbox>
+                >
+                  <template v-slot:label>
+                    <span style="font-size: 12px">{{ itemIndex + 1 }}.</span>
+                  </template>
+                </v-checkbox>
+                <!-- <v-checkbox
+                  v-else
+                  v-model="items"
+                  :label="`${itemIndex + 1}.`"
+                  class="!tw-text-dark-2 check-box"
+                  style="font-size: 16px !important"
+                ></v-checkbox> -->
               </div>
               <div
                 v-if="header.showSerialNumber && header.showImage"
@@ -162,39 +190,43 @@ export default {
       aptIcon,
       imageNotFound,
       selectedItems: [],
-      selectAll: false, // Initialize selectAll model
+      selectAll: false,
+      selectAllIndeterminate: false,
       selectedAddresses: [],
+      selectedCheckboxItem: null,
     };
   },
   watch: {
     selectedData(newValue) {
       this.selectedItems = [...newValue];
-      console.log("asd0", this.selectedItems, newValue);
+      if (newValue.length > 0 && newValue.length == this.items.length) {
+        this.selectAll = true;
+      } else {
+        this.selectAll = false;
+      }
     },
   },
   computed: {
     selectedData() {
       return this.$store.state.general.selectedItem;
     },
-    // displayedItems() {
-    //   if (this.selectedItems.length > 0) {
-    //     return this.items.filter((item) => this.selectedItems.includes(item));
-    //   } else {
-    //     return this.items;
-    //   }
-    // },
   },
   methods: {
-    // selectAllItems() {
-    //   if (this.selectAll) {
-    //     this.selectedAddresses = this.items.map((item) => item.wallet_address);
-    //     console.log("iem as", this.selectedAddresses);
-    //     this.$store.commit("general/setSelectedItem", [...this.items]);
-    //   } else {
-    //     this.selectedAddresses = [];
-    //     this.$store.commit("general/setSelectedItem", []);
-    //   }
-    // },
+    selectAllItems() {
+      if (this.selectAll) {
+        this.$store.commit("general/setSelectedItem", []);
+        this.items.forEach((item) => {
+          item.checkbox = true;
+          this.$store.commit("general/setSelectedItem", this.items);
+        });
+      } else {
+        this.selectedItems = [];
+        this.items.forEach((item) => {
+          item.checkbox = false;
+        });
+        this.$store.commit("general/setSelectedItem", []);
+      }
+    },
     selectedItem(item, value) {
       if (value) {
         this.$store.commit("general/setSelectedItem", [
@@ -205,6 +237,7 @@ export default {
         this.$store.commit("general/removeSelectedItem", item);
       }
     },
+
     handleHeaderClick(header) {
       if (header.text === "Wallet Address") {
         this.selectedItems = [];
@@ -229,27 +262,27 @@ export default {
 };
 </script>
 <style>
-table thead {
+/* .with-checkbox .v-data-table__wrapper table thead {
   position: absolute;
   opacity: 0;
   visibility: hidden;
-}
-.header-template {
+} */
+.with-checkbox .header-template {
   position: relative !important;
   visibility: visible !important;
   opacity: 1 !important;
 }
 
-.header-template tr th {
+.with-checkbox .header-template tr th {
   color: #909296 !important;
   font-size: 14px !important;
-  min-width: 130px !important;
 }
 
-.header-template tr th div span {
+.with-checkbox .header-template tr th div span {
   font-family: "inter";
   text-transform: uppercase !important;
 }
+
 .dashboard-data-table {
   min-width: 100% !important;
   max-width: 100% !important;
@@ -283,11 +316,4 @@ table thead {
   .v-input--selection-controls__input {
   margin-right: 4px !important;
 }
-/* .check-box-select-all {
-  margin-top: 0 !important;
-  position: absolute;
-  top: -20px;
-  left: 10px;
-  z-index: 2;
-} */
 </style>

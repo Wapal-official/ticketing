@@ -264,7 +264,7 @@
         <h3 v-else>Uploading CSV File</h3>
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
-          v-if="!uploading"
+          v-if="!deleting"
         >
           <button-primary title="Yes" @click="deleteAddress()" />
           <button-primary
@@ -366,6 +366,7 @@ export default {
       showRoleFilter: false,
       loaded: false,
       totalAddresses: 0,
+      deleting: false,
     };
   },
   watch: {
@@ -386,7 +387,6 @@ export default {
         return;
       }
       this.loading = true;
-
       try {
         this.filterSearchEntries = this.originalWhitelistEntries.filter(
           (entry: { [s: string]: unknown } | ArrayLike<unknown>) => {
@@ -412,24 +412,33 @@ export default {
       if (selectedDeleteEntries.length === 0) {
         return;
       }
-
+      this.deleting = true;
       this.loading = true;
+
       try {
-        this.paginatedWhitelistEntries = this.paginatedWhitelistEntries.filter(
-          (entry: { wallet_address: any }) =>
-            !selectedDeleteEntries.some(
-              (selectedEntry: { wallet_address: any }) =>
-                selectedEntry.wallet_address === entry.wallet_address
-            )
+        await Promise.all(
+          selectedDeleteEntries.map(async (entry) => {
+            const { collection_id, wallet_address, phase } = entry;
+            await deleteCSVInWhitelistEntry(
+              collection_id,
+              wallet_address,
+              phase
+            );
+          })
         );
-        this.showCSVDeleteModal = false;
 
-        for (const entry of selectedDeleteEntries) {
-          const { collection_id, wallet_address, phase } = entry;
-          await deleteCSVInWhitelistEntry(collection_id, wallet_address, phase);
-        }
+        this.deleting = false;
+
+        const deletedAddresses = new Set(
+          selectedDeleteEntries.map((entry) => entry.wallet_address)
+        );
+        this.paginatedWhitelistEntries = this.paginatedWhitelistEntries.filter(
+          (entry) => !deletedAddresses.has(entry.wallet_address)
+        );
+        this.$toast.showMessage({
+          message: "Selected wallet addresses have been deleted successfully.",
+        });
         this.totalAddresses -= selectedDeleteEntries.length;
-
         this.clearSelection();
         this.showCSVDeleteModal = false;
       } catch (error) {
