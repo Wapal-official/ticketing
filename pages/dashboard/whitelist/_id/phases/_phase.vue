@@ -260,13 +260,11 @@
       <div
         class="tw-w-full tw-py-4 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-bg-dark-7 tw-text-dark-0 tw-rounded"
       >
-        <h3 class="tw-text-lg" v-if="!uploading">
-          Approve Whitelist address to delete?
-        </h3>
+        <h3 class="tw-text-lg" v-if="!uploading">Proceed to delete?</h3>
         <h3 v-else>Uploading CSV File</h3>
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-8"
-          v-if="!uploading"
+          v-if="!deleting"
         >
           <button-primary title="Yes" @click="deleteAddress()" />
           <button-primary
@@ -368,6 +366,7 @@ export default {
       showRoleFilter: false,
       loaded: false,
       totalAddresses: 0,
+      deleting: false,
     };
   },
   watch: {
@@ -388,7 +387,6 @@ export default {
         return;
       }
       this.loading = true;
-
       try {
         this.filterSearchEntries = this.originalWhitelistEntries.filter(
           (entry: { [s: string]: unknown } | ArrayLike<unknown>) => {
@@ -414,32 +412,40 @@ export default {
       if (selectedDeleteEntries.length === 0) {
         return;
       }
-
-      this.paginatedWhitelistEntries = this.paginatedWhitelistEntries.filter(
-        (entry: any) =>
-          selectedDeleteEntries.find(
-            (selectedDeleteEntry: { wallet_address: any }) =>
-              selectedDeleteEntry.wallet_address !== entry.wallet_address
-          )
-      );
-      this.showCSVDeleteModal = false;
-
+      this.deleting = true;
       this.loading = true;
 
-      for (const entry of this.selectedData) {
-        try {
-          const collectionId = entry.collection_id;
-          const walletAddress = entry.wallet_address;
-          const phase = entry.phase;
+      try {
+        await Promise.all(
+          selectedDeleteEntries.map(async (entry) => {
+            const { collection_id, wallet_address, phase } = entry;
+            await deleteCSVInWhitelistEntry(
+              collection_id,
+              wallet_address,
+              phase
+            );
+          })
+        );
 
-          await deleteCSVInWhitelistEntry(collectionId, walletAddress, phase);
-        } catch (error) {
-          console.error("Error deleting entry:", error);
-        }
+        this.deleting = false;
+
+        const deletedAddresses = new Set(
+          selectedDeleteEntries.map((entry) => entry.wallet_address)
+        );
+        this.paginatedWhitelistEntries = this.paginatedWhitelistEntries.filter(
+          (entry) => !deletedAddresses.has(entry.wallet_address)
+        );
+        this.$toast.showMessage({
+          message: "Selected wallet addresses have been deleted successfully.",
+        });
+        this.totalAddresses -= selectedDeleteEntries.length;
+        this.clearSelection();
+        this.showCSVDeleteModal = false;
+      } catch (error) {
+        console.error("Error deleting entries:", error);
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
-      this.clearSelection();
-      this.showCSVDeleteModal = false;
     },
 
     resetDeleteAddress() {
