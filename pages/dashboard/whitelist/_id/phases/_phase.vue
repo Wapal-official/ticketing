@@ -417,7 +417,7 @@ export default {
 
       try {
         await Promise.all(
-          selectedDeleteEntries.map(async (entry) => {
+          selectedDeleteEntries.map(async (entry: any) => {
             const { collection_id, wallet_address, phase } = entry;
             await deleteCSVInWhitelistEntry(
               collection_id,
@@ -430,10 +430,10 @@ export default {
         this.deleting = false;
 
         const deletedAddresses = new Set(
-          selectedDeleteEntries.map((entry) => entry.wallet_address)
+          selectedDeleteEntries.map((entry: any) => entry.wallet_address)
         );
         this.paginatedWhitelistEntries = this.paginatedWhitelistEntries.filter(
-          (entry) => !deletedAddresses.has(entry.wallet_address)
+          (entry: any) => !deletedAddresses.has(entry.wallet_address)
         );
         this.$toast.showMessage({
           message: "Selected wallet addresses have been deleted successfully.",
