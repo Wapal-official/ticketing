@@ -98,7 +98,7 @@
               </button>
             </div>
           </div>
-        </div>  -->
+        </div>   -->
         <div class="tw-w-full md:tw-w-[380px] xl:tw-w-[424px]">
           <input-text-field
             v-model="search"
@@ -165,7 +165,7 @@
     >
       <dashboard-collection-table
         :headers="headers"
-        :items="paginatedWhitelistEntries"
+        :items="search ? filterSearchEntries : paginatedWhitelistEntries"
         :isCheckbox="true"
       />
       <!-- <v-data-table
@@ -346,7 +346,6 @@ export default {
           width: "165px",
         },
       ],
-      originalWhitelistEntries: [],
       whitelistEntries: [],
       paginatedWhitelistEntries: [],
       filterSearchEntries: [],
@@ -361,7 +360,7 @@ export default {
       page: 0,
       mappingData: false,
       uploading: false,
-      search: "",
+      search: null,
       role: null,
       showRoleFilter: false,
       loaded: false,
@@ -372,7 +371,7 @@ export default {
   watch: {
     async search(newSearch: any) {
       if (!newSearch) {
-        this.paginatedWhitelistEntries = this.originalWhitelistEntries;
+        // this.paginatedWhitelistEntries = this.whitelistEntries;
         await this.mapWhitelistEntries();
       } else {
         await this.searchAddress();
@@ -382,13 +381,12 @@ export default {
   methods: {
     async searchAddress() {
       if (!this.search) {
-        this.paginatedWhitelistEntries = this.originalWhitelistEntries;
-        this.clearSelection();
+        await this.mapWhitelistEntries();
         return;
       }
       this.loading = true;
       try {
-        this.filterSearchEntries = this.originalWhitelistEntries.filter(
+        this.filterSearchEntries = this.paginatedWhitelistEntries.filter(
           (entry: { [s: string]: unknown } | ArrayLike<unknown>) => {
             return Object.values(entry).some((value) => {
               if (typeof value === "string") {
@@ -398,7 +396,7 @@ export default {
             });
           }
         );
-        this.paginatedWhitelistEntries = this.filterSearchEntries;
+        // this.paginatedWhitelistEntries = this.filterSearchEntries;
         this.clearSelection();
       } catch (error) {
         console.error("Error searching whitelist entries:", error);
@@ -434,6 +432,9 @@ export default {
           selectedDeleteEntries.map((entry: any) => entry.wallet_address)
         );
         this.paginatedWhitelistEntries = this.paginatedWhitelistEntries.filter(
+          (entry: any) => !deletedAddresses.has(entry.wallet_address)
+        );
+        this.filterSearchEntries = this.filterSearchEntries.filter(
           (entry: any) => !deletedAddresses.has(entry.wallet_address)
         );
         this.$toast.showMessage({
@@ -482,6 +483,8 @@ export default {
         this.showCSVUploadModal = false;
 
         this.page = 0;
+        this.paginatedWhitelistEntries = [];
+        this.whitelistEntries = [];
         this.mapWhitelistEntries();
         this.uploading = false;
       } catch (error) {
@@ -500,7 +503,7 @@ export default {
       this.page++;
       const res = await getWhitelistEntryById(
         this.collection._id,
-        100,
+        1000,
         this.page,
         this.$route.params.phase
       );
@@ -514,8 +517,8 @@ export default {
         this.mappingData = true;
         return;
       }
-      this.originalWhitelistEntries = res.data.whitelistEntries;
-      this.paginatedWhitelistEntries = [...this.originalWhitelistEntries];
+
+      this.whitelistEntries = res.data.whitelistEntries;
 
       this.whitelistEntries.map((whitelistEntry: any) => {
         whitelistEntry.date_joined = this.getFormattedDate(whitelistEntry.date);
@@ -612,4 +615,3 @@ export default {
   right: 0;
 }
 </style>
-: any: any(: any)(: any): any: any(: any)(: any)
