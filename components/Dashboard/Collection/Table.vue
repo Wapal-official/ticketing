@@ -5,10 +5,52 @@
       :items="items"
       :items-per-page="5"
       class="dashboard-data-table"
+      :class="{ 'with-checkbox': isCheckbox }"
       mobile-breakpoint="0"
       :hide-default-footer="true"
+      :hide-default-header="isCheckbox ? true : false"
       disable-pagination
     >
+      <template v-slot:header="{ props }">
+        <thead class="header-template" v-if="isCheckbox">
+          <tr>
+            <th v-for="(header, index) in props.headers" :key="index">
+              <div
+                v-if="header.text === 'Discord Username'"
+                class="tw-flex tw-justify-start"
+                style="align-items: center; min-width: 200px"
+              >
+                <v-checkbox
+                  v-model="selectAll"
+                  class="!tw-text-dark-2 check-box"
+                  :ripple="false"
+                  @change="selectAllItems"
+                  style="font-size: 16px; margin-right: 12px"
+                ></v-checkbox>
+
+                <span>{{ header.text }}</span>
+              </div>
+              <div
+                v-else-if="header.text === 'Mint Limit'"
+                class="tw-flex tw-justify-start"
+                style="align-items: center; min-width: 80px"
+              >
+                <span>{{ header.text }}</span>
+              </div>
+              <div
+                v-else-if="header.text === 'Date Joined'"
+                class="tw-flex tw-justify-start"
+                style="align-items: center; min-width: 100px"
+              >
+                <span>{{ header.text }}</span>
+              </div>
+              <div v-else>
+                <span>{{ header.text }}</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+      </template>
       <template v-slot:body="{ items }">
         <tbody>
           <tr
@@ -18,10 +60,27 @@
             @click="$emit('rowClicked', item)"
           >
             <td
-              class="!tw-border-b-dark-6 !tw-py-4 tw-font-medium !tw-text-base"
+              :class="{ '!tw-py-4 ': !isCheckbox }"
+              class="!tw-border-b-dark-6 tw-font-medium !tw-text-base"
               v-for="(header, index) in headers"
               :key="index"
             >
+              <div
+                v-if="isCheckbox && header.text == 'Discord Username'"
+                class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
+              >
+                <v-checkbox
+                  v-model="item.checkbox"
+                  :ripple="false"
+                  class="!tw-text-dark-2 check-box"
+                  style="font-size: 16px !important"
+                  @change="selectedItem(item, item.checkbox)"
+                >
+                  <template v-slot:label>
+                    <span style="font-size: 12px">{{ itemIndex + 1 }}.</span>
+                  </template>
+                </v-checkbox>
+              </div>
               <div
                 v-if="header.showSerialNumber && header.showImage"
                 class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
@@ -112,14 +171,76 @@ import aptIcon from "@/assets/img/aptBlack.svg";
 import imageNotFound from "@/utils/imageNotFound";
 import { getCoinType } from "@/utils/getCoinType";
 export default {
-  props: { headers: { type: Array }, items: { type: Array } },
+  props: {
+    headers: { type: Array },
+    items: { type: Array },
+    isCheckbox: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       aptIcon,
       imageNotFound,
+      selectedItems: [],
+      selectAll: false,
+      selectAllIndeterminate: false,
+      selectedAddresses: [],
+      selectedCheckboxItem: null,
     };
   },
+  watch: {
+    selectedData(newValue) {
+      this.selectedItems = [...newValue];
+      if (newValue.length > 0 && newValue.length == this.items.length) {
+        this.selectAll = true;
+      } else {
+        this.selectAll = false;
+      }
+    },
+  },
+  computed: {
+    selectedData() {
+      return this.$store.state.general.selectedItem;
+    },
+  },
   methods: {
+    selectAllItems() {
+      if (this.selectAll) {
+        this.$store.commit("general/setSelectedItem", []);
+        this.items.forEach((item) => {
+          item.checkbox = true;
+          this.$store.commit("general/setSelectedItem", this.items);
+        });
+      } else {
+        this.selectedItems = [];
+        this.items.forEach((item) => {
+          item.checkbox = false;
+        });
+        this.$store.commit("general/setSelectedItem", []);
+      }
+    },
+    selectedItem(item, value) {
+      if (value) {
+        this.$store.commit("general/setSelectedItem", [
+          ...this.selectedData,
+          structuredClone(item),
+        ]);
+      } else {
+        this.$store.commit("general/removeSelectedItem", item);
+      }
+    },
+
+    handleHeaderClick(header) {
+      if (header.text === "Wallet Address") {
+        this.selectedItems = [];
+        this.$store.commit("general/setSelectedItem", []);
+      }
+    },
+    handleClearSelection() {
+      this.$emit("clearSelection");
+    },
     getCoinTypeOfCollection(collection) {
       if (collection.coin_type) {
         return getCoinType(collection.coin_type);
@@ -134,7 +255,23 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
+.with-checkbox .header-template {
+  position: relative !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.with-checkbox .header-template tr th {
+  color: #909296 !important;
+  font-size: 14px !important;
+}
+
+.with-checkbox .header-template tr th div span {
+  font-family: "inter";
+  text-transform: uppercase !important;
+}
+
 .dashboard-data-table {
   min-width: 100% !important;
   max-width: 100% !important;
@@ -149,5 +286,38 @@ export default {
 ::v-deep .dashboard-data-table .v-data-table__wrapper {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+.dashboard-data-table .v-data-table__wrapper {
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+.check-box .v-input__control {
+  padding-right: 12px;
+}
+.check-box
+  .v-input__control
+  .v-input__slot
+  .v-input--selection-controls__input
+  .mdi-checkbox-blank-outline {
+  font-size: 18px !important;
+}
+.check-box
+  .v-input__control
+  .v-input__slot
+  .v-input--selection-controls__input
+  .v-icon {
+  font-size: 18px !important;
+}
+.check-box
+  .v-input__control
+  .v-input__slot
+  .v-input--selection-controls__input {
+  margin-right: 4px !important;
+}
+.check-box
+  .v-input__control
+  .v-input__slot
+  .v-input--selection-controls__input {
+  margin-right: 2px !important;
 }
 </style>
