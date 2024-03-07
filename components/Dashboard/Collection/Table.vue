@@ -18,7 +18,7 @@
               <div
                 v-if="header.text === 'Discord Username'"
                 class="tw-flex tw-justify-start"
-                style="align-items: center; min-width: 194px"
+                style="align-items: center; min-width: 200px"
               >
                 <v-checkbox
                   v-model="selectAll"
@@ -292,7 +292,7 @@ export default {
   margin-bottom: 30px;
 }
 .check-box .v-input__control {
-  padding-right: 4px;
+  padding-right: 12px;
 }
 .check-box
   .v-input__control
