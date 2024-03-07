@@ -434,6 +434,9 @@ export default {
         this.paginatedWhitelistEntries = this.paginatedWhitelistEntries.filter(
           (entry: any) => !deletedAddresses.has(entry.wallet_address)
         );
+        this.filterSearchEntries = this.filterSearchEntries.filter(
+          (entry: any) => !deletedAddresses.has(entry.wallet_address)
+        );
         this.$toast.showMessage({
           message: "Selected wallet addresses have been deleted successfully.",
         });
@@ -480,6 +483,8 @@ export default {
         this.showCSVUploadModal = false;
 
         this.page = 0;
+        this.paginatedWhitelistEntries = [];
+        this.whitelistEntries = [];
         this.mapWhitelistEntries();
         this.uploading = false;
       } catch (error) {
