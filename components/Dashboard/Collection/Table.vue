@@ -18,14 +18,14 @@
               <div
                 v-if="header.text === 'Discord Username'"
                 class="tw-flex tw-justify-start"
-                style="align-items: center; min-width: 180px"
+                style="align-items: center; min-width: 194px"
               >
                 <v-checkbox
                   v-model="selectAll"
                   class="!tw-text-dark-2 check-box"
                   :ripple="false"
                   @change="selectAllItems"
-                  style="font-size: 16px; margin-right: 2px"
+                  style="font-size: 16px; margin-right: 12px"
                 ></v-checkbox>
 
                 <span>{{ header.text }}</span>
@@ -60,6 +60,7 @@
             @click="$emit('rowClicked', item)"
           >
             <td
+              :class="{ '!tw-py-4 ': !isCheckbox }"
               class="!tw-border-b-dark-6 tw-font-medium !tw-text-base"
               v-for="(header, index) in headers"
               :key="index"
@@ -79,13 +80,6 @@
                     <span style="font-size: 12px">{{ itemIndex + 1 }}.</span>
                   </template>
                 </v-checkbox>
-                <!-- <v-checkbox
-                  v-else
-                  v-model="items"
-                  :label="`${itemIndex + 1}.`"
-                  class="!tw-text-dark-2 check-box"
-                  style="font-size: 16px !important"
-                ></v-checkbox> -->
               </div>
               <div
                 v-if="header.showSerialNumber && header.showImage"
@@ -262,11 +256,6 @@ export default {
 };
 </script>
 <style>
-/* .with-checkbox .v-data-table__wrapper table thead {
-  position: absolute;
-  opacity: 0;
-  visibility: hidden;
-} */
 .with-checkbox .header-template {
   position: relative !important;
   visibility: visible !important;
@@ -298,10 +287,12 @@ export default {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
 .dashboard-data-table .v-data-table__wrapper {
   padding-bottom: 20px;
   margin-bottom: 30px;
+}
+.check-box .v-input__control {
+  padding-right: 4px;
 }
 .check-box
   .v-input__control
@@ -313,7 +304,20 @@ export default {
 .check-box
   .v-input__control
   .v-input__slot
+  .v-input--selection-controls__input
+  .v-icon {
+  font-size: 18px !important;
+}
+.check-box
+  .v-input__control
+  .v-input__slot
   .v-input--selection-controls__input {
   margin-right: 4px !important;
+}
+.check-box
+  .v-input__control
+  .v-input__slot
+  .v-input--selection-controls__input {
+  margin-right: 2px !important;
 }
 </style>

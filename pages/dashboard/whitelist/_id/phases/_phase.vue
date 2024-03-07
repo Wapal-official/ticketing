@@ -428,6 +428,7 @@ export default {
         );
 
         this.deleting = false;
+        this.clearSelection();
 
         const deletedAddresses = new Set(
           selectedDeleteEntries.map((entry: any) => entry.wallet_address)
