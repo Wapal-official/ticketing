@@ -160,15 +160,20 @@
         </div>
       </div>
     </div>
-    <div
-      class="tw-rounded tw-w-full tw-py-4 tw-my-4 wl-table-container custom-scrollbar"
-    >
-      <dashboard-collection-table
-        :headers="headers"
-        :items="search ? filterSearchEntries : paginatedWhitelistEntries"
-        :isCheckbox="true"
-      />
-      <!-- <v-data-table
+    <div class="tw-w-full" style="position: relative">
+      <div
+        class="tw-rounded tw-w-full tw-mt-4 wl-table-container custom-scrollbar"
+        :style="{
+          'max-height': tblHeight + 'px',
+          'min-height': tblHeight + 'px',
+        }"
+      >
+        <dashboard-collection-table
+          :headers="headers"
+          :items="itemsList"
+          :isCheckbox="true"
+        />
+        <!-- <v-data-table
         :headers="headers"
         :items="paginatedWhitelistEntries"
         :items-per-page="5"
@@ -204,28 +209,29 @@
           </tbody>
         </template>
       </v-data-table> -->
-      <div
-        v-if="!loaded"
-        v-intersect="{ handler: handleIntersect, threshold: [] }"
-      ></div>
-      <reusable-loading v-if="loading" />
-    </div>
-    <div class="footer-delete-btn">
-      <button-primary
-        :class="selectedData.length ? '' : 'btn-secondary'"
-        class="delete-btn tw-w-[180px]"
-        :title="`Delete ${selectedData.length} Address`"
-        :fullWidth="true"
-        :loading="loading"
-        @click="showCSVDeleteModal = true"
-      />
-      <button-primary
-        class="cancel-btn"
-        @click="clearSelection()"
-        :bordered="true"
-        title="Cancel"
-      >
-      </button-primary>
+        <div
+          v-if="!loaded"
+          v-intersect="{ handler: handleIntersect, threshold: [] }"
+        ></div>
+        <reusable-loading v-if="loading" />
+      </div>
+      <div class="footer-delete-btn">
+        <button-primary
+          :class="selectedData.length ? '' : 'btn-secondary'"
+          class="delete-btn tw-w-[180px]"
+          :title="`Delete ${selectedData.length} Address`"
+          :fullWidth="true"
+          :loading="loading"
+          @click="showCSVDeleteModal = true"
+        />
+        <button-primary
+          class="cancel-btn"
+          @click="clearSelection()"
+          :bordered="true"
+          title="Cancel"
+        >
+        </button-primary>
+      </div>
     </div>
     <v-dialog
       v-model="showCSVUploadModal"
@@ -288,6 +294,7 @@ import {
   getWhitelistEntryById,
   uploadCSVInWhitelistEntry,
   deleteCSVInWhitelistEntry,
+  searchWhitelistEntry,
 } from "@/services/WhitelistService";
 
 import moment from "moment";
@@ -360,43 +367,148 @@ export default {
       page: 0,
       mappingData: false,
       uploading: false,
-      search: null,
+      search: "",
       role: null,
       showRoleFilter: false,
       loaded: false,
       totalAddresses: 0,
       deleting: false,
+
+      fetching: false,
+      debounce: null,
+      searching: false,
+      searchFetchDebounce: null,
+      searchDebounce: null,
     };
   },
   watch: {
     async search(newSearch: any) {
-      if (!newSearch) {
-        // this.paginatedWhitelistEntries = this.whitelistEntries;
+      if (!newSearch || newSearch.length <= 3) {
         await this.mapWhitelistEntries();
-      } else {
+      } else if (newSearch.length >= 3) {
         await this.searchAddress();
       }
     },
   },
   methods: {
     async searchAddress() {
+      try {
+        if (!this.search || this.search.length < 3) {
+          this.filterSearchEntries = [];
+          this.paginatedWhitelistEntries = [];
+          this.page = 0;
+          this.loaded = false;
+          this.allLoaded = false;
+          await this.mapWhitelistEntries();
+          this.loaded = true;
+          return;
+        }
+
+        this.searching = true;
+        this.loaded = false;
+
+        clearTimeout(this.debounce);
+
+        this.debounce = setTimeout(async () => {
+          this.page = 0;
+          this.filterSearchEntries = [];
+
+          const res = await searchWhitelistEntry(
+            this.page,
+            100,
+            this.search,
+            this.collection._id,
+            this.$route.params.phase
+          );
+
+          if (res.status === 200 && Array.isArray(res.data.whitelistEntries)) {
+            this.filterSearchEntries = res.data.whitelistEntries;
+            this.loaded = true;
+            this.searching = false;
+          } else {
+            this.filterSearchEntries = [];
+            this.loaded = true;
+            this.searching = false;
+          }
+        }, 300);
+      } catch (error) {
+        console.error("Error searching whitelist entries:", error);
+        this.loaded = true;
+        this.searching = false;
+      }
+    },
+
+    async fetchSearchedCollection(search: string) {
+      clearTimeout(this.searchDebounce);
+      this.searchDebounce = setTimeout(async () => {
+        try {
+          if (!this.fetching) {
+            this.fetching = true;
+
+            const res = await searchWhitelistEntry(
+              this.page + 1,
+              100,
+              search,
+              this.collection._id,
+              this.$route.params.phase
+            );
+
+            if (
+              res.status === 200 &&
+              Array.isArray(res.data.whitelistEntries)
+            ) {
+              this.filterSearchEntries.push(...res.data.whitelistEntries);
+              this.loaded = true;
+              this.fetching = false;
+
+              if (res.data.whitelistEntries.length < 100) {
+                this.allLoaded = true;
+              }
+            }
+          } else {
+            clearTimeout(this.searchFetchDebounce);
+
+            this.searchFetchDebounce = setTimeout(async () => {
+              await this.fetchSearchedCollection(search);
+            }, 100);
+          }
+        } catch (error) {
+          console.error("Error fetching searched whitelist entries:", error);
+          this.fetching = false;
+        }
+      }, 300);
+    },
+    async s() {
       if (!this.search) {
         await this.mapWhitelistEntries();
         return;
       }
       this.loading = true;
       try {
-        this.filterSearchEntries = this.paginatedWhitelistEntries.filter(
-          (entry: { [s: string]: unknown } | ArrayLike<unknown>) => {
-            return Object.values(entry).some((value) => {
-              if (typeof value === "string") {
-                return value.toLowerCase().includes(this.search.toLowerCase());
-              }
-              return false;
-            });
-          }
+        // this.filterSearchEntries = this.paginatedWhitelistEntries.filter(
+        //   (entry: { [s: string]: unknown } | ArrayLike<unknown>) => {
+        //     return Object.values(entry).some((value) => {
+        //       if (typeof value === "string") {
+        //         return value.toLowerCase().includes(this.search.toLowerCase());
+        //       }
+        //       return false;
+        //     });
+        //   }
+        // );
+        const res = await searchWhitelistEntry(
+          this.page,
+          100,
+          this.search,
+          this.collection._id,
+          this.$route.params.phase
         );
-        // this.paginatedWhitelistEntries = this.filterSearchEntries;
+        // if (res.data.whitelistEntries) {
+        //   this.filterSearchEntries = res.data.whitelistEntries;
+        // } else {
+        //   this.filterSearchEntries = [];
+        // }
+        this.filterSearchEntries = res.data.whitelistEntries;
+
         this.clearSelection();
       } catch (error) {
         console.error("Error searching whitelist entries:", error);
@@ -503,7 +615,7 @@ export default {
       this.page++;
       const res = await getWhitelistEntryById(
         this.collection._id,
-        1000,
+        100,
         this.page,
         this.$route.params.phase
       );
@@ -554,6 +666,22 @@ export default {
     },
   },
   computed: {
+    tblHeight() {
+      if (process.client) {
+        if (window.innerWidth < 767) {
+          return window.innerHeight - 365;
+        } else {
+          return window.innerHeight - 275;
+        }
+      }
+    },
+    itemsList() {
+      if (this.search && this.search.length >= 3) {
+        return this.filterSearchEntries;
+      } else {
+        return this.paginatedWhitelistEntries;
+      }
+    },
     checkWhitelistSale() {
       const whitelistTime = new Date(
         this.collection.candyMachine.whitelist_sale_time
@@ -589,14 +717,14 @@ export default {
   border-radius: 0px 0px 10px 10px;
 }
 .footer-delete-btn {
-  height: 80px;
+  height: 60px;
   background-color: #141517;
-  width: 80%;
+  width: 101%;
   position: absolute;
   bottom: 0px;
   z-index: 2;
   display: flex;
-  align-items: center;
+  align-items: end;
 }
 
 .delete-btn {
@@ -612,6 +740,6 @@ export default {
 .cancel-btn {
   max-height: 40px;
   position: absolute;
-  right: 0;
+  right: 25px;
 }
 </style>

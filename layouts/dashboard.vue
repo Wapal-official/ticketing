@@ -13,7 +13,7 @@
           ref="container"
           id="container"
         >
-          <Nuxt class="!tw-px-6 !tw-py-8 height-view" />
+          <Nuxt class="!tw-px-6 !tw-pt-8 height-view" />
         </div>
       </div>
       <div
@@ -191,12 +191,12 @@ export default {
   height: calc(100vh - 75px);
 }
 .height-view {
-  height: 100dvh;
+  /* height: 100dvh; */
 }
 
 @media only screen and (max-width: 600px) {
   .height-view {
-    height: 90dvh;
+    /* height: 90dvh; */
   }
 }
 

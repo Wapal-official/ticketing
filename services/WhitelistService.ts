@@ -66,6 +66,34 @@ export const deleteCSVInWhitelistEntry = async (collectionId: any,walletAddress:
   return res;
 }
 
+export const searchWhitelistEntry = async (
+  page: number,
+  limit: number,
+  q: string, 
+  collection_id: string,
+  phaseName: string,
+  
+) => {
+  let entryLimit = limit;
+  let entryPage = page;
+  if (!limit) {
+    entryLimit = 100;
+  }
+
+  if (!page) {
+    entryPage = 1;
+  }
+
+  const res = await axios.get(
+    `${process.env.baseURL}/api/whitelist/find?page=${entryPage}}&limit=${entryLimit}&q=${q}&collection_id=${collection_id}&phase=${phaseName}`,
+    {
+      params: { collection_id: collection_id },
+    }
+  );
+
+  return res;
+};
+
 export const getWhitelistEntryById = async (
   collection_id: string,
   limit: number,
