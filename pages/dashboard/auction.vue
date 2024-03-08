@@ -45,7 +45,42 @@ export default {
     };
   },
   mounted() {
-    this.$router.push("/dashboard/auction/nfts");
+    // this.$router.push("/dashboard/auction/nfts");
+    if (
+      this.$route.path === "/dashboard/auction" ||
+      this.$route.path === "/dashboard/auction/"
+    ) {
+      this.$router.push("/dashboard/auction/nfts");
+      this.tab = 0;
+    } else if (this.$route.path === "/dashboard/auction/under-review") {
+      this.tab = 1;
+    } else if (this.$route.path === "/dashboard/auction/list") {
+      this.tab = 2;
+    } else {
+      this.tab = 0;
+    }
+  },
+  computed: {
+    path() {
+      return this.$route.path;
+    },
+  },
+  watch: {
+    path() {
+      if (
+        this.$route.path === "/dashboard/auction" ||
+        this.$route.path === "/dashboard/auction/"
+      ) {
+        this.$router.push("/dashboard/auction/nfts");
+        this.tab = 0;
+      } else if (this.$route.path === "/dashboard/auction/under-review") {
+        this.tab = 1;
+      } else if (this.$route.path === "/dashboard/auction/list") {
+        this.tab = 2;
+      } else {
+        this.tab = 0;
+      }
+    },
   },
   methods: {
     tabChanged(tab) {
