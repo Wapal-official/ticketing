@@ -40,7 +40,7 @@
               <div
                 v-else-if="header.text === 'Date Joined'"
                 class="tw-flex tw-justify-start"
-                style="align-items: center; min-width: 100px"
+                style="align-items: center; min-width: 110px"
               >
                 <span>{{ header.text }}</span>
               </div>

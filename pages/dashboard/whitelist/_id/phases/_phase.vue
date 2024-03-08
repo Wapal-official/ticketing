@@ -385,7 +385,7 @@ export default {
     async search(newSearch: any) {
       if (!newSearch || newSearch.length <= 3) {
         await this.mapWhitelistEntries();
-      } else if (newSearch.length >= 3) {
+      } else {
         await this.searchAddress();
       }
     },
@@ -446,7 +446,7 @@ export default {
             this.fetching = true;
 
             const res = await searchWhitelistEntry(
-              this.page + 1,
+              this.page,
               100,
               search,
               this.collection._id,
