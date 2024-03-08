@@ -26,16 +26,6 @@
           </button-primary>
         </div>
       </div>
-      <!-- <v-row no-gutters>
-        <ReusableThemeButton class="auction1" @click="$router.push('/dashboard/mint-auction')" small
-          title="Mint And Add To Auction" />
-      </v-row>
-      <v-tabs background-color="transparent" v-model="tab" id="explore-tab" active-class="!tw-text-wapal-pink">
-        <v-tab @click="$router.push('/dashboard/auction/nfts'), (tab = 0)" :ripple="false"
-          class="!tw-text-white auction2">My Nfts</v-tab>
-        <v-tab @click="$router.push('/dashboard/auction/list'), (tab = 1)" :ripple="false"
-          class="!tw-text-white auction3">My Auctions</v-tab>
-      </v-tabs> -->
     </div>
     <Nuxt />
   </div>
@@ -51,11 +41,46 @@ export default {
   data() {
     return {
       tab: 0,
-      tabs: ["My NFTs", "My Auction"],
+      tabs: ["My NFTs", "Under Review Auctions", "Approved Auctions"],
     };
   },
   mounted() {
-    this.$router.push("/dashboard/auction/nfts");
+    // this.$router.push("/dashboard/auction/nfts");
+    if (
+      this.$route.path === "/dashboard/auction" ||
+      this.$route.path === "/dashboard/auction/"
+    ) {
+      this.$router.push("/dashboard/auction/nfts");
+      this.tab = 0;
+    } else if (this.$route.path === "/dashboard/auction/under-review") {
+      this.tab = 1;
+    } else if (this.$route.path === "/dashboard/auction/list") {
+      this.tab = 2;
+    } else {
+      this.tab = 0;
+    }
+  },
+  computed: {
+    path() {
+      return this.$route.path;
+    },
+  },
+  watch: {
+    path() {
+      if (
+        this.$route.path === "/dashboard/auction" ||
+        this.$route.path === "/dashboard/auction/"
+      ) {
+        this.$router.push("/dashboard/auction/nfts");
+        this.tab = 0;
+      } else if (this.$route.path === "/dashboard/auction/under-review") {
+        this.tab = 1;
+      } else if (this.$route.path === "/dashboard/auction/list") {
+        this.tab = 2;
+      } else {
+        this.tab = 0;
+      }
+    },
   },
   methods: {
     tabChanged(tab) {
@@ -65,6 +90,9 @@ export default {
           this.$router.push("/dashboard/auction/nfts");
           break;
         case 1:
+          this.$router.push("/dashboard/auction/under-review");
+          break;
+        case 2:
           this.$router.push("/dashboard/auction/list");
           break;
         default:

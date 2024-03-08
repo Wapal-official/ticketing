@@ -31,7 +31,7 @@
   </div>
 </template>
 <script>
-import { getApprovedAuctionsOfUser } from "@/services/AuctionService";
+import { getUnderReviewAuctionsOfUser } from "@/services/AuctionService";
 export default {
   data() {
     return {
@@ -77,7 +77,7 @@ export default {
   methods: {
     async getAuctions() {
       this.page++;
-      const auctions = await getApprovedAuctionsOfUser({
+      const auctions = await getUnderReviewAuctionsOfUser({
         page: this.page,
         limit: this.perPage,
       });
@@ -88,7 +88,7 @@ export default {
           auction.image = auction.nft.meta.image;
 
           auction.highestBid =
-            auction.biddings && auction.biddings.length > 0
+            auction.biddings.length > 0
               ? auction.biddings[auction.biddings.length - 1].bid
               : auction.min_bid;
 
