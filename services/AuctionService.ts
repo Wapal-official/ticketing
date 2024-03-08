@@ -341,3 +341,37 @@ export const getOwnerAndRoyaltyOfTokenInAuction = async ({
 
   return { owner: owner, royalty: royaltyPercentage };
 };
+
+export const getApprovedAuctionsOfUser = async ({
+  page,
+  limit,
+}: {
+  page: number;
+  limit: number;
+}) => {
+  const res = await publicRequest.get("/api/auction/user", {
+    params: {
+      page: page,
+      perPage: limit,
+    },
+  });
+
+  return res.data.auctions;
+};
+
+export const getUnderReviewAuctionsOfUser = async ({
+  page,
+  limit,
+}: {
+  page: number;
+  limit: number;
+}) => {
+  const res = await publicRequest.get("/api/auction/unapproved", {
+    params: {
+      page: page,
+      limit: limit,
+    },
+  });
+
+  return res.data.auctions;
+};

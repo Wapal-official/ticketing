@@ -5,3 +5,11 @@ export const login = async (body: any) => {
 
   return res;
 };
+
+export const register = async (walletAddress: string) => {
+  const res = await axios.post(`${process.env.baseURL}/api/auth/register`, {
+    wallet_address: walletAddress,
+  });
+
+  return res;
+};

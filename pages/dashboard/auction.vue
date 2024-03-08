@@ -26,16 +26,6 @@
           </button-primary>
         </div>
       </div>
-      <!-- <v-row no-gutters>
-        <ReusableThemeButton class="auction1" @click="$router.push('/dashboard/mint-auction')" small
-          title="Mint And Add To Auction" />
-      </v-row>
-      <v-tabs background-color="transparent" v-model="tab" id="explore-tab" active-class="!tw-text-wapal-pink">
-        <v-tab @click="$router.push('/dashboard/auction/nfts'), (tab = 0)" :ripple="false"
-          class="!tw-text-white auction2">My Nfts</v-tab>
-        <v-tab @click="$router.push('/dashboard/auction/list'), (tab = 1)" :ripple="false"
-          class="!tw-text-white auction3">My Auctions</v-tab>
-      </v-tabs> -->
     </div>
     <Nuxt />
   </div>
@@ -51,7 +41,7 @@ export default {
   data() {
     return {
       tab: 0,
-      tabs: ["My NFTs", "My Auction"],
+      tabs: ["My NFTs", "Under Review Auctions", "Approved Auctions"],
     };
   },
   mounted() {
@@ -65,6 +55,9 @@ export default {
           this.$router.push("/dashboard/auction/nfts");
           break;
         case 1:
+          this.$router.push("/dashboard/auction/under-review");
+          break;
+        case 2:
           this.$router.push("/dashboard/auction/list");
           break;
         default:
