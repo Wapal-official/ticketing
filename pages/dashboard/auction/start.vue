@@ -412,7 +412,7 @@ export default {
                 error: false,
               });
               this.loading = false;
-              this.$router.push("/dashboard/auction/list");
+              this.$router.push("/dashboard/auction/under-review");
             })
             .catch((err) => {
               console.log(err.response);

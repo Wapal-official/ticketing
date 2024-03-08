@@ -20,6 +20,7 @@ import { getPrice } from "@/services/AssetsService";
 import { aptToUsd, arToUsd } from "@/services/UtilityService";
 import { getCoinType } from "@/utils/getCoinType";
 import { convertPriceToSendInSmartContract } from "~/utils/price";
+import { register } from "@/services/LoginService";
 
 const GRAPHQL_URL = process.env.GRAPHQL_URL ? process.env.GRAPHQL_URL : "";
 
@@ -212,6 +213,8 @@ export const actions = {
             : wallet.account?.publicKey,
         })
       );
+
+      const res = await register(state.wallet.walletAddress);
 
       return true;
     } catch (error) {
