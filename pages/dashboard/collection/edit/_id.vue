@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 xl:tw-flex-row xl:tw-items-start xl:tw-justify-start"
+    class="tw-pt-3 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 xl:tw-flex-row xl:tw-items-start xl:tw-justify-start"
     v-if="!loading"
   >
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6">
@@ -15,7 +15,7 @@
       <video-player
         v-else-if="isVideo(collection.image)"
         :source="collection.image"
-        style="max-width: 700px"
+        style="max-width: 600px"
       />
       <div
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
