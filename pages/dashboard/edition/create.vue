@@ -754,9 +754,94 @@ export default {
 
       reviewElement.prepend(reviewImgElement);
     },
+    displayVideo() {
+      const previewVideoElement = document.createElement("video");
+      const reviewVideoElement = document.createElement("video");
+
+      previewVideoElement.src = reviewVideoElement.src = URL.createObjectURL(
+        this.file
+      );
+      previewVideoElement.autoplay = reviewVideoElement.autoplay = true;
+      previewVideoElement.muted = reviewVideoElement.muted = true;
+      previewVideoElement.loop = reviewVideoElement.loop = true;
+      previewVideoElement.playsInline = reviewVideoElement.playsInline = true;
+      previewVideoElement.preload = reviewVideoElement.preload = "metadata";
+      previewVideoElement.controls = reviewVideoElement.controls = false; // You can set controls to true if you want to display controls
+
+      previewVideoElement.classList.add("tw-w-full");
+      previewVideoElement.classList.add("tw-h-full");
+      previewVideoElement.classList.add("tw-object-fill");
+      previewVideoElement.classList.add("tw-max-h-[300px]");
+      previewVideoElement.classList.add("tw-rounded");
+
+      reviewVideoElement.classList.add("tw-w-full");
+      reviewVideoElement.classList.add("tw-h-full");
+      reviewVideoElement.classList.add("tw-object-fill");
+      reviewVideoElement.classList.add("tw-max-h-[300px]");
+      reviewVideoElement.classList.add("tw-rounded");
+
+      const previewElement = document.getElementById("image-preview");
+      const reviewElement = document.getElementById("image-review");
+
+      while (previewElement.firstChild) {
+        previewElement.removeChild(previewElement.firstChild);
+      }
+
+      while (reviewElement.firstChild) {
+        reviewElement.removeChild(reviewElement.firstChild);
+      }
+
+      previewElement.prepend(previewVideoElement);
+      reviewElement.prepend(reviewVideoElement);
+    },
     selectImage(file) {
       this.file = file;
-      this.displayImage();
+      if (this.isImage(file.name)) {
+        this.displayImage();
+      } else if (this.isVideo(file.name)) {
+        this.displayVideo();
+      }
+    },
+    isImage(source) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
     },
     async submit() {
       const validate = await this.$refs.attributeForm.validate();

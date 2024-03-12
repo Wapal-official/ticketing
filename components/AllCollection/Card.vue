@@ -11,12 +11,18 @@
       <video-player-featured :source="video" />
     </div>
     <utility-image
-      v-else
+      v-else-if="collection && isImage(collection.image)"
       :source="collection?.image"
       :onerror="imageNotFound()"
       :alt="collection?.name"
       class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
     />
+    <video-player-listed
+      v-else-if="collection && isVideo(collection.image)"
+      :source="collection?.image"
+      style="max-width: 100px"
+    />
+
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1">
       <div class="tw-font-medium">{{ collection?.name }}</div>
       <div
@@ -55,6 +61,7 @@
   </NuxtLink>
 </template>
 <script lang="ts">
+// import {listVideoPlayer} from "@/components/VideoPlayer/ListVideoPlayer"
 import { getCollection } from "@/services/CollectionService";
 import imageNotFound from "@/utils/imageNotFound";
 import santa from "@/assets/video/wapal-santa.MP4";
@@ -184,6 +191,49 @@ export default {
       }
 
       return `/nft/${this.collection?.username}`;
+    },
+  },
+  methods: {
+    isImage(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
     },
   },
 };
