@@ -41,7 +41,7 @@
       >
       <input
         type="file"
-        accept=".png, .jpg, .jpeg, .gif, .webp"
+        :accept="acceptFile"
         name="file"
         @change="fileSelected"
         class="tw-hidden tw-w-full tw-h-full"
@@ -56,7 +56,7 @@
     >
       <input
         type="file"
-        accept=".png, .jpg, .jpeg, .gif, .webp"
+        :accept="acceptFile"
         name="file"
         @change="fileSelected"
         class="tw-hidden tw-w-full tw-h-full"
@@ -92,17 +92,44 @@ export default {
     return {
       imageSelected: false,
       dropZoneClass: "tw-border-dark-4",
+      videoFile: "",
+      acceptFile:
+        ".png, .jpg, .jpeg, .gif, .webp, .mp4, .mkv, .m4v, .bmp, .svg, .ico, .tiff, .avi, .mov, .wmv, .flv, .3gp, .ogv, .mpeg, .mpg, .divx, .rm, .asf, .vob, .ts, .m2ts, video/*",
     };
   },
   computed: {},
   methods: {
+    checkFileType() {
+      if (this.extension === ".json") {
+        return "json";
+      }
+
+      const imageRegex = /\.((jpg|jpeg|png|gif|bmp|svg|webp|ico|tiff?))$/i;
+
+      const videoRegex =
+        /\.((mp4|avi|mov|mkv|wmv|flv|webm|3gp|ogv|mpeg|mpg|m4v|divx|rm|asf|vob|ts|m2ts?))$/i;
+
+      if (imageRegex.test(this.extension)) {
+        return "image";
+      } else if (videoRegex.test(this.extension)) {
+        return "video";
+      }
+
+      return "json";
+    },
+
     fileSelected(event: any) {
       const file = event.target.files[0];
       if (file) {
-        this.$emit("fileSelected", file);
-        this.imageSelected = true;
-
-        this.generatePreviewImage(file);
+        if (file.type.includes("image")) {
+          this.$emit("fileSelected", file);
+          this.imageSelected = true;
+          this.generatePreviewImage(file);
+        } else if (file.type.includes("video")) {
+          this.$emit("fileSelected", file);
+          this.imageSelected = true;
+          this.generatePreviewVideo(file);
+        }
       }
     },
     dropZoneClicked() {
@@ -125,6 +152,30 @@ export default {
         }
 
         previewElement.prepend(imgElement);
+      }, 200);
+    },
+    generatePreviewVideo(file: any) {
+      const videoElement = document.createElement("video");
+      videoElement.src = URL.createObjectURL(file);
+      videoElement.autoplay = true;
+      videoElement.controls = true;
+      videoElement.muted = true;
+      videoElement.loop = true;
+      videoElement.playsInline = true;
+      videoElement.preload = "metadata";
+      videoElement.classList.add("tw-w-full");
+      videoElement.classList.add("tw-h-full");
+      videoElement.classList.add("tw-object-cover");
+      videoElement.classList.add("video-opacity");
+
+      setTimeout(() => {
+        const previewElement = this.$refs.imagePreview;
+
+        if (previewElement.firstChild) {
+          previewElement.removeChild(previewElement.firstChild);
+        }
+
+        previewElement.prepend(videoElement);
       }, 200);
     },
     dragover(e: any) {

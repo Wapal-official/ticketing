@@ -81,6 +81,17 @@
         placeholder="Vault Name"
         @input="validateVaultName"
       />
+      <!-- <div>
+        <p>Select Your Asset Type:</p>
+        <v-radio-group
+          v-model="selectedType"
+          hide-details
+          @change="handleAssetTypeChange"
+        >
+          <v-radio label="Image" value="image"></v-radio>
+          <v-radio label="Video" value="video"></v-radio>
+        </v-radio-group>
+      </div> -->
       <div class="tw-text-red-600 tw-text-sm" v-if="vaultNameError">
         Please remove spaces and special characters from vault name
       </div>
@@ -156,6 +167,7 @@ export default {
       loading: true,
       vaultNameError: false,
       defaultTheme,
+      selectedType: "image",
     };
   },
   computed: {
@@ -166,6 +178,9 @@ export default {
     },
   },
   methods: {
+    handleAssetTypeChange() {
+      this.$store.dispatch("asset/updateAssetType", this.selectedType);
+    },
     pushFolder(folder: any) {
       if (!this.folders[0] || !this.folders[0].folder_name) {
         this.folders = [];

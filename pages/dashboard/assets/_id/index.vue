@@ -44,6 +44,7 @@ export default {
     return {
       folders: [
         { name: "assets", type: "assets" },
+        // { name: "image", type: "image" },
         { name: "metadata", type: "metadata" },
       ],
       vault: null,
@@ -59,6 +60,9 @@ export default {
           ]
         : [];
     },
+    // getAssetsType() {
+    //   return this.$store.state.asset.assetType;
+    // },
   },
   async mounted() {
     const folderId = this.$route.params.id;

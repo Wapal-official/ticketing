@@ -13,11 +13,16 @@
         <video-player-featured :source="collection.video" />
       </div>
       <utility-image
-        v-else
+        v-else-if="isImage(collection.image)"
         :source="collection.image"
         :onerror="imageNotFound()"
         :alt="collection.name"
         class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+      />
+      <video-player
+        v-else-if="isVideo(collection.image)"
+        :source="collection.image"
+        style="max-width: 600px"
       />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
@@ -467,6 +472,47 @@ export default {
     };
   },
   methods: {
+    isImage(source) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
     countdownComplete() {
       this.showCountdown = false;
     },
