@@ -157,26 +157,11 @@ export default {
           plugins: ["@babel/plugin-proposal-optional-chaining"],
         },
       });
-
-      config.module.rules.push({
-        test: /\.(ogg|mp3|wav|mpe?g)$/i,
-        loader: "file-loader",
-        options: {
-          name: "[path][name].[ext]",
-        },
-      });
     },
     postcss: {
       plugins: {
         tailwindcss: {},
         autoprefixer: {},
-      },
-    },
-    loaders: {
-      vue: {
-        transformAssetUrls: {
-          audio: "src",
-        },
       },
     },
   },

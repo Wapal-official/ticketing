@@ -12,8 +12,11 @@
           class="tw-w-full tw-h-full tw-object-cover"
           v-if="checkFileType === 'image'"
         />
+        <video-player
+          v-else-if="checkFileType === 'video'"
+          :source="getAssetSrc"
+        />
 
-        <video-player v-if="checkFileType === 'video'" :source="getAssetSrc" />
         <div
           class="tw-w-full tw-h-full tw-absolute tw-top-0 tw-left-0 tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear tw-bg-black/[0.65] tw-backdrop-blur-[2px] group-hover:tw-opacity-100"
           :class="{

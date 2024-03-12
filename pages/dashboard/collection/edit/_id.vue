@@ -5,18 +5,17 @@
   >
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6">
       <img
-        v-if="isImage(collection.image)"
         :src="collection.image"
         :alt="collection.name"
         class="tw-rounded tw-w-[421px] tw-h-[421px]"
         width="421px"
         height="421px"
       />
-      <video-player
+      <!-- <video-player
         v-else-if="isVideo(collection.image)"
         :source="collection.image"
         style="max-width: 600px"
-      />
+      /> -->
       <div
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
       >
@@ -718,47 +717,6 @@ export default {
     this.fetchCollection();
   },
   methods: {
-    isImage(source: string) {
-      const extension = source.split(".").pop()?.toLowerCase();
-      return extension
-        ? [
-            "jpg",
-            "jpeg",
-            "png",
-            "gif",
-            "webp",
-            "bmp",
-            "svg",
-            "ico",
-            "tiff",
-          ].includes(extension)
-        : false;
-    },
-    isVideo(source: string) {
-      const extension = source.split(".").pop()?.toLowerCase();
-      return extension
-        ? [
-            "mp4",
-            "mkv",
-            "m4v",
-            "webm",
-            "avi",
-            "mov",
-            "wmv",
-            "flv",
-            "3gp",
-            "ogv",
-            "mpeg",
-            "mpg",
-            "divx",
-            "rm",
-            "asf",
-            "vob",
-            "ts",
-            "m2ts",
-          ].includes(extension)
-        : false;
-    },
     async fetchCollection() {
       this.loading = true;
       this.collection = await getCollection(this.$route.params.id);

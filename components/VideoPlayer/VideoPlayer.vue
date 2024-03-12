@@ -14,7 +14,6 @@
 </template>
 
 <script lang="ts">
-import videoPoster from "@/assets/img/logo/logo-vertical.png";
 export default {
   name: "VideoPlayer",
   props: {
@@ -24,12 +23,10 @@ export default {
     return {
       player: null,
       videoSource: "",
-      videoPoster,
     };
   },
   mounted() {
     const uncachedSource = this.source + "?refreshCache=true";
-    // this.videoSource = uncachedSource + "#t=0.1";
     this.videoSource = uncachedSource;
   },
 };
