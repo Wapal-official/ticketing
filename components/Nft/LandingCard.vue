@@ -15,6 +15,17 @@
           >
             <video-player-featured :source="video" />
           </div>
+          <video-player-detailed
+            class="video-featured-2"
+            v-else-if="
+              isVideo(
+                isCollection ? collection?.image : collection?.nft.meta.image
+              )
+            "
+            :source="
+              isCollection ? collection?.image : collection?.nft.meta.image
+            "
+          />
           <utility-image
             v-else
             :source="
@@ -268,10 +279,62 @@ export default {
       this.resource = { paused: false, total_supply: 0, minted: 0 };
     }
   },
+  methods: {
+    isVideo(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+  },
 };
 </script>
 <style>
 .gradient {
   background: linear-gradient(180deg, rgba(16, 17, 19, 0) 0%, #000000 100%);
+}
+.video-featured-2 {
+  width: 100%;
+  max-width: 312px;
+  height: 312px;
+
+  /* @media (min-width: 640px) {
+    width: 312px;
+    height: 312px;
+    max-height: 312px;
+  }
+
+  @media (min-width: 768px) {
+    width: 312px;
+    min-width: 312px;
+    height: 312px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 312px;
+    height: 312px;
+    max-height: 312px;
+  } */
+
+  border-radius: 8px;
 }
 </style>

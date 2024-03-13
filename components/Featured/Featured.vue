@@ -11,6 +11,11 @@
       >
         <video-player-featured :source="collection.video" />
       </div>
+      <video-player-detailed
+        class="video-featured"
+        v-else-if="isVideo(collection.image)"
+        :source="collection.image"
+      />
       <utility-image
         v-else
         :source="collection.image"
@@ -347,6 +352,31 @@ export default {
     };
   },
   methods: {
+    isVideo(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
     countdownComplete() {
       this.showPublicSaleTimer = false;
       this.showWhitelistSaleTimer = false;
@@ -849,5 +879,30 @@ export default {
 <style scoped>
 .featured {
   height: calc(100vh - 40px);
+}
+.video-featured {
+  width: 100%;
+  max-width: 400px;
+  height: 338px;
+
+  @media (min-width: 640px) {
+    width: 400px;
+    height: 400px;
+    max-height: 400px;
+  }
+
+  @media (min-width: 768px) {
+    width: 400px;
+    min-width: 400px;
+    height: 400px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 400px;
+    height: 400px;
+    max-height: 400px;
+  }
+
+  border-radius: 8px;
 }
 </style>
