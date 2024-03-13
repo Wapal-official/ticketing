@@ -159,14 +159,13 @@ export default {
       videoElement.src = URL.createObjectURL(file);
       videoElement.autoplay = true;
       videoElement.controls = true;
-      videoElement.muted = true;
+      videoElement.muted = false;
       videoElement.loop = true;
       videoElement.playsInline = true;
       videoElement.preload = "metadata";
       videoElement.classList.add("tw-w-full");
       videoElement.classList.add("tw-h-full");
-      videoElement.classList.add("tw-object-cover");
-      videoElement.classList.add("video-opacity");
+      videoElement.classList.add("tw-object-fill");
 
       setTimeout(() => {
         const previewElement = this.$refs.imagePreview;

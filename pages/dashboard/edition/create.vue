@@ -761,12 +761,12 @@ export default {
       previewVideoElement.src = reviewVideoElement.src = URL.createObjectURL(
         this.file
       );
-      previewVideoElement.autoplay = reviewVideoElement.autoplay = true;
-      previewVideoElement.muted = reviewVideoElement.muted = true;
+      previewVideoElement.autoplay = reviewVideoElement.autoplay = false;
+      previewVideoElement.muted = reviewVideoElement.muted = false;
       previewVideoElement.loop = reviewVideoElement.loop = true;
       previewVideoElement.playsInline = reviewVideoElement.playsInline = true;
       previewVideoElement.preload = reviewVideoElement.preload = "metadata";
-      previewVideoElement.controls = reviewVideoElement.controls = false; // You can set controls to true if you want to display controls
+      previewVideoElement.controls = reviewVideoElement.controls = true;
 
       previewVideoElement.classList.add("tw-w-full");
       previewVideoElement.classList.add("tw-h-full");

@@ -12,10 +12,10 @@
       >
         <video-player-featured :source="collection.video" />
       </div>
-      <video-player
+      <video-player-detailed
+        class="video-detailed"
         v-else-if="isVideo(collection.image)"
         :source="collection.image"
-        style="max-width: 500px"
       />
       <utility-image
         v-else
@@ -1585,3 +1585,15 @@ export default {
   },
 };
 </script>
+<style lang="css">
+.video-detailed {
+  max-width: 550px;
+  height: 550px;
+  border-radius: 0.25rem !important;
+}
+@media (max-width: 600px) {
+  .video-detailed {
+    height: 350px;
+  }
+}
+</style>
