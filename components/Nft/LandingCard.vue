@@ -7,6 +7,21 @@
         class="tw-relative tw-w-full tw-h-full tw-rounded-lg md:!tw-w-[312px] md:!tw-h-[312px]"
       >
         <div
+          v-if="
+            isVideo(
+              isCollection ? collection?.image : collection?.nft.meta.image
+            )
+          "
+          @click.prevent.stop="playVideo()"
+          style="
+            top: 60px;
+            position: absolute;
+            height: 50%;
+            width: 100%;
+            z-index: 4;
+          "
+        ></div>
+        <div
           class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative md:!tw-w-[312px] md:!tw-h-[312px]"
         >
           <div
@@ -22,6 +37,8 @@
                 isCollection ? collection?.image : collection?.nft.meta.image
               )
             "
+            :playIcon="true"
+            :videoControl="false"
             :source="
               isCollection ? collection?.image : collection?.nft.meta.image
             "
@@ -119,6 +136,9 @@ export default {
     };
   },
   computed: {
+    getVideoPlay() {
+      return this.$store.state.general.isVideoPlay;
+    },
     isCollection() {
       return this.type === "collection";
     },
@@ -280,6 +300,10 @@ export default {
     }
   },
   methods: {
+    playVideo() {
+      const newVideoPlayValue = !this.$store.state.general.isVideoPlay;
+      this.$store.commit("general/setVideoPlay", newVideoPlayValue);
+    },
     isVideo(source: string) {
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
