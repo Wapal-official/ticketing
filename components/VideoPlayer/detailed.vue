@@ -2,16 +2,17 @@
   <div class="video-holder-detailed" @click.stop="playVideo">
     <video
       ref="videoPlayer"
-      controls
+      :controls="videoControl"
       controlslist="nodownload"
       loop
       playsinline
       preload="metadata"
       class="tw-w-full tw-h-full tw-object-fill video-opacity"
+      :style="{ opacity: playIcon && !isPlaying ? '0.6' : '1' }"
     >
       <source :src="videoSource" />
     </video>
-    <div class="play-icon-detailed" v-if="!isPlaying">
+    <div class="play-icon-detailed" v-if="!isPlaying && playIcon">
       <span class="mdi mdi-play"></span>
     </div>
   </div>
@@ -23,6 +24,14 @@ import videoPoster from "@/assets/img/logo/logo-vertical.png";
 export default {
   props: {
     source: { type: String },
+    videoControl: {
+      type: Boolean,
+      default: true,
+    },
+    playIcon: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -36,6 +45,24 @@ export default {
     const uncachedSource = this.source + "?refreshCache=true";
     // this.videoSource = uncachedSource + "#t=0.1";
     this.videoSource = uncachedSource;
+  },
+  computed: {
+    getVideoPlay() {
+      return this.$store.state.general.isVideoPlay;
+    },
+  },
+  watch: {
+    getVideoPlay(newVal: Boolean) {
+      const videoPlay = this.$refs.videoPlayer as HTMLVideoElement;
+      if (newVal) {
+        this.isPlaying = newVal;
+        videoPlay.play();
+      } else {
+        this.isPlaying = newVal;
+        videoPlay.pause();
+      }
+      console.log(newVal);
+    },
   },
   methods: {
     playVideo() {
@@ -80,10 +107,12 @@ export default {
 }
 
 .play-icon-detailed {
-  display: none;
+  /* display: none; */
+  color: #fff;
+  font-size: 36px;
   position: absolute;
-  top: 35%;
-  left: 40%;
+  top: 38%;
+  left: 45%;
   margin: auto;
   z-index: 2;
 }
