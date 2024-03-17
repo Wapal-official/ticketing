@@ -49,7 +49,7 @@
         id="drop-zone"
       />
     </div>
-    <div v-else class="d-flex tw-gap-4">
+    <div v-else class="d-flex tw-gap-4 tw-mb-16">
       <div
         class="tw-w-[200px] tw-h-[200px] tw-relative tw-rounded tw-group"
         ref="dropZone"
@@ -104,7 +104,7 @@
         <label
           class="tw-text-center tw-font-medium tw-cursor-pointer"
           id="drop-zone"
-          >Drop your thumnail images here, or
+          >Drop your thumbnail images here, or
           <span class="tw-text-primary-1" id="drop-zone"
             >click to browse</span
           ></label
