@@ -7,19 +7,22 @@
         class="tw-relative tw-w-full tw-h-full tw-rounded-lg md:!tw-w-[312px] md:!tw-h-[312px]"
       >
         <div
+          class="video-player-absolute"
           v-if="
             isVideo(
               isCollection ? collection?.image : collection?.nft.meta.image
             )
           "
           @click.prevent.stop="playVideo()"
-          style="
-            top: 60px;
-            position: absolute;
-            height: 50%;
-            width: 100%;
-            z-index: 4;
+        ></div>
+        <div
+          class="video-player-sound-absolute"
+          v-if="
+            isVideo(
+              isCollection ? collection?.image : collection?.nft.meta.image
+            )
           "
+          @click.prevent.stop="playSound()"
         ></div>
         <div
           class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative md:!tw-w-[312px] md:!tw-h-[312px]"
@@ -304,6 +307,10 @@ export default {
       const newVideoPlayValue = !this.$store.state.general.isVideoPlay;
       this.$store.commit("general/setVideoPlay", newVideoPlayValue);
     },
+    playSound() {
+      const newSoundPlayValue = !this.$store.state.general.isSoundPlay;
+      this.$store.commit("general/setSoundPlay", newSoundPlayValue);
+    },
     isVideo(source: string) {
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
@@ -360,5 +367,24 @@ export default {
   } */
 
   border-radius: 8px;
+}
+
+.video-player-absolute {
+  top: 0px;
+  position: absolute;
+  height: 70%;
+  width: 100%;
+  z-index: 4;
+  /* background-color: red; */
+}
+
+.video-player-sound-absolute {
+  top: 10px;
+  right: 10px;
+  position: absolute;
+  height: 10%;
+  width: 10%;
+  z-index: 5;
+  /* background-color: red; */
 }
 </style>

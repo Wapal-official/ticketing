@@ -2,6 +2,7 @@
 export const state = () => ({
   selectedItem: [],
   isVideoPlay: false,
+  isSoundPlay: false,
 });
 
 export const mutations = {
@@ -15,5 +16,8 @@ export const mutations = {
   },
   setVideoPlay(state, payload) {
     state.isVideoPlay = payload;
+  },
+  setSoundPlay(state, payload) {
+    state.isSoundPlay = payload;
   },
 };

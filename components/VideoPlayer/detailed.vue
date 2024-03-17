@@ -7,13 +7,20 @@
       loop
       playsinline
       preload="metadata"
-      class="tw-w-full tw-h-full tw-object-fill video-opacity"
+      class="tw-w-full tw-h-full tw-object-cover video-opacity"
       :style="{ opacity: playIcon && !isPlaying ? '0.6' : '1' }"
     >
       <source :src="videoSource" />
     </video>
     <div class="play-icon-detailed" v-if="!isPlaying && playIcon">
       <span class="mdi mdi-play"></span>
+    </div>
+    <div class="play-icon-detailed" v-if="isPlaying && playIcon">
+      <span class="mdi mdi-pause"></span>
+    </div>
+    <div v-if="playIcon" class="volume-control">
+      <span v-if="!isMuted" class="mdi mdi-volume-high"></span>
+      <span v-else class="mdi mdi-volume-mute"></span>
     </div>
   </div>
 </template>
@@ -39,6 +46,7 @@ export default {
       videoSource: "",
       videoPoster,
       isPlaying: false,
+      isMuted: false,
     };
   },
   mounted() {
@@ -49,6 +57,9 @@ export default {
   computed: {
     getVideoPlay() {
       return this.$store.state.general.isVideoPlay;
+    },
+    getSoundPlay() {
+      return this.$store.state.general.isSoundPlay;
     },
   },
   watch: {
@@ -62,6 +73,16 @@ export default {
         videoPlay.pause();
       }
       console.log(newVal);
+    },
+    getSoundPlay(newVal: Boolean) {
+      const video = this.$refs.videoPlayer as HTMLVideoElement;
+      if (newVal) {
+        video.muted = true;
+        this.isMuted = true;
+      } else {
+        video.muted = false;
+        this.isMuted = false;
+      }
     },
   },
   methods: {
@@ -101,13 +122,9 @@ export default {
   -webkit-transform: translate(0%, -25%);
   -ms-transform: translate(0%, -25%);
   transform: translate(0%, 0%);
-  /* z-index: 10; */
-
-  /* opacity: 0.7; */
 }
 
 .play-icon-detailed {
-  /* display: none; */
   color: #fff;
   font-size: 36px;
   position: absolute;
@@ -115,5 +132,13 @@ export default {
   left: 45%;
   margin: auto;
   z-index: 2;
+}
+.volume-control {
+  position: absolute;
+  top: 0px;
+  font-size: 30px;
+  right: 10px;
+  color: white;
+  cursor: pointer;
 }
 </style>

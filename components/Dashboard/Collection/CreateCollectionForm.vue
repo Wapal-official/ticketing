@@ -115,7 +115,7 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
           >
             <input-image-drag-and-drop
-              label="Featured Image"
+              label="Featured Image/Video"
               :required="true"
               @fileSelected="imageSelected"
               :file="collection.image"
