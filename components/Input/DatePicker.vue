@@ -189,13 +189,13 @@ export default {
       }
     },
     toggleAM() {
-      this.updateInternalValue();
       this.amPm = "AM";
+      this.updateInternalValue();
     },
 
     togglePM() {
-      this.updateInternalValue();
       this.amPm = "PM";
+      this.updateInternalValue();
     },
     updateInternalValue() {
       if (!this.internalValue) {
