@@ -314,6 +314,8 @@ export default {
 
           let fileNumber = startIndex;
 
+          const extensions: string[] = [];
+
           tempFiles.forEach((file: any) => {
             if (this.type === "assets") {
               if (file.type === "application/json") {
@@ -332,6 +334,11 @@ export default {
             const filename = file.name;
             const extensionIndex = filename.lastIndexOf(".");
             const nameWithoutExtension = filename.substring(0, extensionIndex);
+            const extension = filename.substring(
+              extensionIndex,
+              filename.length
+            );
+            extensions.push(extension);
 
             if (nameWithoutExtension != fileNumber) {
               throw new Error(
@@ -343,6 +350,12 @@ export default {
 
             formData.append("images", file);
           });
+
+          const uniqueExtensions = [...new Set(extensions)];
+
+          if (uniqueExtensions.length > 1) {
+            throw new Error("Please upload file with same extension");
+          }
 
           const res = await folderUpload(formData);
 
