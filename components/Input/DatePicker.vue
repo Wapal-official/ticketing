@@ -34,7 +34,7 @@
             <div class="tw-flex tw-align-center">
               <button
                 class="mx-btn mx-btn-text pull-left hour12-time"
-                @click="showTimePanel"
+                @click.stop="showTimePanel"
                 style="
                   background: #2c2e33 !important;
                   margin-right: 8px !important;
@@ -46,14 +46,14 @@
               <div class="hour12-tab">
                 <button
                   class="hour12-tabs"
-                  @click="toggleAM()"
+                  @click.stop="toggleAM()"
                   :class="{ active: amActive }"
                 >
                   AM
                 </button>
                 <button
                   class="hour12-tabs"
-                  @click="togglePM()"
+                  @click.stop="togglePM()"
                   :class="{ active: pmActive }"
                 >
                   PM
@@ -189,25 +189,18 @@ export default {
       }
     },
     toggleAM() {
-      if (this.amPm === "PM" || !this.hour) {
-        this.amPm = "AM";
-        this.updateInternalValue();
-      } else {
-        this.amPm = "AM";
-        this.updateInternalValue();
-      }
+      this.updateInternalValue();
+      this.amPm = "AM";
     },
 
     togglePM() {
-      if (this.amPm === "AM" || !this.hour) {
-        this.amPm = "PM";
-        this.updateInternalValue();
-      } else {
-        this.amPm = "PM";
-        this.updateInternalValue();
-      }
+      this.updateInternalValue();
+      this.amPm = "PM";
     },
     updateInternalValue() {
+      if (!this.internalValue) {
+        return;
+      }
       let hours = parseInt(this.hour || 0, 10);
       if (this.amPm === "PM" && hours !== 12) {
         hours += 12;
