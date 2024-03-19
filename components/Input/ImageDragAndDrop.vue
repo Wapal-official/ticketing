@@ -66,7 +66,7 @@
           ref="imagePreview"
           class="tw-w-full tw-h-full tw-rounded tw-bg-black"
         ></div>
-        <div class="d-flex align-center tw-gap-3 tw-mt-3">
+        <div v-if="isVideo" class="d-flex align-center tw-gap-3 tw-mt-3">
           <label for="">Resize:</label>
           <button
             :class="resizeAcive ? '' : 'btn-border'"
@@ -125,7 +125,7 @@
           id="drop-zone"
         />
       </div>
-      <div v-else class="d-flex tw-gap-4">
+      <div v-else-if="isVideo && imageSelectedThumnail" class="d-flex tw-gap-4">
         <div
           class="tw-w-[200px] tw-h-[200px] tw-relative tw-rounded tw-group"
           ref="dropZone"
@@ -173,10 +173,11 @@ export default {
     return {
       imageSelected: false,
       imageSelectedThumnail: false,
+      isImage: false,
       dropZoneClass: "tw-border-dark-4",
       videoFile: "",
       acceptFile:
-        ".png, .jpg, .jpeg, .gif, .webp, .mp4, .mkv, .m4v, .bmp, .svg, .ico, .tiff, .avi, .mov, .wmv, .flv, .3gp, .ogv, .mpeg, .mpg, .divx, .rm, .asf, .vob, .ts, .m2ts, video/*",
+        ".png, .jpg, .jpeg, .gif, .webp, .mp4, .mkv, .m4v, .bmp, .svg, .ico, .tiff, .avi, .mov, .wmv, .flv, .3gp, .ogv, .mpeg, .mpg, .divx, .rm, .asf, .vob, .ts, .m2ts, video, .audio, .mp3, .wav, .ogg, .aac, .flac, .wma, .alac, .aiff, .opus/*",
       resizeAcive: false,
       isVideo: false,
       acceptFileThumnail:
@@ -215,6 +216,15 @@ export default {
           this.$emit("fileSelected", file);
           this.imageSelected = true;
           this.generatePreviewVideo(file);
+        } else if (file.type.includes("audio")) {
+          this.$emit("fileSelected", file);
+          this.imageSelected = true;
+          this.generatePreviewAudio(file);
+        } else {
+          this.$toast.showMessage({
+            message: "File error",
+            error: true,
+          });
         }
       }
     },
@@ -240,6 +250,9 @@ export default {
       this.$refs.inputThumnail.click();
     },
     generatePreviewImage(file: any) {
+      this.isImage = true;
+      this.isVideo = false;
+
       const imgElement = document.createElement("img");
 
       imgElement.src = URL.createObjectURL(file);
@@ -278,6 +291,9 @@ export default {
       }, 200);
     },
     generatePreviewVideo(file: any) {
+      this.isVideo = true;
+      this.isImage = false;
+
       const videoElement = document.createElement("video");
       videoElement.src = URL.createObjectURL(file);
 
@@ -301,6 +317,30 @@ export default {
         }
 
         previewElement.prepend(videoElement);
+      }, 200);
+    },
+    generatePreviewAudio(file: any) {
+      const audioElement = document.createElement("audio");
+      audioElement.src = URL.createObjectURL(file);
+      audioElement.autoplay = true;
+      audioElement.controls = true;
+      audioElement.muted = false;
+      audioElement.loop = true;
+      // audioElement.playsInline = true;
+      audioElement.preload = "metadata";
+      audioElement.classList.add("tw-w-full");
+      audioElement.classList.add("tw-h-full");
+      audioElement.classList.add("transition");
+      // videoElement.classList.add("tw-object-fill");
+
+      setTimeout(() => {
+        const previewElement = this.$refs.imagePreview;
+
+        if (previewElement.firstChild) {
+          previewElement.removeChild(previewElement.firstChild);
+        }
+
+        previewElement.prepend(audioElement);
       }, 200);
     },
     videoResize() {

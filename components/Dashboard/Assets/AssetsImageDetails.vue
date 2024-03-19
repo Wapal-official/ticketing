@@ -20,6 +20,22 @@
         v-else-if="checkFileType() === 'video'"
         :source="this.fileData?.image"
       />
+      <div
+        class="tw-w-full tw-h-full tw-object-cover"
+        v-else
+        style="height: 200px; position: relative"
+      >
+        <audio class="audio-postion" controls>
+          <source
+            src="https://arweave.net/a3w2BfpZsnhHJhvw2WPPdflDuhnei55rqQeLeen7H8I/0.mp3"
+            type="audio/mp3"
+          />
+        </audio>
+        <!-- <audio class="audio-postion" controls>
+          <source :src="url" type="audio/mp3" />
+
+        </audio> -->
+      </div>
       <h3 class="tw-text-white tw-font-medium tw-uppercase tw-text-sm">
         {{ this.fileData?.name }}
       </h3>
@@ -48,6 +64,7 @@ export default {
       loading: true,
       attributes: [{ trait_type: "", value: "" }],
       fileData: null,
+      url: "",
     };
   },
   methods: {
@@ -74,6 +91,7 @@ export default {
     },
   },
   async mounted() {
+    console.log("fileDataa", this.fileData);
     if (this.file.metadata) {
       this.fileData = this.file.metadata;
       if (this.fileData.attributes) {
@@ -81,6 +99,8 @@ export default {
       }
     } else {
       const res = await this.$axios.get(this.file.name);
+      const url = res.config.url;
+      this.url = url;
       this.fileData = res.data;
       if (this.fileData.attributes) {
         this.attributes = this.fileData.attributes;
@@ -92,12 +112,14 @@ export default {
     async file(newFile: any) {
       this.loading = true;
       if (newFile.metadata) {
+        console.log("newFile", newFile);
         this.fileData = newFile.metadata;
         if (this.fileData.attributes) {
           this.attributes = this.fileData.attributes;
         }
       } else {
         const res = await this.$axios.get(newFile.name);
+        console.log("new res", res);
         this.fileData = res.data;
         if (this.fileData.attributes) {
           this.attributes = this.fileData.attributes;
