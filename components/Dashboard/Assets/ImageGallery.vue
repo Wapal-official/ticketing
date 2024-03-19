@@ -106,7 +106,6 @@ export default {
   watch: {
     paginatedFiles(paginatedFiles: any) {
       if (this.type === "assets") {
-        console.log("paginatedFiles", ...paginatedFiles);
         paginatedFiles.map((file: any) => {
           const columnIndex = file._id % this.getColumnDivider;
           if (columnIndex === 0) {
@@ -120,10 +119,7 @@ export default {
           }
         });
       } else {
-        console.log("casda");
-
         this.allMetadata.push(...paginatedFiles);
-        console.log("allMetadata", this.allMetadata);
       }
     },
   },

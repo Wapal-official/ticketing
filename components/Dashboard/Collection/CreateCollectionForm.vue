@@ -9,13 +9,6 @@
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Nft Collection Details
           </h2>
-          <!-- <audio class="audio-postion" controls>
-            <source
-              src="https://76tm4uhartifyagzscfs7dp3yk5skrqyvvc4utiqlzxmblpqpe7q.arweave.net/_6bOUOCM0FwA2ZCLL437wrslRhitRcpNEF5uwK3weT8/"
-              type="audio/mp3"
-            />
-          </audio> -->
-          <audio-player></audio-player>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="name"
