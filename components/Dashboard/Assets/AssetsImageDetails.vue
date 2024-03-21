@@ -20,6 +20,21 @@
         v-else-if="checkFileType() === 'video'"
         :source="this.fileData?.image"
       />
+      <div
+        class="tw-w-full tw-h-full tw-object-cover"
+        v-else
+        style="height: 200px; position: relative"
+      >
+        <!-- <audio class="audio-postion" controls>
+          <source :src="url" type="audio/mp3" />
+        </audio> -->
+        <audio-player-test
+          :audioSrc="url"
+          class="audio-postion"
+        ></audio-player-test>
+
+        <!-- <audio-player class="audio-postion" :audioSrc="url"></audio-player> -->
+      </div>
       <h3 class="tw-text-white tw-font-medium tw-uppercase tw-text-sm">
         {{ this.fileData?.name }}
       </h3>
@@ -48,6 +63,7 @@ export default {
       loading: true,
       attributes: [{ trait_type: "", value: "" }],
       fileData: null,
+      url: "",
     };
   },
   methods: {
@@ -74,6 +90,7 @@ export default {
     },
   },
   async mounted() {
+    console.log("fileDataa", this.fileData);
     if (this.file.metadata) {
       this.fileData = this.file.metadata;
       if (this.fileData.attributes) {
@@ -81,6 +98,11 @@ export default {
       }
     } else {
       const res = await this.$axios.get(this.file.name);
+      const url = res.config.url;
+      console.log("url", url);
+      // const modifiedUrl = url.substring(0, url.lastIndexOf("/"));
+      // console.log("Modified URL:", modifiedUrl);
+      this.url = url;
       this.fileData = res.data;
       if (this.fileData.attributes) {
         this.attributes = this.fileData.attributes;
@@ -92,12 +114,19 @@ export default {
     async file(newFile: any) {
       this.loading = true;
       if (newFile.metadata) {
+        console.log("newFilewatch", newFile);
         this.fileData = newFile.metadata;
         if (this.fileData.attributes) {
           this.attributes = this.fileData.attributes;
         }
       } else {
         const res = await this.$axios.get(newFile.name);
+        console.log("new res ", res);
+        const url = res.config.url;
+        console.log("url", url);
+        // const modifiedUrl = url.substring(0, url.lastIndexOf("/"));
+        // console.log("Modified URL watch:", modifiedUrl);
+        this.url = url;
         this.fileData = res.data;
         if (this.fileData.attributes) {
           this.attributes = this.fileData.attributes;
@@ -108,3 +137,9 @@ export default {
   },
 };
 </script>
+<style>
+.audio-postion {
+  position: absolute;
+  bottom: 10px;
+}
+</style>
