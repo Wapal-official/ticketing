@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <div class="audio-player">
       <div class="timeline" @click="seekTimeline($event)">
@@ -16,8 +16,7 @@
           <div class="current">{{ currentTime }}</div>
           <div class="divider">/</div>
           <div class="length">{{ duration }}</div>
-        </div>
-        <!-- <div class="name">Music Song</div> -->
+        </div> 
         <div
           class="volume-container"
           @mouseenter="showVolumeSlider"
@@ -137,15 +136,15 @@ export default {
 <style lang="css">
 .slide-fade-enter-active,
 .slide-fade-leave-active {
-  transition: all 1s ease-out; /* Apply transition to both enter and leave */
+  transition: all 1s ease-out; 
 }
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transition: all 1s ease-out; /* Apply transition to both enter and leave */
+  transition: all 1s ease-out; 
 
-  opacity: 0; /* Initially, hide the element */
-  transform: translateX(20px); /* Move the element slightly to the right */
+  opacity: 0;  
+  transform: translateX(20px); 
 }
 .audio-player {
   height: 50px;
@@ -268,12 +267,8 @@ export default {
 
 .audio-fonts {
   font-size: 16px !important;
-}
-#play-icon {
-  /* width: 50px;
-  height: 50px; */
-}
+} 
 #play-icon span {
   font-size: 24px;
 }
-</style>
+</style> -->

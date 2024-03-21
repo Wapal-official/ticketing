@@ -1,6 +1,6 @@
 <template>
   <div id="audio-player-container" ref="audioPlayerContainer">
-    <audio ref="audio" :src="audio2" preload="metadata" loop></audio>
+    <audio ref="audio" :src="audioUrl" preload="metadata" loop></audio>
     <div
       class="tw-flex tw-flex-col tw-align-center tw-justify-center"
       style="align-items: center"
@@ -65,20 +65,18 @@
   </div>
 </template>
 <script>
-import lottieWeb from "lottie-web";
-
 export default {
   data: () => ({
     isPlay: false,
     isMute: false,
-    audio2: null,
+    audioUrl: null,
   }),
   props: {
     audioSrc: { type: String },
   },
 
   mounted() {
-    this.audio2 = this.audioSrc + "?refreshcache=true";
+    this.audioUrl = this.audioSrc + "?refreshcache=true";
 
     const audioPlayerContainer = this.$refs.audioPlayerContainer;
     const playIconContainer = this.$refs.playIconContainer;

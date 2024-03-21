@@ -173,7 +173,6 @@ export default {
   },
   data() {
     return {
-      Upload: "",
       imageSelected: false,
       imageSelectedThumnail: false,
       isResize: false,
@@ -329,7 +328,6 @@ export default {
       this.isImage = false;
       const audioElement = document.createElement("audio");
       audioElement.src = URL.createObjectURL(file);
-      this.Upload = audioElement.src;
       audioElement.autoplay = true;
       audioElement.controls = true;
       audioElement.muted = false;
