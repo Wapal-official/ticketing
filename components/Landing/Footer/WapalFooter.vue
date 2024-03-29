@@ -52,7 +52,8 @@
           <div
             class="tw-flex tw-flex-row tw-items-start tw-justify-center tw-gap-4"
           >
-            <a href="https://t.co/3KwwcoQ2xW" target="_blank">
+            <!-- <a href="https://t.co/3KwwcoQ2xW" target="_blank"> -->
+            <a href="https://discord.com/invite/vhQVSuqdKt" target="_blank">
               <i class="bx bxl-discord-alt tw-text-xl tw-text-dark-2"></i>
             </a>
             <a href="https://t.me/wapal_official" target="_blank">

@@ -34,7 +34,7 @@
             <div class="tw-flex tw-align-center">
               <button
                 class="mx-btn mx-btn-text pull-left hour12-time"
-                @click="showTimePanel"
+                @click.stop="showTimePanel"
                 style="
                   background: #2c2e33 !important;
                   margin-right: 8px !important;
@@ -46,7 +46,7 @@
               <div class="hour12-tab">
                 <p
                   class="hour12-tabs"
-                  @click="toggleAM()"
+                  @click.stop="toggleAM()"
                   :class="{ active: amActive }"
                 >
                   AM
