@@ -137,6 +137,9 @@
 </template>
 <script lang="ts">
 import { getCachedUrlOfImage } from "@/utils/imageCache";
+import { divideIntoBatches } from "@/utils/batches";
+import { resolveUri } from "@/utils/metadata";
+
 export default {
   props: {
     propFile: { type: Object },
@@ -234,7 +237,7 @@ export default {
       return "json";
     },
     getAssetSrc() {
-      console.log("as", this.file?.src);
+      console.log("as", this.file?.image);
       return this.file.image ? this.file.image : this.file?.src;
     },
 
@@ -248,6 +251,11 @@ export default {
   async mounted() {
     console.log("props", this.propFile);
     this.file = this.propFile;
+
+    const fileSrc = this.file.src;
+
+    console.log("sc", fileSrc);
+    // this.getNftDetails(fileSrc);
     console.log("file", this.file);
     if (this.file.metadata) {
       this.hasMetadata = true;

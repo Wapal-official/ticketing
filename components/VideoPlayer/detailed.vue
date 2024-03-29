@@ -53,37 +53,7 @@ export default {
     const uncachedSource = this.source + "?refreshCache=true";
     // this.videoSource = uncachedSource + "#t=0.1";
     this.videoSource = uncachedSource;
-  },
-  computed: {
-    getVideoPlay() {
-      return this.$store.state.general.isVideoPlay;
-    },
-    getSoundPlay() {
-      return this.$store.state.general.isSoundPlay;
-    },
-  },
-  watch: {
-    getVideoPlay(newVal: Boolean) {
-      const videoPlay = this.$refs.videoPlayer as HTMLVideoElement;
-      if (newVal) {
-        this.isPlaying = newVal;
-        videoPlay.play();
-      } else {
-        this.isPlaying = newVal;
-        videoPlay.pause();
-      }
-      console.log(newVal);
-    },
-    getSoundPlay(newVal: Boolean) {
-      const video = this.$refs.videoPlayer as HTMLVideoElement;
-      if (newVal) {
-        video.muted = true;
-        this.isMuted = true;
-      } else {
-        video.muted = false;
-        this.isMuted = false;
-      }
-    },
+    console.log("videosoirce", this.videoSource);
   },
   methods: {
     playVideo() {
@@ -97,6 +67,37 @@ export default {
       }
     },
   },
+  // computed: {
+  //   getVideoPlay() {
+  //     return this.$store.state.general.isVideoPlay;
+  //   },
+  //   getSoundPlay() {
+  //     return this.$store.state.general.isSoundPlay;
+  //   },
+  // },
+  // watch: {
+  //   getVideoPlay(newVal: Boolean) {
+  //     const videoPlay = this.$refs.videoPlayer as HTMLVideoElement;
+  //     if (newVal) {
+  //       this.isPlaying = newVal;
+  //       videoPlay.play();
+  //     } else {
+  //       this.isPlaying = newVal;
+  //       videoPlay.pause();
+  //     }
+  //     console.log(newVal);
+  //   },
+  //   getSoundPlay(newVal: Boolean) {
+  //     const video = this.$refs.videoPlayer as HTMLVideoElement;
+  //     if (newVal) {
+  //       video.muted = true;
+  //       this.isMuted = true;
+  //     } else {
+  //       video.muted = false;
+  //       this.isMuted = false;
+  //     }
+  //   },
+  // },
 };
 </script>
 <style lang="css">

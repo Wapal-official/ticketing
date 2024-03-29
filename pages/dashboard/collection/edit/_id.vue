@@ -4,19 +4,27 @@
     v-if="!loading"
   >
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6">
-      <video-player-detailed
-        class="video-detailed-edit"
-        v-if="isVideo(collection.image)"
-        :source="collection.image"
-      />
-      <img
-        v-else
-        :src="collection.image"
-        :alt="collection.name"
-        class="tw-rounded tw-w-[421px] tw-h-[421px]"
-        width="421px"
-        height="421px"
-      />
+      <div style="position: relative">
+        <video-player-detailed
+          class="video-detailed-edit"
+          v-if="isVideo(collection.media2)"
+          :source="collection.media2"
+        />
+        <img
+          v-else
+          :src="collection.image"
+          :alt="collection.name"
+          class="tw-rounded tw-w-[421px] tw-h-[421px]"
+          width="421px"
+          height="421px"
+        />
+        <audio-player-test
+          v-if="isAudio(collection.media2)"
+          class="audio-bg"
+          :audioSrc="collection.media2"
+        ></audio-player-test>
+      </div>
+
       <div
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
       >
@@ -667,6 +675,7 @@ export default {
         isVerified: false,
         phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
         isEdition: false,
+        media2: "",
         seed: {
           seedz: false,
           coin_type: "APT",
@@ -743,10 +752,29 @@ export default {
           ].includes(extension)
         : false;
     },
+    isAudio(source) {
+      if (typeof source !== "string") {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
+    },
     async fetchCollection() {
       this.loading = true;
       this.collection = await getCollection(this.$route.params.id);
-
+      console.log("collection", this.collection);
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,
         candy_object: this.collection.candyMachine.resource_account,

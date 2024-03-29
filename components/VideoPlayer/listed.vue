@@ -53,7 +53,7 @@ export default {
 </script>
 <style lang="css">
 .video-holder {
-  max-width: 100px;
+  /* max-width: 100px; */
   background: #333;
   -webkit-transform: translateY(0);
   -ms-transform: translateY(0);
@@ -61,7 +61,7 @@ export default {
   /* padding-top: 15.44%; */
   position: relative;
   overflow: hidden;
-  height: 104px;
+  /* height: 104px; */
   width: 100%;
   border-radius: 4px;
 }

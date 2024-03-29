@@ -67,71 +67,70 @@
           class="tw-w-full tw-h-full tw-rounded tw-bg-black"
         ></div>
         <!-- <v-dialog
-          v-model="checkFeaturedFile"
-          max-width="500  "
-          style="height: 600px; width: 500px !important; background-color: #000"
-        >
-          <v-card
+            v-model="checkFeaturedFile"
+            content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[35%]"
             flat
-            class=" "
-            style="height: 600px; width: 500px; background-color: #000"
           >
-            <div
-              class="tw-w-[400px] tw-h-[350px] tw-pt-10 tw-relative tw-mx-auto tw-rounded tw-group"
-              ref="dropZone"
+            <v-card
+              flat
+              class="d-flex tw-justify-center tw-flex-col"
+              style="height: 600px; width: 500px"
             >
-              <input
-                type="file"
-                :accept="acceptFile"
-                name="file"
-                @change="fileSelected"
-                class="tw-hidden tw-w-full tw-h-full"
-                ref="input"
-              />
               <div
-                ref="imagePreview"
-                class="tw-w-full tw-h-full tw-rounded tw-bg-black mx-auto"
-              ></div>
-              <div class="text-center" style="position: relative">
-                <v-menu v-model="menu" :close-on-content-click="false" offset-x>
-                  <template v-slot:activator="{ on, attrs }">
-                    <div
-                      class="resize-icon-holder"
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="resizeVideo()"
-                    >
-                      <img src="~/assets/img/resize.svg" alt="as" />
-                    </div>
-                  </template>
-
-                  <v-list style="width: 132px">
-                    <v-list-item @click="videoResize()" link>
-                      <v-list-item-title class="d-flex"
-                        >Original
-                        <img
-                          class="tw-ml-3"
-                          src="~/assets/img/img-icon.svg"
-                          alt="img"
-                        />
-                      </v-list-item-title>
-                    </v-list-item>
-
-                    <v-list-item @click="videoResize1()" link>
-                      <v-list-item-title class="d-flex"
-                        >1:1
-                        <img
-                          class="tw-ml-3"
-                          src="~/assets/img/square.svg"
-                          alt="square"
-                        />
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
+                class="tw-w-[400px] tw-h-[350px] tw-relative tw-mx-auto tw-rounded tw-group"
+                ref="dropZone"
+              >
+                <input
+                  type="file"
+                  :accept="acceptFile"
+                  name="file"
+                  @change="fileSelected"
+                  class="tw-hidden tw-w-full tw-h-full"
+                  ref="input"
+                />
+                <div  
+                  ref="imagePreview"
+                  class="tw-w-full tw-h-full tw-rounded tw-bg-black mx-auto"
+                ></div>
+                <div class="text-center" style="position: relative">
+                  <v-menu v-model="menu" :close-on-content-click="false" offset-x>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div
+                        class="resize-icon-holder"
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="resizeVideo()"
+                      >
+                        <img src="~/assets/img/resize.svg" alt="as" />
+                      </div>
+                    </template>
+  
+                    <v-list style="width: 132px">
+                      <v-list-item @click="videoResize()" link>
+                        <v-list-item-title class="d-flex"
+                          >Original
+                          <img
+                            class="tw-ml-3"
+                            src="~/assets/img/img-icon.svg"
+                            alt="img"
+                          />
+                        </v-list-item-title>
+                      </v-list-item>
+  
+                      <v-list-item @click="videoResize1()" link>
+                        <v-list-item-title class="d-flex"
+                          >1:1
+                          <img
+                            class="tw-ml-3"
+                            src="~/assets/img/square.svg"
+                            alt="square"
+                          />
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </div>
               </div>
-            </div>
-            <div>
               <div class="d-flex tw-justify-between">
                 <label for="" class="d-block tw-p-3"> Choose Thumbnail </label>
                 <div
@@ -144,14 +143,12 @@
                   :class="dropZoneClass"
                   id="drop-zone"
                 >
-                  <label for="" style="color: #8759ff"
-                    >Choose from Gallery</label
-                  >
+                  <label for="" style="color: #8759ff">Choose from Gallery</label>
                   <input
                     type="file"
                     :accept="acceptFileThumnail"
                     name="file"
-                    @change="fileSelectedThumbnail"
+                    @change="fileSelectedThumnail"
                     class="tw-hidden tw-w-full tw-h-full"
                     ref="inputThumnail"
                     id="drop-zone"
@@ -170,7 +167,7 @@
                       type="file"
                       :accept="acceptFileThumnail"
                       name="file"
-                      @change="fileSelectedThumbnail"
+                      @change="fileSelectedThumnail"
                       class="tw-hidden tw-w-full tw-h-full"
                       ref="inputThumnail"
                     />
@@ -192,12 +189,11 @@
                 />
                 <button-primary title="Save" />
               </div>
-            </div>
-          </v-card>
-        </v-dialog> -->
+            </v-card>
+          </v-dialog> -->
         <!-- <div class="resize-icon-holder" @click="resizeVideo()">
-          <img src="~/assets/img/resize.svg" alt="resize" />
-        </div> -->
+            <img src="~/assets/img/resize.svg" alt="resize" />
+          </div> -->
 
         <div v-if="isResize" class="d-flex align-center tw-gap-3 tw-mt-3">
           <label for="">Resize:</label>
@@ -251,8 +247,8 @@
         <input
           type="file"
           :accept="acceptFileThumnail"
-          name="thumbnail"
-          @change="fileSelectedThumbnail"
+          name="file"
+          @change="fileSelectedThumnail"
           class="tw-hidden tw-w-full tw-h-full"
           ref="inputThumnail"
           id="drop-zone"
@@ -267,7 +263,7 @@
             type="file"
             :accept="acceptFileThumnail"
             name="file"
-            @change="fileSelectedThumbnail"
+            @change="fileSelectedThumnail"
             class="tw-hidden tw-w-full tw-h-full"
             ref="inputThumnail"
           />
@@ -288,8 +284,6 @@
   </div>
 </template>
 <script lang="ts">
-import CustomAudioPlayer from "@/components/AudioPlayer/AudioPlayer.vue";
-
 export default {
   props: {
     required: {
@@ -322,7 +316,7 @@ export default {
       resizeAcive: false,
       isVideo: false,
       acceptFileThumnail:
-        ".png, .jpg, .jpeg, .gif, .webp, .bmp, .svg,, .ico, .tiff",
+        ".png, .jpg, .jpeg, .gif, .webp, .mp4, .mkv, .m4v, .bmp, .svg,, .ico, .tiff",
     };
   },
   computed: {},
@@ -371,11 +365,11 @@ export default {
         }
       }
     },
-    fileSelectedThumbnail(event: any) {
+    fileSelectedThumnail(event: any) {
       const file = event.target.files[0];
       if (file) {
         if (file.type.includes("image")) {
-          this.$emit("fileSelectedThumbnail", file);
+          this.$emit("fileSelectedThumnail", file);
           this.imageSelectedThumnail = true;
           this.generatePreviewImageThumnail(file);
         } else {
@@ -550,7 +544,7 @@ export default {
         return;
       }
 
-      this.$emit("fileSelectedThumbnail", item);
+      this.$emit("fileSelectedThumnail", item);
       this.imageSelectedThumnail = true;
 
       this.generatePreviewImageThumnail(item);
@@ -570,27 +564,6 @@ export default {
 
       setTimeout(() => {
         const previewElement = this.$refs.imagePreview;
-
-        if (previewElement.firstChild) {
-          previewElement.removeChild(previewElement.firstChild);
-        }
-
-        previewElement.prepend(imgElement);
-      }, 200);
-    }
-    if (this.thumbnail) {
-      this.imageSelectedThumnail = true;
-
-      const imgElement = document.createElement("img");
-
-      imgElement.src = this.thumbnail;
-      imgElement.classList.add("tw-w-full");
-      imgElement.classList.add("tw-h-full");
-      imgElement.classList.add("tw-object-fill");
-      imgElement.classList.add("tw-rounded");
-
-      setTimeout(() => {
-        const previewElement = this.$refs.imagePreviewThumnail;
 
         if (previewElement.firstChild) {
           previewElement.removeChild(previewElement.firstChild);
@@ -621,7 +594,7 @@ export default {
   justify-content: center;
   cursor: pointer;
   position: absolute;
-  left: -30px;
+  left: 10px;
   bottom: 30px;
 }
 </style>
