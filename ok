@@ -1,0 +1,1160 @@
+[33mcommit 051164db22a363511f95f17e109139a8c5d39545[m[33m ([m[1;36mHEAD -> [m[1;32mstaging[m[33m, [m[1;31morigin/staging[m[33m)[m
+Merge: 49c9c17 94fe7d4
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Mar 12 09:52:29 2024 +0545
+
+    Merge pull request #426 from Wapal-official/video-nfts
+    
+    vidoe
+
+[33mcommit 94fe7d4924954ecb5fcf5ec71687e0ccc6464273[m[33m ([m[1;31morigin/video-nfts[m[33m, [m[1;32mvideo-nfts[m[33m)[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Mar 12 09:51:55 2024 +0545
+
+    vidoe
+
+[33mcommit 49c9c17a7f4a17c888d2b910afc1c3f47eef822c[m
+Merge: 63d9777 0cbe570
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Mar 12 09:44:22 2024 +0545
+
+    Merge pull request #425 from Wapal-official/video-nfts
+    
+    Video nfts
+
+[33mcommit 0cbe570f1706ebd2721de94e168ec7cda6d77981[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Mar 12 09:43:33 2024 +0545
+
+    video
+
+[33mcommit 7054c69af350be725b4eb228783b046e6c0f7a68[m[33m ([m[1;32mmain[m[33m)[m
+Merge: 058a2d2 5496545
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Mar 8 14:11:44 2024 +0545
+
+    Merge pull request #424 from Wapal-official/mint-limit
+    
+    Mint limit
+
+[33mcommit 63d9777045d1d9e55f167fb04cc1c8e95b68a0fb[m
+Merge: 9934fdd 5496545
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Mar 8 13:43:31 2024 +0545
+
+    Merge pull request #423 from Wapal-official/mint-limit
+    
+    Mint limit
+
+[33mcommit 549654595284bf87cec3195de1faaf41b2f4e9b3[m[33m ([m[1;31morigin/mint-limit[m[33m, [m[1;32mvideo-nft[m[33m, [m[1;32mmint-limit[m[33m)[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Mar 8 13:42:02 2024 +0545
+
+    after auction create redirection
+
+[33mcommit 0c73b03e734a576f57168fc2e54abd6b84bfaee0[m
+Merge: e56f4d2 e37cee3
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Mar 8 10:55:34 2024 +0545
+
+    Merge branch 'mint-limit' of https://github.com/Wapal-official/wapal-frontend-nuxt-2 into mint-limit
+
+[33mcommit 058a2d228e0eaec8a8cd14a04ff135e7c07a8e91[m
+Merge: 2849eee e56f4d2
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Mar 8 10:40:28 2024 +0545
+
+    Merge pull request #422 from Wapal-official/WL-list
+    
+    search filter
+
+[33mcommit e56f4d2f86a28ab1a20d8a85e8027504fc836006[m[33m ([m[1;31morigin/WL-list[m[33m, [m[1;32mWL-list[m[33m)[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Mar 8 10:37:14 2024 +0545
+
+    search filter
+
+[33mcommit 2849eee56aa4308c939bfd286e63d258f2e38645[m
+Merge: 197f9c1 1f93095
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Mar 7 23:27:35 2024 +0545
+
+    Merge pull request #421 from Wapal-official/WL-list
+    
+    search api
+
+[33mcommit 9934fdd9bf758b75042162968559fc3689c4126a[m
+Merge: c41c3a6 1f93095
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Mar 7 23:04:51 2024 +0545
+
+    Merge pull request #420 from Wapal-official/WL-list
+    
+    Wl list
+
+[33mcommit 1f93095c04d52817ee9d26999dbfd4bcdeef47a8[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Mar 7 23:04:09 2024 +0545
+
+    search api
+
+[33mcommit 197f9c10933d08854d6d0a583066b60515d42e7c[m
+Merge: dbdc785 5d64c2e
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Mar 7 16:14:10 2024 +0545
+
+    Merge pull request #419 from Wapal-official/WL-list
+    
+    Wl list
+
+[33mcommit 5d64c2e12046f913d22684cdae087dbe54569042[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Mar 7 16:12:18 2024 +0545
+
+    upd
+
+[33mcommit c41c3a67e1b877a4eaffd69bc86e6a5182ea49d5[m
+Merge: f6dcfd3 ac1a29d
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Mar 7 15:55:48 2024 +0545
+
+    Merge pull request #418 from Wapal-official/WL-list
+    
+    Wl list
+
+[33mcommit ac1a29de58288acc10b856524c50da56c727b40b[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Mar 7 15:55:18 2024 +0545
+
+    search filter
+
+[33mcommit dbdc78532ee5db66c482824ed910c1c9061f9ff1[m
+Merge: 0fdf19e b33bd9c
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Mar 7 11:27:24 2024 +0545
+
+    Merge pull request #417 from Wapal-official/WL-list
+    
+    Wl list
+
+[33mcommit b33bd9cb25bbe74476d15cd5df121af0265b5571[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Mar 7 11:27:08 2024 +0545
+
+    magin
+
+[33mcommit f6dcfd329b7b2734a22722addcbb8bbb9136f4e4[m
+Merge: 876efa5 70befaa
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Mar 7 11:16:03 2024 +0545
+
+    Merge pull request #416 from Wapal-official/WL-list
+    
+    edit
+
+[33mcommit 70befaad165d578f190b1ec6c589d5555f97e3a7[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Mar 7 11:15:32 2024 +0545
+
+    edit
+
+[33mcommit 876efa558b67f2a740c3269a4dd131adf6a5a827[m
+Merge: e9cbf57 a588406
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Mar 6 11:29:53 2024 +0545
+
+    Merge pull request #415 from Wapal-official/WL-list
+    
+    type any
+
+[33mcommit a5884062a0305c55969d1ff00aab276bb7a89406[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Mar 6 11:29:13 2024 +0545
+
+    type any
+
+[33mcommit e9cbf57178460b0e4833958d391d4cd1b6301254[m
+Merge: 358dab6 ac573a4
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Mar 6 11:16:49 2024 +0545
+
+    Merge pull request #414 from Wapal-official/WL-list
+    
+    Wl list
+
+[33mcommit ac573a4aa212ca95389f4a906145292dc86228ab[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Mar 6 11:16:11 2024 +0545
+
+    select all
+
+[33mcommit 24d19f4ce5fcfe337cdcfb1624e96535b79dfa28[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Mar 5 20:58:52 2024 +0545
+
+    wl
+
+[33mcommit 0fdf19e7c532a3022308d15c158c77cf27c03c58[m
+Merge: 281d954 3ee2338
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Mar 5 20:45:54 2024 +0545
+
+    Merge pull request #413 from Wapal-official/draft-save
+    
+    toggle am pm
+
+[33mcommit 3ee2338f6a76778a81618f2a113989e43a043660[m[33m ([m[1;31morigin/draft-save[m[33m, [m[1;32mdraft-save[m[33m)[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Mar 5 20:45:22 2024 +0545
+
+    toggle am pm
+
+[33mcommit d4b669f47f3ba7beb4b2d9f9f94765435781c436[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Mar 5 20:01:33 2024 +0545
+
+    update
+
+[33mcommit 358dab66e7cf2ec70f3c6a223bf9c3264e35ed36[m
+Merge: 0041e43 b01860b
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Mon Mar 4 16:15:54 2024 +0545
+
+    Merge pull request #412 from Wapal-official/WL-list
+    
+    update
+
+[33mcommit b01860bec39274bd514565eb9ee6ee764770ea26[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Mon Mar 4 16:15:29 2024 +0545
+
+    update
+
+[33mcommit 0041e43f2940a1c4628bacfbf58e03d8c60ba19d[m
+Merge: 14af028 20786aa
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Mon Mar 4 09:52:35 2024 +0545
+
+    Merge pull request #411 from Wapal-official/WL-list
+    
+    deletation
+
+[33mcommit 20786aa3f4f62b50ec020453b85cd651f8f9304e[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Mon Mar 4 09:51:40 2024 +0545
+
+    deletation
+
+[33mcommit 14af02858b3c2f4f844176af272f80febb16b289[m
+Merge: 5c2760c 729b9c4
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Mon Mar 4 09:19:44 2024 +0545
+
+    Merge pull request #410 from Wapal-official/WL-list
+    
+    Wl list
+
+[33mcommit 729b9c40226ee10ca02985da28060bb6f745ae55[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Mon Mar 4 09:18:31 2024 +0545
+
+    search and delete WL
+
+[33mcommit 281d954a2cfcde343af208714aa0468f796e9e60[m
+Merge: 1f124d9 c4be110
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Mar 1 17:26:18 2024 +0545
+
+    Merge pull request #409 from Wapal-official/draft-save
+    
+    Draft save
+
+[33mcommit 5c2760c404cd3e658584123e90088c221678f4c0[m
+Merge: c083481 c4be110
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Mar 1 14:42:12 2024 +0545
+
+    Merge pull request #408 from Wapal-official/draft-save
+    
+    dradt-save
+
+[33mcommit c4be110636c8992d0dc925c8b88a27bae4eb1ba0[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Mar 1 14:41:29 2024 +0545
+
+    dradt-save
+
+[33mcommit c083481bdfa9ba578d340fed9ae57976fc86eefe[m
+Merge: 196d62d 19252cd
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Mar 1 09:13:06 2024 +0545
+
+    Merge pull request #407 from Wapal-official/draft-save
+    
+    calendar
+
+[33mcommit 19252cd5252c2464a3761d79732915590b9c69c1[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Mar 1 09:12:33 2024 +0545
+
+    calendar
+
+[33mcommit 196d62db7f86393228337fe65086b1be2b4a0694[m
+Merge: 96c3428 97a29e5
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Feb 29 21:17:45 2024 +0545
+
+    Merge pull request #406 from Wapal-official/draft-save
+    
+    Draft save
+
+[33mcommit 97a29e5420fb10eb8c1e0a81b9a5d2d6b5818534[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Feb 29 21:17:06 2024 +0545
+
+    calendar
+
+[33mcommit 1f124d9a7f77eb7f5e51c4fbc6ce49f030f2c22a[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 19:16:58 2024 +0545
+
+    video added
+
+[33mcommit 2dc19887390f13c52d864f556cb9393fb423c3b3[m
+Merge: febbf56 fa7f4f6
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 15:13:11 2024 +0545
+
+    Merge pull request #405 from Wapal-official/draft-save
+    
+    checkkk
+
+[33mcommit fa7f4f67058805b2cdf8b04b9d9a449aa925b53b[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 15:12:40 2024 +0545
+
+    checkkk
+
+[33mcommit febbf562cc3f1da6eb991d92027a0e2bf71ed304[m
+Merge: d9b10f8 343c8ae
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 14:59:42 2024 +0545
+
+    Merge pull request #404 from Wapal-official/draft-save
+    
+    checkk
+
+[33mcommit 343c8ae97bb6b0934330cfad9be6ba8543e5aafc[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 14:58:51 2024 +0545
+
+    checkk
+
+[33mcommit d9b10f8d53d387fd9a9912e9750f0f4a485b1544[m
+Merge: 378b8ef 6c26257
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 14:51:28 2024 +0545
+
+    Merge pull request #403 from Wapal-official/draft-save
+    
+    check
+
+[33mcommit 6c26257a15fd505e65ce06df9082e2dba459eb94[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 14:37:18 2024 +0545
+
+    check
+
+[33mcommit 378b8efae2030d3f7e9d5fac0cf46af340839dab[m
+Merge: 0a514f7 0e6fe8f
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 14:24:47 2024 +0545
+
+    Merge pull request #402 from Wapal-official/draft-save
+    
+    check
+
+[33mcommit 0e6fe8f348dcf03fd9580c5727c28ba5532236f9[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 14:24:12 2024 +0545
+
+    check
+
+[33mcommit 0a514f725ac6b4586232ad3ba541a01bb9e20c08[m
+Merge: c1201a4 51ede80
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 14:16:52 2024 +0545
+
+    Merge pull request #401 from Wapal-official/draft-save
+    
+    check
+
+[33mcommit 51ede801f668b768ea6ca493c350594aa0cc5990[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 14:08:12 2024 +0545
+
+    check
+
+[33mcommit c1201a4c6cb58de94137b2b4688da7d7a40b2d4e[m
+Merge: 968102b a4b525b
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 13:55:09 2024 +0545
+
+    Merge pull request #400 from Wapal-official/draft-save
+    
+    redirect check
+
+[33mcommit a4b525b6fca09036301a3cb7f78cd7ef16acf2c3[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 13:54:19 2024 +0545
+
+    redirect check
+
+[33mcommit 968102b218205059988394e1e83868e741f3a08d[m
+Merge: b4ff6c8 429df42
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 13:36:11 2024 +0545
+
+    Merge pull request #399 from Wapal-official/draft-save
+    
+    Draft save
+
+[33mcommit 429df42a2e4c3ddfdd3bf16791104b951c6ba29f[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 12:53:40 2024 +0545
+
+    launchpad redirect
+
+[33mcommit 70deb0f19f58eb5faa1a0efd93ef9564f16a3d4b[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 11:18:08 2024 +0545
+
+    draft save final
+
+[33mcommit 96c34287fba5e384acf6beb6dcbc0c1de83a7afe[m
+Merge: d78a0b5 7e64537
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 09:55:01 2024 +0545
+
+    Merge pull request #398 from Wapal-official/draft-save
+    
+    Draft save
+
+[33mcommit 7e64537b1f99786b13c07deb9ef70e8a743c12e1[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 28 09:53:16 2024 +0545
+
+    drafts save
+
+[33mcommit b4ff6c8bb723c446d3168e1c79e7127f949d3fe6[m[33m ([m[1;31morigin/draft-update[m[33m, [m[1;32mdraft-update[m[33m)[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Sun Feb 25 13:42:35 2024 +0545
+
+    chore: cap supply of some collections
+
+[33mcommit 342bb4b54efe7376250e090841bfb3d1e50a8288[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Thu Feb 22 18:27:39 2024 +0545
+
+    chore: remove monkeys sanctuary from featured slider
+
+[33mcommit d78a0b5390e93b52adb9a0f2974c7ad73c0774bc[m
+Merge: b08e63d 87c8a4e
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Feb 22 09:45:01 2024 +0545
+
+    Merge pull request #396 from Wapal-official/nft-whatsnew
+    
+    compressed img
+
+[33mcommit 87c8a4eb82375753f6ff4e1688f22c85fc2250c3[m[33m ([m[1;31morigin/nft-whatsnew[m[33m)[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Feb 22 09:44:33 2024 +0545
+
+    localstorage rename
+
+[33mcommit 98dc462a401f129cdc6451d486497caa12f4f49d[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Feb 22 09:42:59 2024 +0545
+
+    compressed img
+
+[33mcommit b08e63dbcf79ee36df49737d9bfa283fd906a12f[m
+Merge: de7e956 63f237c
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 21 15:22:53 2024 +0545
+
+    Merge pull request #395 from Wapal-official/nft-whatsnew
+    
+    whats new for new visitors
+
+[33mcommit 63f237c2d21738f3eda99d15d45db57b2d42dfc2[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 21 15:22:09 2024 +0545
+
+    whats new for new visitors
+
+[33mcommit de7e956f964787858a2508db798859df6963c901[m
+Merge: 6f788b8 a45fbcd
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Feb 20 14:31:43 2024 +0545
+
+    Merge pull request #394 from Wapal-official/nft-whatsnew
+    
+    Nft whatsnew
+
+[33mcommit a45fbcda86100a950da9b9d9d75fffeff0f068d3[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Feb 20 14:31:03 2024 +0545
+
+    what's new
+
+[33mcommit 82de080dd6e2d5f000ade1ec43132e6b1baaa78a[m
+Merge: 3461887 136ae9b
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Tue Feb 20 12:13:22 2024 +0545
+
+    Merge pull request #393 from Wapal-official/xenon-token-integration
+    
+    chore: add xenon token
+
+[33mcommit 136ae9be893c182cfaafca547f920ee5b751e6f6[m[33m ([m[1;31morigin/xenon-token-integration[m[33m)[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Feb 20 12:12:58 2024 +0545
+
+    chore: add xenon token
+
+[33mcommit 3461887cba7982bf82d5f33ace4193f6de7ee0c7[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Mon Feb 19 21:02:10 2024 +0545
+
+    chore: change supply of furry cayote
+
+[33mcommit 778bad30b3ee5a1cb66a0db1ef50340966faf34c[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Fri Feb 16 16:28:36 2024 +0545
+
+    chore: change text and size of mint phase box
+
+[33mcommit aac618fb4790c19f7ac0e46784a180bccb78b41c[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Fri Feb 16 13:18:45 2024 +0545
+
+    chore: cap supply of inactive collections
+
+[33mcommit 6f788b8ce1e89d9152353d5e8e161e93ca480426[m
+Merge: 2ba7295 bac9bee
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Feb 14 17:45:48 2024 +0545
+
+    Merge branch 'main' of https://github.com/Wapal-official/wapal-frontend-nuxt-2 into staging
+
+[33mcommit bac9bee75a48df2c6024e74bb5512d86f04e0ade[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Feb 14 17:45:01 2024 +0545
+
+    fix: get original image if cache server throws error
+
+[33mcommit e37cee37af47b19c81d6c3969c838b5269d02113[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Feb 14 17:38:57 2024 +0545
+
+    chore: get under review auctions of users
+
+[33mcommit a499d35b3960888be41695550dcbd63afbc95143[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Feb 14 17:17:19 2024 +0545
+
+    chore: register user on wallet connect
+
+[33mcommit 6d3a2eefbfa3775b7f38eb653b39c932fbeb2d65[m
+Merge: 30fd07d 9c5f264
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Wed Feb 14 17:14:53 2024 +0545
+
+    Merge pull request #392 from Wapal-official/mint-limit
+    
+    Mint limit
+
+[33mcommit 2ba72952637afd888993552f8cea05d9ea3ba6e1[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Feb 14 17:05:10 2024 +0545
+
+    fix: compilation error
+
+[33mcommit 47225f0db848fd98e84fb8a59e934c8c3299092f[m
+Merge: 4a85434 52ad2a5
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Wed Feb 14 16:49:54 2024 +0545
+
+    Merge pull request #391 from Wapal-official/staging-mint-limit
+    
+    Staging mint limit
+
+[33mcommit 52ad2a5cc32ec648a31c8952122d1c868c8cc516[m
+Merge: 9c5f264 4a85434
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Feb 14 16:48:58 2024 +0545
+
+    Merge branch 'staging' of https://github.com/Wapal-official/wapal-frontend-nuxt-2 into staging-mint-limit
+
+[33mcommit 9c5f264f1a535789cc4997b629073cd7ccfcc7e4[m
+Merge: c6cc336 30fd07d
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Feb 14 16:36:57 2024 +0545
+
+    Merge branch 'main' of https://github.com/Wapal-official/wapal-frontend-nuxt-2 into mint-limit
+
+[33mcommit c6cc336f699ee1e05970486c828319479f68d2a0[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Feb 14 16:36:42 2024 +0545
+
+    chore: check if user is whitelisted or not before sale starts
+
+[33mcommit 6bd27ed9271fde0bafae29389bb6a3e4090d6736[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Feb 14 12:16:29 2024 +0545
+
+    chore: add sample whitelist addresses to download
+
+[33mcommit 0116ca3387731f2557a095ef67a4640a591644d1[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Feb 14 11:56:39 2024 +0545
+
+    chore: remove whitelist info icon
+
+[33mcommit 30fd07dc0d83fef0fe13aa5a79f67ab75b6cff15[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 14 09:13:33 2024 +0545
+
+    nav bar nft transfer for large screen size
+
+[33mcommit 64ba1a06c94a7984da66adf2ffa9232a89b50e33[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Sat Feb 10 12:56:23 2024 +0545
+
+    fix: change username of squids aptos
+
+[33mcommit e696ca0305ad02083f5b1931cbf5ccde258f8a5c[m
+Merge: 86a35a5 a21c77b
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Thu Feb 8 20:09:00 2024 +0545
+
+    Merge pull request #390 from Wapal-official/nft-transfer-for-main
+    
+    nft trasnfer mainnet
+
+[33mcommit 5dfdc1a62e7e472a4156fa1c92459fef1170293a[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Thu Feb 8 09:52:52 2024 +0545
+
+    chore: show vault name error below text field
+
+[33mcommit a21c77b0f336caef1323f115b6e3cad6692bf8ed[m[33m ([m[1;31morigin/nft-transfer-for-main[m[33m)[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 7 20:41:32 2024 +0545
+
+    nft trasnfer mainnet
+
+[33mcommit 4a85434b8515286d4758d1c3171cfa5728338a4c[m
+Merge: 9640208 dfcf675
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 7 16:41:57 2024 +0545
+
+    Merge pull request #389 from Wapal-official/nft-trasnfer-final
+    
+    nft transfer update design
+
+[33mcommit dfcf675b83d4bca7a353377e71dbdf6a7a9a928c[m[33m ([m[1;31morigin/nft-trasnfer-final[m[33m)[m
+Merge: 9909384 9640208
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 7 16:41:50 2024 +0545
+
+    Merge branch 'staging' into nft-trasnfer-final
+
+[33mcommit 990938444ffbb865bb881e39f80be6979ee242a3[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Wed Feb 7 16:25:32 2024 +0545
+
+    nft transfer update design
+
+[33mcommit 86a35a597345212404bc6559d360e0a3396f95b5[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Mon Feb 5 19:20:07 2024 +0545
+
+    fix: show owner address of database incase of error
+
+[33mcommit fed891a78861dbb6069e99403c2f30d736c37536[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Mon Feb 5 19:03:59 2024 +0545
+
+    fix: send wallet address if there is error getting domain name
+
+[33mcommit 6c8117363d78865342bca2dbbbbc9faad06343fc[m
+Merge: 85f9992 3ce33f4
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Mon Feb 5 17:48:13 2024 +0545
+
+    Merge pull request #388 from Wapal-official/discord-chat
+    
+    chore: do not show minted of upcoming collections
+
+[33mcommit 3ce33f4fcfe732df78330ca37d57e411b58377ac[m[33m ([m[1;31morigin/discord-chat[m[33m)[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Mon Feb 5 17:47:37 2024 +0545
+
+    chore: do not show minted of upcoming collections
+
+[33mcommit 85f99922150228ad0142ed71349a16d5d5c94e6f[m
+Merge: 8c98337 de861bb
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Sun Feb 4 13:18:58 2024 +0545
+
+    Merge pull request #387 from Wapal-official/discord-chat
+    
+    Discord chat
+
+[33mcommit 964020821dbbfe86c37a9723fc1f95477b744514[m
+Merge: 297a00f de861bb
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Sun Feb 4 13:12:58 2024 +0545
+
+    Merge pull request #386 from Wapal-official/discord-chat
+    
+    chore: add discord chat box
+
+[33mcommit de861bbaef2a458f97debf626e31b7b2dd3da901[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Sun Feb 4 13:11:48 2024 +0545
+
+    style: use dvh instead of vh
+
+[33mcommit 297a00f12ebe33471f09003e07ab8b303fa765e8[m
+Merge: d574498 a8de655
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Sun Feb 4 12:56:37 2024 +0545
+
+    Merge pull request #385 from Wapal-official/discord-chat
+    
+    Discord chat
+
+[33mcommit a8de65591dcc9f5b5e9688589701994b1b353c34[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Sun Feb 4 12:54:33 2024 +0545
+
+    chore: add discord chat box
+
+[33mcommit 8c9833737b9efe0318d7b3bdf318b6516519ce21[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Fri Feb 2 17:32:39 2024 +0545
+
+    chore: increase timer for creating and minting 1/1
+
+[33mcommit 30b6bcd2f5712ff602a9a4b9b599e638ab2ff48f[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Fri Feb 2 12:06:24 2024 +0545
+
+    fix: update whitelist sale time if collection only has public sale
+
+[33mcommit e3ef1cfccab5cf06f37a4dc5c63f9fb75158d6a5[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Fri Feb 2 11:49:40 2024 +0545
+
+    chore: show pause button for all collections
+
+[33mcommit 8a93d55624087f83c9367599e0ca2cf9102af90a[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Thu Feb 1 20:20:21 2024 +0545
+
+    chore: set minted of magical potion to 0
+
+[33mcommit a9bf856f1349f68f7427efa25b2ce94cefe07f72[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Thu Feb 1 14:34:23 2024 +0545
+
+    chore: set minted of boomers to 0
+
+[33mcommit baf2f874bf0db8d615374ddd6ded6c8334e9709c[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Jan 31 00:03:22 2024 +0545
+
+    Revert "chore: set minted of celestines to 0"
+    
+    This reverts commit fc112d59ab31c22da2c3cf47ee00635fc7d577e4.
+
+[33mcommit 7e5f73eb59084564c623a9bcd5ee744a26c660dd[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 30 15:38:07 2024 +0545
+
+    chore: do not show price if price is null or undefined
+
+[33mcommit fc112d59ab31c22da2c3cf47ee00635fc7d577e4[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 30 15:17:38 2024 +0545
+
+    chore: set minted of celestines to 0
+
+[33mcommit 9b9f56c440f2244b4ec77fd77687e114faabdf68[m
+Merge: 65e15ec 4e366ae
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Tue Jan 30 13:02:27 2024 +0545
+
+    Merge pull request #384 from Wapal-official/mint-limit
+    
+    Mint limit
+
+[33mcommit d57449894776c9abc49ef460fe1fcac36b2e0536[m
+Merge: 00aafec 4e366ae
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Tue Jan 30 12:57:11 2024 +0545
+
+    Merge pull request #383 from Wapal-official/mint-limit
+    
+    chore: show error message while creating valut
+
+[33mcommit 4e366aef88a69fd3ffa8480251c3cc7cdc1112c0[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 30 12:56:11 2024 +0545
+
+    chore: show error message while creating valut
+
+[33mcommit 00aafec76189ce1d5d1cfc67a1f6757e10cc3b8d[m
+Merge: e7a3673 af81a89
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Tue Jan 30 11:35:50 2024 +0545
+
+    Merge pull request #382 from Wapal-official/mint-limit
+    
+    Mint limit
+
+[33mcommit af81a891c966e6a9e251ada0da3c3d22c6a8b442[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 30 11:35:10 2024 +0545
+
+    chore: change updated date in privacy policy
+
+[33mcommit 7ab69ab16afa8e127ec7ff8c64e36318abbfffc0[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 30 10:24:58 2024 +0545
+
+    chore: update terms of service
+
+[33mcommit 865f26c3ca2de01ead0fe13783787cec20bf7292[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Mon Jan 29 17:13:56 2024 +0545
+
+    chore: update privacy policy
+
+[33mcommit 607bc28db0f19511b57bf8768a0e95bee8bb863d[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Mon Jan 29 16:44:07 2024 +0545
+
+    fix: slice name in whitelist landing card for long names
+
+[33mcommit e7a36736cce488f4f7b30854ba5959ea151e3863[m
+Merge: db43212 8475af6
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Jan 26 08:59:38 2024 +0545
+
+    Merge pull request #381 from Wapal-official/nft-transfer-v2
+    
+    Nft transfer v2
+
+[33mcommit 8475af6e9beab333b89adee3b98669588d987342[m[33m ([m[1;31morigin/nft-transfer-v2[m[33m)[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Jan 26 08:58:48 2024 +0545
+
+    card stying
+
+[33mcommit e971d05ec88a56327f93f667eebee318b41790da[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Fri Jan 26 08:51:02 2024 +0545
+
+    cleaned code
+
+[33mcommit 65e15eccb6bcc919eb1f2aff420cedd49d9b4efa[m
+Merge: c10b7e0 f572616
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Thu Jan 25 18:19:11 2024 +0545
+
+    Merge pull request #380 from Wapal-official/mint-limit
+    
+    chore: add requirement text in image input
+
+[33mcommit db432129f42d01aa3a637226315bc507ac0ec5c7[m
+Merge: 3ea529e f572616
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Thu Jan 25 18:07:44 2024 +0545
+
+    Merge pull request #379 from Wapal-official/mint-limit
+    
+    chore: add requirement text in image input
+
+[33mcommit f5726160cf6259054b79c2d7d2e3cc68f45153dd[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Thu Jan 25 18:06:14 2024 +0545
+
+    chore: add requirement text in image input
+
+[33mcommit c10b7e092c6bb1c1c0043f3bf50b86430321cefc[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Thu Jan 25 12:42:29 2024 +0545
+
+    style: add read more button on longer description
+
+[33mcommit 094ec00c5739db5eb8aa7861589a6fc079d71485[m
+Merge: 2f62f51 a6222d9
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Wed Jan 24 15:55:14 2024 +0545
+
+    Merge pull request #378 from Wapal-official/remove-ssr
+    
+    Remove ssr
+
+[33mcommit 3ea529e23a85ce58ba5bf8fa7a73d44182b08a1a[m
+Merge: 103029d a6222d9
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Wed Jan 24 14:04:28 2024 +0545
+
+    Merge pull request #377 from Wapal-official/remove-ssr
+    
+    Remove ssr
+
+[33mcommit a6222d9b6432bfe1f29d83b9fdf3236dae0909a3[m[33m ([m[1;31morigin/remove-ssr[m[33m)[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Jan 24 14:02:35 2024 +0545
+
+    fix: get wallet from local storage instead of cookies
+
+[33mcommit 103029d503831c41f0454e61e473637bc47ac4a1[m
+Merge: 0c0a315 ed06b39
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Wed Jan 24 13:52:17 2024 +0545
+
+    Merge pull request #376 from Wapal-official/remove-ssr
+    
+    chore: keep discord token in local storage
+
+[33mcommit ed06b394ad7dcea45a03b4b43e4286c854d6c24c[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Wed Jan 24 13:48:27 2024 +0545
+
+    chore: keep discord token in local storage
+
+[33mcommit 0c0a3150a7abf6e408966196bd6eb05eb3b51541[m
+Merge: 3081803 3d946d2
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Tue Jan 23 16:57:11 2024 +0545
+
+    Merge pull request #375 from Wapal-official/remove-ssr
+    
+    style: change primary color for vuetify
+
+[33mcommit 3d946d2cefde83542025be9fd3cbc5b578e9d4e1[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 23 16:55:57 2024 +0545
+
+    style: change primary color for vuetify
+
+[33mcommit 308180347e56ab558475a48348df56f18c9749ba[m
+Merge: c3faf8d 74a329f
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Tue Jan 23 16:12:03 2024 +0545
+
+    Merge pull request #374 from Wapal-official/remove-ssr
+    
+    Remove ssr
+
+[33mcommit 74a329f300e2254e8cc62446f7a8704b1270dbf1[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 23 16:11:23 2024 +0545
+
+    chore: change background of active stepper
+
+[33mcommit ccce824b4f921f4293927022bd130cd07a6d85ef[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 23 16:04:01 2024 +0545
+
+    chore: change proof api in staging
+
+[33mcommit a8f416c261b03162929e264ca98b766cb3ef0255[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 23 13:45:04 2024 +0545
+
+    chore: initialize wallet and user state in mounted
+
+[33mcommit 9cb0b7673392afe9a896c2a8e7fa9a6ce5bef249[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 23 13:09:11 2024 +0545
+
+    chore: set wallet and user in localstorage
+
+[33mcommit c3faf8df4bcaefeca4f830ab990d6f9fd4df7755[m
+Merge: ab2edc1 4f2e399
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Tue Jan 23 13:00:36 2024 +0545
+
+    Merge pull request #373 from Wapal-official/imageCache2
+    
+    Image cache2
+
+[33mcommit 4f2e399ed829597b2a07487e3ab22b5785a1f2e6[m[33m ([m[1;31morigin/imageCache2[m[33m)[m
+Merge: 1ce6adf ab2edc1
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 23 12:42:14 2024 +0545
+
+    Merge branch 'staging' of https://github.com/Wapal-official/wapal-frontend-nuxt-2 into imageCache2
+
+[33mcommit 2f62f5106645e18f4bc06a97092fd242335d65f4[m
+Merge: 7092641 1ce6adf
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Tue Jan 23 12:38:20 2024 +0545
+
+    Merge pull request #372 from Wapal-official/imageCache2
+    
+    Image cache2
+
+[33mcommit 1ce6adf483bc254c130cc34b9bed10a4b7dbb2ae[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 23 12:37:09 2024 +0545
+
+    chore: used cached image for monkeys sanctuary
+
+[33mcommit 6ee7fc7b3f922f0ca483e441d1bbe46d40c0aac0[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 23 12:19:04 2024 +0545
+
+    Revert "Revert "Merge branch 'staging' into mint-limit""
+
+[33mcommit 7092641892b3b25b5183f927a7b0476de16ef994[m
+Merge: 8b378ce 185ac83
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Tue Jan 23 11:44:09 2024 +0545
+
+    Merge pull request #370 from Wapal-official/imageCache2
+    
+    Revert "chore: add cached image in assets page"
+
+[33mcommit ab2edc13257ff84f43f51cb0b4187760f57285ab[m
+Merge: ced583c 2a6077d
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Jan 23 11:06:00 2024 +0545
+
+    Merge pull request #371 from Wapal-official/nft-transfer-v2
+    
+    margin
+
+[33mcommit 2a6077d3826f7d6a5472fb6dc447e23d39dbd1dd[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Jan 23 11:05:19 2024 +0545
+
+    margin
+
+[33mcommit 185ac836e04a5b1a638f83a881ffefa05605d76a[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Tue Jan 23 10:34:40 2024 +0545
+
+    chore: use file image in asset file card
+
+[33mcommit ced583c6ce4e17a128e223526784bd320b9f5ddd[m
+Merge: 4f74ea5 01067d7
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Tue Jan 23 10:30:10 2024 +0545
+
+    Merge pull request #369 from Wapal-official/imageCache2
+    
+    Revert "chore: add cached image in assets page"
+
+[33mcommit 4f74ea552edcf47ed60e9c9d7ffc086d0bb3ddb1[m
+Merge: d826da3 ca06360
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Jan 23 10:18:08 2024 +0545
+
+    Merge pull request #368 from Wapal-official/nft-transfer-v2
+    
+    lil improvement
+
+[33mcommit ca06360663ef92df34ce51470d7751661e868df8[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Jan 23 10:17:11 2024 +0545
+
+    lil improvement
+
+[33mcommit d826da3f4f37be84946b2938da4a392933b55ea7[m
+Merge: 3971d38 789880d
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Jan 23 10:01:16 2024 +0545
+
+    Merge pull request #367 from Wapal-official/nft-transfer-v2
+    
+    Nft transfer v2
+
+[33mcommit 789880dead6d2a931978069ddf5f92f9a59708cf[m
+Merge: 3e5974e 699a704
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Jan 23 10:00:24 2024 +0545
+
+    merging
+
+[33mcommit 3e5974e0c2ded244f8909725c31e93f4d0233320[m
+Author: Yogesh Shrestha <70264221+Yogeshshrestha@users.noreply.github.com>
+Date:   Tue Jan 23 09:46:53 2024 +0545
+
+    nft transfer implementation
+
+[33mcommit 8b378ceda5df9fb07cb9ab8092b2fd92049e37f8[m
+Merge: 7eda150 ccd6d73
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Mon Jan 22 21:05:16 2024 +0545
+
+    Merge pull request #366 from Wapal-official/mint-limit
+    
+    style: show 3 phases in nft detail
+
+[33mcommit 3971d3870d0bc98cdce1b96253717aae5dc36ddd[m
+Merge: 68e3da3 ccd6d73
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Mon Jan 22 20:59:58 2024 +0545
+
+    Merge pull request #365 from Wapal-official/mint-limit
+    
+    style: show 3 phases in nft detail
+
+[33mcommit ccd6d7351b71dafc1ca2219343d7f4edb43bf9aa[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Mon Jan 22 20:58:54 2024 +0545
+
+    style: show 3 phases in nft detail
+
+[33mcommit 68e3da310d43318300198b72b6157bda282894df[m
+Merge: 1fab5e2 c51d2e5
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Mon Jan 22 20:35:14 2024 +0545
+
+    Merge pull request #364 from Wapal-official/mint-limit
+    
+    chore: change set root endpoint
+
+[33mcommit 7eda1501d8e67e4d6e5ca6cbdd2fabeb9675f30a[m
+Merge: a8bfa5b c51d2e5
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Mon Jan 22 20:27:09 2024 +0545
+
+    Merge pull request #363 from Wapal-official/mint-limit
+    
+    chore: change set root endpoint
+
+[33mcommit c51d2e5f5338ca436503c2692834842133a9c1ee[m
+Author: Meghant00 <dangolmeghant0@gmail.com>
+Date:   Mon Jan 22 20:25:51 2024 +0545
+
+    chore: change set root endpoint
+
+[33mcommit a8bfa5bc8f81912580c95b38568c840720a82d80[m
+Merge: 91857d9 ef36637
+Author: Meghant00 <53548747+Meghant00@users.noreply.github.com>
+Date:   Mon Jan 22 19:37:13 2024 +0545
+
+    Merge pull request #362 from Wapal-official/mint-limit
+    
+    chore: get proof from proof endpoint

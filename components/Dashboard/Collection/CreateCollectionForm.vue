@@ -23,6 +23,13 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
+          <!-- <div class="video-container">
+            <video ref="videoPlayer" controls @loadedmetadata="setupScrubber">
+              <source src="~/assets/video/Launchpad.mp4" />
+            </video>
+            <canvas ref="scrubberCanvas" @click="seekTo"></canvas>
+            <img ref="videoFrame" class="video-frame" />
+          </div> -->
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
@@ -115,10 +122,12 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
           >
             <input-image-drag-and-drop
-              label="Featured Image"
+              label="Featured Image/Video"
               :required="true"
               @fileSelected="imageSelected"
+              @fileSelectedThumbnail="thumbnailSelected"
               :file="collection.image"
+              :thumbnail="collection.thumbnail"
               fileSize="Upto 15 MB"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
@@ -790,10 +799,12 @@ export default {
     return {
       steps: ["Details", "Royalty", "Phase", "Review"],
       stepNumber: 1,
+      checkFeaturedFile: true,
       collection: {
         name: "",
         description: "",
         image: "",
+        thumbnail: "",
         baseURL: "",
         royalty_payee_address:
           this.$store.state.walletStore.wallet.walletAddress,
@@ -819,6 +830,7 @@ export default {
       image: { name: null },
       imageErrorMessage: "",
       imageError: false,
+      thumbnail: { name: null },
       submitting: false,
       breadcrumb: [
         {
@@ -849,6 +861,44 @@ export default {
   methods: {
     async changeStep(step: number) {
       this.stepNumber = step;
+    },
+    setupScrubber() {
+      const video = this.$refs.videoPlayer;
+      const canvas = this.$refs.scrubberCanvas;
+      const ctx = canvas.getContext("2d");
+
+      video.addEventListener("canplay", () => {
+        canvas.width = video.clientWidth;
+        canvas.height = video.clientHeight;
+
+        // Draw the initial video frame onto the canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      });
+    },
+    seekTo(event: { clientX: number }) {
+      const canvas = this.$refs.scrubberCanvas;
+      const rect = canvas.getBoundingClientRect();
+      const offsetX = event.clientX - rect.left;
+      const scrubTime =
+        (offsetX / canvas.width) * this.$refs.videoPlayer.duration;
+      this.$refs.videoPlayer.currentTime = scrubTime;
+      this.updateVideoFrame(scrubTime);
+    },
+    updateVideoFrame(scrubTime: number) {
+      const video = this.$refs.videoPlayer;
+      const canvas = this.$refs.scrubberCanvas;
+
+      const ctx = canvas.getContext("2d");
+      const interval = canvas.width / video.duration;
+
+      // Draw the video frame onto the canvas
+      video.currentTime = scrubTime; // Set video time to capture frame at the scrubTime
+      video.addEventListener("seeked", () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // Draw the video frame onto the canvas
+        ctx.fillStyle = "#000"; // Color of the scrubber
+        ctx.fillRect(scrubTime * interval, 0, 1, canvas.height); // Draw a line for the current time
+      });
     },
     async validateFormForNextStep() {
       switch (this.stepNumber) {
@@ -881,11 +931,21 @@ export default {
 
             break;
           }
-
           if (!this.image.name && !this.collection.image) {
             this.imageError = true;
             this.imageErrorMessage = "Please select an image for collection";
             return;
+          }
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "image") {
+            return;
+          } else {
+            if (!this.thumbnail.name && !this.collection.image) {
+              this.imageError = true;
+              this.imageErrorMessage =
+                "Please select an thumbnail for collection";
+              return;
+            }
           }
 
           if (this.imageError) {
@@ -1021,7 +1081,13 @@ export default {
         }
 
         if (this.image.name) {
-          formData.append("image", this.image);
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "image") {
+            formData.append("image", this.image);
+          } else {
+            formData.append("video", this.image);
+            formData.append("image", this.thumbnail);
+          }
         } else {
           formData.append("image", tempCollection.image);
         }
@@ -1038,6 +1104,22 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
 
         this.submitting = false;
+      }
+    },
+    checkFileType(fileName: any) {
+      const fileExtension = fileName.split(".").pop().toLowerCase();
+      const imageExtensions = ["jpg", "jpeg", "png", "gif", "svg", "bmp"];
+      const videoExtensions = ["mp4", "webm", "ogg", "avi", "mov", "mkv"];
+      const audioExtensions = ["mp3", "ogg", "wav", "webm", "aac", "flac"];
+
+      if (imageExtensions.includes(fileExtension)) {
+        return "image";
+      } else if (videoExtensions.includes(fileExtension)) {
+        return "video";
+      } else if (audioExtensions.includes(fileExtension)) {
+        return "audio";
+      } else {
+        return "unknown";
       }
     },
 
@@ -1078,8 +1160,19 @@ export default {
           formData.append("draft_id", draft_id);
         }
 
+        // if (this.image.name) {
+        //   formData.append("image", this.image);
+        // } else {
+        //   formData.append("image", tempCollection.image || "");
+        // }
         if (this.image.name) {
-          formData.append("image", this.image);
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "image") {
+            formData.append("image", this.image);
+          } else {
+            formData.append("video", this.image);
+            formData.append("image", this.thumbnail);
+          }
         } else {
           formData.append("image", tempCollection.image || "");
         }
@@ -1110,7 +1203,8 @@ export default {
 
     imageSelected(image: any) {
       this.image = image;
-
+      console.log("caijcn");
+      console.log("asdad", this.image);
       if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
         this.imageError = true;
         this.imageErrorMessage = "Please Upload Image less than 15MB";
@@ -1118,7 +1212,17 @@ export default {
         this.imageError = false;
       }
     },
-
+    thumbnailSelected(image: any) {
+      this.thumbnail = image;
+      console.log("okandd");
+      console.log("kjinasv", this.thumbnail);
+      if (Math.floor(this.thumbnail.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
+    },
     async sendDataToCandyMachineCreator() {
       let whitelistTime = null;
       let whitelist_price = this.collection.whitelist_price;
@@ -1219,8 +1323,19 @@ export default {
       formData.append("coin_type", tempCollection.coinType);
       formData.append("tweet", tempCollection.tweet);
 
+      // if (this.image.name) {
+      //   formData.append("image", this.image);
+      // } else {
+      //   formData.append("image", tempCollection.image);
+      // }
       if (this.image.name) {
-        formData.append("image", this.image);
+        const fileType = this.checkFileType(this.image.name);
+        if (fileType === "image") {
+          formData.append("image", this.image);
+        } else {
+          formData.append("video", this.image);
+          formData.append("image", this.thumbnail);
+        }
       } else {
         formData.append("image", tempCollection.image);
       }
@@ -1304,12 +1419,22 @@ export default {
 
         await editDraft(this.$route.params.id, tempCollection);
 
+        // if (this.image.name) {
+        //   formData.append("image", this.image);
+
+        //   await editImage(this.$route.params.id, formData);
+        // }
         if (this.image.name) {
-          formData.append("image", this.image);
-
-          await editImage(this.$route.params.id, formData);
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "image") {
+            formData.append("image", this.image);
+            await editImage(this.$route.params.id, formData);
+          } else {
+            formData.append("video", this.image);
+            formData.append("image", this.thumbnail);
+            await editImage(this.$route.params.id, formData);
+          }
         }
-
         this.$toast.showMessage({ message: "Draft Updated Successfully" });
 
         this.$router.push("/dashboard/collection/draft");
@@ -1390,5 +1515,23 @@ export default {
 .image-collection {
   display: none;
   background-color: #878787;
+}
+.video-container {
+  position: relative;
+  width: 100%;
+}
+
+canvas {
+  width: 100%;
+  height: 50px; /* Adjust height as needed */
+  background-color: #f0f0f0; /* Background color of the scrubber */
+  cursor: pointer;
+}
+
+.video-frame {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 10px; /* Adjust margin as needed */
 }
 </style>
