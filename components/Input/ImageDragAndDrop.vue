@@ -67,7 +67,7 @@
           ref="imagePreview"
           class="tw-w-full tw-h-full tw-rounded tw-bg-black"
         ></div>
-        <v-dialog
+        <!-- <v-dialog
           v-model="checkFeaturedFile"
           max-width="500  "
           style="height: 600px; width: 500px !important; background-color: #000"
@@ -195,7 +195,7 @@
               </div>
             </div>
           </v-card>
-        </v-dialog>
+        </v-dialog> -->
         <!-- <div class="resize-icon-holder" @click="resizeVideo()">
           <img src="~/assets/img/resize.svg" alt="resize" />
         </div> -->
@@ -225,7 +225,7 @@
           <i class="bx bxs-edit-alt tw-text-xl"></i>
         </button>
       </div>
-      <!-- <div
+      <div
         v-if="!imageSelectedThumnail && isVideo"
         class="tw-w-[200px] tw-h-[200px] tw-p-3 tw-border tw-border-dashed tw-border-dark-4 tw-rounded tw-cursor-pointer tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
         @click="dropZoneClickedThumnail"
@@ -284,7 +284,7 @@
             <i class="bx bxs-edit-alt tw-text-xl"></i>
           </button>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
