@@ -30,12 +30,20 @@
                 :alt="item.name"
                 class="tw-w-[45px] tw-h-[45px] tw-object-cover"
               /> -->
-              <!-- <video-player-listed
-                v-if="item.image && isVideo(item.image ? item.image : item.src)"
+              <video-player-listed
+                v-if="isVideo(item.image ? item.image : item.src)"
                 :source="item.image ? item.image : item.src"
                 style="max-width: 50px; height: 50px"
-              /> -->
+              />
+              <audio-player-list
+                v-else-if="isAudio(item.src)"
+                class="audio-list-bg-2"
+                :audioSrc="item.src"
+                iconSize="34"
+                @click.prevent.stop="checkit()"
+              ></audio-player-list>
               <utility-image
+                v-else
                 :source="item.image ? item.image : item.src"
                 :alt="item.name"
                 class="tw-w-[45px] tw-h-[45px] tw-object-cover"
@@ -94,6 +102,25 @@ export default {
       }
       return (size / 1024).toFixed(2) + " KB";
     },
+    isAudio(source: string) {
+      if (typeof source !== "string") {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
+    },
     isVideo(source: string) {
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
@@ -122,6 +149,7 @@ export default {
   },
   watch: {
     paginatedFiles(paginatedFiles: any) {
+      console.log("check gr", paginatedFiles);
       this.allFiles.push(...paginatedFiles);
     },
   },

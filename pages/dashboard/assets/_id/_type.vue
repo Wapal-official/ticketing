@@ -101,7 +101,8 @@
         class="tw-text-dark-0 tw-text-center tw-text-lg tw-w-full"
         v-if="!checkImageUploaded"
       >
-        Please Upload Images/Video in assets folder first
+        Please Upload Images in assets or videos in assets and images in images
+        folder first
       </div>
     </div>
     <div
@@ -631,6 +632,14 @@ export default {
       }
 
       if (!this.folderInfo.assets.baseURI) {
+        return false;
+      }
+
+      if (this.type === "images") {
+        return true;
+      }
+
+      if (!this.folderInfo.images.baseURI) {
         return false;
       }
 

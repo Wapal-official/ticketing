@@ -24,7 +24,7 @@
       v-if="!imageSelected"
     >
       <label class="tw-text-sm tw-font-medium tw-cursor-pointer" id="drop-zone"
-        >Drop your images here, or
+        >Drop your assets here, or
         <span class="tw-text-primary-1" id="drop-zone"
           >click to browse</span
         ></label
@@ -63,6 +63,7 @@
           ref="input"
         />
         <div
+          @click="reClick()"
           ref="imagePreview"
           class="tw-w-full tw-h-full tw-rounded tw-bg-black"
         ></div>
@@ -328,6 +329,9 @@ export default {
   computed: {},
   methods: {
     resizeVideo() {},
+    reClick() {
+      this.checkFeaturedFile = true;
+    },
     checkFileType() {
       if (this.extension === ".json") {
         return "json";
