@@ -472,8 +472,6 @@ export const executeSmartContract = async (initParams: any) => {
 
   return result;
 };
- 
-
 
 export const createCollectionV2 = async (candyMachineArguments: any) => {
   checkWalletConnected();
@@ -483,6 +481,12 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
   const coinTypeObject = getCoinType(candyMachineArguments.coinType);
 
   let programId = coinTypeObject.candy_id;
+
+  if (candyMachineArguments.isRandom) {
+    programId = coinTypeObject.candy_id;
+  } else {
+    programId = process.env.NON_RANDOM_CANDY_MACHINE;
+  }
 
   const isOpenEdition = candyMachineArguments.is_open_edition
     ? candyMachineArguments.is_open_edition
@@ -665,6 +669,13 @@ export const anotherCoinMintSingleNft = async ({
       arguments: [candy_object],
     };
 
+    if (
+      candy_machine_id ===
+      "0xc777f5f82a2773d6e6f9c2e91306fc9c099a57747f64d86c59cf0acab706fd44"
+    ) {
+      mint_script.type_arguments = [];
+    }
+
     const simulateRes = await simulateTransaction({
       sender: sender,
       transactionPayload: mint_script,
@@ -696,6 +707,13 @@ export const anotherCoinMintManyNft = async ({
       type_arguments: [coinObject],
       arguments: [candy_object, amount?.toString()],
     };
+
+    if (
+      candy_machine_id ===
+      "0xc777f5f82a2773d6e6f9c2e91306fc9c099a57747f64d86c59cf0acab706fd44"
+    ) {
+      mint_script_many.type_arguments = [];
+    }
 
     const simulateRes = await simulateTransaction({
       sender: sender,
