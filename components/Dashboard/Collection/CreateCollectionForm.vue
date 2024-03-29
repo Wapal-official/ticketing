@@ -480,11 +480,42 @@
               <input-text-field
                 v-model="collection.public_mint_limit"
                 placeholder="Eg: 0"
-                label="Public Address Mint Limit"
+                label="Public Address Mint Limit (0 for unlimited mint)"
                 :required="true"
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
+            <div
+              class="tw-flex tw-flex-row tw-items-end tw-justify-start tw-gap-2"
+              v-if="collection.coinType === 'APT'"
+            >
+              <v-checkbox
+                v-model="isNonRandom"
+                label="Remove Randomness"
+                :ripple="false"
+                hide-details
+                class="!tw-mt-0"
+              ></v-checkbox>
+              <tool-tip>
+                <template #text>
+                  <i class="bx bx-info-circle tw-text-xl"></i>
+                </template>
+                <template #tip>
+                  <div
+                    class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
+                  >
+                    <div class="tw-font-semibold">Caution</div>
+                    <div>
+                      Ticking this checkbox will disable randomness while
+                      minting.
+                    </div>
+                    <div>
+                      Which means you tokens will be minted sequentially
+                    </div>
+                  </div>
+                </template>
+              </tool-tip>
+            </div>
             <v-checkbox
               v-model="saveAsDraft"
               label="Save as Draft"
@@ -812,6 +843,7 @@ export default {
       loading: false,
       saveAsDraft: false,
       coinTypes: getAvailableCoinTypes(),
+      isNonRandom: false,
     };
   },
   methods: {
@@ -1133,6 +1165,7 @@ export default {
         total_supply: this.collection.supply,
         public_mint_limit: this.collection.public_mint_limit,
         coinType: this.collection.coinType,
+        isRandom: !this.isNonRandom,
       };
 
       const res = await createCollectionV2(candyMachineArguments);
@@ -1289,6 +1322,12 @@ export default {
       }
     },
     checkCoinType() {
+      if (this.isNonRandom) {
+        this.collection.candy_id = process.env.NON_RANDOM_CANDY_MACHINE;
+
+        return;
+      }
+
       const coinTypeObject = getCoinType(this.collection.coinType);
 
       this.collection.candy_id = coinTypeObject.candy_id;
