@@ -44,7 +44,6 @@ export default {
     return {
       folders: [
         { name: "assets", type: "assets" },
-        { name: "images", type: "images" },
         { name: "metadata", type: "metadata" },
       ],
       vault: null,
@@ -64,13 +63,53 @@ export default {
     //   return this.$store.state.asset.assetType;
     // },
   },
+  methods: {
+    isImage(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+  },
   async mounted() {
-    const folderId = this.$route.params.id;
-    const res = await getFolderById(folderId);
-    console.log("asdd", res);
-    this.vault = res.data;
+    try {
+      const folderId = this.$route.params.id;
+      const res = await getFolderById(folderId);
+      console.log("asdd", res);
+      this.vault = res.data;
 
-    this.loading = false;
+      const assetsType = res.data.folderInfo.assets.ext;
+
+      const isImageType = this.isImage(assetsType);
+
+      if (isImageType) {
+        this.folders = [
+          { name: "assets", type: "assets" },
+          { name: "metadata", type: "metadata" },
+        ];
+      } else {
+        this.folders = [
+          { name: "assets", type: "assets" },
+          { name: "images", type: "images" },
+          { name: "metadata", type: "metadata" },
+        ];
+      }
+
+      this.loading = false;
+    } catch (error) {
+      console.error("Error fetching folder data:", error);
+      this.loading = false;
+    }
   },
 };
 </script>

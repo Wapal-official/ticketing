@@ -523,7 +523,7 @@ export default {
     },
     isAudio(source) {
       if (typeof source !== "string") {
-        return false; // Return false if source is not a string
+        return false;
       }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
@@ -1629,7 +1629,7 @@ export default {
   left: 0;
   bottom: 0px;
   right: 0;
-  width: 100%;
+  /* width: 93%; */
   padding: 0 16px 16px;
   background-image: linear-gradient(transparent, #000) !important;
   border-bottom-left-radius: 16px;
