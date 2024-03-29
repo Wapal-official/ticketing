@@ -137,8 +137,6 @@
 </template>
 <script lang="ts">
 import { getCachedUrlOfImage } from "@/utils/imageCache";
-import { divideIntoBatches } from "@/utils/batches";
-import { resolveUri } from "@/utils/metadata";
 
 export default {
   props: {
