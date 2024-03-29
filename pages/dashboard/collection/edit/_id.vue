@@ -752,10 +752,10 @@ export default {
           ].includes(extension)
         : false;
     },
-    isAudio(source) {
-      if (typeof source !== "string") {
-        return false;
-      }
+    isAudio(source: string) {
+      // if (typeof source !== "string") {
+      //   return false;
+      // }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
         ? [

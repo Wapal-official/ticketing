@@ -1,274 +1,368 @@
-<!-- <template>
-  <div>
-    <div class="audio-player">
-      <div class="timeline" @click="seekTimeline($event)">
-        <div class="progress" :style="{ width: progressWidth }"></div>
-      </div>
-      <div class="controls">
-        <div class="play-container">
-          <div
-            class="toggle-playy play"
-            :class="!isPaused ? 'mdi mdi-pause' : 'mdi mdi-play'"
-            @click="togglePlay"
-          ></div>
+<template>
+  <div id="audio-player-container" ref="audioPlayerContainer">
+    <audio ref="audio" :src="audioUrl" preload="metadata" loop></audio>
+    <div
+      class="tw-flex tw-flex-col tw-align-center tw-justify-center"
+      style="align-items: center"
+    >
+      <div
+        class="tw-flex tw-align-center tw-justify-between"
+        style="align-items: center; width: 100%; position: relative"
+      >
+        <div class="tw-flex tw-items-center">
+          <button
+            ref="playIconContainer"
+            id="play-icon"
+            class="icon tw-mr-2"
+            @click="isPlay = !isPlay"
+          >
+            <span v-if="!isPlay" class="mdi mdi-play"></span>
+            <span v-else class="mdi mdi-pause"></span>
+          </button>
+          <span
+            ref="currentTimeContainer"
+            id="current-time"
+            class="time audio-fonts"
+            >0:00</span
+          >
+          <span class="tw-px-1"> / </span>
+          <span ref="durationContainer" id="duration" class="time audio-fonts"
+            >0:00</span
+          >
         </div>
-        <div class="time">
-          <div class="current">{{ currentTime }}</div>
-          <div class="divider">/</div>
-          <div class="length">{{ duration }}</div>
-        </div> 
         <div
-          class="volume-container"
-          @mouseenter="showVolumeSlider"
-          @mouseleave="hideVolumeSlider"
+          class="tw-flex tw-align-center tw-justify-end"
+          style="align-items: center"
         >
-          <div class="volume-button" @click="toggleMute">
-            <span
-              class="volume"
-              :class="[isMuted ? 'mdi mdi-volume-mute' : 'mdi mdi-volume-high']"
-            ></span>
-          </div>
-          <transition name="slide-fade">
-            <div
-              class="volume-slider"
-              v-show="isVolumeSliderVisible"
-              @click="adjustVolume"
-              ref="volumeSlider"
-            >
-              <div
-                class="volume-percentage"
-                :style="{ width: volume * 100 + '%' }"
-              ></div>
-            </div>
-          </transition>
+          <output ref="outputContainer" class="audio-fonts" id="volume-output"
+            >100</output
+          >
+          <input
+            ref="volumeSlider"
+            type="range"
+            id="volume-slider"
+            max="100"
+            value="100"
+          />
+          <button
+            ref="muteIconContainer"
+            id="mute-icon"
+            @click="isMute = !isMute"
+          >
+            <span v-if="!isMute" class="mdi mdi-volume-high"></span>
+            <span v-else class="mdi mdi-volume-mute"></span>
+          </button>
         </div>
       </div>
+      <input
+        ref="seekSlider"
+        type="range"
+        id="seek-slider"
+        max="100"
+        value="0"
+      />
     </div>
   </div>
 </template>
-
 <script>
 export default {
+  data: () => ({
+    isPlay: false,
+    isMute: false,
+    audioUrl: null,
+  }),
   props: {
     audioSrc: { type: String },
   },
-  data() {
-    return {
-      audio: null,
-      isPaused: true,
-      isMuted: false,
-      progressWidth: "0%",
-      currentTime: "0:00",
-      duration: "0:00",
-      volumeWidth: "75%",
-      isVolumeSliderVisible: false,
-    };
-  },
-  mounted() {
-    this.audio = new Audio(
-      "https://ia800905.us.archive.org/19/items/FREE_background_music_dhalius/backsound.mp3"
-    );
-    // this.audio = new Audio(this.audioSrc + "?refreshcache=true");
 
-    this.audio.addEventListener("loadeddata", () => {
-      this.duration = this.getTimeCodeFromNum(this.audio.duration);
+  mounted() {
+    this.audioUrl = this.audioSrc + "?refreshcache=true";
+
+    const audioPlayerContainer = this.$refs.audioPlayerContainer;
+    const playIconContainer = this.$refs.playIconContainer;
+    const seekSlider = this.$refs.seekSlider;
+    const volumeSlider = this.$refs.volumeSlider;
+    const muteIconContainer = this.$refs.muteIconContainer;
+    const audio = this.$refs.audio;
+    const durationContainer = this.$refs.durationContainer;
+    const currentTimeContainer = this.$refs.currentTimeContainer;
+    const outputContainer = this.$refs.outputContainer;
+    let playState = "play";
+    let muteState = "unmute";
+    let raf = null;
+    const whilePlaying = () => {
+      seekSlider.value = Math.floor(audio.currentTime);
+      currentTimeContainer.textContent = calculateTime(seekSlider.value);
+      audioPlayerContainer.style.setProperty(
+        "--seek-before-width",
+        `${(seekSlider.value / seekSlider.max) * 100}%`
+      );
+      raf = requestAnimationFrame(whilePlaying);
+    };
+
+    const showRangeProgress = (rangeInput) => {
+      if (rangeInput === seekSlider)
+        audioPlayerContainer.style.setProperty(
+          "--seek-before-width",
+          (rangeInput.value / rangeInput.max) * 100 + "%"
+        );
+      else
+        audioPlayerContainer.style.setProperty(
+          "--volume-before-width",
+          (rangeInput.value / rangeInput.max) * 100 + "%"
+        );
+    };
+
+    const calculateTime = (secs) => {
+      const minutes = Math.floor(secs / 60);
+      const seconds = Math.floor(secs % 60);
+      const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+      return `${minutes}:${returnedSeconds}`;
+    };
+
+    const displayDuration = () => {
+      durationContainer.textContent = calculateTime(audio.duration);
+    };
+
+    const setSliderMax = () => {
+      seekSlider.max = Math.floor(audio.duration);
+    };
+
+    const displayBufferedAmount = () => {
+      const bufferedAmount = Math.floor(
+        audio.buffered.end(audio.buffered.length - 1)
+      );
+      audioPlayerContainer.style.setProperty(
+        "--buffered-width",
+        `${(bufferedAmount / seekSlider.max) * 100}%`
+      );
+    };
+
+    if (audio.readyState > 0) {
+      displayDuration();
+      setSliderMax();
+      displayBufferedAmount();
+    } else {
+      audio.addEventListener("loadedmetadata", () => {
+        displayDuration();
+        setSliderMax();
+        displayBufferedAmount();
+      });
+    }
+
+    playIconContainer.addEventListener("click", () => {
+      if (playState === "play") {
+        audio.play();
+        // playAnimation.playSegments([14, 27], true);
+        requestAnimationFrame(whilePlaying);
+        playState = "pause";
+      } else {
+        audio.pause();
+        // playAnimation.playSegments([0, 14], true);
+        cancelAnimationFrame(raf);
+        playState = "play";
+      }
     });
 
-    setInterval(() => {
-      this.progressWidth =
-        (this.audio.currentTime / this.audio.duration) * 100 + "%";
-      this.currentTime = this.getTimeCodeFromNum(this.audio.currentTime);
-    }, 500);
-  },
-  methods: {
-    togglePlay() {
-      this.isPaused = !this.isPaused;
-      if (this.isPaused) {
-        this.audio.pause();
+    muteIconContainer.addEventListener("click", () => {
+      if (muteState === "unmute") {
+        // muteAnimation.playSegments([0, 15], true);
+        audio.muted = true;
+        muteState = "mute";
       } else {
-        this.audio.play();
+        // muteAnimation.playSegments([15, 25], true);
+        audio.muted = false;
+        muteState = "unmute";
       }
-    },
-    toggleMute() {
-      this.isMuted = !this.isMuted;
-      this.audio.muted = this.isMuted;
-    },
-    seekTimeline(event) {
-      const timelineWidth = event.currentTarget.offsetWidth;
-      const timeToSeek = (event.offsetX / timelineWidth) * this.audio.duration;
-      this.audio.currentTime = timeToSeek;
-    },
-    getTimeCodeFromNum(num) {
-      let seconds = parseInt(num);
-      let minutes = parseInt(seconds / 60);
-      seconds -= minutes * 60;
-      const hours = parseInt(minutes / 60);
-      minutes -= hours * 60;
+    });
 
-      if (hours === 0)
-        return `${minutes}:${String(seconds % 60).padStart(2, 0)}`;
-      return `${String(hours).padStart(2, 0)}:${minutes}:${String(
-        seconds % 60
-      ).padStart(2, 0)}`;
-    },
-    showVolumeSlider() {
-      this.isVolumeSliderVisible = true;
-    },
-    hideVolumeSlider() {
-      this.isVolumeSliderVisible = false;
-    },
-    adjustVolume(e) {
-      console.log("asdd"), console.log("asdd", e);
+    audio.addEventListener("progress", displayBufferedAmount);
 
-      const volumeSlider = this.$refs.volumeSlider;
-      if (volumeSlider) {
-        const sliderWidth = volumeSlider.getBoundingClientRect().width;
-        const newVolume =
-          (e.clientX - volumeSlider.getBoundingClientRect().left) / sliderWidth;
-        this.audio.volume = newVolume;
-        this.volume = newVolume;
+    seekSlider.addEventListener("input", (e) => {
+      showRangeProgress(e.target);
+      currentTimeContainer.textContent = calculateTime(seekSlider.value);
+      if (!audio.paused) {
+        cancelAnimationFrame(raf);
       }
-    },
+    });
+
+    seekSlider.addEventListener("change", () => {
+      audio.currentTime = seekSlider.value;
+      if (!audio.paused) {
+        requestAnimationFrame(whilePlaying);
+      }
+    });
+
+    volumeSlider.addEventListener("input", (e) => {
+      const value = e.target.value;
+      showRangeProgress(e.target);
+      outputContainer.textContent = value;
+      audio.volume = value / 100;
+    });
   },
 };
 </script>
 
-<style lang="css">
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all 1s ease-out; 
+<style scoped>
+#seek-slider {
+  width: 94%;
+  margin: 0 auto;
 }
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transition: all 1s ease-out; 
-
-  opacity: 0;  
-  transform: translateX(20px); 
-}
-.audio-player {
-  height: 50px;
-  width: 100%;
-  background: rgb(26 27 30);
-  box-shadow: 0 0 20px 0 #000a;
-  font-family: arial;
-  color: white;
-  font-size: 0.75em;
-  overflow: hidden;
-  display: grid;
-  grid-template-rows: 6px auto;
-  position: relative;
-}
-.audio-player .timeline {
-  background: white;
-  width: 100%;
-  position: relative;
-  cursor: pointer;
-  box-shadow: 0 2px 10px 0 #0008;
-}
-.audio-player .progress {
-  background: rgb(135 89 255);
-  width: 0%;
-  height: 100%;
-  transition: 0.25s;
-}
-.audio-player .controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  padding: 0 20px;
-}
-.audio-player .controls > * {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.toggle-playy {
-  cursor: pointer;
-  font-size: 24px;
-}
-
-.audio-player .toggle-play.play {
-  cursor: pointer;
-  position: relative;
-  left: 0;
-  height: 0;
-  width: 0;
-  border: 7px solid #0000;
-  border-left: 13px solid white;
-}
-.audio-player .toggle-play.pause {
-  height: 15px;
-  width: 20px;
-  cursor: pointer;
-  position: relative;
-}
-.audio-player .toggle-play.pause:before {
+#volume-output {
+  opacity: 0;
+  visibility: hidden;
   position: absolute;
-  top: 0;
-  left: 0px;
-  background: white;
-  content: "";
-  height: 15px;
-  width: 3px;
 }
-.audio-player .toggle-play.pause:after {
-  position: absolute;
-  top: 0;
-  right: 8px;
-  background: white;
-  content: "";
-  height: 15px;
-  width: 3px;
-}
-
-.audio-player .time {
-  display: flex;
-}
-.audio-player .time > * {
-  padding: 2px;
-}
-.audio-player .volume-container {
-  cursor: pointer;
-}
-.audio-player .volume-button {
-  height: 26px;
-  display: flex;
-  align-items: center;
-  transition: opacity 0.5s ease;
-}
-.audio-player .volume {
-  transform: scale(0.7);
-  font-size: 24px;
-}
-
-.audio-player .volume-slider {
-  position: absolute;
-  right: 50px;
-  top: 20px;
-  /* z-index: -1; */
-  width: 120px;
-  border-radius: 4px;
-  height: 15px;
-  background: white;
-  box-shadow: 0 0 20px #000a;
-  transition: 0.25s;
-}
-.audio-player .volume-slider .volume-percentage {
-  background: rgb(135 89 255);
-  height: 100%;
-  width: 75%;
-  border-radius: 4px;
-}
-.audio-player .volume-container:hover .volume-slider {
-  display: block;
-  transition: 0.3s ease-in-out;
-}
-
 .audio-fonts {
   font-size: 16px !important;
-} 
+}
 #play-icon span {
   font-size: 24px;
 }
-</style> -->
+button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  width: 40px;
+  height: 40px;
+}
+
+#audio-player-container {
+  --seek-before-width: 0%;
+  --volume-before-width: 100%;
+  --buffered-width: 0%;
+  margin: 0 auto;
+  background: transparent;
+}
+
+path {
+  stroke: #b0afb3;
+}
+#volume-slider {
+  width: 38%;
+}
+#volume-slider::-webkit-slider-runnable-track {
+  background: #54525a;
+}
+#volume-slider::-moz-range-track {
+  background: #54525a;
+}
+#volume-slider::-ms-fill-upper {
+  background: #54525a;
+}
+#volume-slider::before {
+  width: var(--volume-before-width);
+}
+#mute-icon {
+  /* margin: 0 2.5%; */
+}
+#mute-icon span {
+  font-size: 24px;
+}
+input[type="range"] {
+  position: relative;
+  -webkit-appearance: none;
+  width: 38%;
+  margin: 0;
+  padding: 0;
+  height: 19px;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    #54525a var(--buffered-width),
+    rgba(137, 141, 145, 0.2) var(--buffered-width)
+  );
+}
+input[type="range"]::before {
+  position: absolute;
+  content: "";
+  top: 8px;
+  left: 0;
+  width: var(--seek-before-width);
+  height: 3px;
+  background-color: #b0afb3;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  position: relative;
+  -webkit-appearance: none;
+  box-sizing: content-box;
+  border: 1px solid #b0afb3;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+  margin: -7px 0 0 0;
+}
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.2);
+  background: #b0afb3;
+}
+input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    #54525a var(--buffered-width),
+    rgba(97, 100, 100, 0.2) var(--buffered-width)
+  );
+}
+input[type="range"]::-moz-range-progress {
+  background-color: #b0afb3;
+}
+input[type="range"]::-moz-focus-outer {
+  border: 0;
+}
+input[type="range"]::-moz-range-thumb {
+  box-sizing: content-box;
+  border: 1px solid #b0afb3;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+}
+input[type="range"]:active::-moz-range-thumb {
+  transform: scale(1.2);
+  background: #b0afb3;
+}
+input[type="range"]::-ms-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  background: transparent;
+  border: solid transparent;
+  color: transparent;
+}
+input[type="range"]::-ms-fill-lower {
+  background-color: #b0afb3;
+}
+input[type="range"]::-ms-fill-upper {
+  background: linear-gradient(
+    to right,
+    #54525a var(--buffered-width),
+    rgba(93, 96, 97, 0.2) var(--buffered-width)
+  );
+}
+input[type="range"]::-ms-thumb {
+  box-sizing: content-box;
+  border: 1px solid #b0afb3;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+}
+input[type="range"]:active::-ms-thumb {
+  transform: scale(1.2);
+  background: #b0afb3;
+}
+</style>
