@@ -6,24 +6,32 @@
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
-      <div
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
-        v-if="collection.video"
-      >
-        <video-player-featured :source="collection.video" />
+      <div style="position: relative">
+        <div
+          class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+          v-if="collection.video"
+        >
+          <video-player-featured :source="collection.video" />
+        </div>
+        <video-player-detailed
+          class="video-detailed"
+          v-else-if="isVideo(collection.image)"
+          :source="collection.image"
+        />
+
+        <utility-image
+          v-else
+          :source="collection.image"
+          :onerror="imageNotFound()"
+          :alt="collection.name"
+          class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+        />
+        <audio-player-test
+          v-if="isAudio(collection.media2)"
+          class="audio-bg"
+          :audioSrc="collection.media2"
+        ></audio-player-test>
       </div>
-      <video-player-detailed
-        class="video-detailed"
-        v-else-if="isVideo(collection.image)"
-        :source="collection.image"
-      />
-      <utility-image
-        v-else
-        :source="collection.image"
-        :onerror="imageNotFound()"
-        :alt="collection.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
-      />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
       >
@@ -510,6 +518,25 @@ export default {
             "vob",
             "ts",
             "m2ts",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source) {
+      if (typeof source !== "string") {
+        return false; // Return false if source is not a string
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
           ].includes(extension)
         : false;
     },
@@ -1378,6 +1405,7 @@ export default {
     },
   },
   async mounted() {
+    console.log("coll", this.collection);
     if (this.collection) {
       if (this.collection.username === "proudlionsclub") {
         this.collection.username = "proud-lions-club";
@@ -1595,5 +1623,16 @@ export default {
   .video-detailed {
     height: 350px;
   }
+}
+.audio-bg {
+  position: absolute;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  width: 100%;
+  padding: 0 16px 16px;
+  background-image: linear-gradient(transparent, #000) !important;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
 }
 </style>

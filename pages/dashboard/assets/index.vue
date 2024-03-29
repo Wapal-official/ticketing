@@ -81,17 +81,6 @@
         placeholder="Vault Name"
         @input="validateVaultName"
       />
-      <div>
-        <p>Select Your Asset Type:</p>
-        <v-radio-group
-          v-model="selectedType"
-          hide-details
-          @change="handleAssetTypeChange"
-        >
-          <v-radio label="Image" value="image"></v-radio>
-          <v-radio label="Video" value="video"></v-radio>
-        </v-radio-group>
-      </div>
       <div class="tw-text-red-600 tw-text-sm" v-if="vaultNameError">
         Please remove spaces and special characters from vault name
       </div>
@@ -167,7 +156,6 @@ export default {
       loading: true,
       vaultNameError: false,
       defaultTheme,
-      selectedType: "image",
     };
   },
   computed: {
@@ -178,9 +166,6 @@ export default {
     },
   },
   methods: {
-    handleAssetTypeChange() {
-      this.$store.dispatch("asset/updateAssetType", this.selectedType);
-    },
     pushFolder(folder: any) {
       if (!this.folders[0] || !this.folders[0].folder_name) {
         this.folders = [];
@@ -226,6 +211,7 @@ export default {
           user_id: this.$store.state.userStore.user.user_id,
         });
 
+        console.log("ress", res);
         this.pushFolder({
           folder_name: folderName,
           _id: res.data.folderInfo._id,
@@ -291,7 +277,7 @@ export default {
       this.folders = [];
 
       const res = await getAllFolder(this.$store.state.userStore.user.user_id);
-
+      console.log("res foder", res);
       this.folders.push({ _id: this.getFolderId, folder_name: "sample" });
 
       res.data.folderInfo.map((folder: any) => {

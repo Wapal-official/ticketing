@@ -93,11 +93,11 @@
                   :alt="item[header.value]"
                   class="tw-w-[64px] tw-h-[64px] tw-object-cover tw-rounded"
                 />
-                <video-player-listed
+                <!-- <video-player-listed
                   v-else-if="isVideo(item.image)"
                   :source="item.image"
-                  style="max-width: 65px !important; max-height: 65px"
-                />
+                  style="max-width: 65px !important; height: 65px"
+                /> -->
                 {{ item[header.value] }}
               </div>
               <div

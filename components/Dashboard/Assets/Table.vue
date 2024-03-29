@@ -18,12 +18,30 @@
           <td
             class="!tw-border-none tw-uppercase tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-8"
           >
-            <utility-image
-              v-if="$route.params.type === 'assets'"
-              :source="item.image ? item.image : item.src"
-              :alt="item.name"
-              class="tw-w-[45px] tw-h-[45px] tw-object-cover"
-            />
+            <div v-if="$route.params.type === 'assets'">
+              <!-- <video-player-listed
+                v-if="item.image && isVideo(item.image ? item.image : item.src)"
+                :source="item.image ? item.image : item.src"
+                style="max-width: 50px; height: 50px"
+              />
+              <utility-image
+                v-else
+                :source="item.image ? item.image : item.src"
+                :alt="item.name"
+                class="tw-w-[45px] tw-h-[45px] tw-object-cover"
+              /> -->
+              <!-- <video-player-listed
+                v-if="item.image && isVideo(item.image ? item.image : item.src)"
+                :source="item.image ? item.image : item.src"
+                style="max-width: 50px; height: 50px"
+              /> -->
+              <utility-image
+                :source="item.image ? item.image : item.src"
+                :alt="item.name"
+                class="tw-w-[45px] tw-h-[45px] tw-object-cover"
+              />
+            </div>
+
             {{ item.name }}
           </td>
           <td class="!tw-border-none">{{ item.createdDate }}</td>
@@ -75,6 +93,31 @@ export default {
         return (size / 1048576).toFixed(2) + " MB";
       }
       return (size / 1024).toFixed(2) + " KB";
+    },
+    isVideo(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
     },
   },
   watch: {

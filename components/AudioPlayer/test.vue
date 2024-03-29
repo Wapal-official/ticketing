@@ -234,8 +234,6 @@ button {
   --volume-before-width: 100%;
   --buffered-width: 0%;
   margin: 0 auto;
-  max-width: 500px;
-
   background: transparent;
 }
 

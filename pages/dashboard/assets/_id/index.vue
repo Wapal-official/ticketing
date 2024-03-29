@@ -44,7 +44,7 @@ export default {
     return {
       folders: [
         { name: "assets", type: "assets" },
-        // { name: "image", type: "image" },
+        { name: "images", type: "images" },
         { name: "metadata", type: "metadata" },
       ],
       vault: null,
@@ -67,7 +67,7 @@ export default {
   async mounted() {
     const folderId = this.$route.params.id;
     const res = await getFolderById(folderId);
-
+    console.log("asdd", res);
     this.vault = res.data;
 
     this.loading = false;
