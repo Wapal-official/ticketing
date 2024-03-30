@@ -893,7 +893,9 @@ export default {
           this.proof.push(proof.data);
         });
 
-        await this.getMintLimitOfPreviousPhases();
+        // await this.getMintLimitOfPreviousPhases();
+
+        this.mintLimit = 5;
 
         await this.getOwnedCollectionOfUser();
 
@@ -1538,6 +1540,8 @@ export default {
         await this.checkWhitelistForPhases();
         await this.setProof();
         await this.getOwnedCollectionOfUser();
+      } else {
+        await this.checkWhitelistForPhases();
       }
 
       if (
@@ -1547,8 +1551,6 @@ export default {
       ) {
         await this.checkWhitelistForExternalMint();
       }
-
-      await this.checkWhitelistForPhases();
     },
   },
 };
