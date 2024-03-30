@@ -64,6 +64,18 @@ export const checkIfCollectionIsSoldOut = (collection: any) => {
       return {
         supply: 842,
       };
+    case "nibiru-rebels":
+      return {
+        supply: 63,
+      };
+    case "personality-x":
+      return {
+        supply: 171,
+      };
+    case "shadow-bears":
+      return {
+        supply: 41,
+      };
     default:
       return null;
   }
