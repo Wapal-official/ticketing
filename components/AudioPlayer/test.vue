@@ -1,6 +1,6 @@
 <template>
   <div id="audio-player-container" ref="audioPlayerContainer">
-    <audio ref="audio" :src="audioUrl" preload="metadata" loop></audio>
+    <audio ref="audio" :src="audioUrl" preload="metadata"></audio>
     <div
       class="tw-flex tw-flex-col tw-align-center tw-justify-center"
       style="align-items: center"
@@ -76,7 +76,12 @@ export default {
   },
 
   mounted() {
-    this.audioUrl = this.audioSrc + "?refreshcache=true";
+    if (!this.audioSrc.startsWith("blob:")) {
+      this.audioUrl = this.audioSrc + "?refreshcache=true";
+    } else {
+      this.audioUrl = this.audioSrc;
+    }
+    // this.audioUrl = this.audioSrc + "?refreshcache=true";
 
     const audioPlayerContainer = this.$refs.audioPlayerContainer;
     const playIconContainer = this.$refs.playIconContainer;
@@ -227,6 +232,9 @@ button {
   outline: none;
   width: 40px;
   height: 40px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 #audio-player-container {

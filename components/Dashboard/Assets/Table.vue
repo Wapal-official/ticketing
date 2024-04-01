@@ -49,6 +49,13 @@
                 class="tw-w-[45px] tw-h-[45px] tw-object-cover"
               />
             </div>
+            <div v-if="$route.params.type === 'images'">
+              <utility-image
+                :source="item.image ? item.image : item.src"
+                :alt="item.name"
+                class="tw-w-[45px] tw-h-[45px] tw-object-cover"
+              />
+            </div>
 
             {{ item.name }}
           </td>
@@ -96,11 +103,28 @@ export default {
     };
   },
   methods: {
+    checkit() {},
     getFileSize(size: number) {
       if (size / 1048576 > 1) {
         return (size / 1048576).toFixed(2) + " MB";
       }
       return (size / 1024).toFixed(2) + " KB";
+    },
+    isImage(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
     },
     isAudio(source: string) {
       if (typeof source !== "string") {

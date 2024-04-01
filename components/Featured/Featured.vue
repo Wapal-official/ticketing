@@ -14,8 +14,8 @@
         </div>
         <video-player-detailed
           class="video-featured"
-          v-else-if="isVideo(collection.image)"
-          :source="collection.image"
+          v-else-if="isVideo(collection.media2)"
+          :source="collection.media2"
         />
 
         <utility-image
@@ -362,6 +362,7 @@ export default {
   },
   methods: {
     isVideo(source: string) {
+      if (!source) return false;
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
         ? [
@@ -800,6 +801,7 @@ export default {
   },
   async mounted() {
     try {
+      console.log("asd", this.propCollection);
       this.collection = this.propCollection;
       console.log("this", this.collection);
       if (this.collection._id === "651295af57079307bdb1cfe9") {
