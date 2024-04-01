@@ -15,8 +15,8 @@
         </div>
         <video-player-detailed
           class="video-detailed"
-          v-else-if="isVideo(collection.image)"
-          :source="collection.image"
+          v-else-if="isVideo(collection.media2)"
+          :source="collection.media2"
         />
 
         <utility-image

@@ -905,9 +905,7 @@ export default {
             return;
           }
           const fileType = this.checkFileType(this.image.name);
-          if (fileType === "image") {
-            return;
-          } else {
+          if (fileType === "video") {
             if (!this.thumbnail.name && !this.collection.image) {
               this.imageError = true;
               this.imageErrorMessage =

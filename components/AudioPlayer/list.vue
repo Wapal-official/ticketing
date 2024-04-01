@@ -60,6 +60,9 @@ button {
   outline: none;
   width: 40px;
   height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #play-icon span {
   color: #fff;

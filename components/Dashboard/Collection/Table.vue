@@ -98,6 +98,13 @@
                   :source="item.image"
                   style="max-width: 65px !important; height: 65px"
                 /> -->
+                <!-- <audio-player-list
+                  v-if="isAudio(item.src)"
+                  class="audio-list-bg-2"
+                  :audioSrc="item.src"
+                  iconSize="34"
+                  @click.prevent.stop="checkit()"
+                ></audio-player-list> -->
                 {{ item[header.value] }}
               </div>
               <div
