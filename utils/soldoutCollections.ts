@@ -76,6 +76,22 @@ export const checkIfCollectionIsSoldOut = (collection: any) => {
       return {
         supply: 41,
       };
+    case "aptos-friends":
+      return {
+        supply: 389,
+      };
+    case "angry-apes":
+      return {
+        supply: 971,
+      };
+    case "squid-aptos":
+      return {
+        supply: 927,
+      };
+    case "chickens-survival-game-|-mystery-box-":
+      return {
+        supply: 1427,
+      };
     default:
       return null;
   }
