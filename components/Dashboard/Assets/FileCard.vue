@@ -16,6 +16,23 @@
           v-else-if="checkFileType === 'video'"
           :source="getAssetSrc"
         />
+        <div
+          class="tw-w-full tw-h-full tw-object-cover"
+          v-else
+          style="height: 200px; position: relative"
+        >
+          <!-- <audio-player
+            class="audio-postion"
+            :audioSrc="getAssetSrc"
+          ></audio-player> -->
+          <audio-player-test
+            class="audio-postion"
+            :audioSrc="getAssetSrc"
+          ></audio-player-test>
+          <!-- <audio class="audio-postion" controls>
+            <source :src="getAssetSrc" type="audio/mp3" />
+          </audio> -->
+        </div>
 
         <div
           class="tw-w-full tw-h-full tw-absolute tw-top-0 tw-left-0 tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear tw-bg-black/[0.65] tw-backdrop-blur-[2px] group-hover:tw-opacity-100"
@@ -119,6 +136,8 @@
   </div>
 </template>
 <script lang="ts">
+import { getCachedUrlOfImage } from "@/utils/imageCache";
+
 export default {
   props: {
     propFile: { type: Object },
@@ -139,16 +158,21 @@ export default {
   methods: {
     displayFileDetails() {
       this.linkedAsset.name = this.file.src;
+      // this.linkedAsset.image = this.file.image
+      //   ? getCachedUrlOfImage(this.file.image)
+      //   : this.file.metadata
+      //   ? this.file.metadata.image
+      //     ? getCachedUrlOfImage(this.file.metadata.image)
+      //     : null
+      //   : null;
       this.linkedAsset.image = this.file.image
-        ? this.file.image
-        : this.file.metadata
-        ? this.file.metadata.image
-        : null;
-
+        ? getCachedUrlOfImage(this.file.image)
+        : this.file.src;
       this.linkedAsset.metadata = this.file.metadata;
 
       this.$emit("displayFileDetails", this.linkedAsset);
     },
+
     async downloadFile() {
       if (process.client) {
         const res = await this.$axios.get(this.file.src, {
@@ -179,6 +203,7 @@ export default {
       }
     },
     addMetadataInFile(metadata: any) {
+      console.log(this.file, "file");
       this.file.metadata = metadata;
 
       this.file.name = metadata.name;
@@ -203,20 +228,33 @@ export default {
         return "image";
       } else if (videoRegex.test(this.extension)) {
         return "video";
+      } else {
+        return "audio";
       }
 
       return "json";
     },
     getAssetSrc() {
+      console.log("as", this.file?.image);
       return this.file.image ? this.file.image : this.file?.src;
+    },
+
+    getAssetAudio() {
+      return this.file.src;
     },
     getAssetName() {
       return this.file.image ? this.file.name : this.file?.name;
     },
   },
   async mounted() {
+    console.log("props", this.propFile);
     this.file = this.propFile;
 
+    const fileSrc = this.file.src;
+
+    console.log("sc", fileSrc);
+    // this.getNftDetails(fileSrc);
+    console.log("file", this.file);
     if (this.file.metadata) {
       this.hasMetadata = true;
     }
@@ -234,5 +272,13 @@ export default {
     #11151c 81.73%,
     #0e0d0d 100%
   );
+}
+.audio-postion {
+  width: 100%;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 </style>
