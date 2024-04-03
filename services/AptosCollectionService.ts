@@ -4,8 +4,13 @@ import MintCollectionInterface from "@/interfaces/MintCollection";
 import { getCoinType } from "@/utils/getCoinType";
 import { convertPriceToSendInSmartContract } from "@/utils/price";
 import { simulateTransaction } from "@/utils/simulateTransaction";
-import { HexString } from "aptos";
+import { HexString, TypeTagParser } from "aptos";
 import { handleMintError } from "~/errors/Mint";
+import { InputGenerateTransactionData } from "@aptos-labs/wallet-adapter-core";
+import {
+  InputGenerateTransactionPayloadData,
+  parseTypeTag,
+} from "@aptos-labs/ts-sdk";
 
 let walletName: any = "";
 if (process.client) {
@@ -58,16 +63,17 @@ export const updateWhitelistSaleTime = async ({
     new Date(pre_sale_mint_time).getTime() / 1000
   );
 
-  const update_whitelist_sale_time_script = {
-    function: `${candy_machine_id}::candymachine::update_wl_sale_time`,
-    type: "entry_function_payload",
-    arguments: [candy_object, pre_sale_seconds],
-    type_arguments: [],
-  };
+  const update_whitelist_sale_time_script: InputGenerateTransactionPayloadData =
+    {
+      function:
+        `${candy_machine_id}::candymachine::update_wl_sale_time` as `${string}::${string}::${string}`,
+      functionArguments: [candy_object, pre_sale_seconds],
+      typeArguments: [],
+    };
 
-  const transaction = await wallet.signAndSubmitTransaction(
-    update_whitelist_sale_time_script
-  );
+  const transaction = await wallet.signAndSubmitTransaction({
+    data: update_whitelist_sale_time_script,
+  });
 
   const result: any = await client.waitForTransactionWithResult(
     transaction.hash
@@ -96,16 +102,16 @@ export const updatePublicSaleTime = async ({
     new Date(public_sale_time).getTime() / 1000
   );
 
-  const update_public_sale_time_script = {
-    function: `${candy_machine_id}::candymachine::update_public_sale_time`,
-    type: "entry_function_payload",
-    arguments: [candy_object, public_sale_seconds],
-    type_arguments: [],
+  const update_public_sale_time_script: InputGenerateTransactionPayloadData = {
+    function:
+      `${candy_machine_id}::candymachine::update_public_sale_time` as `${string}::${string}::${string}`,
+    functionArguments: [candy_object, public_sale_seconds],
+    typeArguments: [],
   };
 
-  const transaction = await wallet.signAndSubmitTransaction(
-    update_public_sale_time_script
-  );
+  const transaction = await wallet.signAndSubmitTransaction({
+    data: update_public_sale_time_script,
+  });
 
   const result: any = await client.waitForTransactionWithResult(
     transaction.hash
@@ -138,16 +144,16 @@ export const updatePublicSalePrice = async ({
     coinType: coinType,
   });
 
-  const update_public_sale_price_script = {
-    function: `${candy_machine_id}::candymachine::update_public_sale_price`,
-    type: "entry_function_payload",
-    arguments: [candy_object, converted_public_sale_price],
-    type_arguments: [],
+  const update_public_sale_price_script: InputGenerateTransactionPayloadData = {
+    function:
+      `${candy_machine_id}::candymachine::update_public_sale_price` as `${string}::${string}::${string}`,
+    functionArguments: [candy_object, converted_public_sale_price],
+    typeArguments: [],
   };
 
-  const transaction = await wallet.signAndSubmitTransaction(
-    update_public_sale_price_script
-  );
+  const transaction = await wallet.signAndSubmitTransaction({
+    data: update_public_sale_price_script,
+  });
 
   const result: any = await client.waitForTransactionWithResult(
     transaction.hash
@@ -180,16 +186,16 @@ export const updateWhitelistSalePrice = async ({
     coinType: coinType,
   });
 
-  const update_pre_sale_price_script = {
-    function: `${candy_machine_id}::candymachine::update_wl_sale_price`,
-    type: "entry_function_payload",
-    arguments: [candy_object, converted_whitelist_sale_price],
-    type_arguments: [],
+  const update_pre_sale_price_script: InputGenerateTransactionPayloadData = {
+    function:
+      `${candy_machine_id}::candymachine::update_wl_sale_price` as `${string}::${string}::${string}`,
+    functionArguments: [candy_object, converted_whitelist_sale_price],
+    typeArguments: [],
   };
 
-  const transaction = await wallet.signAndSubmitTransaction(
-    update_pre_sale_price_script
-  );
+  const transaction = await wallet.signAndSubmitTransaction({
+    data: update_pre_sale_price_script,
+  });
 
   const result: any = await client.waitForTransactionWithResult(
     transaction.hash
@@ -214,16 +220,16 @@ export const updateTotalSupply = async ({
   await checkWalletConnected();
   checkNetwork();
 
-  const update_total_supply_script = {
-    function: `${candy_machine_id}::candymachine::update_total_supply`,
-    type: "entry_function_payload",
-    arguments: [candy_object, total_supply],
-    type_arguments: [],
+  const update_total_supply_script: InputGenerateTransactionPayloadData = {
+    function:
+      `${candy_machine_id}::candymachine::update_total_supply` as `${string}::${string}::${string}`,
+    functionArguments: [candy_object, total_supply],
+    typeArguments: [],
   };
 
-  const transaction = await wallet.signAndSubmitTransaction(
-    update_total_supply_script
-  );
+  const transaction = await wallet.signAndSubmitTransaction({
+    data: update_total_supply_script,
+  });
 
   const result: any = await client.waitForTransactionWithResult(
     transaction.hash
@@ -298,11 +304,11 @@ export const mintSingleNft = async ({
   sender,
 }: MintCollectionInterface) => {
   try {
-    const mint_script = {
-      type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_script`,
-      type_arguments: [],
-      arguments: [candy_object],
+    const mint_script: InputGenerateTransactionPayloadData = {
+      function:
+        `${candy_machine_id}::candymachine::mint_script` as `${string}::${string}::${string}`,
+      typeArguments: [],
+      functionArguments: [candy_object],
     };
 
     const simulateRes = await simulateTransaction({
@@ -329,11 +335,11 @@ export const mintManyNft = async ({
   sender,
 }: MintCollectionInterface) => {
   try {
-    const mint_script_many = {
-      type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_script_many`,
-      type_arguments: [],
-      arguments: [candy_object, amount?.toString()],
+    const mint_script_many: InputGenerateTransactionPayloadData = {
+      function:
+        `${candy_machine_id}::candymachine::mint_script_many` as `${string}::${string}::${string}`,
+      typeArguments: [],
+      functionArguments: [candy_object, amount?.toString()],
     };
 
     const simulateRes = await simulateTransaction({
@@ -375,7 +381,8 @@ export const merkleMintSingleNft = async ({
 
     const merkle_mint_simulate_script = {
       type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_from_merkle`,
+      function:
+        `${candy_machine_id}::candymachine::mint_from_merkle` as `${string}::${string}::${string}`,
       type_arguments: [],
       arguments: [candy_object, proofsAsHex, simulateMintLimit],
     };
@@ -389,11 +396,11 @@ export const merkleMintSingleNft = async ({
       throw new Error(simulateRes.message);
     }
 
-    const merkle_mint_script = {
-      type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_from_merkle`,
-      type_arguments: [],
-      arguments: [candy_object, proof, mint_limit],
+    const merkle_mint_script: InputGenerateTransactionPayloadData = {
+      function:
+        `${candy_machine_id}::candymachine::mint_from_merkle` as `${string}::${string}::${string}`,
+      typeArguments: [],
+      functionArguments: [candy_object, proof, mint_limit],
     };
 
     const res = await executeTransactionAndGiveResult(merkle_mint_script);
@@ -428,7 +435,8 @@ export const merkleMintManyNft = async ({
 
     const merkle_mint_many_simulate_script = {
       type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
+      function:
+        `${candy_machine_id}::candymachine::mint_from_merkle_many` as `${string}::${string}::${string}`,
       type_arguments: [],
       arguments: [candy_object, proofsAsHex, simulateMintLimit, simulateAmount],
     };
@@ -442,11 +450,11 @@ export const merkleMintManyNft = async ({
       throw new Error(simulateRes.message);
     }
 
-    const merkle_mint_script_many = {
-      type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
-      type_arguments: [],
-      arguments: [candy_object, proof, mint_limit, amount],
+    const merkle_mint_script_many: InputGenerateTransactionPayloadData = {
+      function:
+        `${candy_machine_id}::candymachine::mint_from_merkle_many` as `${string}::${string}::${string}`,
+      typeArguments: [],
+      functionArguments: [candy_object, proof, mint_limit, amount],
     };
 
     const res = await executeTransactionAndGiveResult(merkle_mint_script_many);
@@ -457,16 +465,22 @@ export const merkleMintManyNft = async ({
   }
 };
 
-export const executeTransactionAndGiveResult = async (payload: any) => {
-  const transaction = await wallet.signAndSubmitTransaction(payload);
+export const executeTransactionAndGiveResult = async (
+  payload: InputGenerateTransactionPayloadData
+) => {
+  const transaction = await wallet.signAndSubmitTransaction({ data: payload });
 
   const result = await client.waitForTransactionWithResult(transaction.hash);
 
   return result;
 };
 
-export const executeSmartContract = async (initParams: any) => {
-  const transaction = await wallet.signAndSubmitTransaction(initParams);
+export const executeSmartContract = async (
+  initParams: InputGenerateTransactionPayloadData
+) => {
+  const transaction = await wallet.signAndSubmitTransaction({
+    data: initParams,
+  });
 
   const result = await client.waitForTransactionWithResult(transaction.hash);
 
@@ -504,11 +518,11 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
     coinType: candyMachineArguments.coinType,
   });
 
-  const create_candy_machine = {
-    type: "entry_function_payload",
-    function: programId + "::candymachine::init_candy",
-    type_arguments: [],
-    arguments: [
+  const create_candy_machine: InputGenerateTransactionPayloadData = {
+    function:
+      `${programId}::candymachine::init_candy` as `${string}::${string}::${string}`,
+    typeArguments: [],
+    functionArguments: [
       candyMachineArguments.collection_name,
       candyMachineArguments.collection_description,
       candyMachineArguments.baseuri,
@@ -578,11 +592,11 @@ export const pauseOrResumeMinting = async ({
 
   checkNetwork();
 
-  const pause_resume_script = {
-    type: "entry_function_payload",
-    function: `${candy_machine_id}::candymachine::pause_resume_mint`,
-    arguments: [candy_object],
-    type_arguments: [],
+  const pause_resume_script: InputGenerateTransactionPayloadData = {
+    function:
+      `${candy_machine_id}::candymachine::pause_resume_mint` as `${string}::${string}::${string}`,
+    functionArguments: [candy_object],
+    typeArguments: [],
   };
 
   const res = executeTransactionAndGiveResult(pause_resume_script);
@@ -662,18 +676,19 @@ export const anotherCoinMintSingleNft = async ({
   sender,
 }: MintCollectionInterface) => {
   try {
-    const mint_script = {
-      type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_script`,
-      type_arguments: [coinObject],
-      arguments: [candy_object],
+    const coinType = parseTypeTag(coinObject ? coinObject : "");
+    const mint_script: InputGenerateTransactionPayloadData = {
+      function:
+        `${candy_machine_id}::candymachine::mint_script` as `${string}::${string}::${string}`,
+      typeArguments: [coinType],
+      functionArguments: [candy_object],
     };
 
     if (
       candy_machine_id ===
       "0xc777f5f82a2773d6e6f9c2e91306fc9c099a57747f64d86c59cf0acab706fd44"
     ) {
-      mint_script.type_arguments = [];
+      mint_script.typeArguments = [];
     }
 
     const simulateRes = await simulateTransaction({
@@ -701,18 +716,20 @@ export const anotherCoinMintManyNft = async ({
   sender,
 }: MintCollectionInterface) => {
   try {
-    const mint_script_many = {
-      type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_script_many`,
-      type_arguments: [coinObject],
-      arguments: [candy_object, amount?.toString()],
+    const coinType = parseTypeTag(coinObject ? coinObject : "");
+
+    const mint_script_many: InputGenerateTransactionPayloadData = {
+      function:
+        `${candy_machine_id}::candymachine::mint_script_many` as `${string}::${string}::${string}`,
+      typeArguments: [coinType],
+      functionArguments: [candy_object, amount?.toString()],
     };
 
     if (
       candy_machine_id ===
       "0xc777f5f82a2773d6e6f9c2e91306fc9c099a57747f64d86c59cf0acab706fd44"
     ) {
-      mint_script_many.type_arguments = [];
+      mint_script_many.typeArguments = [];
     }
 
     const simulateRes = await simulateTransaction({
@@ -753,11 +770,13 @@ export const anotherCoinMerkleMintSingleNft = async ({
 
     const simulateMintLimit = mint_limit?.toString();
 
-    const merkle_mint_simulate_script = {
-      type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
-      type_arguments: [coinObject],
-      arguments: [candy_object, proofsAsHex, simulateMintLimit],
+    const coinType = parseTypeTag(coinObject ? coinObject : "");
+
+    const merkle_mint_simulate_script: InputGenerateTransactionPayloadData = {
+      function:
+        `${candy_machine_id}::candymachine::mint_from_merkle_many` as `${string}::${string}::${string}`,
+      typeArguments: [coinType],
+      functionArguments: [candy_object, proofsAsHex, simulateMintLimit],
     };
 
     const simulateRes = await simulateTransaction({
@@ -769,11 +788,11 @@ export const anotherCoinMerkleMintSingleNft = async ({
       throw new Error(simulateRes.message);
     }
 
-    const merkle_mint_script = {
-      type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_from_merkle`,
-      type_arguments: [coinObject],
-      arguments: [candy_object, proof, mint_limit],
+    const merkle_mint_script: InputGenerateTransactionPayloadData = {
+      function:
+        `${candy_machine_id}::candymachine::mint_from_merkle` as `${string}::${string}::${string}`,
+      typeArguments: [coinType],
+      functionArguments: [candy_object, proof, mint_limit],
     };
 
     const res = await executeTransactionAndGiveResult(merkle_mint_script);
@@ -809,7 +828,8 @@ export const anotherCoinMerkleMintManyNft = async ({
 
     const merkle_mint_many_simulate_script = {
       type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
+      function:
+        `${candy_machine_id}::candymachine::mint_from_merkle_many` as `${string}::${string}::${string}`,
       type_arguments: [],
       arguments: [candy_object, proofsAsHex, simulateMintLimit, simulateAmount],
     };
@@ -823,11 +843,13 @@ export const anotherCoinMerkleMintManyNft = async ({
       throw new Error(simulateRes.message);
     }
 
-    const merkle_mint_script_many = {
-      type: "entry_function_payload",
-      function: `${candy_machine_id}::candymachine::mint_from_merkle_many`,
-      type_arguments: [coinObject],
-      arguments: [candy_object, proof, mint_limit, amount],
+    const coinType = parseTypeTag(coinObject ? coinObject : "");
+
+    const merkle_mint_script_many: InputGenerateTransactionPayloadData = {
+      function:
+        `${candy_machine_id}::candymachine::mint_from_merkle_many` as `${string}::${string}::${string}`,
+      typeArguments: [coinType],
+      functionArguments: [candy_object, proof, mint_limit, amount],
     };
 
     const res = await executeTransactionAndGiveResult(merkle_mint_script_many);

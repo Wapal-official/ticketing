@@ -1131,7 +1131,6 @@ export default {
         this.checkCoinType();
 
         const tempCollection = { ...this.collection };
-        console.log("cll", tempCollection);
         const formData = new FormData();
 
         formData.append("name", tempCollection.name);

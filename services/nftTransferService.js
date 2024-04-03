@@ -350,9 +350,9 @@ export const nftTransferV1 = async (tokens, receiverAddresses) => {
 
   let initParams = {
     type: "entry_function_payload",
-    type_arguments: [],
+    typeArguments: [],
     function: func,
-    arguments: [
+    functionArguments: [
       tokens[0].creatorAddress,
       tokens[0].collectionName,
       tokens[0].tokenName,
@@ -387,9 +387,9 @@ export const nftTransferManyV1 = async (tokens, receiverAddresses) => {
 
   let initParams = {
     type: "entry_function_payload",
-    type_arguments: [],
+    typeArguments: [],
     function: func,
-    arguments: [
+    functionArguments: [
       creatorAddresses,
       collectionNames,
       tokenNames,
@@ -408,9 +408,9 @@ export const nftTransferV2 = async (tokens, receiverAddresses) => {
   const func = pid + "::transfer::transfer_v2";
   let initParams = {
     type: "entry_function_payload",
-    type_arguments: [],
+    typeArguments: [],
     function: func,
-    arguments: [tokens[0].tokenDataId, receiverAddresses[0]],
+    functionArguments: [tokens[0].tokenDataId, receiverAddresses[0]],
   };
   const response = await executeSmartContract(initParams);
   return response;
@@ -431,9 +431,9 @@ export const nftTransferManyV2 = async (tokens, receiverAddresses) => {
 
   let initParams = {
     type: "entry_function_payload",
-    type_arguments: [],
+    typeArguments: [],
     function: func,
-    arguments: [tokenDataIds, payloadReceiverAddress],
+    functionArguments: [tokenDataIds, payloadReceiverAddress],
   };
 
   const response = await executeSmartContract(initParams);

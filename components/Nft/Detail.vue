@@ -932,6 +932,18 @@ export default {
         this.whitelisted = false;
         return;
       }
+
+      const currentPhase = this.phases.find(
+        (phase) => phase.id === this.currentSale.id
+      );
+
+      if (!currentPhase.whitelisted) {
+        this.notWhitelisted = true;
+        this.gettingProof = false;
+        this.whitelisted = false;
+        return;
+      }
+
       try {
         this.whitelisted = false;
 
@@ -954,7 +966,9 @@ export default {
           this.proof.push(proof.data);
         });
 
-        await this.getMintLimitOfPreviousPhases();
+        // await this.getMintLimitOfPreviousPhases();
+
+        this.mintLimit = 5;
 
         await this.getOwnedCollectionOfUser();
 
@@ -1543,6 +1557,8 @@ export default {
 
       this.loading = false;
 
+      await this.checkWhitelistForPhases();
+
       if (
         this.phases.length > 1 &&
         this.showPublicSaleTimer &&
@@ -1564,8 +1580,6 @@ export default {
       ) {
         await this.checkWhitelistForExternalMint();
       }
-
-      this.checkWhitelistForPhases();
 
       setTimeout(() => {
         if (!this.collection.status.sold_out && this.live) {
@@ -1596,8 +1610,12 @@ export default {
       if (this.phases.length > 1 && this.showPublicSaleTimer) {
         this.whitelisted = false;
         this.notWhitelisted = false;
+        this.gettingProof = true;
+        await this.checkWhitelistForPhases();
         await this.setProof();
         await this.getOwnedCollectionOfUser();
+      } else {
+        await this.checkWhitelistForPhases();
       }
 
       if (
@@ -1607,8 +1625,6 @@ export default {
       ) {
         await this.checkWhitelistForExternalMint();
       }
-
-      await this.checkWhitelistForPhases();
     },
   },
 };
