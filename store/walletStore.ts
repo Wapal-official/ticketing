@@ -572,7 +572,9 @@ export const actions = {
       candyMachineId,
     }: { root: any; resourceAccount: string; candyMachineId: string }
   ) {
-    await connectWallet(state.wallet.wallet);
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
 
     checkNetwork();
 

@@ -1028,7 +1028,7 @@ export default {
               aptRes.requiredBalance
             );
 
-            if (!transactionRes.success) {
+            if (!transactionRes.success && !transactionRes.hash) {
               throw new Error("Transaction Not Successful Please Try Again");
             }
 
