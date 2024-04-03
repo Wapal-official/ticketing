@@ -63,7 +63,7 @@
           ref="input"
         />
         <div
-          v-if="checkFeaturedFile == false"
+          v-if="checkFeaturedFile == false && isImage == true"
           @click="reClick()"
           ref="imagePreview"
           class="tw-w-full tw-h-full tw-rounded tw-bg-black"
@@ -91,7 +91,7 @@
             style="height: auto; width: 500px; background-color: #000"
           >
             <div
-              class="tw-w-[400px] tw-h-[350px] tw-pt-5 tw-relative tw-mx-auto tw-rounded tw-group"
+              class="tw-w-[400px] tw-h-[400px] tw-pt-5 tw-relative tw-mx-auto tw-rounded tw-group"
               ref="dropZone"
             >
               <input
@@ -186,9 +186,9 @@
                   <div class="change-btn">
                     <span
                       @click="dropZoneClickedThumnail"
-                      class="d-block tw-p-3"
+                      class="d-block tw-p-2"
                     >
-                      change</span
+                      Change</span
                     >
                     <i class="bx bxs-edit-alt tw-text-xl"></i>
                   </div>
@@ -301,7 +301,7 @@
           <img src="~/assets/img/resize.svg" alt="resize" />
         </div> -->
 
-        <!-- <div v-if="isResize" class="d-flex align-center tw-gap-3 tw-mt-3">
+        <div v-if="isResize" class="d-flex align-center tw-gap-3 tw-mt-3">
           <label for="">Resize:</label>
           <button
             :class="resizeAcive ? '' : 'btn-border'"
@@ -317,7 +317,7 @@
           >
             1:1
           </button>
-        </div> -->
+        </div>
         <button
           class="tw-w-full tw-absolute tw-bottom-[-2px] tw-left-0 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-1 tw-py-2 tw-bg-dark-7 tw-text-white tw-rounded tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear group-hover:tw-opacity-100"
           @click="dropZoneClicked"
@@ -434,6 +434,7 @@ export default {
   methods: {
     cancelSelection() {
       this.videoFile = "";
+      this.isVideo = false;
       this.imageSelected = false;
       this.checkFeaturedFile = false;
     },
@@ -714,14 +715,21 @@ export default {
       }
     },
     resizeVideoToOriginal() {
-      this.$refs.imagePreview.style.width = "auto";
-      this.$refs.imagePreview.style.height = "auto";
+      const videoElement = this.$refs.imagePreview.querySelector("video");
+      if (videoElement) {
+        videoElement.classList.remove("tw-object-cover");
+        this.resizeActive = false;
+      }
     },
+
     resizeVideoToSquare() {
-      this.$refs.imagePreview.style.width = "300px";
-      this.$refs.imagePreview.style.height = "300px";
-      this.$refs.imagePreview.style.margin = "auto";
+      const videoElement = this.$refs.imagePreview.querySelector("video");
+      if (videoElement) {
+        videoElement.classList.add("tw-object-cover");
+        this.resizeActive = true;
+      }
     },
+
     dragover(e: any) {
       e.dataTransfer!.dropEffect = "copy";
       this.dropZoneClass = "tw-border-green-600";
@@ -735,21 +743,37 @@ export default {
     async drop(event: any) {
       this.showDropZone = false;
       const item = event.dataTransfer.files[0];
-
+      console.log("item", item);
       this.dropZoneClass = "tw-border-dark-4";
 
-      if (!item.type.includes("image")) {
+      // Check the type of the dropped file
+      if (item.type.includes("image")) {
+        this.$emit("fileSelected", item);
+        this.imageSelected = true;
+        this.audioCheck = false;
+        this.generatePreviewImage(item);
+      } else if (item.type.includes("video")) {
+        this.$emit("fileSelected", item);
+        this.imageSelected = true;
+        this.checkFeaturedFile = true;
+        this.audioCheck = false;
+        this.generatePreviewVideo(item);
+        this.generatePreviewVideo2(item);
+      } else if (item.type.includes("audio")) {
+        this.$emit("fileSelected", item);
+        this.imageSelected = true;
+        this.checkFeaturedFile = true;
+        this.audioCheck = false;
+        this.generatePreviewAudio(item);
+        this.generatePreviewAudio2(item);
+      } else {
         this.$toast.showMessage({
-          message: "Please Drop an Image File",
+          message:
+            "Unsupported file type. Please drop an image, video, or audio file.",
           error: true,
         });
         return;
       }
-
-      this.$emit("fileSelected", item);
-      this.imageSelected = true;
-
-      this.generatePreviewImage(item);
     },
     async dropThumnail(event: any) {
       this.showDropZone = false;

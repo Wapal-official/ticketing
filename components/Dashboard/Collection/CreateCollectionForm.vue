@@ -905,7 +905,7 @@ export default {
             return;
           }
           const fileType = this.checkFileType(this.image.name);
-          if (fileType === "video") {
+          if (fileType === "video" || fileType === "audio") {
             if (!this.thumbnail.name && !this.collection.image) {
               this.imageError = true;
               this.imageErrorMessage =
@@ -1169,8 +1169,6 @@ export default {
 
     imageSelected(image: any) {
       this.image = image;
-      console.log("caijcn");
-      console.log("asdad", this.image);
       if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
         this.imageError = true;
         this.imageErrorMessage = "Please Upload Image less than 15MB";
