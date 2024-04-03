@@ -7,8 +7,8 @@
       <div style="position: relative">
         <video-player-detailed
           class="video-detailed-edit"
-          v-if="isVideo(collection.media2)"
-          :source="collection.media2"
+          v-if="collection.media2 ? collection.media2 : collection.image"
+          :source="collection.media2 ? collection.media2 : collection.image"
         />
         <img
           v-else
@@ -728,6 +728,9 @@ export default {
   },
   methods: {
     isVideo(source: string) {
+      if (!source) {
+        return false;
+      }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
         ? [
@@ -753,9 +756,9 @@ export default {
         : false;
     },
     isAudio(source: string) {
-      // if (typeof source !== "string") {
-      //   return false;
-      // }
+      if (typeof source !== "string") {
+        return false;
+      }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
         ? [

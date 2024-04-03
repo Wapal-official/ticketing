@@ -286,9 +286,29 @@ export default {
       generatingMetadata: false,
       UploadIcon,
       defaultTheme,
+      isImgforMetadata: false,
     };
   },
   methods: {
+    isImage(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
     displayFileDetails(file: any) {
       this.currentFile = file;
       if (file.image) {
@@ -311,15 +331,19 @@ export default {
       this.paginatedFiles = [];
 
       const res = await getFolderById(folderId);
-
       if (this.type === "assets" && !res.data.folderInfo.metadata.baseURI) {
         this.folderInfo.files = res.data.folderInfo.assets.files;
+        console.log("ress");
       } else if (
         this.type === "images" &&
         !res.data.folderInfo.metadata.baseURI
       ) {
+        console.log("resssss");
+
         this.folderInfo.files = res.data.folderInfo.images.files;
       } else {
+        console.log("ressss1", this.folderInfo.files);
+
         this.folderInfo.files = res.data.folderInfo.metadata.files;
       }
       // this.folderInfo.files =
@@ -343,7 +367,10 @@ export default {
       this.folderInfo.images = res.data.folderInfo.images;
       this.folderInfo.metadata = res.data.folderInfo.metadata;
       this.folderInfo.traits = res.data.folderInfo.traits;
-
+      console.log("ca", this.folderInfo.assets);
+      if (this.isImage(this.folderInfo.assets.ext)) {
+        this.isImgforMetadata = true;
+      }
       this.loading = false;
 
       const fileCheck =
@@ -403,7 +430,7 @@ export default {
               const fileIndex = scrollNumber
                 ? scrollNumber - this.assetLimit + index
                 : index;
-
+              console.log("reaaaa");
               if (this.folderInfo.metadata.baseURI) {
                 if (this.type === "assets") {
                   src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
@@ -632,15 +659,18 @@ export default {
       }
 
       if (!this.folderInfo.assets.baseURI) {
+        console.log("aaaa", this.folderInfo.assets.baseURI);
         return false;
       }
 
       if (this.type === "images") {
         return true;
       }
-
-      if (!this.folderInfo.images.baseURI) {
-        return false;
+      if (!this.isImgforMetadata) {
+        console.log("dad", this.isImgforMetadata);
+        if (!this.folderInfo.images.baseURI) {
+          return false;
+        }
       }
 
       return true;
@@ -662,7 +692,6 @@ export default {
   },
   async mounted() {
     this.type = this.$route.params.type;
-    console.log("aaca", this.folderInfo.metadata.baseURI);
     if (
       this.type !== "assets" &&
       this.type !== "images" &&
@@ -674,7 +703,6 @@ export default {
     this.assetLimit = this.type === "assets" ? 12 : 48;
 
     await this.fetchFiles();
-
     await this.mapFiles();
 
     setTimeout(() => {
@@ -685,6 +713,7 @@ export default {
   },
   watch: {
     checkUploadingStatus: async function (newValue: string) {
+      console.log(newValue);
       if (newValue) {
         setTimeout(async () => {
           this.page = 0;

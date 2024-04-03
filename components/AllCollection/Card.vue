@@ -213,7 +213,7 @@ export default {
     },
     isAudio(source: string) {
       if (typeof source !== "string") {
-        return false; // Return false if source is not a string
+        return false;
       }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
@@ -231,6 +231,9 @@ export default {
         : false;
     },
     isImage(source: string) {
+      if (!source) {
+        return false;
+      }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
         ? [
