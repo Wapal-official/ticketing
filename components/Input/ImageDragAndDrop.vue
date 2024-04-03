@@ -301,7 +301,7 @@
           <img src="~/assets/img/resize.svg" alt="resize" />
         </div> -->
 
-        <div v-if="isResize" class="d-flex align-center tw-gap-3 tw-mt-3">
+        <!-- <div v-if="isResize" class="d-flex align-center tw-gap-3 tw-mt-3">
           <label for="">Resize:</label>
           <button
             :class="resizeAcive ? '' : 'btn-border'"
@@ -317,7 +317,7 @@
           >
             1:1
           </button>
-        </div>
+        </div> -->
         <button
           class="tw-w-full tw-absolute tw-bottom-[-2px] tw-left-0 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-1 tw-py-2 tw-bg-dark-7 tw-text-white tw-rounded tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear group-hover:tw-opacity-100"
           @click="dropZoneClicked"
