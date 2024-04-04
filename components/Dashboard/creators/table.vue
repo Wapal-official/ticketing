@@ -225,6 +225,7 @@ export default {
   padding-top: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid #383a3f;
+  font-family: "Inter-Regular", sans-serif !important;
 }
 
 .airdrop-body tr:last-child td {
