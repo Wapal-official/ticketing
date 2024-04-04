@@ -488,7 +488,10 @@
 
 <script>
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
-import { uploadAndCreateFile } from "@/services/AuctionService";
+import {
+  uploadAndCreateFile,
+  uploadAndCreateVideoFile,
+} from "@/services/AuctionService";
 import {
   createCollectionV2,
   mintCollection,
@@ -616,6 +619,7 @@ export default {
       socialErrorMessage: "",
       formSteps: ["Details", "Token", "Attributes", "Review"],
       formStepNumber: 1,
+      checkVideo: false,
     };
   },
   watch: {
@@ -802,10 +806,13 @@ export default {
     selectImage(file) {
       this.file = file;
       if (this.isImage(file.name)) {
+        this.checkVideo = false;
         this.displayImage();
       } else if (this.isVideo(file.name)) {
+        this.checkVideo = true;
         this.displayVideo();
       } else {
+        this.checkVideo = true;
         this.displayVideo();
       }
     },
@@ -1060,7 +1067,7 @@ export default {
             break;
           }
           console.log("asd");
-          console.log("asd", this.thumbnail);
+          console.log("asd", this.file);
 
           console.log("check validation", this.file, this.thumbnail);
           // const fileType = this.checkFileType(this.file.name);
@@ -1127,6 +1134,7 @@ export default {
         console.log(metadata);
 
         const imageUrl = metadata.image;
+        const videoUrl = metadata.video;
 
         const formData = new FormData();
 
@@ -1158,7 +1166,7 @@ export default {
         formData.append("phases", JSON.stringify([]));
         formData.append("tweet", tempCollection.tweet);
 
-        // if (imageUrl) {
+        // if (videoUrl) {
         //   const fileType = this.checkFileType(imageUrl);
         //   if (fileType === "image") {
         //     formData.append("image", imageUrl);
@@ -1167,8 +1175,16 @@ export default {
         //     formData.append("image", this.thumbnail);
         //   }
         // }
+        if (videoUrl) {
+          console.log("vio");
+          formData.append("image", imageUrl);
+          formData.append("video", videoUrl);
+        } else {
+          console.log("imo");
+          formData.append("image", imageUrl);
+        }
         // formData.append("image", this.thumbnail);
-        formData.append("image", imageUrl);
+        // formData.append("image", imageUrl);
 
         // formData.append("video", this.thumbnail);
 
@@ -1209,13 +1225,26 @@ export default {
       }
 
       //uploading and creating metadata file
-      const metaUri =
-        (await uploadAndCreateFile(this.file, {
-          name: this.collection.tokenName,
-          description: this.collection.tokenDesc,
-          attributes: this.collection.attributes,
-        })) + "/";
+      let metaUri;
 
+      if (this.checkVideo === true) {
+        console.log("aaa");
+        metaUri =
+          (await uploadAndCreateVideoFile(this.file, this.thumbnail, {
+            name: this.collection.tokenName,
+            description: this.collection.tokenDesc,
+            attributes: this.collection.attributes,
+          })) + "/";
+      } else {
+        console.log("bbb");
+        metaUri =
+          (await uploadAndCreateFile(this.file, {
+            name: this.collection.tokenName,
+            description: this.collection.tokenDesc,
+            attributes: this.collection.attributes,
+          })) + "/";
+      }
+      console.log("meta ur", metaUri);
       return metaUri;
     },
     async createOpenEditionInChain() {

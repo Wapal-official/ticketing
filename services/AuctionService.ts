@@ -82,6 +82,21 @@ export const uploadAndCreateFile = async (file: File, params: any) => {
   return upload.data.metadata;
 };
 
+export const uploadAndCreateVideoFile = async (file: File, thumbnail: File, params: any) => {
+  const formData = new FormData();
+  formData.append("video", file);
+  formData.append("image", thumbnail);
+  formData.append("name", params.name);
+  formData.append("description", params.description);
+  formData.append("attributes", JSON.stringify(params.attributes));
+
+  const upload = await publicRequest.post(
+    "/api/uploader/videoedition",
+    formData
+  );
+  return upload.data.metadata;
+};
+
 export const getWalletNFT = async (params: any) => {
   let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "AccountTokensData",
