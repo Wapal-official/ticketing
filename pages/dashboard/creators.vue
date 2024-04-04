@@ -154,7 +154,7 @@
           style="background-color: #1a1b1e"
         >
           <img
-            src="~/assets/img/creators/Created.svg"
+            src="~/assets/img/creators/created.svg"
             class="tw-w-full tw-h-full tw-rounded"
             alt="total Created"
             style="max-width: 60px; max-height: 60px"
@@ -285,7 +285,6 @@ export default {
     this.totalAuction = totalAuction[0].total;
     const totalUser = await getTotalusers();
     this.totalUser = totalUser[0].total;
-    console.log("total", totalUser);
   },
 };
 </script>
