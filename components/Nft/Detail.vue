@@ -1195,27 +1195,17 @@ export default {
 
     async getMintLimitOfPreviousPhases() {
       let mintLimit = 0;
-      await Promise.all(
-        this.collection.phases.map(async (phase) => {
-          const date = new Date();
+      this.phases.map(async (phase) => {
+        const date = new Date();
 
-          const phaseStartDate = new Date(phase.mint_time);
+        const phaseStartDate = new Date(phase.mint_time);
 
-          if (date > phaseStartDate) {
-            const mintLimitRes = await getMintLimit({
-              walletAddress: this.getWalletAddress,
-              collectionId: this.collection._id,
-              phase: phase.id,
-            });
-
-            const data = mintLimitRes.data.data;
-
-            if (data) {
-              mintLimit += data.mint_limit;
-            }
+        if (date > phaseStartDate) {
+          if (phase.mintLimit) {
+            mintLimit += phase.mintLimit;
           }
-        })
-      );
+        }
+      });
 
       this.mintLimit = mintLimit;
     },
@@ -1266,8 +1256,10 @@ export default {
 
               if (res.data.data) {
                 tempPhase.whitelisted = true;
+                tempPhase.mintLimit = res.data.data.mint_limit;
               } else {
                 tempPhase.whitelisted = false;
+                tempPhase.mintLimit = 0;
               }
             }
 
