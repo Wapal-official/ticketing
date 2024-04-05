@@ -362,7 +362,9 @@ export default {
   },
   methods: {
     isVideo(source: string) {
-      if (!source) return false;
+      if (!source) {
+        return false;
+      }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
         ? [

@@ -528,7 +528,7 @@ export default {
         : false;
     },
     isAudio(source) {
-      if (typeof source !== "string") {
+      if (!source) {
         return false;
       }
       const extension = source.split(".").pop()?.toLowerCase();
