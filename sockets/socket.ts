@@ -23,7 +23,9 @@ export const uploadSocketState = reactive<UploadSocket>({
   showUploadError: false,
 });
 
-const URL = process.env.baseURL ? process.env.baseURL : "http://localhost:3000";
+const URL = process.env.CREATOR_STUDIO_API
+  ? process.env.CREATOR_STUDIO_API
+  : "http://localhost:3000";
 export const socket = io(URL);
 
 socket.on("connect", () => {
