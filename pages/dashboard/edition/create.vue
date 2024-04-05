@@ -1134,8 +1134,13 @@ export default {
         console.log(metadata);
 
         const imageUrl = metadata.image;
-        const videoUrl = metadata.video;
-
+        let videoUrl;
+        if (metadata.properties) {
+          // videoUrl = metadata.video;
+          videoUrl = metadata.properties.files[1].uri;
+        }
+        console.log(imageUrl);
+        console.log(videoUrl);
         const formData = new FormData();
 
         formData.append("name", tempCollection.name);
@@ -1230,7 +1235,7 @@ export default {
       if (this.checkVideo === true) {
         console.log("aaa");
         metaUri =
-          (await uploadAndCreateVideoFile(this.file, this.thumbnail, {
+          (await uploadAndCreateVideoFile(this.thumbnail, this.file, {
             name: this.collection.tokenName,
             description: this.collection.tokenDesc,
             attributes: this.collection.attributes,
