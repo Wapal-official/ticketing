@@ -21,7 +21,7 @@
       <div class="tw-font-medium">{{ collection?.name }}</div>
       <div
         class="tw-text-dark-2 tw-text-sm tw-font-medium"
-        v-if="collection?.isEdition"
+        v-if="collection?.edition && collection?.edition === 'open-edition'"
       >
         {{ minted }}
         Minted
@@ -130,6 +130,26 @@ export default {
       }
     } catch {
       if (this.collection.mintDetails) {
+        if (
+          new Date(this.collection.candyMachine.whitelist_sale_time).getTime() >
+          Date.now()
+        ) {
+          this.totalSupply = this.collection.supply;
+          this.minted = 0;
+          return;
+        }
+
+        if (
+          this.collection.edition &&
+          this.collection.edition === "open-edition" &&
+          new Date(this.collection.candyMachine.public_sale_time).getTime() >
+            Date.now()
+        ) {
+          this.totalSupply = this.collection.supply;
+          this.minted = 0;
+          return;
+        }
+
         const res = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfExternalCollection",
           {
@@ -181,6 +201,10 @@ export default {
     getRedirectLink() {
       if (this.collection.redirectTo === "landingDraft") {
         return `/nft/draft/${this.collection?._id}`;
+      }
+
+      if (this.collection.isEdition) {
+        return `/editions/${this.collection?.username}`;
       }
 
       return `/nft/${this.collection?.username}`;

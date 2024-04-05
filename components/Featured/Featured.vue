@@ -147,8 +147,7 @@
                 <div
                   class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
                   v-if="
-                    collection.isEdition &&
-                    collection.edition === 'open-edition'
+                    collection.edition && collection.edition === 'open-edition'
                   "
                 >
                   <div class="tw-text-white/70">
@@ -603,7 +602,9 @@ export default {
       });
 
       const publicSale = {
-        name: "public sale",
+        name: this.collection.public_sale_name
+          ? this.collection.public_sale_name
+          : "public sale",
         id: "public-sale",
         mint_price: this.collection.candyMachine.public_sale_price,
         mint_time: this.collection.candyMachine.public_sale_time,
