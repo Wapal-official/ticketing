@@ -145,7 +145,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ["vee-validate"],
+    transpile: ["vee-validate", "@wallet-standard", "@noble/curves"],
     babel: {
       plugins: ["@babel/plugin-proposal-optional-chaining"],
     },
@@ -160,6 +160,21 @@ export default {
           plugins: ["@babel/plugin-proposal-optional-chaining"],
         },
       });
+
+      config.module.rules.push({
+        test: /\.(ogg|mp3|wav|mpe?g)$/i,
+        loader: "file-loader",
+        options: {
+          name: "[path][name].[ext]",
+        },
+      });
+    },
+    loaders: {
+      vue: {
+        transformAssetUrls: {
+          audio: "src",
+        },
+      },
     },
     postcss: {
       plugins: {

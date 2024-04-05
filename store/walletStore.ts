@@ -2,6 +2,7 @@ import {
   WalletCore,
   WalletName,
   NetworkName,
+  InputTransactionData,
 } from "@aptos-labs/wallet-adapter-core";
 import { PetraWallet } from "petra-plugin-wallet-adapter";
 import { MartianWallet } from "@martianwallet/aptos-wallet-adapter";
@@ -10,8 +11,7 @@ import { PontemWallet } from "@pontem/wallet-adapter-plugin";
 import { SpikaWallet } from "@spika/aptos-plugin";
 import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
-import { MSafeWalletAdapter } from "msafe-plugin-wallet-adapter";
-import { BloctoWallet } from "@blocto/aptos-wallet-adapter-plugin";
+import { MSafeWalletAdapter } from "@msafe/aptos-wallet-adapter";
 import { OKXWallet } from "@okwallet/aptos-wallet-adapter";
 import { AptosClient, HexString, TxnBuilderTypes } from "aptos";
 import axios from "axios";
@@ -21,6 +21,7 @@ import { aptToUsd, arToUsd } from "@/services/UtilityService";
 import { getCoinType } from "@/utils/getCoinType";
 import { convertPriceToSendInSmartContract } from "~/utils/price";
 import { register } from "@/services/LoginService";
+import { InputGenerateTransactionPayloadData } from "@aptos-labs/ts-sdk";
 
 const GRAPHQL_URL = process.env.GRAPHQL_URL ? process.env.GRAPHQL_URL : "";
 
@@ -44,10 +45,6 @@ const wallets = [
   new SpikaWallet(),
   new TrustWallet(),
   new MSafeWalletAdapter(),
-  new BloctoWallet({
-    network: network,
-    bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
-  }),
 ];
 
 export const wallet = new WalletCore(wallets);
@@ -261,11 +258,11 @@ export const actions = {
 
     checkNetwork();
 
-    const create_candy_machine = {
-      type: "entry_function_payload",
-      function: process.env.CANDY_MACHINE_V1 + "::candymachine::init_candy",
-      type_arguments: [],
-      arguments: [
+    const create_candy_machine: InputGenerateTransactionPayloadData = {
+      function:
+        `${process.env.CANDY_MACHINE_V1}::candymachine::init_candy` as `${string}::${string}::${string}`,
+      typeArguments: [],
+      functionArguments: [
         candyMachineArguments.collection_name,
         candyMachineArguments.collection_description,
         candyMachineArguments.baseuri,
@@ -284,9 +281,9 @@ export const actions = {
       ],
     };
 
-    let transactionRes = await wallet.signAndSubmitTransaction(
-      create_candy_machine
-    );
+    let transactionRes = await wallet.signAndSubmitTransaction({
+      data: create_candy_machine,
+    });
 
     let getResourceAccount: any = await client.waitForTransactionWithResult(
       transactionRes.hash
@@ -311,11 +308,11 @@ export const actions = {
 
     checkNetwork();
 
-    const create_candy_machine = {
-      type: "entry_function_payload",
-      function: process.env.CANDY_MACHINE_V2 + "::candymachine::init_candy",
-      type_arguments: [],
-      arguments: [
+    const create_candy_machine: InputGenerateTransactionPayloadData = {
+      function:
+        `${process.env.CANDY_MACHINE_V2}::candymachine::init_candy` as `${string}::${string}::${string}`,
+      typeArguments: [],
+      functionArguments: [
         candyMachineArguments.collection_name,
         candyMachineArguments.collection_description,
         candyMachineArguments.baseuri,
@@ -336,9 +333,9 @@ export const actions = {
       ],
     };
 
-    let transactionRes = await wallet.signAndSubmitTransaction(
-      create_candy_machine
-    );
+    let transactionRes = await wallet.signAndSubmitTransaction({
+      data: create_candy_machine,
+    });
 
     let getResourceAccount: any = await client.waitForTransactionWithResult(
       transactionRes.hash
@@ -409,30 +406,30 @@ export const actions = {
     checkNetwork();
 
     try {
-      var create_mint_script: any;
+      var create_mint_script: InputGenerateTransactionPayloadData;
       if (publicMint) {
         create_mint_script = {
-          type: "entry_function_payload",
-          function: candyMachineId + "::candymachine::mint_script",
-          type_arguments: [],
-          arguments: [resourceAccount],
+          function:
+            `${candyMachineId}::candymachine::mint_script` as `${string}::${string}::${string}`,
+          typeArguments: [],
+          functionArguments: [resourceAccount],
         };
       } else {
         if (proof.length > 0) {
           create_mint_script = {
-            type: "entry_function_payload",
-            function: candyMachineId + "::candymachine::mint_from_merkle",
-            type_arguments: [],
-            arguments: [resourceAccount, proof, mintLimit],
+            function:
+              `${candyMachineId}::candymachine::mint_from_merkle` as `${string}::${string}::${string}`,
+            typeArguments: [],
+            functionArguments: [resourceAccount, proof, mintLimit],
           };
         } else {
           throw new Error("You are not whitelisted for this collection");
         }
       }
 
-      const transaction = await wallet.signAndSubmitTransaction(
-        create_mint_script
-      );
+      const transaction = await wallet.signAndSubmitTransaction({
+        data: create_mint_script,
+      });
 
       const res = await client.waitForTransactionWithResult(transaction.hash);
 
@@ -473,19 +470,20 @@ export const actions = {
 
     const transactionAmount = (requiredBalance * Math.pow(10, 8)).toFixed(0);
 
-    const payload = {
-      arguments: [
+    const payload: InputGenerateTransactionPayloadData = {
+      functionArguments: [
         "0x59e129c0275f5289f58b85f75090921b50d1745e0ba54197ac0586676b0a64b8",
         transactionAmount,
       ],
-      function: "0x1::coin::transfer",
-      type: "entry_function_payload",
-      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      function: "0x1::coin::transfer" as `${string}::${string}::${string}`,
+      typeArguments: ["0x1::aptos_coin::AptosCoin"],
     };
 
-    const transaction = await wallet.signAndSubmitTransaction(payload);
+    const transaction = await wallet.signAndSubmitTransaction({
+      data: payload,
+    });
 
-    if (!transaction.success) {
+    if (!transaction.hash) {
       const transactionResult = await client.waitForTransactionWithResult(
         transaction.hash
       );
@@ -574,18 +572,22 @@ export const actions = {
       candyMachineId,
     }: { root: any; resourceAccount: string; candyMachineId: string }
   ) {
-    await connectWallet(state.wallet.wallet);
+    if (!wallet.isConnected()) {
+      await connectWallet(state.wallet.wallet);
+    }
 
     checkNetwork();
 
-    const set_root_script = {
-      function: candyMachineId + "::candymachine::set_root",
-      type: "entry_function_payload",
-      arguments: [resourceAccount, root],
-      type_arguments: [],
+    const set_root_script: InputGenerateTransactionPayloadData = {
+      function:
+        `${candyMachineId}::candymachine::set_root` as `${string}::${string}::${string}`,
+      functionArguments: [resourceAccount, root],
+      typeArguments: [],
     };
 
-    const transaction = await wallet.signAndSubmitTransaction(set_root_script);
+    const transaction = await wallet.signAndSubmitTransaction({
+      data: set_root_script,
+    });
 
     let transactionResult: any = await client.waitForTransactionWithResult(
       transaction.hash
@@ -620,11 +622,11 @@ export const actions = {
       coinType: detail.coinType,
     });
 
-    const create_auction = {
-      type: "entry_function_payload",
-      function: process.env.PID + "::auction::create_auction",
-      type_arguments: [coinType.coinObject],
-      arguments: [
+    const create_auction: InputGenerateTransactionPayloadData = {
+      function:
+        `${process.env.PID}::auction::create_auction` as `${string}::${string}::${string}`,
+      typeArguments: [coinType.coinObject],
+      functionArguments: [
         nft.nft.current_token_data.creator_address,
         nft.nft.current_token_data.collection_name,
         nft.nft.current_token_data.name,
@@ -637,7 +639,9 @@ export const actions = {
       ],
     };
 
-    let transactionRes = await wallet.signAndSubmitTransaction(create_auction);
+    let transactionRes = await wallet.signAndSubmitTransaction({
+      data: create_auction,
+    });
 
     let getResource: any = await client.waitForTransactionWithResult(
       transactionRes.hash
@@ -678,11 +682,11 @@ export const actions = {
 
       const coinType = getCoinType(auction.coinType);
 
-      const place_bid = {
-        type: "entry_function_payload",
-        function: process.env.PID + "::auction::bid",
-        type_arguments: [coinType.coinObject],
-        arguments: [
+      const place_bid: InputGenerateTransactionPayloadData = {
+        function:
+          `${process.env.PID}::auction::bid` as `${string}::${string}::${string}`,
+        typeArguments: [coinType.coinObject],
+        functionArguments: [
           auction.detail.nft.nft.current_token_data.creator_address,
           auction.detail.nft.nft.current_token_data.collection_name,
           auction.detail.nft.nft.current_token_data.name,
@@ -693,7 +697,9 @@ export const actions = {
           withdrawSec,
         ],
       };
-      let transactionRes = await wallet.signAndSubmitTransaction(place_bid);
+      let transactionRes = await wallet.signAndSubmitTransaction({
+        data: place_bid,
+      });
 
       let getResource = await client.waitForTransactionWithResult(
         transactionRes.hash
@@ -725,14 +731,14 @@ export const actions = {
 
     const coinTypeObject = getCoinType(coinType);
 
-    const increase_bid = {
-      type: "entry_function_payload",
-      function: process.env.PID + "::auction::increase_bid",
-      type_arguments: [coinTypeObject.coinObject],
-      arguments: [offer_price, auction_id],
+    const increase_bid: InputGenerateTransactionPayloadData = {
+      function:
+        `${process.env.PID}::auction::increase_bid` as `${string}::${string}::${string}`,
+      typeArguments: [coinTypeObject.coinObject],
+      functionArguments: [offer_price, auction_id],
     };
 
-    const res = await wallet.signAndSubmitTransaction(increase_bid);
+    const res = await wallet.signAndSubmitTransaction({ data: increase_bid });
 
     const txhRes = await client.waitForTransactionWithResult(res.hash);
 
@@ -744,7 +750,7 @@ export const actions = {
       lister_address,
       creation_number,
       coinType,
-    }: { lister_address: String; creation_number: Number; coinType: string }
+    }: { lister_address: string; creation_number: number; coinType: string }
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
@@ -753,14 +759,16 @@ export const actions = {
 
     const coinTypeObject = getCoinType(coinType);
 
-    const withdraw_coin_from_bid = {
-      type: "entry_function_payload",
-      function: process.env.PID + "::auction::withdraw_coin_from_bid",
-      type_arguments: [coinTypeObject.coinObject],
-      arguments: [lister_address, creation_number],
+    const withdraw_coin_from_bid: InputGenerateTransactionPayloadData = {
+      function:
+        `${process.env.PID}::auction::withdraw_coin_from_bid` as `${string}::${string}::${string}`,
+      typeArguments: [coinTypeObject.coinObject],
+      functionArguments: [lister_address, creation_number],
     };
 
-    const res = await wallet.signAndSubmitTransaction(withdraw_coin_from_bid);
+    const res = await wallet.signAndSubmitTransaction({
+      data: withdraw_coin_from_bid,
+    });
 
     const txhRes = await client.getTransactionByHash(res.hash);
 
@@ -768,7 +776,7 @@ export const actions = {
   },
   async completeAuction(
     { state }: { state: any },
-    { auction_id, coinType }: { auction_id: Number; coinType: string }
+    { auction_id, coinType }: { auction_id: number; coinType: string }
   ) {
     if (!wallet.isConnected()) {
       await connectWallet(state.wallet.wallet);
@@ -777,14 +785,16 @@ export const actions = {
 
     const coinTypeObject = getCoinType(coinType);
 
-    const complete_auction = {
-      type: "entry_function_payload",
-      function: process.env.PID + "::auction::complete_auction",
-      type_arguments: [coinTypeObject.coinObject],
-      arguments: [auction_id],
+    const complete_auction: InputGenerateTransactionPayloadData = {
+      function:
+        `${process.env.PID}::auction::complete_auction` as `${string}::${string}::${string}`,
+      typeArguments: [coinTypeObject.coinObject],
+      functionArguments: [auction_id],
     };
 
-    const res = await wallet.signAndSubmitTransaction(complete_auction);
+    const res = await wallet.signAndSubmitTransaction({
+      data: complete_auction,
+    });
 
     const txhRes = await client.getTransactionByHash(res.hash);
 
@@ -796,15 +806,16 @@ export const actions = {
     }
     checkNetwork();
 
-    const buyDomainScript = {
+    const buyDomainScript: InputGenerateTransactionPayloadData = {
       function:
-        "0x867ed1f6bf916171b1de3ee92849b8978b7d1b9e0a8cc982a3d19d535dfd9c0c::domains::register_domain",
-      type_arguments: [],
-      arguments: [domainName, 1],
-      type: "entry_function_payload",
+        "0x867ed1f6bf916171b1de3ee92849b8978b7d1b9e0a8cc982a3d19d535dfd9c0c::domains::register_domain" as `${string}::${string}::${string}`,
+      typeArguments: [],
+      functionArguments: [domainName, 1],
     };
 
-    const transaction = await wallet.signAndSubmitTransaction(buyDomainScript);
+    const transaction = await wallet.signAndSubmitTransaction({
+      data: buyDomainScript,
+    });
 
     const res = await client.waitForTransactionWithResult(transaction.hash);
 
@@ -874,7 +885,9 @@ export const actions = {
 
         const payload: any = buildSendToSelfScriptPayload();
 
-        const transaction = await wallet.signAndSubmitTransaction(payload);
+        const transaction = await wallet.signAndSubmitTransaction({
+          data: payload,
+        });
 
         const res = await client.waitForTransactionWithResult(transaction.hash);
 
@@ -915,19 +928,20 @@ export const actions = {
 
     const transactionAmount = (requiredBalance * Math.pow(10, 8)).toFixed(0);
 
-    const payload = {
-      arguments: [
+    const payload: InputGenerateTransactionPayloadData = {
+      functionArguments: [
         "0x59e129c0275f5289f58b85f75090921b50d1745e0ba54197ac0586676b0a64b8",
         transactionAmount,
       ],
-      function: "0x1::coin::transfer",
-      type: "entry_function_payload",
-      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      function: "0x1::coin::transfer" as `${string}::${string}::${string}`,
+      typeArguments: ["0x1::aptos_coin::AptosCoin"],
     };
 
-    const transaction = await wallet.signAndSubmitTransaction(payload);
+    const transaction = await wallet.signAndSubmitTransaction({
+      data: payload,
+    });
 
-    if (!transaction.success) {
+    if (!transaction.hash) {
       const transactionResult = await client.waitForTransactionWithResult(
         transaction.hash
       );
@@ -954,14 +968,16 @@ export const actions = {
 
     checkNetwork();
 
-    const payload = {
-      type: "entry_function_payload",
-      function: `${programId}::${moduleName}::${mintFunction}`,
-      type_arguments: [],
-      arguments: [],
+    const payload: InputGenerateTransactionPayloadData = {
+      function:
+        `${programId}::${moduleName}::${mintFunction}` as `${string}::${string}::${string}`,
+      typeArguments: [],
+      functionArguments: [],
     };
 
-    const transaction = await wallet.signAndSubmitTransaction(payload);
+    const transaction = await wallet.signAndSubmitTransaction({
+      data: payload,
+    });
 
     const res = await client.waitForTransactionWithResult(transaction.hash);
 
@@ -987,14 +1003,16 @@ export const actions = {
 
     checkNetwork();
 
-    const payload = {
-      type: "entry_function_payload",
-      function: `${programId}::${moduleName}::${mintFunction}`,
-      type_arguments: [],
-      arguments: [numberOfNfts],
+    const payload: InputGenerateTransactionPayloadData = {
+      function:
+        `${programId}::${moduleName}::${mintFunction}` as `${string}::${string}::${string}`,
+      typeArguments: [],
+      functionArguments: [numberOfNfts],
     };
 
-    const transaction = await wallet.signAndSubmitTransaction(payload);
+    const transaction = await wallet.signAndSubmitTransaction({
+      data: payload,
+    });
 
     const res = await client.waitForTransactionWithResult(transaction.hash);
 

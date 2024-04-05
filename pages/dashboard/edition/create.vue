@@ -285,9 +285,12 @@
           >
             <input-image-drag-and-drop
               :required="true"
-              label="Image"
+              label="Image/Video"
               :file="collection.image"
               @fileSelected="selectImage"
+              @fileSelectedThumbnail="thumbnailSelected"
+              :thumbnail="collection.thumbnail"
+              fileSize="Upto 15 MB"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
               {{ imageErrorMessage }}
@@ -485,7 +488,10 @@
 
 <script>
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
-import { uploadAndCreateFile } from "@/services/AuctionService";
+import {
+  uploadAndCreateFile,
+  uploadAndCreateVideoFile,
+} from "@/services/AuctionService";
 import {
   createCollectionV2,
   mintCollection,
@@ -542,6 +548,7 @@ export default {
         name: "",
         description: "",
         image: "",
+        thumbnail: "",
         baseURL: "",
         royalty_payee_address:
           this.$store.state.walletStore.wallet.walletAddress,
@@ -580,6 +587,7 @@ export default {
       startMenu: false,
       endMenu: false,
       file: null,
+      thumbnail: { name: null },
       imageError: false,
       imageErrorMessage: "",
       attributeError: false,
@@ -611,6 +619,7 @@ export default {
       socialErrorMessage: "",
       formSteps: ["Details", "Token", "Attributes", "Review"],
       formStepNumber: 1,
+      checkVideo: false,
     };
   },
   watch: {
@@ -754,9 +763,112 @@ export default {
 
       reviewElement.prepend(reviewImgElement);
     },
+    displayVideo() {
+      const previewVideoElement = document.createElement("video");
+      const reviewVideoElement = document.createElement("video");
+
+      previewVideoElement.src = reviewVideoElement.src = URL.createObjectURL(
+        this.file
+      );
+      previewVideoElement.autoplay = reviewVideoElement.autoplay = false;
+      previewVideoElement.muted = reviewVideoElement.muted = false;
+      previewVideoElement.loop = reviewVideoElement.loop = true;
+      previewVideoElement.playsInline = reviewVideoElement.playsInline = true;
+      previewVideoElement.preload = reviewVideoElement.preload = "metadata";
+      previewVideoElement.controls = reviewVideoElement.controls = true;
+
+      previewVideoElement.classList.add("tw-w-full");
+      previewVideoElement.classList.add("tw-h-full");
+      previewVideoElement.classList.add("tw-object-fill");
+      previewVideoElement.classList.add("tw-max-h-[300px]");
+      previewVideoElement.classList.add("tw-rounded");
+
+      reviewVideoElement.classList.add("tw-w-full");
+      reviewVideoElement.classList.add("tw-h-full");
+      reviewVideoElement.classList.add("tw-object-fill");
+      reviewVideoElement.classList.add("tw-max-h-[300px]");
+      reviewVideoElement.classList.add("tw-rounded");
+
+      const previewElement = document.getElementById("image-preview");
+      const reviewElement = document.getElementById("image-review");
+
+      while (previewElement.firstChild) {
+        previewElement.removeChild(previewElement.firstChild);
+      }
+
+      while (reviewElement.firstChild) {
+        reviewElement.removeChild(reviewElement.firstChild);
+      }
+
+      previewElement.prepend(previewVideoElement);
+      reviewElement.prepend(reviewVideoElement);
+    },
     selectImage(file) {
       this.file = file;
-      this.displayImage();
+      if (this.isImage(file.name)) {
+        this.checkVideo = false;
+        this.displayImage();
+      } else if (this.isVideo(file.name)) {
+        this.checkVideo = true;
+        this.displayVideo();
+      } else {
+        this.checkVideo = true;
+        this.displayVideo();
+      }
+    },
+    thumbnailSelected(file) {
+      this.thumbnail = file;
+      console.log("sadad", this.thumbnail);
+      if (Math.floor(this.thumbnail.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
+    },
+    isImage(source) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
     },
     async submit() {
       const validate = await this.$refs.attributeForm.validate();
@@ -857,6 +969,51 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
       }
     },
+    checkFileType(fileName) {
+      const fileExtension = fileName.split(".").pop().toLowerCase();
+      const imageExtensions = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "webp",
+        "bmp",
+        "svg",
+        "ico",
+        "tiff",
+      ];
+      const videoExtensions = [
+        "mp4",
+        "mkv",
+        "m4v",
+        "webm",
+        "avi",
+        "mov",
+        "wmv",
+        "flv",
+        "3gp",
+        "ogv",
+        "mpeg",
+        "mpg",
+        "divx",
+        "rm",
+        "asf",
+        "vob",
+        "ts",
+        "m2ts",
+      ];
+      const audioExtensions = ["mp3", "ogg", "wav", "webm", "aac", "flac"];
+
+      if (imageExtensions.includes(fileExtension)) {
+        return "image";
+      } else if (videoExtensions.includes(fileExtension)) {
+        return "video";
+      } else if (audioExtensions.includes(fileExtension)) {
+        return "audio";
+      } else {
+        return "image";
+      }
+    },
     async validateFormForNextStep() {
       this.attributeError = false;
       this.socialError = false;
@@ -909,7 +1066,25 @@ export default {
             this.imageErrorMessage = "Please select an image for collection";
             break;
           }
+          console.log("asd");
+          console.log("asd", this.file);
 
+          console.log("check validation", this.file, this.thumbnail);
+          // const fileType = this.checkFileType(this.file.name);
+          // if (fileType === "video" || fileType === "audio") {
+          //   console.log("fileee", this.file.name);
+          //   console.log("fileee", this.thumbnail);
+
+          //   if (!this.thumbnail.name && !this.file.name) {
+          //     this.imageError = true;
+          //     this.imageErrorMessage =
+          //       "Please select an thumbnail for collection";
+          //     return;
+          //   }
+          // }
+          // if (this.imageError) {
+          //   return;
+          // }
           this.formStepNumber++;
           break;
         case 3:
@@ -954,9 +1129,18 @@ export default {
         const metadataRes = await axios.get(this.collection.baseURL);
 
         const metadata = metadataRes.data;
+        console.log("asdddd");
+        console.log(metadataRes);
+        console.log(metadata);
 
         const imageUrl = metadata.image;
-
+        let videoUrl;
+        if (metadata.properties) {
+          // videoUrl = metadata.video;
+          videoUrl = metadata.properties.files[1].uri;
+        }
+        console.log(imageUrl);
+        console.log(videoUrl);
         const formData = new FormData();
 
         formData.append("name", tempCollection.name);
@@ -987,7 +1171,27 @@ export default {
         formData.append("phases", JSON.stringify([]));
         formData.append("tweet", tempCollection.tweet);
 
-        formData.append("image", imageUrl);
+        // if (videoUrl) {
+        //   const fileType = this.checkFileType(imageUrl);
+        //   if (fileType === "image") {
+        //     formData.append("image", imageUrl);
+        //   } else {
+        //     formData.append("video", imageUrl);
+        //     formData.append("image", this.thumbnail);
+        //   }
+        // }
+        if (videoUrl) {
+          console.log("vio");
+          formData.append("image", imageUrl);
+          formData.append("video", videoUrl);
+        } else {
+          console.log("imo");
+          formData.append("image", imageUrl);
+        }
+        // formData.append("image", this.thumbnail);
+        // formData.append("image", imageUrl);
+
+        // formData.append("video", this.thumbnail);
 
         formData.append("isEdition", true);
         formData.append("edition", tempCollection.type);
@@ -1021,18 +1225,31 @@ export default {
         aptRes.requiredBalance
       );
 
-      if (!transactionRes.success) {
+      if (!transactionRes.success && !transactionRes.hash) {
         throw new Error("Transaction Not Successful Please Try Again");
       }
 
       //uploading and creating metadata file
-      const metaUri =
-        (await uploadAndCreateFile(this.file, {
-          name: this.collection.tokenName,
-          description: this.collection.tokenDesc,
-          attributes: this.collection.attributes,
-        })) + "/";
+      let metaUri;
 
+      if (this.checkVideo === true) {
+        console.log("aaa");
+        metaUri =
+          (await uploadAndCreateVideoFile(this.thumbnail, this.file, {
+            name: this.collection.tokenName,
+            description: this.collection.tokenDesc,
+            attributes: this.collection.attributes,
+          })) + "/";
+      } else {
+        console.log("bbb");
+        metaUri =
+          (await uploadAndCreateFile(this.file, {
+            name: this.collection.tokenName,
+            description: this.collection.tokenDesc,
+            attributes: this.collection.attributes,
+          })) + "/";
+      }
+      console.log("meta ur", metaUri);
       return metaUri;
     },
     async createOpenEditionInChain() {

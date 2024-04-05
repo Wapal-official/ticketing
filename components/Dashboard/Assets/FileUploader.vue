@@ -229,6 +229,7 @@ export default {
     async sendDataToUploadFolder() {
       this.serverUploadPercent = 0;
       let files = [];
+      // console.log("asdad", this.uploadedFile);
       if (Array.isArray(this.uploadedFile)) {
         files = this.uploadedFile;
       } else {
@@ -279,14 +280,19 @@ export default {
         this.uploadStatusClass = "tw-h-0";
         this.uploading = true;
         this.showUploadingDialog = true;
-
-        if (this.type === "metadata" && !this.folderInfo.assets.baseURI) {
+        console.log("type", this.type);
+        if (
+          this.type === "metadata" &&
+          !this.folderInfo.assets.baseURI &&
+          !this.folderInfo.images.baseURI
+        ) {
           throw new Error("Please upload Images in Asset Folder first");
         }
 
         if (
           this.type === "metadata" &&
-          this.folderInfo.assets.files.length !== files.length
+          this.folderInfo.assets.files.length !== files.length &&
+          this.folderInfo.images.files.length !== files.length
         ) {
           throw new Error(
             "Your metadata folder does not have same file length as Image Folder"
@@ -322,7 +328,11 @@ export default {
                 throw new Error("Please Only Upload Images on Asset Folder");
               }
             }
-
+            if (this.type === "images") {
+              if (file.type === "application/json") {
+                throw new Error("Please Only Upload Images on Asset Folder");
+              }
+            }
             if (this.type === "metadata") {
               if (file.type !== "application/json") {
                 throw new Error(
@@ -330,7 +340,7 @@ export default {
                 );
               }
             }
-
+            console.log("filee", file);
             const filename = file.name;
             const extensionIndex = filename.lastIndexOf(".");
             const nameWithoutExtension = filename.substring(0, extensionIndex);
@@ -350,13 +360,12 @@ export default {
 
             formData.append("images", file);
           });
-
+ 
           const uniqueExtensions = [...new Set(extensions)];
 
           if (uniqueExtensions.length > 1) {
             throw new Error("Please upload file with same extension");
-          }
-
+          } 
           const res = await folderUpload(formData);
 
           if (res.data.newFolder) {
@@ -394,7 +403,7 @@ export default {
           this.balanceNotEnoughError.requiredBalance
         );
 
-        if (transaction.success) {
+        if (transaction.success || transaction.hash) {
           this.uploading = false;
           this.uploadStatusClass = "tw-h-full";
 

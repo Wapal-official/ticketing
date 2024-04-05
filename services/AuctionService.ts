@@ -79,7 +79,29 @@ export const uploadAndCreateFile = async (file: File, params: any) => {
     "/api/uploader/singleupload",
     formData
   );
+  console.log("upload", upload)
   return upload.data.metadata;
+};
+
+export const uploadAndCreateVideoFile = async (file: File, thumbnail: File, params: any) => {
+  const formData = new FormData();
+  formData.append("image", thumbnail);
+  formData.append("video", file);
+  formData.append("name", params.name);
+  formData.append("description", params.description);
+  formData.append("attributes", JSON.stringify(params.attributes));
+
+  const upload = await publicRequest.post(
+    "/api/uploader/videoedition",
+    formData
+  );
+  console.log("upload", upload)
+  
+  if (upload.data && upload.data.data.metadata) {
+    return upload.data.data.metadata;
+  } else {
+    throw new Error("Metadata not found in the upload response");
+  }
 };
 
 export const getWalletNFT = async (params: any) => {

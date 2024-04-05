@@ -13,7 +13,7 @@ export const getAllFolder = async (userId: string) => {
 
 export const createFolder = async (folder: any) => {
   const res = await publicRequest.post(`/api/folder/create`, folder);
-
+  console.log( 'aaares', res)
   return res;
 };
 
@@ -60,7 +60,7 @@ export const folderUpload = async (formData: any) => {
     formData,
     config
   );
-
+    console.log('folder upload', res)
   return res;
 };
 
