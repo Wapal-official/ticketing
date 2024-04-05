@@ -107,8 +107,8 @@ export default {
     this.startCountdown(this.startTime);
   },
 };
-</script>
-<style>
+</script> 
+<style lang="css"> 
 .change-color {
   color: #fff;
   font-size: 26px;

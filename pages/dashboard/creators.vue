@@ -4,7 +4,7 @@
       Wapal Season 1
     </h2>
     <v-row
-      no-gutters
+      no-gutters 
       class="!tw-mb-10 tw-justify-between tw-p-8 tw-items-center rounded-lg"
       style="background-color: #1a1b1e"
     >
@@ -72,14 +72,14 @@
             :changeColor="false"
           />
           <strong class="dark-text reward-text">Apr 26, 2024 06:00 GMT</strong>
-        </div>
+        </div> 
       </v-col>
     </v-row>
     <h2 class="tw-mb-6 tw-text-white tw-text-[1.75em] tw-font-bold">
       Creator Studio
     </h2>
     <v-row
-      no-gutters
+      no-gutters 
       class="studio-row !tw-mb-10 tw-flex tw-flex-row tw-justify-between tw-items-center rounded-xl"
     >
       <v-col cols="12" sm="6" md="4" class="!tw-pr-4 !tw-pb-4">
@@ -191,28 +191,28 @@
         </div>
       </v-col>
     </v-row>
-    <!-- <h2 class="tw-mb-6 tw-text-white tw-text-[1.75em] tw-font-bold">
+    <!-- <h2 class="tw-mb-6 tw-text-white tw-text-[1.75em] tw-font-bold"> 
       Creators Leaderboard
     </h2>
     <dashboard-creators-table
       class="tw-mb-8"
       :headers="headers"
-      :items="auctions"
-    /> -->
+      :items="auctions" 
+    /> --> 
   </div>
 </template>
 
-<script>
+<script> 
 import {
   getTotalCollections,
   getTotalAuctions,
   getTotalusers,
 } from "@/services/creatorAirdrop";
-
+ 
 export default {
   layout: "dashboard",
   data() {
-    return {
+    return { 
       totalCreated: null,
       totalEdition: null,
       totalMinted: null,
@@ -262,7 +262,7 @@ export default {
       //   },
       // ],
     };
-  },
+  }, 
   methods: {
     formatNumber(number) {
       if (number >= 1000000) {
@@ -276,7 +276,7 @@ export default {
         return number;
       }
     },
-  },
+  }, 
   async mounted() {
     const totals = await getTotalCollections();
     this.totalCreated = totals.totalCollections;
@@ -285,20 +285,20 @@ export default {
     this.totalAuction = totalAuction[0].total;
     const totalUser = await getTotalusers();
     this.totalUser = totalUser[0].total;
-  },
+  }, 
 };
 </script>
 
 <style lang="css" scoped>
 .dark-text {
   color: #909296;
-}
+} 
 
 .reward-text {
   font-size: 12px !important;
   text-transform: uppercase;
 }
 .studio-text {
-  font-size: 18px;
+  font-size: 18px; 
 }
 </style>
