@@ -65,6 +65,7 @@ export default {
       showVerification: false,
       showSidebar: true,
       sidebarItems: [
+        { path: "/dashboard/creators", name: "Creator's Airdrop" },
         { path: "/dashboard/assets", name: "Assets" },
         { path: "/dashboard/collection", name: "Collection" },
         { path: "/dashboard/whitelist", name: "Whitelist" },

@@ -41,7 +41,7 @@
       <span class="live-counter live-counter-shadow">{{ minutes }} M</span>
       <span class="live-counter live-counter-shadow">{{ seconds }} S</span>
     </span>
-    <span class="tw-text-wapal-pink" v-else>
+    <span :class="[changeColor ? 'tw-text-wapal-pink' : 'change-color']" v-else>
       <span v-if="days > 0">{{ days }}d </span>
       {{ hours }}h {{ minutes }}m {{ seconds }}s
     </span>
@@ -55,6 +55,7 @@ export default {
     startTime: { type: String },
     textWhite: { type: Boolean, default: false },
     textSmall: { type: Boolean, default: false },
+    changeColor: { type: Boolean, default: true },
   },
   data() {
     return {
@@ -107,3 +108,9 @@ export default {
   },
 };
 </script>
+<style lang="css">
+.change-color {
+  color: #fff;
+  font-size: 26px;
+}
+</style>
