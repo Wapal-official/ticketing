@@ -481,6 +481,9 @@ export default {
   },
   methods: {
     isImage(source) {
+      if (!source) {
+        return false;
+      }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
         ? [
