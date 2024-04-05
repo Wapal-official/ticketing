@@ -10,12 +10,9 @@ export const login = async (body: any) => {
 };
 
 export const register = async (walletAddress: string) => {
-  const res = await axios.post(
-    `${process.env.CREATOR_STUDIO_API}/api/auth/register`,
-    {
-      wallet_address: walletAddress,
-    }
-  );
+  const res = await axios.post(`${process.env.baseUrl}/api/auth/register`, {
+    wallet_address: walletAddress,
+  });
 
   return res;
 };

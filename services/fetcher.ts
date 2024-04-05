@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let BASE_URL = process.env.CREATOR_STUDIO_API;
+let BASE_URL = process.env.baseURL;
 
 export const publicRequest = axios.create({
   baseURL: BASE_URL,

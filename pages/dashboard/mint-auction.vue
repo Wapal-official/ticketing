@@ -779,6 +779,7 @@ import {
   getAvailableCoinTypesForAuction,
   getCoinType,
 } from "@/utils/getCoinType";
+import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 
 extend("bidAmount", {
   validate(value) {
@@ -1123,7 +1124,7 @@ export default {
                         this.selectedNft.meta.name
                       );
 
-                      await publicRequest.post("/api/auction", {
+                      await creatorStudioRequest.post("/api/auction", {
                         nft: this.selectedNft,
                         startAt: this.mint.startDate,
                         endAt: this.mint.endDate,
