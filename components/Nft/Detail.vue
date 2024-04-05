@@ -500,6 +500,9 @@ export default {
         : false;
     },
     isVideo(source) {
+      if (!source) {
+        return false;
+      }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
         ? [
