@@ -87,7 +87,7 @@
               >
                 {{ itemIndex + 1 }}.
                 <utility-image
-                  v-if="isImage(item.image)"
+                  v-if="item.image"
                   :source="item.image"
                   :onerror="imageNotFound()"
                   :alt="item[header.value]"
