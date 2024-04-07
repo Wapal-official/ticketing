@@ -1137,7 +1137,7 @@ export default {
         let videoUrl;
         if (metadata.properties) {
           // videoUrl = metadata.video;
-          videoUrl = metadata.properties.files[1].uri;
+          videoUrl = metadata.properties.files[0].uri;
         }
         console.log(imageUrl);
         console.log(videoUrl);
@@ -1183,7 +1183,7 @@ export default {
         if (videoUrl) {
           console.log("vio");
           formData.append("image", imageUrl);
-          formData.append("video", videoUrl);
+          formData.append("media2", videoUrl);
         } else {
           console.log("imo");
           formData.append("image", imageUrl);
