@@ -98,11 +98,13 @@
         :type="type"
       />
       <div
-        class="tw-text-dark-0 tw-text-center tw-text-lg tw-w-full"
+        class="tw-text-dark-0 tw-text-center tw-p-16 tw-text-lg tw-w-full"
         v-if="!checkImageUploaded"
+        style="border: 1px solid #25262b"
       >
-        Please Upload Images in assets or videos in assets and images in images
-        folder first
+        <h3 class="!tw-mb-1" style="color: #fff">This folder is empty.</h3>
+        Please upload the assets (images or videos) before uploading the
+        metadata.
       </div>
     </div>
     <div
