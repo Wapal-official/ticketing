@@ -7,12 +7,8 @@
       <div style="position: relative">
         <video-player-detailed
           class="video-detailed-edit"
-          v-if="
-            collection.media2 ? collection.media2 : isVideo(collection.image)
-          "
-          :source="
-            collection.media2 ? collection.media2 : isVideo(collection.image)
-          "
+          v-if="isVideo(fileType ? fileType : collection.media2)"
+          :source="collection.media2"
         />
         <img
           v-else
@@ -23,7 +19,7 @@
           height="421px"
         />
         <audio-player-test
-          v-if="isAudio(collection.media2)"
+          v-if="isAudio(fileType ? fileType : collection.media2)"
           class="audio-bg"
           :audioSrc="collection.media2"
         ></audio-player-test>
@@ -725,12 +721,38 @@ export default {
       settingUpNextPhaseError: false,
       mintingPaused: false,
       aptIcon,
+      fileType: "",
     };
   },
   async mounted() {
     this.fetchCollection();
   },
   methods: {
+    async getFileType(url: RequestInfo | URL) {
+      try {
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (contentType) {
+          const fileParts = contentType.split("/");
+          const fileType = fileParts[fileParts.length - 1];
+          const fileExt = url + "." + fileType;
+          console.log("File ext:", fileExt);
+          this.fileType = fileExt;
+
+          return fileExt;
+        } else {
+          throw new Error("Content type header not found");
+        }
+      } catch (error) {
+        console.error("Error fetching file type:", error);
+        return null;
+      }
+    },
+
     isVideo(source: string) {
       if (!source) {
         return false;
@@ -748,7 +770,6 @@ export default {
             "flv",
             "3gp",
             "ogv",
-            "mpeg",
             "mpg",
             "divx",
             "rm",
@@ -775,12 +796,15 @@ export default {
             "alac",
             "aiff",
             "opus",
+            "mpeg",
           ].includes(extension)
         : false;
     },
     async fetchCollection() {
       this.loading = true;
       this.collection = await getCollection(this.$route.params.id);
+      await this.getFileType(this.collection.media2);
+
       console.log("collection", this.collection);
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,

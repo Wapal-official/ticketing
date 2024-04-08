@@ -1083,7 +1083,7 @@ export default {
           if (fileType === "image") {
             formData.append("image", this.image);
           } else {
-            formData.append("video", this.image);
+            formData.append("media2", this.image);
             formData.append("image", this.thumbnail);
           }
         } else {
