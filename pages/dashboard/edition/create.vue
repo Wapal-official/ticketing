@@ -313,11 +313,19 @@
           </h2>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-items-start md:tw-justify-start lg:tw-flex-row lg:tw-justify-start"
+            style="position: relative"
           >
             <div
               id="image-preview"
               class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
+              style="background-color: #000"
             ></div>
+            <audio-player-test
+              v-if="audioCheck"
+              class="audio-position"
+              :audioSrc="this.audioUrl"
+              style="top: 60% !important"
+            ></audio-player-test>
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
             >
@@ -397,11 +405,19 @@
           </h2>
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 md:tw-items-center md:tw-justify-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start"
+            style="position: relative"
           >
             <div
               id="image-review"
               class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
+              style="background-color: #000"
             ></div>
+            <audio-player-test
+              v-if="audioCheck"
+              class="audio-position"
+              :audioSrc="this.audioUrlReview"
+              style="top: 50% !important"
+            ></audio-player-test>
             <div
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 lg:tw-w-[540px]"
             >
@@ -620,6 +636,9 @@ export default {
       formSteps: ["Details", "Token", "Attributes", "Review"],
       formStepNumber: 1,
       checkVideo: false,
+      audioUrl: "",
+      audioUrlReview: "",
+      audioCheck: false,
     };
   },
   watch: {
@@ -799,21 +818,131 @@ export default {
       while (reviewElement.firstChild) {
         reviewElement.removeChild(reviewElement.firstChild);
       }
+      const fileType = this.getFileType(this.file.name);
 
       previewElement.prepend(previewVideoElement);
       reviewElement.prepend(reviewVideoElement);
+
+      // Log the video source and file type
+      console.log("File Type:", fileType);
+      console.log("Video Source:", previewVideoElement.src + fileType);
+    },
+
+    displayAudio() {
+      const previewVideoElement = document.createElement("audio");
+      const reviewVideoElement = document.createElement("audio");
+
+      previewVideoElement.src = reviewVideoElement.src = URL.createObjectURL(
+        this.file
+      );
+      previewVideoElement.autoplay = false;
+      previewVideoElement.controls = true;
+      previewVideoElement.muted = true;
+      previewVideoElement.preload = reviewVideoElement.preload = "metadata";
+
+      previewVideoElement.classList.add("tw-w-full");
+      previewVideoElement.classList.add("tw-h-full");
+      previewVideoElement.classList.add("tw-object-fill");
+      previewVideoElement.classList.add("tw-max-h-[200px]");
+      previewVideoElement.classList.add("tw-rounded");
+
+      reviewVideoElement.classList.add("tw-w-full");
+      reviewVideoElement.classList.add("tw-h-full");
+      reviewVideoElement.classList.add("tw-object-fill");
+      reviewVideoElement.classList.add("tw-max-h-[200px]");
+      reviewVideoElement.classList.add("tw-rounded");
+
+      const previewElement = document.getElementById("image-preview");
+      const reviewElement = document.getElementById("image-review");
+
+      while (previewElement.firstChild) {
+        previewElement.removeChild(previewElement.firstChild);
+      }
+
+      while (reviewElement.firstChild) {
+        reviewElement.removeChild(reviewElement.firstChild);
+      }
+      const fileType = this.getAudioFileType(this.file.name);
+      this.audioUrl = previewVideoElement.src + fileType;
+      console.log("audio", this.audioUrl);
+      console.log("file type", fileType);
+      // previewElement.prepend(previewVideoElement);
+      // reviewElement.prepend(reviewVideoElement);
+    },
+    getAudioFileType(fileName) {
+      const extension = fileName.split(".").pop().toLowerCase();
+      const audioExtensions = [
+        "mp3",
+        "wav",
+        "ogg",
+        "aac",
+        "flac",
+        "wma",
+        "alac",
+        "aiff",
+        "opus",
+      ];
+
+      if (audioExtensions.includes(extension)) {
+        return "." + extension;
+      } else {
+        return;
+      }
+    },
+    getFileType(fileName) {
+      const extension = fileName.split(".").pop().toLowerCase();
+      const videoExtensions = [
+        "mp4",
+        "mkv",
+        "m4v",
+        "webm",
+        "avi",
+        "mov",
+        "wmv",
+        "flv",
+        "3gp",
+        "ogv",
+        "mpeg",
+        "mpg",
+        "divx",
+        "rm",
+        "asf",
+        "vob",
+        "ts",
+        "m2ts",
+      ];
+
+      if (videoExtensions.includes(extension)) {
+        return "." + extension;
+      } else {
+        return;
+      }
     },
     selectImage(file) {
       this.file = file;
       if (this.isImage(file.name)) {
         this.checkVideo = false;
+        this.audioCheck = false;
+
         this.displayImage();
       } else if (this.isVideo(file.name)) {
         this.checkVideo = true;
+        this.audioCheck = false;
+        console.log("asdfnsd");
+        console.log("asdfnsd", this.file);
+        // const ext = this.getFileType(this.file);
+
+        // console.log("ext", ext);
         this.displayVideo();
-      } else {
+      } else if (this.isAudio(file.name)) {
+        this.audioCheck = true;
         this.checkVideo = true;
-        this.displayVideo();
+        this.displayAudio();
+      } else {
+        this.$toast.showMessage({
+          message: "File error",
+          error: true,
+        });
       }
     },
     thumbnailSelected(file) {
@@ -870,6 +999,25 @@ export default {
           ].includes(extension)
         : false;
     },
+    isAudio(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
+    },
     async submit() {
       const validate = await this.$refs.attributeForm.validate();
 
@@ -904,7 +1052,7 @@ export default {
         this.createEditionModal = true;
 
         this.progress = 1;
-
+        console.log("create", this.collection);
         //uploading and creating metadata file
         const metaUri = await this.uploadImageAndMetadata();
 
@@ -1067,7 +1215,7 @@ export default {
             break;
           }
           console.log("asd");
-          console.log("asd", this.file);
+          console.log("validation", this.file);
 
           console.log("check validation", this.file, this.thumbnail);
           // const fileType = this.checkFileType(this.file.name);
@@ -1171,15 +1319,6 @@ export default {
         formData.append("phases", JSON.stringify([]));
         formData.append("tweet", tempCollection.tweet);
 
-        // if (videoUrl) {
-        //   const fileType = this.checkFileType(imageUrl);
-        //   if (fileType === "image") {
-        //     formData.append("image", imageUrl);
-        //   } else {
-        //     formData.append("video", imageUrl);
-        //     formData.append("image", this.thumbnail);
-        //   }
-        // }
         if (videoUrl) {
           console.log("vio");
           formData.append("image", imageUrl);
@@ -1234,6 +1373,8 @@ export default {
 
       if (this.checkVideo === true) {
         console.log("aaa");
+        console.log("the file", this.file);
+
         metaUri =
           (await uploadAndCreateVideoFile(this.thumbnail, this.file, {
             name: this.collection.tokenName,

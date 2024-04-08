@@ -49,7 +49,7 @@
         id="drop-zone"
       />
     </div>
-    <div v-else class="d-flex tw-gap-4 tw-mb-16">
+    <div v-else class="d-flex tw-gap-4">
       <div
         class="tw-w-[200px] tw-h-[200px] tw-relative tw-rounded tw-group"
         ref="dropZone"
