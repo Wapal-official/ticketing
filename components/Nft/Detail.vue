@@ -98,6 +98,16 @@
               class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
+          <a
+            :href="collection.website"
+            target="_blank"
+            v-if="collection.website"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+          >
+            <i
+              class="bx bx-globe tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
+            ></i>
+          </a>
           <div class="tw-relative">
             <button
               class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
@@ -180,7 +190,7 @@
                   <div
                     class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
                     v-if="
-                      collection.isEdition &&
+                      collection.edition &&
                       collection.edition === 'open-edition'
                     "
                   >
@@ -705,7 +715,7 @@ export default {
         );
 
         if (
-          this.collection.isEdition &&
+          this.collection.edition &&
           this.collection.edition === "open-edition"
         ) {
           return;
@@ -997,10 +1007,13 @@ export default {
       }
     },
     async getOwnedCollectionOfUser() {
-      const res = await getOwnedCollectionOfUser(
-        this.getWalletAddress,
-        this.collection.name
-      );
+      const res = await getOwnedCollectionOfUser({
+        owner_address: this.getWalletAddress,
+        collection_name: this.collection.name,
+        candy_id: this.collection.candyMachine.candy_id,
+        resource_account: this.collection.candyMachine.resource_account,
+        mint_limit: this.mintLimit,
+      });
 
       this.currentlyOwned = res;
 
@@ -1064,7 +1077,9 @@ export default {
       }
 
       const publicSale = {
-        name: "public sale",
+        name: this.collection.public_sale_name
+          ? this.collection.public_sale_name
+          : "public sale",
         id: "public-sale",
         mint_price: this.collection.candyMachine.public_sale_price,
         mint_time: this.collection.candyMachine.public_sale_time,
@@ -1275,27 +1290,17 @@ export default {
 
     async getMintLimitOfPreviousPhases() {
       let mintLimit = 0;
-      await Promise.all(
-        this.collection.phases.map(async (phase) => {
-          const date = new Date();
+      this.phases.map(async (phase) => {
+        const date = new Date();
 
-          const phaseStartDate = new Date(phase.mint_time);
+        const phaseStartDate = new Date(phase.mint_time);
 
-          if (date > phaseStartDate) {
-            const mintLimitRes = await getMintLimit({
-              walletAddress: this.getWalletAddress,
-              collectionId: this.collection._id,
-              phase: phase.id,
-            });
-
-            const data = mintLimitRes.data.data;
-
-            if (data) {
-              mintLimit += data.mint_limit;
-            }
+        if (date > phaseStartDate) {
+          if (phase.mintLimit) {
+            mintLimit += phase.mintLimit;
           }
-        })
-      );
+        }
+      });
 
       this.mintLimit = mintLimit;
     },
@@ -1346,8 +1351,10 @@ export default {
 
               if (res.data.data) {
                 tempPhase.whitelisted = true;
+                tempPhase.mintLimit = res.data.data.mint_limit;
               } else {
                 tempPhase.whitelisted = false;
+                tempPhase.mintLimit = 0;
               }
             }
 

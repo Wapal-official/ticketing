@@ -81,6 +81,16 @@
               class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
+          <a
+            :href="collection.website"
+            target="_blank"
+            v-if="collection.website"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+          >
+            <i
+              class="bx bx-globe tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
+            ></i>
+          </a>
           <div class="tw-relative">
             <button
               class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
@@ -160,8 +170,7 @@
                 <div
                   class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
                   v-if="
-                    collection.isEdition &&
-                    collection.edition === 'open-edition'
+                    collection.edition && collection.edition === 'open-edition'
                   "
                 >
                   <div class="tw-text-white/70">
@@ -324,6 +333,7 @@ export default {
         twitter: "",
         discord: "",
         instagram: "",
+        website: "",
         isVerified: false,
         status: { sold_out: false },
         mintDetails: {
@@ -664,7 +674,9 @@ export default {
       });
 
       const publicSale = {
-        name: "public sale",
+        name: this.collection.public_sale_name
+          ? this.collection.public_sale_name
+          : "public sale",
         id: "public-sale",
         mint_price: this.collection.candyMachine.public_sale_price,
         mint_time: this.collection.candyMachine.public_sale_time,

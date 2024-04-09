@@ -1,4 +1,5 @@
 import { publicRequest } from "./fetcher";
+import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 import axios from "axios";
 
 const GRAPHQL_URL = process.env.GRAPHQL_URL ? process.env.GRAPHQL_URL : "";
@@ -75,7 +76,7 @@ export const uploadAndCreateFile = async (file: File, params: any) => {
   formData.append("description", params.description);
   formData.append("attributes", JSON.stringify(params.attributes));
 
-  const upload = await publicRequest.post(
+  const upload = await creatorStudioRequest.post(
     "/api/uploader/singleupload",
     formData
   );
@@ -105,7 +106,7 @@ export const uploadAndCreateVideoFile = async (file: File, thumbnail: File, para
 };
 
 export const getWalletNFT = async (params: any) => {
-  let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+  let resp = await creatorStudioRequest.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "AccountTokensData",
     query:
       `query AccountTokensData {
@@ -301,7 +302,7 @@ export const getTokensOfCollection = async (params: any) => {
 };
 
 export const setCompleteAuction = async (auctionId: string) => {
-  const res = await publicRequest.patch(`/api/auction/${auctionId}`);
+  const res = await creatorStudioRequest.patch(`/api/auction/${auctionId}`);
 
   return res.data;
 };
@@ -371,7 +372,7 @@ export const getApprovedAuctionsOfUser = async ({
   page: number;
   limit: number;
 }) => {
-  const res = await publicRequest.get("/api/auction/user", {
+  const res = await creatorStudioRequest.get("/api/auction/user", {
     params: {
       page: page,
       perPage: limit,
@@ -388,7 +389,7 @@ export const getUnderReviewAuctionsOfUser = async ({
   page: number;
   limit: number;
 }) => {
-  const res = await publicRequest.get("/api/auction/unapproved", {
+  const res = await creatorStudioRequest.get("/api/auction/unapproved", {
     params: {
       page: page,
       limit: limit,

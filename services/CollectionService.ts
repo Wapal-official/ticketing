@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { publicRequest } from "@/services/fetcher";
+import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 import { getCachedUrlOfImage } from "@/utils/imageCache";
 
 const filterApprovedCollections = (collections: any[]) => {
@@ -40,7 +41,7 @@ export const createCollection = async (formData: any) => {
     headers: { "content-type": "multipart/form-data" },
   };
 
-  const res = await publicRequest.post(
+  const res = await creatorStudioRequest.post(
     `/api/collection/create/`,
     formData,
     config
@@ -131,7 +132,7 @@ export const createDraft = async (formData: any) => {
     headers: { "content-type": "multipart/form-data" },
   };
 
-  const res = await publicRequest.post(`/api/draft/`, formData, config);
+  const res = await creatorStudioRequest.post(`/api/draft/`, formData, config);
 
   return res;
 };
@@ -146,7 +147,7 @@ export const getApprovedCollectionsOfUser = async (
   userId: string,
   page: number
 ) => {
-  const res = await publicRequest.get(
+  const res = await creatorStudioRequest.get(
     `/api/collection/approved?user_id=${userId}&limit=10&page=${page}`
   );
 
@@ -163,7 +164,7 @@ export const getUnderReviewCollectionsOfUser = async (
   userId: string,
   page: number
 ) => {
-  const res = await publicRequest.get(
+  const res = await creatorStudioRequest.get(
     `/api/collection/under-review?user_id=${userId}&limit=10&page=${page}`
   );
 
@@ -177,7 +178,9 @@ export const getUnderReviewCollectionsOfUser = async (
 };
 
 export const getDraftsOfUser = async (page: number) => {
-  const res = await publicRequest.get(`/api/draft?limit=10&page=${page}`);
+  const res = await creatorStudioRequest.get(
+    `/api/draft?limit=10&page=${page}`
+  );
 
   const collections = res.data.data;
 
@@ -188,10 +191,60 @@ export const getDraftsOfUser = async (page: number) => {
   return collections;
 };
 
-export const getOwnedCollectionOfUser = async (
-  owner_address: string,
-  collection_name: string
-) => {
+export const getOwnedCollectionOfUser = async ({
+  owner_address,
+  collection_name,
+  resource_account,
+  candy_id,
+  mint_limit,
+}: {
+  owner_address: string;
+  collection_name: string;
+  resource_account: string;
+  candy_id: string;
+  mint_limit: number;
+}) => {
+  try {
+    const NODE_URL = process.env.NODE_URL ? process.env.NODE_URL : "";
+
+    const res = await axios.post(`${NODE_URL}/view`, {
+      arguments: [owner_address, resource_account],
+      function: `${candy_id}::candymachine::getWhitelistMintLimit`,
+      type_arguments: [],
+    });
+
+    const data = res.data;
+
+    const minted = data[0];
+
+    if (!minted) {
+      return mint_limit;
+    }
+
+    return minted;
+  } catch (error: any) {
+    console.log(error);
+    if (error.response && error.response.status === 400) {
+      const ownedTokens = await getOwnedCollectionOfUserFromIndexer({
+        owner_address,
+        collection_name,
+        mint_limit,
+      });
+
+      return ownedTokens;
+    }
+  }
+};
+
+const getOwnedCollectionOfUserFromIndexer = async ({
+  owner_address,
+  collection_name,
+  mint_limit,
+}: {
+  owner_address: string;
+  collection_name: string;
+  mint_limit: number;
+}) => {
   const res = await axios.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "SingleCollectionOfUser",
     query: `
@@ -213,7 +266,7 @@ export const getOwnedCollectionOfUser = async (
     return data[0].distinct_tokens;
   }
 
-  return 0;
+  return mint_limit;
 };
 
 export const sortPhases = (phases: any[]) => {
@@ -264,7 +317,7 @@ export const editImage = async (draftId: string, data: any) => {
 };
 
 export const updateCollection = async (collectionId: string, data: any) => {
-  const res = await publicRequest.patch(
+  const res = await creatorStudioRequest.patch(
     `/api/collection/${collectionId}`,
     data
   );

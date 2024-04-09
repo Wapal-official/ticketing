@@ -1,4 +1,5 @@
 import { publicRequest } from "./fetcher";
+import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 import axios from "axios";
 
 export const getAllWhitelist = async (page: number, limit: number) => {
@@ -10,23 +11,24 @@ export const getAllWhitelist = async (page: number, limit: number) => {
 };
 
 export const getWhitelistOfUser = async (userId: string) => {
-  const res = await axios.get(
-    `${process.env.baseURL}/api/whitelist/user?limit=20&page=1&user_id=${userId}`
+  const res = await creatorStudioRequest.get(
+    `/api/whitelist/user?limit=20&page=1&user_id=${userId}`
   );
 
   return res;
 };
 
 export const createWhitelist = async (whitelist: any) => {
-  const res = await publicRequest.post("/api/whitelist/create", whitelist);
+  const res = await creatorStudioRequest.post(
+    "/api/whitelist/create",
+    whitelist
+  );
 
   return res;
 };
 
 export const getWhitelistById = async (whitelistId: string) => {
-  const res = await axios.get(
-    `${process.env.baseURL}/api/whitelist/${whitelistId}`
-  );
+  const res = await creatorStudioRequest.get(`/api/whitelist/${whitelistId}`);
 
   return res;
 };
@@ -45,8 +47,8 @@ export const uploadCSVInWhitelistEntry = async (formData: any) => {
     headers: { "content-type": "multipart/form-data" },
   };
 
-  const res = await publicRequest.post(
-    `${process.env.baseURL}/api/uploader/csv`,
+  const res = await creatorStudioRequest.post(
+    `/api/uploader/csv`,
     formData,
     config
   );
@@ -54,25 +56,28 @@ export const uploadCSVInWhitelistEntry = async (formData: any) => {
   return res;
 };
 
-export const deleteCSVInWhitelistEntry = async (collectionId: any,walletAddress: any, phase:any) => {
+export const deleteCSVInWhitelistEntry = async (
+  collectionId: any,
+  walletAddress: any,
+  phase: any
+) => {
   const config = {
     headers: { "content-type": "multipart/form-data" },
   };
-  const res = await publicRequest.delete(
-    `${process.env.baseURL}/api/whitelist/entry?collection_id=${collectionId}&wallet_address=${walletAddress}&phase=${phase}`,
+  const res = await creatorStudioRequest.delete(
+    `/api/whitelist/entry?collection_id=${collectionId}&wallet_address=${walletAddress}&phase=${phase}`,
     config
   );
 
   return res;
-}
+};
 
 export const searchWhitelistEntry = async (
   page: number,
   limit: number,
-  q: string, 
+  q: string,
   collection_id: string,
-  phaseName: string,
-  
+  phaseName: string
 ) => {
   let entryLimit = limit;
   let entryPage = page;
@@ -84,8 +89,8 @@ export const searchWhitelistEntry = async (
     entryPage = 1;
   }
 
-  const res = await axios.get(
-    `${process.env.baseURL}/api/whitelist/find?page=${entryPage}}&limit=${entryLimit}&q=${q}&collection_id=${collection_id}&phase=${phaseName}`,
+  const res = await creatorStudioRequest.get(
+    `/api/whitelist/find?page=${entryPage}}&limit=${entryLimit}&q=${q}&collection_id=${collection_id}&phase=${phaseName}`,
     {
       params: { collection_id: collection_id },
     }
@@ -110,8 +115,8 @@ export const getWhitelistEntryById = async (
     entryPage = 1;
   }
 
-  const res = await axios.get(
-    `${process.env.baseURL}/api/whitelist/entry?phase=${phaseName}&limit=${entryLimit}&page=${entryPage}`,
+  const res = await creatorStudioRequest.get(
+    `/api/whitelist/entry?phase=${phaseName}&limit=${entryLimit}&page=${entryPage}`,
     {
       params: { collection_id: collection_id },
     }
@@ -121,8 +126,7 @@ export const getWhitelistEntryById = async (
 };
 
 export const setRoot = async (rootData: any) => {
-  const PROOF_API_URL = process.env.PROOF_API_URL;
-  const res = await axios.post(`${PROOF_API_URL}/api/whitelist/root`, rootData);
+  const res = await creatorStudioRequest.post(`/api/whitelist/root`, rootData);
 
   return res;
 };
