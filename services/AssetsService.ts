@@ -1,7 +1,7 @@
-import { publicRequest } from "./fetcher";
+import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 
 export const getAllFolder = async (userId: string) => {
-  const res = await publicRequest.get("/api/folder/all", {
+  const res = await creatorStudioRequest.get("/api/folder/all", {
     params: {
       user_id: userId,
       limit: "100",
@@ -12,26 +12,26 @@ export const getAllFolder = async (userId: string) => {
 };
 
 export const createFolder = async (folder: any) => {
-  const res = await publicRequest.post(`/api/folder/create`, folder);
+  const res = await creatorStudioRequest.post(`/api/folder/create`, folder);
 
   return res;
 };
 
 export const updateFolder = async (folder: any) => {
-  const res = await publicRequest.patch(`/api/folder/${folder._id}`, {
+  const res = await creatorStudioRequest.patch(`/api/folder/${folder._id}`, {
     folder_name: folder.folder_name,
   });
   return res;
 };
 
 export const deleteFolder = async (folder: any) => {
-  const res = await publicRequest.delete(`/api/folder/${folder._id}`);
+  const res = await creatorStudioRequest.delete(`/api/folder/${folder._id}`);
 
   return res;
 };
 
 export const getFolderById = async (folderId: string) => {
-  const res = await publicRequest.get(`/api/folder/${folderId}`);
+  const res = await creatorStudioRequest.get(`/api/folder/${folderId}`);
 
   return res;
 };
@@ -41,7 +41,7 @@ export const singleFileUpload = async (formData: any) => {
     headers: { "content-type": "multipart/form-data" },
   };
 
-  const res = await publicRequest.post(
+  const res = await creatorStudioRequest.post(
     `/api/uploader/singleupload`,
     formData,
     config
@@ -55,7 +55,7 @@ export const folderUpload = async (formData: any) => {
     headers: { "content-type": "multipart/form-data" },
   };
 
-  const res = await publicRequest.post(
+  const res = await creatorStudioRequest.post(
     `/api/uploader/folderupload`,
     formData,
     config
@@ -65,13 +65,13 @@ export const folderUpload = async (formData: any) => {
 };
 
 export const getPrice = async () => {
-  const res = await publicRequest.get(`/api/uploader/fund`);
+  const res = await creatorStudioRequest.get(`/api/uploader/fund`);
 
   return res;
 };
 
 export const deleteFolderOnServer = async (userId: string) => {
-  const res = await publicRequest.get(`/api/folder/check?id=${userId}`);
+  const res = await creatorStudioRequest.get(`/api/folder/check?id=${userId}`);
 
   return res;
 };
@@ -81,7 +81,7 @@ export const uploadMetadataCSV = async (formData: any) => {
     headers: { "content-type": "multipart/form-data" },
   };
 
-  const res = await publicRequest.post(
+  const res = await creatorStudioRequest.post(
     `/api/uploader/metadata`,
     formData,
     config
@@ -103,7 +103,7 @@ export const addMetadata = async ({
   nftId: number;
   metadata: any;
 }) => {
-  const res = await publicRequest.post(`/api/folder/trait`, {
+  const res = await creatorStudioRequest.post(`/api/folder/trait`, {
     folder_id,
     folder_name,
     user_id,
@@ -127,7 +127,7 @@ export const editMetadata = async ({
   nftId: number;
   metadata: any;
 }) => {
-  const res = await publicRequest.patch(`/api/folder/trait/${nftId}`, {
+  const res = await creatorStudioRequest.patch(`/api/folder/trait/${nftId}`, {
     folder_id,
     folder_name,
     user_id,
@@ -143,7 +143,7 @@ export const generateMetadataFolderInServer = async ({
 }: {
   folder_name: string;
 }) => {
-  const res = await publicRequest.post(`/api/folder/trait/genmetadata`, {
+  const res = await creatorStudioRequest.post(`/api/folder/trait/genmetadata`, {
     folder_name,
   });
 

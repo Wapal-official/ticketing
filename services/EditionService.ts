@@ -1,4 +1,5 @@
 import { publicRequest } from "@/services/fetcher";
+import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 import { getCachedUrlOfImage } from "@/utils/imageCache";
 
 export const getOpenEditionsOfUser = async ({
@@ -10,7 +11,7 @@ export const getOpenEditionsOfUser = async ({
   limit: number;
   user_id: string;
 }) => {
-  const res = await publicRequest.get(
+  const res = await creatorStudioRequest.get(
     `/api/collection/editions?user_id=${user_id}&edition=open-edition&page=${page}&limit=${limit}`
   );
 

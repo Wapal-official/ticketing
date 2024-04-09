@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { publicRequest } from "@/services/fetcher";
+import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 import { getCachedUrlOfImage } from "@/utils/imageCache";
 
 const filterApprovedCollections = (collections: any[]) => {
@@ -40,7 +41,7 @@ export const createCollection = async (formData: any) => {
     headers: { "content-type": "multipart/form-data" },
   };
 
-  const res = await publicRequest.post(
+  const res = await creatorStudioRequest.post(
     `/api/collection/create/`,
     formData,
     config
@@ -131,7 +132,7 @@ export const createDraft = async (formData: any) => {
     headers: { "content-type": "multipart/form-data" },
   };
 
-  const res = await publicRequest.post(`/api/draft/`, formData, config);
+  const res = await creatorStudioRequest.post(`/api/draft/`, formData, config);
 
   return res;
 };
@@ -146,7 +147,7 @@ export const getApprovedCollectionsOfUser = async (
   userId: string,
   page: number
 ) => {
-  const res = await publicRequest.get(
+  const res = await creatorStudioRequest.get(
     `/api/collection/approved?user_id=${userId}&limit=10&page=${page}`
   );
 
@@ -163,7 +164,7 @@ export const getUnderReviewCollectionsOfUser = async (
   userId: string,
   page: number
 ) => {
-  const res = await publicRequest.get(
+  const res = await creatorStudioRequest.get(
     `/api/collection/under-review?user_id=${userId}&limit=10&page=${page}`
   );
 
@@ -177,7 +178,9 @@ export const getUnderReviewCollectionsOfUser = async (
 };
 
 export const getDraftsOfUser = async (page: number) => {
-  const res = await publicRequest.get(`/api/draft?limit=10&page=${page}`);
+  const res = await creatorStudioRequest.get(
+    `/api/draft?limit=10&page=${page}`
+  );
 
   const collections = res.data.data;
 
@@ -264,7 +267,7 @@ export const editImage = async (draftId: string, data: any) => {
 };
 
 export const updateCollection = async (collectionId: string, data: any) => {
-  const res = await publicRequest.patch(
+  const res = await creatorStudioRequest.patch(
     `/api/collection/${collectionId}`,
     data
   );
