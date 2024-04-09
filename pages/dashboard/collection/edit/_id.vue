@@ -1,16 +1,30 @@
 <template>
   <div
-    class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 xl:tw-flex-row xl:tw-items-start xl:tw-justify-start"
+    class="tw-pt-3 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 xl:tw-flex-row xl:tw-items-start xl:tw-justify-start"
     v-if="!loading"
   >
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6">
-      <img
-        :src="collection.image"
-        :alt="collection.name"
-        class="tw-rounded tw-w-[421px] tw-h-[421px]"
-        width="421px"
-        height="421px"
-      />
+      <div style="position: relative">
+        <video-player-detailed
+          class="video-detailed-edit"
+          v-if="isVideo(fileType ? fileType : collection.media2)"
+          :source="collection.media2"
+        />
+        <img
+          v-else
+          :src="collection.image"
+          :alt="collection.name"
+          class="tw-rounded tw-w-[421px] tw-h-[421px]"
+          width="421px"
+          height="421px"
+        />
+        <audio-player-test
+          v-if="isAudio(fileType ? fileType : collection.media2)"
+          class="audio-bg"
+          :audioSrc="collection.media2"
+        ></audio-player-test>
+      </div>
+
       <div
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
       >
@@ -661,6 +675,7 @@ export default {
         isVerified: false,
         phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
         isEdition: false,
+        media2: "",
         seed: {
           seedz: false,
           coin_type: "APT",
@@ -706,16 +721,91 @@ export default {
       settingUpNextPhaseError: false,
       mintingPaused: false,
       aptIcon,
+      fileType: "",
     };
   },
   async mounted() {
     this.fetchCollection();
   },
   methods: {
+    async getFileType(url: RequestInfo | URL) {
+      try {
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (contentType) {
+          const fileParts = contentType.split("/");
+          const fileType = fileParts[fileParts.length - 1];
+          const fileExt = url + "." + fileType;
+          console.log("File ext:", fileExt);
+          this.fileType = fileExt;
+
+          return fileExt;
+        } else {
+          throw new Error("Content type header not found");
+        }
+      } catch (error) {
+        console.error("Error fetching file type:", error);
+        return null;
+      }
+    },
+
+    isVideo(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+            "mpeg",
+          ].includes(extension)
+        : false;
+    },
     async fetchCollection() {
       this.loading = true;
       this.collection = await getCollection(this.$route.params.id);
+      await this.getFileType(this.collection.media2);
 
+      console.log("collection", this.collection);
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,
         candy_object: this.collection.candyMachine.resource_account,
@@ -1170,3 +1260,10 @@ export default {
   },
 };
 </script>
+<style lang="css">
+.video-detailed-edit {
+  max-width: 421px;
+  height: 421px;
+  border-radius: 0.25rem;
+}
+</style>

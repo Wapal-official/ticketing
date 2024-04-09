@@ -4,19 +4,40 @@
     class="!tw-text-white tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
   >
     <div class="tw-text-sm tw-font-semibold">{{ collectionNumber }}.</div>
-    <div
-      class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
-      v-if="video"
-    >
-      <video-player-featured :source="video" />
+    <div style="position: relative">
+      <div
+        class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
+        v-if="video"
+      >
+        <video-player-featured :source="video" />
+      </div>
+      <!-- <video-player-listed
+        v-else-if="collection && isVideo(collection.image)"
+        :source="collection?.image"
+        style="max-width: 100px; height: 100px"
+      /> -->
+      <utility-image
+        v-else
+        :source="collection?.image"
+        :onerror="imageNotFound()"
+        :alt="collection?.name"
+        class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
+      />
+
+      <div
+        v-if="isAudio(collection?.media2)"
+        @click.prevent.stop="checkit()"
+        class="forAudio-2"
+      >
+        <audio-player-list
+          v-if="isAudio(collection?.media2)"
+          class="audio-list-bg-2"
+          :audioSrc="collection?.media2"
+          iconSize="34"
+          @click.prevent.stop="checkit()"
+        ></audio-player-list>
+      </div>
     </div>
-    <utility-image
-      v-else
-      :source="collection?.image"
-      :onerror="imageNotFound()"
-      :alt="collection?.name"
-      class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
-    />
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1">
       <div class="tw-font-medium">{{ collection?.name }}</div>
       <div
@@ -210,5 +231,94 @@ export default {
       return `/nft/${this.collection?.username}`;
     },
   },
+  methods: {
+    checkit() {
+      console.log("cacac");
+    },
+    isAudio(source: string) {
+      if (typeof source !== "string") {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
+    },
+    isImage(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+  },
 };
 </script>
+<style lang="css" scoped>
+.forAudio-2 {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 4;
+  width: 100%;
+  /* background: red; */
+}
+.audio-list-bg-2 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0%;
+  bottom: 0;
+  margin: auto;
+  z-index: 5;
+
+  transform: translate(0%, 25%);
+}
+</style>

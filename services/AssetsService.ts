@@ -60,7 +60,7 @@ export const folderUpload = async (formData: any) => {
     formData,
     config
   );
-
+  console.log("folder upload", res);
   return res;
 };
 

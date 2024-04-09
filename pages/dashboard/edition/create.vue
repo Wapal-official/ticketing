@@ -285,9 +285,12 @@
           >
             <input-image-drag-and-drop
               :required="true"
-              label="Image"
+              label="Image/Video"
               :file="collection.image"
               @fileSelected="selectImage"
+              @fileSelectedThumbnail="thumbnailSelected"
+              :thumbnail="collection.thumbnail"
+              fileSize="Upto 15 MB"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
               {{ imageErrorMessage }}
@@ -310,11 +313,19 @@
           </h2>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-items-start md:tw-justify-start lg:tw-flex-row lg:tw-justify-start"
+            style="position: relative"
           >
             <div
               id="image-preview"
               class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
+              style="background-color: #000"
             ></div>
+            <audio-player-test
+              v-if="audioCheck"
+              class="audio-position"
+              :audioSrc="this.audioUrl"
+              style="top: 60% !important"
+            ></audio-player-test>
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
             >
@@ -394,11 +405,19 @@
           </h2>
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 md:tw-items-center md:tw-justify-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start"
+            style="position: relative"
           >
             <div
               id="image-review"
               class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
+              style="background-color: #000"
             ></div>
+            <audio-player-test
+              v-if="audioCheck"
+              class="audio-position"
+              :audioSrc="this.audioUrlReview"
+              style="top: 50% !important"
+            ></audio-player-test>
             <div
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 lg:tw-w-[540px]"
             >
@@ -485,7 +504,10 @@
 
 <script>
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
-import { uploadAndCreateFile } from "@/services/AuctionService";
+import {
+  uploadAndCreateFile,
+  uploadAndCreateVideoFile,
+} from "@/services/AuctionService";
 import {
   createCollectionV2,
   mintCollection,
@@ -542,6 +564,7 @@ export default {
         name: "",
         description: "",
         image: "",
+        thumbnail: "",
         baseURL: "",
         royalty_payee_address:
           this.$store.state.walletStore.wallet.walletAddress,
@@ -580,6 +603,7 @@ export default {
       startMenu: false,
       endMenu: false,
       file: null,
+      thumbnail: { name: null },
       imageError: false,
       imageErrorMessage: "",
       attributeError: false,
@@ -611,6 +635,10 @@ export default {
       socialErrorMessage: "",
       formSteps: ["Details", "Token", "Attributes", "Review"],
       formStepNumber: 1,
+      checkVideo: false,
+      audioUrl: "",
+      audioUrlReview: "",
+      audioCheck: false,
     };
   },
   watch: {
@@ -754,9 +782,241 @@ export default {
 
       reviewElement.prepend(reviewImgElement);
     },
+    displayVideo() {
+      const previewVideoElement = document.createElement("video");
+      const reviewVideoElement = document.createElement("video");
+
+      previewVideoElement.src = reviewVideoElement.src = URL.createObjectURL(
+        this.file
+      );
+      previewVideoElement.autoplay = reviewVideoElement.autoplay = false;
+      previewVideoElement.muted = reviewVideoElement.muted = false;
+      previewVideoElement.loop = reviewVideoElement.loop = true;
+      previewVideoElement.playsInline = reviewVideoElement.playsInline = true;
+      previewVideoElement.preload = reviewVideoElement.preload = "metadata";
+      previewVideoElement.controls = reviewVideoElement.controls = true;
+
+      previewVideoElement.classList.add("tw-w-full");
+      previewVideoElement.classList.add("tw-h-full");
+      previewVideoElement.classList.add("tw-object-fill");
+      previewVideoElement.classList.add("tw-max-h-[300px]");
+      previewVideoElement.classList.add("tw-rounded");
+
+      reviewVideoElement.classList.add("tw-w-full");
+      reviewVideoElement.classList.add("tw-h-full");
+      reviewVideoElement.classList.add("tw-object-fill");
+      reviewVideoElement.classList.add("tw-max-h-[300px]");
+      reviewVideoElement.classList.add("tw-rounded");
+
+      const previewElement = document.getElementById("image-preview");
+      const reviewElement = document.getElementById("image-review");
+
+      while (previewElement.firstChild) {
+        previewElement.removeChild(previewElement.firstChild);
+      }
+
+      while (reviewElement.firstChild) {
+        reviewElement.removeChild(reviewElement.firstChild);
+      }
+      const fileType = this.getFileType(this.file.name);
+
+      previewElement.prepend(previewVideoElement);
+      reviewElement.prepend(reviewVideoElement);
+
+      // Log the video source and file type
+      console.log("File Type:", fileType);
+      console.log("Video Source:", previewVideoElement.src + fileType);
+    },
+
+    displayAudio() {
+      const previewVideoElement = document.createElement("audio");
+      const reviewVideoElement = document.createElement("audio");
+
+      previewVideoElement.src = reviewVideoElement.src = URL.createObjectURL(
+        this.file
+      );
+      previewVideoElement.autoplay = false;
+      previewVideoElement.controls = true;
+      previewVideoElement.muted = true;
+      previewVideoElement.preload = reviewVideoElement.preload = "metadata";
+
+      previewVideoElement.classList.add("tw-w-full");
+      previewVideoElement.classList.add("tw-h-full");
+      previewVideoElement.classList.add("tw-object-fill");
+      previewVideoElement.classList.add("tw-max-h-[200px]");
+      previewVideoElement.classList.add("tw-rounded");
+
+      reviewVideoElement.classList.add("tw-w-full");
+      reviewVideoElement.classList.add("tw-h-full");
+      reviewVideoElement.classList.add("tw-object-fill");
+      reviewVideoElement.classList.add("tw-max-h-[200px]");
+      reviewVideoElement.classList.add("tw-rounded");
+
+      const previewElement = document.getElementById("image-preview");
+      const reviewElement = document.getElementById("image-review");
+
+      while (previewElement.firstChild) {
+        previewElement.removeChild(previewElement.firstChild);
+      }
+
+      while (reviewElement.firstChild) {
+        reviewElement.removeChild(reviewElement.firstChild);
+      }
+      const fileType = this.getAudioFileType(this.file.name);
+      this.audioUrl = previewVideoElement.src + fileType;
+      console.log("audio", this.audioUrl);
+      console.log("file type", fileType);
+      // previewElement.prepend(previewVideoElement);
+      // reviewElement.prepend(reviewVideoElement);
+    },
+    getAudioFileType(fileName) {
+      const extension = fileName.split(".").pop().toLowerCase();
+      const audioExtensions = [
+        "mp3",
+        "wav",
+        "ogg",
+        "aac",
+        "flac",
+        "wma",
+        "alac",
+        "aiff",
+        "opus",
+      ];
+
+      if (audioExtensions.includes(extension)) {
+        return "." + extension;
+      } else {
+        return;
+      }
+    },
+    getFileType(fileName) {
+      const extension = fileName.split(".").pop().toLowerCase();
+      const videoExtensions = [
+        "mp4",
+        "mkv",
+        "m4v",
+        "webm",
+        "avi",
+        "mov",
+        "wmv",
+        "flv",
+        "3gp",
+        "ogv",
+        "mpeg",
+        "mpg",
+        "divx",
+        "rm",
+        "asf",
+        "vob",
+        "ts",
+        "m2ts",
+      ];
+
+      if (videoExtensions.includes(extension)) {
+        return "." + extension;
+      } else {
+        return;
+      }
+    },
     selectImage(file) {
       this.file = file;
-      this.displayImage();
+      if (this.isImage(file.name)) {
+        this.checkVideo = false;
+        this.audioCheck = false;
+
+        this.displayImage();
+      } else if (this.isVideo(file.name)) {
+        this.checkVideo = true;
+        this.audioCheck = false;
+        console.log("asdfnsd");
+        console.log("asdfnsd", this.file);
+        // const ext = this.getFileType(this.file);
+
+        // console.log("ext", ext);
+        this.displayVideo();
+      } else if (this.isAudio(file.name)) {
+        this.audioCheck = true;
+        this.checkVideo = true;
+        this.displayAudio();
+      } else {
+        this.$toast.showMessage({
+          message: "File error",
+          error: true,
+        });
+      }
+    },
+    thumbnailSelected(file) {
+      this.thumbnail = file;
+      console.log("sadad", this.thumbnail);
+      if (Math.floor(this.thumbnail.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
+    },
+    isImage(source) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
     },
     async submit() {
       const validate = await this.$refs.attributeForm.validate();
@@ -792,7 +1052,7 @@ export default {
         this.createEditionModal = true;
 
         this.progress = 1;
-
+        console.log("create", this.collection);
         //uploading and creating metadata file
         const metaUri = await this.uploadImageAndMetadata();
 
@@ -858,6 +1118,51 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
       }
     },
+    checkFileType(fileName) {
+      const fileExtension = fileName.split(".").pop().toLowerCase();
+      const imageExtensions = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "webp",
+        "bmp",
+        "svg",
+        "ico",
+        "tiff",
+      ];
+      const videoExtensions = [
+        "mp4",
+        "mkv",
+        "m4v",
+        "webm",
+        "avi",
+        "mov",
+        "wmv",
+        "flv",
+        "3gp",
+        "ogv",
+        "mpeg",
+        "mpg",
+        "divx",
+        "rm",
+        "asf",
+        "vob",
+        "ts",
+        "m2ts",
+      ];
+      const audioExtensions = ["mp3", "ogg", "wav", "webm", "aac", "flac"];
+
+      if (imageExtensions.includes(fileExtension)) {
+        return "image";
+      } else if (videoExtensions.includes(fileExtension)) {
+        return "video";
+      } else if (audioExtensions.includes(fileExtension)) {
+        return "audio";
+      } else {
+        return "image";
+      }
+    },
     async validateFormForNextStep() {
       this.attributeError = false;
       this.socialError = false;
@@ -910,7 +1215,25 @@ export default {
             this.imageErrorMessage = "Please select an image for collection";
             break;
           }
+          console.log("asd");
+          console.log("validation", this.file);
 
+          console.log("check validation", this.file, this.thumbnail);
+          // const fileType = this.checkFileType(this.file.name);
+          // if (fileType === "video" || fileType === "audio") {
+          //   console.log("fileee", this.file.name);
+          //   console.log("fileee", this.thumbnail);
+
+          //   if (!this.thumbnail.name && !this.file.name) {
+          //     this.imageError = true;
+          //     this.imageErrorMessage =
+          //       "Please select an thumbnail for collection";
+          //     return;
+          //   }
+          // }
+          // if (this.imageError) {
+          //   return;
+          // }
           this.formStepNumber++;
           break;
         case 3:
@@ -955,9 +1278,18 @@ export default {
         const metadataRes = await axios.get(this.collection.baseURL);
 
         const metadata = metadataRes.data;
+        console.log("asdddd");
+        console.log(metadataRes);
+        console.log(metadata);
 
         const imageUrl = metadata.image;
-
+        let videoUrl;
+        if (metadata.properties) {
+          // videoUrl = metadata.video;
+          videoUrl = metadata.properties.files[0].uri;
+        }
+        console.log(imageUrl);
+        console.log(videoUrl);
         const formData = new FormData();
 
         formData.append("name", tempCollection.name);
@@ -988,7 +1320,18 @@ export default {
         formData.append("phases", JSON.stringify([]));
         formData.append("tweet", tempCollection.tweet);
 
-        formData.append("image", imageUrl);
+        if (videoUrl) {
+          console.log("vio");
+          formData.append("image", imageUrl);
+          formData.append("media2", videoUrl);
+        } else {
+          console.log("imo");
+          formData.append("image", imageUrl);
+        }
+        // formData.append("image", this.thumbnail);
+        // formData.append("image", imageUrl);
+
+        // formData.append("video", this.thumbnail);
 
         formData.append("isEdition", true);
         formData.append("edition", tempCollection.type);
@@ -1027,13 +1370,28 @@ export default {
       }
 
       //uploading and creating metadata file
-      const metaUri =
-        (await uploadAndCreateFile(this.file, {
-          name: this.collection.tokenName,
-          description: this.collection.tokenDesc,
-          attributes: this.collection.attributes,
-        })) + "/";
+      let metaUri;
 
+      if (this.checkVideo === true) {
+        console.log("aaa");
+        console.log("the file", this.file);
+
+        metaUri =
+          (await uploadAndCreateVideoFile(this.thumbnail, this.file, {
+            name: this.collection.tokenName,
+            description: this.collection.tokenDesc,
+            attributes: this.collection.attributes,
+          })) + "/";
+      } else {
+        console.log("bbb");
+        metaUri =
+          (await uploadAndCreateFile(this.file, {
+            name: this.collection.tokenName,
+            description: this.collection.tokenDesc,
+            attributes: this.collection.attributes,
+          })) + "/";
+      }
+      console.log("meta ur", metaUri);
       return metaUri;
     },
     async createOpenEditionInChain() {
