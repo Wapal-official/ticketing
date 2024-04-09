@@ -68,6 +68,16 @@
               class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
+          <a
+            :href="collection.website"
+            target="_blank"
+            v-if="collection.website"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+          >
+            <i
+              class="bx bx-globe tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
+            ></i>
+          </a>
           <div class="tw-relative">
             <button
               class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
@@ -310,6 +320,7 @@ export default {
         twitter: "",
         discord: "",
         instagram: "",
+        website: "",
         isVerified: false,
         status: { sold_out: false },
         mintDetails: {
