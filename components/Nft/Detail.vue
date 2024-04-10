@@ -6,7 +6,7 @@
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
-      <div style="position: relative">
+      <div class="card-min-width" style="position: relative">
         <div
           class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
           v-if="collection.video"
@@ -15,7 +15,7 @@
         </div>
         <video-player-detailed
           class="video-detailed"
-          v-else-if="isVideo(fileType ? fileType : collection.media2)"
+          v-else-if="isVideo(collection.media2)"
           :source="collection.media2"
         />
 
@@ -27,7 +27,7 @@
           class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
         />
         <audio-player-test
-          v-if="isAudio(fileType ? fileType : collection.media2)"
+          v-if="isAudio(collection.media2)"
           class="audio-bg"
           :audioSrc="collection.media2"
         ></audio-player-test>
@@ -487,7 +487,6 @@ export default {
       maxNumberOfNft: 35,
       imageNotFound,
       xLogo,
-      fileType: "",
     };
   },
   methods: {
@@ -1368,30 +1367,6 @@ export default {
         })
       );
     },
-    async getFileType(url) {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const contentType = response.headers.get("content-type");
-        if (contentType) {
-          const fileParts = contentType.split("/");
-          const fileType = fileParts[fileParts.length - 1];
-          const fileExt = url + "." + fileType;
-          console.log("File ext:", fileExt);
-          this.fileType = fileExt;
-
-          return fileExt;
-        } else {
-          throw new Error("Content type header not found");
-        }
-      } catch (error) {
-        console.error("Error fetching file type:", error);
-        return null;
-      }
-    },
   },
   computed: {
     getCurrentPrice() {
@@ -1455,7 +1430,6 @@ export default {
     },
   },
   async mounted() {
-    await this.getFileType(this.collection.media2);
     console.log("coll", this.collection);
     if (this.collection) {
       if (this.collection.username === "proudlionsclub") {
@@ -1677,6 +1651,11 @@ export default {
     height: 350px;
   }
 }
+@media (min-width: 1024px) and (max-width: 1200px) {
+  .video-detailed {
+    height: 450px;
+  }
+}
 .audio-bg {
   position: absolute;
   left: 0;
@@ -1685,7 +1664,12 @@ export default {
   /* width: 93%; */
   padding: 0 16px 16px;
   background-image: linear-gradient(transparent, #000) !important;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+@media (max-width: 768px) {
+  .card-min-width {
+    min-width: 50%;
+  }
 }
 </style>

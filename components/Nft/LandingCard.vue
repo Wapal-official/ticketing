@@ -427,7 +427,7 @@ export default {
   position: absolute;
   left: 0;
   right: 0;
-  top: 53%;
+  top: 55%;
   bottom: 0;
   margin: auto;
   z-index: 5;

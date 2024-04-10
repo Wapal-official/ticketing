@@ -319,6 +319,6 @@ export default {
   margin: auto;
   z-index: 5;
 
-  transform: translate(0%, 25%);
+  transform: translate(0%, 30%);
 }
 </style>
