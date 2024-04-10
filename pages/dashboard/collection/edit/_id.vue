@@ -14,7 +14,7 @@
           v-else
           :src="collection.image"
           :alt="collection.name"
-          class="tw-rounded tw-w-[421px] tw-h-[421px]"
+          class="tw-rounded-xl tw-w-[421px] tw-h-[421px]"
           width="421px"
           height="421px"
         />

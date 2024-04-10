@@ -216,18 +216,30 @@
                     class="tw-hidden tw-w-full tw-h-full"
                     ref="inputThumnail"
                   />
-
-                  <!-- <button
-                      class="tw-w-full tw-absolute tw-bottom-[-2px] tw-left-0 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-1 tw-py-2 tw-bg-dark-7 tw-text-white tw-rounded tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear group-hover:tw-opacity-100"
-                      @click="dropZoneClickedThumnail"
-                    >
-                      <span class="tw-text-sm tw-font-medium">Change </span>
-                      <i class="bx bxs-edit-alt tw-text-xl"></i>
-                    </button>  -->
+                  <!-- </div>
+                <div
+                  v-else
+                  class="tw-p-3 tw-rounded tw-cursor-pointer tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
+                  @click="dropZoneClickedThumnail"
+                  @dragover.prevent="dragover"
+                  @dragleave.prevent="dragleave"
+                  @drop.prevent="dropThumnail"
+                  :class="dropZoneClass"
+                  id="drop-zone"
+                >
+                  <input
+                    type="file"
+                    :accept="acceptFileThumnail"
+                    name="file"
+                    @change="fileSelectedThumbnail"
+                    class="tw-hidden tw-w-full tw-h-full"
+                    ref="inputThumnail"
+                    id="drop-zone"
+                  /> -->
                 </div>
               </div>
               <div
-                class="tw-w-[94%] tw-h-auto tw-mx-auto tw-p-3 tw-border tw-border-dashed tw-border-dark-4 tw-rounded tw-cursor-pointer tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
+                class="tw-w-[92%] tw-h-auto tw-mx-auto tw-p-3 tw-border tw-border-dashed tw-border-dark-4 tw-rounded tw-cursor-pointer tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
               >
                 <div
                   v-if="!imageSelectedThumnail && isVideo"
@@ -448,6 +460,19 @@ export default {
     };
   },
   computed: {},
+  watch: {
+    thumbnail: {
+      handler(newVal) {
+        console.log("before watch");
+        if (newVal && this.file && this.file.length > 0) {
+          this.imageSelectedThumbnail = true;
+          console.log("after  watch");
+          console.log("after  watch", newVal);
+        }
+      },
+      immediate: true,
+    },
+  },
 
   methods: {
     cancelSelection() {
@@ -485,7 +510,9 @@ export default {
     },
     resizeVideo() {},
     reClick() {
-      this.checkFeaturedFile = true;
+      if (!this.isImage) {
+        this.checkFeaturedFile = true;
+      }
     },
     checkFileType() {
       if (this.extension === ".json") {
@@ -556,6 +583,18 @@ export default {
       }
     },
     dropZoneClicked() {
+      this.$emit("cancel");
+      console.log("trigeer");
+      this.thumbnail = "";
+      this.isVideo = false;
+      this.imageSelectedThumnail = false;
+      if (this.file) {
+        this.checkFeaturedFile == false;
+        this.isImage == true;
+
+        this.generatePreviewImage(this.file);
+      }
+
       this.$refs.input.click();
     },
     dropZoneClickedThumnail() {
