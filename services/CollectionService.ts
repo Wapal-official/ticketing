@@ -228,7 +228,6 @@ export const getOwnedCollectionOfUser = async ({
       const ownedTokens = await getOwnedCollectionOfUserFromIndexer({
         owner_address,
         collection_name,
-        mint_limit,
       });
 
       return ownedTokens;
@@ -239,11 +238,9 @@ export const getOwnedCollectionOfUser = async ({
 const getOwnedCollectionOfUserFromIndexer = async ({
   owner_address,
   collection_name,
-  mint_limit,
 }: {
   owner_address: string;
   collection_name: string;
-  mint_limit: number;
 }) => {
   const res = await axios.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "SingleCollectionOfUser",
@@ -266,7 +263,7 @@ const getOwnedCollectionOfUserFromIndexer = async ({
     return data[0].distinct_tokens;
   }
 
-  return mint_limit;
+  return 0;
 };
 
 export const sortPhases = (phases: any[]) => {
