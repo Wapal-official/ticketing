@@ -97,8 +97,8 @@ export const uploadAndCreateVideoFile = async (file: File, thumbnail: File, para
   );
   console.log("upload", upload)
   
-  if (upload.data && upload.data.data.metadata) {
-    return upload.data.data.metadata;
+  if (upload.data ) {
+    return upload.data.data;
   } else {
     throw new Error("Metadata not found in the upload response");
   }

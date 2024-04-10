@@ -118,14 +118,54 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
+          <div class="select-type tw-mb-5">
+            <div class="tw-mb-3">Select your file type:</div>
+            <div class="select-type-radio tw-flex tw-justify-between">
+              <div>
+                <input
+                  type="radio"
+                  id="image"
+                  name="fileType"
+                  value="Image"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="image">Image</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="video"
+                  name="fileType"
+                  value="Video"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="video">Video</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="audio"
+                  name="fileType"
+                  value="Audio"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="audio">Audio</label>
+              </div>
+            </div>
+          </div>
           <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+            class="tw-mb-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
           >
             <input-image-drag-and-drop
-              label="Featured Image/Video"
+              :label="'Featured' + ' ' + selectedFileType"
               :required="true"
+              @cancel="clearFile"
               @fileSelected="imageSelected"
               @fileSelectedThumbnail="thumbnailSelected"
+              :selectedType="selectedFileType"
               :file="collection.image"
               :thumbnail="collection.thumbnail"
               fileSize="Upto 15 MB"
@@ -135,7 +175,7 @@
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
+            class="tw-mb-5 tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
           >
             <button-secondary
               class="tw-mr-4"
@@ -797,6 +837,7 @@ export default {
   props: { draft: { type: Boolean, default: false } },
   data() {
     return {
+      selectedFileType: "Image",
       steps: ["Details", "Royalty", "Phase", "Review"],
       stepNumber: 1,
       checkFeaturedFile: true,
@@ -1197,9 +1238,13 @@ export default {
         this.submitting = false;
       }
     },
-
+    clearFile() {
+      this.image = "";
+      this.thumbnail = "";
+    },
     imageSelected(image: any) {
       this.image = image;
+      console.log("this image", this.image);
       if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
         this.imageError = true;
         this.imageErrorMessage = "Please Upload Image less than 15MB";
@@ -1528,5 +1573,43 @@ canvas {
   width: 100%;
   height: auto;
   margin-top: 10px; /* Adjust margin as needed */
+}
+.select-type {
+  max-width: 50%;
+}
+@media (max-width: 600px) {
+  .select-type {
+    max-width: 100%;
+  }
+}
+.select-type-radio div {
+  display: flex;
+  align-items: center;
+}
+.radio-input {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #383a3f;
+  outline: none;
+  appearance: none;
+  border-radius: 50%;
+  background: #25262b;
+  margin-right: 8px;
+  position: relative;
+  cursor: pointer;
+}
+.radio-input:checked {
+  background-color: #8759ff;
+}
+.radio-input:checked::before {
+  content: " ";
+  background: #1a1b1e;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

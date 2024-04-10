@@ -280,13 +280,54 @@
             />
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
+          <div class="select-type tw-mb-5">
+            <div class="tw-mb-3">Select your file type:</div>
+            <div class="select-type-radio tw-flex tw-justify-between">
+              <div>
+                <input
+                  type="radio"
+                  id="image"
+                  name="fileType"
+                  value="Image"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="image">Image</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="video"
+                  name="fileType"
+                  value="Video"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="video">Video</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="audio"
+                  name="fileType"
+                  value="Audio"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="audio">Audio</label>
+              </div>
+            </div>
+          </div>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
             <input-image-drag-and-drop
+              :label="'Featured' + ' ' + selectedFileType"
               :required="true"
               label="Image/Video"
               :file="collection.image"
+              :selectedType="selectedFileType"
+              @cancel="clearFile"
               @fileSelected="selectImage"
               @fileSelectedThumbnail="thumbnailSelected"
               :thumbnail="collection.thumbnail"
@@ -317,14 +358,20 @@
           >
             <div
               id="image-preview"
-              class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
+              class="tw-h-[300px] tw-w-[300px]"
+              style="background-color: #000"
+            ></div>
+            <div
+              v-if="audioCheck"
+              id="thumbnail-preview"
+              class="audio-bg tw-h-[300px] tw-w-[300px]"
               style="background-color: #000"
             ></div>
             <audio-player-test
               v-if="audioCheck"
-              class="audio-position"
+              class="audio-position audio-max-width"
               :audioSrc="this.audioUrl"
-              style="top: 60% !important"
+              style="top: 230px !important"
             ></audio-player-test>
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
@@ -409,14 +456,20 @@
           >
             <div
               id="image-review"
-              class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
+              class="tw-h-[300px] tw-w-[300px] tw-ml-0"
+              style="background-color: #000"
+            ></div>
+            <div
+              v-if="audioCheck"
+              id="thumbnail-review"
+              class="audio-bg tw-h-[300px] tw-w-[300px]"
               style="background-color: #000"
             ></div>
             <audio-player-test
               v-if="audioCheck"
-              class="audio-position"
+              class="audio-position audio-max-width"
               :audioSrc="this.audioUrlReview"
-              style="top: 50% !important"
+              style="top: 230px !important"
             ></audio-player-test>
             <div
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 lg:tw-w-[540px]"
@@ -559,6 +612,7 @@ export default {
   components: { ValidationObserver, ValidationProvider },
   data() {
     return {
+      selectedFileType: "Image",
       step: 1,
       collection: {
         name: "",
@@ -595,6 +649,7 @@ export default {
         coinType: "APT",
         tweet: "",
       },
+      metadata: null,
       attribute: "",
       value: "",
       loading: false,
@@ -782,6 +837,58 @@ export default {
 
       reviewElement.prepend(reviewImgElement);
     },
+    displayThumbnail(file) {
+      if (!file) {
+        console.error("File is null or undefined.");
+        return;
+      }
+      console.log("thumb123");
+
+      const previewImgElement = document.createElement("img");
+      const reviewImgElement = document.createElement("img");
+
+      try {
+        previewImgElement.src = reviewImgElement.src =
+          URL.createObjectURL(file);
+      } catch (error) {
+        console.error("Error creating object URL:", error);
+        return;
+      }
+
+      previewImgElement.classList.add(
+        "tw-w-full",
+        "tw-h-full",
+        "tw-object-fill",
+        "tw-max-h-[300px]",
+        "tw-rounded"
+      );
+      reviewImgElement.classList.add(
+        "tw-w-full",
+        "tw-h-full",
+        "tw-object-fill",
+        "tw-max-h-[300px]",
+        "tw-rounded"
+      );
+
+      const previewElement = document.getElementById("thumbnail-preview");
+      const reviewElement = document.getElementById("thumbnail-review");
+
+      if (!previewElement || !reviewElement) {
+        console.error("Thumbnail preview or review element is null.");
+        return;
+      }
+
+      while (previewElement.firstChild) {
+        previewElement.removeChild(previewElement.firstChild);
+      }
+      while (reviewElement.firstChild) {
+        reviewElement.removeChild(reviewElement.firstChild);
+      }
+
+      previewElement.prepend(previewImgElement);
+      reviewElement.prepend(reviewImgElement);
+    },
+
     displayVideo() {
       const previewVideoElement = document.createElement("video");
       const reviewVideoElement = document.createElement("video");
@@ -818,14 +925,9 @@ export default {
       while (reviewElement.firstChild) {
         reviewElement.removeChild(reviewElement.firstChild);
       }
-      const fileType = this.getFileType(this.file.name);
 
       previewElement.prepend(previewVideoElement);
       reviewElement.prepend(reviewVideoElement);
-
-      // Log the video source and file type
-      console.log("File Type:", fileType);
-      console.log("Video Source:", previewVideoElement.src + fileType);
     },
 
     displayAudio() {
@@ -862,12 +964,11 @@ export default {
       while (reviewElement.firstChild) {
         reviewElement.removeChild(reviewElement.firstChild);
       }
-      const fileType = this.getAudioFileType(this.file.name);
-      this.audioUrl = previewVideoElement.src + fileType;
-      console.log("audio", this.audioUrl);
-      console.log("file type", fileType);
-      // previewElement.prepend(previewVideoElement);
-      // reviewElement.prepend(reviewVideoElement);
+      // const fileType = this.getAudioFileType(this.file.name);
+      this.audioUrl = previewVideoElement.src;
+      this.audioUrlReview = previewVideoElement.src;
+      // console.log("audio", this.audioUrl);
+      // console.log("file type", fileType);
     },
     getAudioFileType(fileName) {
       const extension = fileName.split(".").pop().toLowerCase();
@@ -889,34 +990,13 @@ export default {
         return;
       }
     },
-    getFileType(fileName) {
-      const extension = fileName.split(".").pop().toLowerCase();
-      const videoExtensions = [
-        "mp4",
-        "mkv",
-        "m4v",
-        "webm",
-        "avi",
-        "mov",
-        "wmv",
-        "flv",
-        "3gp",
-        "ogv",
-        "mpeg",
-        "mpg",
-        "divx",
-        "rm",
-        "asf",
-        "vob",
-        "ts",
-        "m2ts",
-      ];
-
-      if (videoExtensions.includes(extension)) {
-        return "." + extension;
-      } else {
-        return;
-      }
+    getFileExtension(fileName) {
+      const parts = fileName.split(".");
+      return parts[parts.length - 1];
+    },
+    clearFile() {
+      this.image = "";
+      this.thumbnail = "";
     },
     selectImage(file) {
       this.file = file;
@@ -930,14 +1010,21 @@ export default {
         this.audioCheck = false;
         console.log("asdfnsd");
         console.log("asdfnsd", this.file);
-        // const ext = this.getFileType(this.file);
-
-        // console.log("ext", ext);
+        this.getFileExtension(file.name);
         this.displayVideo();
+        if (this.thumbnail) {
+          console.log("thumb1");
+          this.displayThumbnail(this.thumbnail);
+        }
       } else if (this.isAudio(file.name)) {
         this.audioCheck = true;
         this.checkVideo = true;
         this.displayAudio();
+        if (this.thumbnail) {
+          console.log("thumb12");
+
+          this.displayThumbnail(this.thumbnail);
+        }
       } else {
         this.$toast.showMessage({
           message: "File error",
@@ -947,12 +1034,15 @@ export default {
     },
     thumbnailSelected(file) {
       this.thumbnail = file;
-      console.log("sadad", this.thumbnail);
+      console.log("thumbnail", this.thumbnail);
       if (Math.floor(this.thumbnail.size / (1024 * 1024)) >= 15) {
         this.imageError = true;
         this.imageErrorMessage = "Please Upload Image less than 15MB";
       } else {
         this.imageError = false;
+      }
+      if (file.name) {
+        this.displayThumbnail(file);
       }
     },
     isImage(source) {
@@ -1054,9 +1144,13 @@ export default {
         this.progress = 1;
         console.log("create", this.collection);
         //uploading and creating metadata file
-        const metaUri = await this.uploadImageAndMetadata();
+        let metadataUri = null;
+        metadataUri = this.metadata = await this.uploadImageAndMetadata();
+        console.log("create metaUri", metadataUri);
 
-        this.collection.baseURL = metaUri;
+        this.collection.baseURL = metadataUri.metaUri
+          ? metadataUri.metaUri
+          : metadataUri;
 
         let mintTime = Math.floor(new Date().getTime() / 1000) + 30;
 
@@ -1277,15 +1371,14 @@ export default {
         const metadataRes = await axios.get(this.collection.baseURL);
 
         const metadata = metadataRes.data;
-        console.log("asdddd");
+        console.log("metadataRes");
         console.log(metadataRes);
-        console.log(metadata);
+        console.log("meta data", this.metadata);
 
         const imageUrl = metadata.image;
         let videoUrl;
         if (metadata.properties) {
-          // videoUrl = metadata.video;
-          videoUrl = metadata.properties.files[0].uri;
+          videoUrl = this.metadata.videoUri;
         }
         console.log(imageUrl);
         console.log(videoUrl);
@@ -1318,7 +1411,6 @@ export default {
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify([]));
         formData.append("tweet", tempCollection.tweet);
-
         if (videoUrl) {
           console.log("vio");
           formData.append("image", imageUrl);
@@ -1367,20 +1459,36 @@ export default {
       if (!transactionRes.success && !transactionRes.hash) {
         throw new Error("Transaction Not Successful Please Try Again");
       }
-
-      //uploading and creating metadata file
+      const fileExtension = this.getFileExtension(this.file.name);
       let metaUri;
-
+      console.log("filex", fileExtension);
+      // const video = this.file + "/0." + fileExtension;
       if (this.checkVideo === true) {
         console.log("aaa");
         console.log("the file", this.file);
-
-        metaUri =
-          (await uploadAndCreateVideoFile(this.thumbnail, this.file, {
-            name: this.collection.tokenName,
-            description: this.collection.tokenDesc,
-            attributes: this.collection.attributes,
-          })) + "/";
+        const res = await uploadAndCreateVideoFile(this.file, this.thumbnail, {
+          name: this.collection.tokenName,
+          description: this.collection.tokenDesc,
+          attributes: this.collection.attributes,
+        });
+        console.log("res", res);
+        metaUri = res.metadata + "/";
+        console.log("resss", res.metadata);
+        const videoUri = res.video + "/0." + fileExtension;
+        return {
+          metaUri: metaUri,
+          videoUri: videoUri,
+          imageUri: res.image,
+        };
+        // metaUri =
+        //   (
+        //     await uploadAndCreateVideoFile(this.thumbnail, this.file, {
+        //       name: this.collection.tokenName,
+        //       description: this.collection.tokenDesc,
+        //       attributes: this.collection.attributes,
+        //       extension: fileExtension,
+        //     })
+        //   ).metadata + "/";
       } else {
         console.log("bbb");
         metaUri =
@@ -1394,11 +1502,14 @@ export default {
       return metaUri;
     },
     async createOpenEditionInChain() {
-      const metadataUri = await this.uploadImageAndMetadata();
+      let metadataUri = null;
+      metadataUri = this.metadata = await this.uploadImageAndMetadata();
 
       this.progress = 2;
 
-      this.collection.baseURL = metadataUri;
+      this.collection.baseURL = metadataUri.metaUri
+        ? metadataUri.metaUri
+        : metadataUri;
 
       const tempCollection = structuredClone(this.collection);
 
@@ -1459,5 +1570,53 @@ export default {
 
 .mint-auction-stepper .v-stepper__step__step {
   background: black !important;
+}
+@media (min-width: 1024px) and (max-width: 1200px) {
+  .audio-max-width {
+    max-width: 34%;
+  }
+}
+.audio-bg {
+  position: absolute;
+  top: 0;
+  padding: 0 !important;
+}
+.select-type {
+  max-width: 50%;
+}
+@media (max-width: 600px) {
+  .select-type {
+    max-width: 100%;
+  }
+}
+.select-type-radio div {
+  display: flex;
+  align-items: center;
+}
+.radio-input {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #383a3f;
+  outline: none;
+  appearance: none;
+  border-radius: 50%;
+  background: #25262b;
+  margin-right: 8px;
+  position: relative;
+  cursor: pointer;
+}
+.radio-input:checked {
+  background-color: #8759ff;
+}
+.radio-input:checked::before {
+  content: " ";
+  background: #1a1b1e;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

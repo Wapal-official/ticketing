@@ -317,12 +317,6 @@ export default {
         this.showFileDetails = true;
       }
     },
-    getFileType(item: any) {
-      if (item.type.includes("image/")) {
-        return true;
-      }
-      return false;
-    },
     async fetchFiles() {
       this.fileIndex = 0;
       this.loading = true;
