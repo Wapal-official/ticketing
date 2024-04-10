@@ -118,7 +118,7 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-          <div class="select-type tw-mb-5">
+          <div class="select-type tw-mb-3">
             <div class="tw-mb-3">Select your file type:</div>
             <div class="select-type-radio tw-flex tw-justify-between">
               <div>

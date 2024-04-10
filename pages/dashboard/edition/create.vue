@@ -280,7 +280,7 @@
             />
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
-          <div class="select-type tw-mb-5">
+          <div class="select-type tw-mb-3">
             <div class="tw-mb-3">Select your file type:</div>
             <div class="select-type-radio tw-flex tw-justify-between">
               <div>
@@ -365,7 +365,7 @@
               v-if="audioCheck"
               id="thumbnail-preview"
               class="audio-bg tw-h-[300px] tw-w-[300px]"
-              style="background-color: #000"
+              style="background-color: #000; opacity: 0.7 !important"
             ></div>
             <audio-player-test
               v-if="audioCheck"
@@ -463,7 +463,7 @@
               v-if="audioCheck"
               id="thumbnail-review"
               class="audio-bg tw-h-[300px] tw-w-[300px]"
-              style="background-color: #000"
+              style="background-color: #000; opacity: 0.7 !important"
             ></div>
             <audio-player-test
               v-if="audioCheck"
@@ -947,12 +947,14 @@ export default {
       previewVideoElement.classList.add("tw-object-fill");
       previewVideoElement.classList.add("tw-max-h-[200px]");
       previewVideoElement.classList.add("tw-rounded");
+      previewVideoElement.classList.add("audio-bg-opacity");
 
       reviewVideoElement.classList.add("tw-w-full");
       reviewVideoElement.classList.add("tw-h-full");
       reviewVideoElement.classList.add("tw-object-fill");
       reviewVideoElement.classList.add("tw-max-h-[200px]");
       reviewVideoElement.classList.add("tw-rounded");
+      reviewVideoElement.classList.add("audio-bg-opacity");
 
       const previewElement = document.getElementById("image-preview");
       const reviewElement = document.getElementById("image-review");
@@ -1581,6 +1583,9 @@ export default {
   position: absolute;
   top: 0;
   padding: 0 !important;
+}
+.audio-bg-opacity {
+  opacity: 0.7 !important;
 }
 .select-type {
   max-width: 50%;
