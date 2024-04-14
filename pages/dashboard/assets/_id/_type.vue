@@ -549,10 +549,15 @@ export default {
     },
     completeTransactionForMetadataUpload(csvLength: number) {
       this.showCSVUploadModal = false;
+      if (csvLength !== undefined) {
+        this.CSVLength = csvLength;
 
-      this.CSVLength = csvLength;
-
-      this.transferFund(`uploads/${this.$store.state.userStore.user.user_id}`);
+        this.transferFund(
+          `uploads/${this.$store.state.userStore.user.user_id}`
+        );
+      } else {
+        console.error("csvLength is undefined");
+      }
     },
     showListView() {
       this.listView = true;
