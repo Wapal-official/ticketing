@@ -6,19 +6,32 @@
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
-      <div
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
-        v-if="collection.video"
-      >
-        <video-player-featured :source="collection.video" />
+      <div class="card-min-width" style="position: relative">
+        <div
+          class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+          v-if="collection.video"
+        >
+          <video-player-featured :source="collection.video" />
+        </div>
+        <video-player-detailed
+          class="video-detailed"
+          v-else-if="isVideo(collection.media2)"
+          :source="collection.media2"
+        />
+
+        <utility-image
+          v-else
+          :source="collection.image"
+          :onerror="imageNotFound()"
+          :alt="collection.name"
+          class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+        />
+        <audio-player
+          v-if="isAudio(collection.media2)"
+          class="audio-bg"
+          :audioSrc="collection.media2"
+        ></audio-player>
       </div>
-      <utility-image
-        v-else
-        :source="collection.image"
-        :onerror="imageNotFound()"
-        :alt="collection.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
-      />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
       >
@@ -477,6 +490,72 @@ export default {
     };
   },
   methods: {
+    isImage(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+            "mpeg",
+          ].includes(extension)
+        : false;
+    },
     countdownComplete() {
       this.showCountdown = false;
     },
@@ -1557,3 +1636,35 @@ export default {
   },
 };
 </script>
+<style lang="css">
+.video-detailed {
+  max-width: 550px;
+  height: 550px;
+  border-radius: 0.25rem !important;
+}
+@media (max-width: 600px) {
+  .video-detailed {
+    height: 350px;
+  }
+}
+@media (min-width: 1024px) and (max-width: 1200px) {
+  .video-detailed {
+    height: 450px;
+  }
+}
+.audio-bg {
+  position: absolute;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  padding: 0 16px 16px;
+  background-image: linear-gradient(transparent, #000) !important;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+@media (max-width: 768px) {
+  .card-min-width {
+    min-width: 50%;
+  }
+}
+</style>

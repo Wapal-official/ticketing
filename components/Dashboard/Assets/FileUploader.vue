@@ -279,14 +279,18 @@ export default {
         this.uploadStatusClass = "tw-h-0";
         this.uploading = true;
         this.showUploadingDialog = true;
-
-        if (this.type === "metadata" && !this.folderInfo.assets.baseURI) {
+        if (
+          this.type === "metadata" &&
+          !this.folderInfo.assets.baseURI &&
+          !this.folderInfo.images.baseURI
+        ) {
           throw new Error("Please upload Images in Asset Folder first");
         }
 
         if (
           this.type === "metadata" &&
-          this.folderInfo.assets.files.length !== files.length
+          this.folderInfo.assets.files.length !== files.length &&
+          this.folderInfo.images.files.length !== files.length
         ) {
           throw new Error(
             "Your metadata folder does not have same file length as Image Folder"
@@ -322,7 +326,11 @@ export default {
                 throw new Error("Please Only Upload Images on Asset Folder");
               }
             }
-
+            if (this.type === "images") {
+              if (file.type === "application/json") {
+                throw new Error("Please Only Upload Images on Asset Folder");
+              }
+            }
             if (this.type === "metadata") {
               if (file.type !== "application/json") {
                 throw new Error(

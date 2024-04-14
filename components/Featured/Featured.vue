@@ -5,19 +5,32 @@
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
-      <div
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
-        v-if="collection.video"
-      >
-        <video-player-featured :source="collection.video" />
+      <div style="position: relative">
+        <div
+          class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
+          v-if="collection.video"
+        >
+          <video-player-featured :source="collection.video" />
+        </div>
+        <video-player-detailed
+          class="video-featured"
+          v-else-if="isVideo(collection.media2)"
+          :source="collection.media2"
+        />
+
+        <utility-image
+          v-else
+          :source="collection.image"
+          :onerror="imageNotFound()"
+          :alt="collection.name"
+          class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
+        />
+        <audio-player
+          v-if="isAudio(collection.media2)"
+          class="audio-bg"
+          :audioSrc="collection.media2"
+        ></audio-player>
       </div>
-      <utility-image
-        v-else
-        :source="collection.image"
-        :onerror="imageNotFound()"
-        :alt="collection.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
-      />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
       >
@@ -334,6 +347,7 @@ export default {
           coin_type: "APT",
         },
         video: "",
+        media2: "",
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
@@ -357,6 +371,53 @@ export default {
     };
   },
   methods: {
+    isVideo(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
+    },
     countdownComplete() {
       this.showPublicSaleTimer = false;
       this.showWhitelistSaleTimer = false;
@@ -861,5 +922,35 @@ export default {
 <style scoped>
 .featured {
   height: calc(100vh - 40px);
+}
+.video-featured {
+  width: 100%;
+  max-width: 400px;
+  height: 338px;
+  border-radius: 8px;
+}
+
+@media (min-width: 640px) {
+  .video-featured {
+    width: 400px;
+    height: 400px;
+    max-height: 400px;
+  }
+}
+
+@media (min-width: 768px) {
+  .video-featured {
+    width: 400px;
+    min-width: 400px;
+    height: 400px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .video-featured {
+    width: 400px;
+    height: 400px;
+    max-height: 400px;
+  }
 }
 </style>

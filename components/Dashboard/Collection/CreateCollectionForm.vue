@@ -111,14 +111,56 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
+          <div class="select-type tw-mb-3">
+            <div class="tw-mb-3">Select your file type:</div>
+            <div class="select-type-radio tw-flex tw-justify-between">
+              <div>
+                <input
+                  type="radio"
+                  id="image"
+                  name="fileType"
+                  value="Image"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="image">Image</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="video"
+                  name="fileType"
+                  value="Video"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="video">Video</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="audio"
+                  name="fileType"
+                  value="Audio"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="audio">Audio</label>
+              </div>
+            </div>
+          </div>
           <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+            class="tw-mb-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
           >
             <input-image-drag-and-drop
-              label="Featured Image"
+              :label="'Featured' + ' ' + selectedFileType"
               :required="true"
+              @cancel="clearFile"
               @fileSelected="imageSelected"
+              @fileSelectedThumbnail="thumbnailSelected"
+              :selectedType="selectedFileType"
               :file="collection.image"
+              :thumbnail="collection.thumbnail"
               fileSize="Upto 15 MB"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
@@ -126,7 +168,7 @@
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
+            class="tw-mb-5 tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
           >
             <button-secondary
               class="tw-mr-4"
@@ -788,12 +830,15 @@ export default {
   props: { draft: { type: Boolean, default: false } },
   data() {
     return {
+      selectedFileType: "Image",
       steps: ["Details", "Royalty", "Phase", "Review"],
       stepNumber: 1,
+      checkFeaturedFile: true,
       collection: {
         name: "",
         description: "",
         image: "",
+        thumbnail: "",
         baseURL: "",
         royalty_payee_address:
           this.$store.state.walletStore.wallet.walletAddress,
@@ -819,6 +864,7 @@ export default {
       image: { name: null },
       imageErrorMessage: "",
       imageError: false,
+      thumbnail: { name: null },
       submitting: false,
       breadcrumb: [
         {
@@ -886,6 +932,15 @@ export default {
             this.imageError = true;
             this.imageErrorMessage = "Please select an image for collection";
             return;
+          }
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "video" || fileType === "audio") {
+            if (!this.thumbnail.name && !this.collection.image) {
+              this.imageError = true;
+              this.imageErrorMessage =
+                "Please select an thumbnail for collection";
+              return;
+            }
           }
 
           if (this.imageError) {
@@ -1021,7 +1076,13 @@ export default {
         }
 
         if (this.image.name) {
-          formData.append("image", this.image);
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "image") {
+            formData.append("image", this.image);
+          } else {
+            formData.append("media2", this.image);
+            formData.append("image", this.thumbnail);
+          }
         } else {
           formData.append("image", tempCollection.image);
         }
@@ -1038,6 +1099,61 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
 
         this.submitting = false;
+      }
+    },
+    checkFileType(fileName: any) {
+      const fileExtension = fileName.split(".").pop().toLowerCase();
+      const imageExtensions = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "webp",
+        "bmp",
+        "svg",
+        "ico",
+        "tiff",
+      ];
+      const videoExtensions = [
+        "mp4",
+        "mkv",
+        "m4v",
+        "webm",
+        "avi",
+        "mov",
+        "wmv",
+        "flv",
+        "3gp",
+        "ogv",
+        "mpeg",
+        "mpg",
+        "divx",
+        "rm",
+        "asf",
+        "vob",
+        "ts",
+        "m2ts",
+      ];
+      const audioExtensions = [
+        "mp3",
+        "wav",
+        "ogg",
+        "aac",
+        "flac",
+        "wma",
+        "alac",
+        "aiff",
+        "opus",
+      ];
+
+      if (imageExtensions.includes(fileExtension)) {
+        return "image";
+      } else if (videoExtensions.includes(fileExtension)) {
+        return "video";
+      } else if (audioExtensions.includes(fileExtension)) {
+        return "audio";
+      } else {
+        return "image";
       }
     },
 
@@ -1078,7 +1194,13 @@ export default {
         }
 
         if (this.image.name) {
-          formData.append("image", this.image);
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "image") {
+            formData.append("image", this.image);
+          } else {
+            formData.append("video", this.image);
+            formData.append("image", this.thumbnail);
+          }
         } else {
           formData.append("image", tempCollection.image || "");
         }
@@ -1106,10 +1228,12 @@ export default {
         this.submitting = false;
       }
     },
-
+    clearFile() {
+      this.image = "";
+      this.thumbnail = "";
+    },
     imageSelected(image: any) {
       this.image = image;
-
       if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
         this.imageError = true;
         this.imageErrorMessage = "Please Upload Image less than 15MB";
@@ -1117,7 +1241,15 @@ export default {
         this.imageError = false;
       }
     },
-
+    thumbnailSelected(image: any) {
+      this.thumbnail = image;
+      if (Math.floor(this.thumbnail.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
+    },
     async sendDataToCandyMachineCreator() {
       let whitelistTime = null;
       let whitelist_price = this.collection.whitelist_price;
@@ -1219,7 +1351,13 @@ export default {
       formData.append("tweet", tempCollection.tweet);
 
       if (this.image.name) {
-        formData.append("image", this.image);
+        const fileType = this.checkFileType(this.image.name);
+        if (fileType === "image") {
+          formData.append("image", this.image);
+        } else {
+          formData.append("video", this.image);
+          formData.append("image", this.thumbnail);
+        }
       } else {
         formData.append("image", tempCollection.image);
       }
@@ -1304,11 +1442,16 @@ export default {
         await editDraft(this.$route.params.id, tempCollection);
 
         if (this.image.name) {
-          formData.append("image", this.image);
-
-          await editImage(this.$route.params.id, formData);
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "image") {
+            formData.append("image", this.image);
+            await editImage(this.$route.params.id, formData);
+          } else {
+            formData.append("video", this.image);
+            formData.append("image", this.thumbnail);
+            await editImage(this.$route.params.id, formData);
+          }
         }
-
         this.$toast.showMessage({ message: "Draft Updated Successfully" });
 
         this.$router.push("/dashboard/collection/draft");
@@ -1389,5 +1532,44 @@ export default {
 .image-collection {
   display: none;
   background-color: #878787;
+}
+
+.select-type {
+  max-width: 50%;
+}
+@media (max-width: 600px) {
+  .select-type {
+    max-width: 100%;
+  }
+}
+.select-type-radio div {
+  display: flex;
+  align-items: center;
+}
+.radio-input {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #383a3f;
+  outline: none;
+  appearance: none;
+  border-radius: 50%;
+  background: #25262b;
+  margin-right: 8px;
+  position: relative;
+  cursor: pointer;
+}
+.radio-input:checked {
+  background-color: #8759ff;
+}
+.radio-input:checked::before {
+  content: " ";
+  background: #1a1b1e;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

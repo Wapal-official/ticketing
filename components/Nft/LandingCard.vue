@@ -8,6 +8,7 @@
       >
         <div
           class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative md:!tw-w-[312px] md:!tw-h-[312px]"
+          style="position: relative"
         >
           <div
             class="tw-w-full tw-h-full tw-object-cover tw-rounded-lg tw-absolute tw-top-0 tw-transition-all tw-ease-linear tw-duration-300 tw-transform group-hover/landing-card:tw-scale-110"
@@ -24,6 +25,19 @@
             :onerror="imageNotFound()"
             class="tw-w-full tw-h-full tw-object-cover tw-rounded-lg tw-absolute tw-top-0 tw-transition-all tw-ease-linear tw-duration-300 tw-transform group-hover/landing-card:tw-scale-110"
           />
+          <div
+            v-if="isAudio(collection?.media2)"
+            @click.prevent.stop="checkit()"
+            class="forAudio"
+          >
+            <audio-player-list
+              v-if="isAudio(collection?.media2)"
+              class="audio-list-bg"
+              :audioSrc="collection?.media2"
+              @click.prevent.stop="checkit()"
+              iconSize="44"
+            ></audio-player-list>
+          </div>
         </div>
         <div
           class="tw-absolute tw-w-full tw-h-1/2 tw-bottom-[-1px] gradient tw-rounded-lg"
@@ -268,10 +282,75 @@ export default {
       this.resource = { paused: false, total_supply: 0, minted: 0 };
     }
   },
+  methods: {
+    checkit() {
+      console.log("");
+    },
+    isAudio(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+  },
 };
 </script>
 <style>
 .gradient {
   background: linear-gradient(180deg, rgba(16, 17, 19, 0) 0%, #000000 100%);
+}
+.audio-list-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 55%;
+  bottom: 0;
+  margin: auto;
+  z-index: 5;
+}
+.forAudio {
+  height: 70%;
+  position: absolute;
+  top: 0;
+  z-index: 4;
+  width: 100%;
 }
 </style>

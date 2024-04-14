@@ -16,6 +16,16 @@
           v-else-if="checkFileType === 'video'"
           :source="getAssetSrc"
         />
+        <div
+          class="tw-w-full tw-h-full tw-object-cover"
+          v-else
+          style="height: 200px; position: relative"
+        >
+          <audio-player
+            class="audio-postion"
+            :audioSrc="getAssetSrc"
+          ></audio-player>
+        </div>
 
         <div
           class="tw-w-full tw-h-full tw-absolute tw-top-0 tw-left-0 tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear tw-bg-black/[0.65] tw-backdrop-blur-[2px] group-hover:tw-opacity-100"
@@ -119,6 +129,7 @@
   </div>
 </template>
 <script lang="ts">
+import { getCachedUrlOfImage } from "@/utils/imageCache";
 export default {
   props: {
     propFile: { type: Object },
@@ -140,11 +151,8 @@ export default {
     displayFileDetails() {
       this.linkedAsset.name = this.file.src;
       this.linkedAsset.image = this.file.image
-        ? this.file.image
-        : this.file.metadata
-        ? this.file.metadata.image
-        : null;
-
+        ? getCachedUrlOfImage(this.file.image)
+        : this.file.src;
       this.linkedAsset.metadata = this.file.metadata;
 
       this.$emit("displayFileDetails", this.linkedAsset);
@@ -199,10 +207,14 @@ export default {
       const videoRegex =
         /\.((mp4|avi|mov|mkv|wmv|flv|webm|3gp|ogv|mpeg|mpg|m4v|divx|rm|asf|vob|ts|m2ts?))$/i;
 
+      const audioRegex = /\.((mp3|wav|aac|ogg|flac|wma|alac|aiff|opus?))$/i;
+
       if (imageRegex.test(this.extension)) {
         return "image";
       } else if (videoRegex.test(this.extension)) {
         return "video";
+      } else if (audioRegex.test(this.extension)) {
+        return "audio";
       }
 
       return "json";
@@ -234,5 +246,13 @@ export default {
     #11151c 81.73%,
     #0e0d0d 100%
   );
+}
+.audio-postion {
+  width: 100%;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 </style>

@@ -97,10 +97,13 @@
         :type="type"
       />
       <div
-        class="tw-text-dark-0 tw-text-center tw-text-lg tw-w-full"
+        class="tw-text-dark-0 tw-text-center tw-p-16 tw-text-lg tw-w-full"
         v-if="!checkImageUploaded"
+        style="border: 1px solid #25262b"
       >
-        Please Upload Images in image folder first
+        <h3 class="!tw-mb-1" style="color: #fff">This folder is empty.</h3>
+        Please upload the assets (images or videos) before uploading the
+        metadata.
       </div>
     </div>
     <div
@@ -241,6 +244,7 @@ export default {
         files: [{ createdDate: null, type: "", name: "", src: "", _id: null }],
         metadata: { files: [] },
         assets: { files: [] },
+        images: { files: [] },
       },
       paginatedFiles: [
         { createdDate: null, type: "", name: "", src: "", _id: null },
@@ -283,20 +287,34 @@ export default {
       generatingMetadata: false,
       UploadIcon,
       defaultTheme,
+      isImgforMetadata: false,
     };
   },
   methods: {
+    isImage(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
     displayFileDetails(file: any) {
       this.currentFile = file;
       if (file.image) {
         this.showFileDetails = true;
       }
-    },
-    getFileType(item: any) {
-      if (item.type.includes("image/")) {
-        return true;
-      }
-      return false;
     },
     async fetchFiles() {
       this.fileIndex = 0;
@@ -308,26 +326,38 @@ export default {
       this.paginatedFiles = [];
 
       const res = await getFolderById(folderId);
-
-      this.folderInfo.files =
-        this.type === "assets" && !res.data.folderInfo.metadata.baseURI
-          ? res.data.folderInfo.assets.files
-          : res.data.folderInfo.metadata.files;
+      if (this.type === "assets" && !res.data.folderInfo.metadata.baseURI) {
+        this.folderInfo.files = res.data.folderInfo.assets.files;
+        console.log("ress");
+      } else if (
+        this.type === "images" &&
+        !res.data.folderInfo.metadata.baseURI
+      ) {
+        this.folderInfo.files = res.data.folderInfo.images.files;
+      } else {
+        this.folderInfo.files = res.data.folderInfo.metadata.files;
+      }
 
       this.folderInfo.folder_name = res.data.folderInfo.folder_name;
       this.folderInfo._id = res.data.folderInfo._id;
       this.folderInfo.user_id = res.data.folderInfo.user_id;
       this.folderInfo.assets = res.data.folderInfo.assets;
+      this.folderInfo.images = res.data.folderInfo.images;
       this.folderInfo.metadata = res.data.folderInfo.metadata;
       this.folderInfo.traits = res.data.folderInfo.traits;
-
+      if (this.isImage(this.folderInfo.assets.ext)) {
+        this.isImgforMetadata = true;
+      }
       this.loading = false;
 
       const fileCheck =
         this.type === "assets"
           ? !res.data.folderInfo.assets.files[0]
           : !res.data.folderInfo.metadata.files[0];
-
+      const videoImageCheck =
+        this.type === "images"
+          ? !res.data.folderInfo.images.files[0]
+          : !res.data.folderInfo.metadata.files[0];
       if (fileCheck) {
         this.fileLoading = false;
       }
@@ -337,6 +367,11 @@ export default {
         res.data.folderInfo.assets.files.length > 0
       ) {
         this.fileExtension = res.data.folderInfo.assets.ext;
+      } else if (
+        this.type === "images" &&
+        res.data.folderInfo.images.files.length > 0
+      ) {
+        this.fileExtension = res.data.folderInfo.images.ext;
       } else if (this.type === "metadata") {
         this.fileExtension = ".json";
       }
@@ -371,9 +406,19 @@ export default {
                 : index;
 
               if (this.folderInfo.metadata.baseURI) {
-                src = `${this.folderInfo.metadata.baseURI}${fileIndex}.json`;
+                if (this.type === "assets") {
+                  src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+                } else if (this.type === "images") {
+                  src = `${this.folderInfo.images.baseURI}${fileIndex}${this.folderInfo.images.ext}`;
+                } else {
+                  src = `${this.folderInfo.metadata.baseURI}${fileIndex}.json`;
+                }
               } else {
-                src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+                if (this.type === "assets") {
+                  src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+                } else if (this.type === "images") {
+                  src = `${this.folderInfo.images.baseURI}${fileIndex}${this.folderInfo.images.ext}`;
+                }
               }
 
               const res = await this.$axios.get(src);
@@ -578,6 +623,16 @@ export default {
         return false;
       }
 
+      if (this.type === "images") {
+        return true;
+      }
+      if (!this.isImgforMetadata) {
+        console.log("dad", this.isImgforMetadata);
+        if (!this.folderInfo.images.baseURI) {
+          return false;
+        }
+      }
+
       return true;
     },
     checkUploadingStatus() {
@@ -587,6 +642,7 @@ export default {
       return (
         this.folderInfo.metadata.files.length === 0 &&
         this.folderInfo.assets.files.length > 0 &&
+        this.folderInfo.images.files.length > 0 &&
         this.folderInfo.traits.length === this.folderInfo.assets.files.length
       );
     },
@@ -596,15 +652,17 @@ export default {
   },
   async mounted() {
     this.type = this.$route.params.type;
-
-    if (this.type !== "assets" && this.type !== "metadata") {
+    if (
+      this.type !== "assets" &&
+      this.type !== "images" &&
+      this.type !== "metadata"
+    ) {
       throw { statusCode: 404, message: "Page not found" };
     }
 
     this.assetLimit = this.type === "assets" ? 12 : 48;
 
     await this.fetchFiles();
-
     await this.mapFiles();
 
     setTimeout(() => {
