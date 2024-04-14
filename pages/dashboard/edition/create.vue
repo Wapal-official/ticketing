@@ -1305,7 +1305,25 @@ export default {
             this.imageErrorMessage = "Please select an image for collection";
             break;
           }
+          console.log("asd");
+          console.log("validation", this.file);
 
+          console.log("check validation", this.file, this.thumbnail);
+          // const fileType = this.checkFileType(this.file.name);
+          // if (fileType === "video" || fileType === "audio") {
+          //   console.log("fileee", this.file.name);
+          //   console.log("fileee", this.thumbnail);
+
+          //   if (!this.thumbnail.name && !this.file.name) {
+          //     this.imageError = true;
+          //     this.imageErrorMessage =
+          //       "Please select an thumbnail for collection";
+          //     return;
+          //   }
+          // }
+          // if (this.imageError) {
+          //   return;
+          // }
           this.formStepNumber++;
           break;
         case 3:
@@ -1350,6 +1368,9 @@ export default {
         const metadataRes = await axios.get(this.collection.baseURL);
 
         const metadata = metadataRes.data;
+        console.log("metadataRes");
+        console.log(metadataRes);
+        console.log("meta data", this.metadata);
 
         const imageUrl = metadata.image;
         let videoUrl;
@@ -1426,7 +1447,7 @@ export default {
         aptRes.requiredBalance
       );
 
-      if (!transactionRes.success) {
+      if (!transactionRes.success && !transactionRes.hash) {
         throw new Error("Transaction Not Successful Please Try Again");
       }
       const fileExtension = this.getFileExtension(this.file.name);
@@ -1437,7 +1458,6 @@ export default {
           description: this.collection.tokenDesc,
           attributes: this.collection.attributes,
         });
-
         metaUri = res.metadata + "/";
         const videoUri = res.video + "/0." + fileExtension;
         return {

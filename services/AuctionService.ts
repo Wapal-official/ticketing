@@ -80,6 +80,7 @@ export const uploadAndCreateFile = async (file: File, params: any) => {
     "/api/uploader/singleupload",
     formData
   );
+  console.log("upload", upload)
   return upload.data.metadata;
 };
 

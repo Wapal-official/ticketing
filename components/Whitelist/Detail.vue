@@ -122,6 +122,7 @@
             </div>
             <div
               class="tw-relative tw-w-full tw-rounded-full tw-bg-white/20 tw-h-2"
+              style="overflow: hidden"
             >
               <div
                 class="tw-absolute tw-top-0 tw-bg-primary-1 tw-h-2 tw-rounded-full"

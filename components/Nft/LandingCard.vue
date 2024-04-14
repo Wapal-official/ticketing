@@ -6,6 +6,24 @@
       <div
         class="tw-relative tw-w-full tw-h-full tw-rounded-lg md:!tw-w-[312px] md:!tw-h-[312px]"
       >
+        <!-- <div
+          class="video-player-absolute"
+          v-if="
+            isVideo(
+              isCollection ? collection?.image : collection?.nft.meta.image
+            )
+          "
+          @click.prevent.stop="playVideo()"
+        ></div>
+        <div
+          class="video-player-sound-absolute"
+          v-if="
+            isVideo(
+              isCollection ? collection?.image : collection?.nft.meta.image
+            )
+          "
+          @click.prevent.stop="playSound()"
+        ></div> -->
         <div
           class="tw-w-full tw-h-full tw-rounded-lg tw-overflow-hidden tw-relative md:!tw-w-[312px] md:!tw-h-[312px]"
           style="position: relative"
@@ -16,6 +34,19 @@
           >
             <video-player-featured :source="video" />
           </div>
+          <!-- <video-player-listed
+            class="video-featured-2"
+            v-else-if="
+              isVideo(
+                isCollection ? collection?.image : collection?.nft.meta.image
+              )
+            "
+            :playIcon="true"
+            :videoControl="false"
+            :source="
+              isCollection ? collection?.image : collection?.nft.meta.image
+            "
+          /> -->
           <utility-image
             v-else
             :source="
@@ -122,6 +153,9 @@ export default {
     };
   },
   computed: {
+    getVideoPlay() {
+      return this.$store.state.general.isVideoPlay;
+    },
     isCollection() {
       return this.type === "collection";
     },
@@ -289,6 +323,7 @@ export default {
     isAudio(source: string) {
       if (!source) {
         return false;
+
       }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension

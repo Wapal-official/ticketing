@@ -12,7 +12,7 @@ let PROOF_API_URL = process.env.PROOF_API_URL;
 let CREATOR_STUDIO_API = process.env.CREATOR_STUDIO_API;
 
 const CANDY_MACHINE_V2 =
-  "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac";
+  "0xec015e1b499cf9302b07a040857e32cc9afc8c346819027b0ba4bd0b3dd55c12";
 const CANDY_MACHINE_V1 =
   "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0";
 
@@ -147,7 +147,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ["vee-validate"],
+    transpile: ["vee-validate", "@wallet-standard", "@noble/curves"],
     babel: {
       plugins: ["@babel/plugin-proposal-optional-chaining"],
     },
@@ -162,6 +162,21 @@ export default {
           plugins: ["@babel/plugin-proposal-optional-chaining"],
         },
       });
+
+      config.module.rules.push({
+        test: /\.(ogg|mp3|wav|mpe?g)$/i,
+        loader: "file-loader",
+        options: {
+          name: "[path][name].[ext]",
+        },
+      });
+    },
+    loaders: {
+      vue: {
+        transformAssetUrls: {
+          audio: "src",
+        },
+      },
     },
     postcss: {
       plugins: {

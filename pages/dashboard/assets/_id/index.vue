@@ -59,6 +59,27 @@ export default {
           ]
         : [];
     },
+    // getAssetsType() {
+    //   return this.$store.state.asset.assetType;
+    // },
+  },
+  methods: {
+    isImage(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
   },
   methods: {
     isImage(source: string) {

@@ -11,10 +11,12 @@
     >
       <source :src="videoSource" />
     </video>
+
   </div>
 </template>
 
 <script lang="ts">
+
 export default {
   props: {
     source: { type: String },
@@ -23,6 +25,7 @@ export default {
     return {
       player: null,
       videoSource: "",
+
       isPlaying: false,
     };
   },

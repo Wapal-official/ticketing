@@ -1006,10 +1006,13 @@ export default {
       }
     },
     async getOwnedCollectionOfUser() {
-      const res = await getOwnedCollectionOfUser(
-        this.getWalletAddress,
-        this.collection.name
-      );
+      const res = await getOwnedCollectionOfUser({
+        owner_address: this.getWalletAddress,
+        collection_name: this.collection.name,
+        candy_id: this.collection.candyMachine.candy_id,
+        resource_account: this.collection.candyMachine.resource_account,
+        mint_limit: this.mintLimit,
+      });
 
       this.currentlyOwned = res;
 
@@ -1427,6 +1430,7 @@ export default {
     },
   },
   async mounted() {
+    console.log("coll", this.collection);
     if (this.collection) {
       if (this.collection.username === "proudlionsclub") {
         this.collection.username = "proud-lions-club";

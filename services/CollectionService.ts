@@ -191,10 +191,60 @@ export const getDraftsOfUser = async (page: number) => {
   return collections;
 };
 
-export const getOwnedCollectionOfUser = async (
-  owner_address: string,
-  collection_name: string
-) => {
+export const getOwnedCollectionOfUser = async ({
+  owner_address,
+  collection_name,
+  resource_account,
+  candy_id,
+  mint_limit,
+}: {
+  owner_address: string;
+  collection_name: string;
+  resource_account: string;
+  candy_id: string;
+  mint_limit: number;
+}) => {
+  try {
+    const NODE_URL = process.env.NODE_URL ? process.env.NODE_URL : "";
+
+    const res = await axios.post(`${NODE_URL}/view`, {
+      arguments: [owner_address, resource_account],
+      function: `${candy_id}::candymachine::getWhitelistMintLimit`,
+      type_arguments: [],
+    });
+
+    const data = res.data;
+
+    const minted = data[0];
+
+    if (!minted) {
+      return mint_limit;
+    }
+
+    return minted;
+  } catch (error: any) {
+    console.log(error);
+    if (error.response && error.response.status === 400) {
+      const ownedTokens = await getOwnedCollectionOfUserFromIndexer({
+        owner_address,
+        collection_name,
+        mint_limit,
+      });
+
+      return ownedTokens;
+    }
+  }
+};
+
+const getOwnedCollectionOfUserFromIndexer = async ({
+  owner_address,
+  collection_name,
+  mint_limit,
+}: {
+  owner_address: string;
+  collection_name: string;
+  mint_limit: number;
+}) => {
   const res = await axios.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "SingleCollectionOfUser",
     query: `
@@ -216,7 +266,7 @@ export const getOwnedCollectionOfUser = async (
     return data[0].distinct_tokens;
   }
 
-  return 0;
+  return mint_limit;
 };
 
 export const sortPhases = (phases: any[]) => {
