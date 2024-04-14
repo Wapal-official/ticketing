@@ -808,11 +808,11 @@ export default {
           return;
         }
 
-        if (this.checkPublicSaleTimer()) {
-          if (this.mintLimit <= this.currentlyOwned) {
-            throw new Error("Mint Limit for this phase Exceeded");
-          }
-        }
+        // if (this.checkPublicSaleTimer()) {
+        //   if (this.mintLimit <= this.currentlyOwned) {
+        //     throw new Error("Mint Limit for this phase Exceeded");
+        //   }
+        // }
         let res = null;
         if (!this.v2) {
           res = await this.$store.dispatch("walletStore/mintBulk", {
@@ -823,6 +823,7 @@ export default {
             proof: this.proof,
             mintLimit: this.totalMintLimit,
             sender: this.getSender,
+            price: this.currentSale.mint_price,
           });
         } else {
           if (
@@ -835,9 +836,11 @@ export default {
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
-              mint_limit: this.totalMintLimit,
               coinType: this.collection.seed.coin_type,
               sender: this.getSender,
+              mint_limit: this.currentSale.mintLimit,
+              sender: this.getSender,
+              mint_price: this.currentSale.mint_price,
             });
           } else {
             res = await mintCollection({
@@ -846,8 +849,9 @@ export default {
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
-              mint_limit: this.totalMintLimit,
+              mint_limit: this.currentSale.mintLimit,
               sender: this.getSender,
+              mint_price: this.currentSale.mint_price,
             });
           }
         }
@@ -952,6 +956,8 @@ export default {
       const currentPhase = this.phases.find(
         (phase) => phase.id === this.currentSale.id
       );
+
+      this.currentSale.mintLimit = currentPhase.mintLimit;
 
       if (!currentPhase.whitelisted) {
         this.notWhitelisted = true;
