@@ -665,7 +665,6 @@ export default {
     }
 
     this.assetLimit = this.type === "assets" ? 12 : 48;
-
     await this.fetchFiles();
     await this.mapFiles();
 
