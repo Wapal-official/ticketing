@@ -551,7 +551,6 @@ export default {
       this.showCSVUploadModal = false;
       if (csvLength !== undefined) {
         this.CSVLength = csvLength;
-
         this.transferFund(
           `uploads/${this.$store.state.userStore.user.user_id}`
         );
