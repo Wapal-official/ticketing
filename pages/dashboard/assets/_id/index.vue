@@ -59,6 +59,9 @@ export default {
           ]
         : [];
     },
+    // getAssetsType() {
+    //   return this.$store.state.asset.assetType;
+    // },
   },
   methods: {
     isImage(source: string) {

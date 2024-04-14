@@ -50,7 +50,6 @@ export default {
     const uncachedSource = this.source + "?refreshCache=true";
     // this.videoSource = uncachedSource + "#t=0.1";
     this.videoSource = uncachedSource;
-    console.log("videosoirce", this.videoSource);
   },
   methods: {
     playVideo() {

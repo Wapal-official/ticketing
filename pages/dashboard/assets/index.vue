@@ -211,6 +211,7 @@ export default {
           user_id: this.$store.state.userStore.user.user_id,
         });
 
+        console.log("ress", res);
         this.pushFolder({
           folder_name: folderName,
           _id: res.data.folderInfo._id,
@@ -276,7 +277,7 @@ export default {
       this.folders = [];
 
       const res = await getAllFolder(this.$store.state.userStore.user.user_id);
-
+      console.log("res foder", res);
       this.folders.push({ _id: this.getFolderId, folder_name: "sample" });
 
       res.data.folderInfo.map((folder: any) => {

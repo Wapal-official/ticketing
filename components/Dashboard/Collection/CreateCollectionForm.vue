@@ -23,6 +23,13 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
+          <!-- <div class="video-container">
+            <video ref="videoPlayer" controls @loadedmetadata="setupScrubber">
+              <source src="~/assets/video/Launchpad.mp4" />
+            </video>
+            <canvas ref="scrubberCanvas" @click="seekTo"></canvas>
+            <img ref="videoFrame" class="video-frame" />
+          </div> -->
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
@@ -896,6 +903,44 @@ export default {
     async changeStep(step: number) {
       this.stepNumber = step;
     },
+    setupScrubber() {
+      const video = this.$refs.videoPlayer;
+      const canvas = this.$refs.scrubberCanvas;
+      const ctx = canvas.getContext("2d");
+
+      video.addEventListener("canplay", () => {
+        canvas.width = video.clientWidth;
+        canvas.height = video.clientHeight;
+
+        // Draw the initial video frame onto the canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      });
+    },
+    seekTo(event: { clientX: number }) {
+      const canvas = this.$refs.scrubberCanvas;
+      const rect = canvas.getBoundingClientRect();
+      const offsetX = event.clientX - rect.left;
+      const scrubTime =
+        (offsetX / canvas.width) * this.$refs.videoPlayer.duration;
+      this.$refs.videoPlayer.currentTime = scrubTime;
+      this.updateVideoFrame(scrubTime);
+    },
+    updateVideoFrame(scrubTime: number) {
+      const video = this.$refs.videoPlayer;
+      const canvas = this.$refs.scrubberCanvas;
+
+      const ctx = canvas.getContext("2d");
+      const interval = canvas.width / video.duration;
+
+      // Draw the video frame onto the canvas
+      video.currentTime = scrubTime; // Set video time to capture frame at the scrubTime
+      video.addEventListener("seeked", () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // Draw the video frame onto the canvas
+        ctx.fillStyle = "#000"; // Color of the scrubber
+        ctx.fillRect(scrubTime * interval, 0, 1, canvas.height); // Draw a line for the current time
+      });
+    },
     async validateFormForNextStep() {
       switch (this.stepNumber) {
         case 1:
@@ -927,7 +972,6 @@ export default {
 
             break;
           }
-
           if (!this.image.name && !this.collection.image) {
             this.imageError = true;
             this.imageErrorMessage = "Please select an image for collection";
@@ -1154,6 +1198,7 @@ export default {
         return "audio";
       } else {
         return "image";
+
       }
     },
 
@@ -1193,6 +1238,11 @@ export default {
           formData.append("draft_id", draft_id);
         }
 
+        // if (this.image.name) {
+        //   formData.append("image", this.image);
+        // } else {
+        //   formData.append("image", tempCollection.image || "");
+        // }
         if (this.image.name) {
           const fileType = this.checkFileType(this.image.name);
           if (fileType === "image") {
@@ -1350,6 +1400,11 @@ export default {
       formData.append("coin_type", tempCollection.coinType);
       formData.append("tweet", tempCollection.tweet);
 
+      // if (this.image.name) {
+      //   formData.append("image", this.image);
+      // } else {
+      //   formData.append("image", tempCollection.image);
+      // }
       if (this.image.name) {
         const fileType = this.checkFileType(this.image.name);
         if (fileType === "image") {
@@ -1533,7 +1588,6 @@ export default {
   display: none;
   background-color: #878787;
 }
-
 .select-type {
   max-width: 50%;
 }

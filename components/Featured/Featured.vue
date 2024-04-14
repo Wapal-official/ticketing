@@ -30,6 +30,7 @@
           class="audio-bg"
           :audioSrc="collection.media2"
         ></audio-player>
+
       </div>
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
@@ -815,8 +816,9 @@ export default {
   },
   async mounted() {
     try {
+      console.log("asd", this.propCollection);
       this.collection = this.propCollection;
-
+      console.log("this", this.collection);
       if (this.collection._id === "651295af57079307bdb1cfe9") {
         delete this.collection["candyMachine"].whitelist_sale_time;
         delete this.collection["candyMachine"].whitelist_price;
@@ -937,7 +939,6 @@ export default {
     max-height: 400px;
   }
 }
-
 @media (min-width: 768px) {
   .video-featured {
     width: 400px;
