@@ -33,6 +33,7 @@ import {
 import { getCachedUrlOfImage } from "@/utils/imageCache";
 export default {
   name: "IndexPage",
+  mode: "spa",
   components: {
     PrimaryButton,
     LandingSlider,

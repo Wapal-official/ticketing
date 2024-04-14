@@ -150,6 +150,13 @@ export default {
   methods: {
     displayFileDetails() {
       this.linkedAsset.name = this.file.src;
+      // this.linkedAsset.image = this.file.image
+      //   ? getCachedUrlOfImage(this.file.image)
+      //   : this.file.metadata
+      //   ? this.file.metadata.image
+      //     ? getCachedUrlOfImage(this.file.metadata.image)
+      //     : null
+      //   : null;
       this.linkedAsset.image = this.file.image
         ? getCachedUrlOfImage(this.file.image)
         : this.file.src;
@@ -157,6 +164,7 @@ export default {
 
       this.$emit("displayFileDetails", this.linkedAsset);
     },
+
     async downloadFile() {
       if (process.client) {
         const res = await this.$axios.get(this.file.src, {
@@ -187,6 +195,7 @@ export default {
       }
     },
     addMetadataInFile(metadata: any) {
+      console.log(this.file, "file");
       this.file.metadata = metadata;
 
       this.file.name = metadata.name;
@@ -216,19 +225,29 @@ export default {
       } else if (audioRegex.test(this.extension)) {
         return "audio";
       }
-
       return "json";
     },
     getAssetSrc() {
+      console.log("as", this.file?.image);
       return this.file.image ? this.file.image : this.file?.src;
+    },
+
+    getAssetAudio() {
+      return this.file.src;
     },
     getAssetName() {
       return this.file.image ? this.file.name : this.file?.name;
     },
   },
   async mounted() {
+    console.log("props", this.propFile);
     this.file = this.propFile;
 
+    const fileSrc = this.file.src;
+
+    console.log("sc", fileSrc);
+    // this.getNftDetails(fileSrc);
+    console.log("file", this.file);
     if (this.file.metadata) {
       this.hasMetadata = true;
     }

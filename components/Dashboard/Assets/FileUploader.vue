@@ -229,6 +229,7 @@ export default {
     async sendDataToUploadFolder() {
       this.serverUploadPercent = 0;
       let files = [];
+      // console.log("asdad", this.uploadedFile);
       if (Array.isArray(this.uploadedFile)) {
         files = this.uploadedFile;
       } else {
@@ -338,7 +339,7 @@ export default {
                 );
               }
             }
-
+            console.log("filee", file);
             const filename = file.name;
             const extensionIndex = filename.lastIndexOf(".");
             const nameWithoutExtension = filename.substring(0, extensionIndex);
@@ -358,13 +359,12 @@ export default {
 
             formData.append("images", file);
           });
-
+ 
           const uniqueExtensions = [...new Set(extensions)];
 
           if (uniqueExtensions.length > 1) {
             throw new Error("Please upload file with same extension");
-          }
-
+          } 
           const res = await folderUpload(formData);
 
           if (res.data.newFolder) {
@@ -402,7 +402,7 @@ export default {
           this.balanceNotEnoughError.requiredBalance
         );
 
-        if (transaction.success) {
+        if (transaction.success || transaction.hash) {
           this.uploading = false;
           this.uploadStatusClass = "tw-h-full";
 

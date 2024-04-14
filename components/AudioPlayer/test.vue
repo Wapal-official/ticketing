@@ -81,6 +81,7 @@ export default {
     } else {
       this.audioUrl = this.audioSrc;
     }
+    // this.audioUrl = this.audioSrc + "?refreshcache=true";
 
     const audioPlayerContainer = this.$refs.audioPlayerContainer;
     const playIconContainer = this.$refs.playIconContainer;
@@ -235,6 +236,7 @@ button {
   height: 40px;
   display: flex !important;
   align-items: center !important;
+  justify-content: center !important;
 }
 
 #audio-player-container {
@@ -247,7 +249,6 @@ button {
 
 path {
   stroke: #ffffff;
-
 }
 #volume-slider {
   width: 38%;

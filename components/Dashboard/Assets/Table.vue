@@ -162,6 +162,7 @@ export default {
   },
   watch: {
     paginatedFiles(paginatedFiles: any) {
+      console.log("check gr", paginatedFiles);
       this.allFiles.push(...paginatedFiles);
     },
   },
