@@ -318,19 +318,12 @@ export default {
   },
   methods: {
     checkit() {
-      console.log("cacac");
-    },
-    playVideo() {
-      const newVideoPlayValue = !this.$store.state.general.isVideoPlay;
-      this.$store.commit("general/setVideoPlay", newVideoPlayValue);
-    },
-    playSound() {
-      const newSoundPlayValue = !this.$store.state.general.isSoundPlay;
-      this.$store.commit("general/setSoundPlay", newSoundPlayValue);
+      console.log("");
     },
     isAudio(source: string) {
-      if (typeof source !== "string") {
-        return false; // Return false if source is not a string
+      if (!source) {
+        return false;
+
       }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
@@ -378,50 +371,6 @@ export default {
 <style>
 .gradient {
   background: linear-gradient(180deg, rgba(16, 17, 19, 0) 0%, #000000 100%);
-}
-.video-featured-2 {
-  width: 100%;
-  max-width: 312px;
-  height: 312px;
-
-  /* @media (min-width: 640px) {
-    width: 312px;
-    height: 312px;
-    max-height: 312px;
-  }
-
-  @media (min-width: 768px) {
-    width: 312px;
-    min-width: 312px;
-    height: 312px;
-  }
-
-  @media (min-width: 1024px) {
-    width: 312px;
-    height: 312px;
-    max-height: 312px;
-  } */
-
-  border-radius: 8px;
-}
-
-.video-player-absolute {
-  top: 0px;
-  position: absolute;
-  height: 70%;
-  width: 100%;
-  z-index: 4;
-  /* background-color: red; */
-}
-
-.video-player-sound-absolute {
-  top: 10px;
-  right: 10px;
-  position: absolute;
-  height: 10%;
-  width: 10%;
-  z-index: 5;
-  /* background-color: red; */
 }
 .audio-list-bg {
   position: absolute;

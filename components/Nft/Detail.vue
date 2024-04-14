@@ -26,11 +26,11 @@
           :alt="collection.name"
           class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
         />
-        <audio-player-test
+        <audio-player
           v-if="isAudio(collection.media2)"
           class="audio-bg"
           :audioSrc="collection.media2"
-        ></audio-player-test>
+        ></audio-player>
       </div>
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
@@ -1661,7 +1661,6 @@ export default {
   left: 0;
   bottom: 0px;
   right: 0;
-  /* width: 93%; */
   padding: 0 16px 16px;
   background-image: linear-gradient(transparent, #000) !important;
   border-bottom-left-radius: 8px;

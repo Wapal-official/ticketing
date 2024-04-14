@@ -24,17 +24,15 @@
         v-else-if="checkFileType() === 'video'"
         :source="urlFromJson ? urlFromJson : videoUrl"
       />
-      <!-- :source="videoFile ? videoFile.uri : url" -->
-
       <div
         class="tw-w-full tw-h-full tw-object-cover"
         v-else
         style="height: 200px; position: relative"
       >
-        <audio-player-test
+        <audio-player
           :audioSrc="urlFromJson ? urlFromJson : videoUrl"
           class="audio-postion"
-        ></audio-player-test>
+        ></audio-player>
       </div>
       <h3 class="tw-text-white tw-font-medium tw-uppercase tw-text-sm">
         {{ this.fileData?.name }}
@@ -118,11 +116,6 @@ export default {
     },
   },
   computed: {
-    videoFile() {
-      return this.fileData.properties.files.find(
-        (file: { type: string }) => file.type === "video/mp4"
-      );
-    },
     videoUrl() {
       return this.url;
     },
@@ -137,12 +130,9 @@ export default {
       console.log("aca");
     } else {
       const res = await this.$axios.get(this.file.name);
-
       const url = res.config.url;
-      console.log("url", res);
       this.url = url;
       this.fileData = res.data;
-      console.log("cacaca, this.f", this.fileData);
 
       if (this.fileData.attributes) {
         this.attributes = this.fileData.attributes;
@@ -155,7 +145,6 @@ export default {
           (file: { type: string }) => file.type === "video/mp4"
         );
         if (mediaFile) {
-          console.log("aaaabb", mediaFile.uri);
           filterSrc = mediaFile.uri;
         }
         this.urlFromJson = filterSrc;
@@ -174,11 +163,7 @@ export default {
         }
       } else {
         const res = await this.$axios.get(newFile.name);
-        console.log("new res ", res);
         const url = res.config.url;
-
-        console.log("url", url);
-
         this.url = url;
         this.fileData = res.data;
         if (this.fileData.attributes) {

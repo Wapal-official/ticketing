@@ -25,11 +25,12 @@
           :alt="collection.name"
           class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
         />
-        <audio-player-test
+        <audio-player
           v-if="isAudio(collection.media2)"
           class="audio-bg"
           :audioSrc="collection.media2"
-        ></audio-player-test>
+        ></audio-player>
+
       </div>
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
@@ -400,7 +401,7 @@ export default {
         : false;
     },
     isAudio(source: string) {
-      if (typeof source !== "string") {
+      if (!source) {
         return false;
       }
       const extension = source.split(".").pop()?.toLowerCase();
@@ -928,25 +929,29 @@ export default {
   width: 100%;
   max-width: 400px;
   height: 338px;
+  border-radius: 8px;
+}
 
-  @media (min-width: 640px) {
+@media (min-width: 640px) {
+  .video-featured {
     width: 400px;
     height: 400px;
     max-height: 400px;
   }
-
-  @media (min-width: 768px) {
+}
+@media (min-width: 768px) {
+  .video-featured {
     width: 400px;
     min-width: 400px;
     height: 400px;
   }
+}
 
-  @media (min-width: 1024px) {
+@media (min-width: 1024px) {
+  .video-featured {
     width: 400px;
     height: 400px;
     max-height: 400px;
   }
-
-  border-radius: 8px;
 }
 </style>

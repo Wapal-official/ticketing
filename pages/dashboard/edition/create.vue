@@ -367,12 +367,12 @@
               class="audio-bg tw-h-[300px] tw-w-[300px]"
               style="background-color: #000; opacity: 0.7 !important"
             ></div>
-            <audio-player-test
+            <audio-player
               v-if="audioCheck"
               class="audio-position audio-max-width"
               :audioSrc="this.audioUrl"
               style="top: 230px !important"
-            ></audio-player-test>
+            ></audio-player>
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
             >
@@ -465,12 +465,12 @@
               class="audio-bg tw-h-[300px] tw-w-[300px]"
               style="background-color: #000; opacity: 0.7 !important"
             ></div>
-            <audio-player-test
+            <audio-player
               v-if="audioCheck"
               class="audio-position audio-max-width"
               :audioSrc="this.audioUrlReview"
               style="top: 230px !important"
-            ></audio-player-test>
+            ></audio-player>
             <div
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 lg:tw-w-[540px]"
             >
@@ -966,11 +966,8 @@ export default {
       while (reviewElement.firstChild) {
         reviewElement.removeChild(reviewElement.firstChild);
       }
-      // const fileType = this.getAudioFileType(this.file.name);
       this.audioUrl = previewVideoElement.src;
       this.audioUrlReview = previewVideoElement.src;
-      // console.log("audio", this.audioUrl);
-      // console.log("file type", fileType);
     },
     getAudioFileType(fileName) {
       const extension = fileName.split(".").pop().toLowerCase();
@@ -1144,11 +1141,8 @@ export default {
         this.createEditionModal = true;
 
         this.progress = 1;
-        console.log("create", this.collection);
-        //uploading and creating metadata file
         let metadataUri = null;
         metadataUri = this.metadata = await this.uploadImageAndMetadata();
-        console.log("create metaUri", metadataUri);
 
         this.collection.baseURL = metadataUri.metaUri
           ? metadataUri.metaUri
@@ -1173,7 +1167,7 @@ export default {
           public_mint_limit: 0,
           is_open_edition: false,
           coinType: this.collection.coinType,
-          isRandom:true
+          isRandom: true,
         };
 
         const res = await createCollectionV2(candyMachineArguments);
@@ -1383,8 +1377,6 @@ export default {
         if (metadata.properties) {
           videoUrl = this.metadata.videoUri;
         }
-        console.log(imageUrl);
-        console.log(videoUrl);
         const formData = new FormData();
 
         formData.append("name", tempCollection.name);
@@ -1422,10 +1414,6 @@ export default {
           console.log("imo");
           formData.append("image", imageUrl);
         }
-        // formData.append("image", this.thumbnail);
-        // formData.append("image", imageUrl);
-
-        // formData.append("video", this.thumbnail);
 
         formData.append("isEdition", true);
         formData.append("edition", tempCollection.type);
@@ -1464,36 +1452,20 @@ export default {
       }
       const fileExtension = this.getFileExtension(this.file.name);
       let metaUri;
-      console.log("filex", fileExtension);
-      // const video = this.file + "/0." + fileExtension;
       if (this.checkVideo === true) {
-        console.log("aaa");
-        console.log("the file", this.file);
         const res = await uploadAndCreateVideoFile(this.file, this.thumbnail, {
           name: this.collection.tokenName,
           description: this.collection.tokenDesc,
           attributes: this.collection.attributes,
         });
-        console.log("res", res);
         metaUri = res.metadata + "/";
-        console.log("resss", res.metadata);
         const videoUri = res.video + "/0." + fileExtension;
         return {
           metaUri: metaUri,
           videoUri: videoUri,
           imageUri: res.image,
         };
-        // metaUri =
-        //   (
-        //     await uploadAndCreateVideoFile(this.thumbnail, this.file, {
-        //       name: this.collection.tokenName,
-        //       description: this.collection.tokenDesc,
-        //       attributes: this.collection.attributes,
-        //       extension: fileExtension,
-        //     })
-        //   ).metadata + "/";
       } else {
-        console.log("bbb");
         metaUri =
           (await uploadAndCreateFile(this.file, {
             name: this.collection.tokenName,
@@ -1501,7 +1473,6 @@ export default {
             attributes: this.collection.attributes,
           })) + "/";
       }
-      console.log("meta ur", metaUri);
       return metaUri;
     },
     async createOpenEditionInChain() {

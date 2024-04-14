@@ -89,11 +89,11 @@
           ref="imagePreview2"
           class="tw-w-full tw-h-full tw-rounded tw-bg-black"
         ></div>
-        <audio-player-test
+        <audio-player
           v-if="audioCheck"
           class="audio-position"
           :audioSrc="this.audioUrl"
-        ></audio-player-test>
+        ></audio-player>
 
         <v-dialog
           v-model="checkFeaturedFile"
@@ -121,12 +121,12 @@
                 ref="imagePreview"
                 class="tw-w-full tw-h-full tw-rounded tw-bg-black mx-auto"
               ></div> -->
-              <audio-player-test
+              <audio-player
                 v-if="audioCheck"
                 class="audio-position"
                 :audioSrc="this.audioUrl"
                 style="width: 100% !important"
-              ></audio-player-test>
+              ></audio-player>
               <div
                 v-else
                 ref="imagePreview"
@@ -460,19 +460,6 @@ export default {
     };
   },
   computed: {},
-  watch: {
-    thumbnail: {
-      handler(newVal) {
-        console.log("before watch");
-        if (newVal && this.file && this.file.length > 0) {
-          this.imageSelectedThumbnail = true;
-          console.log("after  watch");
-          console.log("after  watch", newVal);
-        }
-      },
-      immediate: true,
-    },
-  },
 
   methods: {
     cancelSelection() {

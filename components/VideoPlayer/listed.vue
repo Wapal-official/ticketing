@@ -11,14 +11,11 @@
     >
       <source :src="videoSource" />
     </video>
-    <!-- <div class="play-icon" v-if="!isPlaying">
-      <span class="mdi mdi-play"></span>
-    </div> -->
+
   </div>
 </template>
 
 <script lang="ts">
-import videoPoster from "@/assets/img/logo/logo-vertical.png";
 
 export default {
   props: {
@@ -28,7 +25,7 @@ export default {
     return {
       player: null,
       videoSource: "",
-      videoPoster,
+
       isPlaying: false,
     };
   },
@@ -37,31 +34,17 @@ export default {
     // this.videoSource = uncachedSource + "#t=0.1";
     this.videoSource = uncachedSource;
   },
-  methods: {
-    // playVideo() {
-    //   const video = this.$refs.videoPlayer as HTMLVideoElement;
-    //   if (!this.isPlaying) {
-    //     video.play();
-    //     this.isPlaying = true;
-    //   } else {
-    //     video.pause();
-    //     this.isPlaying = false;
-    //   }
-    // },
-  },
+  methods: {},
 };
 </script>
 <style lang="css">
 .video-holder {
-  /* max-width: 100px; */
   background: #333;
   -webkit-transform: translateY(0);
   -ms-transform: translateY(0);
   transform: translateY(0);
-  /* padding-top: 15.44%; */
   position: relative;
   overflow: hidden;
-  /* height: 104px; */
   width: 100%;
   border-radius: 4px;
 }
@@ -81,7 +64,6 @@ export default {
   position: absolute;
   top: 35%;
   left: 40%;
-  /* right: 0; */
   margin: auto;
   z-index: 2;
 }

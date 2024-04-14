@@ -11,11 +11,6 @@
       >
         <video-player-featured :source="video" />
       </div>
-      <!-- <video-player-listed
-        v-else-if="collection && isVideo(collection.image)"
-        :source="collection?.image"
-        style="max-width: 100px; height: 100px"
-      /> -->
       <utility-image
         v-else
         :source="collection?.image"
@@ -23,7 +18,6 @@
         :alt="collection?.name"
         class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
       />
-
       <div
         v-if="isAudio(collection?.media2)"
         @click.prevent.stop="checkit()"
@@ -42,7 +36,7 @@
       <div class="tw-font-medium">{{ collection?.name }}</div>
       <div
         class="tw-text-dark-2 tw-text-sm tw-font-medium"
-        v-if="collection?.edition && collection?.edition === 'open-edition'"
+        v-if="collection?.isEdition"
       >
         {{ minted }}
         Minted
@@ -170,7 +164,6 @@ export default {
           this.minted = 0;
           return;
         }
-
         const res = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfExternalCollection",
           {
@@ -224,19 +217,16 @@ export default {
         return `/nft/draft/${this.collection?._id}`;
       }
 
-      if (this.collection.isEdition) {
-        return `/editions/${this.collection?.username}`;
-      }
-
       return `/nft/${this.collection?.username}`;
     },
   },
   methods: {
-    checkit() {
-      console.log("cacac");
+    checkit() { 
+      console.log("");
     },
     isAudio(source: string) {
-      if (typeof source !== "string") {
+      if (!source) {
+ 
         return false;
       }
       const extension = source.split(".").pop()?.toLowerCase();
@@ -308,7 +298,6 @@ export default {
   top: 0;
   z-index: 4;
   width: 100%;
-  /* background: red; */
 }
 .audio-list-bg-2 {
   position: absolute;
@@ -318,7 +307,6 @@ export default {
   bottom: 0;
   margin: auto;
   z-index: 5;
-
   transform: translate(0%, 30%);
 }
 </style>

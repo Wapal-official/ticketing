@@ -1147,9 +1147,48 @@ export default {
     },
     checkFileType(fileName: any) {
       const fileExtension = fileName.split(".").pop().toLowerCase();
-      const imageExtensions = ["jpg", "jpeg", "png", "gif", "svg", "bmp"];
-      const videoExtensions = ["mp4", "webm", "ogg", "avi", "mov", "mkv"];
-      const audioExtensions = ["mp3", "ogg", "wav", "webm", "aac", "flac"];
+      const imageExtensions = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "webp",
+        "bmp",
+        "svg",
+        "ico",
+        "tiff",
+      ];
+      const videoExtensions = [
+        "mp4",
+        "mkv",
+        "m4v",
+        "webm",
+        "avi",
+        "mov",
+        "wmv",
+        "flv",
+        "3gp",
+        "ogv",
+        "mpeg",
+        "mpg",
+        "divx",
+        "rm",
+        "asf",
+        "vob",
+        "ts",
+        "m2ts",
+      ];
+      const audioExtensions = [
+        "mp3",
+        "wav",
+        "ogg",
+        "aac",
+        "flac",
+        "wma",
+        "alac",
+        "aiff",
+        "opus",
+      ];
 
       if (imageExtensions.includes(fileExtension)) {
         return "image";
@@ -1158,7 +1197,8 @@ export default {
       } else if (audioExtensions.includes(fileExtension)) {
         return "audio";
       } else {
-        return "unknown";
+        return "image";
+
       }
     },
 
@@ -1244,7 +1284,6 @@ export default {
     },
     imageSelected(image: any) {
       this.image = image;
-      console.log("this image", this.image);
       if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
         this.imageError = true;
         this.imageErrorMessage = "Please Upload Image less than 15MB";
@@ -1254,8 +1293,6 @@ export default {
     },
     thumbnailSelected(image: any) {
       this.thumbnail = image;
-      console.log("okandd");
-      console.log("kjinasv", this.thumbnail);
       if (Math.floor(this.thumbnail.size / (1024 * 1024)) >= 15) {
         this.imageError = true;
         this.imageErrorMessage = "Please Upload Image less than 15MB";
@@ -1459,11 +1496,6 @@ export default {
 
         await editDraft(this.$route.params.id, tempCollection);
 
-        // if (this.image.name) {
-        //   formData.append("image", this.image);
-
-        //   await editImage(this.$route.params.id, formData);
-        // }
         if (this.image.name) {
           const fileType = this.checkFileType(this.image.name);
           if (fileType === "image") {
@@ -1555,24 +1587,6 @@ export default {
 .image-collection {
   display: none;
   background-color: #878787;
-}
-.video-container {
-  position: relative;
-  width: 100%;
-}
-
-canvas {
-  width: 100%;
-  height: 50px; /* Adjust height as needed */
-  background-color: #f0f0f0; /* Background color of the scrubber */
-  cursor: pointer;
-}
-
-.video-frame {
-  display: block;
-  width: 100%;
-  height: auto;
-  margin-top: 10px; /* Adjust margin as needed */
 }
 .select-type {
   max-width: 50%;

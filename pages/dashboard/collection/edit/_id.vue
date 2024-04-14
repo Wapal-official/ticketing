@@ -18,11 +18,11 @@
           width="421px"
           height="421px"
         />
-        <audio-player-test
+        <audio-player
           v-if="isAudio(collection.media2)"
           class="audio-bg"
           :audioSrc="collection.media2"
-        ></audio-player-test>
+        ></audio-player>
       </div>
 
       <div

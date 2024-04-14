@@ -334,11 +334,10 @@ export default {
         this.type === "images" &&
         !res.data.folderInfo.metadata.baseURI
       ) {
-        console.log("resssss");
-
         this.folderInfo.files = res.data.folderInfo.images.files;
       } else {
-        console.log("ressss1", this.folderInfo.files);
+        this.folderInfo.files = res.data.folderInfo.metadata.files;
+      }
 
         this.folderInfo.files = res.data.folderInfo.metadata.files;
       }
@@ -363,7 +362,6 @@ export default {
       this.folderInfo.images = res.data.folderInfo.images;
       this.folderInfo.metadata = res.data.folderInfo.metadata;
       this.folderInfo.traits = res.data.folderInfo.traits;
-      console.log("ca", this.folderInfo.assets);
       if (this.isImage(this.folderInfo.assets.ext)) {
         this.isImgforMetadata = true;
       }
@@ -393,7 +391,6 @@ export default {
         res.data.folderInfo.images.files.length > 0
       ) {
         this.fileExtension = res.data.folderInfo.images.ext;
-        console.log("asd", this.fileExtension);
       } else if (this.type === "metadata") {
         this.fileExtension = ".json";
       }
