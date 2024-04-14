@@ -235,7 +235,6 @@ export default {
     AssetsImageDetails,
     GradientBorderButton,
   },
-  ssr: false,
   data() {
     return {
       folderInfo: {
@@ -339,8 +338,6 @@ export default {
         this.folderInfo.files = res.data.folderInfo.metadata.files;
       }
 
-        this.folderInfo.files = res.data.folderInfo.metadata.files;
-      }
       // this.folderInfo.files =
       // this.type === "assets" && !res.data.folderInfo.metadata.baseURI
       //   ? res.data.folderInfo.assets.files
@@ -355,6 +352,9 @@ export default {
       //     ? res.data.folderInfo.images.files
       //     : res.data.folderInfo.metadata.files;
       console.log("fi", this.folderInfo.files);
+
+      this.folderInfo.files = res.data.folderInfo.metadata.files;
+
       this.folderInfo.folder_name = res.data.folderInfo.folder_name;
       this.folderInfo._id = res.data.folderInfo._id;
       this.folderInfo.user_id = res.data.folderInfo.user_id;
@@ -716,6 +716,5 @@ export default {
       }
     },
   },
-  cache: false,
 };
 </script>
