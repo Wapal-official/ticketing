@@ -314,9 +314,10 @@ export const editImage = async (draftId: string, data: any) => {
 };
 
 export const updateCollection = async (collectionId: string, data: any) => {
+  const now = new Date().toISOString();
   const res = await creatorStudioRequest.patch(
     `/api/collection/${collectionId}`,
-    data
+    { ...data, updated_at: now }
   );
 
   return res;
