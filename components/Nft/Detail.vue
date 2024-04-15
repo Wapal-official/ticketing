@@ -26,11 +26,11 @@
           :alt="collection.name"
           class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
         />
-        <audio-player
+        <audio-player-test
           v-if="isAudio(collection.media2)"
           class="audio-bg"
           :audioSrc="collection.media2"
-        ></audio-player>
+        ></audio-player-test>
       </div>
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
@@ -96,16 +96,6 @@
           >
             <i
               class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
-            ></i>
-          </a>
-          <a
-            :href="collection.website"
-            target="_blank"
-            v-if="collection.website"
-            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
-          >
-            <i
-              class="bx bx-globe tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
           <div class="tw-relative">
@@ -190,7 +180,7 @@
                   <div
                     class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between 3xl:tw-text-lg"
                     v-if="
-                      collection.edition &&
+                      collection.isEdition &&
                       collection.edition === 'open-edition'
                     "
                   >
@@ -714,7 +704,7 @@ export default {
         );
 
         if (
-          this.collection.edition &&
+          this.collection.isEdition &&
           this.collection.edition === "open-edition"
         ) {
           return;
@@ -808,11 +798,11 @@ export default {
           return;
         }
 
-        // if (this.checkPublicSaleTimer()) {
-        //   if (this.mintLimit <= this.currentlyOwned) {
-        //     throw new Error("Mint Limit for this phase Exceeded");
-        //   }
-        // }
+        if (this.checkPublicSaleTimer()) {
+          if (this.mintLimit <= this.currentlyOwned) {
+            throw new Error("Mint Limit for this phase Exceeded");
+          }
+        }
         let res = null;
         if (!this.v2) {
           res = await this.$store.dispatch("walletStore/mintBulk", {
@@ -823,7 +813,6 @@ export default {
             proof: this.proof,
             mintLimit: this.totalMintLimit,
             sender: this.getSender,
-            price: this.currentSale.mint_price,
           });
         } else {
           if (
@@ -836,11 +825,9 @@ export default {
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
+              mint_limit: this.totalMintLimit,
               coinType: this.collection.seed.coin_type,
               sender: this.getSender,
-              mint_limit: this.currentSale.mintLimit,
-              sender: this.getSender,
-              mint_price: this.currentSale.mint_price,
             });
           } else {
             res = await mintCollection({
@@ -849,9 +836,8 @@ export default {
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
-              mint_limit: this.currentSale.mintLimit,
+              mint_limit: this.totalMintLimit,
               sender: this.getSender,
-              mint_price: this.currentSale.mint_price,
             });
           }
         }
@@ -957,8 +943,6 @@ export default {
         (phase) => phase.id === this.currentSale.id
       );
 
-      this.currentSale.mintLimit = currentPhase.mintLimit;
-
       if (!currentPhase.whitelisted) {
         this.notWhitelisted = true;
         this.gettingProof = false;
@@ -988,7 +972,9 @@ export default {
           this.proof.push(proof.data);
         });
 
-        await this.getMintLimitOfPreviousPhases();
+        // await this.getMintLimitOfPreviousPhases();
+
+        this.mintLimit = 5;
 
         await this.getOwnedCollectionOfUser();
 
@@ -1012,13 +998,10 @@ export default {
       }
     },
     async getOwnedCollectionOfUser() {
-      const res = await getOwnedCollectionOfUser({
-        owner_address: this.getWalletAddress,
-        collection_name: this.collection.name,
-        candy_id: this.collection.candyMachine.candy_id,
-        resource_account: this.collection.candyMachine.resource_account,
-        mint_limit: this.mintLimit,
-      });
+      const res = await getOwnedCollectionOfUser(
+        this.getWalletAddress,
+        this.collection.name
+      );
 
       this.currentlyOwned = res;
 
@@ -1082,9 +1065,7 @@ export default {
       }
 
       const publicSale = {
-        name: this.collection.public_sale_name
-          ? this.collection.public_sale_name
-          : "public sale",
+        name: "public sale",
         id: "public-sale",
         mint_price: this.collection.candyMachine.public_sale_price,
         mint_time: this.collection.candyMachine.public_sale_time,
@@ -1295,17 +1276,27 @@ export default {
 
     async getMintLimitOfPreviousPhases() {
       let mintLimit = 0;
-      this.phases.map(async (phase) => {
-        const date = new Date();
+      await Promise.all(
+        this.collection.phases.map(async (phase) => {
+          const date = new Date();
 
-        const phaseStartDate = new Date(phase.mint_time);
+          const phaseStartDate = new Date(phase.mint_time);
 
-        if (date > phaseStartDate) {
-          if (phase.mintLimit) {
-            mintLimit += phase.mintLimit;
+          if (date > phaseStartDate) {
+            const mintLimitRes = await getMintLimit({
+              walletAddress: this.getWalletAddress,
+              collectionId: this.collection._id,
+              phase: phase.id,
+            });
+
+            const data = mintLimitRes.data.data;
+
+            if (data) {
+              mintLimit += data.mint_limit;
+            }
           }
-        }
-      });
+        })
+      );
 
       this.mintLimit = mintLimit;
     },
@@ -1356,10 +1347,8 @@ export default {
 
               if (res.data.data) {
                 tempPhase.whitelisted = true;
-                tempPhase.mintLimit = res.data.data.mint_limit;
               } else {
                 tempPhase.whitelisted = false;
-                tempPhase.mintLimit = 0;
               }
             }
 
@@ -1631,6 +1620,8 @@ export default {
         await this.checkWhitelistForPhases();
         await this.setProof();
         await this.getOwnedCollectionOfUser();
+      } else {
+        await this.checkWhitelistForPhases();
       }
 
       if (
@@ -1640,8 +1631,6 @@ export default {
       ) {
         await this.checkWhitelistForExternalMint();
       }
-
-      await this.checkWhitelistForPhases();
     },
   },
 };
@@ -1667,6 +1656,7 @@ export default {
   left: 0;
   bottom: 0px;
   right: 0;
+  /* width: 93%; */
   padding: 0 16px 16px;
   background-image: linear-gradient(transparent, #000) !important;
   border-bottom-left-radius: 8px;

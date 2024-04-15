@@ -235,6 +235,7 @@ export default {
     AssetsImageDetails,
     GradientBorderButton,
   },
+  ssr: false,
   data() {
     return {
       folderInfo: {
@@ -337,7 +338,6 @@ export default {
       } else {
         this.folderInfo.files = res.data.folderInfo.metadata.files;
       }
-
       // this.folderInfo.files =
       // this.type === "assets" && !res.data.folderInfo.metadata.baseURI
       //   ? res.data.folderInfo.assets.files
@@ -351,10 +351,6 @@ export default {
       //   this.type === "images" && !res.data.folderInfo.metadata.baseURI
       //     ? res.data.folderInfo.images.files
       //     : res.data.folderInfo.metadata.files;
-      console.log("fi", this.folderInfo.files);
-
-      this.folderInfo.files = res.data.folderInfo.metadata.files;
-
       this.folderInfo.folder_name = res.data.folderInfo.folder_name;
       this.folderInfo._id = res.data.folderInfo._id;
       this.folderInfo.user_id = res.data.folderInfo.user_id;
@@ -540,7 +536,7 @@ export default {
           this.balanceNotEnoughError.requiredBalance
         );
 
-        if (transaction.success || transaction.hash) {
+        if (transaction.success) {
           this.uploading = false;
           this.uploadStatusClass = "tw-h-full";
 
@@ -581,14 +577,10 @@ export default {
     },
     completeTransactionForMetadataUpload(csvLength: number) {
       this.showCSVUploadModal = false;
-      if (csvLength !== undefined) {
-        this.CSVLength = csvLength;
-        this.transferFund(
-          `uploads/${this.$store.state.userStore.user.user_id}`
-        );
-      } else {
-        console.error("csvLength is undefined");
-      }
+
+      this.CSVLength = csvLength;
+
+      this.transferFund(`uploads/${this.$store.state.userStore.user.user_id}`);
     },
     showListView() {
       this.listView = true;
@@ -719,5 +711,6 @@ export default {
       }
     },
   },
+  cache: false,
 };
 </script>

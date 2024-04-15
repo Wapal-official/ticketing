@@ -1548,6 +1548,11 @@ export default {
 @media (min-width: 1024px) and (max-width: 1200px) {
   .audio-max-width {
     max-width: 34%;
+    min-width: 300px;
+  }
+  #image-preview,
+  #image-review {
+    min-width: 300px;
   }
 }
 .audio-bg {
