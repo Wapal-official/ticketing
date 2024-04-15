@@ -247,7 +247,6 @@ button {
 
 path {
   stroke: #ffffff;
-
 }
 #volume-slider {
   width: 38%;
