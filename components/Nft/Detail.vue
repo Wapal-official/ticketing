@@ -957,6 +957,23 @@ export default {
 
         this.proof = [];
 
+        const localStorageProof = this.getProofFromLocalStorage();
+
+        if (
+          localStorageProof &&
+          localStorageProof.collectionId === this.collection._id &&
+          localStorageProof.phase === this.currentSale.id &&
+          this.collection.updated_at &&
+          new Date(this.collection.updated_at).getTime() ===
+            new Date(localStorageProof.updatedAt).getTime()
+        ) {
+          this.proof = localStorageProof.proof;
+          this.gettingProof = false;
+          this.notWhitelisted = false;
+          this.whitelisted = true;
+          return;
+        }
+
         const proofParams = {
           walletAddress: this.getWalletAddress,
           collectionId: this.collection._id,
@@ -972,9 +989,16 @@ export default {
           this.proof.push(proof.data);
         });
 
-        // await this.getMintLimitOfPreviousPhases();
+        if (this.collection.updated_at) {
+          this.setProofInLocalStorage({
+            proof: this.proof,
+            collectionId: this.collection._id,
+            phase: this.currentSale.id,
+            updatedAt: this.collection.updated_at,
+          });
+        }
 
-        this.mintLimit = 5;
+        await this.getMintLimitOfPreviousPhases();
 
         await this.getOwnedCollectionOfUser();
 
@@ -1361,6 +1385,25 @@ export default {
           }
         })
       );
+    },
+    getProofFromLocalStorage() {
+      const proof = JSON.parse(localStorage.getItem("proof"));
+
+      return proof;
+    },
+    setProofInLocalStorage({ proof, collectionId, phase, updatedAt }) {
+      localStorage.setItem(
+        "proof",
+        JSON.stringify({
+          proof: proof,
+          collectionId: collectionId,
+          phase: phase,
+          updatedAt: updatedAt,
+        })
+      );
+    },
+    removeProofFromLocalStorage() {
+      localStorage.setItem("proof", "");
     },
   },
   computed: {
