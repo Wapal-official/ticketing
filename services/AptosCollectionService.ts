@@ -250,6 +250,7 @@ export const mintCollection = async ({
   proof,
   mint_limit,
   sender,
+  mint_price,
 }: MintCollectionInterface) => {
   await checkWalletConnected();
   checkNetwork();
@@ -260,6 +261,7 @@ export const mintCollection = async ({
         candy_machine_id,
         candy_object,
         sender,
+        mint_price,
       });
 
       return res;
@@ -269,6 +271,7 @@ export const mintCollection = async ({
         candy_object,
         amount,
         sender,
+        mint_price,
       });
       return res;
     }
@@ -280,6 +283,7 @@ export const mintCollection = async ({
         proof,
         mint_limit,
         sender,
+        mint_price,
       });
 
       return res;
@@ -291,6 +295,7 @@ export const mintCollection = async ({
         mint_limit,
         amount,
         sender,
+        mint_price,
       });
 
       return res;
@@ -365,6 +370,7 @@ export const merkleMintSingleNft = async ({
   proof,
   mint_limit,
   sender,
+  mint_price,
 }: MintCollectionInterface) => {
   try {
     const proofsAsHex = proof?.map((tempProof) => {
@@ -377,14 +383,25 @@ export const merkleMintSingleNft = async ({
       return proofAsHex.hex();
     });
 
+    const convertedMintPrice = convertPriceToSendInSmartContract({
+      price: mint_price ? mint_price : 0,
+      isConverted: false,
+      coinType: "APT",
+    });
+
     const simulateMintLimit = mint_limit?.toString();
 
     const merkle_mint_simulate_script = {
       type: "entry_function_payload",
       function:
-        `${candy_machine_id}::candymachine::mint_from_merkle` as `${string}::${string}::${string}`,
+        `${candy_machine_id}::candymachine::mint_from_merkle_v2` as `${string}::${string}::${string}`,
       type_arguments: [],
-      arguments: [candy_object, proofsAsHex, simulateMintLimit],
+      arguments: [
+        candy_object,
+        proofsAsHex,
+        simulateMintLimit,
+        convertedMintPrice,
+      ],
     };
 
     const simulateRes = await simulateTransaction({
@@ -398,9 +415,9 @@ export const merkleMintSingleNft = async ({
 
     const merkle_mint_script: InputGenerateTransactionPayloadData = {
       function:
-        `${candy_machine_id}::candymachine::mint_from_merkle` as `${string}::${string}::${string}`,
+        `${candy_machine_id}::candymachine::mint_from_merkle_v2` as `${string}::${string}::${string}`,
       typeArguments: [],
-      functionArguments: [candy_object, proof, mint_limit],
+      functionArguments: [candy_object, proof, mint_limit, convertedMintPrice],
     };
 
     const res = await executeTransactionAndGiveResult(merkle_mint_script);
@@ -418,6 +435,7 @@ export const merkleMintManyNft = async ({
   mint_limit,
   amount,
   sender,
+  mint_price,
 }: MintCollectionInterface) => {
   try {
     const proofsAsHex = proof?.map((tempProof) => {
@@ -433,10 +451,18 @@ export const merkleMintManyNft = async ({
     const simulateMintLimit = mint_limit?.toString();
     const simulateAmount = amount?.toString();
 
+    const convertedMintPrice = convertPriceToSendInSmartContract({
+      price: mint_price ? mint_price : 0,
+      isConverted: false,
+      coinType: "APT",
+    });
+
+    console.log(convertedMintPrice);
+
     const merkle_mint_many_simulate_script = {
       type: "entry_function_payload",
       function:
-        `${candy_machine_id}::candymachine::mint_from_merkle_many` as `${string}::${string}::${string}`,
+        `${candy_machine_id}::candymachine::mint_from_merkle_many_v2` as `${string}::${string}::${string}`,
       type_arguments: [],
       arguments: [candy_object, proofsAsHex, simulateMintLimit, simulateAmount],
     };
@@ -452,9 +478,15 @@ export const merkleMintManyNft = async ({
 
     const merkle_mint_script_many: InputGenerateTransactionPayloadData = {
       function:
-        `${candy_machine_id}::candymachine::mint_from_merkle_many` as `${string}::${string}::${string}`,
+        `${candy_machine_id}::candymachine::mint_from_merkle_many_v2` as `${string}::${string}::${string}`,
       typeArguments: [],
-      functionArguments: [candy_object, proof, mint_limit, amount],
+      functionArguments: [
+        candy_object,
+        proof,
+        mint_limit,
+        amount,
+        convertedMintPrice,
+      ],
     };
 
     const res = await executeTransactionAndGiveResult(merkle_mint_script_many);
@@ -613,6 +645,7 @@ export const anotherCoinMintCollection = async ({
   mint_limit,
   coinType,
   sender,
+  mint_price,
 }: MintCollectionInterface) => {
   await checkWalletConnected();
   checkNetwork();
@@ -628,6 +661,7 @@ export const anotherCoinMintCollection = async ({
         candy_object,
         coinObject,
         sender,
+        mint_price,
       });
 
       return res;
@@ -638,6 +672,7 @@ export const anotherCoinMintCollection = async ({
         amount,
         coinObject,
         sender,
+        mint_price,
       });
       return res;
     }
@@ -650,6 +685,7 @@ export const anotherCoinMintCollection = async ({
         mint_limit,
         coinObject,
         sender,
+        mint_price,
       });
 
       return res;
@@ -662,6 +698,7 @@ export const anotherCoinMintCollection = async ({
         amount,
         coinObject,
         sender,
+        mint_price,
       });
 
       return res;
@@ -774,7 +811,7 @@ export const anotherCoinMerkleMintSingleNft = async ({
 
     const merkle_mint_simulate_script: InputGenerateTransactionPayloadData = {
       function:
-        `${candy_machine_id}::candymachine::mint_from_merkle_many` as `${string}::${string}::${string}`,
+        `${candy_machine_id}::candymachine::mint_from_merkle_v2` as `${string}::${string}::${string}`,
       typeArguments: [coinType],
       functionArguments: [candy_object, proofsAsHex, simulateMintLimit],
     };
@@ -790,7 +827,7 @@ export const anotherCoinMerkleMintSingleNft = async ({
 
     const merkle_mint_script: InputGenerateTransactionPayloadData = {
       function:
-        `${candy_machine_id}::candymachine::mint_from_merkle` as `${string}::${string}::${string}`,
+        `${candy_machine_id}::candymachine::mint_from_merkle_v2` as `${string}::${string}::${string}`,
       typeArguments: [coinType],
       functionArguments: [candy_object, proof, mint_limit],
     };
@@ -829,7 +866,7 @@ export const anotherCoinMerkleMintManyNft = async ({
     const merkle_mint_many_simulate_script = {
       type: "entry_function_payload",
       function:
-        `${candy_machine_id}::candymachine::mint_from_merkle_many` as `${string}::${string}::${string}`,
+        `${candy_machine_id}::candymachine::mint_from_merkle_many_v2` as `${string}::${string}::${string}`,
       type_arguments: [],
       arguments: [candy_object, proofsAsHex, simulateMintLimit, simulateAmount],
     };
@@ -847,7 +884,7 @@ export const anotherCoinMerkleMintManyNft = async ({
 
     const merkle_mint_script_many: InputGenerateTransactionPayloadData = {
       function:
-        `${candy_machine_id}::candymachine::mint_from_merkle_many` as `${string}::${string}::${string}`,
+        `${candy_machine_id}::candymachine::mint_from_merkle_many_v2` as `${string}::${string}::${string}`,
       typeArguments: [coinType],
       functionArguments: [candy_object, proof, mint_limit, amount],
     };

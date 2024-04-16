@@ -547,7 +547,7 @@ export default {
           this.balanceNotEnoughError.requiredBalance
         );
 
-        if (transaction.success) {
+        if (transaction.success || transaction.hash) {
           this.uploading = false;
           this.uploadStatusClass = "tw-h-full";
 

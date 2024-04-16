@@ -76,10 +76,6 @@ export const checkIfCollectionIsSoldOut = (collection: any) => {
       return {
         supply: 41,
       };
-    case "aptos-friends":
-      return {
-        supply: 389,
-      };
     case "angry-apes":
       return {
         supply: 971,

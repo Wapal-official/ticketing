@@ -276,6 +276,7 @@ import {
   getAvailableCoinTypesForAuction,
   getCoinType,
 } from "@/utils/getCoinType";
+import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 extend("required", {
   ...required,
   message: "This field is required",
@@ -393,7 +394,7 @@ export default {
 
           const auction_name = generateName(this.selectedNft.meta.name);
 
-          publicRequest
+          creatorStudioRequest
             .post("/api/auction", {
               nft: this.selectedNft,
               startAt: this.start_date,
