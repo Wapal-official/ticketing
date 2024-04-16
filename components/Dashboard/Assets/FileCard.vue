@@ -21,17 +21,10 @@
           v-else
           style="height: 200px; position: relative"
         >
-          <!-- <audio-player
+          <audio-player
             class="audio-postion"
             :audioSrc="getAssetSrc"
-          ></audio-player> -->
-          <audio-player-test
-            class="audio-postion"
-            :audioSrc="getAssetSrc"
-          ></audio-player-test>
-          <!-- <audio class="audio-postion" controls>
-            <source :src="getAssetSrc" type="audio/mp3" />
-          </audio> -->
+          ></audio-player>
         </div>
 
         <div
@@ -137,7 +130,6 @@
 </template>
 <script lang="ts">
 import { getCachedUrlOfImage } from "@/utils/imageCache";
-
 export default {
   props: {
     propFile: { type: Object },
@@ -224,14 +216,15 @@ export default {
       const videoRegex =
         /\.((mp4|avi|mov|mkv|wmv|flv|webm|3gp|ogv|mpeg|mpg|m4v|divx|rm|asf|vob|ts|m2ts?))$/i;
 
+      const audioRegex = /\.((mp3|wav|aac|ogg|flac|wma|alac|aiff|opus?))$/i;
+
       if (imageRegex.test(this.extension)) {
         return "image";
       } else if (videoRegex.test(this.extension)) {
         return "video";
-      } else {
+      } else if (audioRegex.test(this.extension)) {
         return "audio";
       }
-
       return "json";
     },
     getAssetSrc() {

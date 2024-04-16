@@ -19,17 +19,6 @@
             class="!tw-border-none tw-uppercase tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-8"
           >
             <div v-if="$route.params.type === 'assets'">
-              <!-- <video-player-listed
-                v-if="item.image && isVideo(item.image ? item.image : item.src)"
-                :source="item.image ? item.image : item.src"
-                style="max-width: 50px; height: 50px"
-              />
-              <utility-image
-                v-else
-                :source="item.image ? item.image : item.src"
-                :alt="item.name"
-                class="tw-w-[45px] tw-h-[45px] tw-object-cover"
-              /> -->
               <video-player-listed
                 v-if="isVideo(item.image ? item.image : item.src)"
                 :source="item.image ? item.image : item.src"

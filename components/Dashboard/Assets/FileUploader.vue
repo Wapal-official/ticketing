@@ -280,7 +280,6 @@ export default {
         this.uploadStatusClass = "tw-h-0";
         this.uploading = true;
         this.showUploadingDialog = true;
-        console.log("type", this.type);
         if (
           this.type === "metadata" &&
           !this.folderInfo.assets.baseURI &&

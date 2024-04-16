@@ -7,22 +7,22 @@
       <div style="position: relative">
         <video-player-detailed
           class="video-detailed-edit"
-          v-if="collection.media2 ? collection.media2 : collection.image"
-          :source="collection.media2 ? collection.media2 : collection.image"
+          v-if="isVideo(collection.media2)"
+          :source="collection.media2"
         />
         <img
           v-else
           :src="collection.image"
           :alt="collection.name"
-          class="tw-rounded tw-w-[421px] tw-h-[421px]"
+          class="tw-rounded-xl tw-w-[421px] tw-h-[421px]"
           width="421px"
           height="421px"
         />
-        <audio-player-test
+        <audio-player
           v-if="isAudio(collection.media2)"
           class="audio-bg"
           :audioSrc="collection.media2"
-        ></audio-player-test>
+        ></audio-player>
       </div>
 
       <div
@@ -721,6 +721,7 @@ export default {
       settingUpNextPhaseError: false,
       mintingPaused: false,
       aptIcon,
+      fileType: "",
     };
   },
   async mounted() {
@@ -744,7 +745,6 @@ export default {
             "flv",
             "3gp",
             "ogv",
-            "mpeg",
             "mpg",
             "divx",
             "rm",
@@ -756,7 +756,7 @@ export default {
         : false;
     },
     isAudio(source: string) {
-      if (typeof source !== "string") {
+      if (!source) {
         return false;
       }
       const extension = source.split(".").pop()?.toLowerCase();
@@ -771,12 +771,14 @@ export default {
             "alac",
             "aiff",
             "opus",
+            "mpeg",
           ].includes(extension)
         : false;
     },
     async fetchCollection() {
       this.loading = true;
       this.collection = await getCollection(this.$route.params.id);
+
       console.log("collection", this.collection);
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,

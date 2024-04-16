@@ -14,7 +14,7 @@
     >
 
     <div
-      class="tw-border tw-border-dashed tw-border-dark-4 tw-py-20 tw-rounded tw-cursor-pointer tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
+      class="tw-text-center tw-px-5 tw-border tw-border-dashed tw-border-dark-4 tw-py-20 tw-rounded tw-cursor-pointer tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
       @click="dropZoneClicked"
       @dragover.prevent="dragover"
       @dragleave.prevent="dragleave"
@@ -29,13 +29,28 @@
           >click to browse</span
         ></label
       >
-      <label class="tw-text-xs tw-font-medium tw-text-dark-2"
+      <label
+        v-if="selectedType == 'Image'"
+        class="tw-text-xs tw-font-medium tw-text-dark-2"
         >Size: 400x400px</label
       >
+      <label
+        v-else-if="selectedType == 'Video'"
+        class="tw-text-xs tw-font-medium tw-text-dark-2 tw-mx-2"
+        >Video types: .mp4, .webm, .mkv, .m4v, .avi, .mov, .wmv, .flv, .3gp,
+        .ogv, .mpeg, .mpg, .divx, .rm, .asf, .vob, .ts, .m2ts</label
+      >
+      <label
+        v-else-if="selectedType == 'Audio'"
+        class="tw-text-xs tw-font-medium tw-text-dark-2"
+        >Audio types: .mp3, .wav, .ogg, .aac, .flac, .wma, .alac, .aiff,
+        .opus</label
+      >
+
       <label class="tw-text-xs tw-font-medium tw-text-dark-2" v-if="fileSize"
         >File Size: {{ fileSize }}</label
       >
-      <label class="tw-text-xs tw-font-medium tw-text-dark-2"
+      <label class="tw-text-xs tw-font-medium tw-text-dark-2 tw-mt-6"
         >These are feature requirements. Rest assured, it won't compromise the
         quality of your NFT.</label
       >
@@ -49,7 +64,7 @@
         id="drop-zone"
       />
     </div>
-    <div v-else class="d-flex tw-gap-4 tw-mb-16">
+    <div v-else class="d-flex tw-gap-4">
       <div
         class="tw-w-[200px] tw-h-[200px] tw-relative tw-rounded tw-group"
         ref="dropZone"
@@ -74,15 +89,15 @@
           ref="imagePreview2"
           class="tw-w-full tw-h-full tw-rounded tw-bg-black"
         ></div>
-        <audio-player-test
+        <audio-player
           v-if="audioCheck"
           class="audio-position"
           :audioSrc="this.audioUrl"
-        ></audio-player-test>
+        ></audio-player>
 
         <v-dialog
           v-model="checkFeaturedFile"
-          max-width="500  "
+          content-class="!tw-w-full md:!tw-w-1/2 1xl:!tw-w-1/3"
           style="height: auto; width: 500px !important; background-color: #000"
         >
           <v-card
@@ -91,7 +106,7 @@
             style="height: auto; width: 500px; background-color: #000"
           >
             <div
-              class="tw-w-[400px] tw-h-[400px] tw-pt-5 tw-relative tw-mx-auto tw-rounded tw-group"
+              class="video-width tw-w-[400px] tw-h-[400px] tw-pt-5 tw-relative tw-mx-auto tw-rounded tw-group"
               ref="dropZone"
             >
               <input
@@ -106,12 +121,12 @@
                 ref="imagePreview"
                 class="tw-w-full tw-h-full tw-rounded tw-bg-black mx-auto"
               ></div> -->
-              <audio-player-test
+              <audio-player
                 v-if="audioCheck"
                 class="audio-position"
                 :audioSrc="this.audioUrl"
                 style="width: 100% !important"
-              ></audio-player-test>
+              ></audio-player>
               <div
                 v-else
                 ref="imagePreview"
@@ -201,18 +216,30 @@
                     class="tw-hidden tw-w-full tw-h-full"
                     ref="inputThumnail"
                   />
-
-                  <!-- <button
-                      class="tw-w-full tw-absolute tw-bottom-[-2px] tw-left-0 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-1 tw-py-2 tw-bg-dark-7 tw-text-white tw-rounded tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear group-hover:tw-opacity-100"
-                      @click="dropZoneClickedThumnail"
-                    >
-                      <span class="tw-text-sm tw-font-medium">Change </span>
-                      <i class="bx bxs-edit-alt tw-text-xl"></i>
-                    </button>  -->
+                  <!-- </div>
+                <div
+                  v-else
+                  class="tw-p-3 tw-rounded tw-cursor-pointer tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
+                  @click="dropZoneClickedThumnail"
+                  @dragover.prevent="dragover"
+                  @dragleave.prevent="dragleave"
+                  @drop.prevent="dropThumnail"
+                  :class="dropZoneClass"
+                  id="drop-zone"
+                >
+                  <input
+                    type="file"
+                    :accept="acceptFileThumnail"
+                    name="file"
+                    @change="fileSelectedThumbnail"
+                    class="tw-hidden tw-w-full tw-h-full"
+                    ref="inputThumnail"
+                    id="drop-zone"
+                  /> -->
                 </div>
               </div>
               <div
-                class="tw-w-[94%] tw-h-auto tw-mx-auto tw-p-3 tw-border tw-border-dashed tw-border-dark-4 tw-rounded tw-cursor-pointer tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
+                class="tw-w-[92%] tw-h-auto tw-mx-auto tw-p-3 tw-border tw-border-dashed tw-border-dark-4 tw-rounded tw-cursor-pointer tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2"
               >
                 <div
                   v-if="!imageSelectedThumnail && isVideo"
@@ -408,6 +435,9 @@ export default {
     thumbnail: {
       type: [String],
     },
+    selectedType: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -433,9 +463,14 @@ export default {
 
   methods: {
     cancelSelection() {
+      this.$emit("cancel");
+      this.file = "";
       this.videoFile = "";
+      this.audioUrl = "";
       this.isVideo = false;
+      this.thumbnail = "";
       this.imageSelected = false;
+      this.imageSelectedThumnail = false;
       this.checkFeaturedFile = false;
     },
     saveSelection() {
@@ -462,7 +497,9 @@ export default {
     },
     resizeVideo() {},
     reClick() {
-      this.checkFeaturedFile = true;
+      if (!this.isImage) {
+        this.checkFeaturedFile = true;
+      }
     },
     checkFileType() {
       if (this.extension === ".json") {
@@ -490,6 +527,10 @@ export default {
           this.$emit("fileSelected", file);
           this.imageSelected = true;
           this.audioCheck = false;
+          this.checkFeaturedFile = false;
+          console.log("img sl");
+          console.log("img sl", file);
+
           this.generatePreviewImage(file);
         } else if (file.type.includes("video")) {
           this.$emit("fileSelected", file);
@@ -503,7 +544,6 @@ export default {
           this.imageSelected = true;
           this.checkFeaturedFile = true;
           this.audioCheck = true;
-
           this.generatePreviewAudio(file);
           this.generatePreviewAudio2(file);
         } else {
@@ -530,6 +570,18 @@ export default {
       }
     },
     dropZoneClicked() {
+      this.$emit("cancel");
+      console.log("trigeer");
+      this.thumbnail = "";
+      this.isVideo = false;
+      this.imageSelectedThumnail = false;
+      if (this.file) {
+        this.checkFeaturedFile == false;
+        this.isImage == true;
+
+        this.generatePreviewImage(this.file);
+      }
+
       this.$refs.input.click();
     },
     dropZoneClickedThumnail() {
@@ -539,6 +591,9 @@ export default {
       this.isImage = true;
       this.isVideo = false;
       this.isResize = false;
+      this.audioCheck = false;
+      this.checkFeaturedFile == false;
+      this.audioUrl = "";
       const imgElement = document.createElement("img");
 
       imgElement.src = URL.createObjectURL(file);
@@ -556,6 +611,8 @@ export default {
 
         previewElement.prepend(imgElement);
       }, 200);
+      console.log("asdasd");
+      console.log("asdasd", file);
     },
     generatePreviewImageThumnail(file: any) {
       const imgElement = document.createElement("img");
@@ -751,6 +808,7 @@ export default {
         this.$emit("fileSelected", item);
         this.imageSelected = true;
         this.audioCheck = false;
+        this.checkFeaturedFile = false;
         this.generatePreviewImage(item);
       } else if (item.type.includes("video")) {
         this.$emit("fileSelected", item);
@@ -865,7 +923,7 @@ export default {
 }
 .audio-position {
   position: absolute;
-  bottom: 40px;
+  bottom: 30px;
 }
 .change-btn {
   display: flex;
@@ -873,5 +931,10 @@ export default {
   color: #8759ff;
   padding: 0 12px;
   cursor: pointer;
+}
+@media (max-width: 555px) {
+  .video-width {
+    max-width: 220px !important;
+  }
 }
 </style>

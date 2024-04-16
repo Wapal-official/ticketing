@@ -98,11 +98,13 @@
         :type="type"
       />
       <div
-        class="tw-text-dark-0 tw-text-center tw-text-lg tw-w-full"
+        class="tw-text-dark-0 tw-text-center tw-p-16 tw-text-lg tw-w-full"
         v-if="!checkImageUploaded"
+        style="border: 1px solid #25262b"
       >
-        Please Upload Images in assets or videos in assets and images in images
-        folder first
+        <h3 class="!tw-mb-1" style="color: #fff">This folder is empty.</h3>
+        Please upload the assets (images or videos) before uploading the
+        metadata.
       </div>
     </div>
     <div
@@ -315,12 +317,6 @@ export default {
         this.showFileDetails = true;
       }
     },
-    getFileType(item: any) {
-      if (item.type.includes("image/")) {
-        return true;
-      }
-      return false;
-    },
     async fetchFiles() {
       this.fileIndex = 0;
       this.loading = true;
@@ -338,12 +334,8 @@ export default {
         this.type === "images" &&
         !res.data.folderInfo.metadata.baseURI
       ) {
-        console.log("resssss");
-
         this.folderInfo.files = res.data.folderInfo.images.files;
       } else {
-        console.log("ressss1", this.folderInfo.files);
-
         this.folderInfo.files = res.data.folderInfo.metadata.files;
       }
       // this.folderInfo.files =
@@ -359,7 +351,6 @@ export default {
       //   this.type === "images" && !res.data.folderInfo.metadata.baseURI
       //     ? res.data.folderInfo.images.files
       //     : res.data.folderInfo.metadata.files;
-      console.log("fi", this.folderInfo.files);
       this.folderInfo.folder_name = res.data.folderInfo.folder_name;
       this.folderInfo._id = res.data.folderInfo._id;
       this.folderInfo.user_id = res.data.folderInfo.user_id;
@@ -367,7 +358,6 @@ export default {
       this.folderInfo.images = res.data.folderInfo.images;
       this.folderInfo.metadata = res.data.folderInfo.metadata;
       this.folderInfo.traits = res.data.folderInfo.traits;
-      console.log("ca", this.folderInfo.assets);
       if (this.isImage(this.folderInfo.assets.ext)) {
         this.isImgforMetadata = true;
       }
@@ -397,7 +387,6 @@ export default {
         res.data.folderInfo.images.files.length > 0
       ) {
         this.fileExtension = res.data.folderInfo.images.ext;
-        console.log("asd", this.fileExtension);
       } else if (this.type === "metadata") {
         this.fileExtension = ".json";
       }
@@ -547,7 +536,7 @@ export default {
           this.balanceNotEnoughError.requiredBalance
         );
 
-        if (transaction.success || transaction.hash) {
+        if (transaction.success) {
           this.uploading = false;
           this.uploadStatusClass = "tw-h-full";
 
@@ -701,7 +690,6 @@ export default {
     }
 
     this.assetLimit = this.type === "assets" ? 12 : 48;
-
     await this.fetchFiles();
     await this.mapFiles();
 
