@@ -81,24 +81,7 @@ export default {
         : false;
     },
   },
-  methods: {
-    isImage(source: string) {
-      const extension = source.split(".").pop()?.toLowerCase();
-      return extension
-        ? [
-            "jpg",
-            "jpeg",
-            "png",
-            "gif",
-            "webp",
-            "bmp",
-            "svg",
-            "ico",
-            "tiff",
-          ].includes(extension)
-        : false;
-    },
-  },
+
   async mounted() {
     try {
       const folderId = this.$route.params.id;

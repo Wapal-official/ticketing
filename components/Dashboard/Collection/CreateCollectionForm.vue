@@ -166,8 +166,8 @@
               @fileSelected="imageSelected"
               @fileSelectedThumbnail="thumbnailSelected"
               :selectedType="selectedFileType"
-              :file="collection.image"
-              :thumbnail="collection.thumbnail"
+              :file="collection.media2 ? collection.media2 : collection.image"
+              :thumbnail="collection.image"
               fileSize="Upto 15 MB"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
@@ -856,6 +856,7 @@ export default {
         whitelist_price: "",
         supply: "",
         twitter: "",
+        media2: "",
         discord: "",
         website: "",
         instagram: "",
@@ -1146,6 +1147,9 @@ export default {
       }
     },
     checkFileType(fileName: any) {
+      if (!fileName) {
+        return false;
+      }
       const fileExtension = fileName.split(".").pop().toLowerCase();
       const imageExtensions = [
         "jpg",
@@ -1198,7 +1202,6 @@ export default {
         return "audio";
       } else {
         return "image";
-
       }
     },
 
@@ -1230,7 +1233,8 @@ export default {
         formData.append("website", tempCollection.website || "");
         formData.append("instagram", tempCollection.instagram || "");
         formData.append("tweet", tempCollection.tweet || "");
-        formData.append("coin_type", tempCollection.coinType);
+
+        // formData.append("coin_type", tempCollection.coinType);
 
         const draft_id = this.$route.params.id;
 
@@ -1248,7 +1252,7 @@ export default {
           if (fileType === "image") {
             formData.append("image", this.image);
           } else {
-            formData.append("video", this.image);
+            formData.append("media2", this.image);
             formData.append("image", this.thumbnail);
           }
         } else {
@@ -1410,7 +1414,7 @@ export default {
         if (fileType === "image") {
           formData.append("image", this.image);
         } else {
-          formData.append("video", this.image);
+          formData.append("media2", this.image);
           formData.append("image", this.thumbnail);
         }
       } else {
@@ -1437,49 +1441,56 @@ export default {
       this.$router.push("/dashboard/collection/draft");
     },
     async setCollectionDataFromDraft() {
-      this.whitelistEnabled = true;
-
-      const draftRes = await getDraftById(this.$route.params.id);
-
-      const draftData = draftRes.data.draft.data;
-
-      draftData.candy_id = this.collection.candy_id;
-
-      this.collection = draftData;
-
       try {
-        this.collection.phases = this.collection.phases
-          ? JSON.parse(this.collection.phases)
-          : [];
-      } catch {
-        this.collection.phases = this.collection.phases
-          ? this.collection.phases
-          : [];
-      }
+        this.whitelistEnabled = true;
 
-      this.collection.phases.map((phase: any) => {
-        phase.mint_time = new Date(phase.mint_time);
-      });
+        const draftRes = await getDraftById(this.$route.params.id);
 
-      this.folders.map((folder: any) => {
-        if (folder.metadata.baseURI === this.collection.baseURL) {
-          this.baseURL = folder.folder_name;
+        const draftData = draftRes.data.draft.data;
+
+        draftData.candy_id = this.collection.candy_id;
+
+        this.collection = draftData;
+
+        try {
+          this.collection.phases = this.collection.phases
+            ? JSON.parse(this.collection.phases)
+            : [];
+        } catch {
+          this.collection.phases = this.collection.phases
+            ? this.collection.phases
+            : [];
         }
-      });
 
-      this.whitelistTBD = this.collection.whitelist_sale_time ? false : true;
-      this.publicSaleTBD = this.collection.public_sale_time ? false : true;
+        this.collection.phases.map((phase: any) => {
+          phase.mint_time = new Date(phase.mint_time);
+        });
 
-      if (this.collection.whitelist_sale_time) {
-        this.collection.whitelist_sale_time = new Date(
-          this.collection.whitelist_sale_time
-        );
-      }
+        this.folders.map((folder: any) => {
+          if (folder.metadata.baseURI === this.collection.baseURL) {
+            this.baseURL = folder.folder_name;
+          }
+        });
 
-      if (this.collection.public_sale_time) {
-        this.collection.public_sale_time = new Date(
-          this.collection.public_sale_time
-        );
+        this.whitelistTBD = this.collection.whitelist_sale_time ? false : true;
+        this.publicSaleTBD = this.collection.public_sale_time ? false : true;
+
+        if (this.collection.whitelist_sale_time) {
+          this.collection.whitelist_sale_time = new Date(
+            this.collection.whitelist_sale_time
+          );
+        }
+
+        if (this.collection.public_sale_time) {
+          this.collection.public_sale_time = new Date(
+            this.collection.public_sale_time
+          );
+        }
+        // if (this.collection.media2) {
+        //   this.collection.image = this.collection.media2;
+        // }
+      } catch (e) {
+        console.log("error", e);
       }
     },
     async saveDraft() {
@@ -1502,7 +1513,7 @@ export default {
             formData.append("image", this.image);
             await editImage(this.$route.params.id, formData);
           } else {
-            formData.append("video", this.image);
+            formData.append("media2", this.image);
             formData.append("image", this.thumbnail);
             await editImage(this.$route.params.id, formData);
           }
@@ -1535,7 +1546,12 @@ export default {
       return this.whitelistTBD || this.publicSaleTBD;
     },
     selectedCoinType() {
-      return getCoinType(this.collection.coinType);
+      try {
+        return getCoinType(this.collection.coinType);
+      } catch (e) {
+        console.log(e);
+        return getCoinType("APT");
+      }
     },
   },
   async mounted() {
@@ -1564,6 +1580,7 @@ export default {
       await this.setCollectionDataFromDraft();
     }
     this.loading = false;
+    console.log("this draft", this.collection);
   },
   watch: {
     whitelistTBD() {

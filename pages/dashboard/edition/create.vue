@@ -1545,9 +1545,16 @@ export default {
 .mint-auction-stepper .v-stepper__step__step {
   background: black !important;
 }
+
 @media (min-width: 1024px) and (max-width: 1200px) {
   .audio-max-width {
     max-width: 34%;
+    min-width: 300px;
+  }
+
+  #image-preview,
+  #image-review {
+    min-width: 300px;
   }
 }
 .audio-bg {
@@ -1595,5 +1602,9 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+.audio-position {
+  position: absolute;
+  bottom: 30px;
 }
 </style>
