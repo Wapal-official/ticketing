@@ -312,6 +312,8 @@ export default {
     },
     displayFileDetails(file: any) {
       this.currentFile = file;
+      console.log("curent file", this.currentFile);
+
       if (file.image) {
         this.showFileDetails = true;
       }
@@ -334,10 +336,11 @@ export default {
         !res.data.folderInfo.metadata.baseURI
       ) {
         this.folderInfo.files = res.data.folderInfo.images.files;
+        console.log("ress2");
       } else {
         this.folderInfo.files = res.data.folderInfo.metadata.files;
+        console.log("ress3", this.folderInfo.files);
       }
-
       // this.folderInfo.files =
       // this.type === "assets" && !res.data.folderInfo.metadata.baseURI
       //   ? res.data.folderInfo.assets.files
@@ -351,10 +354,6 @@ export default {
       //   this.type === "images" && !res.data.folderInfo.metadata.baseURI
       //     ? res.data.folderInfo.images.files
       //     : res.data.folderInfo.metadata.files;
-      console.log("fi", this.folderInfo.files);
-
-      this.folderInfo.files = res.data.folderInfo.metadata.files;
-
       this.folderInfo.folder_name = res.data.folderInfo.folder_name;
       this.folderInfo._id = res.data.folderInfo._id;
       this.folderInfo.user_id = res.data.folderInfo.user_id;
@@ -425,13 +424,13 @@ export default {
                 : index;
               console.log("reaaaa");
               if (this.folderInfo.metadata.baseURI) {
-                if (this.type === "assets") {
-                  src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
-                } else if (this.type === "images") {
-                  src = `${this.folderInfo.images.baseURI}${fileIndex}${this.folderInfo.images.ext}`;
-                } else {
-                  src = `${this.folderInfo.metadata.baseURI}${fileIndex}.json`;
-                }
+                // if (this.type === "assets") {
+                //   src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+                // } else if (this.type === "images") {
+                //   src = `${this.folderInfo.images.baseURI}${fileIndex}${this.folderInfo.images.ext}`;
+                // } else {
+                src = `${this.folderInfo.metadata.baseURI}${fileIndex}.json`;
+                // }
               } else {
                 if (this.type === "assets") {
                   src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
@@ -522,8 +521,9 @@ export default {
         mappedFiles.sort((a: any, b: any) => {
           return a._id - b._id;
         });
-        this.paginatedFiles.push(...mappedFiles);
 
+        this.paginatedFiles.push(...mappedFiles);
+        console.log("this page", this.paginatedFiles);
         this.mappingFiles = false;
       }, 1000);
     },
@@ -540,7 +540,7 @@ export default {
           this.balanceNotEnoughError.requiredBalance
         );
 
-        if (transaction.success || transaction.hash) {
+        if (transaction.success) {
           this.uploading = false;
           this.uploadStatusClass = "tw-h-full";
 
@@ -581,14 +581,19 @@ export default {
     },
     completeTransactionForMetadataUpload(csvLength: number) {
       this.showCSVUploadModal = false;
-      if (csvLength !== undefined) {
-        this.CSVLength = csvLength;
-        this.transferFund(
-          `uploads/${this.$store.state.userStore.user.user_id}`
-        );
-      } else {
-        console.error("csvLength is undefined");
-      }
+
+      // if (csvLength !== undefined) {
+      //   this.CSVLength = csvLength;
+      //   this.transferFund(
+      //     `uploads/${this.$store.state.userStore.user.user_id}`
+      //   );
+      // } else {
+      //   console.error("csvLength is undefined");
+      // }
+
+      this.CSVLength = csvLength;
+
+      this.transferFund(`uploads/${this.$store.state.userStore.user.user_id}`);
     },
     showListView() {
       this.listView = true;

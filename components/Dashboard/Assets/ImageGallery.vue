@@ -162,7 +162,7 @@ export default {
       if (this.type === "assets") {
         paginatedFiles.map((file: any) => {
           const columnIndex = file._id % this.getColumnDivider;
-          if (columnIndex === 0) {
+          if (columnIndex === 0) { 
             this.firstColumnFiles.push(file);
           } else if (columnIndex === 1) {
             this.secondColumnFiles.push(file);

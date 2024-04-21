@@ -48,6 +48,7 @@
             ref="muteIconContainer"
             id="mute-icon"
             @click="isMute = !isMute"
+            style="display: block !important"
           >
             <span v-if="!isMute" class="mdi mdi-volume-high"></span>
             <span v-else class="mdi mdi-volume-mute"></span>
@@ -209,7 +210,7 @@ export default {
 
 <style scoped>
 #seek-slider {
-  width: 94%;
+  width: 96%;
   margin: 0 auto;
 }
 #volume-output {
@@ -233,7 +234,7 @@ button {
   outline: none;
   width: 40px;
   height: 40px;
-  display: flex !important;
+  display: flex;
   align-items: center !important;
 }
 
@@ -247,7 +248,6 @@ button {
 
 path {
   stroke: #ffffff;
-
 }
 #volume-slider {
   width: 38%;

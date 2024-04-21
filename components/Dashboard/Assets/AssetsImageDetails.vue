@@ -117,6 +117,7 @@ export default {
   },
   computed: {
     videoUrl() {
+      console.log("url", this.url);
       return this.url;
     },
   },
@@ -127,10 +128,12 @@ export default {
       if (this.fileData.attributes) {
         this.attributes = this.fileData.attributes;
       }
-      console.log("aca");
     } else {
       const res = await this.$axios.get(this.file.name);
       const url = res.config.url;
+      console.log("res", res);
+      console.log("res", url);
+
       this.url = url;
       this.fileData = res.data;
 
@@ -147,6 +150,7 @@ export default {
         if (mediaFile) {
           filterSrc = mediaFile.uri;
         }
+        console.log("urlfrom json", filterSrc);
         this.urlFromJson = filterSrc;
       }
     }

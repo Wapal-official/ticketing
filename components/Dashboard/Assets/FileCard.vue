@@ -7,14 +7,14 @@
     >
       <div class="tw-relative tw-w-full tw-overflow-hidden">
         <img
-          :src="getAssetSrc"
+          :src="this.file.image"
           :alt="getAssetName"
           class="tw-w-full tw-h-full tw-object-cover"
           v-if="checkFileType === 'image'"
         />
         <video-player
           v-else-if="checkFileType === 'video'"
-          :source="getAssetSrc"
+          :source="videoSrc"
         />
         <div
           class="tw-w-full tw-h-full tw-object-cover"
@@ -23,7 +23,7 @@
         >
           <audio-player
             class="audio-postion"
-            :audioSrc="getAssetSrc"
+            :audioSrc="videoSrc"
           ></audio-player>
         </div>
 
@@ -145,10 +145,12 @@ export default {
       showAddMetadataDialog: false,
       file: { name: "", metadata: null },
       hasMetadata: false,
+      videoSrc: "",
     };
   },
   methods: {
     displayFileDetails() {
+      console.log("file", this.file);
       this.linkedAsset.name = this.file.src;
       // this.linkedAsset.image = this.file.image
       //   ? getCachedUrlOfImage(this.file.image)
@@ -204,6 +206,11 @@ export default {
 
       this.showAddMetadataDialog = false;
     },
+    async getVideoSrc(source: any) {
+      const res = await this.$axios.get(source);
+      this.videoSrc = res.data.animation_url;
+      console.log("res src", res.data.animation_url);
+    },
   },
   computed: {
     checkFileType() {
@@ -228,7 +235,12 @@ export default {
       return "json";
     },
     getAssetSrc() {
-      console.log("as", this.file?.image);
+      // if (!this.file) {
+      //   return null;
+      // }
+      // const res = await this.$axios.get(this.file.src);
+
+      // console.log("list", res.data);
       return this.file.image ? this.file.image : this.file?.src;
     },
 
@@ -242,10 +254,12 @@ export default {
   async mounted() {
     console.log("props", this.propFile);
     this.file = this.propFile;
-
+    const videoSrc = await this.getVideoSrc(this.file.src);
+    console.log("fileSrc", videoSrc);
+    // console.log("sc", res.config.data);
     const fileSrc = this.file.src;
+    console.log("fileSasdarc", fileSrc);
 
-    console.log("sc", fileSrc);
     // this.getNftDetails(fileSrc);
     console.log("file", this.file);
     if (this.file.metadata) {
