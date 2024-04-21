@@ -235,6 +235,7 @@ export default {
     AssetsImageDetails,
     GradientBorderButton,
   },
+  ssr: false,
   data() {
     return {
       folderInfo: {
@@ -724,5 +725,6 @@ export default {
       }
     },
   },
+  cache: false,
 };
 </script>

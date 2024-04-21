@@ -47,9 +47,13 @@ export default {
     };
   },
   mounted() {
-    const uncachedSource = this.source + "?refreshCache=true";
-    // this.videoSource = uncachedSource + "#t=0.1";
-    this.videoSource = uncachedSource;
+    const videoExtensions =
+      /\.((mp4|avi|mov|mkv|wmv|flv|webm|3gp|ogv|mpeg|mpg|m4v|divx|rm|asf|vob|ts|m2ts?))$/i;
+    if (videoExtensions.test(this.source)) {
+      this.videoSource = this.source + "?refreshCache=true";
+    } else {
+      this.videoSource = this.source;
+    }
   },
   methods: {
     playVideo() {

@@ -1551,7 +1551,6 @@ export default {
     max-width: 34%;
     min-width: 300px;
   }
-
   #image-preview,
   #image-review {
     min-width: 300px;

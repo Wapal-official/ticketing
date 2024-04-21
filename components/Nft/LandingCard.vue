@@ -323,7 +323,6 @@ export default {
     isAudio(source: string) {
       if (!source) {
         return false;
-
       }
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
