@@ -423,7 +423,6 @@ export default {
               const fileIndex = scrollNumber
                 ? scrollNumber - this.assetLimit + index
                 : index;
-              console.log("reaaaa");
               if (this.folderInfo.metadata.baseURI) {
                 // if (this.type === "assets") {
                 //   src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;

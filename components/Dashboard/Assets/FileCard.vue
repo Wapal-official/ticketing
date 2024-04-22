@@ -7,14 +7,14 @@
     >
       <div class="tw-relative tw-w-full tw-overflow-hidden">
         <img
-          :src="this.file.image"
+          :src="this.file.image ? this.file.image : this.file.src"
           :alt="getAssetName"
           class="tw-w-full tw-h-full tw-object-cover"
           v-if="checkFileType === 'image'"
         />
         <video-player
           v-else-if="checkFileType === 'video'"
-          :source="videoSrc"
+          :source="videoSrc ? videoSrc : this.file.src"
         />
         <div
           class="tw-w-full tw-h-full tw-object-cover"
@@ -23,7 +23,7 @@
         >
           <audio-player
             class="audio-postion"
-            :audioSrc="videoSrc"
+            :audioSrc="videoSrc ? videoSrc : this.file.src"
           ></audio-player>
         </div>
 
