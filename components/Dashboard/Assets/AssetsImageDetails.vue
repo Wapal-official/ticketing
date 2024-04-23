@@ -132,7 +132,6 @@ export default {
       const res = await this.$axios.get(this.file.name);
       const url = res.config.url;
       console.log("res", res);
-      console.log("res", url);
 
       this.url = url;
       this.fileData = res.data;
@@ -143,14 +142,12 @@ export default {
 
       if (res.data.properties) {
         let filterSrc;
-
         const mediaFile = res.data.properties.files.find(
           (file: { type: string }) => file.type === "video/mp4"
         );
         if (mediaFile) {
           filterSrc = mediaFile.uri;
         }
-        console.log("urlfrom json", filterSrc);
         this.urlFromJson = filterSrc;
       }
     }
@@ -172,6 +169,16 @@ export default {
         this.fileData = res.data;
         if (this.fileData.attributes) {
           this.attributes = this.fileData.attributes;
+        }
+        if (res.data.properties) {
+          let filterSrc;
+          const mediaFile = res.data.properties.files.find(
+            (file: { type: string }) => file.type === "video/mp4"
+          );
+          if (mediaFile) {
+            filterSrc = mediaFile.uri;
+          }
+          this.urlFromJson = filterSrc;
         }
       }
       this.loading = false;
