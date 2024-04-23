@@ -57,7 +57,6 @@ export default {
       this.loading = true;
 
       const collections = await getAllEditions({ page: this.page, limit: 10 });
-
       this.collections.push(...collections);
 
       if (collections.length === 0) {

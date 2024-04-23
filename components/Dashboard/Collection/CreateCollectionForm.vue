@@ -182,7 +182,7 @@
               :bordered="true"
               :paddingTwoHalf="false"
               title="Save As Draft"
-              @click="saveDraftBefore()"
+              @click="saveDraft()"
               style="color: #fff !important"
             />
             <button-primary title="Next" @click="validateFormForNextStep" />
@@ -281,7 +281,7 @@
               :bordered="true"
               :paddingTwoHalf="false"
               title="Save As Draft"
-              @click="saveDraftBefore()"
+              @click="saveDraft()"
               style="color: #fff !important"
             />
             <button-primary title="Next" @click="validateFormForNextStep" />
@@ -1205,83 +1205,83 @@ export default {
       }
     },
 
-    async saveDraftBefore() {
-      try {
-        this.submitting = true;
-        const selectedFolder = this.folders.find(
-          (folder: any) => folder.folder_name === this.baseURL
-        );
-        this.collection.baseURL = selectedFolder.metadata.baseURI;
-        this.checkCoinType();
+    // async saveDraftBefore() {
+    //   try {
+    //     this.submitting = true;
+    //     const selectedFolder = this.folders.find(
+    //       (folder: any) => folder.folder_name === this.baseURL
+    //     );
+    //     this.collection.baseURL = selectedFolder.metadata.baseURI;
+    //     this.checkCoinType();
 
-        const tempCollection = { ...this.collection };
-        const formData = new FormData();
+    //     const tempCollection = { ...this.collection };
+    //     const formData = new FormData();
 
-        formData.append("name", tempCollection.name);
-        formData.append("description", tempCollection.description);
-        formData.append(
-          "royalty_percentage",
-          tempCollection.royalty_percentage
-        );
-        formData.append(
-          "royalty_payee_address",
-          tempCollection.royalty_payee_address
-        );
-        formData.append("supply", tempCollection.supply);
-        formData.append("twitter", tempCollection.twitter || "");
-        formData.append("discord", tempCollection.discord || "");
-        formData.append("website", tempCollection.website || "");
-        formData.append("instagram", tempCollection.instagram || "");
-        formData.append("tweet", tempCollection.tweet || "");
+    //     formData.append("name", tempCollection.name);
+    //     formData.append("description", tempCollection.description);
+    //     formData.append(
+    //       "royalty_percentage",
+    //       tempCollection.royalty_percentage
+    //     );
+    //     formData.append(
+    //       "royalty_payee_address",
+    //       tempCollection.royalty_payee_address
+    //     );
+    //     formData.append("supply", tempCollection.supply);
+    //     formData.append("twitter", tempCollection.twitter || "");
+    //     formData.append("discord", tempCollection.discord || "");
+    //     formData.append("website", tempCollection.website || "");
+    //     formData.append("instagram", tempCollection.instagram || "");
+    //     formData.append("tweet", tempCollection.tweet || "");
 
-        // formData.append("coin_type", tempCollection.coinType);
+    //     // formData.append("coin_type", tempCollection.coinType);
 
-        const draft_id = this.$route.params.id;
+    //     const draft_id = this.$route.params.id;
 
-        if (draft_id) {
-          formData.append("draft_id", draft_id);
-        }
+    //     if (draft_id) {
+    //       formData.append("draft_id", draft_id);
+    //     }
 
-        // if (this.image.name) {
-        //   formData.append("image", this.image);
-        // } else {
-        //   formData.append("image", tempCollection.image || "");
-        // }
-        if (this.image.name) {
-          const fileType = this.checkFileType(this.image.name);
-          if (fileType === "image") {
-            formData.append("image", this.image);
-          } else {
-            formData.append("media2", this.image);
-            formData.append("image", this.thumbnail);
-          }
-        } else {
-          formData.append("image", tempCollection.image || "");
-        }
-        await this.sendDataToCreateDraft(tempCollection);
+    //     // if (this.image.name) {
+    //     //   formData.append("image", this.image);
+    //     // } else {
+    //     //   formData.append("image", tempCollection.image || "");
+    //     // }
+    //     if (this.image.name) {
+    //       const fileType = this.checkFileType(this.image.name);
+    //       if (fileType === "image") {
+    //         formData.append("image", this.image);
+    //       } else {
+    //         formData.append("media2", this.image);
+    //         formData.append("image", this.thumbnail);
+    //       }
+    //     } else {
+    //       formData.append("image", tempCollection.image || "");
+    //     }
+    //     await this.sendDataToCreateDraft(tempCollection);
 
-        if (this.tbd || this.saveAsDraft) {
-          if (this.draft) {
-            await this.saveDraft(tempCollection);
-          } else {
-            await this.sendDataToCreateDraft(tempCollection);
-          }
-          return;
-        }
+    //     if (this.tbd || this.saveAsDraft) {
+    //       if (this.draft) {
+    //         await this.saveDraft(tempCollection);
+    //       } else {
+    //         await this.sendDataToCreateDraft(tempCollection);
+    //       }
+    //       return;
+    //     }
 
-        // await createCollection(formData);
+    //     // await createCollection(formData);
 
-        this.submitting = false;
+    //     this.submitting = false;
 
-        this.message = "Collection Created Successfully";
-        this.$toast.showMessage({ message: this.message, error: false });
-        this.$router.push("/dashboard/collection/draft");
-      } catch (error: any) {
-        console.log(error);
-        this.$toast.showMessage({ message: error, error: true });
-        this.submitting = false;
-      }
-    },
+    //     this.message = "Collection Created Successfully";
+    //     this.$toast.showMessage({ message: this.message, error: false });
+    //     this.$router.push("/dashboard/collection/draft");
+    //   } catch (error: any) {
+    //     console.log(error);
+    //     this.$toast.showMessage({ message: error, error: true });
+    //     this.submitting = false;
+    //   }
+    // },
     clearFile() {
       this.image = "";
       this.thumbnail = "";
@@ -1412,8 +1412,11 @@ export default {
       if (this.image.name) {
         const fileType = this.checkFileType(this.image.name);
         if (fileType === "image") {
+          console.log("img");
           formData.append("image", this.image);
         } else {
+          console.log("vii2");
+
           formData.append("media2", this.image);
           formData.append("image", this.thumbnail);
         }
@@ -1430,6 +1433,8 @@ export default {
           "whitelist_sale_time",
           tempCollection.whitelist_sale_time
         );
+      } else {
+        formData.append("whitelistTBD", "true");
       }
 
       await createDraft(formData);
@@ -1442,7 +1447,9 @@ export default {
     },
     async setCollectionDataFromDraft() {
       try {
-        this.whitelistEnabled = true;
+        this.whitelistEnabled = this.collection.whitelist_sale_time
+          ? true
+          : false;
 
         const draftRes = await getDraftById(this.$route.params.id);
 
@@ -1472,7 +1479,9 @@ export default {
           }
         });
 
-        this.whitelistTBD = this.collection.whitelist_sale_time ? false : true;
+        this.whitelistTBD = JSON.parse(this.collection.whitelistTBD)
+          ? true
+          : false;
         this.publicSaleTBD = this.collection.public_sale_time ? false : true;
 
         if (this.collection.whitelist_sale_time) {
@@ -1496,27 +1505,31 @@ export default {
     async saveDraft() {
       try {
         const formData = new FormData();
-
         const selectedFolder = this.folders.find(
           (folder: any) => folder.folder_name === this.baseURL
         );
-
-        this.collection.baseURL = selectedFolder.metadata.baseURI;
+        console.log("selected folder", selectedFolder);
+        if (selectedFolder) {
+          this.collection.baseURL = selectedFolder.metadata.baseURI;
+        }
 
         const tempCollection = structuredClone(this.collection);
+        console.log("asdasd", tempCollection);
+        if (this.$route.params.id) {
+          await editDraft(this.$route.params.id, tempCollection);
+        } else {
+          await this.sendDataToCreateDraft(tempCollection);
+        }
 
-        await editDraft(this.$route.params.id, tempCollection);
-
-        if (this.image.name) {
+        if (this.image.name && this.$route.params.id) {
           const fileType = this.checkFileType(this.image.name);
           if (fileType === "image") {
             formData.append("image", this.image);
-            await editImage(this.$route.params.id, formData);
           } else {
             formData.append("media2", this.image);
             formData.append("image", this.thumbnail);
-            await editImage(this.$route.params.id, formData);
           }
+          await editImage(this.$route.params.id, formData);
         }
         this.$toast.showMessage({ message: "Draft Updated Successfully" });
 

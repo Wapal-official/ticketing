@@ -7,7 +7,7 @@
     >
       <div class="tw-relative tw-w-full tw-overflow-hidden">
         <img
-          :src="this.file.image ? this.file.image : this.file.src"
+          :src="imgFromJson ? imgFromJson : this.file.src"
           :alt="getAssetName"
           class="tw-w-full tw-h-full tw-object-cover"
           v-if="checkFileType === 'image'"
@@ -146,25 +146,29 @@ export default {
       file: { name: "", metadata: null },
       hasMetadata: false,
       videoSrc: "",
+      imgFromJson: "",
+      checkJson: false,
     };
   },
   methods: {
     displayFileDetails() {
       console.log("file", this.file);
-      this.linkedAsset.name = this.file.src;
-      // this.linkedAsset.image = this.file.image
-      //   ? getCachedUrlOfImage(this.file.image)
-      //   : this.file.metadata
-      //   ? this.file.metadata.image
-      //     ? getCachedUrlOfImage(this.file.metadata.image)
-      //     : null
-      //   : null;
-      this.linkedAsset.image = this.file.image
-        ? getCachedUrlOfImage(this.file.image)
-        : this.file.src;
-      this.linkedAsset.metadata = this.file.metadata;
+      if (this.checkJson) {
+        this.linkedAsset.name = this.file.src;
+        // this.linkedAsset.image = this.file.image
+        //   ? getCachedUrlOfImage(this.file.image)
+        //   : this.file.metadata
+        //   ? this.file.metadata.image
+        //     ? getCachedUrlOfImage(this.file.metadata.image)
+        //     : null
+        //   : null;
+        this.linkedAsset.image = this.imgFromJson
+          ? getCachedUrlOfImage(this.imgFromJson)
+          : this.file.src;
+        this.linkedAsset.metadata = this.file.metadata;
 
-      this.$emit("displayFileDetails", this.linkedAsset);
+        this.$emit("displayFileDetails", this.linkedAsset);
+      }
     },
 
     async downloadFile() {
@@ -248,17 +252,23 @@ export default {
       return this.file.src;
     },
     getAssetName() {
-      return this.file.image ? this.file.name : this.file?.name;
+      return this.file.image ? this.file.name : this.file.name;
     },
   },
   async mounted() {
     console.log("props", this.propFile);
     this.file = this.propFile;
+
     const videoSrc = await this.getVideoSrc(this.file.src);
     console.log("fileSrc", videoSrc);
     // console.log("sc", res.config.data);
     const fileSrc = this.file.src;
-    console.log("fileSasdarc", fileSrc);
+    if (fileSrc && fileSrc.endsWith(".json")) {
+      const res = await this.$axios.get(fileSrc);
+      const url = res.data.image;
+      this.imgFromJson = url;
+      this.checkJson = true;
+    }
 
     // this.getNftDetails(fileSrc);
     console.log("file", this.file);
