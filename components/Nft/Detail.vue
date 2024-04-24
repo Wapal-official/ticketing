@@ -791,6 +791,10 @@ export default {
           return;
         }
 
+        if (!this.numberOfNft) {
+          throw new Error("Please Enter Number of Nft to mit");
+        }
+
         this.minting = true;
 
         if (this.collection.mintDetails) {
@@ -825,7 +829,7 @@ export default {
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
-              mint_limit: this.currentSale.mintLimit,
+              mint_limit: this.totalMintLimit,
               coinType: this.collection.seed.coin_type,
               sender: this.getSender,
               mint_price: this.currentSale.mint_price,
@@ -837,7 +841,7 @@ export default {
               amount: this.numberOfNft,
               publicMint: !this.checkPublicSaleTimer(),
               proof: this.proof,
-              mint_limit: this.currentSale.mintLimit,
+              mint_limit: this.totalMintLimit,
               sender: this.getSender,
               mint_price: this.currentSale.mint_price,
             });
@@ -945,9 +949,11 @@ export default {
         (phase) => phase.id === this.currentSale.id
       );
 
-      console.log(currentPhase);
-
       this.currentSale.mintLimit = currentPhase.mintLimit;
+
+      this.mintLimit = currentPhase.mintLimit;
+
+      this.setMaxNumberOfNfts();
 
       if (!currentPhase.whitelisted) {
         this.notWhitelisted = true;
@@ -970,10 +976,12 @@ export default {
           localStorageProof.collectionId === this.collection._id &&
           localStorageProof.phase === this.currentSale.id &&
           this.collection.updated_at &&
+          this.getWalletAddress === localStorageProof.walletAddress &&
           new Date(this.collection.updated_at).getTime() ===
             new Date(localStorageProof.updatedAt).getTime()
         ) {
           this.proof = localStorageProof.proof;
+          this.totalMintLimit = localStorageProof.mintLimit;
           this.gettingProof = false;
           this.notWhitelisted = false;
           this.whitelisted = true;
@@ -998,9 +1006,11 @@ export default {
         if (this.collection.updated_at) {
           this.setProofInLocalStorage({
             proof: this.proof,
+            mintLimit: this.totalMintLimit,
             collectionId: this.collection._id,
             phase: this.currentSale.id,
             updatedAt: this.collection.updated_at,
+            walletAddress: this.getWalletAddress,
           });
         }
 
@@ -1341,7 +1351,7 @@ export default {
         return;
       }
 
-      this.maxNumberOfNft = this.mintLimit - this.currentlyOwned;
+      this.maxNumberOfNft = this.mintLimit;
 
       if (this.maxNumberOfNft <= 0) {
         this.maxNumberOfNft = 1;
@@ -1399,14 +1409,23 @@ export default {
 
       return proof;
     },
-    setProofInLocalStorage({ proof, collectionId, phase, updatedAt }) {
+    setProofInLocalStorage({
+      proof,
+      mintLimit,
+      collectionId,
+      phase,
+      updatedAt,
+      walletAddress,
+    }) {
       localStorage.setItem(
         "proof",
         JSON.stringify({
           proof: proof,
+          mintLimit: mintLimit,
           collectionId: collectionId,
           phase: phase,
           updatedAt: updatedAt,
+          walletAddress: this.getWalletAddress,
         })
       );
     },
@@ -1476,7 +1495,6 @@ export default {
     },
   },
   async mounted() {
-    console.log("coll", this.collection);
     if (this.collection) {
       if (this.collection.username === "proudlionsclub") {
         this.collection.username = "proud-lions-club";

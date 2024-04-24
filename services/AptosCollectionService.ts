@@ -457,8 +457,6 @@ export const merkleMintManyNft = async ({
       coinType: "APT",
     });
 
-    console.log(convertedMintPrice);
-
     const merkle_mint_many_simulate_script = {
       type: "entry_function_payload",
       function:
