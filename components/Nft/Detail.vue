@@ -791,6 +791,10 @@ export default {
           return;
         }
 
+        if (!this.numberOfNft) {
+          throw new Error("Please Enter Number of Nft to mit");
+        }
+
         this.minting = true;
 
         if (this.collection.mintDetails) {
