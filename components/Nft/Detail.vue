@@ -1038,12 +1038,12 @@ export default {
       }
     },
     async getOwnedCollectionOfUser() {
-      const res = await getOwnedCollectionOfUser(
-        this.getWalletAddress,
-        this.collection.name
-      );
+      // const res = await getOwnedCollectionOfUser(
+      //   this.getWalletAddress,
+      //   this.collection.name
+      // );
 
-      this.currentlyOwned = res;
+      // this.currentlyOwned = res;
 
       this.setMaxNumberOfNfts();
     },
