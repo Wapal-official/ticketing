@@ -970,7 +970,6 @@ export default {
         this.proof = [];
 
         const localStorageProof = this.getProofFromLocalStorage();
-
         if (
           localStorageProof &&
           localStorageProof.collectionId === this.collection._id &&
@@ -978,7 +977,8 @@ export default {
           this.collection.updated_at &&
           this.getWalletAddress === localStorageProof.walletAddress &&
           new Date(this.collection.updated_at).getTime() ===
-            new Date(localStorageProof.updatedAt).getTime()
+            new Date(localStorageProof.updatedAt).getTime() &&
+          localStorageProof.proof.length <= 0
         ) {
           this.proof = localStorageProof.proof;
           this.totalMintLimit = localStorageProof.mintLimit;
