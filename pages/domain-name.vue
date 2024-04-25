@@ -252,7 +252,7 @@ export default {
           this.domainStatus.domainName
         );
 
-        if (res.success) {
+        if (res.success || res.hash) {
           this.$toast.showMessage({
             message: `Domain Name Registered Successfully`,
           });

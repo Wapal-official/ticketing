@@ -1057,7 +1057,7 @@ export default {
           candy_object: this.collection.candyMachine.resource_account,
         });
 
-        if (pauseRes.success) {
+        if (pauseRes.success || pauseRes.hash) {
           this.mintingPaused = true;
           this.settingUpNextPhaseProgress = 2;
 
@@ -1088,14 +1088,17 @@ export default {
                   : "",
               });
 
-            if (updateWhitelistSalePriceRes.success) {
+            if (
+              updateWhitelistSalePriceRes.success ||
+              updateWhitelistSalePriceRes.hash
+            ) {
               this.settingUpNextPhaseProgress = 3;
               const resumeRes: any = await pauseOrResumeMinting({
                 candy_machine_id: this.collection.candyMachine.candy_id,
                 candy_object: this.collection.candyMachine.resource_account,
               });
 
-              if (resumeRes.success) {
+              if (resumeRes.success || resumeRes.hash) {
                 this.mintingPaused = false;
                 this.settingUpNextPhaseProgress = 4;
                 this.showSettingUpNextPhaseModal = false;

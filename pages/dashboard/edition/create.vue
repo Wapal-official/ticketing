@@ -817,7 +817,7 @@ export default {
           public_mint_limit: 0,
           is_open_edition: false,
           coinType: this.collection.coinType,
-          isRandom:true
+          isRandom: true,
         };
 
         const res = await createCollectionV2(candyMachineArguments);
@@ -1022,7 +1022,7 @@ export default {
         aptRes.requiredBalance
       );
 
-      if (!transactionRes.success) {
+      if (!transactionRes.success && !transactionRes.hash) {
         throw new Error("Transaction Not Successful Please Try Again");
       }
 
