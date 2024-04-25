@@ -488,7 +488,9 @@ export default {
       this.showPublicSaleTimer = false;
       this.changeEndInTimer();
       this.currentSale = {
-        name: "public sale",
+        name: this.collection.public_sale_name
+          ? this.collection.public_sale_name
+          : "public sale",
         id: "public-sale",
         mint_price: this.collection.candyMachine.public_sale_price,
         mint_time: this.collection.candyMachine.public_sale_time,
@@ -635,7 +637,7 @@ export default {
         );
 
         if (
-          this.collection.edition &&
+          this.collection.isEdition &&
           this.collection.edition === "open-edition"
         ) {
           return;
@@ -722,6 +724,10 @@ export default {
           return;
         }
 
+        if (!this.numberOfNft) {
+          throw new Error("Please Enter Number of Nft to mit");
+        }
+
         this.minting = true;
 
         if (this.collection.mintDetails) {
@@ -729,11 +735,11 @@ export default {
           return;
         }
 
-        if (this.checkPublicSaleTimer()) {
-          if (this.mintLimit <= this.currentlyOwned) {
-            throw new Error("Mint Limit for this phase Exceeded");
-          }
-        }
+        // if (this.checkPublicSaleTimer()) {
+        //   if (this.mintLimit <= this.currentlyOwned) {
+        //     throw new Error("Mint Limit for this phase Exceeded");
+        //   }
+        // }
         let res = null;
         if (!this.v2) {
           res = await this.$store.dispatch("walletStore/mintBulk", {
@@ -759,6 +765,7 @@ export default {
               mint_limit: this.totalMintLimit,
               coinType: this.collection.seed.coin_type,
               sender: this.getSender,
+              mint_price: this.currentSale.mint_price,
             });
           } else {
             res = await mintCollection({
@@ -769,11 +776,12 @@ export default {
               proof: this.proof,
               mint_limit: this.totalMintLimit,
               sender: this.getSender,
+              mint_price: this.currentSale.mint_price,
             });
           }
         }
 
-        if (res.success) {
+        if (res.success || res.hash) {
           this.$toast.showMessage({
             message: `${this.collection.name} Minted Successfully`,
           });
@@ -874,6 +882,12 @@ export default {
         (phase) => phase.id === this.currentSale.id
       );
 
+      this.currentSale.mintLimit = currentPhase.mintLimit;
+
+      this.mintLimit = currentPhase.mintLimit;
+
+      this.setMaxNumberOfNfts();
+
       if (!currentPhase.whitelisted) {
         this.notWhitelisted = true;
         this.gettingProof = false;
@@ -887,6 +901,25 @@ export default {
         this.gettingProof = true;
 
         this.proof = [];
+
+        const localStorageProof = this.getProofFromLocalStorage();
+        if (
+          localStorageProof &&
+          localStorageProof.collectionId === this.collection._id &&
+          localStorageProof.phase === this.currentSale.id &&
+          this.collection.updated_at &&
+          this.getWalletAddress === localStorageProof.walletAddress &&
+          new Date(this.collection.updated_at).getTime() ===
+            new Date(localStorageProof.updatedAt).getTime() &&
+          localStorageProof.proof.length <= 0
+        ) {
+          this.proof = localStorageProof.proof;
+          this.totalMintLimit = localStorageProof.mintLimit;
+          this.gettingProof = false;
+          this.notWhitelisted = false;
+          this.whitelisted = true;
+          return;
+        }
 
         const proofParams = {
           walletAddress: this.getWalletAddress,
@@ -902,6 +935,17 @@ export default {
         proofs.map((proof) => {
           this.proof.push(proof.data);
         });
+
+        if (this.collection.updated_at) {
+          this.setProofInLocalStorage({
+            proof: this.proof,
+            mintLimit: this.totalMintLimit,
+            collectionId: this.collection._id,
+            phase: this.currentSale.id,
+            updatedAt: this.collection.updated_at,
+            walletAddress: this.getWalletAddress,
+          });
+        }
 
         await this.getMintLimitOfPreviousPhases();
 
@@ -927,12 +971,12 @@ export default {
       }
     },
     async getOwnedCollectionOfUser() {
-      const res = await getOwnedCollectionOfUser(
-        this.getWalletAddress,
-        this.collection.name
-      );
+      // const res = await getOwnedCollectionOfUser(
+      //   this.getWalletAddress,
+      //   this.collection.name
+      // );
 
-      this.currentlyOwned = res;
+      // this.currentlyOwned = res;
 
       this.setMaxNumberOfNfts();
     },
@@ -994,9 +1038,7 @@ export default {
       }
 
       const publicSale = {
-        name: this.collection.public_sale_name
-          ? this.collection.public_sale_name
-          : "public sale",
+        name: "public sale",
         id: "public-sale",
         mint_price: this.collection.candyMachine.public_sale_price,
         mint_time: this.collection.candyMachine.public_sale_time,
@@ -1207,17 +1249,27 @@ export default {
 
     async getMintLimitOfPreviousPhases() {
       let mintLimit = 0;
-      this.phases.map(async (phase) => {
-        const date = new Date();
+      await Promise.all(
+        this.collection.phases.map(async (phase) => {
+          const date = new Date();
 
-        const phaseStartDate = new Date(phase.mint_time);
+          const phaseStartDate = new Date(phase.mint_time);
 
-        if (date > phaseStartDate) {
-          if (phase.mintLimit) {
-            mintLimit += phase.mintLimit;
+          if (date > phaseStartDate) {
+            const mintLimitRes = await getMintLimit({
+              walletAddress: this.getWalletAddress,
+              collectionId: this.collection._id,
+              phase: phase.id,
+            });
+
+            const data = mintLimitRes.data.data;
+
+            if (data) {
+              mintLimit += data.mint_limit;
+            }
           }
-        }
-      });
+        })
+      );
 
       this.mintLimit = mintLimit;
     },
@@ -1232,7 +1284,7 @@ export default {
         return;
       }
 
-      this.maxNumberOfNft = this.mintLimit - this.currentlyOwned;
+      this.maxNumberOfNft = this.mintLimit;
 
       if (this.maxNumberOfNft <= 0) {
         this.maxNumberOfNft = 1;
@@ -1284,6 +1336,34 @@ export default {
           }
         })
       );
+    },
+    getProofFromLocalStorage() {
+      const proof = JSON.parse(localStorage.getItem("proof"));
+
+      return proof;
+    },
+    setProofInLocalStorage({
+      proof,
+      mintLimit,
+      collectionId,
+      phase,
+      updatedAt,
+      walletAddress,
+    }) {
+      localStorage.setItem(
+        "proof",
+        JSON.stringify({
+          proof: proof,
+          mintLimit: mintLimit,
+          collectionId: collectionId,
+          phase: phase,
+          updatedAt: updatedAt,
+          walletAddress: this.getWalletAddress,
+        })
+      );
+    },
+    removeProofFromLocalStorage() {
+      localStorage.setItem("proof", "");
     },
   },
   computed: {
@@ -1542,6 +1622,8 @@ export default {
         await this.checkWhitelistForPhases();
         await this.setProof();
         await this.getOwnedCollectionOfUser();
+      } else {
+        await this.checkWhitelistForPhases();
       }
 
       if (
@@ -1551,8 +1633,6 @@ export default {
       ) {
         await this.checkWhitelistForExternalMint();
       }
-
-      await this.checkWhitelistForPhases();
     },
   },
 };

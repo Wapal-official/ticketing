@@ -1029,7 +1029,7 @@ export default {
               aptRes.requiredBalance
             );
 
-            if (!transactionRes.success) {
+            if (!transactionRes.success && !transactionRes.hash) {
               throw new Error("Transaction Not Successful Please Try Again");
             }
 
@@ -1086,7 +1086,7 @@ export default {
                   }
                 );
 
-                if (mint.success) {
+                if (mint.success || mint.hash) {
                   //auction
                   this.auctionProgress = 4;
 

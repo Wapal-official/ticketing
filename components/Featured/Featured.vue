@@ -438,7 +438,7 @@ export default {
             });
           }
 
-          if (res.success) {
+          if (res.success || res.hash) {
             this.$toast.showMessage({
               message: `${this.collection.name} Minted Successfully`,
             });
