@@ -1305,35 +1305,55 @@ export default {
         return;
       }
 
-      this.phases = await Promise.all(
-        this.phases.map(async (phase) => {
-          let tempPhase = structuredClone(phase);
-          try {
-            if (tempPhase.id !== "public-sale") {
-              const res = await getMintLimit({
-                walletAddress: this.getWalletAddress,
-                collectionId: this.collection._id,
-                phase: tempPhase.id,
-              });
+      const localStoragePhases = this.getPhaseFromLocalStorage();
 
-              if (res.data.data) {
-                tempPhase.whitelisted = true;
-                tempPhase.mintLimit = res.data.data.mint_limit;
-              } else {
-                tempPhase.whitelisted = false;
-                tempPhase.mintLimit = 0;
+      if (
+        localStoragePhases &&
+        localStoragePhases.collectionId === this.collection._id &&
+        this.collection.updated_at &&
+        this.getWalletAddress === localStoragePhases.walletAddress &&
+        new Date(this.collection.updated_at).getTime() ===
+          new Date(localStoragePhases.updatedAt).getTime()
+      ) {
+        this.phases = localStoragePhases.phases;
+      } else {
+        this.phases = await Promise.all(
+          this.phases.map(async (phase) => {
+            let tempPhase = structuredClone(phase);
+            try {
+              if (tempPhase.id !== "public-sale") {
+                const res = await getMintLimit({
+                  walletAddress: this.getWalletAddress,
+                  collectionId: this.collection._id,
+                  phase: tempPhase.id,
+                });
+
+                if (res.data.data) {
+                  tempPhase.whitelisted = true;
+                  tempPhase.mintLimit = res.data.data.mint_limit;
+                } else {
+                  tempPhase.whitelisted = false;
+                  tempPhase.mintLimit = 0;
+                }
               }
+
+              return tempPhase;
+            } catch (error) {
+              console.log(error);
+              tempPhase.whitelisted = false;
+
+              return tempPhase;
             }
+          })
+        );
 
-            return tempPhase;
-          } catch (error) {
-            console.log(error);
-            tempPhase.whitelisted = false;
-
-            return tempPhase;
-          }
-        })
-      );
+        this.setPhasesInLocalStorage({
+          phases: this.phases,
+          collectionId: this.collection._id,
+          updatedAt: this.collection.updated_at,
+          walletAddress: this.getWalletAddress,
+        });
+      }
     },
     getProofFromLocalStorage() {
       const proof = JSON.parse(localStorage.getItem("proof"));
@@ -1356,12 +1376,36 @@ export default {
           collectionId: collectionId,
           phase: phase,
           updatedAt: updatedAt,
-          walletAddress: this.getWalletAddress,
+          walletAddress: walletAddress,
         })
       );
     },
     removeProofFromLocalStorage() {
       localStorage.setItem("proof", "");
+    },
+    getPhaseFromLocalStorage() {
+      const proof = JSON.parse(localStorage.getItem("phases"));
+
+      return proof;
+    },
+    setPhasesInLocalStorage({
+      phases,
+      collectionId,
+      updatedAt,
+      walletAddress,
+    }) {
+      localStorage.setItem(
+        "phases",
+        JSON.stringify({
+          phases: phases,
+          collectionId: collectionId,
+          updatedAt: updatedAt,
+          walletAddress: walletAddress,
+        })
+      );
+    },
+    removePhasesFromLocalStorage() {
+      localStorage.setItem("phases", "");
     },
   },
   computed: {
