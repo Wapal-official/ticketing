@@ -485,37 +485,6 @@
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
-            <div
-              class="tw-flex tw-flex-row tw-items-end tw-justify-start tw-gap-2"
-              v-if="collection.coinType === 'APT'"
-            >
-              <v-checkbox
-                v-model="isNonRandom"
-                label="Remove Randomness"
-                :ripple="false"
-                hide-details
-                class="!tw-mt-0"
-              ></v-checkbox>
-              <tool-tip>
-                <template #text>
-                  <i class="bx bx-info-circle tw-text-xl"></i>
-                </template>
-                <template #tip>
-                  <div
-                    class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
-                  >
-                    <div class="tw-font-semibold">Caution</div>
-                    <div>
-                      Ticking this checkbox will disable randomness while
-                      minting.
-                    </div>
-                    <div>
-                      Which means you tokens will be minted sequentially
-                    </div>
-                  </div>
-                </template>
-              </tool-tip>
-            </div>
             <v-checkbox
               v-model="saveAsDraft"
               label="Save as Draft"
