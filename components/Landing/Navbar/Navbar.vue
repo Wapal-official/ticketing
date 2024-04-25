@@ -55,17 +55,13 @@
           </v-menu>
         </div>
 
-        <div
+        <!-- <div
           class="tw-hidden sm:tw-flex"
           @click="$store.commit('dialog/setWhatsNew', true)"
           style="cursor: pointer; min-width: 40px !important"
         >
-          <img
-            class="star-img"
-            src="~/assets/img/whatsNew/star.gif"
-            alt="new feature start"
-          />
-        </div>
+          <img src="~/assets/img/star.svg" alt="new feature start" />
+        </div> -->
       </div>
 
       <div
@@ -118,17 +114,13 @@
           </v-menu>
         </div>
 
-        <div
+        <!-- <div
           class="tw-hidden sm:tw-flex"
           @click="$store.commit('dialog/setWhatsNew', true)"
           style="cursor: pointer; min-width: 40px !important"
         >
-          <img
-            class="star-img"
-            src="~/assets/img/whatsNew/star.gif"
-            alt="new feature start"
-          />
-        </div>
+          <img src="~/assets/img/star.svg" alt="new feature start" />
+        </div> -->
       </div>
 
       <div
@@ -216,17 +208,13 @@
       <div
         class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-3 tw-col-span-9 md:tw-hidden"
       >
-        <div
+        <!-- <div
           class="tw-flex sm:tw-hidden"
           @click="$store.commit('dialog/setWhatsNew', true)"
           style="cursor: pointer; min-width: 30px !important"
         >
-          <img
-            class="star-img"
-            src="~/assets/img/whatsNew/star.gif"
-            alt="new feature start"
-          />
-        </div>
+          <img src="~/assets/img/star.svg" alt="new feature start" />
+        </div> -->
         <div
           @click="nftTransferAction()"
           class="mr-2 mr-lg-3 d-flex align-center"
@@ -310,19 +298,6 @@ export default {
     this.checkScreenSize();
     window.addEventListener("resize", this.checkScreenSize);
   },
-  watch: {
-    getWalletStatus: {
-      immediate: true,
-      handler(newVal: boolean) {
-        if (newVal) {
-          if (localStorage.getItem("whats_New_launchpad") === null) {
-            this.$store.commit("dialog/setWhatsNew", true);
-            localStorage.setItem("whats_New_launchpad", "true");
-          }
-        }
-      },
-    },
-  },
   methods: {
     async nftTransferAction() {
       if (!this.getWalletStatus) {
@@ -373,9 +348,6 @@ export default {
 };
 </script>
 <style scoped>
-.star-img {
-  max-width: 32px;
-}
 .mobile-menu {
   height: calc(100vh - 95px);
 }

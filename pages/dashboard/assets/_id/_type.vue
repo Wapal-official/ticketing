@@ -74,7 +74,6 @@
             v-if="!listView"
             :paginatedFiles="paginatedFiles"
             :type="$route.params.type"
-            propFile
             :extension="fileExtension"
             :folderName="folderInfo.folder_name"
             @displayFileDetails="displayFileDetails"
@@ -98,13 +97,10 @@
         :type="type"
       />
       <div
-        class="tw-text-dark-0 tw-text-center tw-p-16 tw-text-lg tw-w-full"
+        class="tw-text-dark-0 tw-text-center tw-text-lg tw-w-full"
         v-if="!checkImageUploaded"
-        style="border: 1px solid #25262b"
       >
-        <h3 class="!tw-mb-1" style="color: #fff">This folder is empty.</h3>
-        Please upload the assets (images or videos) before uploading the
-        metadata.
+        Please Upload Images in image folder first
       </div>
     </div>
     <div
@@ -245,7 +241,6 @@ export default {
         files: [{ createdDate: null, type: "", name: "", src: "", _id: null }],
         metadata: { files: [] },
         assets: { files: [] },
-        images: { files: [] },
       },
       paginatedFiles: [
         { createdDate: null, type: "", name: "", src: "", _id: null },
@@ -288,36 +283,20 @@ export default {
       generatingMetadata: false,
       UploadIcon,
       defaultTheme,
-      isImgforMetadata: false,
     };
   },
   methods: {
-    isImage(source: string) {
-      if (!source) {
-        return false;
-      }
-      const extension = source.split(".").pop()?.toLowerCase();
-      return extension
-        ? [
-            "jpg",
-            "jpeg",
-            "png",
-            "gif",
-            "webp",
-            "bmp",
-            "svg",
-            "ico",
-            "tiff",
-          ].includes(extension)
-        : false;
-    },
     displayFileDetails(file: any) {
       this.currentFile = file;
-      console.log("curent file", this.currentFile);
-
       if (file.image) {
         this.showFileDetails = true;
       }
+    },
+    getFileType(item: any) {
+      if (item.type.includes("image/")) {
+        return true;
+      }
+      return false;
     },
     async fetchFiles() {
       this.fileIndex = 0;
@@ -329,68 +308,35 @@ export default {
       this.paginatedFiles = [];
 
       const res = await getFolderById(folderId);
-      if (this.type === "assets" && !res.data.folderInfo.metadata.baseURI) {
-        this.folderInfo.files = res.data.folderInfo.assets.files;
-        console.log("ress");
-      } else if (
-        this.type === "images" &&
-        !res.data.folderInfo.metadata.baseURI
-      ) {
-        this.folderInfo.files = res.data.folderInfo.images.files;
-        console.log("ress2");
-      } else {
-        this.folderInfo.files = res.data.folderInfo.metadata.files;
-        console.log("ress3", this.folderInfo.files);
-      }
-      // this.folderInfo.files =
-      // this.type === "assets" && !res.data.folderInfo.metadata.baseURI
-      //   ? res.data.folderInfo.assets.files
-      //   : res.data.folderInfo.metadata.files;
-      // this.type === "assets" && !res.data.folderInfo.metadata.baseURI
-      //   ? res.data.folderInfo.assets.files
-      //   : this.type === "images" && !res.data.folderInfo.metadata.baseURI
-      //   ? res.data.folderInfo.images.files
-      //   : res.data.folderInfo.metadata.files;
-      // this.folderInfo.files =
-      //   this.type === "images" && !res.data.folderInfo.metadata.baseURI
-      //     ? res.data.folderInfo.images.files
-      //     : res.data.folderInfo.metadata.files;
+
+      this.folderInfo.files =
+        this.type === "assets" && !res.data.folderInfo.metadata.baseURI
+          ? res.data.folderInfo.assets.files
+          : res.data.folderInfo.metadata.files;
+
       this.folderInfo.folder_name = res.data.folderInfo.folder_name;
       this.folderInfo._id = res.data.folderInfo._id;
       this.folderInfo.user_id = res.data.folderInfo.user_id;
       this.folderInfo.assets = res.data.folderInfo.assets;
-      this.folderInfo.images = res.data.folderInfo.images;
       this.folderInfo.metadata = res.data.folderInfo.metadata;
       this.folderInfo.traits = res.data.folderInfo.traits;
-      if (this.isImage(this.folderInfo.assets.ext)) {
-        this.isImgforMetadata = true;
-      }
+
       this.loading = false;
 
       const fileCheck =
         this.type === "assets"
           ? !res.data.folderInfo.assets.files[0]
           : !res.data.folderInfo.metadata.files[0];
-      const videoImageCheck =
-        this.type === "images"
-          ? !res.data.folderInfo.images.files[0]
-          : !res.data.folderInfo.metadata.files[0];
+
       if (fileCheck) {
         this.fileLoading = false;
       }
-      console.log("file check", this.type);
 
       if (
         this.type === "assets" &&
         res.data.folderInfo.assets.files.length > 0
       ) {
-        console.log("vasa");
         this.fileExtension = res.data.folderInfo.assets.ext;
-      } else if (
-        this.type === "images" &&
-        res.data.folderInfo.images.files.length > 0
-      ) {
-        this.fileExtension = res.data.folderInfo.images.ext;
       } else if (this.type === "metadata") {
         this.fileExtension = ".json";
       }
@@ -423,37 +369,15 @@ export default {
               const fileIndex = scrollNumber
                 ? scrollNumber - this.assetLimit + index
                 : index;
+
               if (this.folderInfo.metadata.baseURI) {
-                // if (this.type === "assets") {
-                //   src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
-                // } else if (this.type === "images") {
-                //   src = `${this.folderInfo.images.baseURI}${fileIndex}${this.folderInfo.images.ext}`;
-                // } else {
                 src = `${this.folderInfo.metadata.baseURI}${fileIndex}.json`;
-                // }
               } else {
-                if (this.type === "assets") {
-                  src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
-                } else if (this.type === "images") {
-                  src = `${this.folderInfo.images.baseURI}${fileIndex}${this.folderInfo.images.ext}`;
-                }
+                src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
               }
 
               const res = await this.$axios.get(src);
 
-              // if (res.data) {
-              //   const fileData = res.data;
-              //   if (fileData.attributes) {
-              //     this.attributes = fileData.attributes;
-              //   }
-              // }
-              // const res = await this.$axios.get(this.file.name);
-
-              // this.fileData = res.data;
-              console.log("cacaca, this.f", res.data?.image);
-              // if (this.fileData.attributes) {
-              //   this.attributes = this.fileData.attributes;
-              // }
               const tempFile = res.data;
 
               let fileType = "image";
@@ -521,9 +445,8 @@ export default {
         mappedFiles.sort((a: any, b: any) => {
           return a._id - b._id;
         });
-
         this.paginatedFiles.push(...mappedFiles);
-        console.log("this page", this.paginatedFiles);
+
         this.mappingFiles = false;
       }, 1000);
     },
@@ -540,7 +463,7 @@ export default {
           this.balanceNotEnoughError.requiredBalance
         );
 
-        if (transaction.success) {
+        if (transaction.success || transaction.hash) {
           this.uploading = false;
           this.uploadStatusClass = "tw-h-full";
 
@@ -581,15 +504,6 @@ export default {
     },
     completeTransactionForMetadataUpload(csvLength: number) {
       this.showCSVUploadModal = false;
-
-      // if (csvLength !== undefined) {
-      //   this.CSVLength = csvLength;
-      //   this.transferFund(
-      //     `uploads/${this.$store.state.userStore.user.user_id}`
-      //   );
-      // } else {
-      //   console.error("csvLength is undefined");
-      // }
 
       this.CSVLength = csvLength;
 
@@ -661,18 +575,7 @@ export default {
       }
 
       if (!this.folderInfo.assets.baseURI) {
-        console.log("aaaa", this.folderInfo.assets.baseURI);
         return false;
-      }
-
-      if (this.type === "images") {
-        return true;
-      }
-      if (!this.isImgforMetadata) {
-        console.log("dad", this.isImgforMetadata);
-        if (!this.folderInfo.images.baseURI) {
-          return false;
-        }
       }
 
       return true;
@@ -684,7 +587,6 @@ export default {
       return (
         this.folderInfo.metadata.files.length === 0 &&
         this.folderInfo.assets.files.length > 0 &&
-        this.folderInfo.images.files.length > 0 &&
         this.folderInfo.traits.length === this.folderInfo.assets.files.length
       );
     },
@@ -694,16 +596,15 @@ export default {
   },
   async mounted() {
     this.type = this.$route.params.type;
-    if (
-      this.type !== "assets" &&
-      this.type !== "images" &&
-      this.type !== "metadata"
-    ) {
+
+    if (this.type !== "assets" && this.type !== "metadata") {
       throw { statusCode: 404, message: "Page not found" };
     }
 
     this.assetLimit = this.type === "assets" ? 12 : 48;
+
     await this.fetchFiles();
+
     await this.mapFiles();
 
     setTimeout(() => {
@@ -714,7 +615,6 @@ export default {
   },
   watch: {
     checkUploadingStatus: async function (newValue: string) {
-      console.log(newValue);
       if (newValue) {
         setTimeout(async () => {
           this.page = 0;

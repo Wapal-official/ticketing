@@ -114,10 +114,7 @@
 </template>
 <script lang="ts">
 import moment from "moment";
-import {
-  getCollectionByUsername,
-  updateCollection,
-} from "@/services/CollectionService";
+import { getCollectionByUsername } from "@/services/CollectionService";
 import { getWhitelistByUsername, setRoot } from "@/services/WhitelistService";
 export default {
   components: {},
@@ -176,8 +173,6 @@ export default {
             candyMachineId: this.collection.candyMachine.candy_id,
           }
         );
-
-        await updateCollection(this.collection._id, this.collection);
 
         this.$toast.showMessage({
           message: "Wallet Addresses Added For Whitelist",

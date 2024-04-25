@@ -1,30 +1,16 @@
 <template>
   <div
-    class="tw-pt-3 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 xl:tw-flex-row xl:tw-items-start xl:tw-justify-start"
+    class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 xl:tw-flex-row xl:tw-items-start xl:tw-justify-start"
     v-if="!loading"
   >
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6">
-      <div style="position: relative">
-        <video-player-detailed
-          class="video-detailed-edit"
-          v-if="isVideo(collection.media2)"
-          :source="collection.media2"
-        />
-        <img
-          v-else
-          :src="collection.image"
-          :alt="collection.name"
-          class="tw-rounded-xl tw-w-[421px] tw-h-[421px]"
-          width="421px"
-          height="421px"
-        />
-        <audio-player
-          v-if="isAudio(collection.media2)"
-          class="audio-bg"
-          :audioSrc="collection.media2"
-        ></audio-player>
-      </div>
-
+      <img
+        :src="collection.image"
+        :alt="collection.name"
+        class="tw-rounded tw-w-[421px] tw-h-[421px]"
+        width="421px"
+        height="421px"
+      />
       <div
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
       >
@@ -675,7 +661,6 @@ export default {
         isVerified: false,
         phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
         isEdition: false,
-        media2: "",
         seed: {
           seedz: false,
           coin_type: "APT",
@@ -721,65 +706,16 @@ export default {
       settingUpNextPhaseError: false,
       mintingPaused: false,
       aptIcon,
-      fileType: "",
     };
   },
   async mounted() {
     this.fetchCollection();
   },
   methods: {
-    isVideo(source: string) {
-      if (!source) {
-        return false;
-      }
-      const extension = source.split(".").pop()?.toLowerCase();
-      return extension
-        ? [
-            "mp4",
-            "mkv",
-            "m4v",
-            "webm",
-            "avi",
-            "mov",
-            "wmv",
-            "flv",
-            "3gp",
-            "ogv",
-            "mpg",
-            "divx",
-            "rm",
-            "asf",
-            "vob",
-            "ts",
-            "m2ts",
-          ].includes(extension)
-        : false;
-    },
-    isAudio(source: string) {
-      if (!source) {
-        return false;
-      }
-      const extension = source.split(".").pop()?.toLowerCase();
-      return extension
-        ? [
-            "mp3",
-            "wav",
-            "ogg",
-            "aac",
-            "flac",
-            "wma",
-            "alac",
-            "aiff",
-            "opus",
-            "mpeg",
-          ].includes(extension)
-        : false;
-    },
     async fetchCollection() {
       this.loading = true;
       this.collection = await getCollection(this.$route.params.id);
 
-      console.log("collection", this.collection);
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,
         candy_object: this.collection.candyMachine.resource_account,
@@ -1121,7 +1057,7 @@ export default {
           candy_object: this.collection.candyMachine.resource_account,
         });
 
-        if (pauseRes.success) {
+        if (pauseRes.success || pauseRes.hash) {
           this.mintingPaused = true;
           this.settingUpNextPhaseProgress = 2;
 
@@ -1152,14 +1088,17 @@ export default {
                   : "",
               });
 
-            if (updateWhitelistSalePriceRes.success) {
+            if (
+              updateWhitelistSalePriceRes.success ||
+              updateWhitelistSalePriceRes.hash
+            ) {
               this.settingUpNextPhaseProgress = 3;
               const resumeRes: any = await pauseOrResumeMinting({
                 candy_machine_id: this.collection.candyMachine.candy_id,
                 candy_object: this.collection.candyMachine.resource_account,
               });
 
-              if (resumeRes.success) {
+              if (resumeRes.success || resumeRes.hash) {
                 this.mintingPaused = false;
                 this.settingUpNextPhaseProgress = 4;
                 this.showSettingUpNextPhaseModal = false;
@@ -1234,10 +1173,3 @@ export default {
   },
 };
 </script>
-<style lang="css">
-.video-detailed-edit {
-  max-width: 421px;
-  height: 421px;
-  border-radius: 0.25rem;
-}
-</style>

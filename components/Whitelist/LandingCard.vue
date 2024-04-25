@@ -26,7 +26,6 @@
         </div>
         <div
           class="tw-w-full tw-relative tw-rounded-full tw-bg-white/20 tw-h-2"
-          style="overflow: hidden"
         >
           <div
             class="tw-rounded-full tw-absolute tw-top-0 tw-h-2 tw-bg-primary-1"

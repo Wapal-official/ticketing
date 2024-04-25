@@ -72,12 +72,12 @@
             <div v-if="trait == true">
               <LandingWhatsNewSectionsTraiteBids />
             </div>
-            <!-- <div v-if="offer == true">
+            <div v-if="offer == true">
               <LandingWhatsNewSectionsOfferSystem />
             </div>
             <div v-if="alert == true">
               <LandingWhatsNewSectionsAlertTypes />
-            </div> -->
+            </div>
           </v-col>
         </v-row>
       </v-card>
@@ -95,11 +95,11 @@ export default {
     activeIndex: 0,
     whatsNewDrawer: false,
     items: [
-      "Edit your launchpad",
-      "Multiple Token Mint",
-      "Tweet sharing",
-      // "New Offer System",
-      //"New Alert Types",
+      "Inscriptions",
+      "YOLO Buy",
+      "Trait Bids",
+      "New Offer System",
+      "New Alert Types",
     ],
     inscriptions: true,
     yoyo: false,
@@ -140,30 +140,36 @@ export default {
     },
     activateItem(item, index) {
       this.activeIndex = index;
-      if (item == "Edit your launchpad") {
+      if (item == "Inscriptions") {
         this.inscriptions = true;
         this.yoyo = false;
         this.trait = false;
-      } else if (item == "Multiple Token Mint") {
+        this.offer = false;
+        this.alert = false;
+      } else if (item == "YOLO Buy") {
         this.inscriptions = false;
         this.yoyo = true;
         this.trait = false;
-      } else if (item == "Tweet sharing") {
+        this.offer = false;
+        this.alert = false;
+      } else if (item == "Trait Bids") {
         this.inscriptions = false;
         this.yoyo = false;
         this.trait = true;
-        // } else if (item == "New Offer System") {
-        //   this.inscriptions = false;
-        //   this.yoyo = false;
-        //   this.trait = false;
-        //   this.offer = true;
-        //   this.alert = false;
-        // } else if (item == "New Alert Types") {
-        //   this.inscriptions = false;
-        //   this.yoyo = false;
-        //   this.trait = false;
-        //   this.offer = false;
-        //   this.alert = true;
+        this.offer = false;
+        this.alert = false;
+      } else if (item == "New Offer System") {
+        this.inscriptions = false;
+        this.yoyo = false;
+        this.trait = false;
+        this.offer = true;
+        this.alert = false;
+      } else if (item == "New Alert Types") {
+        this.inscriptions = false;
+        this.yoyo = false;
+        this.trait = false;
+        this.offer = false;
+        this.alert = true;
       }
     },
   },

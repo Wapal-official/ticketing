@@ -4,39 +4,24 @@
     class="!tw-text-white tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
   >
     <div class="tw-text-sm tw-font-semibold">{{ collectionNumber }}.</div>
-    <div style="position: relative">
-      <div
-        class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
-        v-if="video"
-      >
-        <video-player-featured :source="video" />
-      </div>
-      <utility-image
-        v-else
-        :source="collection?.image"
-        :onerror="imageNotFound()"
-        :alt="collection?.name"
-        class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
-      />
-      <div
-        v-if="isAudio(collection?.media2)"
-        @click.prevent.stop="checkit()"
-        class="forAudio-2"
-      >
-        <audio-player-list
-          v-if="isAudio(collection?.media2)"
-          class="audio-list-bg-2"
-          :audioSrc="collection?.media2"
-          iconSize="34"
-          @click.prevent.stop="checkit()"
-        ></audio-player-list>
-      </div>
+    <div
+      class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
+      v-if="video"
+    >
+      <video-player-featured :source="video" />
     </div>
+    <utility-image
+      v-else
+      :source="collection?.image"
+      :onerror="imageNotFound()"
+      :alt="collection?.name"
+      class="tw-w-[96px] tw-h-[96px] tw-object-cover tw-rounded"
+    />
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1">
       <div class="tw-font-medium">{{ collection?.name }}</div>
       <div
         class="tw-text-dark-2 tw-text-sm tw-font-medium"
-        v-if="collection?.isEdition"
+        v-if="collection?.edition && collection?.edition === 'open-edition'"
       >
         {{ minted }}
         Minted
@@ -164,6 +149,7 @@ export default {
           this.minted = 0;
           return;
         }
+
         const res = await this.$store.dispatch(
           "walletStore/getSupplyAndMintedOfExternalCollection",
           {
@@ -217,95 +203,12 @@ export default {
         return `/nft/draft/${this.collection?._id}`;
       }
 
+      if (this.collection.isEdition) {
+        return `/editions/${this.collection?.username}`;
+      }
+
       return `/nft/${this.collection?.username}`;
-    },
-  },
-  methods: {
-    checkit() {
-      console.log("");
-    },
-    isAudio(source: string) {
-      if (!source) {
-        return false;
-      }
-      const extension = source.split(".").pop()?.toLowerCase();
-      return extension
-        ? [
-            "mp3",
-            "wav",
-            "ogg",
-            "aac",
-            "flac",
-            "wma",
-            "alac",
-            "aiff",
-            "opus",
-          ].includes(extension)
-        : false;
-    },
-    isImage(source: string) {
-      if (!source) {
-        return false;
-      }
-      const extension = source.split(".").pop()?.toLowerCase();
-      return extension
-        ? [
-            "jpg",
-            "jpeg",
-            "png",
-            "gif",
-            "webp",
-            "bmp",
-            "svg",
-            "ico",
-            "tiff",
-          ].includes(extension)
-        : false;
-    },
-    isVideo(source: string) {
-      const extension = source.split(".").pop()?.toLowerCase();
-      return extension
-        ? [
-            "mp4",
-            "mkv",
-            "m4v",
-            "webm",
-            "avi",
-            "mov",
-            "wmv",
-            "flv",
-            "3gp",
-            "ogv",
-            "mpeg",
-            "mpg",
-            "divx",
-            "rm",
-            "asf",
-            "vob",
-            "ts",
-            "m2ts",
-          ].includes(extension)
-        : false;
     },
   },
 };
 </script>
-<style lang="css" scoped>
-.forAudio-2 {
-  height: 100%;
-  position: absolute;
-  top: 0;
-  z-index: 4;
-  width: 100%;
-}
-.audio-list-bg-2 {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0%;
-  bottom: 0;
-  margin: auto;
-  z-index: 5;
-  transform: translate(0%, 30%);
-}
-</style>

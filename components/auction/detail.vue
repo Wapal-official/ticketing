@@ -769,7 +769,7 @@ export default {
           return;
         }
         let creation_number = 0;
-        if (resource.success) {
+        if (resource.success || resource.hash) {
           resource.events.map((event) => {
             if (event.type === `${process.env.PID}::auction::BidEvent`) {
               creation_number = event.data.bid_id.listing_id.creation_num;
@@ -844,7 +844,7 @@ export default {
 
           let creation_number = 0;
 
-          if (increaseBidRes.success) {
+          if (increaseBidRes.success || increaseBidRes.hash) {
             increaseBidRes.events.map((event) => {
               if (
                 event.type ===
@@ -951,7 +951,7 @@ export default {
           coinType: this.selectedCoinType.coinType,
         });
 
-        if (res.success) {
+        if (res.success || res.hash) {
           this.$toast.showMessage({ message: "Bid Withdrawn Successfully" });
         }
 
@@ -975,7 +975,7 @@ export default {
           coinType: this.selectedCoinType.coinType,
         });
 
-        if (res.success) {
+        if (res.success || res.hash) {
           await setCompleteAuction(this.auction._id);
 
           await this.getAuctionDetails();

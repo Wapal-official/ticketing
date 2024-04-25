@@ -289,7 +289,7 @@ export const actions = {
       transactionRes.hash
     );
 
-    if (!getResourceAccount.success) {
+    if (!getResourceAccount.success && !getResourceAccount.hash) {
       throw new Error("Transaction not Successful please try again");
     }
 
@@ -341,7 +341,7 @@ export const actions = {
       transactionRes.hash
     );
 
-    if (!getResourceAccount.success) {
+    if (!getResourceAccount.success && !getResourceAccount.hash) {
       throw new Error("Transaction not Successful please try again");
     }
 
@@ -593,7 +593,7 @@ export const actions = {
       transaction.hash
     );
 
-    if (!transactionResult.success) {
+    if (!transactionResult.success && !transactionResult.hash) {
       throw new Error("Transaction not Successful please try again");
     }
 
@@ -647,7 +647,7 @@ export const actions = {
       transactionRes.hash
     );
 
-    if (getResource.success) {
+    if (getResource.success && getResource.hash) {
       for (var x = 0; x < getResource.changes.length; x++) {
         if (
           getResource.changes[x].data &&

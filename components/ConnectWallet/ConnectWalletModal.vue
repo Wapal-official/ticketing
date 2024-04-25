@@ -67,7 +67,6 @@
 
 <script lang="ts">
 import bloctoIcon from "@/assets/img/blocto-icon-svg.svg";
-import { wallet } from "@/store/walletStore";
 export default {
   props: { message: { type: String, default: "" } },
   data() {
@@ -75,7 +74,6 @@ export default {
       wallets: this.$store.getters["walletStore/getWalletsDetail"],
       installedWallets: [{ name: "", icon: "", url: "" }],
       availableWallets: [{ name: "", icon: "", url: "" }],
-      storeWallet: wallet,
       bloctoIcon,
     };
   },
@@ -83,10 +81,7 @@ export default {
     async connectWallet(wallet: any) {
       try {
         if (wallet.readyState === "NotDetected") {
-          this.storeWallet.connect(wallet.name);
-          setTimeout(() => {
-            window.open(wallet.url, "_blank");
-          }, 1000);
+          window.open(wallet.url, "_blank");
           return;
         }
 

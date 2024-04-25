@@ -79,7 +79,7 @@ export const updateWhitelistSaleTime = async ({
     transaction.hash
   );
 
-  if (!result.success) {
+  if (!result.success && !result.hash) {
     throw new Error("Transaction not Successful please try again");
   }
 
@@ -117,7 +117,7 @@ export const updatePublicSaleTime = async ({
     transaction.hash
   );
 
-  if (!result.success) {
+  if (!result.success && !result.hash) {
     throw new Error("Transaction not Successful please try again");
   }
 
@@ -159,7 +159,7 @@ export const updatePublicSalePrice = async ({
     transaction.hash
   );
 
-  if (!result.success) {
+  if (!result.success && !result.hash) {
     throw new Error("Transaction not Successful please try again");
   }
 
@@ -201,7 +201,7 @@ export const updateWhitelistSalePrice = async ({
     transaction.hash
   );
 
-  if (!result.success) {
+  if (!result.success && !result.hash) {
     throw new Error("Transaction not Successful please try again");
   }
 
@@ -235,7 +235,7 @@ export const updateTotalSupply = async ({
     transaction.hash
   );
 
-  if (!result.success) {
+  if (!result.success && !result.hash) {
     throw new Error("Transaction not Successful please try again");
   }
 
@@ -577,7 +577,7 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
     create_candy_machine
   );
 
-  if (!transactionRes.success) {
+  if (!transactionRes.success && !transactionRes.hash) {
     throw new Error("Transaction not Successful please try again");
   }
 

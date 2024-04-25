@@ -44,20 +44,20 @@
                 {{ hour ? hour : "00" }}:{{ minute ? minute : "00 " }}
               </button>
               <div class="hour12-tab">
-                <p
+                <button
                   class="hour12-tabs"
                   @click.stop="toggleAM()"
                   :class="{ active: amActive }"
                 >
                   AM
-                </p>
-                <p
+                </button>
+                <button
                   class="hour12-tabs"
-                  @click="togglePM"
+                  @click.stop="togglePM()"
                   :class="{ active: pmActive }"
                 >
                   PM
-                </p>
+                </button>
               </div>
             </div>
           </div>
@@ -137,14 +137,13 @@ export default {
         const time = newValue.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
-          hour12: true, // Include AM/PM information
+          hour12: true,
         });
-        const [hours, minutes, amPm] = time.split(/:| /); // Split by colon or space
+        const [hours, minutes, amPm] = time.split(/:| /);
         this.hour = hours;
         this.minute = minutes;
-        this.amPm = amPm; // Store AM or PM information
+        this.amPm = amPm;
 
-        // Set active tab based on AM/PM
         if (amPm === "AM") {
           this.amActive = true;
           this.pmActive = false;
@@ -186,38 +185,22 @@ export default {
   methods: {
     handleChange(value: any, type: string) {
       if (type === "date") {
-        console.log(value, "asd", type);
         this.showDatePickerTimePanel = false;
       }
     },
     toggleAM() {
-      if (!this.hour || (this.hour === "12" && this.amPm === "AM")) {
-        this.amActive = true;
-        this.pmActive = false;
-        this.amPm = "AM";
-        this.updateInternalValue();
-      } else if (this.amPm === "PM") {
-        this.amActive = true;
-        this.pmActive = false;
-        this.amPm = "AM";
-        this.updateInternalValue();
-      }
+      this.amPm = "AM";
+      this.updateInternalValue();
     },
+
     togglePM() {
-      if (!this.hour || (this.hour === "12" && this.amPm === "PM")) {
-        this.amActive = false;
-        this.pmActive = true;
-        this.amPm = "PM";
-        this.updateInternalValue();
-      } else if (this.amPm === "AM") {
-        this.amActive = false;
-        this.pmActive = true;
-        this.amPm = "PM";
-        this.updateInternalValue();
-      }
+      this.amPm = "PM";
+      this.updateInternalValue();
     },
     updateInternalValue() {
-      // Update internalValue based on hour, minute, and amPm
+      if (!this.internalValue) {
+        return;
+      }
       let hours = parseInt(this.hour || 0, 10);
       if (this.amPm === "PM" && hours !== 12) {
         hours += 12;
@@ -237,12 +220,12 @@ export default {
         const time = this.internalValue.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
-          hour12: true, // Include AM/PM information
+          hour12: true,
         });
-        const [hours, minutes, amPm] = time.split(/:| /); // Split by colon or space
+        const [hours, minutes, amPm] = time.split(/:| /);
         this.hour = hours;
         this.minute = minutes;
-        this.amPm = amPm; // Store AM or PM information
+        this.amPm = amPm;
       }
     },
 
@@ -277,6 +260,8 @@ export default {
   display: flex;
   padding: 4px;
   cursor: pointer;
+  position: relative;
+  z-index: 4;
 }
 
 .hour12-tabs {

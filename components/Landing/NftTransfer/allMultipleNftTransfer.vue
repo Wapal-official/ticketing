@@ -18,7 +18,9 @@
               <nft-transfer-skeleton
                 v-intersect.quiet="{
                   handler: onIntersect,
-                  options: { threshold: [] },
+                  options: {
+                    threshold: [],
+                  },
                 }"
                 :cols="calculateColumns()"
                 class="my-2 my-sm-3"
@@ -29,7 +31,6 @@
             >
               <span v-if="!allLoaded"> loading nfts </span>
               <span v-else-if="userNfts.length > 0">no more nfts</span>
-              <span v-if="userNfts.length > 0">no more nfts</span>
               <span v-else-if="userNfts.length > 0 && allLoaded == true"
                 >No more nfts</span
               >
