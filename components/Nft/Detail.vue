@@ -936,6 +936,8 @@ export default {
           this.proof.push(proof.data);
         });
 
+        await this.getMintLimitOfPreviousPhases();
+
         if (this.collection.updated_at) {
           this.setProofInLocalStorage({
             proof: this.proof,
@@ -946,8 +948,6 @@ export default {
             walletAddress: this.getWalletAddress,
           });
         }
-
-        await this.getMintLimitOfPreviousPhases();
 
         await this.getOwnedCollectionOfUser();
 
@@ -1270,8 +1270,6 @@ export default {
           }
         })
       );
-
-      this.mintLimit = mintLimit;
     },
     setMaxNumberOfNfts() {
       if (this.collection.isEdition) {
