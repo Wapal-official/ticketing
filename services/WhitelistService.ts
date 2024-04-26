@@ -173,6 +173,14 @@ export const getWhitelistByUsername = async (username: string) => {
   return res;
 };
 
+export const getWhitelistByUsernameInCreatorStudio = async (
+  username: string
+) => {
+  const res = await creatorStudioRequest.get(`/api/whitelist/${username}`);
+
+  return res;
+};
+
 export const getProof = async ({
   walletAddress,
   collectionId,

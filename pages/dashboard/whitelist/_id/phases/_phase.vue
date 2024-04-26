@@ -298,7 +298,7 @@ import {
 } from "@/services/WhitelistService";
 
 import moment from "moment";
-import { getCollectionByUsername } from "@/services/CollectionService";
+import { getCollectionByUsernameInCreatorStudio } from "@/services/CollectionService";
 
 export default {
   layout: "dashboard",
@@ -701,7 +701,9 @@ export default {
     },
   },
   async mounted() {
-    this.collection = await getCollectionByUsername(this.$route.params.id);
+    this.collection = await getCollectionByUsernameInCreatorStudio(
+      this.$route.params.id
+    );
 
     await this.mapWhitelistEntries();
   },

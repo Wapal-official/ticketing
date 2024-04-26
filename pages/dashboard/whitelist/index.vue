@@ -65,7 +65,7 @@
 <script lang="ts">
 import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
 import {
-  getCollection,
+  getCollectionInCreatorStudio,
   getCollectionsOfUser,
 } from "@/services/CollectionService";
 import {
@@ -305,7 +305,9 @@ export default {
             "whitelist"
           );
 
-          const collectionRes = await getCollection(whitelist.collection_id);
+          const collectionRes = await getCollectionInCreatorStudio(
+            whitelist.collection_id
+          );
 
           whitelist.name = collectionRes.collection[0].name;
           whitelist.image = collectionRes.collection[0].image;
