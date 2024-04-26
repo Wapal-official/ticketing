@@ -474,8 +474,6 @@ export default {
           uploadSocketState.totalFiles = 0;
           uploadSocketState.showUploadBar = true;
 
-          socket.connect();
-
           socket.emit(
             "upload",
             this.folderInfo.user_id,
@@ -597,6 +595,7 @@ export default {
     },
   },
   async mounted() {
+    socket.connect();
     this.type = this.$route.params.type;
 
     if (this.type !== "assets" && this.type !== "metadata") {
