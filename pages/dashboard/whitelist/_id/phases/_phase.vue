@@ -291,14 +291,17 @@
 </template>
 <script lang="ts">
 import {
-  getWhitelistEntryById,
+  getWhitelistEntryByIdInCreatorStudio,
   uploadCSVInWhitelistEntry,
   deleteCSVInWhitelistEntry,
   searchWhitelistEntry,
 } from "@/services/WhitelistService";
 
 import moment from "moment";
-import { getCollectionByUsername } from "@/services/CollectionService";
+import {
+  getCollectionByUsernameInCreatorStudio,
+  updateCollection,
+} from "@/services/CollectionService";
 
 export default {
   layout: "dashboard",
@@ -591,6 +594,8 @@ export default {
 
         const res = await uploadCSVInWhitelistEntry(formData);
 
+        await updateCollection(this.collection._id, this.collection);
+
         this.$toast.showMessage({ message: "CSV File Imported Successfully" });
         this.showCSVUploadModal = false;
 
@@ -601,6 +606,7 @@ export default {
         this.uploading = false;
       } catch (error) {
         console.log(error);
+        await updateCollection(this.collection._id, this.collection);
         this.$toast.showMessage({ message: error, error: true });
         this.uploading = false;
       }
@@ -613,7 +619,7 @@ export default {
       this.loading = true;
 
       this.page++;
-      const res = await getWhitelistEntryById(
+      const res = await getWhitelistEntryByIdInCreatorStudio(
         this.collection._id,
         100,
         this.page,
@@ -701,7 +707,9 @@ export default {
     },
   },
   async mounted() {
-    this.collection = await getCollectionByUsername(this.$route.params.id);
+    this.collection = await getCollectionByUsernameInCreatorStudio(
+      this.$route.params.id
+    );
 
     await this.mapWhitelistEntries();
   },

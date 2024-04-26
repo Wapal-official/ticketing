@@ -36,6 +36,16 @@ export const getCollection = async (collectionId: string) => {
   return collection;
 };
 
+export const getCollectionInCreatorStudio = async (collectionId: string) => {
+  const res = await creatorStudioRequest.get(`/api/collection/${collectionId}`);
+
+  const collection = res.data.collection[0];
+
+  collection.image = getCachedUrlOfImage(collection.image);
+
+  return collection;
+};
+
 export const createCollection = async (formData: any) => {
   const config = {
     headers: { "content-type": "multipart/form-data" },
@@ -78,6 +88,20 @@ export const setSoldOut = async (collectionId: string) => {
 export const getCollectionByUsername = async (username: string) => {
   const res = await axios.get(
     `${process.env.baseURL}/api/collection/username/${username}`
+  );
+
+  const collection = res.data.collection[0];
+
+  collection.image = getCachedUrlOfImage(collection.image);
+
+  return collection;
+};
+
+export const getCollectionByUsernameInCreatorStudio = async (
+  username: string
+) => {
+  const res = await creatorStudioRequest.get(
+    `/api/collection/username/${username}`
   );
 
   const collection = res.data.collection[0];
@@ -139,6 +163,12 @@ export const createDraft = async (formData: any) => {
 
 export const getDraftById = async (draftId: any) => {
   const res = await publicRequest.get(`/api/draft/${draftId}`);
+
+  return res;
+};
+
+export const getDraftByIdInCreatorStudio = async (draftId: any) => {
+  const res = await creatorStudioRequest.get(`/api/draft/${draftId}`);
 
   return res;
 };

@@ -115,7 +115,7 @@
 <script lang="ts">
 import moment from "moment";
 import {
-  getCollectionByUsername,
+  getCollectionByUsernameInCreatorStudio,
   updateCollection,
 } from "@/services/CollectionService";
 import { getWhitelistByUsername, setRoot } from "@/services/WhitelistService";
@@ -212,7 +212,9 @@ export default {
 
     const whitelist = res.data.whitelist;
 
-    this.collection = await getCollectionByUsername(this.$route.params.id);
+    this.collection = await getCollectionByUsernameInCreatorStudio(
+      this.$route.params.id
+    );
 
     if (whitelist) {
       this.setupWhitelistStatus = false;
