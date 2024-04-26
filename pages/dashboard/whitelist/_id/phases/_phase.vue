@@ -298,7 +298,10 @@ import {
 } from "@/services/WhitelistService";
 
 import moment from "moment";
-import { getCollectionByUsernameInCreatorStudio } from "@/services/CollectionService";
+import {
+  getCollectionByUsernameInCreatorStudio,
+  updateCollection,
+} from "@/services/CollectionService";
 
 export default {
   layout: "dashboard",
@@ -591,6 +594,8 @@ export default {
 
         const res = await uploadCSVInWhitelistEntry(formData);
 
+        await updateCollection(this.collection._id, this.collection);
+
         this.$toast.showMessage({ message: "CSV File Imported Successfully" });
         this.showCSVUploadModal = false;
 
@@ -601,6 +606,7 @@ export default {
         this.uploading = false;
       } catch (error) {
         console.log(error);
+        await updateCollection(this.collection._id, this.collection);
         this.$toast.showMessage({ message: error, error: true });
         this.uploading = false;
       }
