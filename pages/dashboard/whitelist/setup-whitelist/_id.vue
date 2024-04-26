@@ -196,7 +196,7 @@
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
-import { getCollection } from "@/services/CollectionService";
+import { getCollectionInCreatorStudio } from "@/services/CollectionService";
 import { createWhitelist } from "@/services/WhitelistService";
 
 extend("required", {
@@ -322,7 +322,7 @@ export default {
   async mounted() {
     this.phases = [];
 
-    this.collection = await getCollection(this.$route.params.id);
+    this.collection = await getCollectionInCreatorStudio(this.$route.params.id);
 
     this.phases = this.collection.phases ? this.collection.phases : [];
   },

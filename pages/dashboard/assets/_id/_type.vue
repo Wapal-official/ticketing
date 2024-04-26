@@ -595,6 +595,7 @@ export default {
     },
   },
   async mounted() {
+    socket.connect();
     this.type = this.$route.params.type;
 
     if (this.type !== "assets" && this.type !== "metadata") {

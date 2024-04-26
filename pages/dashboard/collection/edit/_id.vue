@@ -591,7 +591,7 @@
 </template>
 <script lang="ts">
 import {
-  getCollection,
+  getCollectionInCreatorStudio,
   updateCollection,
   getMetadataFromTokenURI,
   sortPhases,
@@ -714,7 +714,9 @@ export default {
   methods: {
     async fetchCollection() {
       this.loading = true;
-      this.collection = await getCollection(this.$route.params.id);
+      this.collection = await getCollectionInCreatorStudio(
+        this.$route.params.id
+      );
 
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,

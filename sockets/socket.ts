@@ -26,7 +26,9 @@ export const uploadSocketState = reactive<UploadSocket>({
 const URL = process.env.CREATOR_STUDIO_API
   ? process.env.CREATOR_STUDIO_API
   : "http://localhost:3000";
-export const socket = io(URL);
+export const socket = io(URL, {
+  autoConnect: false,
+});
 
 socket.on("connect", () => {
   uploadSocketState.connected = true;

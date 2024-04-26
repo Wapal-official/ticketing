@@ -636,9 +636,9 @@ import {
   createCollection,
   createDraft,
   sortPhases,
-  getDraftById,
   editDraft,
   editImage,
+  getDraftByIdInCreatorStudio,
 } from "@/services/CollectionService";
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 import { createCollectionV2 } from "@/services/AptosCollectionService";
@@ -1215,7 +1215,7 @@ export default {
     async setCollectionDataFromDraft() {
       this.whitelistEnabled = true;
 
-      const draftRes = await getDraftById(this.$route.params.id);
+      const draftRes = await getDraftByIdInCreatorStudio(this.$route.params.id);
 
       const draftData = draftRes.data.draft.data;
 
