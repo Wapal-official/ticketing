@@ -167,6 +167,12 @@ export const getDraftById = async (draftId: any) => {
   return res;
 };
 
+export const getDraftByIdInCreatorStudio = async (draftId: any) => {
+  const res = await creatorStudioRequest.get(`/api/draft/${draftId}`);
+
+  return res;
+};
+
 export const getApprovedCollectionsOfUser = async (
   userId: string,
   page: number
