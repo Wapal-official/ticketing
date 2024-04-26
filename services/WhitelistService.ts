@@ -28,6 +28,14 @@ export const createWhitelist = async (whitelist: any) => {
 };
 
 export const getWhitelistById = async (whitelistId: string) => {
+  const res = await axios.get(
+    `${process.env.baseURL}/api/whitelist/${whitelistId}`
+  );
+
+  return res;
+};
+
+export const getWhitelistByIdInCreatorStudio = async (whitelistId: string) => {
   const res = await creatorStudioRequest.get(`/api/whitelist/${whitelistId}`);
 
   return res;
@@ -100,6 +108,32 @@ export const searchWhitelistEntry = async (
 };
 
 export const getWhitelistEntryById = async (
+  collection_id: string,
+  limit: number,
+  page: number,
+  phaseName: string
+) => {
+  let entryLimit = limit;
+  let entryPage = page;
+  if (!limit) {
+    entryLimit = 100;
+  }
+
+  if (!page) {
+    entryPage = 1;
+  }
+
+  const res = await axios.get(
+    `${process.env.baseURL}/api/whitelist/entry?phase=${phaseName}&limit=${entryLimit}&page=${entryPage}`,
+    {
+      params: { collection_id: collection_id },
+    }
+  );
+
+  return res;
+};
+
+export const getWhitelistEntryByIdInCreatorStudio = async (
   collection_id: string,
   limit: number,
   page: number,

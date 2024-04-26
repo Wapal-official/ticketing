@@ -291,7 +291,7 @@
 </template>
 <script lang="ts">
 import {
-  getWhitelistEntryById,
+  getWhitelistEntryByIdInCreatorStudio,
   uploadCSVInWhitelistEntry,
   deleteCSVInWhitelistEntry,
   searchWhitelistEntry,
@@ -613,7 +613,7 @@ export default {
       this.loading = true;
 
       this.page++;
-      const res = await getWhitelistEntryById(
+      const res = await getWhitelistEntryByIdInCreatorStudio(
         this.collection._id,
         100,
         this.page,

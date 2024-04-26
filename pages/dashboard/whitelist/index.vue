@@ -69,8 +69,7 @@ import {
   getCollectionsOfUser,
 } from "@/services/CollectionService";
 import {
-  getWhitelistById,
-  getWhitelistEntryById,
+  getWhitelistEntryByIdInCreatorStudio,
   getWhitelistOfUser,
 } from "@/services/WhitelistService";
 import { getCollectionDetails } from "@/services/AptosCollectionService";
@@ -299,7 +298,7 @@ export default {
       const mappedWhitelists = await Promise.all(
         whitelists.map(async (whitelist: any) => {
           //Get Whitelist Detail
-          const { data } = await getWhitelistEntryById(
+          const { data } = await getWhitelistEntryByIdInCreatorStudio(
             whitelist.collection_id,
             1,
             1,
