@@ -214,3 +214,7 @@ export const getMintLimit = async ({
 
   return res;
 };
+
+export const clearCacheOfMintLimit = async () => {
+  const res = await creatorStudioRequest.get("/api/whitelist/clear");
+};

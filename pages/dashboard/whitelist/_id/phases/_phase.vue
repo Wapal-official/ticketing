@@ -295,6 +295,7 @@ import {
   uploadCSVInWhitelistEntry,
   deleteCSVInWhitelistEntry,
   searchWhitelistEntry,
+  clearCacheOfMintLimit,
 } from "@/services/WhitelistService";
 
 import moment from "moment";
@@ -594,6 +595,7 @@ export default {
 
         const res = await uploadCSVInWhitelistEntry(formData);
 
+        await clearCacheOfMintLimit();
         await updateCollection(this.collection._id, this.collection);
 
         this.$toast.showMessage({ message: "CSV File Imported Successfully" });
@@ -606,6 +608,7 @@ export default {
         this.uploading = false;
       } catch (error) {
         console.log(error);
+        await clearCacheOfMintLimit();
         await updateCollection(this.collection._id, this.collection);
         this.$toast.showMessage({ message: error, error: true });
         this.uploading = false;
