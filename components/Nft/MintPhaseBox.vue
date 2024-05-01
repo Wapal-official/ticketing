@@ -35,7 +35,8 @@
     >
       <i class="bx bx-info-circle tw-text-xl"></i>
       <div v-if="phase?.whitelisted">
-        You are eligible to mint for this phase
+        You are eligible to mint for this phase. Mint Limit:
+        {{ phase.mintLimit }}
       </div>
       <div v-else>You are not whitelisted for this phase</div>
     </div>
