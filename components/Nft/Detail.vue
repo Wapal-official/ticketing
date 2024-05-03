@@ -930,8 +930,8 @@ export default {
 
         const res = await getProof(proofParams);
 
-        const proofs = res.data.proofs;
-        this.totalMintLimit = res.data.mint_limit;
+        const proofs = JSON.parse(res.data.data);
+        this.totalMintLimit = this.currentSale.mintLimit;
 
         proofs.map((proof) => {
           this.proof.push(proof.data);
