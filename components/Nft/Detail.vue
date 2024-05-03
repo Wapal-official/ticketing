@@ -931,7 +931,14 @@ export default {
         const res = await getProof(proofParams);
 
         const proofs = JSON.parse(res.data.data);
-        this.totalMintLimit = this.currentSale.mintLimit;
+
+        this.totalMintLimit = 0;
+
+        this.phases.forEach((phase) => {
+          if (new Date(phase.mint_time).getTime() < Date.now()) {
+            this.totalMintLimit += phase.mintLimit ? phase.mintLimit : 0;
+          }
+        });
 
         proofs.map((proof) => {
           this.proof.push(proof.data);
