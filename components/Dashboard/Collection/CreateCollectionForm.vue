@@ -897,7 +897,7 @@ export default {
           (folder: any) => folder.folder_name === this.baseURL
         );
 
-        this.collection.baseURL = selectedFolder.metadata.baseURI;
+        this.collection.baseURL = selectedFolder.metadataBaseURI;
 
         this.checkCoinType();
 
@@ -1146,9 +1146,7 @@ export default {
         (folder: any) => folder.folder_name === this.baseURL
       );
       if (selectedFolder) {
-        this.collection.supply = selectedFolder.metadata.files.length
-          ? selectedFolder.metadata.files.length
-          : null;
+        this.collection.supply = selectedFolder.metadata;
       } else {
         this.collection.supply = null;
       }
@@ -1266,7 +1264,7 @@ export default {
           (folder: any) => folder.folder_name === this.baseURL
         );
 
-        this.collection.baseURL = selectedFolder.metadata.baseURI;
+        this.collection.baseURL = selectedFolder.metadataBaseURI;
 
         const tempCollection = structuredClone(this.collection);
 
@@ -1326,7 +1324,7 @@ export default {
     const res = await getAllFolder(this.$store.state.userStore.user.user_id);
 
     res.data.folderInfo.map((folder: any) => {
-      if (folder.metadata.baseURI) {
+      if (folder.metadataBaseURI) {
         this.folders.push(folder);
       }
     });
