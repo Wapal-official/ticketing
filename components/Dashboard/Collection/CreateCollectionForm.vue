@@ -1016,7 +1016,7 @@ export default {
         const selectedFolder = this.folders.find(
           (folder: any) => folder.folder_name === this.baseURL
         );
-        this.collection.baseURL = selectedFolder.metadata.baseURI;
+        this.collection.baseURL = selectedFolder.metadataBaseURI;
         this.checkCoinType();
 
         const tempCollection = { ...this.collection };
@@ -1236,7 +1236,7 @@ export default {
       });
 
       this.folders.map((folder: any) => {
-        if (folder.metadata.baseURI === this.collection.baseURL) {
+        if (folder.metadataBaseURI === this.collection.baseURL) {
           this.baseURL = folder.folder_name;
         }
       });
