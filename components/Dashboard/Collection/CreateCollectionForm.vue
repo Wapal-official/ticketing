@@ -1236,7 +1236,7 @@ export default {
       });
 
       this.folders.map((folder: any) => {
-        if (folder.metadata.baseURI === this.collection.baseURL) {
+        if (folder.metadataBaseURI === this.collection.baseURL) {
           this.baseURL = folder.folder_name;
         }
       });
