@@ -190,11 +190,15 @@ export default {
     },
     toggleAM() {
       this.amPm = "AM";
+      this.amActive = true;
+      this.pmActive = false;
       this.updateInternalValue();
     },
 
     togglePM() {
       this.amPm = "PM";
+      this.amActive = false;
+      this.pmActive = true;
       this.updateInternalValue();
     },
     updateInternalValue() {
@@ -261,7 +265,7 @@ export default {
   padding: 4px;
   cursor: pointer;
   position: relative;
-  z-index: 4;
+  z-index: 999;
 }
 
 .hour12-tabs {
