@@ -38,10 +38,16 @@ module.exports = {
         "utility-red": "#FF5449",
         "utility-green": "#8CD867",
         "utility-yellow": "#FFAD05",
+        loonies: {
+          primary: "#5B180F",
+        },
       },
       screens: {
         "1xl": "1440px",
         "3xl": "1920px",
+      },
+      fontFamily: {
+        oswald: ["Oswald"],
       },
     },
   },
