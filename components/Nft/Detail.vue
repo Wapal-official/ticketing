@@ -477,6 +477,7 @@ export default {
       showShareModal: false,
       maxNumberOfNft: 35,
       showLooniesTweet: false,
+      mintButtonClicked: 0,
       imageNotFound,
       xLogo,
     };
@@ -735,6 +736,19 @@ export default {
 
         this.minting = true;
 
+        if (this.mintButtonClicked >= 2) {
+          this.removePhasesFromLocalStorage();
+          this.removeProofFromLocalStorage();
+
+          this.whitelisted = false;
+          this.notWhitelisted = false;
+          this.gettingProof = true;
+          await this.checkWhitelistForPhases();
+          await this.setProof();
+        }
+
+        this.mintButtonClicked++;
+
         if (this.collection.mintDetails) {
           this.mintCollectionExternally();
           return;
@@ -787,6 +801,8 @@ export default {
         }
 
         if (res.success || res.hash) {
+          this.mintBulkCollection = 0;
+
           this.$toast.showMessage({
             message: `${this.collection.name} Minted Successfully`,
           });
@@ -884,6 +900,7 @@ export default {
       if (!this.getWalletAddress) {
         this.gettingProof = false;
         this.whitelisted = false;
+        this.removeProofFromLocalStorage();
         return;
       }
 
@@ -1319,6 +1336,9 @@ export default {
 
           return tempPhase;
         });
+
+        this.removePhasesFromLocalStorage();
+        this.removeProofFromLocalStorage();
         return;
       }
 
@@ -1398,7 +1418,7 @@ export default {
       );
     },
     removeProofFromLocalStorage() {
-      localStorage.setItem("proof", "");
+      localStorage.removeItem("proof");
     },
     getPhaseFromLocalStorage() {
       const proof = JSON.parse(localStorage.getItem("phases"));
@@ -1422,7 +1442,7 @@ export default {
       );
     },
     removePhasesFromLocalStorage() {
-      localStorage.setItem("phases", "");
+      localStorage.removeItem("phases");
     },
   },
   computed: {
