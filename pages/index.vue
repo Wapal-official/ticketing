@@ -1,11 +1,15 @@
 <template>
   <div class="">
-    <landing-featured-slider />
+    <landing-featured-slider @looniesMinted="showLooniesTweet = true" />
     <landing-explore-section />
     <landing-all-collection-section />
     <landing-all-edition-section />
     <landing-auction-section />
     <landing-whitelist-opportunities />
+    <loonies-congratulations-popup
+      v-if="showLooniesTweet"
+      @closeCongratulationsPopup="showLooniesTweet = false"
+    />
   </div>
 </template>
 
@@ -53,6 +57,7 @@ export default {
       loading: true,
       fastestSoldoutCollections: [],
       auctions: [],
+      showLooniesTweet: false,
     };
   },
   methods: {

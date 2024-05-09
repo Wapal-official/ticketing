@@ -10,7 +10,10 @@
         v-for="collection in featuredCollections"
         :key="collection._id"
       >
-        <featured :propCollection="collection" />
+        <featured
+          @looniesMinted="$emit('looniesMinted')"
+          :propCollection="collection"
+        />
       </div>
       <div
         class="swiper-slide tw-w-full"
@@ -57,6 +60,7 @@ export default {
       featuredCollection: null,
       swiper: null,
       featuredAuctions: [],
+      showLooniesTweet: true,
     };
   },
   async mounted() {
