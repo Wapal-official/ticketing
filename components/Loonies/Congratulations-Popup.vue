@@ -96,13 +96,13 @@ export default {
       document.body.removeChild(link);
     },
     tweetTicket() {
-      const baseURL = "https://launchpad.wapal.io/nft/loonies-whitelist-ticket";
+      const baseURL = "https://preview.theloonies.xyz/whitelist-ticket";
 
       const twitterURL = "https://twitter.com";
 
       const text = `Just got whitelisted for the hottest collection dropping on @Aptos on @wapal_official!\n \nGetting my APT ready for @theloonies_nft.\n`;
 
-      const link = `${baseURL}/whitelist`;
+      const link = `${baseURL}`;
 
       const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}&hashtags=Aptos,Loonies,DitchLimits`;
 
