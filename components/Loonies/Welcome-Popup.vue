@@ -71,7 +71,7 @@ export default {
     },
     redirectToLooniesMintPage() {
       this.closeWelcomePopup();
-      this.$router.push(`/nft/loonies`);
+      this.$router.push(`/nft/loonies-whitelist-ticket`);
     },
   },
 };

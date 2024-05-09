@@ -96,7 +96,7 @@ export default {
       document.body.removeChild(link);
     },
     tweetTicket() {
-      const baseURL = "https://launchpad.wapal.io/nft/loonies";
+      const baseURL = "https://launchpad.wapal.io/nft/loonies-whitelist-ticket";
 
       const twitterURL = "https://twitter.com";
 

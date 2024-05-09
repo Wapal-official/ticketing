@@ -795,7 +795,7 @@ export default {
             this.showShareModal = true;
           }
 
-          if (this.collection.username === "loonies-test") {
+          if (this.collection.username === "loonies-whitelist-ticket") {
             this.showLooniesTweet = true;
           }
 
