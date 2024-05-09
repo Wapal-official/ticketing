@@ -100,15 +100,21 @@ export default {
 
       const twitterURL = "https://twitter.com";
 
-      const text = `Just got whitelisted for the hottest collection dropping on @Aptos on @wapal_official!\n \nGetting my APT ready for @theloonies_nft.\n`;
+      const tweetText = encodeURIComponent(
+        "Just got whitelisted for the hottest collection dropping on @Aptos on @wapal_official!" +
+          "\n" +
+          "\n" +
+          "Getting my APT ready for @theloonies_nft. " +
+          "\n" +
+          "\n" +
+          "#Aptos #Loonies #Ditchlimits" +
+          "\n" +
+          baseURL
+      );
 
-      const link = `${baseURL}`;
+      const twitterShareLink = `${twitterURL}/intent/tweet?text=${tweetText}`;
 
-      const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}&hashtags=Aptos,Loonies,DitchLimits`;
-
-      const encodedShareLink = encodeURI(twitterShareLink);
-
-      window.open(encodedShareLink, "_blank");
+      window.open(twitterShareLink, "_blank");
     },
   },
 };
