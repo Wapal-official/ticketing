@@ -88,6 +88,10 @@ export const checkIfCollectionIsSoldOut = (collection: any) => {
       return {
         supply: 1427,
       };
+    case "hero-collection7":
+      return {
+        supply: 105,
+      };
     default:
       return null;
   }
