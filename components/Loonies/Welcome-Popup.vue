@@ -62,7 +62,7 @@ export default {
     },
     enableBodyOverflow() {
       const body = document.querySelector("html");
-      body.style.overflow = "aut";
+      body.style.overflow = "auto";
     },
     closeWelcomePopup() {
       localStorage.setItem("seenWelcomePopup", "true");
