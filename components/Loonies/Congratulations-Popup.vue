@@ -96,7 +96,7 @@ export default {
       document.body.removeChild(link);
     },
     tweetTicket() {
-      const baseURL = "https://preview.theloonies.xyz/whitelist-ticket";
+      const baseURL = "https://preview.theloonies.xyz/whitelist-ticket-share";
 
       const twitterURL = "https://twitter.com";
 
