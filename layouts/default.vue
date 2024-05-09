@@ -36,7 +36,11 @@ export default {
     checkIfUserHasSeenWelcomeLooniesPopup() {
       const seenWelcomePopup = localStorage.getItem("seenWelcomePopup");
 
-      if (!seenWelcomePopup) {
+      const now = Date.now();
+
+      const revealDate = new Date("2024-05-09T15:00:00Z").getTime();
+
+      if (now > revealDate && !seenWelcomePopup) {
         this.showWelcomeLooniesPopup = true;
       }
     },
