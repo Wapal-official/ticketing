@@ -526,9 +526,7 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
 
   let programId = coinTypeObject.candy_id;
 
-  if (candyMachineArguments.isSoulBound) {
-    programId = process.env.SOUL_BOUND_CANDY_MACHINE;
-  } else if (candyMachineArguments.isRandom) {
+  if (candyMachineArguments.isRandom) {
     programId = coinTypeObject.candy_id;
   } else {
     programId = process.env.NON_RANDOM_CANDY_MACHINE;
