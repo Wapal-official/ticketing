@@ -491,11 +491,6 @@
               :ripple="false"
               v-if="!draft"
             ></v-checkbox>
-            <v-checkbox
-              v-model="isSoulBound"
-              label="Is Soulbound"
-              :ripple="false"
-            ></v-checkbox>
             <div
               class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
               :class="{ 'tw-justify-between': draft }"
@@ -818,7 +813,6 @@ export default {
       saveAsDraft: false,
       coinTypes: getAvailableCoinTypes(),
       isNonRandom: false,
-      isSoulBound: false,
     };
   },
   methods: {
@@ -1140,7 +1134,6 @@ export default {
         public_mint_limit: this.collection.public_mint_limit,
         coinType: this.collection.coinType,
         isRandom: !this.isNonRandom,
-        isSoulBound: this.isSoulBound,
       };
 
       const res = await createCollectionV2(candyMachineArguments);
@@ -1297,10 +1290,6 @@ export default {
     checkCoinType() {
       if (this.isNonRandom) {
         this.collection.candy_id = process.env.NON_RANDOM_CANDY_MACHINE;
-
-        return;
-      } else if (this.isSoulBound) {
-        this.collection.candy_id = process.env.SOUL_BOUND_CANDY_MACHINE;
 
         return;
       }
