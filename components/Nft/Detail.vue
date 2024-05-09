@@ -409,6 +409,10 @@
         ></button-primary>
       </div>
     </v-dialog>
+    <loonies-congratulations-popup
+      v-if="showLooniesTweet"
+      @closeCongratulationsPopup="showLooniesTweet = false"
+    />
   </div>
   <loading-collection v-else />
 </template>
@@ -472,6 +476,7 @@ export default {
       holdingDecreaseButtonInterval: null,
       showShareModal: false,
       maxNumberOfNft: 35,
+      showLooniesTweet: false,
       imageNotFound,
       xLogo,
     };
@@ -788,6 +793,10 @@ export default {
 
           if (this.collection.tweet) {
             this.showShareModal = true;
+          }
+
+          if (this.collection.username === "loonies-whitelist-ticket") {
+            this.showLooniesTweet = true;
           }
 
           let res = await this.$store.dispatch(

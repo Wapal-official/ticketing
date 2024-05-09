@@ -447,6 +447,10 @@ export default {
               this.showShareModal = true;
             }
 
+            if (this.collection.username === "loonies-whitelist-ticket") {
+              this.$emit("loonies-minted");
+            }
+
             let res = await this.$store.dispatch(
               "walletStore/getSupplyAndMintedOfCollection",
               {
