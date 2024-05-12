@@ -431,6 +431,7 @@ import imageNotFound from "@/utils/imageNotFound";
 import santa from "@/assets/video/wapal-santa.MP4";
 import xLogo from "@/assets/img/x-logo.svg";
 import { checkIfCollectionIsSoldOut } from "@/utils/soldoutCollections";
+import { sponsorMintTransaction } from "~/services/SponsoredTransactionService";
 export default {
   props: { collection: { type: Object } },
   data() {
@@ -1167,6 +1168,15 @@ export default {
     },
     async mintCollectionExternally() {
       try {
+        if (
+          this.collection.candyMachine.candy_id ===
+          "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62"
+        ) {
+          await sponsorMintTransaction();
+          this.minting = false;
+          this.numberOfNft = 1;
+          return;
+        }
         if (this.externalWhitelisted) {
           const res = await this.$store.dispatch("walletStore/externalMint", {
             mintFunction: this.collection.mintDetails.whitelist_mint_function,
@@ -1537,12 +1547,25 @@ export default {
       this.showEndInTimer = true;
 
       if (this.collection.mintDetails) {
-        this.resource = await this.$store.dispatch(
-          "walletStore/getSupplyAndMintedOfExternalCollection",
-          {
-            collectionId: this.collection.candyMachine.resource_account,
-          }
-        );
+        if (
+          this.collection.candyMachine.candy_id ===
+          "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62"
+        ) {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfExternalCollection",
+            {
+              collectionId:
+                "0x9a6f1b16323c428756b439553ab2a6a4cbdd46ade55d0da17f3a7c7d3e4c6ac8",
+            }
+          );
+        } else {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfExternalCollection",
+            {
+              collectionId: this.collection.candyMachine.resource_account,
+            }
+          );
+        }
 
         if (this.resource.total_supply === 0) {
           this.resource = await this.$store.dispatch(

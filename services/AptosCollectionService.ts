@@ -1,12 +1,10 @@
 import { client, wallet, checkNetwork } from "@/store/walletStore";
-import Cookies from "js-cookie";
 import MintCollectionInterface from "@/interfaces/MintCollection";
 import { getCoinType } from "@/utils/getCoinType";
 import { convertPriceToSendInSmartContract } from "@/utils/price";
 import { simulateTransaction } from "@/utils/simulateTransaction";
-import { HexString, TypeTagParser } from "aptos";
-import { handleMintError } from "~/errors/Mint";
-import { InputGenerateTransactionData } from "@aptos-labs/wallet-adapter-core";
+import { HexString } from "aptos";
+import { handleMintError } from "@/errors/Mint";
 import {
   InputGenerateTransactionPayloadData,
   parseTypeTag,
