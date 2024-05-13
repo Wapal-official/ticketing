@@ -516,12 +516,36 @@ export default {
     showMintedProgress() {
       this.progressInterval = setInterval(async () => {
         if (this.collection.mintDetails) {
-          this.resource = await this.$store.dispatch(
-            "walletStore/getSupplyAndMintedOfExternalCollection",
-            {
-              collectionId: this.collection.candyMachine.resource_account,
-            }
-          );
+          if (
+            this.collection.candyMachine.candy_id ===
+            "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62"
+          ) {
+            this.resource = await this.$store.dispatch(
+              "walletStore/getSupplyAndMintedOfExternalCollection",
+              {
+                collectionId:
+                  "0x9a6f1b16323c428756b439553ab2a6a4cbdd46ade55d0da17f3a7c7d3e4c6ac8",
+              }
+            );
+          } else if (
+            this.collection.candyMachine.candy_id ===
+            "0xd2434b9d9fc38c6816d55a76a7df6806a0c0bc3599b7bbaabf713e6680f7c8df"
+          ) {
+            this.resource = await this.$store.dispatch(
+              "walletStore/getSupplyAndMintedOfExternalCollection",
+              {
+                collectionId:
+                  "0x185f604afb67f9bbcbaa2e3c84a7210c537528ed24ffd9778edc981486385885",
+              }
+            );
+          } else {
+            this.resource = await this.$store.dispatch(
+              "walletStore/getSupplyAndMintedOfExternalCollection",
+              {
+                collectionId: this.collection.candyMachine.resource_account,
+              }
+            );
+          }
 
           if (this.resource.total_supply === 0) {
             this.resource = await this.$store.dispatch(
@@ -796,12 +820,36 @@ export default {
       this.loading = false;
 
       if (this.collection.mintDetails) {
-        this.resource = await this.$store.dispatch(
-          "walletStore/getSupplyAndMintedOfExternalCollection",
-          {
-            collectionId: this.collection.candyMachine.resource_account,
-          }
-        );
+        if (
+          this.collection.candyMachine.candy_id ===
+          "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62"
+        ) {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfExternalCollection",
+            {
+              collectionId:
+                "0x9a6f1b16323c428756b439553ab2a6a4cbdd46ade55d0da17f3a7c7d3e4c6ac8",
+            }
+          );
+        } else if (
+          this.collection.candyMachine.candy_id ===
+          "0xd2434b9d9fc38c6816d55a76a7df6806a0c0bc3599b7bbaabf713e6680f7c8df"
+        ) {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfExternalCollection",
+            {
+              collectionId:
+                "0x185f604afb67f9bbcbaa2e3c84a7210c537528ed24ffd9778edc981486385885",
+            }
+          );
+        } else {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfExternalCollection",
+            {
+              collectionId: this.collection.candyMachine.resource_account,
+            }
+          );
+        }
 
         if (this.resource.total_supply === 0) {
           this.resource = await this.$store.dispatch(
