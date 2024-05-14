@@ -54,10 +54,12 @@ export const sponsorMintTransaction = async () => {
       throw new Error("Error in Kanalabs");
     }
 
-    const addUserToWhitelist = await addAddressToWhitelist(senderAccount);
+    if (!isUserWhitelisted.whitelisted) {
+      const addUserToWhitelist = await addAddressToWhitelist(senderAccount);
 
-    if (!addUserToWhitelist.success) {
-      throw new Error("Error in Kanalabs");
+      if (!addUserToWhitelist.success) {
+        throw new Error("Error in Kanalabs");
+      }
     }
 
     const transaction: any = await aptosClient.transaction.build.simple({
