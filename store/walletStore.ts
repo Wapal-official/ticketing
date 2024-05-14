@@ -808,9 +808,9 @@ export const actions = {
 
     const buyDomainScript: InputGenerateTransactionPayloadData = {
       function:
-        "0x867ed1f6bf916171b1de3ee92849b8978b7d1b9e0a8cc982a3d19d535dfd9c0c::domains::register_domain" as `${string}::${string}::${string}`,
+        "0x867ed1f6bf916171b1de3ee92849b8978b7d1b9e0a8cc982a3d19d535dfd9c0c::router::register_domain" as `${string}::${string}::${string}`,
       typeArguments: [],
-      functionArguments: [domainName, 1],
+      functionArguments: [domainName, 31536000, null, null],
     };
 
     const transaction = await wallet.signAndSubmitTransaction({
