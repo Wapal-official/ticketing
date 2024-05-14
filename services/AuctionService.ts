@@ -236,41 +236,44 @@ export const getNumberOfTokensInOwnedCollectionOfUser = async (
   return res.data;
 };
 
-export const getTokensOfCollection = async (params: any) => {
+export const getTokensOfCollection = async ({
+  limit,
+  offset,
+  collectionId,
+  walletAddress,
+}: {
+  limit: number;
+  offset: number;
+  collectionId: string;
+  walletAddress: string;
+}) => {
   let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
-    operationName: "AccountTokensData",
-    query:
-      `query AccountTokensData {
-          current_token_ownerships(
-            limit: ` +
-      params.limit +
-      `
-            offset:` +
-      params.offset +
-      `
-            where: {owner_address: {_eq: "` +
-      params.walletAddress +
-      `"},
-      collection_name: {_eq: "` +
-      params.collectionName +
-      `"},
-      amount:{_gt:0}
-    }
-            ) {
-              owner_address
-              property_version
-              amount
-            current_token_data {
-              name
-              metadata_uri
-              description
-              collection_name
-              creator_address
-              token_data_id_hash
+    operationName: "GetTokensOfACollection",
+    query: `query GetTokensOfACollection($LIMIT: Int, $OFFSET: Int,$COLLECTION_ID: String, $WALLET_ADDRESS: String) {
+        current_token_ownerships_v2(
+          where: {current_token_data: {collection_id: {_eq: $COLLECTION_ID}}, owner_address: {_eq: $WALLET_ADDRESS}, amount: {_gt: "0"}}
+          limit: $LIMIT
+          offset: $OFFSET
+        ) {
+          current_token_data {
+            collection_id
+            token_name
+            token_data_id
+            token_standard
+            cdn_asset_uris {
+              cdn_image_uri
+              raw_image_uri
+              asset_uri
             }
           }
-        }`,
-    variables: null,
+        }
+      }`,
+    variables: {
+      LIMIT: limit,
+      OFFSET: offset,
+      COLLECTION_ID: collectionId,
+      WALLET_ADDRESS: walletAddress,
+    },
   });
   return resp.data;
 };

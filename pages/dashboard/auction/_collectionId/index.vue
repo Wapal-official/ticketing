@@ -1,12 +1,12 @@
 <template>
   <div class="tw-py-4">
     <div
-      v-if="nfts.length > 0"
+      v-if="tokens.length > 0"
       class="tw-grid tw-grid-cols-1 tw-gap-6 md:tw-grid-cols-2 lg:tw-grid-cols-3 xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
     >
       <div
         class="tw-h-full tw-rounded tw-w-[250px] tw-max-w-[250px] tw-group tw-cursor-pointer"
-        v-for="(item, i) in metadata"
+        v-for="(item, i) in tokens"
         :key="i"
         @click="
           $router.push('/dashboard/auction/start'),
@@ -61,7 +61,7 @@ export default {
     return {
       end: false,
       nfts: [],
-      metadata: [],
+      tokens: [],
       offset: 0,
       page: 0,
       limit: 20,
@@ -81,58 +81,27 @@ export default {
       this.loading = true;
       this.offset = this.page * this.limit;
       this.page++;
-      let data = await getTokensOfCollection({
+      let res = await getTokensOfCollection({
         limit: this.limit,
         offset: this.offset,
         walletAddress: this.walletAddress,
-        collectionName: this.$route.params.collection,
+        collectionId: this.$route.params.collectionId,
       });
 
-      if (data.data.current_token_ownerships.length > 0) {
-        const nfts = data.data.current_token_ownerships;
-        for (var x = 0; x < nfts.length; x++) {
-          try {
-            let meta = null;
-            if (
-              nfts[x].current_token_data.metadata_uri.slice(0, 4) === "ipfs"
-            ) {
-              const url = this.sliceIPFSUrl(
-                nfts[x].current_token_data.metadata_uri
-              );
-              meta = await this.$axios.get(
-                `https://cloudflare-ipfs.com/ipfs/${url}`
-              );
-            } else {
-              meta = await this.$axios.get(
-                nfts[x].current_token_data.metadata_uri
-              );
-            }
+      const data = res.data.current_token_ownerships_v2;
 
-            let imageURL = meta.data.image;
+      if (data.length > 0) {
+        data.map((token) => {
+          const image = token.current_token_data.cdn_asset_uris.cdn_image_uri
+            ? token.current_token_data.cdn_asset_uris.cdn_image_uri
+            : token.current_token_data.cdn_asset_uris.raw_image_uri;
 
-            if (imageURL.slice(0, 4) === "ipfs") {
-              const url = this.sliceIPFSUrl(imageURL);
-
-              imageURL = `https://cloudflare-ipfs.com/ipfs/${url}`;
-            }
-
-            if (imageURL.includes("ipfs.apt.land")) {
-              const index = imageURL.indexOf("ipfs.apt.land");
-
-              const slicedURL = imageURL.slice(index, imageURL.length);
-
-              imageURL = slicedURL.replaceAll("/", "-");
-
-              imageURL =
-                "https://ipfs.bluemove.net/uploads/cdn-image/" + imageURL;
-            }
-            meta.data.image = imageURL;
-
-            this.metadata.push(meta.data);
-
-            this.nfts.push(nfts[x]);
-          } catch {}
-        }
+          this.tokens.push({
+            tokenDataId: token.current_token_data.token_data_id,
+            name: token.current_token_data.token_name,
+            image: image,
+          });
+        });
       } else {
         this.end = true;
       }

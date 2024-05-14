@@ -97,8 +97,6 @@ export default {
 
       if (data.length > 0) {
         data.forEach((collection) => {
-          console.log(collection);
-
           const image = collection.current_collection.cdn_asset_uris
             .cdn_image_uri
             ? collection.current_collection.cdn_asset_uris.cdn_image_uri
@@ -107,7 +105,7 @@ export default {
             collection_id: collection.collection_id,
             name: collection.collection_name,
             image: image,
-            ownedNumber: collection.distinct_token,
+            ownedNumber: collection.distinct_tokens,
           });
         });
       } else {
