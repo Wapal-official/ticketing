@@ -833,7 +833,7 @@ export default {
         }
 
         if (res.success || res.hash) {
-          this.mintBulkCollection = 0;
+          this.mintButtonClicked = 0;
 
           this.$toast.showMessage({
             message: `${this.collection.name} Minted Successfully`,
@@ -1204,12 +1204,20 @@ export default {
           "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62"
         ) {
           await sponsorMintTransaction();
+
           this.minting = false;
           this.numberOfNft = 1;
 
           this.$toast.showMessage({
             message: `${this.collection.name} Minted Successfully`,
           });
+
+          this.mintButtonClicked = 0;
+
+          if (this.collection.tweet) {
+            this.showShareModal = true;
+          }
+
           return;
         }
 
@@ -1220,6 +1228,7 @@ export default {
           await normalMintTransaction();
           this.minting = false;
           this.numberOfNft = 1;
+          this.mintCounter;
           return;
         }
 
@@ -1246,6 +1255,7 @@ export default {
           this.publicMintCollectionExternally();
         }
       } catch (error) {
+        this.minting = false;
         if (error.message === "Error getting whitelist proof") {
           this.externalWhitelisted = false;
           this.currentSale.mint_price =
