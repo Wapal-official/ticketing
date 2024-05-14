@@ -176,38 +176,34 @@ export const getEndedAuctions = async ({
   return res.data.auctions;
 };
 
-export const getOwnedCollectionsOfUser = async (params: any) => {
+export const getOwnedCollectionsOfUser = async ({
+  limit,
+  offset,
+  walletAddress,
+}: any) => {
   let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "AccountTokensData",
-    query:
-      `query AccountTokensData {
-          current_token_ownerships(
-            distinct_on: collection_name
-            limit: ` +
-      params.limit +
-      `
-            offset:` +
-      params.offset +
-      `
-            where: {owner_address: {_eq: "` +
-      params.walletAddress +
-      `"},
-        amount:{_gt:0}}
+    query: `query AccountTokensData($LIMIT: Int, $OFFSET: Int, $WALLET_ADDRESS: String) {
+        current_collection_ownership_v2_view(
+            distinct_on: collection_id
+            limit: $LIMIT
+            offset:$OFFSET
+            where: {owner_address: {_eq: $WALLET_ADDRESS}},
             ) {
-              owner_address
-              property_version
-              amount
-            current_token_data {
-              name
-              metadata_uri
-              description
+              collection_id
               collection_name
+              collection_uri
+              distinct_tokens
               creator_address
-              token_data_id_hash
-            }
+              current_collection {
+                cdn_asset_uris {
+                  cdn_image_uri
+                  raw_image_uri
+                }
+              }
           }
         }`,
-    variables: null,
+    variables: { LIMIT: limit, OFFSET: offset, WALLET_ADDRESS: walletAddress },
   });
   return resp.data;
 };
