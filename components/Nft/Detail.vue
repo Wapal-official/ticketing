@@ -1206,6 +1206,10 @@ export default {
           await sponsorMintTransaction();
           this.minting = false;
           this.numberOfNft = 1;
+
+          this.$toast.showMessage({
+            message: `${this.collection.name} Minted Successfully`,
+          });
           return;
         }
 

@@ -104,6 +104,10 @@ export const sponsorMintTransaction = async () => {
 
     const res = await executeSmartContract(payload);
 
+    if (res.hash) {
+      return res;
+    }
+
     throw new Error(error.message);
   }
 };
