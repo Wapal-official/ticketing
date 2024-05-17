@@ -84,15 +84,19 @@ export default {
 
       if (auctions.length > 0) {
         auctions.map((auction) => {
-          auction.name = auction.nft.meta.name;
-          auction.image = auction.nft.meta.image;
+          try {
+            auction.name = auction.nft.meta.name;
+            auction.image = auction.nft.meta.image;
 
-          auction.highestBid =
-            auction.biddings.length > 0
-              ? auction.biddings[auction.biddings.length - 1].bid
-              : auction.min_bid;
+            auction.highestBid =
+              auction.biddings.length > 0
+                ? auction.biddings[auction.biddings.length - 1].bid
+                : auction.min_bid;
 
-          this.auctions.push(auction);
+            this.auctions.push(auction);
+          } catch (error) {
+            console.log(error);
+          }
         });
       } else {
         this.end = true;

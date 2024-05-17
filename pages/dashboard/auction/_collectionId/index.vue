@@ -9,8 +9,7 @@
         v-for="(item, i) in tokens"
         :key="i"
         @click="
-          $router.push('/dashboard/auction/start'),
-            $store.commit('auction/selectNft', { nft: nfts[i], meta: item })
+          $router.push(`${$route.params.collectionId}/${item.tokenDataId}`)
         "
       >
         <div

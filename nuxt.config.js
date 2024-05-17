@@ -33,6 +33,12 @@ const NON_RANDOM_CANDY_MACHINE =
 const PID =
   "0xe743f11e73711a90bc76d5ed3df5a6d979a06b2fce194d8b0ca8faf697f4f5f4";
 
+const AUCTION_PID =
+  "0x74e404c04364b11201e6ad17c25044c84a15aed0302e4050f1624a37012c8e52";
+
+const FEE_SCHEDULE_ID =
+  "0xaecc0e81f2eed047fb34f9e0b1dd2dbda690615aa46f02dac4c343902b523e44";
+
 let MARKETPLACE_URL = "https://wapal.io";
 
 let discordRedirectURI = "http://staging.wapal.io/discord/token";
@@ -210,6 +216,8 @@ export default {
     NON_RANDOM_CANDY_MACHINE: NON_RANDOM_CANDY_MACHINE,
     CREATOR_STUDIO_API: CREATOR_STUDIO_API,
     KANA_LABS_PROJECT_KEY: KANA_LABS_PROJECT_KEY,
+    AUCTION_PID: AUCTION_PID,
+    FEE_SCHEDULE_ID: FEE_SCHEDULE_ID,
   },
   auth: {
     strategies: {

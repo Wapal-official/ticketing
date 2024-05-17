@@ -1,8 +1,35 @@
 import { publicRequest } from "./fetcher";
 import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 import axios from "axios";
+import {
+  CreateAuction,
+  InitAuctionV1,
+  InitAuctionV2,
+} from "@/interfaces/auction";
+import { checkNetwork, wallet } from "@/store/walletStore";
+import { InputGenerateTransactionPayloadData } from "@aptos-labs/ts-sdk";
+import { getCoinType } from "@/utils/getCoinType";
+import { executeSmartContract } from "@/services/ExecutePayload";
+import { convertDateInSeconds } from "@/utils/date";
+import { convertPriceToSendInSmartContract } from "@/utils/price";
 
 const GRAPHQL_URL = process.env.GRAPHQL_URL ? process.env.GRAPHQL_URL : "";
+const FEE_SCHEDULE_ID = process.env.FEE_SCHEDULE_ID;
+const AUCTION_PID = process.env.AUCTION_PID;
+
+let walletName: any = "";
+if (process.client) {
+  if (localStorage.getItem("wallet")) {
+    const wallet = JSON.parse(localStorage.getItem("wallet")!);
+    walletName = wallet.wallet;
+  }
+}
+
+const checkWalletConnected = async () => {
+  if (!wallet.isConnected()) {
+    await wallet.connect(walletName);
+  }
+};
 
 export const getCurrentBid = (auction: any) => {
   let bid = 0;
@@ -278,6 +305,80 @@ export const getTokensOfCollection = async ({
   return resp.data;
 };
 
+export const getToken = async ({
+  collectionId,
+  tokenDataId,
+}: {
+  collectionId: string;
+  tokenDataId: string;
+}) => {
+  const query = {
+    operationName: "GetToken",
+    query: `query GetToken($COLLECTION_ID:String, $TOKEN_DATA_ID:String) {
+      current_token_datas_v2(
+        where: {collection_id: {_eq: $COLLECTION_ID}, token_data_id: {_eq: $TOKEN_DATA_ID}}
+      ) {
+        token_name
+        token_data_id
+        token_standard
+        description
+        token_uri
+        cdn_asset_uris {
+          raw_image_uri
+          asset_uri
+          cdn_image_uri
+          cdn_animation_uri
+          raw_animation_uri
+        }
+        current_collection {
+          collection_name
+          creator_address
+          collection_id
+        }
+        current_token_ownerships(limit: 1) {
+          property_version_v1
+        }
+      }
+    }`,
+    variables: {
+      COLLECTION_ID: collectionId,
+      TOKEN_DATA_ID: tokenDataId,
+    },
+  };
+
+  const res = await axios.post(`${GRAPHQL_URL}`, query);
+
+  const data = res.data.data;
+
+  const token = data.current_token_datas_v2[0];
+
+  const image = token.cdn_asset_uris.cdn_image_uri
+    ? token.cdn_asset_uris.cdn_image_uri
+    : token.cdn_asset_uris.raw_image_uri;
+  const animationUri = token.cdn_asset_uris.cdn_animation_uri
+    ? token.cdn_asset_uris.cdn_animation_uri
+    : token.cdn_asset_uris.raw_animation_uri;
+
+  const propertyVersion = token.current_token_ownerships[0].property_version_v1;
+
+  const formattedToken = {
+    tokenDataId: token.token_data_id,
+    tokenStandard: token.token_standard,
+    propertyVersion: propertyVersion,
+    collectionName: token.current_collection.collection_name,
+    collectionId: token.current_collection.collection_id,
+    creatorAddress: token.current_collection.creator_address,
+    meta: {
+      name: token.token_name,
+      description: token.description,
+      image: image,
+      animationUri: animationUri,
+    },
+  };
+
+  return formattedToken;
+};
+
 export const setCompleteAuction = async (auctionId: string) => {
   const res = await creatorStudioRequest.patch(`/api/auction/${auctionId}`);
 
@@ -374,4 +475,129 @@ export const getUnderReviewAuctionsOfUser = async ({
   });
 
   return res.data.auctions;
+};
+
+export const createAuctionV1InChain = async ({
+  creatorAddress,
+  collectionName,
+  tokenName,
+  propertyVersion,
+  startTime,
+  minimumBid,
+  bidIncrement,
+  auctionEndTime,
+  minimumBidTimeBeforeEnd,
+  coinType,
+}: InitAuctionV1) => {
+  await checkWalletConnected();
+
+  checkNetwork();
+
+  const coinTypeObject = getCoinType(coinType);
+
+  const startTimeInSeconds: number = convertDateInSeconds(startTime);
+  const endTimeInSeconds: number = convertDateInSeconds(auctionEndTime);
+
+  const convertedMinimumBid: number = convertPriceToSendInSmartContract({
+    price: minimumBid,
+    coinType: coinType,
+    isConverted: false,
+  });
+
+  const createAuctionPayload: InputGenerateTransactionPayloadData = {
+    function:
+      `${AUCTION_PID}::coin_listing::init_auction_for_tokenv1` as `${string}::${string}::${string}`,
+    functionArguments: [
+      creatorAddress,
+      collectionName,
+      tokenName,
+      propertyVersion,
+      FEE_SCHEDULE_ID,
+      startTimeInSeconds,
+      convertedMinimumBid,
+      bidIncrement,
+      endTimeInSeconds,
+      endTimeInSeconds,
+      null,
+    ],
+    typeArguments: [coinTypeObject.coinObject],
+  };
+
+  const res = await executeSmartContract(createAuctionPayload);
+
+  return res;
+};
+
+export const createAuctionV2InChain = async ({
+  tokenDataId,
+  startTime,
+  minimumBid,
+  bidIncrement,
+  auctionEndTime,
+  minimumBidTimeBeforeEnd,
+  coinType,
+}: InitAuctionV2) => {
+  await checkWalletConnected();
+
+  checkNetwork();
+
+  const coinTypeObject = getCoinType(coinType);
+
+  const startTimeInSeconds: number = convertDateInSeconds(startTime);
+  const endTimeInSeconds: number = convertDateInSeconds(auctionEndTime);
+
+  const convertedMinimumBid: number = convertPriceToSendInSmartContract({
+    price: minimumBid,
+    coinType: coinType,
+    isConverted: false,
+  });
+
+  const createAuctionPayload: InputGenerateTransactionPayloadData = {
+    function:
+      `${AUCTION_PID}::coin_listing::init_auction` as `${string}::${string}::${string}`,
+    functionArguments: [
+      tokenDataId,
+      FEE_SCHEDULE_ID,
+      startTimeInSeconds,
+      convertedMinimumBid,
+      bidIncrement,
+      endTimeInSeconds,
+      endTimeInSeconds,
+      null,
+    ],
+    typeArguments: [coinTypeObject.coinObject],
+  };
+
+  const res = await executeSmartContract(createAuctionPayload);
+
+  return res;
+};
+
+export const saveAuctionInDatabase = async ({
+  token,
+  startAt,
+  endAt,
+  min_bid,
+  id,
+  auction_name,
+  twitter,
+  instagram,
+  user_id,
+  coin_type,
+}: CreateAuction) => {
+  console.log(token);
+  const res = await creatorStudioRequest.post("/api/auction", {
+    nft: token,
+    startAt: startAt,
+    endAt: endAt,
+    min_bid: min_bid,
+    id: id,
+    auction_name: auction_name,
+    twitter: twitter,
+    instagram: instagram,
+    user_id: user_id,
+    coin_type: coin_type,
+  });
+
+  return res;
 };
