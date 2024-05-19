@@ -19,7 +19,7 @@
             :src="item.image"
             :alt="item.name"
             :onerror="imageNotFound()"
-            class="tw-rounded-t tw-w-[250px] tw-h-[250px] tw-object-cover tw-transition-all tw-duration-200 tw-ease-linear tw-group group-hover:tw-scale-125"
+            class="tw-rounded-t tw-w-[250px] tw-h-[250px] tw-object-cover tw-transition-all tw-duration-200 tw-ease-linear tw-group group-hover:tw-scale-110"
           />
         </div>
         <div

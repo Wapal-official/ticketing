@@ -60,30 +60,46 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
-            rules="required|bidAmount"
-            name="min_bid"
-            v-slot="{ errors }"
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
           >
-            <input-text-field
-              label="Min. Bid Price"
-              placeholder="Eg. 0"
-              v-model="minimumBid"
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+              rules="required|bidAmount"
+              name="min_bid"
+              v-slot="{ errors }"
             >
-              <template #append-icon>
-                <img
-                  :src="selectedCoinType.imageWhite"
-                  alt="Coin Type"
-                  width="14px"
-                  height="14px"
-                />
-              </template>
-            </input-text-field>
-            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-          </ValidationProvider>
-
+              <input-text-field
+                label="Min. Bid Price"
+                placeholder="Eg. 0"
+                v-model="minimumBid"
+              >
+                <template #append-icon>
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
+                </template>
+              </input-text-field>
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+              name="minimumIncrement"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                label="Minimum Increment (0% by default)"
+                placeholder="Eg. 1"
+                v-model="minimumIncrement"
+              >
+                <template #append-icon>%</template>
+              </input-text-field>
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
             rules="required"
@@ -224,6 +240,8 @@ export default {
       start_date: null,
       end_date: null,
       minimumBid: null,
+      minimumIncrement: null,
+      minimumIncrementInApt: 0,
       valid: true,
       loading: false,
       validRules: {
@@ -267,12 +285,20 @@ export default {
           this.submitting = true;
 
           let auction = null;
+
+          if (this.minimumIncrement) {
+            this.minimumIncrementInApt =
+              (this.minimumIncrement * this.minimumBid) / 100;
+          } else {
+            this.minimumIncrementInApt = 0;
+          }
+
           if (this.token.tokenStandard === "v2") {
             auction = await createAuctionV2InChain({
               tokenDataId: this.token.tokenDataId,
               startTime: this.start_date,
               minimumBid: this.minimumBid,
-              bidIncrement: 0,
+              bidIncrement: this.minimumIncrementInApt,
               auctionEndTime: this.end_date,
               minimumBidTimeBeforeEnd: this.end_date,
               coinType: this.coinType,
@@ -285,20 +311,25 @@ export default {
               propertyVersion: this.token.propertyVersion,
               startTime: this.start_date,
               minimumBid: this.minimumBid,
-              bidIncrement: 0,
+              bidIncrement: this.minimumIncrementInApt,
               auctionEndTime: this.end_date,
               minimumBidTimeBeforeEnd: this.end_date,
               coinType: this.coinType,
             });
           }
 
-          const changes = auction.changes;
+          const events = auction.events;
 
           let listingId = "";
 
-          changes.forEach((change) => {
-            if (change.data && change.data.type === `0x1::object::ObjectCore`) {
-              listingId = change.address;
+          const AUCTION_PID = process.env.AUCTION_PID;
+
+          events.forEach((event) => {
+            if (
+              event.type &&
+              event.type === `${AUCTION_PID}::events::ListingPlaced`
+            ) {
+              listingId = event.data.listing;
             }
           });
 
@@ -315,6 +346,7 @@ export default {
             instagram: this.instagram,
             user_id: this.$store.state.userStore.user.user_id,
             coin_type: this.coinType,
+            contract: process.env.AUCTION_PID,
           });
 
           this.$toast.showMessage({

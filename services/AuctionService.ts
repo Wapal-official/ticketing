@@ -337,6 +337,7 @@ export const getToken = async ({
         }
         current_token_ownerships(limit: 1) {
           property_version_v1
+          owner_address
         }
       }
     }`,
@@ -360,6 +361,7 @@ export const getToken = async ({
     : token.cdn_asset_uris.raw_animation_uri;
 
   const propertyVersion = token.current_token_ownerships[0].property_version_v1;
+  const ownerAddress = token.current_token_ownerships[0].owner_address;
 
   const formattedToken = {
     tokenDataId: token.token_data_id,
@@ -368,6 +370,7 @@ export const getToken = async ({
     collectionName: token.current_collection.collection_name,
     collectionId: token.current_collection.collection_id,
     creatorAddress: token.current_collection.creator_address,
+    ownerAddress: ownerAddress,
     meta: {
       name: token.token_name,
       description: token.description,
@@ -398,6 +401,10 @@ export const getOwnerAndRoyaltyOfTokenInAuction = async ({
   creatorAddress: string;
   tokenDataId: string;
 }) => {
+  if (!tokenDataId.startsWith("0x")) {
+    tokenDataId = "0x" + tokenDataId;
+  }
+
   const getOwnerAndRoyaltyOfTokenQuery = {
     operationName: "GetOwnerAndRoyaltyOfToken",
     query: `
@@ -418,7 +425,7 @@ export const getOwnerAndRoyaltyOfTokenInAuction = async ({
     `,
     variables: {
       CREATOR_ADDRESS: creatorAddress,
-      TOKEN_DATA_ID: "0x" + tokenDataId,
+      TOKEN_DATA_ID: tokenDataId,
     },
   };
   const res = await axios.post(GRAPHQL_URL, getOwnerAndRoyaltyOfTokenQuery);
@@ -434,10 +441,12 @@ export const getOwnerAndRoyaltyOfTokenInAuction = async ({
 
   let royaltyPercentage = 0;
 
-  if (royalty.royalty_points_numerator !== 0) {
-    royaltyPercentage =
-      (royalty.royalty_points_numerator * 100) /
-      royalty.royalty_points_denominator;
+  if (royalty) {
+    if (royalty.royalty_points_numerator !== 0) {
+      royaltyPercentage =
+        (royalty.royalty_points_numerator * 100) /
+        royalty.royalty_points_denominator;
+    }
   }
 
   return { owner: owner, royalty: royaltyPercentage };
@@ -504,6 +513,12 @@ export const createAuctionV1InChain = async ({
     isConverted: false,
   });
 
+  const convertedBidIncrement: number = convertPriceToSendInSmartContract({
+    price: bidIncrement,
+    coinType: coinType,
+    isConverted: false,
+  });
+
   const createAuctionPayload: InputGenerateTransactionPayloadData = {
     function:
       `${AUCTION_PID}::coin_listing::init_auction_for_tokenv1` as `${string}::${string}::${string}`,
@@ -515,9 +530,9 @@ export const createAuctionV1InChain = async ({
       FEE_SCHEDULE_ID,
       startTimeInSeconds,
       convertedMinimumBid,
-      bidIncrement,
+      convertedBidIncrement,
       endTimeInSeconds,
-      endTimeInSeconds,
+      0,
       null,
     ],
     typeArguments: [coinTypeObject.coinObject],
@@ -552,6 +567,12 @@ export const createAuctionV2InChain = async ({
     isConverted: false,
   });
 
+  const convertedBidIncrement: number = convertPriceToSendInSmartContract({
+    price: bidIncrement,
+    coinType: coinType,
+    isConverted: false,
+  });
+
   const createAuctionPayload: InputGenerateTransactionPayloadData = {
     function:
       `${AUCTION_PID}::coin_listing::init_auction` as `${string}::${string}::${string}`,
@@ -560,9 +581,9 @@ export const createAuctionV2InChain = async ({
       FEE_SCHEDULE_ID,
       startTimeInSeconds,
       convertedMinimumBid,
-      bidIncrement,
+      convertedBidIncrement,
       endTimeInSeconds,
-      endTimeInSeconds,
+      0,
       null,
     ],
     typeArguments: [coinTypeObject.coinObject],
@@ -584,6 +605,7 @@ export const saveAuctionInDatabase = async ({
   instagram,
   user_id,
   coin_type,
+  contract,
 }: CreateAuction) => {
   console.log(token);
   const res = await creatorStudioRequest.post("/api/auction", {
@@ -597,7 +619,69 @@ export const saveAuctionInDatabase = async ({
     instagram: instagram,
     user_id: user_id,
     coin_type: coin_type,
+    contract: contract,
   });
+
+  return res;
+};
+
+export const placeBidInChain = async ({
+  auctionId,
+  bid,
+  coinType,
+  pid,
+}: {
+  auctionId: string;
+  bid: number;
+  coinType: string;
+  pid: string;
+}) => {
+  await checkWalletConnected();
+
+  checkNetwork();
+
+  const coinTypeObject = getCoinType(coinType);
+
+  const convertedBid: number = convertPriceToSendInSmartContract({
+    price: bid,
+    coinType: coinType,
+    isConverted: false,
+  });
+
+  const placeBidPayload: InputGenerateTransactionPayloadData = {
+    function: `${pid}::coin_listing::bid` as `${string}::${string}::${string}`,
+    functionArguments: [auctionId, convertedBid],
+    typeArguments: [coinTypeObject.coinObject],
+  };
+
+  const res = await executeSmartContract(placeBidPayload);
+
+  return res;
+};
+
+export const completeAuction = async ({
+  auctionId,
+  coinType,
+  pid,
+}: {
+  auctionId: string;
+  coinType: string;
+  pid: string;
+}) => {
+  await checkWalletConnected();
+
+  checkNetwork();
+
+  const coinTypeObject = getCoinType(coinType);
+
+  const completeAuctionPayload: InputGenerateTransactionPayloadData = {
+    function:
+      `${pid}::coin_listing::complete_auction` as `${string}::${string}::${string}`,
+    functionArguments: [auctionId],
+    typeArguments: [coinTypeObject.coinObject],
+  };
+
+  const res = await executeSmartContract(completeAuctionPayload);
 
   return res;
 };

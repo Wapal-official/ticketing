@@ -32,6 +32,7 @@ export interface CreateAuction {
   instagram: string;
   user_id: string;
   coin_type: string;
+  contract: string;
 }
 
 interface AuctionToken {

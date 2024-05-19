@@ -37,7 +37,7 @@ const AUCTION_PID =
   "0x74e404c04364b11201e6ad17c25044c84a15aed0302e4050f1624a37012c8e52";
 
 const FEE_SCHEDULE_ID =
-  "0xaecc0e81f2eed047fb34f9e0b1dd2dbda690615aa46f02dac4c343902b523e44";
+  "0x371617f71aedfa6034e1ebcc3889bccc5593206dbaf1a92802b402eeb7a15a1d";
 
 let MARKETPLACE_URL = "https://wapal.io";
 
