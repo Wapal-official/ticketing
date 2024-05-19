@@ -23,6 +23,13 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
+          <!-- <div class="video-container">
+            <video ref="videoPlayer" controls @loadedmetadata="setupScrubber">
+              <source src="~/assets/video/Launchpad.mp4" />
+            </video>
+            <canvas ref="scrubberCanvas" @click="seekTo"></canvas>
+            <img ref="videoFrame" class="video-frame" />
+          </div> -->
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
@@ -111,14 +118,56 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
+          <div class="select-type tw-mb-3">
+            <div class="tw-mb-3">Select your file type:</div>
+            <div class="select-type-radio tw-flex tw-justify-between">
+              <div>
+                <input
+                  type="radio"
+                  id="image"
+                  name="fileType"
+                  value="Image"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="image">Image</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="video"
+                  name="fileType"
+                  value="Video"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="video">Video</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="audio"
+                  name="fileType"
+                  value="Audio"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="audio">Audio</label>
+              </div>
+            </div>
+          </div>
           <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+            class="tw-mb-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
           >
             <input-image-drag-and-drop
-              label="Featured Image"
+              :label="'Featured' + ' ' + selectedFileType"
               :required="true"
+              @cancel="clearFile"
               @fileSelected="imageSelected"
-              :file="collection.image"
+              @fileSelectedThumbnail="thumbnailSelected"
+              :selectedType="selectedFileType"
+              :file="collection.media2 ? collection.media2 : collection.image"
+              :thumbnail="collection.image"
               fileSize="Upto 15 MB"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
@@ -126,14 +175,14 @@
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
+            class="tw-mb-5 tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
           >
             <button-secondary
               class="tw-mr-4"
               :bordered="true"
               :paddingTwoHalf="false"
               title="Save As Draft"
-              @click="saveDraftBefore()"
+              @click="saveDraft()"
               style="color: #fff !important"
             />
             <button-primary title="Next" @click="validateFormForNextStep" />
@@ -232,7 +281,7 @@
               :bordered="true"
               :paddingTwoHalf="false"
               title="Save As Draft"
-              @click="saveDraftBefore()"
+              @click="saveDraft()"
               style="color: #fff !important"
             />
             <button-primary title="Next" @click="validateFormForNextStep" />
@@ -485,6 +534,37 @@
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
+            <div
+              class="tw-flex tw-flex-row tw-items-end tw-justify-start tw-gap-2"
+              v-if="collection.coinType === 'APT'"
+            >
+              <v-checkbox
+                v-model="isNonRandom"
+                label="Remove Randomness"
+                :ripple="false"
+                hide-details
+                class="!tw-mt-0"
+              ></v-checkbox>
+              <tool-tip>
+                <template #text>
+                  <i class="bx bx-info-circle tw-text-xl"></i>
+                </template>
+                <template #tip>
+                  <div
+                    class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
+                  >
+                    <div class="tw-font-semibold">Caution</div>
+                    <div>
+                      Ticking this checkbox will disable randomness while
+                      minting.
+                    </div>
+                    <div>
+                      Which means you tokens will be minted sequentially
+                    </div>
+                  </div>
+                </template>
+              </tool-tip>
+            </div>
             <v-checkbox
               v-model="saveAsDraft"
               label="Save as Draft"
@@ -641,6 +721,7 @@ import {
   createCollection,
   createDraft,
   sortPhases,
+  getDraftById,
   editDraft,
   editImage,
   getDraftByIdInCreatorStudio,
@@ -762,12 +843,15 @@ export default {
   props: { draft: { type: Boolean, default: false } },
   data() {
     return {
+      selectedFileType: "Image",
       steps: ["Details", "Royalty", "Phase", "Review"],
       stepNumber: 1,
+      checkFeaturedFile: true,
       collection: {
         name: "",
         description: "",
         image: "",
+        thumbnail: "",
         baseURL: "",
         royalty_payee_address:
           this.$store.state.walletStore.wallet.walletAddress,
@@ -778,6 +862,7 @@ export default {
         whitelist_price: "",
         supply: "",
         twitter: "",
+        media2: "",
         discord: "",
         website: "",
         instagram: "",
@@ -793,6 +878,7 @@ export default {
       image: { name: null },
       imageErrorMessage: "",
       imageError: false,
+      thumbnail: { name: null },
       submitting: false,
       breadcrumb: [
         {
@@ -825,6 +911,44 @@ export default {
     async changeStep(step: number) {
       this.stepNumber = step;
     },
+    setupScrubber() {
+      const video = this.$refs.videoPlayer;
+      const canvas = this.$refs.scrubberCanvas;
+      const ctx = canvas.getContext("2d");
+
+      video.addEventListener("canplay", () => {
+        canvas.width = video.clientWidth;
+        canvas.height = video.clientHeight;
+
+        // Draw the initial video frame onto the canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      });
+    },
+    seekTo(event: { clientX: number }) {
+      const canvas = this.$refs.scrubberCanvas;
+      const rect = canvas.getBoundingClientRect();
+      const offsetX = event.clientX - rect.left;
+      const scrubTime =
+        (offsetX / canvas.width) * this.$refs.videoPlayer.duration;
+      this.$refs.videoPlayer.currentTime = scrubTime;
+      this.updateVideoFrame(scrubTime);
+    },
+    updateVideoFrame(scrubTime: number) {
+      const video = this.$refs.videoPlayer;
+      const canvas = this.$refs.scrubberCanvas;
+
+      const ctx = canvas.getContext("2d");
+      const interval = canvas.width / video.duration;
+
+      // Draw the video frame onto the canvas
+      video.currentTime = scrubTime; // Set video time to capture frame at the scrubTime
+      video.addEventListener("seeked", () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // Draw the video frame onto the canvas
+        ctx.fillStyle = "#000"; // Color of the scrubber
+        ctx.fillRect(scrubTime * interval, 0, 1, canvas.height); // Draw a line for the current time
+      });
+    },
     async validateFormForNextStep() {
       switch (this.stepNumber) {
         case 1:
@@ -856,11 +980,19 @@ export default {
 
             break;
           }
-
           if (!this.image.name && !this.collection.image) {
             this.imageError = true;
             this.imageErrorMessage = "Please select an image for collection";
             return;
+          }
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "video" || fileType === "audio") {
+            if (!this.thumbnail.name && !this.collection.image) {
+              this.imageError = true;
+              this.imageErrorMessage =
+                "Please select an thumbnail for collection";
+              return;
+            }
           }
 
           if (this.imageError) {
@@ -903,7 +1035,7 @@ export default {
           (folder: any) => folder.folder_name === this.baseURL
         );
 
-        this.collection.baseURL = selectedFolder.metadataBaseURI;
+        this.collection.baseURL = selectedFolder.metadata.baseURI;
 
         this.checkCoinType();
 
@@ -996,7 +1128,13 @@ export default {
         }
 
         if (this.image.name) {
-          formData.append("image", this.image);
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "image") {
+            formData.append("image", this.image);
+          } else {
+            formData.append("media2", this.image);
+            formData.append("image", this.thumbnail);
+          }
         } else {
           formData.append("image", tempCollection.image);
         }
@@ -1015,76 +1153,148 @@ export default {
         this.submitting = false;
       }
     },
+    checkFileType(fileName: any) {
+      if (!fileName) {
+        return false;
+      }
+      const fileExtension = fileName.split(".").pop().toLowerCase();
+      const imageExtensions = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "webp",
+        "bmp",
+        "svg",
+        "ico",
+        "tiff",
+      ];
+      const videoExtensions = [
+        "mp4",
+        "mkv",
+        "m4v",
+        "webm",
+        "avi",
+        "mov",
+        "wmv",
+        "flv",
+        "3gp",
+        "ogv",
+        "mpeg",
+        "mpg",
+        "divx",
+        "rm",
+        "asf",
+        "vob",
+        "ts",
+        "m2ts",
+      ];
+      const audioExtensions = [
+        "mp3",
+        "wav",
+        "ogg",
+        "aac",
+        "flac",
+        "wma",
+        "alac",
+        "aiff",
+        "opus",
+      ];
 
-    async saveDraftBefore() {
-      try {
-        this.submitting = true;
-        const selectedFolder = this.folders.find(
-          (folder: any) => folder.folder_name === this.baseURL
-        );
-        this.collection.baseURL = selectedFolder.metadataBaseURI;
-        this.checkCoinType();
-
-        const tempCollection = { ...this.collection };
-        const formData = new FormData();
-
-        formData.append("name", tempCollection.name);
-        formData.append("description", tempCollection.description);
-        formData.append(
-          "royalty_percentage",
-          tempCollection.royalty_percentage
-        );
-        formData.append(
-          "royalty_payee_address",
-          tempCollection.royalty_payee_address
-        );
-        formData.append("supply", tempCollection.supply);
-        formData.append("twitter", tempCollection.twitter || "");
-        formData.append("discord", tempCollection.discord || "");
-        formData.append("website", tempCollection.website || "");
-        formData.append("instagram", tempCollection.instagram || "");
-        formData.append("tweet", tempCollection.tweet || "");
-        formData.append("coin_type", tempCollection.coinType);
-
-        const draft_id = this.$route.params.id;
-
-        if (draft_id) {
-          formData.append("draft_id", draft_id);
-        }
-
-        if (this.image.name) {
-          formData.append("image", this.image);
-        } else {
-          formData.append("image", tempCollection.image || "");
-        }
-        await this.sendDataToCreateDraft(tempCollection);
-
-        if (this.tbd || this.saveAsDraft) {
-          if (this.draft) {
-            await this.saveDraft(tempCollection);
-          } else {
-            await this.sendDataToCreateDraft(tempCollection);
-          }
-          return;
-        }
-
-        // await createCollection(formData);
-
-        this.submitting = false;
-
-        this.message = "Collection Created Successfully";
-        this.$toast.showMessage({ message: this.message, error: false });
-        this.$router.push("/dashboard/collection/draft");
-      } catch (error: any) {
-        console.log(error);
-        this.$toast.showMessage({ message: error, error: true });
-        this.submitting = false;
+      if (imageExtensions.includes(fileExtension)) {
+        return "image";
+      } else if (videoExtensions.includes(fileExtension)) {
+        return "video";
+      } else if (audioExtensions.includes(fileExtension)) {
+        return "audio";
+      } else {
+        return "image";
       }
     },
 
+    // async saveDraftBefore() {
+    //   try {
+    //     this.submitting = true;
+    //     const selectedFolder = this.folders.find(
+    //       (folder: any) => folder.folder_name === this.baseURL
+    //     );
+    //     this.collection.baseURL = selectedFolder.metadata.baseURI;
+    //     this.checkCoinType();
+
+    //     const tempCollection = { ...this.collection };
+    //     const formData = new FormData();
+
+    //     formData.append("name", tempCollection.name);
+    //     formData.append("description", tempCollection.description);
+    //     formData.append(
+    //       "royalty_percentage",
+    //       tempCollection.royalty_percentage
+    //     );
+    //     formData.append(
+    //       "royalty_payee_address",
+    //       tempCollection.royalty_payee_address
+    //     );
+    //     formData.append("supply", tempCollection.supply);
+    //     formData.append("twitter", tempCollection.twitter || "");
+    //     formData.append("discord", tempCollection.discord || "");
+    //     formData.append("website", tempCollection.website || "");
+    //     formData.append("instagram", tempCollection.instagram || "");
+    //     formData.append("tweet", tempCollection.tweet || "");
+
+    //     // formData.append("coin_type", tempCollection.coinType);
+
+    //     const draft_id = this.$route.params.id;
+
+    //     if (draft_id) {
+    //       formData.append("draft_id", draft_id);
+    //     }
+
+    //     // if (this.image.name) {
+    //     //   formData.append("image", this.image);
+    //     // } else {
+    //     //   formData.append("image", tempCollection.image || "");
+    //     // }
+    //     if (this.image.name) {
+    //       const fileType = this.checkFileType(this.image.name);
+    //       if (fileType === "image") {
+    //         formData.append("image", this.image);
+    //       } else {
+    //         formData.append("media2", this.image);
+    //         formData.append("image", this.thumbnail);
+    //       }
+    //     } else {
+    //       formData.append("image", tempCollection.image || "");
+    //     }
+    //     await this.sendDataToCreateDraft(tempCollection);
+
+    //     if (this.tbd || this.saveAsDraft) {
+    //       if (this.draft) {
+    //         await this.saveDraft(tempCollection);
+    //       } else {
+    //         await this.sendDataToCreateDraft(tempCollection);
+    //       }
+    //       return;
+    //     }
+
+    //     // await createCollection(formData);
+
+    //     this.submitting = false;
+
+    //     this.message = "Collection Created Successfully";
+    //     this.$toast.showMessage({ message: this.message, error: false });
+    //     this.$router.push("/dashboard/collection/draft");
+    //   } catch (error: any) {
+    //     console.log(error);
+    //     this.$toast.showMessage({ message: error, error: true });
+    //     this.submitting = false;
+    //   }
+    // },
+    clearFile() {
+      this.image = "";
+      this.thumbnail = "";
+    },
     imageSelected(image: any) {
       this.image = image;
-
       if (Math.floor(this.image.size / (1024 * 1024)) >= 15) {
         this.imageError = true;
         this.imageErrorMessage = "Please Upload Image less than 15MB";
@@ -1092,7 +1302,15 @@ export default {
         this.imageError = false;
       }
     },
-
+    thumbnailSelected(image: any) {
+      this.thumbnail = image;
+      if (Math.floor(this.thumbnail.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
+    },
     async sendDataToCandyMachineCreator() {
       let whitelistTime = null;
       let whitelist_price = this.collection.whitelist_price;
@@ -1153,7 +1371,9 @@ export default {
         (folder: any) => folder.folder_name === this.baseURL
       );
       if (selectedFolder) {
-        this.collection.supply = selectedFolder.metadata;
+        this.collection.supply = selectedFolder.metadata.files.length
+          ? selectedFolder.metadata.files.length
+          : null;
       } else {
         this.collection.supply = null;
       }
@@ -1192,8 +1412,22 @@ export default {
       formData.append("coin_type", tempCollection.coinType);
       formData.append("tweet", tempCollection.tweet);
 
+      // if (this.image.name) {
+      //   formData.append("image", this.image);
+      // } else {
+      //   formData.append("image", tempCollection.image);
+      // }
       if (this.image.name) {
-        formData.append("image", this.image);
+        const fileType = this.checkFileType(this.image.name);
+        if (fileType === "image") {
+          console.log("img");
+          formData.append("image", this.image);
+        } else {
+          console.log("vii2");
+
+          formData.append("media2", this.image);
+          formData.append("image", this.thumbnail);
+        }
       } else {
         formData.append("image", tempCollection.image);
       }
@@ -1207,6 +1441,8 @@ export default {
           "whitelist_sale_time",
           tempCollection.whitelist_sale_time
         );
+      } else {
+        formData.append("whitelistTBD", "true");
       }
 
       await createDraft(formData);
@@ -1218,71 +1454,93 @@ export default {
       this.$router.push("/dashboard/collection/draft");
     },
     async setCollectionDataFromDraft() {
-      this.whitelistEnabled = true;
-
-      const draftRes = await getDraftByIdInCreatorStudio(this.$route.params.id);
-
-      const draftData = draftRes.data.draft.data;
-
-      draftData.candy_id = this.collection.candy_id;
-
-      this.collection = draftData;
-
       try {
-        this.collection.phases = this.collection.phases
-          ? JSON.parse(this.collection.phases)
-          : [];
-      } catch {
-        this.collection.phases = this.collection.phases
-          ? this.collection.phases
-          : [];
-      }
+        this.whitelistEnabled = this.collection.whitelist_sale_time
+          ? true
+          : false;
 
-      this.collection.phases.map((phase: any) => {
-        phase.mint_time = new Date(phase.mint_time);
-      });
+        const draftRes = await getDraftByIdInCreatorStudio(
+          this.$route.params.id
+        );
 
-      this.folders.map((folder: any) => {
-        if (folder.metadataBaseURI === this.collection.baseURL) {
-          this.baseURL = folder.folder_name;
+        const draftData = draftRes.data.draft.data;
+
+        draftData.candy_id = this.collection.candy_id;
+
+        this.collection = draftData;
+
+        try {
+          this.collection.phases = this.collection.phases
+            ? JSON.parse(this.collection.phases)
+            : [];
+        } catch {
+          this.collection.phases = this.collection.phases
+            ? this.collection.phases
+            : [];
         }
-      });
 
-      this.whitelistTBD = this.collection.whitelist_sale_time ? false : true;
-      this.publicSaleTBD = this.collection.public_sale_time ? false : true;
+        this.collection.phases.map((phase: any) => {
+          phase.mint_time = new Date(phase.mint_time);
+        });
 
-      if (this.collection.whitelist_sale_time) {
-        this.collection.whitelist_sale_time = new Date(
-          this.collection.whitelist_sale_time
-        );
-      }
+        this.folders.map((folder: any) => {
+          if (folder.metadata.baseURI === this.collection.baseURL) {
+            this.baseURL = folder.folder_name;
+          }
+        });
 
-      if (this.collection.public_sale_time) {
-        this.collection.public_sale_time = new Date(
-          this.collection.public_sale_time
-        );
+        this.whitelistTBD = JSON.parse(this.collection.whitelistTBD)
+          ? true
+          : false;
+        this.publicSaleTBD = this.collection.public_sale_time ? false : true;
+
+        if (this.collection.whitelist_sale_time) {
+          this.collection.whitelist_sale_time = new Date(
+            this.collection.whitelist_sale_time
+          );
+        }
+
+        if (this.collection.public_sale_time) {
+          this.collection.public_sale_time = new Date(
+            this.collection.public_sale_time
+          );
+        }
+        // if (this.collection.media2) {
+        //   this.collection.image = this.collection.media2;
+        // }
+      } catch (e) {
+        console.log("error", e);
       }
     },
     async saveDraft() {
       try {
         const formData = new FormData();
-
         const selectedFolder = this.folders.find(
           (folder: any) => folder.folder_name === this.baseURL
         );
-
-        this.collection.baseURL = selectedFolder.metadataBaseURI;
-
-        const tempCollection = structuredClone(this.collection);
-
-        await editDraft(this.$route.params.id, tempCollection);
-
-        if (this.image.name) {
-          formData.append("image", this.image);
-
-          await editImage(this.$route.params.id, formData);
+        console.log("selected folder", selectedFolder);
+        if (selectedFolder) {
+          this.collection.baseURL = selectedFolder.metadata.baseURI;
         }
 
+        const tempCollection = structuredClone(this.collection);
+        console.log("asdasd", tempCollection);
+        if (this.$route.params.id) {
+          await editDraft(this.$route.params.id, tempCollection);
+        } else {
+          await this.sendDataToCreateDraft(tempCollection);
+        }
+
+        if (this.image.name && this.$route.params.id) {
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "image") {
+            formData.append("image", this.image);
+          } else {
+            formData.append("media2", this.image);
+            formData.append("image", this.thumbnail);
+          }
+          await editImage(this.$route.params.id, formData);
+        }
         this.$toast.showMessage({ message: "Draft Updated Successfully" });
 
         this.$router.push("/dashboard/collection/draft");
@@ -1315,7 +1573,12 @@ export default {
       return this.whitelistTBD || this.publicSaleTBD;
     },
     selectedCoinType() {
-      return getCoinType(this.collection.coinType);
+      try {
+        return getCoinType(this.collection.coinType);
+      } catch (e) {
+        console.log(e);
+        return getCoinType("APT");
+      }
     },
   },
   async mounted() {
@@ -1335,7 +1598,7 @@ export default {
     const res = await getAllFolder(this.$store.state.userStore.user.user_id);
 
     res.data.folderInfo.map((folder: any) => {
-      if (folder.metadataBaseURI) {
+      if (folder.metadata.baseURI) {
         this.folders.push(folder);
       }
     });
@@ -1344,6 +1607,7 @@ export default {
       await this.setCollectionDataFromDraft();
     }
     this.loading = false;
+    console.log("this draft", this.collection);
   },
   watch: {
     whitelistTBD() {
@@ -1367,5 +1631,43 @@ export default {
 .image-collection {
   display: none;
   background-color: #878787;
+}
+.select-type {
+  max-width: 50%;
+}
+@media (max-width: 600px) {
+  .select-type {
+    max-width: 100%;
+  }
+}
+.select-type-radio div {
+  display: flex;
+  align-items: center;
+}
+.radio-input {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #383a3f;
+  outline: none;
+  appearance: none;
+  border-radius: 50%;
+  background: #25262b;
+  margin-right: 8px;
+  position: relative;
+  cursor: pointer;
+}
+.radio-input:checked {
+  background-color: #8759ff;
+}
+.radio-input:checked::before {
+  content: " ";
+  background: #1a1b1e;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
