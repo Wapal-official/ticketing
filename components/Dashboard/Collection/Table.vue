@@ -87,11 +87,24 @@
               >
                 {{ itemIndex + 1 }}.
                 <utility-image
+                  v-if="item.image"
                   :source="item.image"
                   :onerror="imageNotFound()"
                   :alt="item[header.value]"
                   class="tw-w-[64px] tw-h-[64px] tw-object-cover tw-rounded"
                 />
+                <!-- <video-player-listed
+                  v-else-if="isVideo(item.image)"
+                  :source="item.image"
+                  style="max-width: 65px !important; height: 65px"
+                /> -->
+                <!-- <audio-player-list
+                  v-if="isAudio(item.src)"
+                  class="audio-list-bg-2"
+                  :audioSrc="item.src"
+                  iconSize="34"
+                  @click.prevent.stop="checkit()"
+                ></audio-player-list> -->
                 {{ item[header.value] }}
               </div>
               <div
@@ -206,6 +219,47 @@ export default {
     },
   },
   methods: {
+    isImage(source) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
     selectAllItems() {
       if (this.selectAll) {
         this.$store.commit("general/setSelectedItem", []);

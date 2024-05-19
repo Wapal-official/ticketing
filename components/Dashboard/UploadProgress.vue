@@ -84,6 +84,9 @@ export default {
           this.$toast.showMessage({ message: this.getUploadSummary });
           this.showedMessage = true;
         }
+        setTimeout(() => {
+          this.close();
+        }, 4000);
       }
       return uploadSocketState.uploading;
     },
