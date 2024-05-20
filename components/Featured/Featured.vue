@@ -39,7 +39,11 @@
             :href="MARKETPLACE_URL"
             class="!tw-text-primary-2 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium"
             target="_blank"
-            v-if="!showLiveInTimer && resource.minted > 0"
+            v-if="
+              !showLiveInTimer &&
+              resource.minted > 0 &&
+              collection.username !== 'loonies-whitelist-ticket'
+            "
           >
             <span>List on Secondary</span>
             <i class="bx bx-link-external"></i>

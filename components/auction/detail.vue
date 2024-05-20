@@ -144,18 +144,13 @@
                 title="Place a Bid"
                 :fullWidth="true"
                 @click="placeBid"
-                v-if="showPlaceBidButton"
                 :loading="loading"
-              />
-              <button-primary
-                title="Increase Your Bid"
-                :fullWidth="true"
-                @click="increaseBid"
-                :loading="loading"
-                v-else
               />
             </div>
           </ValidationObserver>
+          <div class="tw-text-dark-0 tw-text-sm">
+            Minimum Acceptable Bid: {{ this.minimumBid }}
+          </div>
         </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
@@ -180,7 +175,7 @@
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-baseline tw-justify-between tw-gap-2 md:tw-flex-row"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-between tw-gap-2 md:tw-flex-row"
           >
             <div
               class="tw-w-full md:tw-w-[213px] md:tw-max-w-[213px] lg:tw-w-full lg:tw-max-w-full xl:tw-w-[213px] xl:tw-max-w-[213px]"
@@ -196,23 +191,11 @@
               class="tw-w-full md:tw-w-[213px] md:tw-max-w-[213px] lg:tw-w-full lg:tw-max-w-full xl:tw-w-[213px] xl:tw-max-w-[213px]"
             >
               <button-primary
-                title="Withdraw Bid"
+                title="Complete Auction"
                 :fullWidth="true"
                 :loading="loading"
-                :title="
-                  auction.nft.nft.owner_address === getWalletConnectedStatus
-                    ? 'Complete Auction'
-                    : 'Claim NFT'
-                "
                 @click="completeAuction"
-                :disabled="auction.completed"
-                v-if="checkOwner"
-              />
-              <button-primary
-                title="Withdraw Bid"
-                :fullWidth="true"
-                @click="withdrawBid"
-                v-else
+                :disabled="auction.completed || !checkOwner"
               />
             </div>
           </div>
@@ -346,208 +329,6 @@
       </div>
     </v-dialog>
   </div>
-  <!-- <div v-if="!loadingAuction">
-    <div
-      class="tw-container tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-start tw-gap-8 tw-px-4 tw-pt-16 tw-pb-16 md:tw-px-16 xl:tw-flex-row xl:tw-gap-16 xl:tw-items-start"
-    >
-      <div
-        class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-w-full tw-group md:tw-w-[60%] xl:tw-w-[40%]"
-      >
-        <div
-          class="tw-rounded-lg nft-preview-card-border tw-w-full tw-overflow-hidden tw-transition-all tw-duration-150 tw-ease-linear"
-        >
-          <img
-            :src="auction.nft.meta.image"
-            :alt="auction.nft.meta.name"
-            class="tw-w-full tw-rounded-lg tw-max-h-[550px] tw-object-fill"
-          />
-        </div>
-        <div class="tw-w-full" v-if="auctionStarted">
-          <div
-            class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full lg:tw-flex-row xl:tw-flex-col 2xl:tw-flex-row tw-gap-4"
-            v-if="!auctionEnded"
-          >
-            <span
-              class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
-              >Auction Ends In</span
-            >
-            <reusable-count-down
-              :startTime="auction.endAt"
-              :shadow="true"
-              @countdownComplete="endAuction"
-            />
-          </div>
-          <span
-            class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
-            v-else
-            >Auction Ended</span
-          >
-        </div>
-      </div>
-      <div
-        class="tw-rounded tw-w-full tw-bg-[#001233] tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-px-4 tw-py-8 md:tw-px-8 xl:tw-w-[60%] preview-shadow"
-      >
-        <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4"
-        >
-          <a :href="auction.twitter" target="_blank" v-if="auction.twitter">
-            <v-icon
-              class="!tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink"
-              >mdi-twitter</v-icon
-            >
-          </a>
-          <a :href="auction.instagram" target="_blank" v-if="auction.instagram">
-            <v-icon
-              class="!tw-text-2xl tw-transition tw-duration-200 tw-ease-linear hover:!tw-text-wapal-pink"
-              >mdi-instagram</v-icon
-            >
-          </a>
-        </div>
-        <div class="tw-text-wapal-gray tw-pb-8">
-          <h1
-            class="tw-text-2xl tw-pb-4 tw-font-semibold tw-capitalize md:tw-text-4xl"
-          >
-            {{ auction.nft.meta.name }}
-          </h1>
-          <p class="tw-font-light">
-            {{ auction.nft.meta.description }}
-          </p>
-        </div>
-        <div
-          class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-w-full"
-          v-if="!auctionStarted"
-        >
-          <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-py-4 tw-px-4 tw-bg-[#0C224B] tw-rounded tw-w-fit lg:tw-flex-row lg:tw-items-center lg:tw-justify-between lg:tw-px-8"
-          >
-            <div
-              class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-gap-4"
-            >
-              <span
-                class="tw-text-wapal-pink tw-text-3xl 2xl:tw-text-2xl 3xl:tw-text-3xl"
-                >Auction Starts In</span
-              >
-              <reusable-count-down
-                :startTime="auction.startAt"
-                :shadow="true"
-                @countdownComplete="startAuction"
-              />
-            </div>
-          </div>
-        </div>
-        <ValidationObserver
-          ref="form"
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-p-4 tw-bg-[#0C224B] tw-rounded tw-w-full lg:tw-flex-row lg:tw-items-center lg:tw-justify-between"
-          v-else
-        >
-          <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 tw-w-fit"
-          >
-            <div class="tw-text-xs">Current Bid</div>
-            <div class="tw-text-3xl xl:tw-text-xl 2xl:tw-text-3xl">
-              {{ current_bid }} APT
-            </div>
-          </div>
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-max-w-[300px]"
-            rules="required|bidAmount|lamport"
-            v-slot="{ errors }"
-          >
-            <reusable-text-field
-              v-model="bid"
-              background="#0C224B"
-              type="number"
-            ></reusable-text-field>
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
-          </ValidationProvider>
-          <div v-if="!auctionEnded">
-            <ReusableThemeButton
-              title="Place Your Bid"
-              @click="placeBid"
-              :loading="loading"
-              :disabled="!auctionStarted"
-              v-if="showPlaceBidButton"
-            />
-            <ReusableThemeButton
-              title="Increase Your Bid"
-              @click="increaseBid"
-              :loading="loading"
-              v-else
-            />
-          </div>
-          <div
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
-            v-else
-          >
-            <reusable-theme-button
-              :loading="loading"
-              :title="
-                auction.nft.nft.owner_address === getWalletConnectedStatus
-                  ? 'Complete Auction'
-                  : 'Claim NFT'
-              "
-              @click="completeAuction"
-              :disabled="auction.completed"
-              v-if="checkOwner"
-            />
-            <reusable-theme-button
-              :loading="loading"
-              title="Withdraw Bid"
-              @click="withdrawBid"
-              v-else
-            />
-          </div>
-        </ValidationObserver>
-        <div
-          class="tw-text-green-600 tw-text-lg"
-          v-if="
-            auction.completed &&
-            checkOwner &&
-            auction.nft.nft.owner_address !== getWalletConnectedStatus
-          "
-        >
-          Congratulations on winning the bid. NFT has been sent to your wallet.
-        </div>
-        <div
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
-          v-if="auctionStarted"
-        >
-          <h4 class="tw-text-xl tw-font-semibold tw-text-wapal-gray">
-            Last Bid
-          </h4>
-          <div
-            v-if="auction.biddings.length > 0"
-            class="tw-w-full tw-h-[375px] tw-overflow-auto tw-pr-4 bid-list"
-          >
-            <div
-              v-for="(item, i) in auction.biddings"
-              :key="i"
-              class="tw-w-full"
-            >
-              <div
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-py-2"
-              >
-                <div class="!tw-text-white">
-                  {{ item.displayName }}
-                  bid for {{ item.bid }} APT
-                </div>
-                <div>
-                  <small class="tw-text-sm">{{
-                    $moment(item.time).fromNow()
-                  }}</small>
-                </div>
-              </div>
-              <div
-                v-if="i < auction.biddings.length - 1"
-                class="tw-w-full tw-h-[1px] tw-bg-wapal-gray"
-              ></div>
-            </div>
-          </div>
-          <p v-else class="text-center">No biddings yet</p>
-        </div>
-      </div>
-    </div>
-  </div> -->
   <div class="tw-py-32 tw-w-full" v-else>
     <reusable-loading />
   </div>
@@ -562,6 +343,9 @@ import {
   placeBid,
   setCompleteAuction,
   getOwnerAndRoyaltyOfTokenInAuction,
+  placeBidInChain,
+  completeAuction,
+  getRoyaltyFromResourceAccount,
 } from "@/services/AuctionService";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import { getCoinType } from "@/utils/getCoinType";
@@ -616,8 +400,9 @@ export default {
       royaltyPercentage: null,
       ownerAddress: "",
       description: "",
-      imageNotFound,
       showShareModal: false,
+      minimumBid: 0,
+      imageNotFound,
     };
   },
   watch: {
@@ -631,10 +416,16 @@ export default {
       return this.$store.state.walletStore.wallet.walletAddress;
     },
     checkOwner() {
-      if (
-        this.getWalletConnectedStatus === this.auction.nft.nft.owner_address
-      ) {
-        return true;
+      if (this.auction.nft.nft) {
+        if (
+          this.getWalletConnectedStatus === this.auction.nft.nft.owner_address
+        ) {
+          return true;
+        }
+      } else {
+        if (this.getWalletConnectedStatus === this.auction.nft.ownerAddress) {
+          return true;
+        }
       }
 
       if (this.auction.biddings.length > 0) {
@@ -718,6 +509,16 @@ export default {
 
       this.current_bid = getCurrentBid(this.auction);
 
+      const lastBid = this.auction.biddings[0]
+        ? this.auction.biddings[0].bid
+        : this.auction.min_bid;
+
+      this.minimumBid = parseFloat(
+        (lastBid + (this.auction.bid_inc * this.auction.min_bid) / 100).toFixed(
+          8
+        )
+      );
+
       this.loadingAuction = false;
       this.checkWalletInBiddings();
     },
@@ -758,10 +559,26 @@ export default {
           return;
         }
 
-        let resource = await this.$store.dispatch("walletStore/placeBid", {
-          detail: this.auction,
-          offer_price: Number(this.bid).toFixed(8),
-          coinType: this.selectedCoinType.coinType,
+        if (this.bid <= this.minimumBid) {
+          this.loading = false;
+          this.$toast.showMessage({
+            message: "Bid Should be greater than minimum acceptable bid",
+            error: true,
+          });
+          return;
+        }
+
+        let pid = process.env.AUCTION_PID;
+
+        if (this.auction.contract) {
+          pid = this.auction.contract;
+        }
+
+        let resource = await placeBidInChain({
+          auctionId: this.auction.id,
+          coinType: this.auction.coin_type,
+          pid: pid,
+          bid: this.bid,
         });
 
         if (!resource) {
@@ -833,14 +650,15 @@ export default {
         const validated = await this.$refs.form.validate();
         if (validated) {
           this.loading = true;
-          const increaseBidRes = await this.$store.dispatch(
-            "walletStore/increaseAuctionBid",
-            {
-              price: this.bid,
-              auction_id: this.auction.id,
-              coinType: this.selectedCoinType.coinType,
-            }
-          );
+
+          const pid = process.env.AUCTION_PID;
+
+          const increaseBidRes = await placeBidInChain({
+            auctionId: this.auction.id,
+            coinType: this.auction.coin_type,
+            pid: pid,
+            bid: bid,
+          });
 
           let creation_number = 0;
 
@@ -970,9 +788,16 @@ export default {
 
       try {
         this.loading = true;
-        const res = await this.$store.dispatch("walletStore/completeAuction", {
-          auction_id: Number(this.auction.id),
-          coinType: this.selectedCoinType.coinType,
+        let pid = process.env.AUCTION_PID;
+
+        if (this.auction.contract) {
+          pid = this.auction.contract;
+        }
+
+        const res = await completeAuction({
+          auctionId: this.auction.id,
+          coinType: this.auction.coin_type,
+          pid: pid,
         });
 
         if (res.success || res.hash) {
@@ -1060,11 +885,13 @@ export default {
     },
     async setRoyaltyAndOwnerOfToken() {
       try {
-        const creatorAddress =
-          this.auction.nft.nft.current_token_data.creator_address;
+        const creatorAddress = this.auction.nft.nft
+          ? this.auction.nft.nft.current_token_data.creator_address
+          : this.auction.nft.creatorAddress;
 
-        const tokenDataId =
-          this.auction.nft.nft.current_token_data.token_data_id_hash;
+        const tokenDataId = this.auction.nft.nft
+          ? this.auction.nft.nft.current_token_data.token_data_id_hash
+          : this.auction.nft.tokenDataId;
 
         const royaltyAndOwnerAddressRes =
           await getOwnerAndRoyaltyOfTokenInAuction({
@@ -1090,11 +917,26 @@ export default {
           if (this.auction.biddings[0]) {
             this.ownerAddress = this.auction.biddings[0].displayName;
           } else {
-            const ownerAddress = this.auction.nft.nft.owner_address;
+            let ownerAddress = null;
+
+            if (this.auction.nft.nft) {
+              ownerAddress = this.auction.nft.nft.owner_address;
+            } else {
+              ownerAddress = this.auction.nft.ownerAddress;
+            }
+
             this.ownerAddress = this.sliceAddressForDisplay(ownerAddress);
           }
         }
+
+        if (this.auction.nft.resourceAccount) {
+          this.royaltyPercentage = await getRoyaltyFromResourceAccount({
+            resourceAccount: this.auction.nft.resourceAccount,
+            candyId: this.auction.nft.candyId,
+          });
+        }
       } catch (error) {
+        console.log(error);
         this.ownerAddress = this.sliceAddressForDisplay(
           this.auction.nft.owner_address
         );

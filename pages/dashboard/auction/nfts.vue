@@ -1,14 +1,14 @@
 <template>
   <div class="tw-py-4">
     <div
-      v-if="nfts.length > 0"
+      v-if="collections.length > 0"
       class="tw-grid tw-grid-cols-1 tw-gap-6 md:tw-grid-cols-2 lg:tw-grid-cols-3 xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
     >
       <div
         class="tw-h-full tw-rounded tw-w-[250px] tw-max-w-[250px] tw-group tw-cursor-pointer"
-        v-for="(item, i) in nfts"
+        v-for="(item, i) in collections"
         :key="i"
-        @click="$router.push(`/dashboard/auction/${item.name}`)"
+        @click="$router.push(`/dashboard/auction/${item.collection_id}`)"
       >
         <div
           class="tw-rounded-t tw-overflow-hidden tw-w-[250px] tw-max-w-[250px]"
@@ -17,7 +17,7 @@
             :src="item.image"
             :alt="item.name"
             :onerror="imageNotFound()"
-            class="tw-rounded-t tw-w-[250px] tw-h-[250px] tw-object-cover tw-transition-all tw-duration-200 tw-ease-linear tw-group group-hover:tw-scale-125"
+            class="tw-rounded-t tw-w-[250px] tw-h-[250px] tw-object-cover tw-transition-all tw-duration-200 tw-ease-linear tw-group group-hover:tw-scale-110"
           />
         </div>
         <div
@@ -46,7 +46,7 @@
       color="transparent"
       v-if="!end"
       v-intersect="{
-        handler: fetchNfts,
+        handler: fetchCollections,
         options: {
           threshold: [0, 0.5, 1.0],
         },
@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       end: false,
-      nfts: [],
+      collections: [],
       metadata: [],
       offset: 0,
       page: 0,
@@ -75,7 +75,7 @@ export default {
     };
   },
   mounted() {
-    this.fetchNfts();
+    this.fetchCollections();
   },
   computed: {
     walletAddress() {
@@ -83,69 +83,31 @@ export default {
     },
   },
   methods: {
-    async fetchNfts() {
+    async fetchCollections() {
       this.loading = true;
       this.offset = this.page * this.limit;
       this.page++;
-      let data = await getOwnedCollectionsOfUser({
+      let res = await getOwnedCollectionsOfUser({
         limit: this.limit,
         offset: this.offset,
         walletAddress: this.walletAddress,
       });
 
-      if (data.data.current_token_ownerships.length > 0) {
-        const nfts = data.data.current_token_ownerships;
-        for (var x = 0; x < nfts.length; x++) {
-          try {
-            let meta = null;
-            const numberRes = await getNumberOfTokensInOwnedCollectionOfUser(
-              nfts[x].current_token_data.collection_name,
-              this.walletAddress
-            );
+      const data = res.data.current_collection_ownership_v2_view;
 
-            if (
-              nfts[x].current_token_data.metadata_uri.slice(0, 4) === "ipfs"
-            ) {
-              const url = this.sliceIPFSUrl(
-                nfts[x].current_token_data.metadata_uri
-              );
-              meta = await this.$axios.get(
-                `https://cloudflare-ipfs.com/ipfs/${url}`
-              );
-            } else {
-              meta = await this.$axios.get(
-                nfts[x].current_token_data.metadata_uri
-              );
-            }
-
-            let imageURL = meta.data.image;
-
-            if (imageURL.slice(0, 4) === "ipfs") {
-              const url = this.sliceIPFSUrl(imageURL);
-
-              imageURL = `https://cloudflare-ipfs.com/ipfs/${url}`;
-            }
-
-            if (imageURL.includes("ipfs.apt.land")) {
-              const index = imageURL.indexOf("ipfs.apt.land");
-
-              const slicedURL = imageURL.slice(index, imageURL.length);
-
-              imageURL = slicedURL.replaceAll("/", "-");
-
-              imageURL =
-                "https://ipfs.bluemove.net/uploads/cdn-image/" + imageURL;
-            }
-
-            this.nfts.push({
-              name: nfts[x].current_token_data.collection_name,
-              image: imageURL,
-              ownedNumber:
-                numberRes.data.current_token_ownerships_aggregate.aggregate
-                  .count,
-            });
-          } catch {}
-        }
+      if (data.length > 0) {
+        data.forEach((collection) => {
+          const image = collection.current_collection.cdn_asset_uris
+            .cdn_image_uri
+            ? collection.current_collection.cdn_asset_uris.cdn_image_uri
+            : collection.current_collection.cdn_asset_uris.raw_image_uri;
+          this.collections.push({
+            collection_id: collection.collection_id,
+            name: collection.collection_name,
+            image: image,
+            ownedNumber: collection.distinct_tokens,
+          });
+        });
       } else {
         this.end = true;
       }

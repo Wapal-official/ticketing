@@ -56,7 +56,11 @@
             :href="`${MARKETPLACE_URL}/collection/${collection.username}`"
             class="!tw-text-primary-2 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium"
             target="_blank"
-            v-if="live && resource.minted > 0"
+            v-if="
+              live &&
+              resource.minted > 0 &&
+              collection.username !== 'loonies-whitelist-ticket'
+            "
           >
             <span>List on Secondary</span>
             <i class="bx bx-link-external"></i>

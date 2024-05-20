@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="$route.fullPath !== '/dashboard/auction/start'">
+    <div v-if="$route.name !== 'dashboard-auction-collectionId-tokenDataId'">
       <dashboard-page-heading heading="Auction" />
       <launchpad-guide
         title="Auction Guide"
