@@ -909,8 +909,14 @@ export const actions = {
 
     const uploadMultiplier = 1.091;
     const oracleFee = 1.1;
+    const arkbFees = 1.1;
+    const bundlrFees = 1.3;
 
-    const totalAPT = (totalAR / aptosRate) * uploadMultiplier * oracleFee;
+    const totalAPT =
+      (totalAR / aptosRate) *
+      uploadMultiplier *
+      oracleFee *
+      (arkbFees + bundlrFees);
 
     return {
       requiredBalance: totalAPT.toFixed(8),
