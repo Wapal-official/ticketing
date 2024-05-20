@@ -148,6 +148,9 @@
               />
             </div>
           </ValidationObserver>
+          <div class="tw-text-dark-0 tw-text-sm">
+            Minimum Acceptable Bid: {{ this.minimumBid }}
+          </div>
         </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
@@ -172,7 +175,7 @@
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-baseline tw-justify-between tw-gap-2 md:tw-flex-row"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-between tw-gap-2 md:tw-flex-row"
           >
             <div
               class="tw-w-full md:tw-w-[213px] md:tw-max-w-[213px] lg:tw-w-full lg:tw-max-w-full xl:tw-w-[213px] xl:tw-max-w-[213px]"
@@ -192,8 +195,7 @@
                 :fullWidth="true"
                 :loading="loading"
                 @click="completeAuction"
-                :disabled="auction.completed"
-                v-if="checkOwner"
+                :disabled="auction.completed || !checkOwner"
               />
             </div>
           </div>
@@ -397,8 +399,9 @@ export default {
       royaltyPercentage: null,
       ownerAddress: "",
       description: "",
-      imageNotFound,
       showShareModal: false,
+      minimumBid: 0,
+      imageNotFound,
     };
   },
   watch: {
@@ -505,6 +508,16 @@ export default {
 
       this.current_bid = getCurrentBid(this.auction);
 
+      const lastBid = this.auction.biddings[0]
+        ? this.auction.biddings[0].bid
+        : this.auction.min_bid;
+
+      this.minimumBid = parseFloat(
+        (lastBid + (this.auction.bid_inc * this.auction.min_bid) / 100).toFixed(
+          8
+        )
+      );
+
       this.loadingAuction = false;
       this.checkWalletInBiddings();
     },
@@ -540,6 +553,15 @@ export default {
           this.loading = false;
           this.$toast.showMessage({
             message: "Bid Should be greater than current bid",
+            error: true,
+          });
+          return;
+        }
+
+        if (this.bid <= this.minimumBid) {
+          this.loading = false;
+          this.$toast.showMessage({
+            message: "Bid Should be greater than minimum acceptable bid",
             error: true,
           });
           return;

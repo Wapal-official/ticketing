@@ -21,7 +21,7 @@
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-0.5"
         >
           <h2 class="tw-font-medium tw-text-xs">
-            {{ auction?.nft.nft.current_token_data.collection_name }}
+            {{ collectionName }}
           </h2>
           <i
             class="bx bxs-badge-check !tw-text-primary-1"
@@ -102,6 +102,7 @@ export default {
     return {
       auctionStarted: false,
       auctionEnded: false,
+      collectionName: "",
       aptIcon,
       imageNotFound,
     };
@@ -146,6 +147,17 @@ export default {
         this.auctionStarted = true;
       }
     },
+    setCollectionName() {
+      if (this.auction.nft.nft) {
+        this.collectionName =
+          this.auction?.nft.nft.current_token_data.collection_name;
+      } else {
+        this.collectionName = this.auction.nft.collectionName;
+      }
+    },
+  },
+  mounted() {
+    this.setCollectionName();
   },
 };
 </script>
