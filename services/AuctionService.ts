@@ -382,6 +382,102 @@ export const getToken = async ({
   return formattedToken;
 };
 
+export const getCollectionAndTokenByMetadataUri = async ({
+  metadataUri,
+}: {
+  metadataUri: string;
+}) => {
+  const getCollectionQuery = {
+    operationName: "GetCollectionByMetadataUri",
+    query: `query GetCollectionByMetadataUri($METADATA_URI:String) {
+      current_collections_v2(
+        where: {uri: {_eq:  $METADATA_URI}}
+        limit: 1
+      ) {
+        collection_id
+      }
+    }`,
+    variables: {
+      METADATA_URI: metadataUri,
+    },
+  };
+
+  const collectionRes = await axios.post(`${GRAPHQL_URL}`, getCollectionQuery);
+
+  const collection = collectionRes.data.data.current_collections_v2[0];
+
+  const collectionId = collection.collection_id;
+
+  const query = {
+    operationName: "GetToken",
+    query: `query GetToken($COLLECTION_ID:String) {
+      current_token_datas_v2(
+        where: {collection_id: {_eq: $COLLECTION_ID}}
+        limit:1
+      ) {
+        token_name
+        token_data_id
+        token_standard
+        description
+        token_uri
+        cdn_asset_uris {
+          raw_image_uri
+          asset_uri
+          cdn_image_uri
+          cdn_animation_uri
+          raw_animation_uri
+        }
+        current_collection {
+          collection_name
+          creator_address
+          collection_id
+        }
+        current_token_ownerships(limit: 1) {
+          property_version_v1
+          owner_address
+        }
+      }
+    }`,
+    variables: {
+      COLLECTION_ID: collectionId,
+    },
+  };
+
+  const res = await axios.post(`${GRAPHQL_URL}`, query);
+
+  const data = res.data.data;
+
+  const token = data.current_token_datas_v2[0];
+
+  const image = token.cdn_asset_uris.cdn_image_uri
+    ? token.cdn_asset_uris.cdn_image_uri
+    : token.cdn_asset_uris.raw_image_uri;
+  const animationUri = token.cdn_asset_uris.cdn_animation_uri
+    ? token.cdn_asset_uris.cdn_animation_uri
+    : token.cdn_asset_uris.raw_animation_uri;
+
+  const propertyVersion = token.current_token_ownerships[0].property_version_v1;
+  const ownerAddress = token.current_token_ownerships[0].owner_address;
+
+  const formattedToken = {
+    tokenDataId: token.token_data_id,
+    tokenStandard: token.token_standard,
+    propertyVersion: propertyVersion,
+    collectionName: token.current_collection.collection_name,
+    collectionId: token.current_collection.collection_id,
+    creatorAddress: token.current_collection.creator_address,
+    ownerAddress: ownerAddress,
+    meta: {
+      name: token.token_name,
+      description: token.description,
+      image: image,
+      animationUri: animationUri,
+    },
+  };
+
+  return formattedToken;
+};
+
 export const setCompleteAuction = async (auctionId: string) => {
   const res = await creatorStudioRequest.patch(`/api/auction/${auctionId}`);
 
@@ -606,8 +702,8 @@ export const saveAuctionInDatabase = async ({
   user_id,
   coin_type,
   contract,
+  bidIncrement,
 }: CreateAuction) => {
-  console.log(token);
   const res = await creatorStudioRequest.post("/api/auction", {
     nft: token,
     startAt: startAt,
@@ -620,6 +716,7 @@ export const saveAuctionInDatabase = async ({
     user_id: user_id,
     coin_type: coin_type,
     contract: contract,
+    bid_inc: bidIncrement,
   });
 
   return res;

@@ -33,6 +33,7 @@ export interface CreateAuction {
   user_id: string;
   coin_type: string;
   contract: string;
+  bidIncrement: number;
 }
 
 interface AuctionToken {

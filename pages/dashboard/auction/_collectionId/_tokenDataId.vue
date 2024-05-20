@@ -95,7 +95,9 @@
                 placeholder="Eg. 1"
                 v-model="minimumIncrement"
               >
-                <template #append-icon>%</template>
+                <template #append-icon>
+                  <i class="tw-text-sm">%</i>
+                </template>
               </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
@@ -347,6 +349,7 @@ export default {
             user_id: this.$store.state.userStore.user.user_id,
             coin_type: this.coinType,
             contract: process.env.AUCTION_PID,
+            bidIncrement: this.minimumIncrement,
           });
 
           this.$toast.showMessage({

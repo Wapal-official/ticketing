@@ -190,22 +190,42 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
-            rules="required"
-            v-slot="{ errors }"
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
           >
-            <input-auto-complete
-              :required="true"
-              label="Coin Type"
-              v-model="coinType"
-              placeholder="Select Coin Type"
-              :items="coinTypes"
-              text="name"
-              itemValue="id"
-            />
-            <div class="tw-text-red-600">{{ errors[0] }}</div>
-          </ValidationProvider>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <input-auto-complete
+                :required="true"
+                label="Coin Type"
+                v-model="coinType"
+                placeholder="Select Coin Type"
+                :items="coinTypes"
+                text="name"
+                itemValue="id"
+              />
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+              name="minimumIncrement"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                label="Minimum Increment (0% by default)"
+                placeholder="Eg. 1"
+                v-model="mint.minimumIncrement"
+              >
+                <template #append-icon>
+                  <i class="tw-text-sm">%</i>
+                </template>
+              </input-text-field>
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
@@ -424,348 +444,17 @@
       @closeProgressModal="createAuctionModal = false"
     />
   </div>
-  <!-- <div>
-    <p class="tw-text-3xl tw-text-wapal-gray !tw-font-medium">NFT Details</p>
-
-    <v-stepper v-model="step" class="!tw-bg-transparent">
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <p class="text-h6">Collection</p>
-          <ValidationObserver ref="collectionForm" v-slot="{ handleSubmit }">
-            <form
-              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 xl:tw-w-1/2"
-              @submit.prevent="handleSubmit(nextStep)"
-            >
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <label
-                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                  >Collection Name</label
-                >
-                <reusable-text-field
-                  v-model="mint.colName"
-                  type="text"
-                  placeholder="Collection Name"
-                ></reusable-text-field>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <label
-                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                  >Collection Description</label
-                >
-                <reusable-text-area
-                  v-model="mint.colDesc"
-                  placeholder="Collection Description"
-                  type="text"
-                ></reusable-text-area>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="link"
-                v-slot="{ errors }"
-              >
-                <label ref="social">Twitter Link</label>
-                <reusable-text-field
-                  v-model="mint.twitter"
-                  type="text"
-                  placeholder="Twitter Link"
-                ></reusable-text-field>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="link"
-                v-slot="{ errors }"
-              >
-                <label>Instagram Link</label>
-                <reusable-text-field
-                  v-model="mint.instagram"
-                  type="text"
-                  placeholder="Instagram Link"
-                ></reusable-text-field>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <div v-if="socialError" class="tw-text-red-600">
-                {{ socialErrorMessage }}
-              </div>
-              <p class="text-h6">Token Details</p>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <label
-                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                  >Token Name</label
-                >
-                <reusable-text-field
-                  v-model="mint.tokenName"
-                  placeholder="Token Name"
-                  type="text"
-                ></reusable-text-field>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <label
-                  class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                  >Token Description</label
-                >
-                <reusable-text-area
-                  v-model="mint.tokenDesc"
-                  placeholder="Token Description"
-                  type="text"
-                ></reusable-text-area>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <div
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
-              >
-                <ValidationProvider
-                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required|auctionTime"
-                  name="auction_start"
-                  v-slot="{ errors }"
-                >
-                  <label
-                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                    >Start Date</label
-                  >
-                  <reusable-date-picker
-                    v-model="mint.startDate"
-                    placeholder="Select Auction Start Time"
-                    type="datetime"
-                  />
-                  <div class="tw-text-red-600">{{ errors[0] }}</div>
-                </ValidationProvider>
-                <ValidationProvider
-                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required|endTime:@auction_start"
-                  v-slot="{ errors }"
-                >
-                  <label
-                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                    >End Date</label
-                  >
-                  <reusable-date-picker
-                    v-model="mint.endDate"
-                    placeholder="Select Auction End Time"
-                    type="datetime"
-                  />
-                  <div class="tw-text-red-600">{{ errors[0] }}</div>
-                </ValidationProvider>
-              </div>
-              <div
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full tw-gap-4 md:tw-flex-row md:tw-items-start md:tw-justify-between"
-              >
-                <ValidationProvider
-                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required|bidAmount"
-                  v-slot="{ errors }"
-                >
-                  <label
-                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                    >Min. Bid in Apt</label
-                  >
-                  <reusable-text-field
-                    v-model="mint.minBid"
-                    placeholder="Eg. 1"
-                    type="text"
-                  ></reusable-text-field>
-                  <div class="tw-text-red-600">{{ errors[0] }}</div>
-                </ValidationProvider>
-                <ValidationProvider
-                  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                  rules="required|percentage"
-                  v-slot="{ errors }"
-                >
-                  <label
-                    class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2"
-                    >Royalties Fees in Percent</label
-                  >
-                  <reusable-text-field
-                    v-model="mint.royalty"
-                    type="text"
-                    placeholder="Eg. 2"
-                  ></reusable-text-field>
-                  <div class="tw-text-red-600">{{ errors[0] }}</div>
-                </ValidationProvider>
-              </div>
-              <div class="upload-bar tw-w-full" id="drop-container">
-                <v-col style="padding: 30px" align="center">
-                  <img :src="uploadIcon" alt="upload" /><br />
-                  <small>Drag And Drop Your Files Here</small><br />
-                  <small>OR</small><br />
-                  <button
-                    class="tw-px-6 tw-py-2 tw-rounded tw-bg-wapal-gray tw-text-black"
-                    @click.prevent="$refs.imageUploader.click()"
-                    v-if="file == null"
-                  >
-                    Browse
-                  </button>
-                  <button
-                    class="tw-px-6 tw-py-2 tw-rounded tw-bg-wapal-gray tw-text-black"
-                    @click.prevent="$refs.imageUploader.click()"
-                    v-else
-                  >
-                    {{ file.name }}
-                  </button>
-                  <div v-if="imageError" class="tw-text-red-600">
-                    {{ imageErrorMessage }}
-                  </div>
-                </v-col>
-              </div>
-              <input
-                ref="imageUploader"
-                class="d-none"
-                type="file"
-                accept="image/*"
-                @change="selectImage"
-              />
-              <reusable-theme-button title="Next" />
-            </form>
-          </ValidationObserver>
-        </v-stepper-content>
-        <v-stepper-content step="2">
-          <div class="text-h6 tw-py-2">NFT</div>
-          <div
-            class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-8 md:tw-grid-cols-2"
-          >
-            <div class="tw-w-full" id="image-preview"></div>
-            <ValidationObserver v-slot="{ handleSubmit }" ref="attributeForm">
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <label>Name</label>
-                <reusable-text-field
-                  v-model="mint.tokenName"
-                  type="text"
-                  :disabled="true"
-                ></reusable-text-field>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <ValidationProvider
-                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <label>Description</label>
-                <reusable-text-area
-                  v-model="mint.tokenDesc"
-                  type="text"
-                  :readOnly="true"
-                ></reusable-text-area>
-                <div class="tw-text-red-600">{{ errors[0] }}</div>
-              </ValidationProvider>
-              <form @submit.prevent="handleSubmit()">
-                <div class="tw-pb-2">Add Attributes</div>
-                <div
-                  class="tw-w-full"
-                  v-for="(attribute, index) in mint.attributes"
-                  :key="index"
-                >
-                  <div
-                    class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-flex-row md:tw-items-start md:tw-justify-between md:tw-gap-4"
-                  >
-                    <ValidationProvider
-                      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                      rules="required"
-                      v-slot="{ errors }"
-                    >
-                      <label
-                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2 tw-text-sm"
-                        >Attribute Type</label
-                      >
-                      <reusable-text-field
-                        v-model="attribute.trait_type"
-                        type="text"
-                        placeholder="Background"
-                      ></reusable-text-field>
-                      <div class="tw-text-red-600">{{ errors[0] }}</div>
-                    </ValidationProvider>
-                    <ValidationProvider
-                      class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 dashboard-text-field-group tw-w-full"
-                      rules="required"
-                      v-slot="{ errors }"
-                    >
-                      <label
-                        class="after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2 tw-text-sm"
-                        >Value</label
-                      >
-                      <div
-                        class="tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-2"
-                      >
-                        <reusable-text-field
-                          v-model="attribute.value"
-                          type="text"
-                          placeholder="Blue"
-                        ></reusable-text-field>
-                        <button
-                          class="tw-bg-transparent !tw-border !tw-border-solid !tw-border-wapal-pink tw-text-white tw-px-4 tw-py-2 tw-mb-4 tw-rounded-lg"
-                          @click.prevent="removeAttribute(index)"
-                        >
-                          <v-icon>mdi-trash-can</v-icon>
-                        </button>
-                      </div>
-                      <div class="tw-text-red-600">{{ errors[0] }}</div>
-                    </ValidationProvider>
-                  </div>
-                </div>
-                <button
-                  class="tw-bg-transparent !tw-border !tw-border-solid !tw-border-wapal-pink tw-text-white tw-px-6 tw-py-2 tw-mb-4 tw-rounded-lg"
-                  @click.prevent="addAttribute"
-                >
-                  <v-icon class="!tw-text-white !tw-pr-2">mdi-plus</v-icon
-                  ><span>Add</span>
-                </button>
-                <div
-                  class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
-                >
-                  <reusable-theme-button title="Back" @click="step = 1" />
-                  <reusable-theme-button
-                    title="Submit"
-                    @click="submit"
-                    :loading="loading"
-                  />
-                </div>
-              </form>
-            </ValidationObserver>
-          </div>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
-    <reusable-progress-modal
-      :showProgressModal="createAuctionModal"
-      :showClose="showCloseAuctionModal"
-      name="Create Auction"
-      description="Please review and approve up to four transactions in your wallet window to create your NFT."
-      :steps="steps"
-      :progress="auctionProgress"
-      :error="createError"
-      @closeProgressModal="createAuctionModal = false"
-    />
-  </div> -->
 </template>
 
 <script>
-import { uploadAndCreateFile } from "@/services/AuctionService";
-import { createCollection } from "@/services/CollectionService";
+import {
+  createAuctionV2InChain,
+  getCollectionAndTokenByMetadataUri,
+  getTokenByMetadataUri,
+  saveAuctionInDatabase,
+  uploadAndCreateFile,
+} from "@/services/AuctionService";
 import { getWalletNFT } from "@/services/AuctionService";
-import { publicRequest } from "@/services/fetcher";
 
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
@@ -780,6 +469,10 @@ import {
   getCoinType,
 } from "@/utils/getCoinType";
 import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
+import {
+  createCollectionV2,
+  mintCollection,
+} from "@/services/AptosCollectionService";
 
 extend("bidAmount", {
   validate(value) {
@@ -871,6 +564,7 @@ export default {
         attributes: [{ trait_type: null, value: null }],
         twitter: null,
         instagram: null,
+        minimumIncrement: null,
       },
       attribute: "",
       value: "",
@@ -899,6 +593,7 @@ export default {
       formStepNumber: 1,
       coinTypes: getAvailableCoinTypesForAuction(),
       coinType: "APT",
+      minimumIncrementInApt: 0,
       defaultTheme,
       aptIcon,
       darkAptIcon,
@@ -1041,10 +736,10 @@ export default {
                 attributes: this.mint.attributes,
               })) + "/";
 
-            let mintTime = Math.floor(new Date().getTime() / 1000) + 10;
+            let mintTime = Math.floor(new Date().getTime() / 1000) + 20;
 
             if (this.$store.state.walletStore.wallet.wallet === "Martian") {
-              mintTime += 20;
+              mintTime += 30;
             }
 
             this.auctionProgress = 2;
@@ -1062,11 +757,13 @@ export default {
               public_sale_mint_price: 0,
               total_supply: 1,
               public_mint_limit: 0,
+              coinType: "apt",
+              isRandom: true,
+              is_open_edition: false,
             };
 
             //creating collection
-            const candymachine = await this.$store.dispatch(
-              "walletStore/createCandyMachine",
+            const candymachine = await createCollectionV2(
               candyMachineArguments
             );
 
@@ -1077,14 +774,12 @@ export default {
               try {
                 this.auctionProgress = 3;
 
-                const mint = await this.$store.dispatch(
-                  "walletStore/mintCollection",
-                  {
-                    resourceAccount: resource_account,
-                    publicMint: true,
-                    candyMachineId: process.env.CANDY_MACHINE_V1,
-                  }
-                );
+                const mint = await mintCollection({
+                  candy_machine_id: process.env.CANDY_MACHINE_V2,
+                  candy_object: resource_account,
+                  amount: 1,
+                  publicMint: true,
+                });
 
                 if (mint.success || mint.hash) {
                   //auction
@@ -1092,49 +787,57 @@ export default {
 
                   setTimeout(async () => {
                     try {
-                      const nftRes = await getWalletNFT({
-                        creatorAddress: this.walletAddress,
-                        collectionName: this.mint.colName,
-                        tokenName: this.mint.colName + " #0",
-                        metadata_uri: metaUri + "0.json",
+                      const token = await getCollectionAndTokenByMetadataUri({
+                        metadataUri: metaUri,
                       });
 
-                      const nft = nftRes.data.current_token_ownerships[0];
+                      if (this.mint.minimumIncrement) {
+                        this.minimumIncrementInApt =
+                          (this.mint.minimumIncrement * this.mint.minBid) / 100;
+                      } else {
+                        this.minimumIncrementInApt = 0;
+                      }
 
-                      const meta = await this.$axios.get(
-                        nft.current_token_data.metadata_uri
-                      );
-
-                      this.$store.commit("auction/selectNft", {
-                        nft: nft,
-                        meta: meta.data,
+                      const auction = await createAuctionV2InChain({
+                        tokenDataId: token.tokenDataId,
+                        startTime: this.mint.startDate,
+                        minimumBid: this.mint.minBid,
+                        bidIncrement: this.minimumIncrementInApt,
+                        auctionEndTime: this.mint.endDate,
+                        minimumBidTimeBeforeEnd: this.mint.endDate,
+                        coinType: this.coinType,
                       });
 
-                      const auction = await this.$store.dispatch(
-                        "walletStore/createAuction",
-                        {
-                          start_date: this.mint.startDate,
-                          end_date: this.mint.endDate,
-                          min_bid: this.mint.minBid,
-                          coinType: this.coinType,
+                      const events = auction.events;
+
+                      let listingId = "";
+
+                      const AUCTION_PID = process.env.AUCTION_PID;
+
+                      events.forEach((event) => {
+                        if (
+                          event.type &&
+                          event.type === `${AUCTION_PID}::events::ListingPlaced`
+                        ) {
+                          listingId = event.data.listing;
                         }
-                      );
+                      });
 
-                      const auction_name = generateName(
-                        this.selectedNft.meta.name
-                      );
+                      const auction_name = generateName(token.meta.name);
 
-                      await creatorStudioRequest.post("/api/auction", {
-                        nft: this.selectedNft,
+                      const res = await saveAuctionInDatabase({
+                        token: token,
                         startAt: this.mint.startDate,
                         endAt: this.mint.endDate,
                         min_bid: this.mint.minBid,
-                        id: auction.cur_auction_id,
+                        id: listingId,
                         auction_name: auction_name,
                         twitter: this.mint.twitter,
                         instagram: this.mint.instagram,
                         user_id: this.$store.state.userStore.user.user_id,
                         coin_type: this.coinType,
+                        contract: process.env.AUCTION_PID,
+                        bidIncrement: this.mint.minimumIncrement,
                       });
 
                       this.$toast.showMessage({
@@ -1146,7 +849,7 @@ export default {
 
                       this.auctionProgress = 5;
 
-                      this.$router.push("/dashboard/auction/list");
+                      this.$router.push("/dashboard/auction/under-review");
                     } catch (error) {
                       console.log(error);
                       this.$toast.showMessage({ message: error, error: true });
