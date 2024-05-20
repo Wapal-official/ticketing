@@ -61,7 +61,7 @@
             Min. Increment
           </div>
           <div>
-            {{ auction?.minIncrement ? auction?.minIncrement + "%" : "0%" }}
+            {{ auction?.bid_inc ? auction?.bid_inc + "%" : "0%" }}
           </div>
         </div>
       </div>
