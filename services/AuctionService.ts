@@ -6,7 +6,7 @@ import {
   InitAuctionV1,
   InitAuctionV2,
 } from "@/interfaces/auction";
-import { checkNetwork, wallet } from "@/store/walletStore";
+import { checkNetwork, client, wallet } from "@/store/walletStore";
 import { InputGenerateTransactionPayloadData } from "@aptos-labs/ts-sdk";
 import { getCoinType } from "@/utils/getCoinType";
 import { executeSmartContract } from "@/services/ExecutePayload";
@@ -781,4 +781,29 @@ export const completeAuction = async ({
   const res = await executeSmartContract(completeAuctionPayload);
 
   return res;
+};
+
+export const getRoyaltyFromResourceAccount = async ({
+  resourceAccount,
+  candyId,
+}: {
+  resourceAccount: string;
+  candyId: string;
+}) => {
+  const resources = await client.getAccountResources(resourceAccount);
+
+  if (!candyId) {
+    candyId = process.env.CANDY_MACHINE_V2 ? process.env.CANDY_MACHINE_V2 : "";
+  }
+
+  let royalty = 0;
+  resources.map((resource) => {
+    if (resource.type === `${candyId}::candymachine::CandyMachine`) {
+      const data: any = resource.data;
+
+      royalty = data.royalty_points_numerator / 10;
+    }
+  });
+
+  return royalty;
 };

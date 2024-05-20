@@ -345,6 +345,7 @@ import {
   getOwnerAndRoyaltyOfTokenInAuction,
   placeBidInChain,
   completeAuction,
+  getRoyaltyFromResourceAccount,
 } from "@/services/AuctionService";
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import { getCoinType } from "@/utils/getCoinType";
@@ -926,6 +927,13 @@ export default {
 
             this.ownerAddress = this.sliceAddressForDisplay(ownerAddress);
           }
+        }
+
+        if (this.auction.nft.resourceAccount) {
+          this.royaltyPercentage = await getRoyaltyFromResourceAccount({
+            resourceAccount: this.auction.nft.resourceAccount,
+            candyId: this.auction.nft.candyId,
+          });
         }
       } catch (error) {
         console.log(error);

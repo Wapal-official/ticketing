@@ -825,6 +825,9 @@ export default {
 
                       const auction_name = generateName(token.meta.name);
 
+                      token.resourceAccount = resource_account;
+                      token.candyId = process.env.CANDY_MACHINE_V2;
+
                       const res = await saveAuctionInDatabase({
                         token: token,
                         startAt: this.mint.startDate,
