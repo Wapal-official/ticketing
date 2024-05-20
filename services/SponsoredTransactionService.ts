@@ -54,10 +54,12 @@ export const sponsorMintTransaction = async () => {
       throw new Error("Error in Kanalabs");
     }
 
-    const addUserToWhitelist = await addAddressToWhitelist(senderAccount);
+    if (!isUserWhitelisted.whitelisted) {
+      const addUserToWhitelist = await addAddressToWhitelist(senderAccount);
 
-    if (!addUserToWhitelist.success) {
-      throw new Error("Error in Kanalabs");
+      if (!addUserToWhitelist.success) {
+        throw new Error("Error in Kanalabs");
+      }
     }
 
     const transaction: any = await aptosClient.transaction.build.simple({
@@ -127,5 +129,31 @@ const checkIfWalletIsWhitelisted = async (senderAccount: string) => {
     console.log(error);
 
     return { success: false };
+  }
+};
+
+export const normalMintTransaction = async () => {
+  try {
+    const CONTRACT_ADDRESS =
+      "0xd2434b9d9fc38c6816d55a76a7df6806a0c0bc3599b7bbaabf713e6680f7c8df";
+    const collectionConfigAddress =
+      "0x14300a96370b5a412d0933f6fafa4413acbefe35f0e083117152103fbd3f9fc0";
+    const referrer = "wapal";
+
+    const payload: InputGenerateTransactionPayloadData = {
+      function:
+        `${CONTRACT_ADDRESS}::airdrop_machine::mint` as `${string}::${string}::${string}`,
+      typeArguments: [],
+      functionArguments: [collectionConfigAddress, referrer],
+    };
+
+    const res = await executeSmartContract(payload);
+
+    console.log(res);
+    return res;
+  } catch (error: any) {
+    console.log(error);
+
+    throw new Error(error.message);
   }
 };

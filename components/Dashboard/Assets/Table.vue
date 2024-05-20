@@ -18,12 +18,34 @@
           <td
             class="!tw-border-none tw-uppercase tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 !tw-py-8"
           >
-            <utility-image
-              v-if="$route.params.type === 'assets'"
-              :source="item.image ? item.image : item.src"
-              :alt="item.name"
-              class="tw-w-[45px] tw-h-[45px] tw-object-cover"
-            />
+            <div v-if="$route.params.type === 'assets'">
+              <video-player-listed
+                v-if="isVideo(item.image ? item.image : item.src)"
+                :source="item.image ? item.image : item.src"
+                style="max-width: 50px; height: 50px"
+              />
+              <audio-player-list
+                v-else-if="isAudio(item.src)"
+                class="audio-list-bg-2"
+                :audioSrc="item.src"
+                iconSize="34"
+                @click.prevent.stop="checkit()"
+              ></audio-player-list>
+              <utility-image
+                v-else
+                :source="item.image ? item.image : item.src"
+                :alt="item.name"
+                class="tw-w-[45px] tw-h-[45px] tw-object-cover"
+              />
+            </div>
+            <div v-if="$route.params.type === 'images'">
+              <utility-image
+                :source="item.image ? item.image : item.src"
+                :alt="item.name"
+                class="tw-w-[45px] tw-h-[45px] tw-object-cover"
+              />
+            </div>
+
             {{ item.name }}
           </td>
           <td class="!tw-border-none">{{ item.createdDate }}</td>
@@ -70,15 +92,77 @@ export default {
     };
   },
   methods: {
+    checkit() {},
     getFileSize(size: number) {
       if (size / 1048576 > 1) {
         return (size / 1048576).toFixed(2) + " MB";
       }
       return (size / 1024).toFixed(2) + " KB";
     },
+    isImage(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source: string) {
+      if (typeof source !== "string") {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
   },
   watch: {
     paginatedFiles(paginatedFiles: any) {
+      console.log("check gr", paginatedFiles);
       this.allFiles.push(...paginatedFiles);
     },
   },

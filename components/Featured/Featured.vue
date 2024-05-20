@@ -5,19 +5,32 @@
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
-      <div
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
-        v-if="collection.video"
-      >
-        <video-player-featured :source="collection.video" />
+      <div style="position: relative">
+        <div
+          class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
+          v-if="collection.video"
+        >
+          <video-player-featured :source="collection.video" />
+        </div>
+        <video-player-detailed
+          class="video-featured"
+          v-else-if="isVideo(collection.media2)"
+          :source="collection.media2"
+        />
+
+        <utility-image
+          v-else
+          :source="collection.image"
+          :onerror="imageNotFound()"
+          :alt="collection.name"
+          class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
+        />
+        <audio-player
+          v-if="isAudio(collection.media2)"
+          class="audio-bg"
+          :audioSrc="collection.media2"
+        ></audio-player>
       </div>
-      <utility-image
-        v-else
-        :source="collection.image"
-        :onerror="imageNotFound()"
-        :alt="collection.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
-      />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
       >
@@ -338,6 +351,7 @@ export default {
           coin_type: "APT",
         },
         video: "",
+        media2: "",
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
@@ -361,6 +375,53 @@ export default {
     };
   },
   methods: {
+    isVideo(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
+    },
     countdownComplete() {
       this.showPublicSaleTimer = false;
       this.showWhitelistSaleTimer = false;
@@ -450,7 +511,6 @@ export default {
             if (this.collection.tweet) {
               this.showShareModal = true;
             }
-
             if (this.collection.username === "loonies-whitelist-ticket") {
               this.$emit("loonies-minted");
             }
@@ -520,12 +580,36 @@ export default {
     showMintedProgress() {
       this.progressInterval = setInterval(async () => {
         if (this.collection.mintDetails) {
-          this.resource = await this.$store.dispatch(
-            "walletStore/getSupplyAndMintedOfExternalCollection",
-            {
-              collectionId: this.collection.candyMachine.resource_account,
-            }
-          );
+          if (
+            this.collection.candyMachine.candy_id ===
+            "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62"
+          ) {
+            this.resource = await this.$store.dispatch(
+              "walletStore/getSupplyAndMintedOfExternalCollection",
+              {
+                collectionId:
+                  "0x9a6f1b16323c428756b439553ab2a6a4cbdd46ade55d0da17f3a7c7d3e4c6ac8",
+              }
+            );
+          } else if (
+            this.collection.candyMachine.candy_id ===
+            "0xd2434b9d9fc38c6816d55a76a7df6806a0c0bc3599b7bbaabf713e6680f7c8df"
+          ) {
+            this.resource = await this.$store.dispatch(
+              "walletStore/getSupplyAndMintedOfExternalCollection",
+              {
+                collectionId:
+                  "0x185f604afb67f9bbcbaa2e3c84a7210c537528ed24ffd9778edc981486385885",
+              }
+            );
+          } else {
+            this.resource = await this.$store.dispatch(
+              "walletStore/getSupplyAndMintedOfExternalCollection",
+              {
+                collectionId: this.collection.candyMachine.resource_account,
+              }
+            );
+          }
 
           if (this.resource.total_supply === 0) {
             this.resource = await this.$store.dispatch(
@@ -762,8 +846,9 @@ export default {
   },
   async mounted() {
     try {
+      console.log("asd", this.propCollection);
       this.collection = this.propCollection;
-
+      console.log("this", this.collection);
       if (this.collection._id === "651295af57079307bdb1cfe9") {
         delete this.collection["candyMachine"].whitelist_sale_time;
         delete this.collection["candyMachine"].whitelist_price;
@@ -800,12 +885,36 @@ export default {
       this.loading = false;
 
       if (this.collection.mintDetails) {
-        this.resource = await this.$store.dispatch(
-          "walletStore/getSupplyAndMintedOfExternalCollection",
-          {
-            collectionId: this.collection.candyMachine.resource_account,
-          }
-        );
+        if (
+          this.collection.candyMachine.candy_id ===
+          "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62"
+        ) {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfExternalCollection",
+            {
+              collectionId:
+                "0x9a6f1b16323c428756b439553ab2a6a4cbdd46ade55d0da17f3a7c7d3e4c6ac8",
+            }
+          );
+        } else if (
+          this.collection.candyMachine.candy_id ===
+          "0xd2434b9d9fc38c6816d55a76a7df6806a0c0bc3599b7bbaabf713e6680f7c8df"
+        ) {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfExternalCollection",
+            {
+              collectionId:
+                "0x185f604afb67f9bbcbaa2e3c84a7210c537528ed24ffd9778edc981486385885",
+            }
+          );
+        } else {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfExternalCollection",
+            {
+              collectionId: this.collection.candyMachine.resource_account,
+            }
+          );
+        }
 
         if (this.resource.total_supply === 0) {
           this.resource = await this.$store.dispatch(
@@ -869,5 +978,34 @@ export default {
 <style scoped>
 .featured {
   height: calc(100vh - 40px);
+}
+.video-featured {
+  width: 100%;
+  max-width: 400px;
+  height: 338px;
+  border-radius: 8px;
+}
+
+@media (min-width: 640px) {
+  .video-featured {
+    width: 400px;
+    height: 400px;
+    max-height: 400px;
+  }
+}
+@media (min-width: 768px) {
+  .video-featured {
+    width: 400px;
+    min-width: 400px;
+    height: 400px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .video-featured {
+    width: 400px;
+    height: 400px;
+    max-height: 400px;
+  }
 }
 </style>

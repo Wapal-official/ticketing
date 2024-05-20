@@ -6,19 +6,32 @@
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
     >
-      <div
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
-        v-if="collection.video"
-      >
-        <video-player-featured :source="collection.video" />
+      <div class="card-min-width" style="position: relative">
+        <div
+          class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+          v-if="collection.video"
+        >
+          <video-player-featured :source="collection.video" />
+        </div>
+        <video-player-detailed
+          class="video-detailed"
+          v-else-if="isVideo(collection.media2)"
+          :source="collection.media2"
+        />
+
+        <utility-image
+          v-else
+          :source="collection.image"
+          :onerror="imageNotFound()"
+          :alt="collection.name"
+          class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+        />
+        <audio-player
+          v-if="isAudio(collection.media2)"
+          class="audio-bg"
+          :audioSrc="collection.media2"
+        ></audio-player>
       </div>
-      <utility-image
-        v-else
-        :source="collection.image"
-        :onerror="imageNotFound()"
-        :alt="collection.name"
-        class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
-      />
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
       >
@@ -435,7 +448,10 @@ import imageNotFound from "@/utils/imageNotFound";
 import santa from "@/assets/video/wapal-santa.MP4";
 import xLogo from "@/assets/img/x-logo.svg";
 import { checkIfCollectionIsSoldOut } from "@/utils/soldoutCollections";
-import { sponsorMintTransaction } from "~/services/SponsoredTransactionService";
+import {
+  normalMintTransaction,
+  sponsorMintTransaction,
+} from "@/services/SponsoredTransactionService";
 export default {
   props: { collection: { type: Object } },
   data() {
@@ -488,6 +504,72 @@ export default {
     };
   },
   methods: {
+    isImage(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+            "mpeg",
+          ].includes(extension)
+        : false;
+    },
     countdownComplete() {
       this.showCountdown = false;
     },
@@ -552,12 +634,36 @@ export default {
     showMintedProgress() {
       this.progressInterval = setInterval(async () => {
         if (this.collection.mintDetails) {
-          this.resource = await this.$store.dispatch(
-            "walletStore/getSupplyAndMintedOfExternalCollection",
-            {
-              collectionId: this.collection.candyMachine.resource_account,
-            }
-          );
+          if (
+            this.collection.candyMachine.candy_id ===
+            "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62"
+          ) {
+            this.resource = await this.$store.dispatch(
+              "walletStore/getSupplyAndMintedOfExternalCollection",
+              {
+                collectionId:
+                  "0x9a6f1b16323c428756b439553ab2a6a4cbdd46ade55d0da17f3a7c7d3e4c6ac8",
+              }
+            );
+          } else if (
+            this.collection.candyMachine.candy_id ===
+            "0xd2434b9d9fc38c6816d55a76a7df6806a0c0bc3599b7bbaabf713e6680f7c8df"
+          ) {
+            this.resource = await this.$store.dispatch(
+              "walletStore/getSupplyAndMintedOfExternalCollection",
+              {
+                collectionId:
+                  "0x185f604afb67f9bbcbaa2e3c84a7210c537528ed24ffd9778edc981486385885",
+              }
+            );
+          } else {
+            this.resource = await this.$store.dispatch(
+              "walletStore/getSupplyAndMintedOfExternalCollection",
+              {
+                collectionId: this.collection.candyMachine.resource_account,
+              }
+            );
+          }
 
           if (this.resource.total_supply === 0) {
             this.resource = await this.$store.dispatch(
@@ -807,7 +913,6 @@ export default {
 
         if (res.success || res.hash) {
           this.mintBulkCollection = 0;
-
           this.$toast.showMessage({
             message: `${this.collection.name} Minted Successfully`,
           });
@@ -815,7 +920,6 @@ export default {
           if (this.collection.tweet) {
             this.showShareModal = true;
           }
-
           if (this.collection.username === "loonies-whitelist-ticket") {
             this.showLooniesTweet = true;
           }
@@ -906,13 +1010,13 @@ export default {
         this.gettingProof = false;
         this.whitelisted = false;
         this.removeProofFromLocalStorage();
+
         return;
       }
 
       const currentPhase = this.phases.find(
         (phase) => phase.id === this.currentSale.id
       );
-
       this.currentSale.mintLimit = currentPhase.mintLimit;
 
       this.mintLimit = currentPhase.mintLimit;
@@ -932,7 +1036,6 @@ export default {
         this.gettingProof = true;
 
         this.proof = [];
-
         const localStorageProof = this.getProofFromLocalStorage();
 
         if (
@@ -1172,15 +1275,6 @@ export default {
     },
     async mintCollectionExternally() {
       try {
-        if (
-          this.collection.candyMachine.candy_id ===
-          "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62"
-        ) {
-          await sponsorMintTransaction();
-          this.minting = false;
-          this.numberOfNft = 1;
-          return;
-        }
         if (this.externalWhitelisted) {
           const res = await this.$store.dispatch("walletStore/externalMint", {
             mintFunction: this.collection.mintDetails.whitelist_mint_function,
@@ -1320,6 +1414,17 @@ export default {
       );
     },
     setMaxNumberOfNfts() {
+      if (
+        this.collection.candyMachine.candy_id ===
+          "0xd2434b9d9fc38c6816d55a76a7df6806a0c0bc3599b7bbaabf713e6680f7c8df" ||
+        this.collection.candyMachine.candy_id ===
+          "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62"
+      ) {
+        this.maxNumberOfNft = 1;
+
+        return;
+      }
+
       if (this.collection.isEdition) {
         this.maxNumberOfNft = 200;
         return;
@@ -1397,7 +1502,6 @@ export default {
             }
           })
         );
-
         this.setPhasesInLocalStorage({
           phases: this.phases,
           collectionId: this.collection._id,
@@ -1521,6 +1625,7 @@ export default {
     },
   },
   async mounted() {
+    console.log("coll", this.collection);
     if (this.collection) {
       if (this.collection.username === "proudlionsclub") {
         this.collection.username = "proud-lions-club";
@@ -1533,6 +1638,7 @@ export default {
       }
 
       this.setPhases();
+      this.setMaxNumberOfNfts();
 
       this.currentSale = this.getCurrentSale();
 
@@ -1560,6 +1666,17 @@ export default {
             {
               collectionId:
                 "0x9a6f1b16323c428756b439553ab2a6a4cbdd46ade55d0da17f3a7c7d3e4c6ac8",
+            }
+          );
+        } else if (
+          this.collection.candyMachine.candy_id ===
+          "0xd2434b9d9fc38c6816d55a76a7df6806a0c0bc3599b7bbaabf713e6680f7c8df"
+        ) {
+          this.resource = await this.$store.dispatch(
+            "walletStore/getSupplyAndMintedOfExternalCollection",
+            {
+              collectionId:
+                "0x185f604afb67f9bbcbaa2e3c84a7210c537528ed24ffd9778edc981486385885",
             }
           );
         } else {
@@ -1739,7 +1856,41 @@ export default {
       ) {
         await this.checkWhitelistForExternalMint();
       }
+
+      await this.checkWhitelistForPhases();
     },
   },
 };
 </script>
+<style lang="css">
+.video-detailed {
+  max-width: 550px;
+  height: 550px;
+  border-radius: 0.25rem !important;
+}
+@media (max-width: 600px) {
+  .video-detailed {
+    height: 350px;
+  }
+}
+@media (min-width: 1024px) and (max-width: 1200px) {
+  .video-detailed {
+    height: 450px;
+  }
+}
+.audio-bg {
+  position: absolute;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  padding: 0 16px 16px;
+  background-image: linear-gradient(transparent, #000) !important;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+@media (max-width: 768px) {
+  .card-min-width {
+    min-width: 50%;
+  }
+}
+</style>
