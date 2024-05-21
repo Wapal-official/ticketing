@@ -88,6 +88,10 @@ export default {
       (this.takenSpots * 100) / this.totalSpots
     );
 
+    if (this.takenSpotsPercent >= 100) {
+      this.takenSpotsPercent = 100;
+    }
+
     this.loading = false;
 
     setTimeout(() => {
