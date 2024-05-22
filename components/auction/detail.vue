@@ -150,6 +150,7 @@
           </ValidationObserver>
           <div class="tw-text-dark-0 tw-text-sm">
             Minimum Acceptable Bid: {{ this.minimumBid }}
+            {{ this.auction.coin_type }}
           </div>
         </div>
         <div
