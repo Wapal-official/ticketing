@@ -1,8 +1,35 @@
 import { publicRequest } from "./fetcher";
 import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 import axios from "axios";
+import {
+  CreateAuction,
+  InitAuctionV1,
+  InitAuctionV2,
+} from "@/interfaces/auction";
+import { checkNetwork, client, wallet } from "@/store/walletStore";
+import { InputGenerateTransactionPayloadData } from "@aptos-labs/ts-sdk";
+import { getCoinType } from "@/utils/getCoinType";
+import { executeSmartContract } from "@/services/ExecutePayload";
+import { convertDateInSeconds } from "@/utils/date";
+import { convertPriceToSendInSmartContract } from "@/utils/price";
 
 const GRAPHQL_URL = process.env.GRAPHQL_URL ? process.env.GRAPHQL_URL : "";
+const FEE_SCHEDULE_ID = process.env.FEE_SCHEDULE_ID;
+const AUCTION_PID = process.env.AUCTION_PID;
+
+let walletName: any = "";
+if (process.client) {
+  if (localStorage.getItem("wallet")) {
+    const wallet = JSON.parse(localStorage.getItem("wallet")!);
+    walletName = wallet.wallet;
+  }
+}
+
+const checkWalletConnected = async () => {
+  if (!wallet.isConnected()) {
+    await wallet.connect(walletName);
+  }
+};
 
 export const getCurrentBid = (auction: any) => {
   let bid = 0;
@@ -176,38 +203,34 @@ export const getEndedAuctions = async ({
   return res.data.auctions;
 };
 
-export const getOwnedCollectionsOfUser = async (params: any) => {
+export const getOwnedCollectionsOfUser = async ({
+  limit,
+  offset,
+  walletAddress,
+}: any) => {
   let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "AccountTokensData",
-    query:
-      `query AccountTokensData {
-          current_token_ownerships(
-            distinct_on: collection_name
-            limit: ` +
-      params.limit +
-      `
-            offset:` +
-      params.offset +
-      `
-            where: {owner_address: {_eq: "` +
-      params.walletAddress +
-      `"},
-        amount:{_gt:0}}
+    query: `query AccountTokensData($LIMIT: Int, $OFFSET: Int, $WALLET_ADDRESS: String) {
+        current_collection_ownership_v2_view(
+            distinct_on: collection_id
+            limit: $LIMIT
+            offset:$OFFSET
+            where: {owner_address: {_eq: $WALLET_ADDRESS}},
             ) {
-              owner_address
-              property_version
-              amount
-            current_token_data {
-              name
-              metadata_uri
-              description
+              collection_id
               collection_name
+              collection_uri
+              distinct_tokens
               creator_address
-              token_data_id_hash
-            }
+              current_collection {
+                cdn_asset_uris {
+                  cdn_image_uri
+                  raw_image_uri
+                }
+              }
           }
         }`,
-    variables: null,
+    variables: { LIMIT: limit, OFFSET: offset, WALLET_ADDRESS: walletAddress },
   });
   return resp.data;
 };
@@ -240,43 +263,219 @@ export const getNumberOfTokensInOwnedCollectionOfUser = async (
   return res.data;
 };
 
-export const getTokensOfCollection = async (params: any) => {
+export const getTokensOfCollection = async ({
+  limit,
+  offset,
+  collectionId,
+  walletAddress,
+}: {
+  limit: number;
+  offset: number;
+  collectionId: string;
+  walletAddress: string;
+}) => {
   let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
-    operationName: "AccountTokensData",
-    query:
-      `query AccountTokensData {
-          current_token_ownerships(
-            limit: ` +
-      params.limit +
-      `
-            offset:` +
-      params.offset +
-      `
-            where: {owner_address: {_eq: "` +
-      params.walletAddress +
-      `"},
-      collection_name: {_eq: "` +
-      params.collectionName +
-      `"},
-      amount:{_gt:0}
-    }
-            ) {
-              owner_address
-              property_version
-              amount
-            current_token_data {
-              name
-              metadata_uri
-              description
-              collection_name
-              creator_address
-              token_data_id_hash
+    operationName: "GetTokensOfACollection",
+    query: `query GetTokensOfACollection($LIMIT: Int, $OFFSET: Int,$COLLECTION_ID: String, $WALLET_ADDRESS: String) {
+        current_token_ownerships_v2(
+          where: {current_token_data: {collection_id: {_eq: $COLLECTION_ID}}, owner_address: {_eq: $WALLET_ADDRESS}, amount: {_gt: "0"}}
+          limit: $LIMIT
+          offset: $OFFSET
+        ) {
+          current_token_data {
+            collection_id
+            token_name
+            token_data_id
+            token_standard
+            cdn_asset_uris {
+              cdn_image_uri
+              raw_image_uri
+              asset_uri
             }
           }
-        }`,
-    variables: null,
+        }
+      }`,
+    variables: {
+      LIMIT: limit,
+      OFFSET: offset,
+      COLLECTION_ID: collectionId,
+      WALLET_ADDRESS: walletAddress,
+    },
   });
   return resp.data;
+};
+
+export const getToken = async ({
+  collectionId,
+  tokenDataId,
+}: {
+  collectionId: string;
+  tokenDataId: string;
+}) => {
+  const query = {
+    operationName: "GetToken",
+    query: `query GetToken($COLLECTION_ID:String, $TOKEN_DATA_ID:String) {
+      current_token_datas_v2(
+        where: {collection_id: {_eq: $COLLECTION_ID}, token_data_id: {_eq: $TOKEN_DATA_ID}}
+      ) {
+        token_name
+        token_data_id
+        token_standard
+        description
+        token_uri
+        cdn_asset_uris {
+          raw_image_uri
+          asset_uri
+          cdn_image_uri
+          cdn_animation_uri
+          raw_animation_uri
+        }
+        current_collection {
+          collection_name
+          creator_address
+          collection_id
+        }
+        current_token_ownerships(limit: 1) {
+          property_version_v1
+          owner_address
+        }
+      }
+    }`,
+    variables: {
+      COLLECTION_ID: collectionId,
+      TOKEN_DATA_ID: tokenDataId,
+    },
+  };
+
+  const res = await axios.post(`${GRAPHQL_URL}`, query);
+
+  const data = res.data.data;
+
+  const token = data.current_token_datas_v2[0];
+
+  const image = token.cdn_asset_uris.cdn_image_uri
+    ? token.cdn_asset_uris.cdn_image_uri
+    : token.cdn_asset_uris.raw_image_uri;
+  const animationUri = token.cdn_asset_uris.cdn_animation_uri
+    ? token.cdn_asset_uris.cdn_animation_uri
+    : token.cdn_asset_uris.raw_animation_uri;
+
+  const propertyVersion = token.current_token_ownerships[0].property_version_v1;
+  const ownerAddress = token.current_token_ownerships[0].owner_address;
+
+  const formattedToken = {
+    tokenDataId: token.token_data_id,
+    tokenStandard: token.token_standard,
+    propertyVersion: propertyVersion,
+    collectionName: token.current_collection.collection_name,
+    collectionId: token.current_collection.collection_id,
+    creatorAddress: token.current_collection.creator_address,
+    ownerAddress: ownerAddress,
+    meta: {
+      name: token.token_name,
+      description: token.description,
+      image: image,
+      animationUri: animationUri,
+    },
+  };
+
+  return formattedToken;
+};
+
+export const getCollectionAndTokenByMetadataUri = async ({
+  metadataUri,
+}: {
+  metadataUri: string;
+}) => {
+  const getCollectionQuery = {
+    operationName: "GetCollectionByMetadataUri",
+    query: `query GetCollectionByMetadataUri($METADATA_URI:String) {
+      current_collections_v2(
+        where: {uri: {_eq:  $METADATA_URI}}
+        limit: 1
+      ) {
+        collection_id
+      }
+    }`,
+    variables: {
+      METADATA_URI: metadataUri,
+    },
+  };
+
+  const collectionRes = await axios.post(`${GRAPHQL_URL}`, getCollectionQuery);
+
+  const collection = collectionRes.data.data.current_collections_v2[0];
+
+  const collectionId = collection.collection_id;
+
+  const query = {
+    operationName: "GetToken",
+    query: `query GetToken($COLLECTION_ID:String) {
+      current_token_datas_v2(
+        where: {collection_id: {_eq: $COLLECTION_ID}}
+        limit:1
+      ) {
+        token_name
+        token_data_id
+        token_standard
+        description
+        token_uri
+        cdn_asset_uris {
+          raw_image_uri
+          asset_uri
+          cdn_image_uri
+          cdn_animation_uri
+          raw_animation_uri
+        }
+        current_collection {
+          collection_name
+          creator_address
+          collection_id
+        }
+        current_token_ownerships(limit: 1) {
+          property_version_v1
+          owner_address
+        }
+      }
+    }`,
+    variables: {
+      COLLECTION_ID: collectionId,
+    },
+  };
+
+  const res = await axios.post(`${GRAPHQL_URL}`, query);
+
+  const data = res.data.data;
+
+  const token = data.current_token_datas_v2[0];
+
+  const image = token.cdn_asset_uris.cdn_image_uri
+    ? token.cdn_asset_uris.cdn_image_uri
+    : token.cdn_asset_uris.raw_image_uri;
+  const animationUri = token.cdn_asset_uris.cdn_animation_uri
+    ? token.cdn_asset_uris.cdn_animation_uri
+    : token.cdn_asset_uris.raw_animation_uri;
+
+  const propertyVersion = token.current_token_ownerships[0].property_version_v1;
+  const ownerAddress = token.current_token_ownerships[0].owner_address;
+
+  const formattedToken = {
+    tokenDataId: token.token_data_id,
+    tokenStandard: token.token_standard,
+    propertyVersion: propertyVersion,
+    collectionName: token.current_collection.collection_name,
+    collectionId: token.current_collection.collection_id,
+    creatorAddress: token.current_collection.creator_address,
+    ownerAddress: ownerAddress,
+    meta: {
+      name: token.token_name,
+      description: token.description,
+      image: image,
+      animationUri: animationUri,
+    },
+  };
+
+  return formattedToken;
 };
 
 export const setCompleteAuction = async (auctionId: string) => {
@@ -298,6 +497,10 @@ export const getOwnerAndRoyaltyOfTokenInAuction = async ({
   creatorAddress: string;
   tokenDataId: string;
 }) => {
+  if (!tokenDataId.startsWith("0x")) {
+    tokenDataId = "0x" + tokenDataId;
+  }
+
   const getOwnerAndRoyaltyOfTokenQuery = {
     operationName: "GetOwnerAndRoyaltyOfToken",
     query: `
@@ -318,7 +521,7 @@ export const getOwnerAndRoyaltyOfTokenInAuction = async ({
     `,
     variables: {
       CREATOR_ADDRESS: creatorAddress,
-      TOKEN_DATA_ID: "0x" + tokenDataId,
+      TOKEN_DATA_ID: tokenDataId,
     },
   };
   const res = await axios.post(GRAPHQL_URL, getOwnerAndRoyaltyOfTokenQuery);
@@ -334,10 +537,12 @@ export const getOwnerAndRoyaltyOfTokenInAuction = async ({
 
   let royaltyPercentage = 0;
 
-  if (royalty.royalty_points_numerator !== 0) {
-    royaltyPercentage =
-      (royalty.royalty_points_numerator * 100) /
-      royalty.royalty_points_denominator;
+  if (royalty) {
+    if (royalty.royalty_points_numerator !== 0) {
+      royaltyPercentage =
+        (royalty.royalty_points_numerator * 100) /
+        royalty.royalty_points_denominator;
+    }
   }
 
   return { owner: owner, royalty: royaltyPercentage };
@@ -375,4 +580,230 @@ export const getUnderReviewAuctionsOfUser = async ({
   });
 
   return res.data.auctions;
+};
+
+export const createAuctionV1InChain = async ({
+  creatorAddress,
+  collectionName,
+  tokenName,
+  propertyVersion,
+  startTime,
+  minimumBid,
+  bidIncrement,
+  auctionEndTime,
+  minimumBidTimeBeforeEnd,
+  coinType,
+}: InitAuctionV1) => {
+  await checkWalletConnected();
+
+  checkNetwork();
+
+  const coinTypeObject = getCoinType(coinType);
+
+  const startTimeInSeconds: number = convertDateInSeconds(startTime);
+  const endTimeInSeconds: number = convertDateInSeconds(auctionEndTime);
+
+  const convertedMinimumBid: number = convertPriceToSendInSmartContract({
+    price: minimumBid,
+    coinType: coinType,
+    isConverted: false,
+  });
+
+  const convertedBidIncrement: number = convertPriceToSendInSmartContract({
+    price: bidIncrement,
+    coinType: coinType,
+    isConverted: false,
+  });
+
+  const createAuctionPayload: InputGenerateTransactionPayloadData = {
+    function:
+      `${AUCTION_PID}::coin_listing::init_auction_for_tokenv1` as `${string}::${string}::${string}`,
+    functionArguments: [
+      creatorAddress,
+      collectionName,
+      tokenName,
+      propertyVersion,
+      FEE_SCHEDULE_ID,
+      startTimeInSeconds,
+      convertedMinimumBid,
+      convertedBidIncrement,
+      endTimeInSeconds,
+      0,
+      null,
+    ],
+    typeArguments: [coinTypeObject.coinObject],
+  };
+
+  const res = await executeSmartContract(createAuctionPayload);
+
+  return res;
+};
+
+export const createAuctionV2InChain = async ({
+  tokenDataId,
+  startTime,
+  minimumBid,
+  bidIncrement,
+  auctionEndTime,
+  minimumBidTimeBeforeEnd,
+  coinType,
+}: InitAuctionV2) => {
+  await checkWalletConnected();
+
+  checkNetwork();
+
+  const coinTypeObject = getCoinType(coinType);
+
+  const startTimeInSeconds: number = convertDateInSeconds(startTime);
+  const endTimeInSeconds: number = convertDateInSeconds(auctionEndTime);
+
+  const convertedMinimumBid: number = convertPriceToSendInSmartContract({
+    price: minimumBid,
+    coinType: coinType,
+    isConverted: false,
+  });
+
+  const convertedBidIncrement: number = convertPriceToSendInSmartContract({
+    price: bidIncrement,
+    coinType: coinType,
+    isConverted: false,
+  });
+
+  const createAuctionPayload: InputGenerateTransactionPayloadData = {
+    function:
+      `${AUCTION_PID}::coin_listing::init_auction` as `${string}::${string}::${string}`,
+    functionArguments: [
+      tokenDataId,
+      FEE_SCHEDULE_ID,
+      startTimeInSeconds,
+      convertedMinimumBid,
+      convertedBidIncrement,
+      endTimeInSeconds,
+      0,
+      null,
+    ],
+    typeArguments: [coinTypeObject.coinObject],
+  };
+
+  const res = await executeSmartContract(createAuctionPayload);
+
+  return res;
+};
+
+export const saveAuctionInDatabase = async ({
+  token,
+  startAt,
+  endAt,
+  min_bid,
+  id,
+  auction_name,
+  twitter,
+  instagram,
+  user_id,
+  coin_type,
+  contract,
+  bidIncrement,
+}: CreateAuction) => {
+  const res = await creatorStudioRequest.post("/api/auction", {
+    nft: token,
+    startAt: startAt,
+    endAt: endAt,
+    min_bid: min_bid,
+    id: id,
+    auction_name: auction_name,
+    twitter: twitter,
+    instagram: instagram,
+    user_id: user_id,
+    coin_type: coin_type,
+    contract: contract,
+    bid_inc: bidIncrement,
+  });
+
+  return res;
+};
+
+export const placeBidInChain = async ({
+  auctionId,
+  bid,
+  coinType,
+  pid,
+}: {
+  auctionId: string;
+  bid: number;
+  coinType: string;
+  pid: string;
+}) => {
+  await checkWalletConnected();
+
+  checkNetwork();
+
+  const coinTypeObject = getCoinType(coinType);
+
+  const convertedBid: number = convertPriceToSendInSmartContract({
+    price: bid,
+    coinType: coinType,
+    isConverted: false,
+  });
+
+  const placeBidPayload: InputGenerateTransactionPayloadData = {
+    function: `${pid}::coin_listing::bid` as `${string}::${string}::${string}`,
+    functionArguments: [auctionId, convertedBid],
+    typeArguments: [coinTypeObject.coinObject],
+  };
+
+  const res = await executeSmartContract(placeBidPayload);
+
+  return res;
+};
+
+export const completeAuction = async ({
+  auctionId,
+  coinType,
+  pid,
+}: {
+  auctionId: string;
+  coinType: string;
+  pid: string;
+}) => {
+  await checkWalletConnected();
+
+  checkNetwork();
+
+  const coinTypeObject = getCoinType(coinType);
+
+  const completeAuctionPayload: InputGenerateTransactionPayloadData = {
+    function:
+      `${pid}::coin_listing::complete_auction` as `${string}::${string}::${string}`,
+    functionArguments: [auctionId],
+    typeArguments: [coinTypeObject.coinObject],
+  };
+
+  const res = await executeSmartContract(completeAuctionPayload);
+
+  return res;
+};
+
+export const getRoyaltyFromResourceAccount = async ({
+  resourceAccount,
+  candyId,
+}: {
+  resourceAccount: string;
+  candyId: string;
+}) => {
+  const resources = await client.getAccountResources(resourceAccount);
+
+  if (!candyId) {
+    candyId = process.env.CANDY_MACHINE_V2 ? process.env.CANDY_MACHINE_V2 : "";
+  }
+
+  let royalty = 0;
+  resources.map((resource) => {
+    if (resource.type === `${candyId}::candymachine::CandyMachine`) {
+      const data: any = resource.data;
+
+      royalty = data.royalty_points_numerator / 10;
+    }
+  });
+
+  return royalty;
 };

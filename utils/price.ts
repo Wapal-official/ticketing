@@ -34,6 +34,16 @@ export const convertPriceToSendInSmartContract = ({
         convertedPrice = parseFloat((price * Math.pow(10, 6)).toFixed(4));
       }
       break;
+    case "SHRIMP":
+      if (isConverted) {
+        convertedPrice = price / Math.pow(10, 8);
+        convertedPrice = parseFloat(
+          (convertedPrice * Math.pow(10, 2)).toFixed(4)
+        );
+      } else {
+        convertedPrice = parseFloat((price * Math.pow(10, 2)).toFixed(4));
+      }
+      break;
     default:
       if (isConverted) {
         convertedPrice = price;

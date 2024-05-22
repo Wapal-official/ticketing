@@ -6,6 +6,7 @@ import guiDark from "@/assets/img/gui-dark.png";
 import guiWhite from "@/assets/img/gui-white.png";
 import celestialWhite from "@/assets/img/celestial-white.png";
 import xenonWhite from "@/assets/img/xenon-white.png";
+import shrimp from "@/assets/img/shrimp.png";
 
 const APT_COIN_OBJECT = "0x1::aptos_coin::AptosCoin";
 const GUI_COIN_OBJECT =
@@ -16,6 +17,8 @@ const CELESTIAL_COIN_OBJECT =
   "0xe4ccb6d39136469f376242c31b34d10515c8eaaa38092f804db8e08a8f53c5b2::assets_v1::EchoCoin004";
 const XENON_COIN_OBJECT =
   "0xf6563b1903ecac579a72c8221700bcb7ce7e0fb841b14dcfd705a9353e291eb0::asset::XenonCoin";
+const SHRIMP_COIN_OBJECT =
+  "0x55987edfab9a57f69bac759674f139ae473b5e09a9283848c1f87faf6fc1e789::shrimp::ShrimpCoin";
 
 export const getCoinType = (coinType: string) => {
   const coinTypeObject = {
@@ -57,6 +60,13 @@ export const getCoinType = (coinType: string) => {
       coinTypeObject.candy_id = process.env.XENON_CANDY_MACHINE;
       coinTypeObject.coinObject = XENON_COIN_OBJECT;
       break;
+    case "SHRIMP":
+      coinTypeObject.coinType = "SHRIMP";
+      coinTypeObject.imageDark = shrimp;
+      coinTypeObject.imageWhite = shrimp;
+      coinTypeObject.candy_id = process.env.SHRIMP_CANDY_MACHINE;
+      coinTypeObject.coinObject = SHRIMP_COIN_OBJECT;
+      break;
     default:
       break;
   }
@@ -69,5 +79,5 @@ export const getAvailableCoinTypes = () => {
 };
 
 export const getAvailableCoinTypesForAuction = () => {
-  return ["APT", "GUI"];
+  return ["APT", "GUI", "SHRIMP"];
 };
