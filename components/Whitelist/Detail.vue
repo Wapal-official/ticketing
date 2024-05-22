@@ -194,6 +194,10 @@ export default {
         (this.resource.occupiedSpots / this.resource.totalSpots) * 100
       );
 
+      if (this.resource.spotPercent >= 100) {
+        this.resource.spotPercent = 100;
+      }
+
       const noOfSpotsPercent: any = this.$refs.noOfSpotsPercent;
 
       noOfSpotsPercent.style.width = this.resource.spotPercent + "%";
@@ -221,6 +225,10 @@ export default {
         this.resource.spotPercent = Math.floor(
           (this.resource.occupiedSpots / this.resource.totalSpots) * 100
         );
+
+        if (this.resource.spotPercent >= 100) {
+          this.resource.spotPercent = 100;
+        }
 
         const noOfSpotsPercent: any = this.$refs.noOfSpotsPercent;
 
