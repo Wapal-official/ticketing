@@ -45,7 +45,9 @@
             <div class="tw-font-medium !tw-text-white">
               {{
                 getLiveStatus === -1
-                  ? "Ended"
+                  ? collection?.status.sold_out
+                    ? "Soldout"
+                    : "Ended"
                   : getLiveStatus === 0
                   ? "Upcoming"
                   : "Live"
@@ -112,7 +114,7 @@ export default {
       return this.type === "collection";
     },
     getLiveStatus() {
-      if (this.resource.paused) {
+      if (this.resource.paused || this.collection.status.sold_out) {
         return -1;
       }
 
