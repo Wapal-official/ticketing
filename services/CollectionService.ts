@@ -3,6 +3,7 @@ import axios from "axios";
 import { publicRequest } from "@/services/fetcher";
 import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 import { getCachedUrlOfImage } from "@/utils/imageCache";
+import { clearCacheOfMintLimit } from "@/services/WhitelistService";
 
 const filterApprovedCollections = (collections: any[]) => {
   const tempCollections = collections.filter((collection: any) => {
@@ -302,6 +303,8 @@ export const updateCollection = async (collectionId: string, data: any) => {
     `/api/collection/${collectionId}`,
     { ...data, updated_at: now }
   );
+
+  await clearCacheOfMintLimit();
 
   return res;
 };
