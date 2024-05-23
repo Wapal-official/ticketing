@@ -832,7 +832,7 @@ export default {
           }
         }
 
-        if (res.success || res.hash) {
+        if (res.success) {
           this.mintButtonClicked = 0;
 
           this.$toast.showMessage({
