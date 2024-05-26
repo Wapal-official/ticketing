@@ -40,7 +40,6 @@ export default {
   },
   data() {
     return {
-      allFiles: [],
       headers: [
         {
           text: "Name",
@@ -77,9 +76,9 @@ export default {
       return (size / 1024).toFixed(2) + " KB";
     },
   },
-  watch: {
-    paginatedFiles(paginatedFiles: any) {
-      this.allFiles.push(...paginatedFiles);
+  computed: {
+    allFiles() {
+      return this.$store.state.asset.files;
     },
   },
 };
