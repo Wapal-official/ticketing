@@ -133,7 +133,6 @@ export default {
       linkedAsset: { name: "", image: "" },
       showAddMetadataDialog: false,
       file: { name: "", attributes: null },
-      hasMetadata: false,
     };
   },
   methods: {
@@ -178,11 +177,7 @@ export default {
         this.$toast.showMessage({ message: "Link Copied Successfully" });
       }
     },
-    addMetadataInFile({ attributes }: { attributes: any }) {
-      this.file.attributes = attributes;
-
-      this.hasMetadata = true;
-
+    addMetadataInFile() {
       this.showAddMetadataDialog = false;
     },
   },
@@ -211,13 +206,17 @@ export default {
     getAssetName() {
       return this.file.image ? this.file.name : this.file?.name;
     },
+    hasMetadata() {
+      return this.file.edit;
+    },
+  },
+  watch: {
+    propFile() {
+      this.file = this.propFile;
+    },
   },
   async mounted() {
     this.file = this.propFile;
-
-    if (this.file.attributes) {
-      this.hasMetadata = true;
-    }
 
     this.loading = false;
   },

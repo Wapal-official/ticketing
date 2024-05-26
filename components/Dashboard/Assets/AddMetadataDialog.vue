@@ -179,7 +179,7 @@ export default {
             break;
           case "applyForAll":
             nftIdFrom = 0;
-            nftIdTo = this.folderInfo.files.length - 1;
+            nftIdTo = this.folderInfo.assets.files.length - 1;
             break;
           case "applyInRange":
             nftIdFrom = this.rangeFrom;
@@ -206,11 +206,16 @@ export default {
           attributes: this.attributes,
         });
 
-        // if (res.data.data) {
         this.saving = false;
 
         this.$emit("closeModal", {
           attributes: this.attributes,
+        });
+
+        this.$store.dispatch("asset/makeAttributesOfFileEditable", {
+          attributes: this.attributes,
+          nftIdFrom: nftIdFrom,
+          nftIdTo: nftIdTo,
         });
 
         this.$toast.showMessage({
@@ -219,9 +224,6 @@ export default {
         });
 
         this.checkIfAllFilesHaveMetadata();
-        // } else {
-        //   throw new Error("Metadata Already Added");
-        // }
       } catch (error) {
         this.saving = false;
         this.$toast.showMessage({ message: error, error: true });
@@ -294,20 +296,20 @@ export default {
   mounted() {
     if (this.propAttributes) {
       this.edit = true;
-      this.attributes = this.propAttributes;
+      this.attributes = structuredClone(this.propAttributes);
     }
   },
   watch: {
     id() {
       if (this.propAttributes) {
         this.edit = true;
-        this.attributes = this.propAttributes;
+        this.attributes = structuredClone(this.propAttributes);
       }
     },
     propAttributes() {
       if (this.propAttributes) {
         this.edit = true;
-        this.attributes = this.attributes;
+        this.attributes = structuredClone(this.attributes);
       }
     },
   },

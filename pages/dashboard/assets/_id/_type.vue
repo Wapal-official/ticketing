@@ -53,6 +53,7 @@
             title="Set Metadata"
             @click="showSetMetadataDialog = true"
             :bordered="true"
+            v-if="showSetMetadataButton"
           />
           <button>
             <v-icon class="!tw-text-white" @click="showListView"
@@ -71,7 +72,6 @@
         <div class="tw-w-full">
           <dashboard-assets-image-gallery
             v-if="!listView"
-            :paginatedFiles="paginatedFiles"
             :type="$route.params.type"
             :extension="fileExtension"
             :folderName="folderInfo.folder_name"
@@ -291,7 +291,7 @@ export default {
 
       const folderId = this.$route.params.id;
 
-      this.paginatedFiles = [];
+      this.$store.commit("asset/setFiles", []);
 
       const res = await getFolderById(folderId);
 
@@ -343,7 +343,8 @@ export default {
       this.debounce = setTimeout(async () => {
         this.page++;
         const scrollNumber = this.page * this.assetLimit;
-        this.paginatedFiles = [];
+
+        this.$store.commit("asset/setFiles", []);
 
         if (scrollNumber > this.folderInfo.files.length) {
           this.end = true;
@@ -399,12 +400,9 @@ export default {
                 };
               } else {
                 const createdDate = moment().format("DD/MM/YYYY");
-
                 if (
                   this.folderInfo.metadata.files.length === 0 &&
-                  this.folderInfo.traits &&
-                  this.folderInfo.traits[index] &&
-                  this.folderInfo.traits[index].attributes
+                  this.folderInfo.traits
                 ) {
                   generatedFile = {
                     _id: fileIndex,
@@ -413,16 +411,18 @@ export default {
                     type: res.headers["content-type"],
                     createdDate: createdDate,
                     size: res.headers["content-length"],
+                    edit: false,
                   };
 
                   const nft = this.folderInfo.traits.find(
-                    (trait: any) => trait.nftId === index
+                    (trait: any) => Number(trait.nftId) === Number(fileIndex)
                   );
 
                   let attributes: any[] = [];
                   if (nft) {
                     attributes = nft.attributes;
                     generatedFile.attributes = attributes;
+                    generatedFile.edit = true;
                   }
                 } else {
                   generatedFile = {
@@ -446,7 +446,8 @@ export default {
         mappedFiles.sort((a: any, b: any) => {
           return a._id - b._id;
         });
-        this.paginatedFiles.push(...mappedFiles);
+
+        this.$store.commit("asset/pushNewFilesIntoFiles", mappedFiles);
 
         this.mappingFiles = false;
       }, 1000);
