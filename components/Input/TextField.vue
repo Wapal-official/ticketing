@@ -31,7 +31,7 @@
         :counter="counter"
         :type="type"
         :disabled="disabled"
-        class="wapal-input tw-w-full px-8"
+        class="wapal-input no-spin-button tw-w-full px-8"
         :class="{
           'tw-cursor-not-allowed': disabled,
           '!tw-pl-6': $slots['prepend-icon'],

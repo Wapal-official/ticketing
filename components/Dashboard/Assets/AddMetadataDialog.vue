@@ -18,37 +18,10 @@
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-h-[285px] tw-max-h-[285px] tw-overflow-y-auto tw-px-2 no-scrollbar md:tw-px-8"
         ref="metadataForm"
       >
-        <h3>Token Details</h3>
-        <ValidationProvider
-          rules="required"
-          name="name"
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-          v-slot="{ errors }"
-        >
-          <input-text-field
-            label="Token Name"
-            v-model="metadata.name"
-            :required="true"
-          />
-          <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-        </ValidationProvider>
-        <ValidationProvider
-          rules="required"
-          name="description"
-          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-          v-slot="{ errors }"
-        >
-          <input-text-area
-            label="Description"
-            v-model="metadata.description"
-            :required="true"
-          />
-          <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-        </ValidationProvider>
         <h3>Attributes</h3>
         <div
           class="tw-w-full tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-4"
-          v-for="(attribute, index) in metadata.attributes"
+          v-for="(attribute, index) in attributes"
           :key="index"
         >
           <div
@@ -94,6 +67,49 @@
             <i class="bx bx-plus"></i>
           </template>
         </button-primary>
+        <div
+          class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+        >
+          <input-radio-button
+            v-model="selectedRange"
+            displayValue="applyForOne"
+            label="Apply For One"
+          />
+          <input-radio-button
+            v-model="selectedRange"
+            displayValue="applyForAll"
+            label="Apply For All"
+          />
+          <input-radio-button
+            v-model="selectedRange"
+            displayValue="applyInRange"
+            label="Apply In Range"
+          />
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            v-if="selectedRange === 'applyInRange'"
+          >
+            <h6 class="tw-text-white tw-text-xs">Range</h6>
+            <div
+              class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-4 tw-w-1/2"
+            >
+              <input-text-field
+                type="number"
+                v-model="rangeFrom"
+                :required="true"
+              />
+              <i class="bx bx-minus tw-text-dark-4 tw-text-2xl"></i>
+              <input-text-field
+                type="number"
+                v-model="rangeTo"
+                :required="true"
+              />
+            </div>
+            <div v-if="rangeError" class="tw-text-red-600 tw-text-sm">
+              Range is Required
+            </div>
+          </div>
+        </div>
         <button-primary
           title="Save Changes"
           @click="saveChanges"
@@ -106,48 +122,44 @@
 <script>
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import {
-  addMetadata,
+  addMultipleMetadata,
   editMetadata,
   getFolderById,
+  getTraitsOfAsset,
 } from "@/services/AssetsService";
 export default {
   props: {
     image: { type: String },
     folderName: { type: String },
     id: { type: [String, Number] },
-    propMetadata: { type: Object },
+    propAttributes: { type: Array },
   },
   components: { ValidationObserver, ValidationProvider },
   data() {
     return {
-      metadata: {
-        name: "",
-        description: "",
-        attributes: [{ trait_type: "", value: "" }],
-        image: this.image,
-      },
+      attributes: [{ trait_type: "", value: "" }],
       saving: false,
       edit: false,
-      folderInfo: null,
+      selectedRange: "applyForOne",
+      rangeFrom: null,
+      rangeTo: null,
+      rangeError: false,
     };
   },
   methods: {
     addAttribute() {
-      this.metadata.attributes.push({ trait_type: "", value: "" });
+      this.attributes.push({ trait_type: "", value: "" });
     },
     deleteAttribute(index) {
-      this.metadata.attributes.splice(index, 1);
+      this.attributes.splice(index, 1);
     },
     saveChanges() {
-      if (this.edit) {
-        this.editMetadata();
-      } else {
-        this.saveMetadata();
-      }
+      this.saveMetadata();
     },
     async saveMetadata() {
       try {
         this.saving = true;
+        this.rangeError = false;
 
         const validated = await this.$refs.metadataForm.validate();
 
@@ -156,34 +168,60 @@ export default {
           return;
         }
 
-        const user_id = this.$store.state.userStore.user.user_id;
-
         const folder_name = this.folderName;
-        const folder_id = this.$route.params.id;
         const nftId = this.id;
 
-        const res = await addMetadata({
-          user_id,
-          folder_name,
-          nftId,
-          folder_id,
-          metadata: this.metadata,
-        });
+        let nftIdFrom = this.id;
+        let nftIdTo = this.id;
 
-        if (res.data.data) {
+        switch (this.selectedRange) {
+          case "applyForOne":
+            break;
+          case "applyForAll":
+            nftIdFrom = 0;
+            nftIdTo = this.folderInfo.files.length - 1;
+            break;
+          case "applyInRange":
+            nftIdFrom = this.rangeFrom;
+            nftIdTo = this.rangeTo;
+            break;
+          default:
+            break;
+        }
+
+        if (
+          this.selectedRange === "applyInRange" &&
+          (this.rangeFrom === null || this.rangeTo === null)
+        ) {
+          this.rangeError = true;
           this.saving = false;
 
-          this.$emit("closeModal", this.metadata);
-
-          this.$toast.showMessage({
-            message: "Metadata Added Successfully",
-            error: false,
-          });
-
-          this.checkIfAllFilesHaveMetadata();
-        } else {
-          throw new Error("Metadata Already Added");
+          return;
         }
+
+        const res = await addMultipleMetadata({
+          folder_name: folder_name,
+          nftIdFrom: nftIdFrom,
+          nftIdTo: nftIdTo,
+          attributes: this.attributes,
+        });
+
+        // if (res.data.data) {
+        this.saving = false;
+
+        this.$emit("closeModal", {
+          attributes: this.attributes,
+        });
+
+        this.$toast.showMessage({
+          message: "Metadata Added Successfully",
+          error: false,
+        });
+
+        this.checkIfAllFilesHaveMetadata();
+        // } else {
+        //   throw new Error("Metadata Already Added");
+        // }
       } catch (error) {
         this.saving = false;
         this.$toast.showMessage({ message: error, error: true });
@@ -246,35 +284,39 @@ export default {
     async getFolderInfo() {
       const res = await getFolderById(this.$route.params.id);
 
-      this.folderInfo = res.data.folderInfo;
+      const traits = await getTraitsOfAsset({ folderId: this.folderInfo._id });
+
+      res.data.folderInfo.traits = traits;
+
+      this.$store.commit("asset/setFolderInfo", res.data.folderInfo);
     },
   },
   mounted() {
-    if (this.propMetadata) {
+    if (this.propAttributes) {
       this.edit = true;
-      this.metadata = this.propMetadata;
-      this.metadata.image = this.image;
+      this.attributes = this.propAttributes;
     }
   },
   watch: {
     id() {
-      if (this.propMetadata) {
+      if (this.propAttributes) {
         this.edit = true;
-        this.metadata = this.propMetadata;
-        this.metadata.image = this.image;
+        this.attributes = this.propAttributes;
       }
     },
-    propMetadata() {
-      if (this.propMetadata) {
+    propAttributes() {
+      if (this.propAttributes) {
         this.edit = true;
-        this.metadata = this.propMetadata;
-        this.metadata.image = this.image;
+        this.attributes = this.attributes;
       }
     },
   },
   computed: {
     showSetMetadataButton() {
       return this.$store.state.asset.showSetMetadataButton;
+    },
+    folderInfo() {
+      return this.$store.state.asset.folderInfo;
     },
   },
 };
