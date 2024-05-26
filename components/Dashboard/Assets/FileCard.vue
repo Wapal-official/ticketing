@@ -144,7 +144,6 @@ export default {
       linkedAsset: { name: "", image: "" },
       showAddMetadataDialog: false,
       file: { name: "", metadata: null, attributes: null },
-      hasMetadata: false,
       videoSrc: "",
       imgFromJson: "",
       checkJson: false,
@@ -272,9 +271,6 @@ export default {
 
     // this.getNftDetails(fileSrc);
     console.log("file", this.file);
-    if (this.file.metadata) {
-      this.hasMetadata = true;
-    }
 
     this.loading = false;
   },
