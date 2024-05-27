@@ -337,7 +337,6 @@ export default {
 
       this.$store.commit("asset/setFolderInfo", this.folderInfo);
 
-      this.folderInfo.traits = res.data.folderInfo.traits;
       if (this.isImage(this.folderInfo.assets.ext)) {
         this.isImgforMetadata = true;
       }
@@ -656,7 +655,6 @@ export default {
       return (
         this.folderInfo.metadata.files.length === 0 &&
         this.folderInfo.assets.files.length > 0 &&
-        this.folderInfo.images.files.length > 0 &&
         this.folderInfo.traits.length === this.folderInfo.assets.files.length
       );
     },
