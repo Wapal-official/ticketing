@@ -101,7 +101,7 @@ export default {
           public_sale_price: 0,
         },
         status: {
-          sold_out: true,
+          sold_out: false,
         },
         username: "monkkesanturies",
         isVerified: true,
