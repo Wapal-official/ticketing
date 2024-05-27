@@ -62,7 +62,6 @@ export default {
   },
   data() {
     return {
-      allFiles: [],
       headers: [
         {
           text: "Name",
@@ -160,10 +159,9 @@ export default {
         : false;
     },
   },
-  watch: {
-    paginatedFiles(paginatedFiles: any) {
-      console.log("check gr", paginatedFiles);
-      this.allFiles.push(...paginatedFiles);
+  computed: {
+    allFiles() {
+      return this.$store.state.asset.files;
     },
   },
 };

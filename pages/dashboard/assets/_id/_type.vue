@@ -49,12 +49,12 @@
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 tw-w-full md:tw-w-fit md:tw-justify-end"
         >
-          <!-- <button-primary
+          <button-primary
             title="Set Metadata"
             @click="showSetMetadataDialog = true"
             :bordered="true"
-            v-if="showSetMetadataButton || showSetMetadataButtonFromStore"
-          /> -->
+            v-if="showSetMetadataButton"
+          />
           <button>
             <v-icon class="!tw-text-white" @click="showListView"
               >mdi-view-list</v-icon
@@ -72,14 +72,13 @@
         <div class="tw-w-full">
           <dashboard-assets-image-gallery
             v-if="!listView"
-            :paginatedFiles="paginatedFiles"
             :type="$route.params.type"
             propFile
             :extension="fileExtension"
             :folderName="folderInfo.folder_name"
             @displayFileDetails="displayFileDetails"
           />
-          <dashboard-assets-table :paginatedFiles="paginatedFiles" v-else />
+          <dashboard-assets-table v-else />
         </div>
       </div>
       <v-dialog
@@ -192,25 +191,11 @@
       content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
       :persistent="generatingMetadata"
     >
-      <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
-      >
-        <div>Are you sure you want to set Metadata?</div>
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
-        >
-          <button-primary
-            title="Yes"
-            @click="sendFolderNameToGenerateMetadata"
-            :loading="generatingMetadata"
-          />
-          <button-primary
-            title="No"
-            :bordered="true"
-            @click="showSetMetadataDialog = false"
-          />
-        </div>
-      </div>
+      <dashboard-assets-set-metadata-modal
+        :folderName="folderInfo.folder_name"
+        @generatedMetadata="sendFolderNameToGenerateMetadata"
+        @closeSetMetadataModal="showSetMetadataDialog = false"
+      />
     </v-dialog>
   </div>
 </template>
@@ -224,6 +209,7 @@ import {
   getFolderById,
   deleteFolderOnServer,
   generateMetadataFolderInServer,
+  getTraitsOfAsset,
 } from "@/services/AssetsService";
 import { defaultTheme } from "@/theme/wapaltheme";
 import moment from "moment";
@@ -327,42 +313,30 @@ export default {
 
       const folderId = this.$route.params.id;
 
-      this.paginatedFiles = [];
+      this.$store.commit("asset/setFiles", []);
 
       const res = await getFolderById(folderId);
-      if (this.type === "assets" && !res.data.folderInfo.metadata.baseURI) {
-        this.folderInfo.files = res.data.folderInfo.assets.files;
-        console.log("ress");
-      } else if (
-        this.type === "images" &&
-        !res.data.folderInfo.metadata.baseURI
-      ) {
-        this.folderInfo.files = res.data.folderInfo.images.files;
-        console.log("ress2");
-      } else {
-        this.folderInfo.files = res.data.folderInfo.metadata.files;
-        console.log("ress3", this.folderInfo.files);
-      }
-      // this.folderInfo.files =
-      // this.type === "assets" && !res.data.folderInfo.metadata.baseURI
-      //   ? res.data.folderInfo.assets.files
-      //   : res.data.folderInfo.metadata.files;
-      // this.type === "assets" && !res.data.folderInfo.metadata.baseURI
-      //   ? res.data.folderInfo.assets.files
-      //   : this.type === "images" && !res.data.folderInfo.metadata.baseURI
-      //   ? res.data.folderInfo.images.files
-      //   : res.data.folderInfo.metadata.files;
-      // this.folderInfo.files =
-      //   this.type === "images" && !res.data.folderInfo.metadata.baseURI
-      //     ? res.data.folderInfo.images.files
-      //     : res.data.folderInfo.metadata.files;
+
+      this.$store.commit("asset/setFolderInfo", null);
+
+      this.folderInfo.files =
+        this.type === "assets" && !res.data.folderInfo.metadata.baseURI
+          ? res.data.folderInfo.assets.files
+          : res.data.folderInfo.metadata.files;
+
       this.folderInfo.folder_name = res.data.folderInfo.folder_name;
       this.folderInfo._id = res.data.folderInfo._id;
       this.folderInfo.user_id = res.data.folderInfo.user_id;
       this.folderInfo.assets = res.data.folderInfo.assets;
       this.folderInfo.images = res.data.folderInfo.images;
       this.folderInfo.metadata = res.data.folderInfo.metadata;
-      this.folderInfo.traits = res.data.folderInfo.traits;
+
+      const traits = await getTraitsOfAsset({ folderId: this.folderInfo._id });
+
+      this.folderInfo.traits = traits;
+
+      this.$store.commit("asset/setFolderInfo", this.folderInfo);
+
       if (this.isImage(this.folderInfo.assets.ext)) {
         this.isImgforMetadata = true;
       }
@@ -405,7 +379,8 @@ export default {
       this.debounce = setTimeout(async () => {
         this.page++;
         const scrollNumber = this.page * this.assetLimit;
-        this.paginatedFiles = [];
+
+        this.$store.commit("asset/setFiles", []);
 
         if (scrollNumber > this.folderInfo.files.length) {
           this.end = true;
@@ -458,7 +433,7 @@ export default {
               const tempFile = res.data;
 
               let fileType = "image";
-              let generatedFile = null;
+              let generatedFile: any = null;
 
               if (
                 res.headers["content-type"] ===
@@ -483,23 +458,30 @@ export default {
                 };
               } else {
                 const createdDate = moment().format("DD/MM/YYYY");
-
                 if (
                   this.folderInfo.metadata.files.length === 0 &&
-                  this.folderInfo.traits &&
-                  this.folderInfo.traits[index] &&
-                  this.folderInfo.traits[index].metadata
+                  this.folderInfo.traits
                 ) {
-                  const metadata = this.folderInfo.traits[index].metadata;
                   generatedFile = {
                     _id: fileIndex,
-                    name: metadata.name,
+                    name: fileIndex,
                     src: src,
                     type: res.headers["content-type"],
                     createdDate: createdDate,
                     size: res.headers["content-length"],
-                    metadata: metadata,
+                    edit: false,
                   };
+
+                  const nft = this.folderInfo.traits.find(
+                    (trait: any) => Number(trait.nftId) === Number(fileIndex)
+                  );
+
+                  let attributes: any[] = [];
+                  if (nft) {
+                    attributes = nft.attributes;
+                    generatedFile.attributes = attributes;
+                    generatedFile.edit = true;
+                  }
                 } else {
                   generatedFile = {
                     _id: fileIndex,
@@ -523,8 +505,8 @@ export default {
           return a._id - b._id;
         });
 
-        this.paginatedFiles.push(...mappedFiles);
-        console.log("this page", this.paginatedFiles);
+        this.$store.commit("asset/pushNewFilesIntoFiles", mappedFiles);
+
         this.mappingFiles = false;
       }, 1000);
     },
@@ -541,7 +523,7 @@ export default {
           this.balanceNotEnoughError.requiredBalance
         );
 
-        if (transaction.success) {
+        if (transaction.success || transaction.hash) {
           this.uploading = false;
           this.uploadStatusClass = "tw-h-full";
 
@@ -606,10 +588,7 @@ export default {
     async sendFolderNameToGenerateMetadata() {
       try {
         this.generatingMetadata = true;
-        await generateMetadataFolderInServer({
-          folder_name: this.folderInfo.folder_name,
-        });
-        this.generatingMetadata = true;
+
         this.showSetMetadataDialog = false;
 
         this.transferFund(
@@ -676,7 +655,6 @@ export default {
       return (
         this.folderInfo.metadata.files.length === 0 &&
         this.folderInfo.assets.files.length > 0 &&
-        this.folderInfo.images.files.length > 0 &&
         this.folderInfo.traits.length === this.folderInfo.assets.files.length
       );
     },

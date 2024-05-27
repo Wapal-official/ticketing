@@ -123,7 +123,6 @@
 <script lang="ts">
 export default {
   props: {
-    paginatedFiles: { type: Array },
     type: { type: String },
     extension: { type: String },
     folderName: { type: String },
@@ -154,6 +153,9 @@ export default {
       } else {
         return 4;
       }
+    },
+    paginatedFiles() {
+      return this.$store.state.asset.files;
     },
   },
   watch: {

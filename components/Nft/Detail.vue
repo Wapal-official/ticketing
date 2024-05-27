@@ -912,7 +912,8 @@ export default {
         }
 
         if (res.success || res.hash) {
-          this.mintBulkCollection = 0;
+          this.mintButtonClicked = 0;
+
           this.$toast.showMessage({
             message: `${this.collection.name} Minted Successfully`,
           });
@@ -1275,6 +1276,39 @@ export default {
     },
     async mintCollectionExternally() {
       try {
+        if (
+          this.collection.candyMachine.candy_id ===
+          "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62"
+        ) {
+          await sponsorMintTransaction();
+
+          this.minting = false;
+          this.numberOfNft = 1;
+
+          this.$toast.showMessage({
+            message: `${this.collection.name} Minted Successfully`,
+          });
+
+          this.mintButtonClicked = 0;
+
+          if (this.collection.tweet) {
+            this.showShareModal = true;
+          }
+
+          return;
+        }
+
+        if (
+          this.collection.candyMachine.candy_id ===
+          "0xd2434b9d9fc38c6816d55a76a7df6806a0c0bc3599b7bbaabf713e6680f7c8df"
+        ) {
+          await normalMintTransaction();
+          this.minting = false;
+          this.numberOfNft = 1;
+          this.mintCounter;
+          return;
+        }
+
         if (this.externalWhitelisted) {
           const res = await this.$store.dispatch("walletStore/externalMint", {
             mintFunction: this.collection.mintDetails.whitelist_mint_function,
@@ -1298,6 +1332,7 @@ export default {
           this.publicMintCollectionExternally();
         }
       } catch (error) {
+        this.minting = false;
         if (error.message === "Error getting whitelist proof") {
           this.externalWhitelisted = false;
           this.currentSale.mint_price =
