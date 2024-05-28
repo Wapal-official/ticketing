@@ -53,7 +53,7 @@
             title="Set Metadata"
             @click="showSetMetadataDialog = true"
             :bordered="true"
-            v-if="showSetMetadataButton"
+            v-if="showSetMetadataButton || showSetMetadataButtonFromStore"
           />
           <button>
             <v-icon class="!tw-text-white" @click="showListView"
