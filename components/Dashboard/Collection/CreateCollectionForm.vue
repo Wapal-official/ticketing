@@ -1013,10 +1013,15 @@ export default {
     async saveDraftBefore() {
       try {
         this.submitting = true;
+
         const selectedFolder = this.folders.find(
           (folder: any) => folder.folder_name === this.baseURL
         );
-        this.collection.baseURL = selectedFolder.metadataBaseURI;
+
+        if (selectedFolder) {
+          this.collection.baseURL = selectedFolder.metadataBaseURI;
+        }
+
         this.checkCoinType();
 
         const tempCollection = { ...this.collection };
