@@ -478,6 +478,7 @@ export default {
 
       //   this.generatePreviewImage(this.file);
       // }
+      this.videoLink = false;
       this.$refs.input.click();
     },
     dropZoneClickedThumnail() {
@@ -681,7 +682,6 @@ export default {
     },
   },
   mounted() {
-    console.log("this thumbnail", this.thumbnail);
     if (this.file) {
       this.extension = this.file.slice(this.file.lastIndexOf("."));
       // this.checkFileType();

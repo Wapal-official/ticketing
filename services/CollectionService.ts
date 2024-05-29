@@ -290,10 +290,24 @@ export const getApprovedDrafts = async (page: number, limit: number) => {
   return collections;
 };
 
-export const editDraft = async (draftId: string, data: any) => {
-  const res = await publicRequest.patch(`/api/draft/${draftId}`, {
-    data: data,
-  });
+// export const editDraft = async (draftId: string, data: any) => {
+//   const res = await publicRequest.patch(`/api/draft/${draftId}`, {
+//     data: data,
+//   });
+
+//   return res;
+// };
+ 
+
+export const editDraft = async (draftId: string,   formData: any) => {
+  console.log('Form Data', formData);
+  const config = {
+    headers: { "content-type": "multipart/form-data" },
+  };
+  const res = await publicRequest.patch(`/api/draft/${draftId}`,  
+    formData,
+    config
+  );
 
   return res;
 };

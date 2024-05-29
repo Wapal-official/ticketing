@@ -1516,7 +1516,7 @@ export default {
       try {
         const formData = new FormData();
         const selectedFolder = this.folders.find(
-          (folder: any) => folder.folder_name === this.baseURL
+          (folder: { folder_name: any }) => folder.folder_name === this.baseURL
         );
         console.log("selected folder", selectedFolder);
         if (selectedFolder) {
@@ -1524,14 +1524,13 @@ export default {
         }
 
         const tempCollection = structuredClone(this.collection);
-        console.log("asdasd", tempCollection);
-        if (this.$route.params.id) {
-          await editDraft(this.$route.params.id, tempCollection);
-        } else {
-          await this.sendDataToCreateDraft(tempCollection);
+        console.log("tempCollection", tempCollection);
+
+        for (const key in tempCollection) {
+          formData.append(key, tempCollection[key]);
         }
 
-        if (this.image.name && this.$route.params.id) {
+        if (this.image && this.image.name) {
           const fileType = this.checkFileType(this.image.name);
           if (fileType === "image") {
             formData.append("image", this.image);
@@ -1539,10 +1538,15 @@ export default {
             formData.append("media2", this.image);
             formData.append("image", this.thumbnail);
           }
-          await editImage(this.$route.params.id, formData);
         }
-        this.$toast.showMessage({ message: "Draft Updated Successfully" });
 
+        if (this.$route.params.id) {
+          await editDraft(this.$route.params.id, formData);
+        } else {
+          await this.sendDataToCreateDraft(tempCollection);
+        }
+
+        this.$toast.showMessage({ message: "Draft Updated Successfully" });
         this.$router.push("/dashboard/collection/draft");
       } catch (error) {
         console.log(error);
