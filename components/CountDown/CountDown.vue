@@ -97,5 +97,11 @@ export default {
     this.setDate();
     this.startCountdown(this.startTime);
   },
+  watch: {
+    startTime() {
+      this.setDate();
+      this.startCountdown(this.startTime);
+    },
+  },
 };
 </script>
