@@ -23,13 +23,6 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-          <!-- <div class="video-container">
-            <video ref="videoPlayer" controls @loadedmetadata="setupScrubber">
-              <source src="~/assets/video/Launchpad.mp4" />
-            </video>
-            <canvas ref="scrubberCanvas" @click="seekTo"></canvas>
-            <img ref="videoFrame" class="video-frame" />
-          </div> -->
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
@@ -911,44 +904,6 @@ export default {
     async changeStep(step: number) {
       this.stepNumber = step;
     },
-    setupScrubber() {
-      const video = this.$refs.videoPlayer;
-      const canvas = this.$refs.scrubberCanvas;
-      const ctx = canvas.getContext("2d");
-
-      video.addEventListener("canplay", () => {
-        canvas.width = video.clientWidth;
-        canvas.height = video.clientHeight;
-
-        // Draw the initial video frame onto the canvas
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      });
-    },
-    seekTo(event: { clientX: number }) {
-      const canvas = this.$refs.scrubberCanvas;
-      const rect = canvas.getBoundingClientRect();
-      const offsetX = event.clientX - rect.left;
-      const scrubTime =
-        (offsetX / canvas.width) * this.$refs.videoPlayer.duration;
-      this.$refs.videoPlayer.currentTime = scrubTime;
-      this.updateVideoFrame(scrubTime);
-    },
-    updateVideoFrame(scrubTime: number) {
-      const video = this.$refs.videoPlayer;
-      const canvas = this.$refs.scrubberCanvas;
-
-      const ctx = canvas.getContext("2d");
-      const interval = canvas.width / video.duration;
-
-      // Draw the video frame onto the canvas
-      video.currentTime = scrubTime; // Set video time to capture frame at the scrubTime
-      video.addEventListener("seeked", () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // Draw the video frame onto the canvas
-        ctx.fillStyle = "#000"; // Color of the scrubber
-        ctx.fillRect(scrubTime * interval, 0, 1, canvas.height); // Draw a line for the current time
-      });
-    },
     async validateFormForNextStep() {
       switch (this.stepNumber) {
         case 1:
@@ -1034,8 +989,9 @@ export default {
         const selectedFolder = this.folders.find(
           (folder: any) => folder.folder_name === this.baseURL
         );
+        // this.collection.baseURL = selectedFolder.metadata.baseURI;
 
-        this.collection.baseURL = selectedFolder.metadata.baseURI;
+        this.collection.baseURL = selectedFolder.metadataBaseURI;
 
         this.checkCoinType();
 
@@ -1371,9 +1327,10 @@ export default {
         (folder: any) => folder.folder_name === this.baseURL
       );
       if (selectedFolder) {
-        this.collection.supply = selectedFolder.metadata.files.length
-          ? selectedFolder.metadata.files.length
-          : null;
+        // this.collection.supply = selectedFolder.metadata.files.length
+        //   ? selectedFolder.metadata.files.length
+        //   : null;
+        this.collection.supply = selectedFolder.metadata;
       } else {
         this.collection.supply = null;
       }
@@ -1412,11 +1369,6 @@ export default {
       formData.append("coin_type", tempCollection.coinType);
       formData.append("tweet", tempCollection.tweet);
 
-      // if (this.image.name) {
-      //   formData.append("image", this.image);
-      // } else {
-      //   formData.append("image", tempCollection.image);
-      // }
       if (this.image.name) {
         const fileType = this.checkFileType(this.image.name);
         if (fileType === "image") {
@@ -1484,14 +1436,17 @@ export default {
         });
 
         this.folders.map((folder: any) => {
-          if (folder.metadata.baseURI === this.collection.baseURL) {
+          // if (folder.metadata.baseURI === this.collection.baseURL) {
+
+          if (folder.metadataBaseURI === this.collection.baseURL) {
             this.baseURL = folder.folder_name;
           }
         });
 
-        this.whitelistTBD = JSON.parse(this.collection.whitelistTBD)
-          ? true
-          : false;
+        // this.whitelistTBD = JSON.parse(this.collection.whitelistTBD)
+        //   ? true
+        //   : false;
+        this.whitelistTBD = this.collection.whitelist_sale_time ? false : true;
         this.publicSaleTBD = this.collection.public_sale_time ? false : true;
 
         if (this.collection.whitelist_sale_time) {
@@ -1505,9 +1460,6 @@ export default {
             this.collection.public_sale_time
           );
         }
-        // if (this.collection.media2) {
-        //   this.collection.image = this.collection.media2;
-        // }
       } catch (e) {
         console.log("error", e);
       }
@@ -1580,7 +1532,6 @@ export default {
       try {
         return getCoinType(this.collection.coinType);
       } catch (e) {
-        console.log(e);
         return getCoinType("APT");
       }
     },
@@ -1602,7 +1553,9 @@ export default {
     const res = await getAllFolder(this.$store.state.userStore.user.user_id);
 
     res.data.folderInfo.map((folder: any) => {
-      if (folder.metadata.baseURI) {
+      // if (folder.metadata.baseURI) {
+
+      if (folder.metadataBaseURI) {
         this.folders.push(folder);
       }
     });
@@ -1611,7 +1564,6 @@ export default {
       await this.setCollectionDataFromDraft();
     }
     this.loading = false;
-    console.log("this draft", this.collection);
   },
   watch: {
     whitelistTBD() {
