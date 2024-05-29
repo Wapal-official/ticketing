@@ -117,7 +117,7 @@ export default {
   },
   computed: {
     videoUrl() {
-      console.log("url", this.url);
+      this.url = this.fileData.animation_url;
       return this.url;
     },
   },
