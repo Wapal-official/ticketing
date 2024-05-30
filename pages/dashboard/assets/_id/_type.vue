@@ -49,12 +49,12 @@
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 tw-w-full md:tw-w-fit md:tw-justify-end"
         >
-          <!-- <button-primary
+          <button-primary
             title="Set Metadata"
             @click="showSetMetadataDialog = true"
             :bordered="true"
             v-if="showSetMetadataButton || showSetMetadataButtonFromStore"
-          /> -->
+          />
           <button>
             <v-icon class="!tw-text-white" @click="showListView"
               >mdi-view-list</v-icon
@@ -72,7 +72,6 @@
         <div class="tw-w-full">
           <dashboard-assets-image-gallery
             v-if="!listView"
-            :paginatedFiles="paginatedFiles"
             :type="$route.params.type"
             :extension="fileExtension"
             :folderName="folderInfo.folder_name"
@@ -188,25 +187,11 @@
       content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
       :persistent="generatingMetadata"
     >
-      <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
-      >
-        <div>Are you sure you want to set Metadata?</div>
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
-        >
-          <button-primary
-            title="Yes"
-            @click="sendFolderNameToGenerateMetadata"
-            :loading="generatingMetadata"
-          />
-          <button-primary
-            title="No"
-            :bordered="true"
-            @click="showSetMetadataDialog = false"
-          />
-        </div>
-      </div>
+      <dashboard-assets-set-metadata-modal
+        :folderName="folderInfo.folder_name"
+        @generatedMetadata="sendFolderNameToGenerateMetadata"
+        @closeSetMetadataModal="showSetMetadataDialog = false"
+      />
     </v-dialog>
   </div>
 </template>
@@ -220,6 +205,7 @@ import {
   getFolderById,
   deleteFolderOnServer,
   generateMetadataFolderInServer,
+  getTraitsOfAsset,
 } from "@/services/AssetsService";
 import { defaultTheme } from "@/theme/wapaltheme";
 import moment from "moment";
@@ -305,9 +291,11 @@ export default {
 
       const folderId = this.$route.params.id;
 
-      this.paginatedFiles = [];
+      this.$store.commit("asset/setFiles", []);
 
       const res = await getFolderById(folderId);
+
+      this.$store.commit("asset/setFolderInfo", null);
 
       this.folderInfo.files =
         this.type === "assets" && !res.data.folderInfo.metadata.baseURI
@@ -319,7 +307,12 @@ export default {
       this.folderInfo.user_id = res.data.folderInfo.user_id;
       this.folderInfo.assets = res.data.folderInfo.assets;
       this.folderInfo.metadata = res.data.folderInfo.metadata;
-      this.folderInfo.traits = res.data.folderInfo.traits;
+
+      const traits = await getTraitsOfAsset({ folderId: this.folderInfo._id });
+
+      this.folderInfo.traits = traits;
+
+      this.$store.commit("asset/setFolderInfo", this.folderInfo);
 
       this.loading = false;
 
@@ -350,7 +343,8 @@ export default {
       this.debounce = setTimeout(async () => {
         this.page++;
         const scrollNumber = this.page * this.assetLimit;
-        this.paginatedFiles = [];
+
+        this.$store.commit("asset/setFiles", []);
 
         if (scrollNumber > this.folderInfo.files.length) {
           this.end = true;
@@ -381,7 +375,7 @@ export default {
               const tempFile = res.data;
 
               let fileType = "image";
-              let generatedFile = null;
+              let generatedFile: any = null;
 
               if (
                 res.headers["content-type"] ===
@@ -406,23 +400,30 @@ export default {
                 };
               } else {
                 const createdDate = moment().format("DD/MM/YYYY");
-
                 if (
                   this.folderInfo.metadata.files.length === 0 &&
-                  this.folderInfo.traits &&
-                  this.folderInfo.traits[index] &&
-                  this.folderInfo.traits[index].metadata
+                  this.folderInfo.traits
                 ) {
-                  const metadata = this.folderInfo.traits[index].metadata;
                   generatedFile = {
                     _id: fileIndex,
-                    name: metadata.name,
+                    name: fileIndex,
                     src: src,
                     type: res.headers["content-type"],
                     createdDate: createdDate,
                     size: res.headers["content-length"],
-                    metadata: metadata,
+                    edit: false,
                   };
+
+                  const nft = this.folderInfo.traits.find(
+                    (trait: any) => Number(trait.nftId) === Number(fileIndex)
+                  );
+
+                  let attributes: any[] = [];
+                  if (nft) {
+                    attributes = nft.attributes;
+                    generatedFile.attributes = attributes;
+                    generatedFile.edit = true;
+                  }
                 } else {
                   generatedFile = {
                     _id: fileIndex,
@@ -445,7 +446,8 @@ export default {
         mappedFiles.sort((a: any, b: any) => {
           return a._id - b._id;
         });
-        this.paginatedFiles.push(...mappedFiles);
+
+        this.$store.commit("asset/pushNewFilesIntoFiles", mappedFiles);
 
         this.mappingFiles = false;
       }, 1000);
@@ -528,10 +530,7 @@ export default {
     async sendFolderNameToGenerateMetadata() {
       try {
         this.generatingMetadata = true;
-        await generateMetadataFolderInServer({
-          folder_name: this.folderInfo.folder_name,
-        });
-        this.generatingMetadata = true;
+
         this.showSetMetadataDialog = false;
 
         this.transferFund(

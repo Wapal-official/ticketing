@@ -42,7 +42,7 @@
               <i class="bx bx-download tw-text-white tw-text-xl"></i>
             </button>
           </div>
-          <!-- <div
+          <div
             class="tw-h-full tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
             v-if="!this.file.name || !this.file.image"
           >
@@ -64,7 +64,7 @@
                 ><i class="bx bx-plus tw-pr-1"></i>
               </template>
             </button-primary>
-          </div> -->
+          </div>
         </div>
       </div>
       <div
@@ -112,7 +112,7 @@
         :folderName="folderName"
         :image="getAssetSrc"
         :id="id"
-        :propMetadata="file.metadata"
+        :propAttributes="file.attributes"
         @closeModal="addMetadataInFile"
       />
     </v-dialog>
@@ -132,8 +132,7 @@ export default {
       loading: true,
       linkedAsset: { name: "", image: "" },
       showAddMetadataDialog: false,
-      file: { name: "", metadata: null },
-      hasMetadata: false,
+      file: { name: "", attributes: null },
     };
   },
   methods: {
@@ -178,13 +177,7 @@ export default {
         this.$toast.showMessage({ message: "Link Copied Successfully" });
       }
     },
-    addMetadataInFile(metadata: any) {
-      this.file.metadata = metadata;
-
-      this.file.name = metadata.name;
-
-      this.hasMetadata = true;
-
+    addMetadataInFile() {
       this.showAddMetadataDialog = false;
     },
   },
@@ -213,13 +206,17 @@ export default {
     getAssetName() {
       return this.file.image ? this.file.name : this.file?.name;
     },
+    hasMetadata() {
+      return this.file.edit;
+    },
+  },
+  watch: {
+    propFile() {
+      this.file = this.propFile;
+    },
   },
   async mounted() {
     this.file = this.propFile;
-
-    if (this.file.metadata) {
-      this.hasMetadata = true;
-    }
 
     this.loading = false;
   },

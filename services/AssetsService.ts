@@ -138,14 +138,51 @@ export const editMetadata = async ({
   return res;
 };
 
-export const generateMetadataFolderInServer = async ({
+export const addMultipleMetadata = async ({
   folder_name,
+  nftIdFrom,
+  nftIdTo,
+  attributes,
 }: {
   folder_name: string;
+  nftIdFrom: number;
+  nftIdTo: number;
+  attributes: any;
 }) => {
-  const res = await creatorStudioRequest.post(`/api/folder/trait/genmetadata`, {
-    folder_name,
+  const res = await creatorStudioRequest.post(`/api/folder/trait/addMetadata`, {
+    folder_name: folder_name,
+    nftIdFrom: nftIdFrom,
+    nftIdTo: nftIdTo,
+    attributes: attributes,
   });
 
   return res;
+};
+
+export const generateMetadataFolderInServer = async ({
+  folder_name,
+  collectionName,
+  description,
+}: {
+  folder_name: string;
+  collectionName: string;
+  description: string;
+}) => {
+  const res = await creatorStudioRequest.post(`/api/folder/trait/genmetadata`, {
+    folder_name,
+    collectionName: collectionName,
+    description: description,
+  });
+
+  return res;
+};
+
+export const getTraitsOfAsset = async ({ folderId }: { folderId: string }) => {
+  const res = await creatorStudioRequest.get(`/api/folder/trait`, {
+    params: { folder_id: folderId },
+  });
+
+  const data = res.data.data;
+
+  return data;
 };
