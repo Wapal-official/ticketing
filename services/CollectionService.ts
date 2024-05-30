@@ -14,20 +14,27 @@ const filterApprovedCollections = (collections: any[]) => {
 };
 
 export const getCollections = async (page: number, limit: number) => {
-  const res = await axios.get(
-    `${process.env.baseURL}/api/collection/approved?page=${page}&limit=${limit}`
-  );
-
-  const collections = res.data.data;
-
-  collections.map((collection: any) => {
-    collection.image = getCachedUrlOfImage(collection.image);
-  });
-
-  return collections;
+  try {
+    const res = await axios.get(
+      `${process.env.baseURL}/api/collection/approved?page=${page}&limit=${limit}`
+    );
+  
+    const collections = res.data.data;
+  
+    collections.map((collection: any) => {
+      collection.image = getCachedUrlOfImage(collection.image);
+    });
+  
+    return collections;
+  } catch (error) {
+    console.error("Error fetching collections:", error);
+    return {};
+  }
 };
 
 export const getCollection = async (collectionId: string) => {
+  try {
+
   const res = await publicRequest.get(`/api/collection/${collectionId}`);
 
   const collection = res.data.collection[0];
@@ -35,9 +42,15 @@ export const getCollection = async (collectionId: string) => {
   collection.image = getCachedUrlOfImage(collection.image);
 
   return collection;
+} catch (error) {
+  console.error("Error fetching collections:", error);
+  return {};
+}
 };
 
 export const getCollectionInCreatorStudio = async (collectionId: string) => {
+  try {
+
   const res = await creatorStudioRequest.get(`/api/collection/${collectionId}`);
 
   const collection = res.data.collection[0];
@@ -45,7 +58,10 @@ export const getCollectionInCreatorStudio = async (collectionId: string) => {
   collection.image = getCachedUrlOfImage(collection.image);
 
   return collection;
-};
+} catch (error) {
+  console.error("Error fetching collections:", error);
+  return {};
+}};
 
 export const createCollection = async (formData: any) => {
   const config = {
@@ -275,10 +291,24 @@ export const getApprovedDrafts = async (page: number, limit: number) => {
   return collections;
 };
 
-export const editDraft = async (draftId: string, data: any) => {
-  const res = await publicRequest.patch(`/api/draft/${draftId}`, {
-    data: data,
-  });
+// export const editDraft = async (draftId: string, data: any) => {
+//   const res = await publicRequest.patch(`/api/draft/${draftId}`, {
+//     data: data,
+//   });
+
+//   return res;
+// };
+ 
+
+export const editDraft = async (draftId: string,   formData: any) => {
+  console.log('Form Data', formData);
+  const config = {
+    headers: { "content-type": "multipart/form-data" },
+  };
+  const res = await publicRequest.patch(`/api/draft/${draftId}`,  
+    formData,
+    config
+  );
 
   return res;
 };
@@ -298,6 +328,7 @@ export const editImage = async (draftId: string, data: any) => {
 };
 
 export const updateCollection = async (collectionId: string, data: any) => {
+  try {
   const now = new Date().toISOString();
   const res = await creatorStudioRequest.patch(
     `/api/collection/${collectionId}`,
@@ -307,6 +338,10 @@ export const updateCollection = async (collectionId: string, data: any) => {
   await clearCacheOfMintLimit();
 
   return res;
+} catch (error) {
+  console.error("Error fetching collections:", error);
+  return [];
+}
 };
 
 export const getMetadataFromTokenURI = async (URI: string) => {

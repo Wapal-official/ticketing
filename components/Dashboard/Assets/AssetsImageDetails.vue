@@ -3,23 +3,37 @@
     class="tw-w-full tw-relative tw-bg-wapal-background tw-h-full tw-overflow-auto"
     v-if="!loading"
   >
-    <button class="tw-absolute tw-top-4 tw-right-4" @click="close">
+    <button
+      class="tw-absolute tw-top-4 tw-right-4"
+      @click="close"
+      style="z-index: 2"
+    >
       <v-icon class="!tw-text-white">mdi-close</v-icon>
     </button>
     <div
       class="tw-w-full tw-min-h-full tw-border tw-border-transparent tw-px-4 tw-py-16 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4 md:tw-border-primary-tint md:tw-py-8"
     >
       <img
-        :src="this.fileData?.image"
+        :src="this.fileData?.image ? this.fileData?.image : url"
         :alt="this.fileData?.name"
         class="tw-max-w-[300px] tw-max-h-[300px]"
         draggable="false"
         v-if="checkFileType() === 'image'"
       />
-      <video-player
+      <video-player-detailed
         v-else-if="checkFileType() === 'video'"
-        :source="this.fileData?.image"
+        :source="urlFromJson ? urlFromJson : videoUrl"
       />
+      <div
+        class="tw-w-full tw-h-full tw-object-cover"
+        v-else
+        style="height: 200px; position: relative"
+      >
+        <audio-player
+          :audioSrc="urlFromJson ? urlFromJson : videoUrl"
+          class="audio-postion"
+        ></audio-player>
+      </div>
       <h3 class="tw-text-white tw-font-medium tw-uppercase tw-text-sm">
         {{ this.fileData?.name }}
       </h3>
@@ -48,11 +62,38 @@ export default {
       loading: true,
       attributes: [{ trait_type: "", value: "" }],
       fileData: null,
+      url: "",
+      urlFromJson: "",
     };
   },
   methods: {
     close() {
       this.$emit("close");
+    },
+    isVideo(source: string) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
     },
     checkFileType() {
       if (this.extension === ".json") {
@@ -67,13 +108,21 @@ export default {
       if (imageRegex.test(this.extension)) {
         return "image";
       } else if (videoRegex.test(this.extension)) {
+        console.log("ide");
         return "video";
       }
 
       return "json";
     },
   },
+  computed: {
+    videoUrl() {
+      this.url = this.fileData.animation_url;
+      return this.url;
+    },
+  },
   async mounted() {
+    console.log("fileDataa", this.file);
     if (this.file.metadata) {
       this.fileData = this.file.metadata;
       if (this.fileData.attributes) {
@@ -81,9 +130,25 @@ export default {
       }
     } else {
       const res = await this.$axios.get(this.file.name);
+      const url = res.config.url;
+      console.log("res", res);
+
+      this.url = url;
       this.fileData = res.data;
+
       if (this.fileData.attributes) {
         this.attributes = this.fileData.attributes;
+      }
+
+      if (res.data.properties) {
+        let filterSrc;
+        const mediaFile = res.data.properties.files.find(
+          (file: { type: string }) => file.type === "video/mp4"
+        );
+        if (mediaFile) {
+          filterSrc = mediaFile.uri;
+        }
+        this.urlFromJson = filterSrc;
       }
     }
     this.loading = false;
@@ -92,15 +157,28 @@ export default {
     async file(newFile: any) {
       this.loading = true;
       if (newFile.metadata) {
+        console.log("newFilewatch", newFile);
         this.fileData = newFile.metadata;
         if (this.fileData.attributes) {
           this.attributes = this.fileData.attributes;
         }
       } else {
         const res = await this.$axios.get(newFile.name);
+        const url = res.config.url;
+        this.url = url;
         this.fileData = res.data;
         if (this.fileData.attributes) {
           this.attributes = this.fileData.attributes;
+        }
+        if (res.data.properties) {
+          let filterSrc;
+          const mediaFile = res.data.properties.files.find(
+            (file: { type: string }) => file.type === "video/mp4"
+          );
+          if (mediaFile) {
+            filterSrc = mediaFile.uri;
+          }
+          this.urlFromJson = filterSrc;
         }
       }
       this.loading = false;
@@ -108,3 +186,9 @@ export default {
   },
 };
 </script>
+<style>
+.audio-postion {
+  position: absolute;
+  bottom: 10px;
+}
+</style>
