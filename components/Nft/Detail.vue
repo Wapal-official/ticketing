@@ -395,7 +395,7 @@
               v-if="!checkIfPhaseStarted(phase.mint_time)"
               :coinType="collection.seed ? collection.seed.coin_type : 'APT'"
               :showWhitelistText="true"
-              :publicSaleMintLimit="publicSaleMintLimit"
+              :publicSaleMintLimit="Number(publicSaleMintLimit)"
             />
           </div>
         </div>
@@ -474,7 +474,6 @@
 </template>
 <script>
 import {
-  getOwnedCollectionOfUser,
   setSoldOut,
 } from "@/services/CollectionService";
 import { getProof, getMintLimit } from "@/services/WhitelistService";

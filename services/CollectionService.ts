@@ -42,6 +42,7 @@ export const getCollectionInCreatorStudio = async (collectionId: string) => {
 
   const collection = res.data.collection[0];
 
+  collection.uncachedImage = collection.image;
   collection.image = getCachedUrlOfImage(collection.image);
 
   return collection;
@@ -299,6 +300,11 @@ export const editImage = async (draftId: string, data: any) => {
 
 export const updateCollection = async (collectionId: string, data: any) => {
   const now = new Date().toISOString();
+
+  data.image = data.uncachedImage;
+
+  delete data.uncachedImage;
+
   const res = await creatorStudioRequest.patch(
     `/api/collection/${collectionId}`,
     { ...data, updated_at: now }
