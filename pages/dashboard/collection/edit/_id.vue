@@ -803,24 +803,14 @@ export default {
             this.collection.candyMachine.whitelist_sale_time
           ).getTime() !== new Date(sortedPhases[0].mint_time).getTime()
         ) {
+          const phaseWithTimeGreaterThanCurrentTime = sortedPhases.find(
+            (phase) => new Date(phase.mint_time).getTime() > Date.now()
+          );
+
           await updateWhitelistSaleTime({
             candy_object: this.collection.candyMachine.resource_account,
             candy_machine_id: this.collection.candyMachine.candy_id,
-            pre_sale_mint_time: sortedPhases[0].mint_time,
-          });
-        }
-
-        if (
-          this.collection.candyMachine.whitelist_price !=
-          sortedPhases[0].mint_price
-        ) {
-          await updateWhitelistSalePrice({
-            candy_object: this.collection.candyMachine.resource_account,
-            candy_machine_id: this.collection.candyMachine.candy_id,
-            pre_sale_price: sortedPhases[0].mint_price,
-            coinType: this.collection.seed
-              ? this.collection.seed.coin_type
-              : "",
+            pre_sale_mint_time: phaseWithTimeGreaterThanCurrentTime.mint_time,
           });
         }
 

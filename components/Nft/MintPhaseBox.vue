@@ -48,7 +48,7 @@
     </div>
     <div
       class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 tw-text-sm tw-text-dark-0"
-      v-if="showWhitelistText"
+      v-if="showWhitelistText && phase?.id !== 'public-sale'"
     >
       <div
         v-if="phase?.whitelisted"
@@ -68,6 +68,14 @@
       </div>
       <div v-else>You are not whitelisted for this phase</div>
     </div>
+    <div
+      v-if="
+        phase?.id === 'public-sale' && showWhitelistText && publicSaleMintLimit
+      "
+      class="tw-w-full tw-text-sm tw-text-white tw-font-semibold tw-text-right"
+    >
+      Limit {{ publicSaleMintLimit }} per wallet
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -78,6 +86,7 @@ export default {
     coinType: { type: String, default: "APT" },
     showWhitelistText: { type: Boolean, default: false },
     showEnded: { type: Boolean, default: false },
+    publicSaleMintLimit: { type: Number, default: 0 },
   },
   data() {
     return {

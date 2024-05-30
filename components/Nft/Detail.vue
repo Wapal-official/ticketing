@@ -185,6 +185,7 @@
               </h2>
               <div
                 class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-1.5"
+                v-if="currentSale.id !== 'public-sale'"
               >
                 <div
                   class="tw-uppercase tw-text-dark-2 tw-text-xs tw-tracking-[3%] tw-font-semibold"
@@ -362,6 +363,12 @@
                   </div>
                 </div>
               </div>
+              <div
+                v-if="!checkPublicSaleTimer() && publicSaleMintLimit"
+                class="tw-w-full tw-text-sm tw-text-white tw-font-semibold tw-text-right"
+              >
+                Limit {{ publicSaleMintLimit }} per wallet
+              </div>
             </div>
           </div>
         </div>
@@ -369,9 +376,6 @@
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-relative tw-rounded-lg"
           v-if="phaseCounter !== phases.length"
         >
-          <div
-            class="tw-absolute tw-w-full tw-h-1/4 tw-overflow-hidden tw-left-0 tw-bottom-0 tw-rounded-b-lg tw-bg-gradient-to-b tw-from-black/0 tw-to-black"
-          ></div>
           <h2 class="tw-text-white tw-text-[1.375em] tw-font-bold">
             Mint Phases
           </h2>
@@ -379,8 +383,8 @@
             class="tw-w-full tw-overflow-auto no-scrollbar tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-rounded-lg"
             :style="`height:${
               phases.length - phaseCounter >= 3
-                ? 440
-                : (phases.length === 2 ? 142 : 120) *
+                ? 439
+                : (phases.length === 2 ? 190 : 180) *
                   (phases.length - phaseCounter)
             }px`"
           >
@@ -390,7 +394,8 @@
               :phase="phase"
               v-if="!checkIfPhaseStarted(phase.mint_time)"
               :coinType="collection.seed ? collection.seed.coin_type : 'APT'"
-              :showWhitelistText="phase.id !== 'public-sale'"
+              :showWhitelistText="true"
+              :publicSaleMintLimit="publicSaleMintLimit"
             />
           </div>
         </div>
@@ -486,7 +491,6 @@ import {
   normalMintTransaction,
   sponsorMintTransaction,
 } from "@/services/SponsoredTransactionService";
-import { data } from "autoprefixer";
 export default {
   props: { collection: { type: Object } },
   data() {
@@ -535,6 +539,7 @@ export default {
       showLooniesTweet: false,
       mintButtonClicked: 0,
       endedPhases: [],
+      publicSaleMintLimit: 0,
       imageNotFound,
       xLogo,
     };
@@ -1443,6 +1448,11 @@ export default {
       }
 
       if (!this.checkPublicSaleTimer()) {
+        if (this.publicSaleMintLimit) {
+          this.maxNumberOfNft = this.publicSaleMintLimit;
+          return;
+        }
+
         this.maxNumberOfNft = 35;
         return;
       }
@@ -1738,6 +1748,7 @@ export default {
       }
 
       this.v2 = this.resource.v2;
+      this.publicSaleMintLimit = this.resource.publicSaleMintLimit;
 
       if (this.collection._id === "642bf277c10560ca41e179fa") {
         this.resource = {

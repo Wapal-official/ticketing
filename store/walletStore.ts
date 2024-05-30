@@ -530,6 +530,7 @@ export const actions = {
       total_supply: resource.total_supply,
       minted: resource.minted,
       paused: resource.paused,
+      publicSaleMintLimit: resource.public_mint_limit,
       v2: v2,
     };
   },
