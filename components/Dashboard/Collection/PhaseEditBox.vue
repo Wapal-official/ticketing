@@ -165,6 +165,7 @@ export default {
     },
     coinType: { type: String },
     savingChanges: { type: Boolean, default: false },
+    saved: { type: Boolean, default: false },
   },
   components: { ValidationProvider },
   data() {
@@ -185,7 +186,6 @@ export default {
     },
     saveChanges() {
       this.$emit("editPhases");
-      this.resetEditing();
     },
   },
   computed: {
@@ -194,6 +194,13 @@ export default {
     },
     selectedCoinType() {
       return getCoinType(this.coinType);
+    },
+  },
+  watch: {
+    saved() {
+      if (this.saved) {
+        this.resetEditing();
+      }
     },
   },
 };

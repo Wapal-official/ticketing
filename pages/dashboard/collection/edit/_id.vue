@@ -248,6 +248,7 @@
           "
           :savingChanges="savingChanges"
           :key="index"
+          :saved="!savingChanges"
           @editPhases="editPhases"
         />
       </div>
