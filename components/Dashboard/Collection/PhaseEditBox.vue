@@ -34,7 +34,7 @@
         </ValidationProvider>
       </div>
       <div
-        class="tw-w-full tw-flex tw-flex-row tw-items-baseline tw-justify-between"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-baseline md:tw-justify-between"
       >
         <div class="tw-w-full">
           <div
@@ -67,7 +67,9 @@
             <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
         </div>
-        <div class="tw-w-full tw-flex tw-flex-col tw-items-end tw-justify-end">
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-items-end md:tw-justify-end"
+        >
           <div
             class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
           >
@@ -111,7 +113,7 @@
         </div>
       </div>
       <div
-        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 md:tw-justify-start tw-pt-2"
+        class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-4 md:tw-flex-row md:tw-justify-start"
         v-if="editing"
       >
         <button-primary
@@ -157,7 +159,10 @@ extend("number", {
 
 export default {
   props: {
-    phase: { type: Object },
+    phase: {
+      type: Object,
+      default: { name: "", mint_price: "", mint_time: "" },
+    },
     coinType: { type: String },
     savingChanges: { type: Boolean, default: false },
   },

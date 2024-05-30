@@ -4,8 +4,8 @@
     v-if="!loading"
   >
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6">
-      <img
-        :src="collection.image"
+      <utility-image
+        :source="collection?.image"
         :alt="collection.name"
         class="tw-rounded tw-w-[421px] tw-h-[421px]"
         width="421px"
@@ -63,8 +63,7 @@
             class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
             @click="editingTotalSupply = true"
           >
-            <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-2xl"></i>
-            <span>Edit</span>
+            <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-lg"></i>
           </button>
         </div>
         <div
@@ -87,7 +86,7 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
             <div
-              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 md:tw-justify-start"
+              class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-4 md:tw-flex-row md:tw-justify-start"
             >
               <button-primary
                 title="Cancel"
@@ -214,7 +213,7 @@
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between md:tw-justify-end md:tw-gap-4"
+            class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-4 md:tw-flex-row md:tw-justify-start"
             v-if="editingWhitelistSalePrice || editingWhitelistSaleTime"
           >
             <button-primary
@@ -238,14 +237,6 @@
       >
         <div class="tw-w-full tw-flex tw-flex-row tw-justify-between">
           <h3 class="tw-text-sm tw-font-semibold">Mint Phases</h3>
-          <button
-            class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
-            @click="editingPhases = true"
-            v-if="!editingPhases"
-          >
-            <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-2xl"></i>
-            <span>Edit</span>
-          </button>
         </div>
         <dashboard-collection-phase-edit-box
           v-for="(phase, index) in editCollection.phases"
@@ -365,7 +356,7 @@
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between md:tw-justify-end md:tw-gap-4"
+            class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-4 md:tw-flex-row md:tw-justify-start"
             v-if="editingPublicSalePrice || editingPublicSaleTime"
           >
             <button-primary
@@ -386,23 +377,26 @@
       <div
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
       >
-      <div class="tw-w-full md:tw-w-1/2">
-        
-        <button-primary
-          title="Resume Mint"
-          v-if="mintingPaused"
-          @click="pauseOrResumeMint"
-          :bordered="true"
-          :fullWidth="true"
-        />
-        
-        <button-primary
-          title="Pause Mint"
-          @click="pauseOrResumeMint"
-          :fullWidth="true"
-          v-else
-        />
-      </div>
+        <div class="tw-w-full md:tw-w-1/2">
+          <button
+            class="resume-button tw-w-full tw-relative tw-rounded-md tw-text-white tw-px-6 tw-py-2.5 tw-h-10 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+            @click="pauseOrResumeMint"
+            v-if="mintingPaused"
+          >
+            <div
+              class="tw-w-full tw-h-full tw-rounded-sm tw-absolute tw-top-0 tw-left-0 tw-py-2.5 tw-bg-black/40"
+            >
+              <span>Resume Mint</span>
+            </div>
+          </button>
+
+          <button-primary
+            title="Pause Mint"
+            @click="pauseOrResumeMint"
+            :fullWidth="true"
+            v-else
+          />
+        </div>
       </div>
     </ValidationObserver>
     <reusable-progress-modal
@@ -1036,3 +1030,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.resume-button {
+  background: linear-gradient(0deg, #8cd867, #8cd867),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35));
+}
+</style>
