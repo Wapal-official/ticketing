@@ -29,6 +29,10 @@ export const getCoinType = (coinType: string) => {
     coinObject: APT_COIN_OBJECT,
   };
 
+  if (!coinType) {
+    coinType = "APT";
+  }
+
   switch (coinType.toUpperCase()) {
     case "APT":
       break;

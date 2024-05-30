@@ -1108,7 +1108,7 @@ export default {
 
         this.submitting = false;
       }
-    },
+    }, 
     checkFileType(fileName: any) {
       if (!fileName) {
         return false;
@@ -1165,6 +1165,7 @@ export default {
         return "audio";
       } else {
         return "image";
+ 
       }
     },
 
