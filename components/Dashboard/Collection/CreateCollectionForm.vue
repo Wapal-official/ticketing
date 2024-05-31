@@ -1404,9 +1404,10 @@ export default {
     },
     async setCollectionDataFromDraft() {
       try {
-        this.whitelistEnabled = this.collection.whitelist_sale_time
-          ? true
-          : false;
+        this.whitelistEnabled = true;
+        // this.whitelistEnabled = this.collection.whitelist_sale_time
+        //   ? true
+        //   : false;
 
         const draftRes = await getDraftByIdInCreatorStudio(
           this.$route.params.id
