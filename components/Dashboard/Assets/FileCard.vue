@@ -142,12 +142,11 @@ export default {
     return {
       loading: true,
       linkedAsset: { name: "", image: "" },
-      showAddMetadataDialog: false, 
+      showAddMetadataDialog: false,
       file: { name: "", metadata: null, attributes: null },
       videoSrc: "",
       imgFromJson: "",
       checkJson: false,
- 
     };
   },
   methods: {
@@ -255,14 +254,10 @@ export default {
       return this.file.edit;
     },
   },
-  watch: {
-    propFile() {
-      this.file = this.propFile;
-    },
-  },
+
   async mounted() {
     this.file = this.propFile;
- 
+
     const videoSrc = await this.getVideoSrc(this.file.src);
     const fileSrc = this.file.src;
     if (fileSrc && fileSrc.endsWith(".json")) {
@@ -273,7 +268,7 @@ export default {
     }
 
     // this.getNftDetails(fileSrc);
- 
+
     this.loading = false;
   },
 };
