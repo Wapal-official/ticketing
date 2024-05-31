@@ -527,7 +527,7 @@
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
-            <div
+            <!-- <div
               class="tw-flex tw-flex-row tw-items-end tw-justify-start tw-gap-2"
               v-if="collection.coinType === 'APT'"
             >
@@ -557,18 +557,18 @@
                   </div>
                 </template>
               </tool-tip>
-            </div>
+            </div> -->
             <v-checkbox
               v-model="saveAsDraft"
               label="Save as Draft"
               :ripple="false"
               v-if="!draft"
             ></v-checkbox>
-            <v-checkbox
+            <!-- <v-checkbox
               v-model="isSoulBound"
               label="Is Soulbound"
               :ripple="false"
-            ></v-checkbox>
+            ></v-checkbox> -->
             <div
               class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
               :class="{ 'tw-justify-between': draft }"
@@ -1108,7 +1108,7 @@ export default {
 
         this.submitting = false;
       }
-    }, 
+    },
     checkFileType(fileName: any) {
       if (!fileName) {
         return false;
@@ -1165,7 +1165,6 @@ export default {
         return "audio";
       } else {
         return "image";
- 
       }
     },
 
@@ -1373,11 +1372,8 @@ export default {
       if (this.image.name) {
         const fileType = this.checkFileType(this.image.name);
         if (fileType === "image") {
-          console.log("img");
           formData.append("image", this.image);
         } else {
-          console.log("vii2");
-
           formData.append("media2", this.image);
           formData.append("image", this.thumbnail);
         }
@@ -1471,13 +1467,11 @@ export default {
         const selectedFolder = this.folders.find(
           (folder: { folder_name: any }) => folder.folder_name === this.baseURL
         );
-        console.log("selected folder", selectedFolder);
         if (selectedFolder) {
           this.collection.baseURL = selectedFolder.metadata.baseURI;
         }
 
         const tempCollection = structuredClone(this.collection);
-        console.log("tempCollection", tempCollection);
 
         for (const key in tempCollection) {
           formData.append(key, tempCollection[key]);

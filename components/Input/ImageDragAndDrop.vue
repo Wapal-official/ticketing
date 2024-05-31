@@ -422,15 +422,12 @@ export default {
           this.$emit("fileSelected", file);
           this.imageSelected = true;
           this.isImage = true;
-          console.log("img sl");
-          console.log("img sl", file);
           this.generatePreviewImage(file);
         } else if (file.type.includes("video")) {
           this.audioUrl = "";
           this.$emit("fileSelected", file);
           this.isImage = false;
           this.imageSelected = true;
-          console.log("img sl", file);
           this.generatePreviewVideo(file);
           this.generatePreviewVideoDialog(file);
           this.checkFeaturedFile = true;
@@ -439,7 +436,6 @@ export default {
           this.$emit("fileSelected", file);
           this.isImage = false;
           this.imageSelected = true;
-          console.log("img sl", file);
           this.generatePreviewAudio(file);
 
           this.checkFeaturedFile = true;
@@ -532,7 +528,6 @@ export default {
     generatePreviewVideo(file: any) {
       const videoElement = document.createElement("video");
       videoElement.src = URL.createObjectURL(file);
-      console.log("fa", videoElement.src);
       videoElement.autoplay = false;
       videoElement.controls = true;
       videoElement.muted = false;
@@ -555,7 +550,6 @@ export default {
       }, 300);
     },
     generatePreviewVideoDialog(file: any) {
-      console.log("File:", file);
       if (file instanceof File) {
         const videoElement = document.createElement("video");
         videoElement.src = URL.createObjectURL(file);
@@ -606,8 +600,6 @@ export default {
         if (previewElement.firstChild) {
           previewElement.removeChild(previewElement.firstChild);
         }
-        console.log("audio ele", audioElement.src);
-        console.log("afterrr", this.audioUrl);
         // previewElement.prepend(audioElement);
       }, 300);
       this.audioUrl = audioElement.src;
@@ -686,7 +678,6 @@ export default {
       this.extension = this.file.slice(this.file.lastIndexOf("."));
       // this.checkFileType();
       const fileType = this.checkFileType();
-      console.log("fileT", fileType);
       if (fileType == "image") {
         this.checkFeaturedFile = false;
         this.isImage = true;
@@ -733,7 +724,6 @@ export default {
         this.isImage = false;
         isValidHardenedPath;
         this.imageSelected = true;
-        console.log("this audi", this.file);
         // const imgElement = document.createElement("img");
         const imgElement = document.createElement("audio");
         // imgElement.src = URL.createObjectURL(this.file);

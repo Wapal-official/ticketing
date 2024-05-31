@@ -779,7 +779,6 @@ export default {
       this.loading = true;
       this.collection = await getCollection(this.$route.params.id);
 
-      console.log("collection", this.collection);
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,
         candy_object: this.collection.candyMachine.resource_account,

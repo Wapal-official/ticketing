@@ -160,7 +160,6 @@ export default {
   },
   watch: {
     paginatedFiles(paginatedFiles: any) {
-      console.log("Paginated Files:", paginatedFiles);
       if (this.type === "assets") {
         paginatedFiles.map((file: any) => {
           const columnIndex = file._id % this.getColumnDivider;
