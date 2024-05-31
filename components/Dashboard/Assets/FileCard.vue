@@ -7,15 +7,25 @@
     >
       <div class="tw-relative tw-w-full tw-overflow-hidden">
         <img
-          :src="getAssetSrc"
+          :src="imgFromJson ? imgFromJson : this.file.src"
           :alt="getAssetName"
           class="tw-w-full tw-h-full tw-object-cover"
           v-if="checkFileType === 'image'"
         />
         <video-player
           v-else-if="checkFileType === 'video'"
-          :source="getAssetSrc"
+          :source="videoSrc ? videoSrc : this.file.src"
         />
+        <div
+          class="tw-w-full tw-h-full tw-object-cover"
+          v-else
+          style="height: 200px; position: relative"
+        >
+          <audio-player
+            class="audio-postion"
+            :audioSrc="videoSrc ? videoSrc : this.file.src"
+          ></audio-player>
+        </div>
 
         <div
           class="tw-w-full tw-h-full tw-absolute tw-top-0 tw-left-0 tw-opacity-0 tw-transition-all tw-duration-200 tw-ease-linear tw-bg-black/[0.65] tw-backdrop-blur-[2px] group-hover:tw-opacity-100"
@@ -119,6 +129,7 @@
   </div>
 </template>
 <script lang="ts">
+import { getCachedUrlOfImage } from "@/utils/imageCache";
 export default {
   props: {
     propFile: { type: Object },
@@ -131,22 +142,32 @@ export default {
     return {
       loading: true,
       linkedAsset: { name: "", image: "" },
-      showAddMetadataDialog: false,
-      file: { name: "", attributes: null },
+      showAddMetadataDialog: false, 
+      file: { name: "", metadata: null, attributes: null },
+      videoSrc: "",
+      imgFromJson: "",
+      checkJson: false,
+ 
     };
   },
   methods: {
     displayFileDetails() {
-      this.linkedAsset.name = this.file.src;
-      this.linkedAsset.image = this.file.image
-        ? this.file.image
-        : this.file.metadata
-        ? this.file.metadata.image
-        : null;
+      if (this.checkJson) {
+        this.linkedAsset.name = this.file.src;
+        // this.linkedAsset.image = this.file.image
+        //   ? getCachedUrlOfImage(this.file.image)
+        //   : this.file.metadata
+        //   ? this.file.metadata.image
+        //     ? getCachedUrlOfImage(this.file.metadata.image)
+        //     : null
+        //   : null;
+        this.linkedAsset.image = this.imgFromJson
+          ? getCachedUrlOfImage(this.imgFromJson)
+          : this.file.src;
+        this.linkedAsset.metadata = this.file.metadata;
 
-      this.linkedAsset.metadata = this.file.metadata;
-
-      this.$emit("displayFileDetails", this.linkedAsset);
+        this.$emit("displayFileDetails", this.linkedAsset);
+      }
     },
     async downloadFile() {
       if (process.client) {
@@ -180,6 +201,10 @@ export default {
     addMetadataInFile() {
       this.showAddMetadataDialog = false;
     },
+    async getVideoSrc(source: any) {
+      const res = await this.$axios.get(source);
+      this.videoSrc = res.data.animation_url;
+    },
   },
   computed: {
     checkFileType() {
@@ -192,19 +217,39 @@ export default {
       const videoRegex =
         /\.((mp4|avi|mov|mkv|wmv|flv|webm|3gp|ogv|mpeg|mpg|m4v|divx|rm|asf|vob|ts|m2ts?))$/i;
 
+      const audioRegex = /\.((mp3|wav|aac|ogg|flac|wma|alac|aiff|opus?))$/i;
+
       if (imageRegex.test(this.extension)) {
         return "image";
       } else if (videoRegex.test(this.extension)) {
         return "video";
+      } else if (audioRegex.test(this.extension)) {
+        return "audio";
       }
-
       return "json";
     },
     getAssetSrc() {
+      // if (!this.file) {
+      //   return null;
+      // }
+      // const res = await this.$axios.get(this.file.src);
+
       return this.file.image ? this.file.image : this.file?.src;
     },
+
+    getAssetAudio() {
+      return this.file.src;
+    },
     getAssetName() {
-      return this.file.image ? this.file.name : this.file?.name;
+      return this.file.image ? this.file.name : this.file.name;
+    },
+    hasMetadata() {
+      return this.file.edit;
+    },
+  },
+  watch: {
+    propFile() {
+      this.file = this.propFile;
     },
     hasMetadata() {
       return this.file.edit;
@@ -217,7 +262,18 @@ export default {
   },
   async mounted() {
     this.file = this.propFile;
+ 
+    const videoSrc = await this.getVideoSrc(this.file.src);
+    const fileSrc = this.file.src;
+    if (fileSrc && fileSrc.endsWith(".json")) {
+      const res = await this.$axios.get(fileSrc);
+      const url = res.data.image;
+      this.imgFromJson = url;
+      this.checkJson = true;
+    }
 
+    // this.getNftDetails(fileSrc);
+ 
     this.loading = false;
   },
 };
@@ -231,5 +287,13 @@ export default {
     #11151c 81.73%,
     #0e0d0d 100%
   );
+}
+.audio-postion {
+  width: 100%;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 </style>

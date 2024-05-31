@@ -280,14 +280,58 @@
             />
             <div class="tw-text-red-600">{{ errors[0] }}</div>
           </ValidationProvider>
+          <div class="select-type tw-mb-3">
+            <div class="tw-mb-3">Select your file type:</div>
+            <div class="select-type-radio tw-flex tw-justify-between">
+              <div>
+                <input
+                  type="radio"
+                  id="image"
+                  name="fileType"
+                  value="Image"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="image">Image</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="video"
+                  name="fileType"
+                  value="Video"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="video">Video</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="audio"
+                  name="fileType"
+                  value="Audio"
+                  v-model="selectedFileType"
+                  class="radio-input"
+                />
+                <label for="audio">Audio</label>
+              </div>
+            </div>
+          </div>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
             <input-image-drag-and-drop
+              :label="'Featured' + ' ' + selectedFileType"
               :required="true"
-              label="Image"
+              label="Image/Video"
               :file="collection.image"
+              :selectedType="selectedFileType"
+              @cancel="clearFile"
               @fileSelected="selectImage"
+              @fileSelectedThumbnail="thumbnailSelected"
+              :thumbnail="collection.thumbnail"
+              fileSize="Upto 15 MB"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
               {{ imageErrorMessage }}
@@ -310,11 +354,25 @@
           </h2>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-items-start md:tw-justify-start lg:tw-flex-row lg:tw-justify-start"
+            style="position: relative"
           >
             <div
               id="image-preview"
-              class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
+              class="tw-h-[300px] tw-w-[300px]"
+              style="background-color: #000"
             ></div>
+            <div
+              v-if="audioCheck"
+              id="thumbnail-preview"
+              class="audio-bg tw-h-[300px] tw-w-[300px]"
+              style="background-color: #000; opacity: 0.7 !important"
+            ></div>
+            <audio-player
+              v-if="audioCheck"
+              class="audio-position audio-max-width"
+              :audioSrc="this.audioUrl"
+              style="top: 230px !important"
+            ></audio-player>
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
             >
@@ -394,11 +452,25 @@
           </h2>
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 md:tw-items-center md:tw-justify-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start"
+            style="position: relative"
           >
             <div
               id="image-review"
-              class="tw-w-full tw-h-[300px] md:tw-w-[300px]"
+              class="tw-h-[300px] tw-w-[300px] tw-ml-0"
+              style="background-color: #000"
             ></div>
+            <div
+              v-if="audioCheck"
+              id="thumbnail-review"
+              class="audio-bg tw-h-[300px] tw-w-[300px]"
+              style="background-color: #000; opacity: 0.7 !important"
+            ></div>
+            <audio-player
+              v-if="audioCheck"
+              class="audio-position audio-max-width"
+              :audioSrc="this.audioUrlReview"
+              style="top: 230px !important"
+            ></audio-player>
             <div
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1 lg:tw-w-[540px]"
             >
@@ -485,7 +557,10 @@
 
 <script>
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
-import { uploadAndCreateFile } from "@/services/AuctionService";
+import {
+  uploadAndCreateFile,
+  uploadAndCreateVideoFile,
+} from "@/services/AuctionService";
 import {
   createCollectionV2,
   mintCollection,
@@ -537,11 +612,13 @@ export default {
   components: { ValidationObserver, ValidationProvider },
   data() {
     return {
+      selectedFileType: "Image",
       step: 1,
       collection: {
         name: "",
         description: "",
         image: "",
+        thumbnail: "",
         baseURL: "",
         royalty_payee_address:
           this.$store.state.walletStore.wallet.walletAddress,
@@ -572,6 +649,7 @@ export default {
         coinType: "APT",
         tweet: "",
       },
+      metadata: null,
       attribute: "",
       value: "",
       loading: false,
@@ -580,6 +658,7 @@ export default {
       startMenu: false,
       endMenu: false,
       file: null,
+      thumbnail: { name: null },
       imageError: false,
       imageErrorMessage: "",
       attributeError: false,
@@ -611,6 +690,10 @@ export default {
       socialErrorMessage: "",
       formSteps: ["Details", "Token", "Attributes", "Review"],
       formStepNumber: 1,
+      checkVideo: false,
+      audioUrl: "",
+      audioUrlReview: "",
+      audioCheck: false,
     };
   },
   watch: {
@@ -754,9 +837,268 @@ export default {
 
       reviewElement.prepend(reviewImgElement);
     },
+    displayThumbnail(file) {
+      if (!file) {
+        console.error("File is null or undefined.");
+        return;
+      }
+
+      const previewImgElement = document.createElement("img");
+      const reviewImgElement = document.createElement("img");
+
+      try {
+        previewImgElement.src = reviewImgElement.src =
+          URL.createObjectURL(file);
+      } catch (error) {
+        console.error("Error creating object URL:", error);
+        return;
+      }
+
+      previewImgElement.classList.add(
+        "tw-w-full",
+        "tw-h-full",
+        "tw-object-fill",
+        "tw-max-h-[300px]",
+        "tw-rounded"
+      );
+      reviewImgElement.classList.add(
+        "tw-w-full",
+        "tw-h-full",
+        "tw-object-fill",
+        "tw-max-h-[300px]",
+        "tw-rounded"
+      );
+
+      const previewElement = document.getElementById("thumbnail-preview");
+      const reviewElement = document.getElementById("thumbnail-review");
+
+      if (!previewElement || !reviewElement) {
+        console.error("Thumbnail preview or review element is null.");
+        return;
+      }
+
+      while (previewElement.firstChild) {
+        previewElement.removeChild(previewElement.firstChild);
+      }
+      while (reviewElement.firstChild) {
+        reviewElement.removeChild(reviewElement.firstChild);
+      }
+
+      previewElement.prepend(previewImgElement);
+      reviewElement.prepend(reviewImgElement);
+    },
+
+    displayVideo() {
+      const previewVideoElement = document.createElement("video");
+      const reviewVideoElement = document.createElement("video");
+
+      previewVideoElement.src = reviewVideoElement.src = URL.createObjectURL(
+        this.file
+      );
+      previewVideoElement.autoplay = reviewVideoElement.autoplay = false;
+      previewVideoElement.muted = reviewVideoElement.muted = false;
+      previewVideoElement.loop = reviewVideoElement.loop = true;
+      previewVideoElement.playsInline = reviewVideoElement.playsInline = true;
+      previewVideoElement.preload = reviewVideoElement.preload = "metadata";
+      previewVideoElement.controls = reviewVideoElement.controls = true;
+
+      previewVideoElement.classList.add("tw-w-full");
+      previewVideoElement.classList.add("tw-h-full");
+      previewVideoElement.classList.add("tw-object-fill");
+      previewVideoElement.classList.add("tw-max-h-[300px]");
+      previewVideoElement.classList.add("tw-rounded");
+
+      reviewVideoElement.classList.add("tw-w-full");
+      reviewVideoElement.classList.add("tw-h-full");
+      reviewVideoElement.classList.add("tw-object-fill");
+      reviewVideoElement.classList.add("tw-max-h-[300px]");
+      reviewVideoElement.classList.add("tw-rounded");
+
+      const previewElement = document.getElementById("image-preview");
+      const reviewElement = document.getElementById("image-review");
+
+      while (previewElement.firstChild) {
+        previewElement.removeChild(previewElement.firstChild);
+      }
+
+      while (reviewElement.firstChild) {
+        reviewElement.removeChild(reviewElement.firstChild);
+      }
+
+      previewElement.prepend(previewVideoElement);
+      reviewElement.prepend(reviewVideoElement);
+    },
+
+    displayAudio() {
+      const previewVideoElement = document.createElement("audio");
+      const reviewVideoElement = document.createElement("audio");
+
+      previewVideoElement.src = reviewVideoElement.src = URL.createObjectURL(
+        this.file
+      );
+      previewVideoElement.autoplay = false;
+      previewVideoElement.controls = true;
+      previewVideoElement.muted = true;
+      previewVideoElement.preload = reviewVideoElement.preload = "metadata";
+
+      previewVideoElement.classList.add("tw-w-full");
+      previewVideoElement.classList.add("tw-h-full");
+      previewVideoElement.classList.add("tw-object-fill");
+      previewVideoElement.classList.add("tw-max-h-[200px]");
+      previewVideoElement.classList.add("tw-rounded");
+      previewVideoElement.classList.add("audio-bg-opacity");
+
+      reviewVideoElement.classList.add("tw-w-full");
+      reviewVideoElement.classList.add("tw-h-full");
+      reviewVideoElement.classList.add("tw-object-fill");
+      reviewVideoElement.classList.add("tw-max-h-[200px]");
+      reviewVideoElement.classList.add("tw-rounded");
+      reviewVideoElement.classList.add("audio-bg-opacity");
+
+      const previewElement = document.getElementById("image-preview");
+      const reviewElement = document.getElementById("image-review");
+
+      while (previewElement.firstChild) {
+        previewElement.removeChild(previewElement.firstChild);
+      }
+
+      while (reviewElement.firstChild) {
+        reviewElement.removeChild(reviewElement.firstChild);
+      }
+      this.audioUrl = previewVideoElement.src;
+      this.audioUrlReview = previewVideoElement.src;
+    },
+    getAudioFileType(fileName) {
+      const extension = fileName.split(".").pop().toLowerCase();
+      const audioExtensions = [
+        "mp3",
+        "wav",
+        "ogg",
+        "aac",
+        "flac",
+        "wma",
+        "alac",
+        "aiff",
+        "opus",
+      ];
+
+      if (audioExtensions.includes(extension)) {
+        return "." + extension;
+      } else {
+        return;
+      }
+    },
+    getFileExtension(fileName) {
+      const parts = fileName.split(".");
+      return parts[parts.length - 1];
+    },
+    clearFile() {
+      this.image = "";
+      this.thumbnail = "";
+    },
     selectImage(file) {
       this.file = file;
-      this.displayImage();
+      if (this.isImage(file.name)) {
+        this.checkVideo = false;
+        this.audioCheck = false;
+
+        this.displayImage();
+      } else if (this.isVideo(file.name)) {
+        this.checkVideo = true;
+        this.audioCheck = false;
+        this.getFileExtension(file.name);
+        this.displayVideo();
+        if (this.thumbnail) {
+          this.displayThumbnail(this.thumbnail);
+        }
+      } else if (this.isAudio(file.name)) {
+        this.audioCheck = true;
+        this.checkVideo = true;
+        this.displayAudio();
+        if (this.thumbnail) {
+          this.displayThumbnail(this.thumbnail);
+        }
+      } else {
+        this.$toast.showMessage({
+          message: "File error",
+          error: true,
+        });
+      }
+    },
+    thumbnailSelected(file) {
+      this.thumbnail = file;
+      if (Math.floor(this.thumbnail.size / (1024 * 1024)) >= 15) {
+        this.imageError = true;
+        this.imageErrorMessage = "Please Upload Image less than 15MB";
+      } else {
+        this.imageError = false;
+      }
+      if (file.name) {
+        this.displayThumbnail(file);
+      }
+    },
+    isImage(source) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
     },
     async submit() {
       const validate = await this.$refs.attributeForm.validate();
@@ -792,11 +1134,12 @@ export default {
         this.createEditionModal = true;
 
         this.progress = 1;
+        let metadataUri = null;
+        metadataUri = this.metadata = await this.uploadImageAndMetadata();
 
-        //uploading and creating metadata file
-        const metaUri = await this.uploadImageAndMetadata();
-
-        this.collection.baseURL = metaUri;
+        this.collection.baseURL = metadataUri.metaUri
+          ? metadataUri.metaUri
+          : metadataUri;
 
         let mintTime = Math.floor(new Date().getTime() / 1000) + 30;
 
@@ -858,6 +1201,51 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
       }
     },
+    checkFileType(fileName) {
+      const fileExtension = fileName.split(".").pop().toLowerCase();
+      const imageExtensions = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "webp",
+        "bmp",
+        "svg",
+        "ico",
+        "tiff",
+      ];
+      const videoExtensions = [
+        "mp4",
+        "mkv",
+        "m4v",
+        "webm",
+        "avi",
+        "mov",
+        "wmv",
+        "flv",
+        "3gp",
+        "ogv",
+        "mpeg",
+        "mpg",
+        "divx",
+        "rm",
+        "asf",
+        "vob",
+        "ts",
+        "m2ts",
+      ];
+      const audioExtensions = ["mp3", "ogg", "wav", "webm", "aac", "flac"];
+
+      if (imageExtensions.includes(fileExtension)) {
+        return "image";
+      } else if (videoExtensions.includes(fileExtension)) {
+        return "video";
+      } else if (audioExtensions.includes(fileExtension)) {
+        return "audio";
+      } else {
+        return "image";
+      }
+    },
     async validateFormForNextStep() {
       this.attributeError = false;
       this.socialError = false;
@@ -910,7 +1298,21 @@ export default {
             this.imageErrorMessage = "Please select an image for collection";
             break;
           }
+          // const fileType = this.checkFileType(this.file.name);
+          // if (fileType === "video" || fileType === "audio") {
+          //   console.log("fileee", this.file.name);
+          //   console.log("fileee", this.thumbnail);
 
+          //   if (!this.thumbnail.name && !this.file.name) {
+          //     this.imageError = true;
+          //     this.imageErrorMessage =
+          //       "Please select an thumbnail for collection";
+          //     return;
+          //   }
+          // }
+          // if (this.imageError) {
+          //   return;
+          // }
           this.formStepNumber++;
           break;
         case 3:
@@ -957,7 +1359,10 @@ export default {
         const metadata = metadataRes.data;
 
         const imageUrl = metadata.image;
-
+        let videoUrl;
+        if (metadata.properties) {
+          videoUrl = this.metadata.videoUri;
+        }
         const formData = new FormData();
 
         formData.append("name", tempCollection.name);
@@ -987,8 +1392,12 @@ export default {
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify([]));
         formData.append("tweet", tempCollection.tweet);
-
-        formData.append("image", imageUrl);
+        if (videoUrl) {
+          formData.append("image", imageUrl);
+          formData.append("media2", videoUrl);
+        } else {
+          formData.append("image", imageUrl);
+        }
 
         formData.append("isEdition", true);
         formData.append("edition", tempCollection.type);
@@ -1025,23 +1434,40 @@ export default {
       if (!transactionRes.success && !transactionRes.hash) {
         throw new Error("Transaction Not Successful Please Try Again");
       }
-
-      //uploading and creating metadata file
-      const metaUri =
-        (await uploadAndCreateFile(this.file, {
+      const fileExtension = this.getFileExtension(this.file.name);
+      let metaUri;
+      if (this.checkVideo === true) {
+        const res = await uploadAndCreateVideoFile(this.file, this.thumbnail, {
           name: this.collection.tokenName,
           description: this.collection.tokenDesc,
           attributes: this.collection.attributes,
-        })) + "/";
-
+        });
+        metaUri = res.metadata + "/";
+        const videoUri = res.video + "/0." + fileExtension;
+        return {
+          metaUri: metaUri,
+          videoUri: videoUri,
+          imageUri: res.image,
+        };
+      } else {
+        metaUri =
+          (await uploadAndCreateFile(this.file, {
+            name: this.collection.tokenName,
+            description: this.collection.tokenDesc,
+            attributes: this.collection.attributes,
+          })) + "/";
+      }
       return metaUri;
     },
     async createOpenEditionInChain() {
-      const metadataUri = await this.uploadImageAndMetadata();
+      let metadataUri = null;
+      metadataUri = this.metadata = await this.uploadImageAndMetadata();
 
       this.progress = 2;
 
-      this.collection.baseURL = metadataUri;
+      this.collection.baseURL = metadataUri.metaUri
+        ? metadataUri.metaUri
+        : metadataUri;
 
       const tempCollection = structuredClone(this.collection);
 
@@ -1102,5 +1528,67 @@ export default {
 
 .mint-auction-stepper .v-stepper__step__step {
   background: black !important;
+}
+
+@media (min-width: 1024px) and (max-width: 1200px) {
+  .audio-max-width {
+    max-width: 34%;
+    min-width: 300px;
+  }
+
+  #image-preview,
+  #image-review {
+    min-width: 300px;
+  }
+}
+.audio-bg {
+  position: absolute;
+  top: 0;
+  padding: 0 !important;
+}
+.audio-bg-opacity {
+  opacity: 0.7 !important;
+}
+.select-type {
+  max-width: 50%;
+}
+@media (max-width: 600px) {
+  .select-type {
+    max-width: 100%;
+  }
+}
+.select-type-radio div {
+  display: flex;
+  align-items: center;
+}
+.radio-input {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #383a3f;
+  outline: none;
+  appearance: none;
+  border-radius: 50%;
+  background: #25262b;
+  margin-right: 8px;
+  position: relative;
+  cursor: pointer;
+}
+.radio-input:checked {
+  background-color: #8759ff;
+}
+.radio-input:checked::before {
+  content: " ";
+  background: #1a1b1e;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.audio-position {
+  position: absolute;
+  bottom: 30px;
 }
 </style>
