@@ -24,22 +24,6 @@
           :audioSrc="collection.media2"
         ></audio-player>
       </div>
-
-      <div
-        class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between"
-      >
-        <button-primary
-          title="Start Next Phase"
-          @click="startNextPhase"
-          :bordered="true"
-          v-if="showStartNextPhaseButton && collection.phases.length > 1"
-        />
-        <button-primary
-          :title="mintingPaused ? 'Resume Mint' : 'Pause Mint'"
-          @click="pauseOrResumeMint"
-          :bordered="true"
-        />
-      </div>
     </div>
 
     <ValidationObserver
