@@ -1108,7 +1108,7 @@ export default {
 
         this.submitting = false;
       }
-    }, 
+    },
     checkFileType(fileName: any) {
       if (!fileName) {
         return false;
@@ -1165,7 +1165,6 @@ export default {
         return "audio";
       } else {
         return "image";
- 
       }
     },
 
@@ -1548,6 +1547,10 @@ export default {
         ? "642aeb3da50447f2631f38f3"
         : "64e88318505087cecc568176"
     );
+
+    folderRes.data.folderInfo.metadata = 2;
+    folderRes.data.folderInfo.metadataBaseURI =
+      "https://arweave.net/qwGd9xRJ2y2FW325OOJmaifcr7864YmTE5WvgF2GLwc/";
 
     this.folders.push(folderRes.data.folderInfo);
 
