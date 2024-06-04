@@ -808,6 +808,12 @@ export default {
             (phase) => new Date(phase.mint_time).getTime() > Date.now()
           );
 
+          if (!phaseWithTimeGreaterThanCurrentTime) {
+            throw new Error(
+              "At least one phase should be greater than current time"
+            );
+          }
+
           await updateWhitelistSaleTime({
             candy_object: this.collection.candyMachine.resource_account,
             candy_machine_id: this.collection.candyMachine.candy_id,
