@@ -1,16 +1,29 @@
 <template>
   <div
-    class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 xl:tw-flex-row xl:tw-items-start xl:tw-justify-start"
+    class="tw-pt-3 tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 xl:tw-flex-row xl:tw-items-start xl:tw-justify-start"
     v-if="!loading"
   >
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6">
-      <utility-image
-        :source="collection?.image"
-        :alt="collection.name"
-        class="tw-rounded tw-w-[421px] tw-h-[421px]"
-        width="421px"
-        height="421px"
-      />
+      <div style="position: relative">
+        <video-player-detailed
+          class="video-detailed-edit"
+          v-if="isVideo(collection.media2)"
+          :source="collection.media2"
+        />
+        <utility-image
+          :source="collection?.image"
+          :alt="collection.name"
+          class="tw-rounded tw-w-[421px] tw-h-[421px]"
+          width="421px"
+          height="421px"
+          v-else
+        />
+        <audio-player
+          v-if="isAudio(collection.media2)"
+          class="audio-bg"
+          :audioSrc="collection.media2"
+        ></audio-player>
+      </div>
     </div>
 
     <ValidationObserver
@@ -417,7 +430,7 @@
 </template>
 <script lang="ts">
 import {
-  getCollectionInCreatorStudio,
+  getCollection,
   updateCollection,
   getMetadataFromTokenURI,
   sortPhases,
@@ -487,6 +500,7 @@ export default {
         isVerified: false,
         phases: [{ id: "", name: "", mint_time: "", mint_price: "" }],
         isEdition: false,
+        media2: "",
         seed: {
           seedz: false,
           coin_type: "APT",
@@ -532,17 +546,63 @@ export default {
       settingUpNextPhaseError: false,
       mintingPaused: false,
       aptIcon,
+      fileType: "",
     };
   },
   async mounted() {
     this.fetchCollection();
   },
   methods: {
+    isVideo(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+            "mpeg",
+          ].includes(extension)
+        : false;
+    },
     async fetchCollection() {
       this.loading = true;
-      this.collection = await getCollectionInCreatorStudio(
-        this.$route.params.id
-      );
+      this.collection = await getCollection(this.$route.params.id);
 
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,
@@ -875,7 +935,7 @@ export default {
           candy_object: this.collection.candyMachine.resource_account,
         });
 
-        if (pauseRes.success || pauseRes.hash) {
+        if (pauseRes.success) {
           this.mintingPaused = true;
           this.settingUpNextPhaseProgress = 2;
 
@@ -906,17 +966,14 @@ export default {
                   : "",
               });
 
-            if (
-              updateWhitelistSalePriceRes.success ||
-              updateWhitelistSalePriceRes.hash
-            ) {
+            if (updateWhitelistSalePriceRes.success) {
               this.settingUpNextPhaseProgress = 3;
               const resumeRes: any = await pauseOrResumeMinting({
                 candy_machine_id: this.collection.candyMachine.candy_id,
                 candy_object: this.collection.candyMachine.resource_account,
               });
 
-              if (resumeRes.success || resumeRes.hash) {
+              if (resumeRes.success) {
                 this.mintingPaused = false;
                 this.settingUpNextPhaseProgress = 4;
                 this.showSettingUpNextPhaseModal = false;
@@ -1031,5 +1088,11 @@ export default {
 .resume-button {
   background: linear-gradient(0deg, #8cd867, #8cd867),
     linear-gradient(0deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35));
+}
+
+.video-detailed-edit {
+  max-width: 421px;
+  height: 421px;
+  border-radius: 0.25rem;
 }
 </style>

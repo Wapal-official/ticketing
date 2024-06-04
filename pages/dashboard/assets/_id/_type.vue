@@ -49,12 +49,12 @@
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-4 tw-w-full md:tw-w-fit md:tw-justify-end"
         >
-          <!-- <button-primary
+          <button-primary
             title="Set Metadata"
             @click="showSetMetadataDialog = true"
             :bordered="true"
             v-if="showSetMetadataButton || showSetMetadataButtonFromStore"
-          /> -->
+          />
           <button>
             <v-icon class="!tw-text-white" @click="showListView"
               >mdi-view-list</v-icon
@@ -74,6 +74,7 @@
             v-if="!listView"
             :paginatedFiles="paginatedFiles"
             :type="$route.params.type"
+            propFile
             :extension="fileExtension"
             :folderName="folderInfo.folder_name"
             @displayFileDetails="displayFileDetails"
@@ -97,10 +98,13 @@
         :type="type"
       />
       <div
-        class="tw-text-dark-0 tw-text-center tw-text-lg tw-w-full"
+        class="tw-text-dark-0 tw-text-center tw-p-16 tw-text-lg tw-w-full"
         v-if="!checkImageUploaded"
+        style="border: 1px solid #25262b"
       >
-        Please Upload Images in image folder first
+        <h3 class="!tw-mb-1" style="color: #fff">This folder is empty.</h3>
+        Please upload the assets (images or videos) before uploading the
+        metadata.
       </div>
     </div>
     <div
@@ -188,25 +192,11 @@
       content-class="!tw-w-full tw-relative tw-mx-4 tw-px-8 tw-py-4 tw-bg-dark-7 tw-border-none tw-text-white tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:!tw-w-1/2 lg:!tw-w-[30%]"
       :persistent="generatingMetadata"
     >
-      <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
-      >
-        <div>Are you sure you want to set Metadata?</div>
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4"
-        >
-          <button-primary
-            title="Yes"
-            @click="sendFolderNameToGenerateMetadata"
-            :loading="generatingMetadata"
-          />
-          <button-primary
-            title="No"
-            :bordered="true"
-            @click="showSetMetadataDialog = false"
-          />
-        </div>
-      </div>
+      <dashboard-assets-set-metadata-modal
+        :folderName="folderInfo.folder_name"
+        @generatedMetadata="sendFolderNameToGenerateMetadata"
+        @closeSetMetadataModal="showSetMetadataDialog = false"
+      />
     </v-dialog>
   </div>
 </template>
@@ -220,6 +210,7 @@ import {
   getFolderById,
   deleteFolderOnServer,
   generateMetadataFolderInServer,
+  getTraitsOfAsset,
 } from "@/services/AssetsService";
 import { defaultTheme } from "@/theme/wapaltheme";
 import moment from "moment";
@@ -241,6 +232,7 @@ export default {
         files: [{ createdDate: null, type: "", name: "", src: "", _id: null }],
         metadata: { files: [] },
         assets: { files: [] },
+        images: { files: [] },
       },
       paginatedFiles: [
         { createdDate: null, type: "", name: "", src: "", _id: null },
@@ -283,21 +275,37 @@ export default {
       generatingMetadata: false,
       UploadIcon,
       defaultTheme,
+      isImgforMetadata: false,
     };
   },
   methods: {
+    isImage(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
     displayFileDetails(file: any) {
       this.currentFile = file;
+
       if (file.image) {
         this.showFileDetails = true;
       }
     },
-    getFileType(item: any) {
-      if (item.type.includes("image/")) {
-        return true;
-      }
-      return false;
-    },
+
     async fetchFiles() {
       this.fileIndex = 0;
       this.loading = true;
@@ -306,37 +314,71 @@ export default {
       const folderId = this.$route.params.id;
 
       this.paginatedFiles = [];
+      this.$store.commit("asset/setFiles", []);
 
       const res = await getFolderById(folderId);
-
-      this.folderInfo.files =
-        this.type === "assets" && !res.data.folderInfo.metadata.baseURI
-          ? res.data.folderInfo.assets.files
-          : res.data.folderInfo.metadata.files;
+      this.$store.commit("asset/setFolderInfo", null);
+      if (this.type === "assets" && !res.data.folderInfo.metadata.baseURI) {
+        this.folderInfo.files = res.data.folderInfo.assets.files;
+      } else if (
+        this.type === "images" &&
+        !res.data.folderInfo.metadata.baseURI
+      ) {
+        this.folderInfo.files = res.data.folderInfo.images.files;
+      } else {
+        this.folderInfo.files = res.data.folderInfo.metadata.files;
+      }
+      // this.folderInfo.files =
+      // this.type === "assets" && !res.data.folderInfo.metadata.baseURI
+      //   ? res.data.folderInfo.assets.files
+      //   : res.data.folderInfo.metadata.files;
+      // this.type === "assets" && !res.data.folderInfo.metadata.baseURI
+      //   ? res.data.folderInfo.assets.files
+      //   : this.type === "images" && !res.data.folderInfo.metadata.baseURI
+      //   ? res.data.folderInfo.images.files
+      //   : res.data.folderInfo.metadata.files;
+      // this.folderInfo.files =
+      //   this.type === "images" && !res.data.folderInfo.metadata.baseURI
+      //     ? res.data.folderInfo.images.files
+      //     : res.data.folderInfo.metadata.files;
 
       this.folderInfo.folder_name = res.data.folderInfo.folder_name;
       this.folderInfo._id = res.data.folderInfo._id;
       this.folderInfo.user_id = res.data.folderInfo.user_id;
       this.folderInfo.assets = res.data.folderInfo.assets;
+      this.folderInfo.images = res.data.folderInfo.images;
       this.folderInfo.metadata = res.data.folderInfo.metadata;
-      this.folderInfo.traits = res.data.folderInfo.traits;
+      const traits = await getTraitsOfAsset({ folderId: this.folderInfo._id });
 
+      this.folderInfo.traits = traits;
+
+      this.$store.commit("asset/setFolderInfo", this.folderInfo);
+      if (this.isImage(this.folderInfo.assets.ext)) {
+        this.isImgforMetadata = true;
+      }
       this.loading = false;
 
       const fileCheck =
         this.type === "assets"
           ? !res.data.folderInfo.assets.files[0]
           : !res.data.folderInfo.metadata.files[0];
-
+      const videoImageCheck =
+        this.type === "images"
+          ? !res.data.folderInfo.images.files[0]
+          : !res.data.folderInfo.metadata.files[0];
       if (fileCheck) {
         this.fileLoading = false;
       }
-
       if (
         this.type === "assets" &&
         res.data.folderInfo.assets.files.length > 0
       ) {
         this.fileExtension = res.data.folderInfo.assets.ext;
+      } else if (
+        this.type === "images" &&
+        res.data.folderInfo.images.files.length > 0
+      ) {
+        this.fileExtension = res.data.folderInfo.images.ext;
       } else if (this.type === "metadata") {
         this.fileExtension = ".json";
       }
@@ -350,6 +392,7 @@ export default {
       this.debounce = setTimeout(async () => {
         this.page++;
         const scrollNumber = this.page * this.assetLimit;
+        this.$store.commit("asset/setFiles", []);
         this.paginatedFiles = [];
 
         if (scrollNumber > this.folderInfo.files.length) {
@@ -369,19 +412,40 @@ export default {
               const fileIndex = scrollNumber
                 ? scrollNumber - this.assetLimit + index
                 : index;
-
               if (this.folderInfo.metadata.baseURI) {
+                // if (this.type === "assets") {
+                //   src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+                // } else if (this.type === "images") {
+                //   src = `${this.folderInfo.images.baseURI}${fileIndex}${this.folderInfo.images.ext}`;
+                // } else {
                 src = `${this.folderInfo.metadata.baseURI}${fileIndex}.json`;
+                // }
               } else {
-                src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+                if (this.type === "assets") {
+                  src = `${this.folderInfo.assets.baseURI}${fileIndex}${this.folderInfo.assets.ext}`;
+                } else if (this.type === "images") {
+                  src = `${this.folderInfo.images.baseURI}${fileIndex}${this.folderInfo.images.ext}`;
+                }
               }
 
               const res = await this.$axios.get(src);
 
+              // if (res.data) {
+              //   const fileData = res.data;
+              //   if (fileData.attributes) {
+              //     this.attributes = fileData.attributes;
+              //   }
+              // }
+              // const res = await this.$axios.get(this.file.name);
+
+              // this.fileData = res.data;
+              // if (this.fileData.attributes) {
+              //   this.attributes = this.fileData.attributes;
+              // }
               const tempFile = res.data;
 
               let fileType = "image";
-              let generatedFile = null;
+              let generatedFile: any = null;
 
               if (
                 res.headers["content-type"] ===
@@ -406,7 +470,6 @@ export default {
                 };
               } else {
                 const createdDate = moment().format("DD/MM/YYYY");
-
                 if (
                   this.folderInfo.metadata.files.length === 0 &&
                   this.folderInfo.traits &&
@@ -416,13 +479,25 @@ export default {
                   const metadata = this.folderInfo.traits[index].metadata;
                   generatedFile = {
                     _id: fileIndex,
-                    name: metadata.name,
+                    name: fileIndex ? fileIndex : metadata.name,
                     src: src,
                     type: res.headers["content-type"],
                     createdDate: createdDate,
                     size: res.headers["content-length"],
                     metadata: metadata,
+                    edit: false,
                   };
+
+                  const nft = this.folderInfo.traits.find(
+                    (trait: any) => Number(trait.nftId) === Number(fileIndex)
+                  );
+
+                  let attributes: any[] = [];
+                  if (nft) {
+                    attributes = nft.attributes;
+                    generatedFile.attributes = attributes;
+                    generatedFile.edit = true;
+                  }
                 } else {
                   generatedFile = {
                     _id: fileIndex,
@@ -445,7 +520,8 @@ export default {
         mappedFiles.sort((a: any, b: any) => {
           return a._id - b._id;
         });
-        this.paginatedFiles.push(...mappedFiles);
+        this.$store.commit("asset/pushNewFilesIntoFiles", mappedFiles);
+        // this.paginatedFiles.push(...mappedFiles);
 
         this.mappingFiles = false;
       }, 1000);
@@ -528,10 +604,11 @@ export default {
     async sendFolderNameToGenerateMetadata() {
       try {
         this.generatingMetadata = true;
-        await generateMetadataFolderInServer({
-          folder_name: this.folderInfo.folder_name,
-        });
-        this.generatingMetadata = true;
+        // await generateMetadataFolderInServer({
+        //   folder_name: this.folderInfo.folder_name,
+        // });
+        // this.generatingMetadata = true;
+
         this.showSetMetadataDialog = false;
 
         this.transferFund(
@@ -578,6 +655,15 @@ export default {
         return false;
       }
 
+      if (this.type === "images") {
+        return true;
+      }
+      if (!this.isImgforMetadata) {
+        if (!this.folderInfo.images.baseURI) {
+          return false;
+        }
+      }
+
       return true;
     },
     checkUploadingStatus() {
@@ -587,6 +673,7 @@ export default {
       return (
         this.folderInfo.metadata.files.length === 0 &&
         this.folderInfo.assets.files.length > 0 &&
+        this.folderInfo.images.files.length > 0 &&
         this.folderInfo.traits.length === this.folderInfo.assets.files.length
       );
     },
@@ -596,16 +683,18 @@ export default {
   },
   async mounted() {
     socket.connect();
-    this.type = this.$route.params.type;
 
-    if (this.type !== "assets" && this.type !== "metadata") {
+    this.type = this.$route.params.type;
+    if (
+      this.type !== "assets" &&
+      this.type !== "images" &&
+      this.type !== "metadata"
+    ) {
       throw { statusCode: 404, message: "Page not found" };
     }
 
     this.assetLimit = this.type === "assets" ? 12 : 48;
-
     await this.fetchFiles();
-
     await this.mapFiles();
 
     setTimeout(() => {
