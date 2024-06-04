@@ -1324,6 +1324,10 @@ export default {
         : "64e88318505087cecc568176"
     );
 
+    folderRes.data.folderInfo.metadata = 2;
+    folderRes.data.folderInfo.metadataBaseURI =
+      folderRes.data.folderInfo.metadata.baseURI;
+
     this.folders.push(folderRes.data.folderInfo);
 
     const res = await getAllFolder(this.$store.state.userStore.user.user_id);
