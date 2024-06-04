@@ -151,7 +151,6 @@ export default {
   },
   methods: {
     displayFileDetails() {
-      console.log("file", this.file);
       if (this.checkJson) {
         this.linkedAsset.name = this.file.src;
         // this.linkedAsset.image = this.file.image
@@ -204,7 +203,6 @@ export default {
     async getVideoSrc(source: any) {
       const res = await this.$axios.get(source);
       this.videoSrc = res.data.animation_url;
-      console.log("res src", res.data.animation_url);
     },
   },
   computed: {
@@ -235,7 +233,6 @@ export default {
       // }
       // const res = await this.$axios.get(this.file.src);
 
-      // console.log("list", res.data);
       return this.file.image ? this.file.image : this.file?.src;
     },
 
@@ -253,14 +250,15 @@ export default {
     propFile() {
       this.file = this.propFile;
     },
+    hasMetadata() {
+      return this.file.edit;
+    },
   },
+
   async mounted() {
-    console.log("props", this.propFile);
     this.file = this.propFile;
 
     const videoSrc = await this.getVideoSrc(this.file.src);
-    console.log("fileSrc", videoSrc);
-    // console.log("sc", res.config.data);
     const fileSrc = this.file.src;
     if (fileSrc && fileSrc.endsWith(".json")) {
       const res = await this.$axios.get(fileSrc);
@@ -270,7 +268,6 @@ export default {
     }
 
     // this.getNftDetails(fileSrc);
-    console.log("file", this.file);
 
     this.loading = false;
   },

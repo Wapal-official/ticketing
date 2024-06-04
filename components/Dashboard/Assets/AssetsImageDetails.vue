@@ -108,7 +108,6 @@ export default {
       if (imageRegex.test(this.extension)) {
         return "image";
       } else if (videoRegex.test(this.extension)) {
-        console.log("ide");
         return "video";
       }
 
@@ -122,7 +121,6 @@ export default {
     },
   },
   async mounted() {
-    console.log("fileDataa", this.file);
     if (this.file.metadata) {
       this.fileData = this.file.metadata;
       if (this.fileData.attributes) {
@@ -131,7 +129,6 @@ export default {
     } else {
       const res = await this.$axios.get(this.file.name);
       const url = res.config.url;
-      console.log("res", res);
 
       this.url = url;
       this.fileData = res.data;
@@ -157,7 +154,6 @@ export default {
     async file(newFile: any) {
       this.loading = true;
       if (newFile.metadata) {
-        console.log("newFilewatch", newFile);
         this.fileData = newFile.metadata;
         if (this.fileData.attributes) {
           this.attributes = this.fileData.attributes;

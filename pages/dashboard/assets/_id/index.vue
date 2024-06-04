@@ -86,7 +86,6 @@ export default {
     try {
       const folderId = this.$route.params.id;
       const res = await getFolderById(folderId);
-      console.log("asdd", res);
       this.vault = res.data;
 
       const assetsType = res.data.folderInfo.assets.ext;

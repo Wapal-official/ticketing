@@ -1404,11 +1404,8 @@ export default {
       if (this.image.name) {
         const fileType = this.checkFileType(this.image.name);
         if (fileType === "image") {
-          console.log("img");
           formData.append("image", this.image);
         } else {
-          console.log("vii2");
-
           formData.append("media2", this.image);
           formData.append("image", this.thumbnail);
         }
@@ -1439,9 +1436,10 @@ export default {
     },
     async setCollectionDataFromDraft() {
       try {
-        this.whitelistEnabled = this.collection.whitelist_sale_time
-          ? true
-          : false;
+        this.whitelistEnabled = true;
+        // this.whitelistEnabled = this.collection.whitelist_sale_time
+        //   ? true
+        //   : false;
 
         const draftRes = await getDraftByIdInCreatorStudio(
           this.$route.params.id
@@ -1502,13 +1500,11 @@ export default {
         const selectedFolder = this.folders.find(
           (folder: { folder_name: any }) => folder.folder_name === this.baseURL
         );
-        console.log("selected folder", selectedFolder);
         if (selectedFolder) {
           this.collection.baseURL = selectedFolder.metadata.baseURI;
         }
 
         const tempCollection = structuredClone(this.collection);
-        console.log("tempCollection", tempCollection);
 
         for (const key in tempCollection) {
           formData.append(key, tempCollection[key]);
@@ -1582,7 +1578,7 @@ export default {
 
     folderRes.data.folderInfo.metadata = 2;
     folderRes.data.folderInfo.metadataBaseURI =
-      "https://arweave.net/qwGd9xRJ2y2FW325OOJmaifcr7864YmTE5WvgF2GLwc/";
+      folderRes.data.folderInfo.metadata.baseURI;
 
     this.folders.push(folderRes.data.folderInfo);
 

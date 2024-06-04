@@ -300,7 +300,6 @@ export default {
     },
     displayFileDetails(file: any) {
       this.currentFile = file;
-      console.log("curent file", this.currentFile);
 
       if (file.image) {
         this.showFileDetails = true;
@@ -321,16 +320,13 @@ export default {
       this.$store.commit("asset/setFolderInfo", null);
       if (this.type === "assets" && !res.data.folderInfo.metadata.baseURI) {
         this.folderInfo.files = res.data.folderInfo.assets.files;
-        console.log("ress");
       } else if (
         this.type === "images" &&
         !res.data.folderInfo.metadata.baseURI
       ) {
         this.folderInfo.files = res.data.folderInfo.images.files;
-        console.log("ress2");
       } else {
         this.folderInfo.files = res.data.folderInfo.metadata.files;
-        console.log("ress3", this.folderInfo.files);
       }
       // this.folderInfo.files =
       // this.type === "assets" && !res.data.folderInfo.metadata.baseURI
@@ -345,6 +341,7 @@ export default {
       //   this.type === "images" && !res.data.folderInfo.metadata.baseURI
       //     ? res.data.folderInfo.images.files
       //     : res.data.folderInfo.metadata.files;
+
       this.folderInfo.folder_name = res.data.folderInfo.folder_name;
       this.folderInfo._id = res.data.folderInfo._id;
       this.folderInfo.user_id = res.data.folderInfo.user_id;
@@ -372,13 +369,10 @@ export default {
       if (fileCheck) {
         this.fileLoading = false;
       }
-      console.log("file check", this.type);
-
       if (
         this.type === "assets" &&
         res.data.folderInfo.assets.files.length > 0
       ) {
-        console.log("vasa");
         this.fileExtension = res.data.folderInfo.assets.ext;
       } else if (
         this.type === "images" &&
@@ -445,7 +439,6 @@ export default {
               // const res = await this.$axios.get(this.file.name);
 
               // this.fileData = res.data;
-              console.log("cacaca, this.f", res.data?.image);
               // if (this.fileData.attributes) {
               //   this.attributes = this.fileData.attributes;
               // }
@@ -486,7 +479,7 @@ export default {
                   const metadata = this.folderInfo.traits[index].metadata;
                   generatedFile = {
                     _id: fileIndex,
-                    name: metadata.name,
+                    name: fileIndex ? fileIndex : metadata.name,
                     src: src,
                     type: res.headers["content-type"],
                     createdDate: createdDate,
@@ -494,6 +487,7 @@ export default {
                     metadata: metadata,
                     edit: false,
                   };
+
                   const nft = this.folderInfo.traits.find(
                     (trait: any) => Number(trait.nftId) === Number(fileIndex)
                   );
@@ -528,7 +522,7 @@ export default {
         });
         this.$store.commit("asset/pushNewFilesIntoFiles", mappedFiles);
         // this.paginatedFiles.push(...mappedFiles);
-        // console.log("this page", this.paginatedFiles);
+
         this.mappingFiles = false;
       }, 1000);
     },
@@ -614,6 +608,7 @@ export default {
         //   folder_name: this.folderInfo.folder_name,
         // });
         // this.generatingMetadata = true;
+
         this.showSetMetadataDialog = false;
 
         this.transferFund(
@@ -657,7 +652,6 @@ export default {
       }
 
       if (!this.folderInfo.assets.baseURI) {
-        console.log("aaaa", this.folderInfo.assets.baseURI);
         return false;
       }
 
@@ -665,7 +659,6 @@ export default {
         return true;
       }
       if (!this.isImgforMetadata) {
-        console.log("dad", this.isImgforMetadata);
         if (!this.folderInfo.images.baseURI) {
           return false;
         }
@@ -712,7 +705,6 @@ export default {
   },
   watch: {
     checkUploadingStatus: async function (newValue: string) {
-      console.log(newValue);
       if (newValue) {
         setTimeout(async () => {
           this.page = 0;

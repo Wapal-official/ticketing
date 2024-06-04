@@ -842,7 +842,6 @@ export default {
         console.error("File is null or undefined.");
         return;
       }
-      console.log("thumb123");
 
       const previewImgElement = document.createElement("img");
       const reviewImgElement = document.createElement("img");
@@ -1007,12 +1006,9 @@ export default {
       } else if (this.isVideo(file.name)) {
         this.checkVideo = true;
         this.audioCheck = false;
-        console.log("asdfnsd");
-        console.log("asdfnsd", this.file);
         this.getFileExtension(file.name);
         this.displayVideo();
         if (this.thumbnail) {
-          console.log("thumb1");
           this.displayThumbnail(this.thumbnail);
         }
       } else if (this.isAudio(file.name)) {
@@ -1020,8 +1016,6 @@ export default {
         this.checkVideo = true;
         this.displayAudio();
         if (this.thumbnail) {
-          console.log("thumb12");
-
           this.displayThumbnail(this.thumbnail);
         }
       } else {
@@ -1033,7 +1027,6 @@ export default {
     },
     thumbnailSelected(file) {
       this.thumbnail = file;
-      console.log("thumbnail", this.thumbnail);
       if (Math.floor(this.thumbnail.size / (1024 * 1024)) >= 15) {
         this.imageError = true;
         this.imageErrorMessage = "Please Upload Image less than 15MB";
@@ -1305,10 +1298,6 @@ export default {
             this.imageErrorMessage = "Please select an image for collection";
             break;
           }
-          console.log("asd");
-          console.log("validation", this.file);
-
-          console.log("check validation", this.file, this.thumbnail);
           // const fileType = this.checkFileType(this.file.name);
           // if (fileType === "video" || fileType === "audio") {
           //   console.log("fileee", this.file.name);
@@ -1368,9 +1357,6 @@ export default {
         const metadataRes = await axios.get(this.collection.baseURL);
 
         const metadata = metadataRes.data;
-        console.log("metadataRes");
-        console.log(metadataRes);
-        console.log("meta data", this.metadata);
 
         const imageUrl = metadata.image;
         let videoUrl;
@@ -1407,11 +1393,9 @@ export default {
         formData.append("phases", JSON.stringify([]));
         formData.append("tweet", tempCollection.tweet);
         if (videoUrl) {
-          console.log("vio");
           formData.append("image", imageUrl);
           formData.append("media2", videoUrl);
         } else {
-          console.log("imo");
           formData.append("image", imageUrl);
         }
 

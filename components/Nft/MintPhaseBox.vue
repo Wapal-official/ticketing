@@ -69,12 +69,20 @@
       <div v-else>You are not whitelisted for this phase</div>
     </div>
     <div
+      class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2 tw-text-sm tw-text-dark-0"
       v-if="
         phase?.id === 'public-sale' && showWhitelistText && publicSaleMintLimit
       "
-      class="tw-w-full tw-text-sm tw-text-white tw-font-semibold tw-text-right"
     >
-      Limit {{ publicSaleMintLimit }} per wallet
+      <div
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+      >
+        <i class="bx bx-info-circle tw-text-xl"></i>
+        <div class="tw-text-sm tw-text-dark-0 tw-font-semibold">
+          You are eligible to mint for this phase.
+        </div>
+      </div>
+      <div>Limit {{ publicSaleMintLimit }} per wallet</div>
     </div>
   </div>
 </template>

@@ -302,7 +302,6 @@ export const getApprovedDrafts = async (page: number, limit: number) => {
 // };
 
 export const editDraft = async (draftId: string, formData: any) => {
-  console.log("Form Data", formData);
   const config = {
     headers: { "content-type": "multipart/form-data" },
   };
@@ -333,7 +332,9 @@ export const updateCollection = async (collectionId: string, data: any) => {
   try {
     const now = new Date().toISOString();
 
-    data.image = getUncachedImageLink(data.image);
+    if (data.image) {
+      data.image = getUncachedImageLink(data.image);
+    }
 
     const res = await creatorStudioRequest.patch(
       `/api/collection/${collectionId}`,
