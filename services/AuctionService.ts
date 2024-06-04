@@ -121,8 +121,7 @@ export const uploadAndCreateVideoFile = async (file: File, thumbnail: File, para
   const upload = await publicRequest.post(
     "/api/uploader/videoedition",
     formData
-  );
-  console.log("upload", upload)
+  ); 
   
   if (upload.data ) {
     return upload.data.data;

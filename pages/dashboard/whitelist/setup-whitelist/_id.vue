@@ -354,8 +354,6 @@ export default {
 
         tempWhitelist.discord_roles = this.roles;
 
-        console.log(tempWhitelist);
-
         await createWhitelist(tempWhitelist);
 
         this.submitting = false;

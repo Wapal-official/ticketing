@@ -346,7 +346,6 @@ export default {
                 );
               }
             }
-            console.log("filee", file);
             const filename = file.name;
             const extensionIndex = filename.lastIndexOf(".");
             const nameWithoutExtension = filename.substring(0, extensionIndex);

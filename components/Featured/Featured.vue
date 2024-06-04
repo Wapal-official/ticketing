@@ -846,9 +846,7 @@ export default {
   },
   async mounted() {
     try {
-      console.log("asd", this.propCollection);
       this.collection = this.propCollection;
-      console.log("this", this.collection);
       if (this.collection._id === "651295af57079307bdb1cfe9") {
         delete this.collection["candyMachine"].whitelist_sale_time;
         delete this.collection["candyMachine"].whitelist_price;

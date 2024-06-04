@@ -11,12 +11,12 @@
           :source="collection.media2"
         />
         <utility-image
-          v-else
           :source="collection?.image"
           :alt="collection.name"
           class="tw-rounded tw-w-[421px] tw-h-[421px]"
           width="421px"
           height="421px"
+          v-else
         />
         <audio-player
           v-if="isAudio(collection.media2)"
@@ -52,11 +52,11 @@
                 class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
               >
                 <div class="tw-font-semibold">Caution</div>
-                <div>Click 'Start Next Phase' 3 minutes before the start</div>
+                <div>Make sure to click 'Set Whitelist' button</div>
                 <div>
-                  of each phase if you have set the different prices for
+                  in whitelist page after editing mint price or mint time in
+                  phases
                 </div>
-                <div>different phases. No need for public mint.</div>
               </div>
             </template>
           </tool-tip>
@@ -604,7 +604,6 @@ export default {
       this.loading = true;
       this.collection = await getCollection(this.$route.params.id);
 
-      console.log("collection", this.collection);
       const chainRes = await getCollectionDetails({
         candyMachineId: this.collection.candyMachine.candy_id,
         candy_object: this.collection.candyMachine.resource_account,
@@ -858,7 +857,9 @@ export default {
       try {
         this.savingChanges = true;
 
-        const sortedPhases = sortPhases(this.editCollection.phases);
+        const sortedPhases = sortPhases(
+          structuredClone(this.editCollection.phases)
+        );
 
         if (
           new Date(
@@ -868,6 +869,12 @@ export default {
           const phaseWithTimeGreaterThanCurrentTime = sortedPhases.find(
             (phase) => new Date(phase.mint_time).getTime() > Date.now()
           );
+
+          if (!phaseWithTimeGreaterThanCurrentTime) {
+            throw new Error(
+              "At least one phase should be greater than current time"
+            );
+          }
 
           await updateWhitelistSaleTime({
             candy_object: this.collection.candyMachine.resource_account,
