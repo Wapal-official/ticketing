@@ -857,7 +857,9 @@ export default {
       try {
         this.savingChanges = true;
 
-        const sortedPhases = sortPhases(this.editCollection.phases);
+        const sortedPhases = sortPhases(
+          structuredClone(this.editCollection.phases)
+        );
 
         if (
           new Date(
