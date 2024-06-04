@@ -52,11 +52,11 @@
                 class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
               >
                 <div class="tw-font-semibold">Caution</div>
-                <div>Click 'Start Next Phase' 3 minutes before the start</div>
+                <div>Make sure to click 'Set Whitelist' button</div>
                 <div>
-                  of each phase if you have set the different prices for
+                  in whitelist page after editing mint price or mint time in
+                  phases
                 </div>
-                <div>different phases. No need for public mint.</div>
               </div>
             </template>
           </tool-tip>
