@@ -527,7 +527,7 @@
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
-            <!-- <div
+            <div
               class="tw-flex tw-flex-row tw-items-end tw-justify-start tw-gap-2"
               v-if="collection.coinType === 'APT'"
             >
@@ -557,7 +557,7 @@
                   </div>
                 </template>
               </tool-tip>
-            </div> -->
+            </div>
             <v-checkbox
               v-model="saveAsDraft"
               label="Save as Draft"
