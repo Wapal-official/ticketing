@@ -120,274 +120,276 @@
           </div>
         </div>
       </div>
-      <div
+      <!-- <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-p-4"
         v-if="collection.phases.length === 1"
       >
         <div class="tw-text-white tw-font-semibold tw-capitalize tw-text-sm">
           Whitelist Sale
+        </div> -->
+      <div
+        v-if="collection.phases.length === 1"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+      >
+        <div class="tw-text-white tw-font-semibold tw-capitalize">
+          Whitelist Sale
         </div>
         <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-flex-row md:tw-items-baseline md:tw-justify-between"
         >
-          <div class="tw-text-white tw-font-semibold tw-capitalize">
-            Whitelist Sale
-          </div>
-          <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-flex-row md:tw-items-baseline md:tw-justify-between"
-          >
-            <div class="tw-w-full">
-              <div
-                class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
-              >
-                Whitelist Sale Time
-              </div>
-              <div
-                class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-start"
-                v-if="!editingWhitelistSaleTime"
-              >
-                <span>
-                  {{
-                    formatDateTime(collection.candyMachine.whitelist_sale_time)
-                  }}</span
-                >
-                <button
-                  class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
-                  @click="editingWhitelistSaleTime = true"
-                >
-                  <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-lg"></i>
-                </button>
-              </div>
-              <div
-                class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8"
-                v-else
-              >
-                <ValidationProvider
-                  class="tw-w-full"
-                  rules="required|date"
-                  v-slot="{ errors }"
-                >
-                  <input-date-picker
-                    placeholder="Select Whitelist Sale Time"
-                    v-model="editCollection.whitelistSaleTime"
-                  />
-                  <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
-                </ValidationProvider>
-              </div>
+          <div class="tw-w-full">
+            <div
+              class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+            >
+              Whitelist Sale Time
             </div>
             <div
-              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-items-end"
+              class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-start"
+              v-if="!editingWhitelistSaleTime"
             >
-              <div
-                class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+              <span>
+                {{
+                  formatDateTime(collection.candyMachine.whitelist_sale_time)
+                }}</span
               >
-                Price
-              </div>
-              <div
-                class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-end"
-                v-if="!editingWhitelistSalePrice"
+              <button
+                class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+                @click="editingWhitelistSaleTime = true"
               >
-                <span
-                  >{{ collection.candyMachine.whitelist_price }}
-                  {{
-                    collection.seed && collection.seed.coin_type
-                      ? collection.seed.coin_type
-                      : "APT"
-                  }}</span
-                >
-                <button
-                  class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
-                  @click="editingWhitelistSalePrice = true"
-                >
-                  <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-lg"></i>
-                </button>
-              </div>
+                <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-lg"></i>
+              </button>
+            </div>
+            <div
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8"
+              v-else
+            >
               <ValidationProvider
                 class="tw-w-full"
-                rules="required|number"
+                rules="required|date"
                 v-slot="{ errors }"
-                v-else
               >
-                <input-text-field
-                  placeholder="Whitelist Sale Price"
-                  v-model="editCollection.whitelistPrice"
-                >
-                  <template #append-icon>
-                    <img
-                      :src="selectedCoinType.imageWhite"
-                      alt="Coin Type"
-                      width="14px"
-                      height="14px"
-                    />
-                  </template>
-                </input-text-field>
+                <input-date-picker
+                  placeholder="Select Whitelist Sale Time"
+                  v-model="editCollection.whitelistSaleTime"
+                />
                 <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
               </ValidationProvider>
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-4 md:tw-flex-row md:tw-justify-start"
-            v-if="editingWhitelistSalePrice || editingWhitelistSaleTime"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-items-end"
           >
-            <button-primary
-              title="Cancel"
-              @click="resetEditingWhitelistSale"
-              :bordered="true"
-              :fullWidth="true"
-            />
-            <button-primary
-              title="Save Changes"
-              @click="saveWhitelistSale"
-              :loading="savingChanges"
-              :fullWidth="true"
-            />
+            <div
+              class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+            >
+              Price
+            </div>
+            <div
+              class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-end"
+              v-if="!editingWhitelistSalePrice"
+            >
+              <span
+                >{{ collection.candyMachine.whitelist_price }}
+                {{
+                  collection.seed && collection.seed.coin_type
+                    ? collection.seed.coin_type
+                    : "APT"
+                }}</span
+              >
+              <button
+                class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+                @click="editingWhitelistSalePrice = true"
+              >
+                <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-lg"></i>
+              </button>
+            </div>
+            <ValidationProvider
+              class="tw-w-full"
+              rules="required|number"
+              v-slot="{ errors }"
+              v-else
+            >
+              <input-text-field
+                placeholder="Whitelist Sale Price"
+                v-model="editCollection.whitelistPrice"
+              >
+                <template #append-icon>
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
+                </template>
+              </input-text-field>
+              <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
           </div>
         </div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-4 md:tw-flex-row md:tw-justify-start"
+          v-if="editingWhitelistSalePrice || editingWhitelistSaleTime"
+        >
+          <button-primary
+            title="Cancel"
+            @click="resetEditingWhitelistSale"
+            :bordered="true"
+            :fullWidth="true"
+          />
+          <button-primary
+            title="Save Changes"
+            @click="saveWhitelistSale"
+            :loading="savingChanges"
+            :fullWidth="true"
+          />
+        </div>
       </div>
-      <div
+      <!-- </div> -->
+      <!-- <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-p-4"
         v-if="collection.phases.length > 1"
       >
         <div class="tw-w-full tw-flex tw-flex-row tw-justify-between">
           <h3 class="tw-text-sm tw-font-semibold">Mint Phases</h3>
-        </div>
-        <dashboard-collection-phase-edit-box
-          v-for="(phase, index) in editCollection.phases"
-          :phase="phase"
-          :coinType="
-            collection.seed && collection.seed.coin_type
-              ? collection.seed.coin_type
-              : 'APT'
-          "
-          :savingChanges="savingChanges"
-          :key="index"
-          :saved="!savingChanges"
-          @editPhases="editPhases"
-        />
-      </div>
-      <div
+        </div> -->
+      <dashboard-collection-phase-edit-box
+        v-if="collection.phases.length > 1"
+        v-for="(phase, index) in editCollection.phases"
+        :phase="phase"
+        :coinType="
+          collection.seed && collection.seed.coin_type
+            ? collection.seed.coin_type
+            : 'APT'
+        "
+        :savingChanges="savingChanges"
+        :key="index"
+        :saved="!savingChanges"
+        @editPhases="editPhases"
+      />
+      <!-- </div> -->
+      <!-- <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-p-4"
       >
         <div class="tw-text-white tw-font-semibold tw-capitalize tw-text-sm">
           Public Sale
+        </div> -->
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+      >
+        <div class="tw-text-white tw-font-semibold tw-capitalize">
+          Public Sale
         </div>
         <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-flex-row md:tw-items-baseline md:tw-justify-between"
         >
-          <div class="tw-text-white tw-font-semibold tw-capitalize">
-            Public Sale
-          </div>
-          <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-flex-row md:tw-items-baseline md:tw-justify-between"
-          >
-            <div class="tw-w-full">
-              <div
-                class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
-              >
-                Public Sale Time
-              </div>
-              <div
-                class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-start"
-                v-if="!editingPublicSaleTime"
-              >
-                <span>
-                  {{
-                    formatDateTime(collection.candyMachine.public_sale_time)
-                  }}</span
-                >
-                <button
-                  class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
-                  @click="editingPublicSaleTime = true"
-                >
-                  <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-lg"></i>
-                </button>
-              </div>
-              <div
-                class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8"
-                v-else
-              >
-                <ValidationProvider
-                  class="tw-w-full"
-                  rules="required|date"
-                  v-slot="{ errors }"
-                >
-                  <input-date-picker
-                    placeholder="Select Whitelist Sale Time"
-                    v-model="editCollection.publicSaleTime"
-                  />
-                  <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
-                </ValidationProvider>
-              </div>
+          <div class="tw-w-full">
+            <div
+              class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+            >
+              Public Sale Time
             </div>
             <div
-              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-items-end"
+              class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-start"
+              v-if="!editingPublicSaleTime"
             >
-              <div
-                class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+              <span>
+                {{
+                  formatDateTime(collection.candyMachine.public_sale_time)
+                }}</span
               >
-                Price
-              </div>
-              <div
-                class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-end"
-                v-if="!editingPublicSalePrice"
+              <button
+                class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+                @click="editingPublicSaleTime = true"
               >
-                <span
-                  >{{ collection.candyMachine.public_sale_price }}
-                  {{
-                    collection.seed && collection.seed.coin_type
-                      ? collection.seed.coin_type
-                      : "APT"
-                  }}</span
-                >
-                <button
-                  class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
-                  @click="editingPublicSalePrice = true"
-                >
-                  <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-lg"></i>
-                </button>
-              </div>
+                <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-lg"></i>
+              </button>
+            </div>
+            <div
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8"
+              v-else
+            >
               <ValidationProvider
                 class="tw-w-full"
-                rules="required|number"
+                rules="required|date"
                 v-slot="{ errors }"
-                v-else
               >
-                <input-text-field
-                  placeholder="Whitelist Sale Price"
-                  v-model="editCollection.publicSalePrice"
-                >
-                  <template #append-icon>
-                    <img
-                      :src="selectedCoinType.imageWhite"
-                      alt="Coin Type"
-                      width="14px"
-                      height="14px"
-                    />
-                  </template>
-                </input-text-field>
+                <input-date-picker
+                  placeholder="Select Whitelist Sale Time"
+                  v-model="editCollection.publicSaleTime"
+                />
                 <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
               </ValidationProvider>
             </div>
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-4 md:tw-flex-row md:tw-justify-start"
-            v-if="editingPublicSalePrice || editingPublicSaleTime"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start md:tw-items-end"
           >
-            <button-primary
-              title="Cancel"
-              @click="resetEditingPublicSale"
-              :bordered="true"
-              :fullWidth="true"
-            />
-            <button-primary
-              title="Save Changes"
-              @click="savePublicSale"
-              :loading="savingChanges"
-              :fullWidth="true"
-            />
+            <div
+              class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+            >
+              Price
+            </div>
+            <div
+              class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-end"
+              v-if="!editingPublicSalePrice"
+            >
+              <span
+                >{{ collection.candyMachine.public_sale_price }}
+                {{
+                  collection.seed && collection.seed.coin_type
+                    ? collection.seed.coin_type
+                    : "APT"
+                }}</span
+              >
+              <button
+                class="tw-flex tw-flex-row tw-items-start tw-justify-start tw-gap-2"
+                @click="editingPublicSalePrice = true"
+              >
+                <i class="bx bxs-edit-alt tw-text-dark-0 tw-text-lg"></i>
+              </button>
+            </div>
+            <ValidationProvider
+              class="tw-w-full"
+              rules="required|number"
+              v-slot="{ errors }"
+              v-else
+            >
+              <input-text-field
+                placeholder="Whitelist Sale Price"
+                v-model="editCollection.publicSalePrice"
+              >
+                <template #append-icon>
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
+                </template>
+              </input-text-field>
+              <div class="tw-text-sm tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider>
           </div>
         </div>
+        <div
+          class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-4 md:tw-flex-row md:tw-justify-start"
+          v-if="editingPublicSalePrice || editingPublicSaleTime"
+        >
+          <button-primary
+            title="Cancel"
+            @click="resetEditingPublicSale"
+            :bordered="true"
+            :fullWidth="true"
+          />
+          <button-primary
+            title="Save Changes"
+            @click="savePublicSale"
+            :loading="savingChanges"
+            :fullWidth="true"
+          />
+        </div>
       </div>
+      <!-- </div> -->
       <div
         class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-center"
       >
