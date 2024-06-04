@@ -22,3 +22,18 @@ export const extractImageLinkFromCacheServerUrl = (url: any | URL) => {
 
   return link;
 };
+
+export const getUncachedImageLink = (url: any | URL) => {
+  const urlObject = new URL(url);
+  const params = new URLSearchParams(urlObject.search);
+
+  const link = params.get("l");
+
+  if (!link) {
+    return url;
+  }
+
+  const uncachedLink: string = getUncachedImageLink(link);
+
+  return uncachedLink;
+};

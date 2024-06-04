@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { publicRequest } from "@/services/fetcher";
 import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
-import { getCachedUrlOfImage } from "@/utils/imageCache";
+import { getCachedUrlOfImage, getUncachedImageLink } from "@/utils/imageCache";
 import { clearCacheOfMintLimit } from "@/services/WhitelistService";
 
 const filterApprovedCollections = (collections: any[]) => {
@@ -301,9 +301,9 @@ export const editImage = async (draftId: string, data: any) => {
 export const updateCollection = async (collectionId: string, data: any) => {
   const now = new Date().toISOString();
 
-  data.image = data.uncachedImage;
-
-  delete data.uncachedImage;
+  if (data.image) {
+    data.image = getUncachedImageLink(data.image);
+  }
 
   const res = await creatorStudioRequest.patch(
     `/api/collection/${collectionId}`,
