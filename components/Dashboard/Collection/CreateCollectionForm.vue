@@ -527,59 +527,91 @@
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
-            <!-- <div
-              class="tw-flex tw-flex-row tw-items-end tw-justify-start tw-gap-2"
-              v-if="collection.coinType === 'APT'"
-            >
-              <v-checkbox
-                v-model="isNonRandom"
-                label="Remove Randomness"
-                :ripple="false"
-                hide-details
-                class="!tw-mt-0"
-              ></v-checkbox>
-              <tool-tip>
-                <template #text>
-                  <i class="bx bx-info-circle tw-text-xl"></i>
-                </template>
-                <template #tip>
-                  <div
-                    class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
-                  >
-                    <div class="tw-font-semibold">Caution</div>
-                    <div>
-                      Ticking this checkbox will disable randomness while
-                      minting.
-                    </div>
-                    <div>
-                      Which means you tokens will be minted sequentially
-                    </div>
-                  </div>
-                </template>
-              </tool-tip>
-            </div> -->
-            <v-checkbox
-              v-model="saveAsDraft"
-              label="Save as Draft"
-              :ripple="false"
-              v-if="!draft"
-            ></v-checkbox>
-            <!-- <v-checkbox
-              v-model="isSoulBound"
-              label="Is Soulbound"
-              :ripple="false"
-            ></v-checkbox> -->
+            <div class="tw-w-full">
+              <label class="tw-text-white tw-text-sm tw-font-medium">
+                Additional Options
+              </label>
+              <div class="tw-flex tw-justify-between tw-w-full">
+                <div
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+                  v-if="collection.coinType === 'APT'"
+                >
+                  <v-checkbox
+                    v-model="isNonRandom"
+                    label="Remove Randomness"
+                    :ripple="false"
+                    hide-details
+                    class="!tw-mt-0 tw-w-[200px]"
+                  ></v-checkbox>
+                  <tool-tip>
+                    <template #text>
+                      <i
+                        class="bx bx-info-circle tw-text-xl"
+                        style="vertical-align: middle !important"
+                      ></i>
+                    </template>
+                    <template #tip>
+                      <div
+                        class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
+                      >
+                        <div>
+                          This feature allows you to mint your collection in a
+                          specific order folowing the indexing.
+                        </div>
+                      </div>
+                    </template>
+                  </tool-tip>
+                </div>
+                <div
+                  class="tw-flex tw-flex-row tw-justify-start tw-gap-2 tw-items-center"
+                >
+                  <v-checkbox
+                    class="tw-w-[140px] !tw-mt-0"
+                    v-model="isSoulBound"
+                    hide-details
+                    label="Is Soulbound"
+                    :ripple="false"
+                  ></v-checkbox>
+                  <tool-tip>
+                    <template #text>
+                      <i
+                        class="bx bx-info-circle tw-text-xl"
+                        style="vertical-align: middle !important"
+                      ></i>
+                    </template>
+                    <template #tip>
+                      <div
+                        class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
+                      >
+                        <div>
+                          This feature ensures your NFTs are not transferable or
+                          tradable.
+                        </div>
+                      </div>
+                    </template>
+                  </tool-tip>
+                </div>
+              </div>
+            </div>
             <div
               class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
               :class="{ 'tw-justify-between': draft }"
             >
               <button-primary
+                class="tw-mr-4"
                 title="Save Changes"
                 :loading="submitting"
                 @click="saveDraft"
                 v-if="draft"
               />
-
+              <button-secondary
+                class="tw-mr-4"
+                :bordered="true"
+                :paddingTwoHalf="false"
+                title="Save As Draft"
+                @click="saveDraft()"
+                style="color: #fff !important"
+              />
               <button-primary
                 title="Next"
                 :loading="submitting"

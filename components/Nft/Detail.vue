@@ -8,7 +8,7 @@
     >
       <div class="card-min-width" style="position: relative">
         <div
-          class="tw-w-full tw-max-h-[338px] md:tw-w-[550px] md:tw-h-[550px] md:tw-max-h-[550px] lg:tw-w-[450px] lg:tw-min-w-[450px] lg:tw-h-[450px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+          class="tw-w-full tw-max-h-[338px] md:tw-w-[440px] md:tw-h-[440px] md:tw-max-h-[440px] lg:tw-w-[440px] lg:tw-min-w-[440px] lg:tw-h-[440px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
           v-if="collection.video"
         >
           <video-player-featured :source="collection.video" />
