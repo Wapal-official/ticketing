@@ -342,8 +342,7 @@
                     Getting Proof for {{ currentSale.name }}
                   </div>
                   <div v-if="notWhitelisted">
-                    You are not whitelisted in {{ currentSale.name }} for this
-                    collection
+                    You are not whitelisted for this phase
                   </div>
                   <div
                     class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
@@ -364,10 +363,20 @@
                 </div>
               </div>
               <div
-                v-if="!checkPublicSaleTimer() && publicSaleMintLimit"
-                class="tw-w-full tw-text-sm tw-text-white tw-font-semibold tw-text-right"
+                v-if="!checkPublicSaleTimer() && Number(publicSaleMintLimit)"
+                class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
               >
-                Limit {{ publicSaleMintLimit }} per wallet
+                <div
+                  class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+                >
+                  <i class="bx bx-info-circle tw-text-xl"></i>
+                  <div class="tw-text-sm tw-text-dark-0 tw-font-semibold">
+                    You are eligible to mint.
+                  </div>
+                </div>
+                <div class="tw-text-sm">
+                  Limit {{ publicSaleMintLimit }} per wallet
+                </div>
               </div>
             </div>
           </div>
@@ -473,9 +482,7 @@
   <loading-collection v-else />
 </template>
 <script>
-import {
-  setSoldOut,
-} from "@/services/CollectionService";
+import { setSoldOut } from "@/services/CollectionService";
 import { getProof, getMintLimit } from "@/services/WhitelistService";
 import { getWhitelistEntryById } from "@/services/WhitelistService";
 import {
