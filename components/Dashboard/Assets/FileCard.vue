@@ -204,6 +204,69 @@ export default {
       const res = await this.$axios.get(source);
       this.videoSrc = res.data.animation_url;
     },
+    isImage(source: string) {
+      const extension = source;
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source;
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source;
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
+    },
   },
   computed: {
     checkFileType() {
@@ -225,7 +288,14 @@ export default {
       } else if (audioRegex.test(this.extension)) {
         return "audio";
       }
-      return "image";
+      if (this.isImage(this.extension)) {
+        return "image";
+      } else if (this.isVideo(this.extension)) {
+        return "video";
+      } else if (this.isAudio(this.extension)) {
+        return "audio";
+      }
+      return "json";
     },
     getAssetSrc() {
       // if (!this.file) {
@@ -234,10 +304,6 @@ export default {
       // const res = await this.$axios.get(this.file.src);
 
       return this.file.image ? this.file.image : this.file?.src;
-    },
-
-    getAssetAudio() {
-      return this.file.src;
     },
     getAssetName() {
       return this.file.image ? this.file.name : this.file.name;

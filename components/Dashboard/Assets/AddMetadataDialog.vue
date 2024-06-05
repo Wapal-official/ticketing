@@ -1,17 +1,26 @@
 <template>
   <div
-    class="tw-text-white tw-bg-dark-9 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 tw-py-2 md:tw-py-4"
+    class="tw-text-white tw-bg-dark-9 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-8 tw-py-4 md:tw-py-6"
   >
     <div
       class="tw-w-full tw-px-2 md:tw-px-8 tw-flex tw-flex-col tw-items-center tw-justify-center"
     >
       <img
+        v-if="checkFileType === 'image'"
         :src="image"
         alt="asset"
         width="300px"
         height="300px"
         class="tw-max-w-[300px] tw-max-h-[300px]"
       />
+      <video-player v-else-if="checkFileType === 'video'" :source="image" />
+      <div
+        class="tw-w-full tw-h-full tw-object-cover"
+        v-else-if="checkFileType === 'audio'"
+        style="height: 200px; position: relative"
+      >
+        <audio-player class="audio-postion" :audioSrc="image"></audio-player>
+      </div>
     </div>
     <form @submit.prevent="" class="tw-w-full">
       <ValidationObserver
@@ -292,11 +301,72 @@ export default {
 
       this.$store.commit("asset/setFolderInfo", res.data.folderInfo);
     },
+    isImage(source) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
+    isAudio(source) {
+      if (typeof source !== "string") {
+        return false;
+      }
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
+    },
+    isVideo(source) {
+      const extension = source.split(".").pop()?.toLowerCase();
+      return extension
+        ? [
+            "mp4",
+            "mkv",
+            "m4v",
+            "webm",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "3gp",
+            "ogv",
+            "mpeg",
+            "mpg",
+            "divx",
+            "rm",
+            "asf",
+            "vob",
+            "ts",
+            "m2ts",
+          ].includes(extension)
+        : false;
+    },
   },
   mounted() {
     if (this.propAttributes) {
       this.edit = true;
       this.attributes = structuredClone(this.propAttributes);
+      console.log("asd attri", this.attributes);
     }
   },
   watch: {
@@ -319,6 +389,15 @@ export default {
     },
     folderInfo() {
       return this.$store.state.asset.folderInfo;
+    },
+    checkFileType() {
+      if (this.isImage(this.image)) {
+        return "image";
+      } else if (this.isVideo(this.image)) {
+        return "video";
+      } else if (this.isAudio(this.image)) {
+        return "audio";
+      }
     },
   },
 };
