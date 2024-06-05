@@ -2,6 +2,7 @@
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
     <dashboard-page-heading heading="Collection" v-if="showTabs" />
     <launchpad-guide
+      v-if="showLaunchpadGuide"
       title="Collection Guide"
       itemLink="https://docs.wapal.io/launchpad-overall-guide/create-a-collection"
     ></launchpad-guide>
@@ -88,6 +89,11 @@ export default {
     },
     path() {
       return this.$route.path;
+    },
+    showLaunchpadGuide() {
+      return !/^\/dashboard\/collection\/edit(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i.test(
+        this.$route.path
+      );
     },
   },
   watch: {
