@@ -225,7 +225,7 @@ export default {
       } else if (audioRegex.test(this.extension)) {
         return "audio";
       }
-      return "json";
+      return "image";
     },
     getAssetSrc() {
       // if (!this.file) {
