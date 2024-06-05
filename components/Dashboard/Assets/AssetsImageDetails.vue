@@ -70,8 +70,27 @@ export default {
     close() {
       this.$emit("close");
     },
+    isImage(source: string) {
+      const extension = source;
+      return extension
+        ? [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp",
+            "bmp",
+            "svg",
+            "ico",
+            "tiff",
+          ].includes(extension)
+        : false;
+    },
     isVideo(source: string) {
-      const extension = source.split(".").pop()?.toLowerCase();
+      if (!source) {
+        return false;
+      }
+      const extension = source;
       return extension
         ? [
             "mp4",
@@ -95,6 +114,25 @@ export default {
           ].includes(extension)
         : false;
     },
+    isAudio(source: string) {
+      if (!source) {
+        return false;
+      }
+      const extension = source;
+      return extension
+        ? [
+            "mp3",
+            "wav",
+            "ogg",
+            "aac",
+            "flac",
+            "wma",
+            "alac",
+            "aiff",
+            "opus",
+          ].includes(extension)
+        : false;
+    },
     checkFileType() {
       if (this.extension === ".json") {
         return "json";
@@ -110,7 +148,11 @@ export default {
       } else if (videoRegex.test(this.extension)) {
         return "video";
       }
-
+      if (this.isImage(this.extension)) {
+        return "image";
+      } else if (this.isVideo(this.extension)) {
+        return "video";
+      }
       return "json";
     },
   },
