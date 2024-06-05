@@ -111,7 +111,7 @@ export default {
         return "video";
       }
 
-      return "json";
+      return "image";
     },
   },
   computed: {
