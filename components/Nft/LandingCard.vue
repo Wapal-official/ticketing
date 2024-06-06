@@ -183,9 +183,10 @@ export default {
         return 0;
       }
 
-      const whiteListDate = this.collection.candyMachine.whitelist_sale_time
-        ? new Date(this.collection.candyMachine.whitelist_sale_time)
-        : null;
+      const whiteListDate =
+        this.collection.phases && this.collection.phases[0]
+          ? new Date(this.collection.phases[0].mint_time)
+          : null;
       const publicSaleDate = new Date(
         this.collection.candyMachine.public_sale_time
       );
