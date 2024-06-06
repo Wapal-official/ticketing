@@ -700,10 +700,6 @@ export default {
         }
       }
 
-      this.phases.map((phase: any) => {
-        phase.mint_price = this.collection.candyMachine.whitelist_price;
-      });
-
       const publicSale = {
         name: this.collection.public_sale_name
           ? this.collection.public_sale_name
@@ -812,7 +808,7 @@ export default {
       }
 
       if (whiteListDate && this.showPublicSaleTimer) {
-        return this.collection.candyMachine.whitelist_price;
+        return this.currentSale.mint_price;
       } else {
         return this.collection.candyMachine.public_sale_price;
       }

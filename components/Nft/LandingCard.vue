@@ -276,7 +276,13 @@ export default {
       }
 
       if (whiteListDate && publicSaleDate > now) {
-        return this.collection.candyMachine.whitelist_price + this.getCoinType;
+        const startedPhases = this.collection.phases.filter(
+          (phase: any) => new Date(phase.mint_time).getTime() < Date.now()
+        );
+
+        const currentPhase = startedPhases[startedPhases.length - 1];
+
+        return currentPhase.mint_price + this.getCoinType;
       } else {
         return (
           this.collection.candyMachine.public_sale_price + this.getCoinType
