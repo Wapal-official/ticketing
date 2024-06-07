@@ -2,14 +2,14 @@ import { checkImageExtension } from "@/utils/extensionChecker";
 
 export const getCachedUrlOfImage = (url: any) => {
   if (checkImageExtension(url)) {
-    return `https://aggregator-cache.wapal.io/api/cache?l=${url}`;
+    return `https://media.wapal.io/api/cache?l=${url}`;
   }
 
   return url;
 };
 
 export const checkIfImageIsFromCacheServer = (url: any) => {
-  const cacheServerRegex = /https:\/\/aggregator-cache\.wapal\.io\/api\/cache/;
+  const cacheServerRegex = /https:\/\/media\.wapal\.io\/api\/cache/;
 
   return cacheServerRegex.test(url);
 };
