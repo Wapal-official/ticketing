@@ -559,6 +559,8 @@ export default {
       mintButtonClicked: 0,
       endedPhases: [],
       publicSaleMintLimit: 0,
+      merkleMintRetries: 0,
+      simulatedMerkleMint: false,
       imageNotFound,
       xLogo,
     };
@@ -967,12 +969,14 @@ export default {
               mint_limit: this.totalMintLimit,
               sender: this.getSender,
               mint_price: this.currentSale.mint_price,
+              simulatedMerkleMint: this.simulatedMerkleMint,
             });
           }
         }
 
         if (res.success) {
           this.mintButtonClicked = 0;
+          this.simulatedMerkleMint = true;
 
           this.$toast.showMessage({
             message: `${this.collection.name} Minted Successfully`,
@@ -1050,6 +1054,30 @@ export default {
         this.minting = false;
       } catch (error) {
         console.log(error);
+
+        if (error.message && error.message === "Invalid Proof") {
+          this.mintButtonClicked = 0;
+          this.merkleMintRetries++;
+
+          if (this.merkleMintRetries < 6) {
+            this.removePhasesFromLocalStorage();
+            this.removeProofFromLocalStorage();
+
+            await this.checkWhitelistForPhases();
+
+            await this.setProof();
+
+            setTimeout(() => {
+              this.mintBulkCollection();
+            }, 3000);
+          } else {
+            this.$toast.showMessage({ message: error, error: true });
+            this.minting = false;
+          }
+
+          return;
+        }
+
         if (
           error.response &&
           error.response.data.msg &&
@@ -1064,6 +1092,7 @@ export default {
           this.$toast.showMessage({ message: error, error: true });
         }
         this.minting = false;
+        this.simulatedMerkleMint = true;
       }
     },
     async setProof() {

@@ -2,7 +2,10 @@ import { client, wallet, checkNetwork } from "@/store/walletStore";
 import MintCollectionInterface from "@/interfaces/MintCollection";
 import { getCoinType } from "@/utils/getCoinType";
 import { convertPriceToSendInSmartContract } from "@/utils/price";
-import { simulateTransaction } from "@/utils/simulateTransaction";
+import {
+  simulateTransaction,
+  simulateTransactionForMerkleMint,
+} from "@/utils/simulateTransaction";
 import { HexString } from "aptos";
 import { handleMintError } from "@/errors/Mint";
 import {
@@ -249,6 +252,7 @@ export const mintCollection = async ({
   mint_limit,
   sender,
   mint_price,
+  simulatedMerkleMint,
 }: MintCollectionInterface) => {
   await checkWalletConnected();
   checkNetwork();
@@ -282,6 +286,7 @@ export const mintCollection = async ({
         mint_limit,
         sender,
         mint_price,
+        simulatedMerkleMint,
       });
 
       return res;
@@ -294,6 +299,7 @@ export const mintCollection = async ({
         amount,
         sender,
         mint_price,
+        simulatedMerkleMint,
       });
 
       return res;
@@ -369,6 +375,7 @@ export const merkleMintSingleNft = async ({
   mint_limit,
   sender,
   mint_price,
+  simulatedMerkleMint,
 }: MintCollectionInterface) => {
   try {
     const proofsAsHex = proof?.map((tempProof) => {
@@ -398,17 +405,20 @@ export const merkleMintSingleNft = async ({
         candy_object,
         proofsAsHex,
         simulateMintLimit,
-        convertedMintPrice,
+        convertedMintPrice.toString(),
       ],
     };
 
-    const simulateRes = await simulateTransaction({
-      sender: sender,
-      transactionPayload: merkle_mint_simulate_script,
-    });
+    if (!simulatedMerkleMint) {
+      const simulateRes = await simulateTransactionForMerkleMint({
+        sender: sender,
+        transactionPayload: merkle_mint_simulate_script,
+        contractAddress: candy_machine_id,
+      });
 
-    if (simulateRes.error) {
-      throw new Error(simulateRes.message);
+      if (simulateRes.error) {
+        throw new Error(simulateRes.message);
+      }
     }
 
     const merkle_mint_script: InputGenerateTransactionPayloadData = {
@@ -434,6 +444,7 @@ export const merkleMintManyNft = async ({
   amount,
   sender,
   mint_price,
+  simulatedMerkleMint,
 }: MintCollectionInterface) => {
   try {
     const proofsAsHex = proof?.map((tempProof) => {
@@ -460,16 +471,25 @@ export const merkleMintManyNft = async ({
       function:
         `${candy_machine_id}::candymachine::mint_from_merkle_many_v2` as `${string}::${string}::${string}`,
       type_arguments: [],
-      arguments: [candy_object, proofsAsHex, simulateMintLimit, simulateAmount],
+      arguments: [
+        candy_object,
+        proofsAsHex,
+        simulateMintLimit,
+        simulateAmount,
+        convertedMintPrice.toString(),
+      ],
     };
 
-    const simulateRes = await simulateTransaction({
-      sender: sender,
-      transactionPayload: merkle_mint_many_simulate_script,
-    });
+    if (!simulatedMerkleMint) {
+      const simulateRes = await simulateTransactionForMerkleMint({
+        sender: sender,
+        transactionPayload: merkle_mint_many_simulate_script,
+        contractAddress: candy_machine_id,
+      });
 
-    if (simulateRes.error) {
-      throw new Error(simulateRes.message);
+      if (simulateRes.error) {
+        throw new Error(simulateRes.message);
+      }
     }
 
     const merkle_mint_script_many: InputGenerateTransactionPayloadData = {
