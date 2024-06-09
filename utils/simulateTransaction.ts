@@ -87,7 +87,7 @@ export const simulateTransactionForMerkleMint = async ({
     const transaction = {
       sender: sender.walletAddress,
       sequence_number: rawTransaction.sequence_number.toString(),
-      max_gas_amount: "2000000",
+      max_gas_amount: "100000",
       gas_unit_price: "100",
       expiration_timestamp_secs: expirationTimestamp,
       payload: transactionPayload,
@@ -100,7 +100,7 @@ export const simulateTransactionForMerkleMint = async ({
     };
 
     const res = await axios.post(
-      `${NODE_URL}/transactions/simulate`,
+      `${NODE_URL}/transactions/simulate?estimate_gas_unit_price=true&estimate_max_gas_amount=true&estimate_prioritized_gas_unit_price=false`,
       transaction
     );
 
