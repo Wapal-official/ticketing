@@ -305,10 +305,6 @@ export default {
 
       return this.file.image ? this.file.image : this.file?.src;
     },
-
-    getAssetAudio() {
-      return this.file.src;
-    },
     getAssetName() {
       return this.file.image ? this.file.name : this.file.name;
     },

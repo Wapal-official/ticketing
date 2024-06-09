@@ -75,14 +75,16 @@
       "
     >
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-flex-grow tw-gap-2"
       >
         <i class="bx bx-info-circle tw-text-xl"></i>
         <div class="tw-text-sm tw-text-dark-0 tw-font-semibold">
           You are eligible to mint for this phase.
         </div>
       </div>
-      <div>Limit {{ publicSaleMintLimit }} per wallet</div>
+      <div class="tw-text-right tw-w-fit tw-text-white tw-font-semibold">
+        Limit {{ publicSaleMintLimit }} per wallet
+      </div>
     </div>
   </div>
 </template>

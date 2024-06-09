@@ -366,6 +366,7 @@ export default {
     if (this.propAttributes) {
       this.edit = true;
       this.attributes = structuredClone(this.propAttributes);
+      console.log("asd attri", this.attributes);
     }
   },
   watch: {

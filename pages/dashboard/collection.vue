@@ -36,6 +36,7 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
 

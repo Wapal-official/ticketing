@@ -18,13 +18,13 @@ export const getCollections = async (page: number, limit: number) => {
     const res = await axios.get(
       `${process.env.baseURL}/api/collection/approved?page=${page}&limit=${limit}`
     );
-  
+
     const collections = res.data.data;
-  
+
     collections.map((collection: any) => {
       collection.image = getCachedUrlOfImage(collection.image);
     });
-  
+
     return collections;
   } catch (error) {
     console.error("Error fetching collections:", error);
@@ -34,35 +34,36 @@ export const getCollections = async (page: number, limit: number) => {
 
 export const getCollection = async (collectionId: string) => {
   try {
+    const res = await publicRequest.get(`/api/collection/${collectionId}`);
 
-  const res = await publicRequest.get(`/api/collection/${collectionId}`);
+    const collection = res.data.collection[0];
 
-  const collection = res.data.collection[0];
+    collection.image = getCachedUrlOfImage(collection.image);
 
-  collection.image = getCachedUrlOfImage(collection.image);
-
-  return collection;
-} catch (error) {
-  console.error("Error fetching collections:", error);
-  return {};
-}
+    return collection;
+  } catch (error) {
+    console.error("Error fetching collections:", error);
+    return {};
+  }
 };
 
 export const getCollectionInCreatorStudio = async (collectionId: string) => {
   try {
+    const res = await creatorStudioRequest.get(
+      `/api/collection/${collectionId}`
+    );
 
-  const res = await creatorStudioRequest.get(`/api/collection/${collectionId}`);
+    const collection = res.data.collection[0];
 
-  const collection = res.data.collection[0];
+    collection.uncachedImage = collection.image;
+    collection.image = getCachedUrlOfImage(collection.image);
 
-  collection.uncachedImage = collection.image;
-  collection.image = getCachedUrlOfImage(collection.image);
-
-  return collection;
-} catch (error) {
-  console.error("Error fetching collections:", error);
-  return {};
-}};
+    return collection;
+  } catch (error) {
+    console.error("Error fetching collections:", error);
+    return {};
+  }
+};
 
 export const createCollection = async (formData: any) => {
   const config = {
@@ -299,13 +300,13 @@ export const getApprovedDrafts = async (page: number, limit: number) => {
 
 //   return res;
 // };
- 
 
-export const editDraft = async (draftId: string,   formData: any) => { 
+export const editDraft = async (draftId: string, formData: any) => {
   const config = {
     headers: { "content-type": "multipart/form-data" },
   };
-  const res = await publicRequest.patch(`/api/draft/${draftId}`,  
+  const res = await publicRequest.patch(
+    `/api/draft/${draftId}`,
     formData,
     config
   );
@@ -329,24 +330,24 @@ export const editImage = async (draftId: string, data: any) => {
 
 export const updateCollection = async (collectionId: string, data: any) => {
   try {
-  const now = new Date().toISOString();
+    const now = new Date().toISOString();
 
-  if (data.image) {
-    data.image = getUncachedImageLink(data.image);
+    if (data.image) {
+      data.image = getUncachedImageLink(data.image);
+    }
+
+    const res = await creatorStudioRequest.patch(
+      `/api/collection/${collectionId}`,
+      { ...data, updated_at: now }
+    );
+
+    await clearCacheOfMintLimit();
+
+    return res;
+  } catch (error) {
+    console.error("Error fetching collections:", error);
+    return [];
   }
-
-  const res = await creatorStudioRequest.patch(
-    `/api/collection/${collectionId}`,
-    { ...data, updated_at: now }
-  );
-
-  await clearCacheOfMintLimit();
-
-  return res;
-} catch (error) {
-  console.error("Error fetching collections:", error);
-  return [];
-}
 };
 
 export const getMetadataFromTokenURI = async (URI: string) => {

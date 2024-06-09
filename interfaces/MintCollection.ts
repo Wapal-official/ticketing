@@ -9,4 +9,5 @@ export default interface MintCollectionInterface {
   coinType?: string;
   coinObject?: string;
   sender?: string;
+  simulatedMerkleMint?: boolean;
 }
