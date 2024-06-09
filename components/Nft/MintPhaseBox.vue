@@ -82,7 +82,7 @@
           You are eligible to mint for this phase.
         </div>
       </div>
-      <div class="tw-text-right tw-w-fit">
+      <div class="tw-text-right tw-w-fit tw-text-white tw-font-semibold">
         Limit {{ publicSaleMintLimit }} per wallet
       </div>
     </div>
