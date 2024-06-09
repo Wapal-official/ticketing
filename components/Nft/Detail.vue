@@ -374,6 +374,9 @@
                     </div>
                   </div>
                 </div>
+                <div class="tw-pt-2" v-if="showPhaseChangeMessage">
+                  {{ phaseChangeMessage }}
+                </div>
               </div>
               <div
                 v-if="!checkPublicSaleTimer() && Number(publicSaleMintLimit)"
@@ -561,6 +564,9 @@ export default {
       publicSaleMintLimit: 0,
       merkleMintRetries: 0,
       simulatedMerkleMint: false,
+      phaseChangeMessage:
+        "If you don't see your WL eligibility, please refresh the page as the server scales",
+      showPhaseChangeMessage: false,
       imageNotFound,
       xLogo,
     };
@@ -1343,6 +1349,12 @@ export default {
       if (this.phases.length === 1) {
         this.phaseCounter = 1;
       }
+
+      this.showPhaseChangeMessage = true;
+
+      setTimeout(() => {
+        this.showPhaseChangeMessage = false;
+      }, 1000 * 60 * 3);
     },
     startPhaseInterval() {
       this.phaseInterval = setInterval(async () => {
