@@ -527,7 +527,7 @@
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
-            <div class="tw-w-full">
+            <!-- <div class="tw-w-full">
               <label class="tw-text-white tw-text-sm tw-font-medium">
                 Additional Options
               </label>
@@ -592,7 +592,7 @@
                   </tool-tip>
                 </div>
               </div>
-            </div>
+            </div> -->
             <div
               class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
               :class="{ 'tw-justify-between': draft }"
