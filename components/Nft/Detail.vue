@@ -373,9 +373,9 @@
                       Limit {{ currentSale?.mintLimit }} per wallet
                     </div>
                   </div>
-                </div>
-                <div class="tw-pt-2" v-if="showPhaseChangeMessage">
-                  {{ phaseChangeMessage }}
+                  <div class="tw-pt-2" v-if="showPhaseChangeMessage">
+                    {{ phaseChangeMessage }}
+                  </div>
                 </div>
               </div>
               <div
