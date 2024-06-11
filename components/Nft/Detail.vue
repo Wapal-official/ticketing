@@ -373,10 +373,13 @@
                       Limit {{ currentSale?.mintLimit }} per wallet
                     </div>
                   </div>
-                  <div class="tw-pt-2" v-if="showPhaseChangeMessage">
-                    {{ phaseChangeMessage }}
-                  </div>
                 </div>
+              </div>
+              <div
+                class="tw-w-full tw-text-sm tw-text-dark-0"
+                v-if="showPhaseChangeMessage"
+              >
+                {{ phaseChangeMessage }}
               </div>
               <div
                 v-if="!checkPublicSaleTimer() && Number(publicSaleMintLimit)"
@@ -1349,14 +1352,22 @@ export default {
       if (this.phases.length === 1) {
         this.phaseCounter = 1;
       }
-
-      this.showPhaseChangeMessage = true;
-
-      setTimeout(() => {
-        this.showPhaseChangeMessage = false;
-      }, 1000 * 60 * 3);
     },
     startPhaseInterval() {
+      const currentSaleTime = new Date(this.currentSale.mint_time).getTime();
+      const threeMinutes = 1000 * 60 * 3;
+
+      if (
+        Date.now() - currentSaleTime <= threeMinutes &&
+        Date.now() - currentSaleTime > 0
+      ) {
+        this.showPhaseChangeMessage = true;
+
+        setTimeout(() => {
+          this.showPhaseChangeMessage = false;
+        }, threeMinutes - (Date.now() - currentSaleTime));
+      }
+
       this.phaseInterval = setInterval(async () => {
         const date = new Date(this.nextSale.mint_time);
 
