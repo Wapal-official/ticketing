@@ -374,9 +374,12 @@
                     </div>
                   </div>
                 </div>
-                <div class="tw-pt-2" v-if="showPhaseChangeMessage">
-                  {{ phaseChangeMessage }}
-                </div>
+              </div>
+              <div
+                class="tw-w-full tw-text-sm tw-text-dark-0"
+                v-if="showPhaseChangeMessage"
+              >
+                {{ phaseChangeMessage }}
               </div>
               <div
                 v-if="!checkPublicSaleTimer() && Number(publicSaleMintLimit)"
@@ -513,6 +516,10 @@ import {
   normalMintTransaction,
   sponsorMintTransaction,
 } from "@/services/SponsoredTransactionService";
+import {
+  getMintedTokenDataIdsFromTransaction,
+  getTokenDetailsFromTokenDataIds,
+} from "@/services/TokenDetailService";
 export default {
   props: { collection: { type: Object } },
   data() {
@@ -567,6 +574,7 @@ export default {
       phaseChangeMessage:
         "If you don't see your WL eligibility, please refresh the page as the server scales",
       showPhaseChangeMessage: false,
+      mintedTokens: [],
       imageNotFound,
       xLogo,
     };
@@ -938,9 +946,9 @@ export default {
         //     throw new Error("Mint Limit for this phase Exceeded");
         //   }
         // }
-        let res = null;
+        let mintRes = null;
         if (!this.v2) {
-          res = await this.$store.dispatch("walletStore/mintBulk", {
+          mintRes = await this.$store.dispatch("walletStore/mintBulk", {
             resourceAccount: this.collection.candyMachine.resource_account,
             publicMint: !this.checkPublicSaleTimer(),
             candyMachineId: this.collection.candyMachine.candy_id,
@@ -954,7 +962,7 @@ export default {
             this.collection.seed &&
             this.collection.seed.coin_type !== "APT"
           ) {
-            res = await anotherCoinMintCollection({
+            mintRes = await anotherCoinMintCollection({
               candy_machine_id: this.collection.candyMachine.candy_id,
               candy_object: this.collection.candyMachine.resource_account,
               amount: this.numberOfNft,
@@ -966,7 +974,7 @@ export default {
               mint_price: this.currentSale.mint_price,
             });
           } else {
-            res = await mintCollection({
+            mintRes = await mintCollection({
               candy_machine_id: this.collection.candyMachine.candy_id,
               candy_object: this.collection.candyMachine.resource_account,
               amount: this.numberOfNft,
@@ -980,7 +988,7 @@ export default {
           }
         }
 
-        if (res.success) {
+        if (mintRes.success) {
           this.mintButtonClicked = 0;
           this.simulatedMerkleMint = true;
 
@@ -988,12 +996,23 @@ export default {
             message: `${this.collection.name} Minted Successfully`,
           });
 
-          if (this.collection.tweet) {
-            this.showShareModal = true;
-          }
-          if (this.collection.username === "loonies-whitelist-ticket") {
-            this.showLooniesTweet = true;
-          }
+          const mintedTokenDataIds =
+            getMintedTokenDataIdsFromTransaction(mintRes);
+
+          setTimeout(async () => {
+            const tokensDetail = await getTokenDetailsFromTokenDataIds({
+              tokenDataIds: mintedTokenDataIds,
+            });
+
+            this.mintedTokens = tokensDetail;
+
+            if (this.collection.tweet) {
+              this.showShareModal = true;
+            }
+            if (this.collection.username === "loonies-whitelist-ticket") {
+              this.showLooniesTweet = true;
+            }
+          }, 3000);
 
           let res = await this.$store.dispatch(
             "walletStore/getSupplyAndMintedOfCollection",
@@ -1349,14 +1368,22 @@ export default {
       if (this.phases.length === 1) {
         this.phaseCounter = 1;
       }
-
-      this.showPhaseChangeMessage = true;
-
-      setTimeout(() => {
-        this.showPhaseChangeMessage = false;
-      }, 1000 * 60 * 3);
     },
     startPhaseInterval() {
+      const currentSaleTime = new Date(this.currentSale.mint_time).getTime();
+      const threeMinutes = 1000 * 60 * 3;
+
+      if (
+        Date.now() - currentSaleTime <= threeMinutes &&
+        Date.now() - currentSaleTime > 0
+      ) {
+        this.showPhaseChangeMessage = true;
+
+        setTimeout(() => {
+          this.showPhaseChangeMessage = false;
+        }, threeMinutes - (Date.now() - currentSaleTime));
+      }
+
       this.phaseInterval = setInterval(async () => {
         const date = new Date(this.nextSale.mint_time);
 
