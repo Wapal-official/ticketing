@@ -281,6 +281,12 @@ export default {
           (phase: any) => new Date(phase.mint_time).getTime() < Date.now()
         );
 
+        if (startedPhases.length === 0) {
+          const currentPhase = this.collection.phases[0];
+
+          return currentPhase.mint_price + this.getCoinType;
+        }
+
         const currentPhase = startedPhases[startedPhases.length - 1];
 
         return currentPhase.mint_price + this.getCoinType;
