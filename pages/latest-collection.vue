@@ -51,7 +51,7 @@ export default {
     this.collections = [];
 
     const monkeySanctuary = {
-      name: "Aptos Monkeys Sanctuary",
+      name: "Aptosaaa Monkeys Sanctuary",
       description:
         "Sanctuaries are homes to the fighting Monkeys who stood their ground to protect their lands and fortunes.",
       image:
