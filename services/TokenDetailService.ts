@@ -34,6 +34,7 @@ export const getTokenDetailsFromTokenDataIds = async ({
       raw_image_uri
     }
     token_name
+    token_uri
     description
   }`;
 
@@ -42,7 +43,13 @@ export const getTokenDetailsFromTokenDataIds = async ({
   };
 
   tokenDataIds.forEach((tokenDataId, index) => {
-    queryVariables[`TOKEN_DATA_ID_${index + 1}`] = tokenDataId;
+    let paddedTokenDataId = tokenDataId;
+    if (tokenDataId.length < 66) {
+      const unPaddedTokenDataId = tokenDataId.slice(2, tokenDataId.length);
+
+      paddedTokenDataId = "0x" + unPaddedTokenDataId.padStart(64, "0");
+    }
+    queryVariables[`TOKEN_DATA_ID_${index + 1}`] = paddedTokenDataId;
   });
 
   const duplicatedQuery = duplicateQuery({
@@ -70,15 +77,26 @@ export const getTokenDetailsFromTokenDataIds = async ({
 
     const token = tokenData[0];
 
-    if (token.cdn_asset_uris.cdn_image_uri) {
-      token.image = token.cdn_asset_uris.cdn_image_uri;
-    } else {
-      token.image = token.cdn_asset_uris.raw_image_uri;
+    if (token) {
+      if (token.cdn_asset_uris) {
+        if (token.cdn_asset_uris.cdn_image_uri) {
+          token.image = token.cdn_asset_uris.cdn_image_uri;
+        } else {
+          token.image = token.cdn_asset_uris.raw_image_uri;
+        }
+      } else {
+        const metadataRes = await axios.get(token.token_uri);
+
+        const metadata = metadataRes.data;
+
+        token.image = metadata.image;
+      }
+
+      token.name = token.token_name;
+      token.tokenDataId = tokenDataIds[i];
+
+      finalTokens.push(token);
     }
-
-    token.name = token.token_name;
-
-    finalTokens.push(token);
   }
   return finalTokens;
 };

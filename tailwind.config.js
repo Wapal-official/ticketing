@@ -40,6 +40,8 @@ module.exports = {
         "utility-yellow": "#FFAD05",
         loonies: {
           primary: "#5B180F",
+          "bg-1": "#F8F0E4",
+          "bg-2": "#C9AFA4",
         },
       },
       screens: {

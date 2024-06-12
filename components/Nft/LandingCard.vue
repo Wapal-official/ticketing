@@ -183,9 +183,10 @@ export default {
         return 0;
       }
 
-      const whiteListDate = this.collection.candyMachine.whitelist_sale_time
-        ? new Date(this.collection.candyMachine.whitelist_sale_time)
-        : null;
+      const whiteListDate =
+        this.collection.phases && this.collection.phases[0]
+          ? new Date(this.collection.phases[0].mint_time)
+          : null;
       const publicSaleDate = new Date(
         this.collection.candyMachine.public_sale_time
       );
@@ -276,7 +277,19 @@ export default {
       }
 
       if (whiteListDate && publicSaleDate > now) {
-        return this.collection.candyMachine.whitelist_price + this.getCoinType;
+        const startedPhases = this.collection.phases.filter(
+          (phase: any) => new Date(phase.mint_time).getTime() < Date.now()
+        );
+
+        if (startedPhases.length === 0) {
+          const currentPhase = this.collection.phases[0];
+
+          return currentPhase.mint_price + this.getCoinType;
+        }
+
+        const currentPhase = startedPhases[startedPhases.length - 1];
+
+        return currentPhase.mint_price + this.getCoinType;
       } else {
         return (
           this.collection.candyMachine.public_sale_price + this.getCoinType
