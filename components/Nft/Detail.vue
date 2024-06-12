@@ -497,6 +497,12 @@
       v-if="showLooniesTweet"
       @closeCongratulationsPopup="showLooniesTweet = false"
     />
+    <loonies-after-mint-dialog
+      :showModal="showAfterMintModal"
+      :tokenDataIds="mintedTokens"
+      @close="showAfterMintModal = false"
+      v-if="showAfterMintModal"
+    />
   </div>
   <loading-collection v-else />
 </template>
@@ -516,10 +522,7 @@ import {
   normalMintTransaction,
   sponsorMintTransaction,
 } from "@/services/SponsoredTransactionService";
-import {
-  getMintedTokenDataIdsFromTransaction,
-  getTokenDetailsFromTokenDataIds,
-} from "@/services/TokenDetailService";
+import { getMintedTokenDataIdsFromTransaction } from "@/services/TokenDetailService";
 export default {
   props: { collection: { type: Object } },
   data() {
@@ -575,6 +578,7 @@ export default {
         "If you don't see your WL eligibility, please refresh the page as the server scales",
       showPhaseChangeMessage: false,
       mintedTokens: [],
+      showAfterMintModal: false,
       imageNotFound,
       xLogo,
     };
@@ -1004,6 +1008,7 @@ export default {
           if (this.collection.username === "loonies-whitelist-ticket") {
             this.showLooniesTweet = true;
           }
+          this.showAfterMintModal = true;
 
           let res = await this.$store.dispatch(
             "walletStore/getSupplyAndMintedOfCollection",
@@ -1590,7 +1595,7 @@ export default {
       }
 
       if (!this.checkPublicSaleTimer()) {
-        if (this.publicSaleMintLimit) {
+        if (Number(this.publicSaleMintLimit)) {
           this.maxNumberOfNft = this.publicSaleMintLimit;
           return;
         }
