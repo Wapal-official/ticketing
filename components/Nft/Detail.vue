@@ -996,23 +996,14 @@ export default {
             message: `${this.collection.name} Minted Successfully`,
           });
 
-          const mintedTokenDataIds =
-            getMintedTokenDataIdsFromTransaction(mintRes);
+          this.mintedTokens = getMintedTokenDataIdsFromTransaction(mintRes);
 
-          setTimeout(async () => {
-            const tokensDetail = await getTokenDetailsFromTokenDataIds({
-              tokenDataIds: mintedTokenDataIds,
-            });
-
-            this.mintedTokens = tokensDetail;
-
-            if (this.collection.tweet) {
-              this.showShareModal = true;
-            }
-            if (this.collection.username === "loonies-whitelist-ticket") {
-              this.showLooniesTweet = true;
-            }
-          }, 3000);
+          if (this.collection.tweet) {
+            this.showShareModal = true;
+          }
+          if (this.collection.username === "loonies-whitelist-ticket") {
+            this.showLooniesTweet = true;
+          }
 
           let res = await this.$store.dispatch(
             "walletStore/getSupplyAndMintedOfCollection",
