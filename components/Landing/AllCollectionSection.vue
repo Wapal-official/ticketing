@@ -65,9 +65,9 @@ export default {
         description: "",
         image:
           "https://wflakeutdvphlghtnureiqqdvu6xhasm5nfi3cpqioiltaaqai2q.arweave.net/sVYFEpMdXnWY820iREIDrT1zgkzrSo2J8EOQuYAQAjU",
-        twitter: "https://x.com/theloonies_nft",
-        website: "https://theloonies.xyz/",
-        discord: "https://t.co/jYRAyXBgfj",
+        // twitter: "https://x.com/theloonies_nft",
+        // website: "https://theloonies.xyz/",
+        // discord: "https://t.co/jYRAyXBgfj",
         mintDetails: {
           link: " ",
         },
