@@ -6,11 +6,6 @@
       <slot></slot>
       <chat />
       <wapal-footer :class="mainClass" />
-
-      <loonies-welcome-popup
-        v-if="showWelcomeLooniesPopup"
-        @closeWelcomePopup="showWelcomeLooniesPopup = false"
-      />
     </div>
     <toast />
   </v-app>
@@ -33,17 +28,6 @@ export default {
         this.mainClass = "";
       }
     },
-    checkIfUserHasSeenWelcomeLooniesPopup() {
-      const seenWelcomePopup = localStorage.getItem("seenWelcomePopup");
-
-      const now = Date.now();
-
-      const revealDate = new Date("2024-05-09T15:00:00Z").getTime();
-
-      if (now > revealDate && !seenWelcomePopup) {
-        this.showWelcomeLooniesPopup = true;
-      }
-    },
   },
   created() {
     this.$store.dispatch("walletStore/initializeWallet");
@@ -55,8 +39,6 @@ export default {
         error: this.$store.state.toast.error,
       });
     }
-
-    this.checkIfUserHasSeenWelcomeLooniesPopup();
   },
 };
 </script>
