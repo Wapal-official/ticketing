@@ -124,6 +124,7 @@ export default {
             "0x39f1338e6b69c3ed2f0caa95876e898dbe4c9b272d721626d577554015d033b8",
           candy_id:
             "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0",
+          public_sale_price: "4.2",
         },
         status: {
           sold_out: false,
