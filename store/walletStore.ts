@@ -49,7 +49,7 @@ const wallets = [
 
 export const wallet = new WalletCore(wallets);
 
-const makeId = (length: number) => {
+export const makeId = (length: number) => {
   var result = "";
   var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy";
   var charactersLength = characters.length;
