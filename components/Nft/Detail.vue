@@ -143,7 +143,17 @@
             </div>
           </div>
         </div>
-        <div class="tw-pb-2 tw-text-dark-0 description">
+        <div
+          v-if="collection.description !== 'looniess'"
+          class="tw-pb-2 tw-text-dark-0 description"
+        >
+          {{ collection.description }}
+        </div>
+        <div
+          v-else
+          class="tw-pb-2 tw-text-dark-0 description"
+          style="opacity: 0; visibility: hidden"
+        >
           {{ collection.description }}
         </div>
         <div
@@ -408,6 +418,27 @@
             Mint Phases
           </h2>
           <div
+            v-if="collection.id == 'loonies'"
+            class="tw-w-full tw-overflow-auto no-scrollbar tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-rounded-lg"
+            :style="`height:${
+              phases.length - phaseCounter >= 3
+                ? 439
+                : (phases.length === 2 ? 190 : 180) *
+                  (phases.length - phaseCounter)
+            }px`"
+          >
+            <nft-mint-phase-box-loonies
+              v-for="(phase, index) in phases"
+              :key="index"
+              :phase="phase"
+              v-if="!checkIfPhaseStarted(phase.mint_time)"
+              :coinType="collection.seed ? collection.seed.coin_type : 'APT'"
+              :showWhitelistText="true"
+              :publicSaleMintLimit="Number(publicSaleMintLimit)"
+            />
+          </div>
+          <div
+            v-else
             class="tw-w-full tw-overflow-auto no-scrollbar tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-rounded-lg"
             :style="`height:${
               phases.length - phaseCounter >= 3
