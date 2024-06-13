@@ -48,19 +48,12 @@
             <span>List on Secondary</span>
             <i class="bx bx-link-external"></i>
           </a>
-          <h1
-            v-if="collection.name === 'Loonies'"
-            class="tw-mb-3 tw-text-4xl tw-font-bold tw-tracking-[-0.025em] bebas-neue-regular"
-            style="color: #f8f0e4 !important"
-          >
-            Loonies Mint Starts in
-          </h1>
+
           <h1 v-else class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
             {{ collection.name }}
           </h1>
         </div>
         <div
-          v-if="collection.name !== 'Loonies'"
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
           <a
@@ -103,7 +96,7 @@
               class="bx bx-globe tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
-          <div class="tw-relative" v-if="collection.name !== 'Loonies'">
+          <div class="tw-relative">
             <button
               class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
               @click="showShareBox = !showShareBox"
@@ -134,10 +127,7 @@
             </div>
           </div>
         </div>
-        <div
-          v-if="collection.name !== 'Loonies'"
-          class="tw-text-dark-0 tw-pb-4 description"
-        >
+        <div class="tw-text-dark-0 tw-pb-4 description">
           {{ collection.description }}
         </div>
         <div
@@ -163,19 +153,10 @@
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
             v-if="showLiveInTimer"
           >
-            <h3
-              v-if="collection.name !== 'Loonies'"
-              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm"
-            >
+            <h3 class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm">
               {{ currentSale.name }} Starts In
             </h3>
-            <count-down-custom
-              v-if="collection.name === 'Loonies'"
-              :startTime="currentSale.mint_time"
-              @countdownComplete="countdownComplete"
-            />
             <count-down
-              v-else
               :startTime="currentSale.mint_time"
               @countdownComplete="countdownComplete"
             />

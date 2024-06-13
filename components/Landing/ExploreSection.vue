@@ -133,7 +133,7 @@ export default {
         isVerified: true,
       };
 
-      this.collections.push(looniesCollection);
+      // this.collections.push(looniesCollection);
 
       const res = await getFeaturedCollection();
       this.collections.push(...res);

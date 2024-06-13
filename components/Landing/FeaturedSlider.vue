@@ -88,7 +88,7 @@ export default {
       username: "loonies",
       isVerified: true,
     };
-    this.featuredCollections.push(collection);
+    // this.featuredCollections.push(collection);
     const res = await getFeaturedCollection();
     this.featuredCollections.push(...res);
     const auctionRes = await getFeaturedAuctions();
