@@ -81,7 +81,6 @@ export default {
     // }
     try {
       const collection = await getCollectionByUsername(name);
-      console.log("collec", collection);
       if (collection) {
         if (collection._id === "651295af57079307bdb1cfe9") {
           delete collection["candyMachine"].whitelist_sale_time;
