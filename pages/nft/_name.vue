@@ -40,9 +40,36 @@ export default {
       };
       return { collection };
     }
+    if (name === "loonies") {
+      collection = {
+        name: "loonies",
+        description: "",
+        media2:
+          "https://arweave.net/omyEpuu-pSHoDxW6eh7WlzNTRFpndzaMcD1Nu4UvyA8/0.mp4",
+
+        twitter: "https://x.com/theloonies_nft",
+        website: "https://theloonies.xyz/",
+        discord: "https://t.co/jYRAyXBgfj",
+        mintDetails: {
+          link: " ",
+        },
+        candyMachine: {
+          public_sale_time: "2024-06-13T15:00:00.000Z",
+          resource_account:
+            "0x39f1338e6b69c3ed2f0caa95876e898dbe4c9b272d721626d577554015d033b8",
+          candy_id:
+            "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0",
+          public_sale_price: "4.2",
+        },
+        status: {
+          sold_out: false,
+        },
+        username: "loonies",
+      };
+      return { collection };
+    }
     try {
       const collection = await getCollectionByUsername(name);
-
       if (collection) {
         if (collection._id === "651295af57079307bdb1cfe9") {
           delete collection["candyMachine"].whitelist_sale_time;
@@ -57,7 +84,6 @@ export default {
     } catch {
       try {
         const collection = await getCollection(name);
-
         if (collection._id === "651295af57079307bdb1cfe9") {
           delete collection["candyMachine"].whitelist_sale_time;
           delete collection["candyMachine"].whitelist_price;
