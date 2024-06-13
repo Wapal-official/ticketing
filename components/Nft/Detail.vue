@@ -369,7 +369,16 @@
                         You are eligible to mint for this phase.
                       </div>
                     </div>
-                    <div class="tw-text-sm tw-text-white tw-font-semibold">
+                    <div
+                      class="tw-text-sm tw-text-white tw-font-semibold"
+                      v-if="collection.username"
+                    >
+                      You Decide Your Own Limit!
+                    </div>
+                    <div
+                      class="tw-text-sm tw-text-white tw-font-semibold"
+                      v-else
+                    >
                       Limit {{ currentSale?.mintLimit }} per wallet
                     </div>
                   </div>
@@ -382,7 +391,7 @@
                 {{ phaseChangeMessage }}
               </div>
               <div
-                v-if="!checkPublicSaleTimer() && Number(publicSaleMintLimit)"
+                v-if="!checkPublicSaleTimer()"
                 class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
               >
                 <div
@@ -393,7 +402,10 @@
                     You are eligible to mint.
                   </div>
                 </div>
-                <div class="tw-text-sm">
+                <div class="tw-text-sm" v-if="collection.username">
+                  You Decide Your Own Limit!
+                </div>
+                <div class="tw-text-sm" v-else>
                   Limit {{ publicSaleMintLimit }} per wallet
                 </div>
               </div>
@@ -567,7 +579,7 @@ export default {
       holdingIncreaseButtonInterval: null,
       holdingDecreaseButtonInterval: null,
       showShareModal: false,
-      maxNumberOfNft: 35,
+      maxNumberOfNft: 10,
       showLooniesTweet: false,
       mintButtonClicked: 0,
       endedPhases: [],
@@ -1600,7 +1612,7 @@ export default {
           return;
         }
 
-        this.maxNumberOfNft = 35;
+        this.maxNumberOfNft = 10;
         return;
       }
 
@@ -1610,8 +1622,8 @@ export default {
         this.maxNumberOfNft = 1;
       }
 
-      if (this.maxNumberOfNft >= 35) {
-        this.maxNumberOfNft = 35;
+      if (this.maxNumberOfNft >= 10) {
+        this.maxNumberOfNft = 10;
       }
 
       this.numberOfNft = 1;
