@@ -66,7 +66,7 @@ export const assignRole = async ({
   id: string;
   role_id: string;
 }) => {
-  const res = await axios.post(`${DISCORD_BOT_URL}`, {
+  const res = await axios.post(`${DISCORD_BOT_URL}/assign-role`, {
     id: id,
     role_id: role_id,
   });
