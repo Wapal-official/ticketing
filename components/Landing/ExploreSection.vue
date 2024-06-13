@@ -119,7 +119,7 @@ export default {
           link: " ",
         },
         candyMachine: {
-          public_sale_time: "2024-06-13T14:50:00.000Z",
+          public_sale_time: "2024-06-13T15:00:00.000Z",
           resource_account:
             "0x39f1338e6b69c3ed2f0caa95876e898dbe4c9b272d721626d577554015d033b8",
           candy_id:
@@ -132,8 +132,10 @@ export default {
         username: "loonies",
         isVerified: true,
       };
-
-      this.collections.push(looniesCollection);
+      const currentTime = new Date().toISOString();
+      if (currentTime < looniesCollection.candyMachine.public_sale_time) {
+        this.collections.push(looniesCollection);
+      }
 
       const res = await getFeaturedCollection();
       this.collections.push(...res);

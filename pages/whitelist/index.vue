@@ -160,69 +160,77 @@ export default {
     async fetchWhitelists() {
       this.loading = true;
 
-      const res = await getAllWhitelist(1, 100);
-      const whitelists = res.data.whitelists;
+      try {
+        const res = await getAllWhitelist(1, 100);
+        const whitelists = res.data.whitelists;
 
-      const collectionRes = await Promise.all(
-        whitelists.map(async (whitelist: any) => {
-          try {
-            const collection = await getCollection(whitelist.collection_id);
+        const collectionRes = await Promise.all(
+          whitelists.map(async (whitelist: any) => {
+            try {
+              const collection = await getCollection(whitelist.collection_id);
 
-            const spotRes = await getWhitelistEntryById(
-              whitelist.collection_id,
-              1,
-              1,
-              "whitelist"
-            );
+              const spotRes = await getWhitelistEntryById(
+                whitelist.collection_id,
+                1,
+                1,
+                "whitelist"
+              );
 
-            const spots = {
-              occupiedSpots: spotRes.data.spotsCount,
-              totalSpots: whitelist.whitelist_spots,
-              spotPercent: 0,
-            };
+              const spots = {
+                occupiedSpots: spotRes.data.spotsCount,
+                totalSpots: whitelist.whitelist_spots,
+                spotPercent: 0,
+              };
 
-            const spotPercent = Math.floor(
-              (spots.occupiedSpots / spots.totalSpots) * 100
-            );
+              const spotPercent = Math.floor(
+                (spots.occupiedSpots / spots.totalSpots) * 100
+              );
 
-            spots.spotPercent = spotPercent;
+              spots.spotPercent = spotPercent;
 
-            this.count++;
+              this.count++;
 
-            return {
-              _id: whitelist._id,
-              username: collection.username,
-              collectionName: collection.name,
-              twitter: collection.twitter,
-              discord: collection.discord,
-              mintDate: whitelist.whitelist_end,
-              noOfSpots: whitelist.whitelist_spots,
-              image: collection.image,
-              spot: spots,
-            };
-          } catch (error) {
-            const id = Math.floor(Math.random() * 100);
-            return {
-              _id: id,
-              username: "",
-              collectionName: "",
-              twitter: "",
-              discord: "",
-              mintDate: "",
-              noOfSpots: "",
-              image: "",
-              spot: { occupiedSpots: 0, totalSpots: 0, spotPercent: 0 },
-            };
-          }
-        })
-      );
+              return {
+                _id: whitelist._id,
+                username: collection.username,
+                collectionName: collection.name,
+                twitter: collection.twitter,
+                discord: collection.discord,
+                mintDate: whitelist.whitelist_end,
+                noOfSpots: whitelist.whitelist_spots,
+                image: collection.image,
+                spot: spots,
+              };
+            } catch (error) {
+              console.error(`Error fetching whitelist entry: ${error}`);
+              const id = Math.floor(Math.random() * 100);
+              return {
+                _id: id,
+                username: "",
+                collectionName: "",
+                twitter: "",
+                discord: "",
+                mintDate: "",
+                noOfSpots: "",
+                image: "",
+                spot: { occupiedSpots: 0, totalSpots: 0, spotPercent: 0 },
+              };
+            }
+          })
+        );
 
-      this.whitelists = collectionRes;
-
-      this.paginatedWhitelists = this.whitelists;
-
-      this.loading = false;
+        this.whitelists = collectionRes;
+        this.paginatedWhitelists = this.whitelists;
+        this.loading = false;
+      } catch (error) {
+        console.error(`Error fetching whitelists: ${error}`);
+        this.whitelists = [];
+        this.paginatedWhitelists = [];
+      } finally {
+        this.loading = false;
+      }
     },
+
     getFormattedDate(date: string) {
       return moment(date).format("MMM DD, HH:MM A");
     },
