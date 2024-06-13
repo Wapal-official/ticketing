@@ -132,9 +132,13 @@ export default {
       const twitterURL = "https://twitter.com";
 
       const tweetText = encodeURIComponent(
-        "Thanks for being a Loonie! You've just ditched the limits with @theloonies_nft ⚡️" +
+        "I just minted a @theloonies_nft, one of the most hyped nft collection on Aptos." +
           "\n" +
-          "#weditchlimits #Aptos #Loonies" +
+          "\n" +
+          "Lets ditch limits together." +
+          "\n" +
+          "\n" +
+          "#theloonies #aptos" +
           "\n" +
           baseURL
       );
@@ -149,7 +153,6 @@ export default {
           this.downloading = true;
           const metadata = await this.$axios.get(token.token_uri);
 
-          console.log(metadata);
           const image = await fetch(metadata.data.image);
           const imageBlog = await image.blob();
           const imageURL = URL.createObjectURL(imageBlog);
