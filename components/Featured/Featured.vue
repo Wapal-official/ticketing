@@ -49,7 +49,7 @@
             <i class="bx bx-link-external"></i>
           </a>
           <h1
-            v-if="collection.name === 'Loonies'"
+            v-if="collection.description === 'Loonies'"
             class="tw-mb-3 tw-text-4xl tw-font-bold tw-tracking-[-0.025em] bebas-neue-regular"
             style="color: #f8f0e4 !important"
           >
@@ -60,7 +60,7 @@
           </h1>
         </div>
         <div
-          v-if="collection.name !== 'Loonies'"
+          v-if="collection.description !== 'Loonies'"
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-2"
         >
           <a
@@ -135,7 +135,7 @@
           </div>
         </div>
         <div
-          v-if="collection.name !== 'Loonies'"
+          v-if="collection.description !== 'Loonies'"
           class="tw-text-dark-0 tw-pb-4 description"
         >
           {{ collection.description }}
@@ -164,13 +164,13 @@
             v-if="showLiveInTimer"
           >
             <h3
-              v-if="collection.name !== 'Loonies'"
+              v-if="collection.description !== 'Loonies'"
               class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm"
             >
               {{ currentSale.name }} Starts In
             </h3>
             <count-down-custom
-              v-if="collection.name === 'Loonies'"
+              v-if="collection.description === 'Loonies'"
               :startTime="currentSale.mint_time"
               @countdownComplete="countdownComplete"
             />

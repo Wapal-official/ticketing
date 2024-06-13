@@ -3,13 +3,16 @@ import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 import axios from "axios";
 
 export const getAllWhitelist = async (page: number, limit: number) => {
-  const res = await axios.get(
-    `${process.env.baseURL}/api/whitelist/all?limit=${limit}&page=${page}`
-  );
-
-  return res;
+  try {
+    const res = await axios.get(
+      `${process.env.baseURL}/api/whitelist/all?limit=${limit}&page=${page}`
+    );
+    return res;
+  } catch (error) {
+    console.error("Error fetching whitelist:", error);
+    throw error;
+  }
 };
-
 export const getWhitelistOfUser = async (userId: string) => {
   const res = await creatorStudioRequest.get(
     `/api/whitelist/user?limit=20&page=1&user_id=${userId}`
