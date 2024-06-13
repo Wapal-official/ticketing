@@ -371,7 +371,7 @@
                     </div>
                     <div
                       class="tw-text-sm tw-text-white tw-font-semibold"
-                      v-if="collection.username"
+                      v-if="collection.username === 'the-loonies'"
                     >
                       You Decide Your Own Limit!
                     </div>
@@ -402,7 +402,10 @@
                     You are eligible to mint.
                   </div>
                 </div>
-                <div class="tw-text-sm" v-if="collection.username">
+                <div
+                  class="tw-text-sm"
+                  v-if="collection.username === 'the-loonies'"
+                >
                   You Decide Your Own Limit!
                 </div>
                 <div class="tw-text-sm" v-else>
@@ -1020,7 +1023,10 @@ export default {
           if (this.collection.username === "loonies-whitelist-ticket") {
             this.showLooniesTweet = true;
           }
-          this.showAfterMintModal = true;
+
+          if (this.collection.username === "the-loonies") {
+            this.showAfterMintModal = true;
+          }
 
           let res = await this.$store.dispatch(
             "walletStore/getSupplyAndMintedOfCollection",
