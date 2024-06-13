@@ -40,45 +40,45 @@ export default {
       };
       return { collection };
     }
-    if (name === "loonies") {
-      collection = {
-        id: "loonies",
-        name: "loonies",
-        description: "looniess",
-        media2:
-          "https://arweave.net/omyEpuu-pSHoDxW6eh7WlzNTRFpndzaMcD1Nu4UvyA8/0.mp4",
+    // if (name === "loonies") {
+    //   collection = {
+    //     id: "loonies",
+    //     name: "loonies",
+    //     description: "looniess",
+    //     media2:
+    //       "https://arweave.net/omyEpuu-pSHoDxW6eh7WlzNTRFpndzaMcD1Nu4UvyA8/0.mp4",
 
-        twitter: "https://x.com/theloonies_nft",
-        website: "https://theloonies.xyz/",
-        discord: "https://t.co/jYRAyXBgfj",
-        mintDetails: {
-          link: " ",
-        },
-        candyMachine: {
-          // public_sale_time: "2024-06-14T15:00:00.000Z",
-          resource_account:
-            "0x39f1338e6b69c3ed2f0caa95876e898dbe4c9b272d721626d577554015d033b8",
-          candy_id:
-            "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0",
-          // public_sale_price: "",
-          whitelist_price: "4.2",
-          whitelist_sale_time: "2023-10-31T06:23:35.216Z",
-        },
-        phases: [
-          {
-            id: "whitelist-loonies",
-            mint_price: "4.2",
-            mint_time: "2024-06-13T15:00:00.000Z",
-            name: "Whitelist Sale",
-          },
-        ],
-        status: {
-          sold_out: false,
-        },
-        username: "loonies",
-      };
-      return { collection };
-    }
+    //     twitter: "https://x.com/theloonies_nft",
+    //     website: "https://theloonies.xyz/",
+    //     discord: "https://t.co/jYRAyXBgfj",
+    //     mintDetails: {
+    //       link: " ",
+    //     },
+    //     candyMachine: {
+    //       // public_sale_time: "2024-06-14T15:00:00.000Z",
+    //       resource_account:
+    //         "0x39f1338e6b69c3ed2f0caa95876e898dbe4c9b272d721626d577554015d033b8",
+    //       candy_id:
+    //         "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0",
+    //       // public_sale_price: "",
+    //       whitelist_price: "4.2",
+    //       whitelist_sale_time: "2023-10-31T06:23:35.216Z",
+    //     },
+    //     phases: [
+    //       {
+    //         id: "whitelist-loonies",
+    //         mint_price: "4.2",
+    //         mint_time: "2024-06-13T15:00:00.000Z",
+    //         name: "Whitelist Sale",
+    //       },
+    //     ],
+    //     status: {
+    //       sold_out: false,
+    //     },
+    //     username: "loonies",
+    //   };
+    //   return { collection };
+    // }
     try {
       const collection = await getCollectionByUsername(name);
       console.log("collec", collection);
