@@ -366,7 +366,7 @@
                     >
                       <i class="bx bx-info-circle tw-text-xl"></i>
                       <div class="tw-text-sm tw-text-dark-0 tw-font-semibold">
-                        You are eligible to mint for this phase.
+                        You are eligible to mint.
                       </div>
                     </div>
                     <div
