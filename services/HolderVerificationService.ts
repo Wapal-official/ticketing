@@ -33,7 +33,7 @@ export const getHeldLooniesOfUser = async ({
       operationName: "GetHeldLooniesOfUser",
       query: `query GetHeldLooniesOfUser($WALLET_ADDRESS:String) {
                     current_token_ownerships_v2_aggregate(
-                    where: {owner_address: {_eq: $WALLET_ADDRESS}, current_token_data: {collection_id: {_eq: "0x08a1ad885b2c2ee8757c206905b3565bec9217d7ad9a02e28bed03aca0dd017c"}}}
+                    where: {owner_address: {_eq: $WALLET_ADDRESS}, current_token_data: {collection_id: {_eq: "0xa2485c3b392d211770ed161e73a1097d21016c7dd41f53592434380b2aa14cba"}}}
                     ) {
                         aggregate {
                                 count
