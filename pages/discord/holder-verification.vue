@@ -148,15 +148,17 @@ export default {
       }
     },
     assignRoleBasedOnHeldTokens() {
-      if (this.heldTokens >= 20) {
+      const heldTokens = Number(this.heldTokens);
+
+      if (heldTokens >= 20) {
         this.currentRole = "1250341818982338592";
-      } else if (this.heldTokens >= 16 && this.heldTokens <= 20) {
+      } else if (heldTokens >= 16 && heldTokens <= 20) {
         this.currentRole = "1250341411681734678";
-      } else if (this.heldTokens >= 11 && this.heldTokens <= 15) {
+      } else if (heldTokens >= 11 && heldTokens <= 15) {
         this.currentRole = "1250344236365381642";
-      } else if (this.heldTokens >= 6 && this.heldTokens <= 10) {
-        this.currentRole = "1250344236365381642";
-      } else if (this.heldTokens >= 1 && this.heldTokens < 5) {
+      } else if (heldTokens >= 6 && heldTokens <= 10) {
+        this.currentRole = "1250340914426286180";
+      } else if (heldTokens >= 1 && heldTokens < 5) {
         this.currentRole = "1250340459025399868";
       } else {
         this.currentRole = "";
