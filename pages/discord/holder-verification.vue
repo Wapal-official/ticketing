@@ -158,7 +158,7 @@ export default {
         this.currentRole = "1250344236365381642";
       } else if (heldTokens >= 6 && heldTokens <= 10) {
         this.currentRole = "1250340914426286180";
-      } else if (heldTokens >= 1 && heldTokens < 5) {
+      } else if (heldTokens >= 1 && heldTokens <= 5) {
         this.currentRole = "1250340459025399868";
       } else {
         this.currentRole = "";
