@@ -49,7 +49,7 @@
             <i class="bx bx-link-external"></i>
           </a>
 
-          <h1 v-else class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
+          <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
             {{ collection.name }}
           </h1>
         </div>
