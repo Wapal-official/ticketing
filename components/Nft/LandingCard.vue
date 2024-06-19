@@ -270,6 +270,12 @@ export default {
         );
       }
 
+      if (this.collection.isEdition) {
+        return (
+          this.collection.candyMachine.public_sale_price + this.getCoinType
+        );
+      }
+
       if (now > publicSaleDate) {
         return (
           this.collection.candyMachine.public_sale_price + this.getCoinType
@@ -280,6 +286,12 @@ export default {
         const startedPhases = this.collection.phases.filter(
           (phase: any) => new Date(phase.mint_time).getTime() < Date.now()
         );
+
+        if (this.collection.phases.length === 0) {
+          return (
+            this.collection.candyMachine.whitelist_price + this.getCoinType
+          );
+        }
 
         if (startedPhases.length === 0) {
           const currentPhase = this.collection.phases[0];
