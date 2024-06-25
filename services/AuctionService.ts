@@ -63,7 +63,7 @@ export const getAuctions = async (params: any) => {
 };
 
 export const fetchWalletNfts = async (params: any) => {
-  let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+  let resp = await axios.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "AccountTokensData",
     query:
       `query AccountTokensData {
@@ -110,7 +110,11 @@ export const uploadAndCreateFile = async (file: File, params: any) => {
   return upload.data.metadata;
 };
 
-export const uploadAndCreateVideoFile = async (file: File, thumbnail: File, params: any) => {
+export const uploadAndCreateVideoFile = async (
+  file: File,
+  thumbnail: File,
+  params: any
+) => {
   const formData = new FormData();
   formData.append("image", thumbnail);
   formData.append("video", file);
@@ -121,9 +125,9 @@ export const uploadAndCreateVideoFile = async (file: File, thumbnail: File, para
   const upload = await publicRequest.post(
     "/api/uploader/videoedition",
     formData
-  ); 
-  
-  if (upload.data ) {
+  );
+
+  if (upload.data) {
     return upload.data.data;
   } else {
     throw new Error("Metadata not found in the upload response");
@@ -131,7 +135,7 @@ export const uploadAndCreateVideoFile = async (file: File, thumbnail: File, para
 };
 
 export const getWalletNFT = async (params: any) => {
-  let resp = await creatorStudioRequest.post(`${process.env.GRAPHQL_URL}`, {
+  let resp = await axios.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "AccountTokensData",
     query:
       `query AccountTokensData {
@@ -228,7 +232,7 @@ export const getOwnedCollectionsOfUser = async ({
   offset,
   walletAddress,
 }: any) => {
-  let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+  let resp = await axios.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "AccountTokensData",
     query: `query AccountTokensData($LIMIT: Int, $OFFSET: Int, $WALLET_ADDRESS: String) {
         current_collection_ownership_v2_view(
@@ -259,7 +263,7 @@ export const getNumberOfTokensInOwnedCollectionOfUser = async (
   collection_name: string,
   wallet_address: string
 ) => {
-  const res = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+  const res = await axios.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "NumberOfTokensInOwnedCollectionOfUser",
     query: `
     query NumberOfTokensInOwnedCollectionOfUser{
@@ -294,7 +298,7 @@ export const getTokensOfCollection = async ({
   collectionId: string;
   walletAddress: string;
 }) => {
-  let resp = await publicRequest.post(`${process.env.GRAPHQL_URL}`, {
+  let resp = await axios.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "GetTokensOfACollection",
     query: `query GetTokensOfACollection($LIMIT: Int, $OFFSET: Int,$COLLECTION_ID: String, $WALLET_ADDRESS: String) {
         current_token_ownerships_v2(
