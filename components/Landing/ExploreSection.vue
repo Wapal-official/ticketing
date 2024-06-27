@@ -107,7 +107,35 @@ export default {
         isVerified: true,
       };
 
-      this.collections.push(monkeysCollection);
+      const looniesCollection = {
+        name: "Loonies",
+        description: "",
+        image:
+          "https://wflakeutdvphlghtnureiqqdvu6xhasm5nfi3cpqioiltaaqai2q.arweave.net/sVYFEpMdXnWY820iREIDrT1zgkzrSo2J8EOQuYAQAjU",
+        // twitter: "https://x.com/theloonies_nft",
+        // website: "https://theloonies.xyz/",
+        // discord: "https://t.co/jYRAyXBgfj",
+        mintDetails: {
+          link: " ",
+        },
+        candyMachine: {
+          public_sale_time: "2024-06-13T15:00:00.000Z",
+          resource_account:
+            "0x39f1338e6b69c3ed2f0caa95876e898dbe4c9b272d721626d577554015d033b8",
+          candy_id:
+            "0x25d440284ca6c13afadb0e83ff1bccacbaa75175551111d8b7cb5d2854e708f0",
+          public_sale_price: "4.2",
+        },
+        status: {
+          sold_out: false,
+        },
+        username: "loonies",
+        isVerified: true,
+      };
+      const currentTime = new Date().toISOString();
+      if (currentTime < looniesCollection.candyMachine.public_sale_time) {
+        this.collections.push(looniesCollection);
+      }
 
       const res = await getFeaturedCollection();
       this.collections.push(...res);

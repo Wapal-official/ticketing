@@ -45,9 +45,15 @@ export default {
     };
   },
   async mounted() {
-    const res = await getAllWhitelist(1, 5);
-    this.whitelists = res.data.whitelists;
-    this.loading = false;
+    try {
+      const res = await getAllWhitelist(1, 5);
+      this.whitelists = res.data.whitelists;
+    } catch (error) {
+      console.error("Error fetching whitelists:", error);
+      this.whitelists = [];
+    } finally {
+      this.loading = false;
+    }
   },
   methods: {
     gotoWhitelistPage() {
