@@ -513,8 +513,11 @@
       v-if="showLooniesTweet"
       @closeCongratulationsPopup="showLooniesTweet = false"
     />
-    <loonies-after-mint-dialog
+    <nft-after-mint-dialog
       :showModal="showAfterMintModal"
+      :collectionUserName="collectionUserName"
+      :collectionType="collection.isEdition ? 'editions' : 'nft'"
+      :collectionTweet="collectionTweet"
       :tokenDataIds="mintedTokens"
       @close="showAfterMintModal = false"
       v-if="showAfterMintModal"
@@ -593,8 +596,21 @@ export default {
       phaseChangeMessage:
         "If you don't see your WL eligibility, please refresh the page as the server scales",
       showPhaseChangeMessage: false,
+      // mintedTokens: [
+      //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
+      //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
+      //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
+      // "0xc0ec856e8432d3954112303be181d3506ab49c14f9ee44a5b7d9d9ae6478e00a",
+      // "0xf8db0bb39dad529a9d389e60bba62e61a73a14c4a52e9ad5f26c8ce5862c853b",
+      // "0x17aae9b2c4b2c58b642f11b35897a5cbac1d0f6b32a29cea740ff78dc966ef69",
+      // "0xc0ec856e8432d3954112303be181d3506ab49c14f9ee44a5b7d9d9ae6478e00a",
+      // "0xf8db0bb39dad529a9d389e60bba62e61a73a14c4a52e9ad5f26c8ce5862c853b",
+      // "0x17aae9b2c4b2c58b642f11b35897a5cbac1d0f6b32a29cea740ff78dc966ef69",
+      // ],
       mintedTokens: [],
       showAfterMintModal: false,
+      collectionTweet: "",
+      collectionUserName: "",
       imageNotFound,
       xLogo,
     };
@@ -938,7 +954,7 @@ export default {
         }
 
         if (!this.numberOfNft) {
-          throw new Error("Please Enter Number of Nft to mit");
+          throw new Error("Please Enter Number of Nft to mint");
         }
 
         this.minting = true;
@@ -1021,13 +1037,13 @@ export default {
           if (this.collection.tweet) {
             this.showShareModal = true;
           }
-          if (this.collection.username === "loonies-whitelist-ticket") {
-            this.showLooniesTweet = true;
-          }
+          // if (this.collection.username === "loonies-whitelist-ticket") {
+          // this.showLooniesTweet = true;
+          // }
 
-          if (this.collection.username === "the-loonies") {
-            this.showAfterMintModal = true;
-          }
+          // if (this.collection.username === "the-loonies") {
+          this.showAfterMintModal = true;
+          // }
 
           let res = await this.$store.dispatch(
             "walletStore/getSupplyAndMintedOfCollection",
@@ -1830,6 +1846,8 @@ export default {
   },
   async mounted() {
     if (this.collection) {
+      this.collection.tweet = this.collectionTweet;
+      this.collection.username = this.collectionUserName;
       if (this.collection.username === "proudlionsclub") {
         this.collection.username = "proud-lions-club";
       } else if (this.collection.username === "squids-|-aptos") {
