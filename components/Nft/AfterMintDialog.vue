@@ -55,7 +55,7 @@
         class="tw-px-3 tw-w-full tw-flex tw-items-center tw-justify-center tw-gap-4"
       >
         <button
-          v-if="collectionTweet !== ''"
+          v-if="collectionTweet"
           class="tw-w-full !tw-max-w-[98px] tw-h-10 tw-bg-primary-1 tw-rounded tw-text-white tw-bg-primary tw-py-2.5 tw-px-6 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-0.5 tw-font-medium disabled:tw-cursor-not-allowed"
           :disabled="loading"
           @click="tweet"
@@ -63,14 +63,14 @@
           <img :src="xLogo" alt="X" width="16px" height="16px" />
           <span>Tweet</span>
         </button>
-        <button
+        <!-- <button
           class="tw-w-full !tw-max-w-[98px] tw-h-10 tw-bg-primary-1 tw-rounded tw-text-white tw-bg-primary tw-py-2.5 tw-px-6 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-0.5 tw-font-medium disabled:tw-cursor-not-allowed"
           :disabled="loading"
           @click="tweet"
         >
           <img :src="xLogo" alt="X" width="16px" height="16px" />
           <span>Tweet</span>
-        </button>
+        </button> -->
         <button
           class="tw-w-full tw-h-10 tw-rounded tw-bg-primary-1 tw-text-white tw-py-2.5 tw-px-4 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-0.5 tw-font-medium tw-border tw-border-solid tw-border-loonies-primary disabled:tw-cursor-not-allowed"
           :disabled="loading || downloading"
@@ -109,11 +109,6 @@ export default {
   },
   mounted() {
     this.setGridStyle();
-    console.log("token collectionType", this.collectionType);
-    console.log("token collectionUserName", this.collectionUserName);
-
-    console.log("token collectionTweet", this.collectionTweet);
-
     let seconds = this.tokenDataIds.length * 1500;
 
     if (seconds > 5000) {

@@ -631,9 +631,9 @@ export default {
       //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
       //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
       //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
-      // "0xc0ec856e8432d3954112303be181d3506ab49c14f9ee44a5b7d9d9ae6478e00a",
-      // "0xf8db0bb39dad529a9d389e60bba62e61a73a14c4a52e9ad5f26c8ce5862c853b",
-      // "0x17aae9b2c4b2c58b642f11b35897a5cbac1d0f6b32a29cea740ff78dc966ef69",
+      //   "0xc0ec856e8432d3954112303be181d3506ab49c14f9ee44a5b7d9d9ae6478e00a",
+      //   "0xf8db0bb39dad529a9d389e60bba62e61a73a14c4a52e9ad5f26c8ce5862c853b",
+      //   "0x17aae9b2c4b2c58b642f11b35897a5cbac1d0f6b32a29cea740ff78dc966ef69",
       // "0xc0ec856e8432d3954112303be181d3506ab49c14f9ee44a5b7d9d9ae6478e00a",
       // "0xf8db0bb39dad529a9d389e60bba62e61a73a14c4a52e9ad5f26c8ce5862c853b",
       // "0x17aae9b2c4b2c58b642f11b35897a5cbac1d0f6b32a29cea740ff78dc966ef69",
@@ -1880,8 +1880,11 @@ export default {
   async mounted() {
     if (this.collection) {
       console.log("check clect", this.collection);
-      this.collection.tweet = this.collectionTweet;
-      this.collection.username = this.collectionUserName;
+      this.collectionTweet = this.collection.tweet;
+      this.collectionUserName = this.collection.username;
+
+      // this.collection.tweet = this.collectionTweet;
+      // this.collection.username = this.collectionUserName;
       if (this.collection.username === "proudlionsclub") {
         this.collection.username = "proud-lions-club";
       } else if (this.collection.username === "squids-|-aptos") {
