@@ -609,6 +609,8 @@ export default {
       // ],
       mintedTokens: [],
       showAfterMintModal: false,
+      // showAfterMintModal: true,
+
       collectionTweet: "",
       collectionUserName: "",
       imageNotFound,
@@ -1846,6 +1848,7 @@ export default {
   },
   async mounted() {
     if (this.collection) {
+      console.log("check clect", this.collection);
       this.collection.tweet = this.collectionTweet;
       this.collection.username = this.collectionUserName;
       if (this.collection.username === "proudlionsclub") {
