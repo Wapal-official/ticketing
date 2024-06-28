@@ -230,7 +230,7 @@ export default {
       const checkCollection = this.collectionType;
       const username = this.collectionUserName;
       const link = `${baseURL}/${checkCollection}/${username}`;
-      const tweet = this.collectionTweet;
+      const tweet = this.collectionTweet + "\n";
       const text = encodeURIComponent(tweet);
 
       const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}`;
