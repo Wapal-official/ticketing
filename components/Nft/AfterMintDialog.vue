@@ -63,22 +63,16 @@
           <img :src="xLogo" alt="X" width="16px" height="16px" />
           <span>Tweet</span>
         </button>
-        <!-- <button
-          class="tw-w-full !tw-max-w-[98px] tw-h-10 tw-bg-primary-1 tw-rounded tw-text-white tw-bg-primary tw-py-2.5 tw-px-6 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-0.5 tw-font-medium disabled:tw-cursor-not-allowed"
-          :disabled="loading"
-          @click="tweet"
-        >
-          <img :src="xLogo" alt="X" width="16px" height="16px" />
-          <span>Tweet</span>
-        </button> -->
         <button
-          class="tw-w-full tw-h-10 tw-rounded tw-bg-primary-1 tw-text-white tw-py-2.5 tw-px-4 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-0.5 tw-font-medium tw-border tw-border-solid tw-border-loonies-primary disabled:tw-cursor-not-allowed"
+          class="tw-w-full tw-h-10 tw-rounded tw-bg-transparent tw-text-white tw-py-2.5 tw-px-4 tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-0.5 tw-font-medium tw-border tw-border-solid tw-border-dark-4 disabled:tw-cursor-not-allowed"
           :disabled="loading || downloading"
-          :class="[downloading ? '!tw-max-w-[144px]' : '!tw-max-w-[120px]']"
+          :class="[downloading ? '!tw-max-w-[154px]' : '!tw-max-w-[120px]']"
           @click="downloadImages"
         >
-          <i class="bx bxs-download tw-text-2xl"></i>
-          <span>{{ downloading ? "Downloading..." : "Download" }}</span>
+          <i class="bx bxs-download tw-text-2xl tw-text-white"></i>
+          <span class="tw-text-white">{{
+            downloading ? "Downloading..." : "Download"
+          }}</span>
         </button>
       </div>
     </div>
@@ -236,7 +230,8 @@ export default {
       const checkCollection = this.collectionType;
       const username = this.collectionUserName;
       const link = `${baseURL}/${checkCollection}/${username}`;
-      const tweet = this.collectionTweet;
+      // const tweet = this.collectionTweet;
+      const tweet = " tweet template \n";
       const text = encodeURIComponent(tweet);
 
       const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}`;
