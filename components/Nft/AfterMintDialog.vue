@@ -230,8 +230,7 @@ export default {
       const checkCollection = this.collectionType;
       const username = this.collectionUserName;
       const link = `${baseURL}/${checkCollection}/${username}`;
-      // const tweet = this.collectionTweet;
-      const tweet = " tweet template \n";
+      const tweet = this.collectionTweet;
       const text = encodeURIComponent(tweet);
 
       const twitterShareLink = `${twitterURL}/intent/tweet?text=${text}&url=${link}`;
@@ -270,17 +269,14 @@ export default {
 };
 </script>
 <style scoped>
-/* width */
 .loonies-preview-scrollbar::-webkit-scrollbar {
   width: 5px;
 }
 
-/* Track */
 .loonies-preview-scrollbar::-webkit-scrollbar-track {
   @apply tw-bg-dark-9 tw-rounded-full;
 }
 
-/* Handle */
 .loonies-preview-scrollbar::-webkit-scrollbar-thumb {
   @apply tw-bg-dark-6 tw-rounded-full;
 }
