@@ -513,8 +513,11 @@
       v-if="showLooniesTweet"
       @closeCongratulationsPopup="showLooniesTweet = false"
     />
-    <loonies-after-mint-dialog
+    <nft-after-mint-dialog
       :showModal="showAfterMintModal"
+      :collectionUserName="collectionUserName"
+      :collectionType="collection.isEdition ? 'editions' : 'nft'"
+      :collectionTweet="collectionTweet"
       :tokenDataIds="mintedTokens"
       @close="showAfterMintModal = false"
       v-if="showAfterMintModal"
@@ -593,8 +596,14 @@ export default {
       phaseChangeMessage:
         "If you don't see your WL eligibility, please refresh the page as the server scales",
       showPhaseChangeMessage: false,
+      // mintedTokens: [
+      //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
+      // "0xf8db0bb39dad529a9d389e60bba62e61a73a14c4a52e9ad5f26c8ce5862c853b",
+      // ],
       mintedTokens: [],
       showAfterMintModal: false,
+      collectionTweet: "",
+      collectionUserName: "",
       imageNotFound,
       xLogo,
     };
@@ -938,7 +947,7 @@ export default {
         }
 
         if (!this.numberOfNft) {
-          throw new Error("Please Enter Number of Nft to mit");
+          throw new Error("Please Enter Number of Nft to mint");
         }
 
         this.minting = true;
@@ -1019,13 +1028,7 @@ export default {
           this.mintedTokens = getMintedTokenDataIdsFromTransaction(mintRes);
 
           if (this.collection.tweet) {
-            this.showShareModal = true;
-          }
-          if (this.collection.username === "loonies-whitelist-ticket") {
-            this.showLooniesTweet = true;
-          }
-
-          if (this.collection.username === "the-loonies") {
+            // this.showShareModal = true;
             this.showAfterMintModal = true;
           }
 
@@ -1830,6 +1833,8 @@ export default {
   },
   async mounted() {
     if (this.collection) {
+      this.collectionTweet = this.collection.tweet;
+      this.collectionUserName = this.collection.username;
       if (this.collection.username === "proudlionsclub") {
         this.collection.username = "proud-lions-club";
       } else if (this.collection.username === "squids-|-aptos") {
