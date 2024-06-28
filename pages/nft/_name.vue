@@ -39,7 +39,7 @@ export default {
         username: "monkkesanturies",
       };
       return { collection };
-    }
+    } 
     // if (name === "loonies") {
     //   collection = {
     //     id: "loonies",
@@ -81,11 +81,11 @@ export default {
     // }
     try {
       const collection = await getCollectionByUsername(name);
+ 
       if (collection) {
         if (collection._id === "651295af57079307bdb1cfe9") {
           delete collection["candyMachine"].whitelist_sale_time;
           delete collection["candyMachine"].whitelist_price;
-
           delete collection.phases;
         }
         return { collection };
@@ -98,10 +98,8 @@ export default {
         if (collection._id === "651295af57079307bdb1cfe9") {
           delete collection["candyMachine"].whitelist_sale_time;
           delete collection["candyMachine"].whitelist_price;
-
           delete collection.phases;
         }
-
         return { collection };
       } catch (error) {
         collection = null;
