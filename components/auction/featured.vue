@@ -17,7 +17,7 @@
         <h2
           class="tw-text-lg tw-font-medium tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1.5"
         >
-          <span>{{ auction?.nft.nft.current_token_data.collection_name }}</span>
+          <span>{{ auction?.nft.collectionName }}</span>
           <i
             class="bx bxs-badge-check tw-text-primary-1"
             v-if="auction?.isVerified"

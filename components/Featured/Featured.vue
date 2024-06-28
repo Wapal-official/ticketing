@@ -47,15 +47,10 @@
           >
             <span>List on Secondary</span>
             <i class="bx bx-link-external"></i>
-          </a>
-          <h1
-            v-if="collection.description === 'Loonies'"
-            class="tw-mb-3 tw-text-4xl tw-font-bold tw-tracking-[-0.025em] bebas-neue-regular"
-            style="color: #f8f0e4 !important"
-          >
-            Loonies Mint Starts in
-          </h1>
-          <h1 v-else class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
+          </a> 
+
+          <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
+ 
             {{ collection.name }}
           </h1>
         </div>
