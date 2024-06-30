@@ -1027,10 +1027,10 @@ export default {
 
           this.mintedTokens = getMintedTokenDataIdsFromTransaction(mintRes);
 
-          if (this.collection.tweet) {
-            // this.showShareModal = true;
-            this.showAfterMintModal = true;
-          }
+          // if (this.collection.tweet) {
+          // this.showShareModal = true;
+          this.showAfterMintModal = true;
+          // }
 
           let res = await this.$store.dispatch(
             "walletStore/getSupplyAndMintedOfCollection",
@@ -1833,6 +1833,7 @@ export default {
   },
   async mounted() {
     if (this.collection) {
+      console.log("sdasdasd", this.collection);
       this.collectionTweet = this.collection.tweet;
       this.collectionUserName = this.collection.username;
       if (this.collection.username === "proudlionsclub") {
