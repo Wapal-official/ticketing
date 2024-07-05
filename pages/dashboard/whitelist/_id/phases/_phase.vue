@@ -724,14 +724,15 @@ export default {
     this.collection = await getCollectionByUsernameInCreatorStudio(
       this.$route.params.id
     );
-    const whitelistTime = this.collection.candyMachine.whitelist_sale_time;
+    const whitelistTime = new Date(
+      this.collection.candyMachine.whitelist_sale_time
+    );
     {
       if (this.collection) {
         this.checkWhitelistTime = true;
       }
     }
     const currentTime = new Date();
-
     if (currentTime > whitelistTime) {
       this.beforeLive = false;
     } else {
