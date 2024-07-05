@@ -383,6 +383,8 @@ export default {
       searching: false,
       searchFetchDebounce: null,
       searchDebounce: null,
+      beforeLive: true,
+      checkWhitelistTime: false,
     };
   },
   watch: {
@@ -663,7 +665,16 @@ export default {
       this.mappingData = false;
     },
     showFileSelectionDialog() {
-      this.$refs.csv.click();
+      if (this.checkWhitelistTime == true) {
+        if (this.beforeLive == true) {
+          this.$refs.csv.click();
+        } else {
+          this.$toast.showMessage({
+            message: "WL upload closes at mint",
+            error: true,
+          });
+        }
+      }
     },
     async handleIntersect(entries: any) {
       if (entries[0].isIntersecting) {
@@ -713,6 +724,19 @@ export default {
     this.collection = await getCollectionByUsernameInCreatorStudio(
       this.$route.params.id
     );
+    const whitelistTime = this.collection.candyMachine.whitelist_sale_time;
+    {
+      if (this.collection) {
+        this.checkWhitelistTime = true;
+      }
+    }
+    const currentTime = new Date();
+
+    if (currentTime > whitelistTime) {
+      this.beforeLive = false;
+    } else {
+      this.beforeLive = true;
+    }
 
     await this.mapWhitelistEntries();
   },
