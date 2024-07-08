@@ -63,6 +63,14 @@ if (API_URL.includes("staging")) {
   MARKETPLACE_URL = "https://wapal.io";
 }
 
+if (!PROOF_API_URL) {
+  PROOF_API_URL = API_URL;
+}
+
+if (!CREATOR_STUDIO_API) {
+  CREATOR_STUDIO_API = API_URL;
+}
+
 let NODE_URL = `https://aptos-${NETWORK}.nodereal.io/v1/${APTOS_API_KEY}/v1`;
 
 if (NETWORK === "mainnet") {
