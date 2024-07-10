@@ -680,6 +680,7 @@ export const anotherCoinMintCollection = async ({
         coinObject,
         sender,
         mint_price,
+        coinType,
       });
 
       return res;
@@ -691,6 +692,7 @@ export const anotherCoinMintCollection = async ({
         coinObject,
         sender,
         mint_price,
+        coinType,
       });
       return res;
     }
@@ -704,6 +706,7 @@ export const anotherCoinMintCollection = async ({
         coinObject,
         sender,
         mint_price,
+        coinType,
       });
 
       return res;
@@ -717,6 +720,7 @@ export const anotherCoinMintCollection = async ({
         coinObject,
         sender,
         mint_price,
+        coinType,
       });
 
       return res;
@@ -729,9 +733,10 @@ export const anotherCoinMintSingleNft = async ({
   candy_object,
   coinObject,
   sender,
+  coinType,
 }: MintCollectionInterface) => {
   try {
-    const coinType = parseTypeTag(coinObject ? coinObject : "");
+    const coinType = coinObject ? coinObject : "";
     const mint_script: InputGenerateTransactionPayloadData = {
       function:
         `${candy_machine_id}::candymachine::mint_script` as `${string}::${string}::${string}`,
@@ -769,9 +774,10 @@ export const anotherCoinMintManyNft = async ({
   amount,
   coinObject,
   sender,
+  coinType,
 }: MintCollectionInterface) => {
   try {
-    const coinType = parseTypeTag(coinObject ? coinObject : "");
+    const coinType = coinObject ? coinObject : "";
 
     const mint_script_many: InputGenerateTransactionPayloadData = {
       function:
@@ -812,9 +818,9 @@ export const anotherCoinMerkleMintSingleNft = async ({
   coinObject,
   sender,
   mint_price,
+  coinType,
 }: MintCollectionInterface) => {
   try {
-    console.log("here");
     const proofsAsHex = proof?.map((tempProof) => {
       // Convert proof into Buffer
       const proofBuffer = Buffer.from(tempProof);
@@ -827,12 +833,10 @@ export const anotherCoinMerkleMintSingleNft = async ({
 
     const simulateMintLimit = mint_limit?.toString();
 
-    const coinType = parseTypeTag(coinObject ? coinObject : "");
-
     const merkle_mint_simulate_script: InputGenerateTransactionPayloadData = {
       function:
         `${candy_machine_id}::candymachine::mint_from_merkle_v2` as `${string}::${string}::${string}`,
-      typeArguments: [coinType],
+      typeArguments: [coinObject ? coinObject : ""],
       functionArguments: [candy_object, proofsAsHex, simulateMintLimit],
     };
 
@@ -848,13 +852,13 @@ export const anotherCoinMerkleMintSingleNft = async ({
     const convertedMintPrice = convertPriceToSendInSmartContract({
       price: mint_price ? mint_price : 0,
       isConverted: false,
-      coinType: "GUI",
+      coinType: coinType ? coinType : "",
     });
 
     const merkle_mint_script: InputGenerateTransactionPayloadData = {
       function:
         `${candy_machine_id}::candymachine::mint_from_merkle_v2` as `${string}::${string}::${string}`,
-      typeArguments: [coinType],
+      typeArguments: [coinObject ? coinObject : ""],
       functionArguments: [candy_object, proof, mint_limit, convertedMintPrice],
     };
 
@@ -875,6 +879,7 @@ export const anotherCoinMerkleMintManyNft = async ({
   coinObject,
   sender,
   mint_price,
+  coinType,
 }: MintCollectionInterface) => {
   try {
     const proofsAsHex = proof?.map((tempProof) => {
@@ -907,18 +912,16 @@ export const anotherCoinMerkleMintManyNft = async ({
       throw new Error(simulateRes.message);
     }
 
-    const coinType = parseTypeTag(coinObject ? coinObject : "");
-
     const convertedMintPrice = convertPriceToSendInSmartContract({
       price: mint_price ? mint_price : 0,
       isConverted: false,
-      coinType: "GUI",
+      coinType: coinType ? coinType : "",
     });
 
     const merkle_mint_script_many: InputGenerateTransactionPayloadData = {
       function:
         `${candy_machine_id}::candymachine::mint_from_merkle_many_v2` as `${string}::${string}::${string}`,
-      typeArguments: [coinType],
+      typeArguments: [coinObject ? coinObject : ""],
       functionArguments: [
         candy_object,
         proof,
