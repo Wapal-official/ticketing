@@ -811,8 +811,10 @@ export const anotherCoinMerkleMintSingleNft = async ({
   mint_limit,
   coinObject,
   sender,
+  mint_price,
 }: MintCollectionInterface) => {
   try {
+    console.log("here");
     const proofsAsHex = proof?.map((tempProof) => {
       // Convert proof into Buffer
       const proofBuffer = Buffer.from(tempProof);
@@ -843,11 +845,17 @@ export const anotherCoinMerkleMintSingleNft = async ({
       throw new Error(simulateRes.message);
     }
 
+    const convertedMintPrice = convertPriceToSendInSmartContract({
+      price: mint_price ? mint_price : 0,
+      isConverted: false,
+      coinType: "GUI",
+    });
+
     const merkle_mint_script: InputGenerateTransactionPayloadData = {
       function:
         `${candy_machine_id}::candymachine::mint_from_merkle_v2` as `${string}::${string}::${string}`,
       typeArguments: [coinType],
-      functionArguments: [candy_object, proof, mint_limit],
+      functionArguments: [candy_object, proof, mint_limit, convertedMintPrice],
     };
 
     const res = await executeTransactionAndGiveResult(merkle_mint_script);
@@ -866,6 +874,7 @@ export const anotherCoinMerkleMintManyNft = async ({
   amount,
   coinObject,
   sender,
+  mint_price,
 }: MintCollectionInterface) => {
   try {
     const proofsAsHex = proof?.map((tempProof) => {
@@ -900,11 +909,23 @@ export const anotherCoinMerkleMintManyNft = async ({
 
     const coinType = parseTypeTag(coinObject ? coinObject : "");
 
+    const convertedMintPrice = convertPriceToSendInSmartContract({
+      price: mint_price ? mint_price : 0,
+      isConverted: false,
+      coinType: "GUI",
+    });
+
     const merkle_mint_script_many: InputGenerateTransactionPayloadData = {
       function:
         `${candy_machine_id}::candymachine::mint_from_merkle_many_v2` as `${string}::${string}::${string}`,
       typeArguments: [coinType],
-      functionArguments: [candy_object, proof, mint_limit, amount],
+      functionArguments: [
+        candy_object,
+        proof,
+        mint_limit,
+        amount,
+        convertedMintPrice,
+      ],
     };
 
     const res = await executeTransactionAndGiveResult(merkle_mint_script_many);
