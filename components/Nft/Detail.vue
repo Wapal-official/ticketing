@@ -1067,17 +1067,9 @@ export default {
 
           this.mintedTokens = getMintedTokenDataIdsFromTransaction(mintRes);
 
-          if (this.collection.tweet) {
-            // this.showShareModal = true;
-            this.showAfterMintModal = true;
-          }
-          // if (this.collection.username === "loonies-whitelist-ticket") {
-          // this.showLooniesTweet = true;
-          // }
-          // this.showAfterMintModal = true;
-
-          // if (this.collection.username === "the-loonies") {
-          // this.showAfterMintModal = true;
+          // if (this.collection.tweet) {
+          // this.showShareModal = true;
+          this.showAfterMintModal = true;
           // }
 
           let res = await this.$store.dispatch(

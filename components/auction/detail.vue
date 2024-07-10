@@ -915,7 +915,18 @@ export default {
             );
           }
         } else {
-          if (this.auction.biddings[0]) {
+          if (this.auction.nft && this.auction.nft.ownerAddress) {
+            const ownerAddress = this.auction.nft.ownerAddress;
+            const ownerNameRes = await getDomainNameFromWalletAddress(
+              ownerAddress
+            );
+
+            if (ownerNameRes.name) {
+              this.ownerAddress = ownerNameRes.name + ".apt";
+            } else {
+              this.ownerAddress = this.sliceAddressForDisplay(ownerAddress);
+            }
+          } else if (this.auction.biddings[0]) {
             this.ownerAddress = this.auction.biddings[0].displayName;
           } else {
             let ownerAddress = null;
