@@ -1576,9 +1576,9 @@ export default {
         : "64e88318505087cecc568176"
     );
 
-    folderRes.data.folderInfo.metadata = 2;
     folderRes.data.folderInfo.metadataBaseURI =
       folderRes.data.folderInfo.metadata.baseURI;
+    folderRes.data.folderInfo.metadata = 2;
 
     this.folders.push(folderRes.data.folderInfo);
 
