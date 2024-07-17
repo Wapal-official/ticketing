@@ -13,7 +13,7 @@ import { RiseWallet } from "@rise-wallet/wallet-adapter";
 import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
 import { MSafeWalletAdapter } from "@msafe/aptos-wallet-adapter";
 import { OKXWallet } from "@okwallet/aptos-wallet-adapter";
-import { AptosClient, HexString, TxnBuilderTypes } from "aptos";
+import { AptosClient, HexString, Network, TxnBuilderTypes } from "aptos";
 import axios from "axios";
 
 import { getPrice } from "@/services/AssetsService";
@@ -22,21 +22,27 @@ import { getCoinType } from "@/utils/getCoinType";
 import { convertPriceToSendInSmartContract } from "~/utils/price";
 import { register } from "@/services/LoginService";
 import { InputGenerateTransactionPayloadData } from "@aptos-labs/ts-sdk";
+import { AptosConnectWalletPlugin } from "@aptos-connect/wallet-adapter-plugin";
 
 const GRAPHQL_URL = process.env.GRAPHQL_URL ? process.env.GRAPHQL_URL : "";
 
 let network = NetworkName.Testnet;
-
+let walletNetwork = Network.TESTNET;
 if (process.env.NETWORK === "testnet") {
   network = NetworkName.Testnet;
+   walletNetwork = Network.TESTNET;
 } else {
   network = NetworkName.Mainnet;
+  walletNetwork = Network.MAINNET;
 }
 
 export const client = new AptosClient(process.env.NODE_URL || "");
 
 const wallets = [
-  new PetraWallet(),
+  new PetraWallet(),  new AptosConnectWalletPlugin({
+    network: walletNetwork,
+    dappId: "d21761c1-fab1-4aa5-8c27-ec3749568e45",
+  }),
   new OKXWallet(),
   new RiseWallet(),
   new PontemWallet(),
@@ -47,7 +53,7 @@ const wallets = [
   new MSafeWalletAdapter(),
 ];
 
-export const wallet = new WalletCore(wallets);
+export const wallet = new WalletCore(wallets, []);
 
 export const makeId = (length: number) => {
   var result = "";
