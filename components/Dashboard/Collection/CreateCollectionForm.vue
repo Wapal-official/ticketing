@@ -1449,17 +1449,13 @@ export default {
 
         draftData.candy_id = this.collection.candy_id;
 
-        this.collection = draftData;
-
         try {
-          this.collection.phases = this.collection.phases
-            ? JSON.parse(this.collection.phases)
-            : [];
+          draftData.phases = JSON.parse(draftData.phases);
         } catch {
-          this.collection.phases = this.collection.phases
-            ? this.collection.phases
-            : [];
+          draftData.phases = [];
         }
+
+        this.collection = draftData;
 
         this.collection.phases.map((phase: any) => {
           phase.mint_time = new Date(phase.mint_time);
@@ -1507,7 +1503,12 @@ export default {
         const tempCollection = structuredClone(this.collection);
 
         for (const key in tempCollection) {
-          formData.append(key, tempCollection[key]);
+          formData.append(
+            key,
+            key !== "phases"
+              ? tempCollection[key]
+              : JSON.stringify(tempCollection.phases)
+          );
         }
 
         if (this.image && this.image.name) {
