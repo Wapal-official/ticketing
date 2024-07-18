@@ -30,7 +30,7 @@ let network = NetworkName.Testnet;
 let walletNetwork = Network.TESTNET;
 if (process.env.NETWORK === "testnet") {
   network = NetworkName.Testnet;
-   walletNetwork = Network.TESTNET;
+  walletNetwork = Network.TESTNET;
 } else {
   network = NetworkName.Mainnet;
   walletNetwork = Network.MAINNET;
@@ -39,9 +39,10 @@ if (process.env.NETWORK === "testnet") {
 export const client = new AptosClient(process.env.NODE_URL || "");
 
 const wallets = [
-  new PetraWallet(),  new AptosConnectWalletPlugin({
+  new PetraWallet(),
+  new AptosConnectWalletPlugin({
     network: walletNetwork,
-    dappId: "d21761c1-fab1-4aa5-8c27-ec3749568e45",
+    dappId: "848745c5-6d74-49c9-926c-035178fbb3d4",
   }),
   new OKXWallet(),
   new RiseWallet(),
@@ -53,7 +54,10 @@ const wallets = [
   new MSafeWalletAdapter(),
 ];
 
-export const wallet = new WalletCore(wallets, []);
+export const wallet = new WalletCore(wallets, [], {
+  network: walletNetwork,
+  aptosConnectDappId: "848745c5-6d74-49c9-926c-035178fbb3d4",
+});
 
 export const makeId = (length: number) => {
   var result = "";
