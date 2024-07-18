@@ -16,6 +16,7 @@
 <script lang="ts">
 import PrimaryButton from "@/components/Button/PrimaryButton.vue";
 import { login } from "@/services/LoginService";
+import { HexString } from "aptos";
 import { encodeBase64 } from "tweetnacl-util";
 
 export default {
@@ -36,6 +37,9 @@ export default {
 
         const body = { wallet_address: "", message: "", signature: "" };
 
+        let signature: any = "";
+        let publicKey: any = this.$store.state.walletStore.wallet.publicKey;
+
         if (res.result) {
           if (res.result.address) {
             body.wallet_address = res.result.address;
@@ -44,35 +48,68 @@ export default {
               this.$store.state.walletStore.wallet.walletAddress;
           }
 
-          if (Array.isArray(res.result.signature)) {
-            body.signature = res.result.signature[0];
+          if (res.result.signature[0].data) {
+            signature = HexString.fromBuffer(res.result.signature[0].data);
           } else {
-            body.signature = res.result.signature;
+            signature = HexString.fromBuffer(res.result.signature);
           }
 
           body.message = res.result.fullMessage;
         } else {
-          if (res.address) {
-            body.wallet_address = res.address;
+          if (
+            res.signature.signature &&
+            res.signature.signature.ephemeralSignature
+          ) {
+            if (res.address) {
+              body.wallet_address = res.address;
+            } else {
+              body.wallet_address =
+                this.$store.state.walletStore.wallet.walletAddress;
+            }
+
+            signature = HexString.fromBuffer(
+              res.signature.signature.ephemeralSignature.signature.data.data
+            );
+
+            const publicKeyHexString: any = HexString.fromBuffer(
+              res.signature.signature.ephemeralPublicKey.publicKey.key.data
+            );
+
+            publicKey = publicKeyHexString.hexString;
           } else {
-            body.wallet_address =
-              this.$store.state.walletStore.wallet.walletAddress;
+            if (res.address) {
+              body.wallet_address = res.address;
+            } else {
+              body.wallet_address =
+                this.$store.state.walletStore.wallet.walletAddress;
+            }
+
+            if (Array.isArray(res.signature)) {
+              if (res.signature[0].data) {
+                signature = HexString.fromBuffer(res.signature[0].data.data);
+              } else {
+                signature = res.signature[0];
+              }
+            } else {
+              if (res.signature.data) {
+                signature = HexString.fromBuffer(res.signature.data.data);
+              } else {
+                signature = res.signature;
+              }
+            }
           }
 
-          if (Array.isArray(res.signature)) {
-            body.signature = res.signature[0];
-          } else {
-            body.signature = res.signature;
-          }
           body.message = res.fullMessage;
         }
 
         let messageBytes = new TextEncoder().encode(body.message);
 
+        body.signature = signature.hexString ? signature.hexString : signature;
+
         let data = {
           message: encodeBase64(messageBytes),
           wallet_address: body.wallet_address,
-          publicKey: this.$store.state.walletStore.wallet.publicKey,
+          publicKey: publicKey,
           signature: body.signature,
         };
 
