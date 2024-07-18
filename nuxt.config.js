@@ -172,20 +172,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: [
-      "vee-validate",
-      "@wallet-standard",
-      "@noble/curves",
-      "@identity-connect/wallet-api/dist/index.js",
-      "@identity-connect/dapp-sdk/dist/index.js",
-      "@identity-connect/api/dist/index.js",
-      "@aptos-labs",
-      "@noble/curves/abstract",
-      "@wallet-standard/app",
-      "@aptos-connect/wallet-api/dist/index.js",
-      "@aptos-connect/wallet-adapter-plugin/dist/index.js",
-      "@aptos-connect/wallet-adapter-plugin/node_modules/@identity-connect/wallet-api/dist/index.js",
-    ],
+    transpile: ["vee-validate", "@wallet-standard", "@noble/curves"],
     babel: {
       plugins: ["@babel/plugin-proposal-optional-chaining"],
     },
