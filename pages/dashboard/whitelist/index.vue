@@ -429,20 +429,21 @@ export default {
     },
   },
   async mounted() {
-    this.checkWhitelistPopup();
     this.collections = [];
     this.whitelists = [];
-    const user_id = this.$store.state.userStore.user.user_id;
 
     this.loading = false;
-    new Swiper(this.$refs.swiper, {
-      autoplay: {
-        delay: 3000,
-        disableOnInteraction: false,
-      },
-      loop: true,
-      grabCursor: true,
+    this.$nextTick(() => {
+      new Swiper(this.$refs.swiper, {
+        autoplay: {
+          delay: 3000,
+          disableOnInteraction: false,
+        },
+        loop: false,
+        grabCursor: true,
+      });
     });
+    this.checkWhitelistPopup();
     await this.mapCollections();
   },
 };
