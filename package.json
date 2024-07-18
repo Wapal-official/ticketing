@@ -10,8 +10,7 @@
   },
   "dependencies": {
     "@aptos-connect/wallet-adapter-plugin": "^1.0.1",
-    "@aptos-labs/ts-sdk": "^1.24.0",
-    "@aptos-labs/wallet-adapter-core": "^4.10.0",
+    "@aptos-labs/wallet-adapter-core": "^4.11.0",
     "@kanalabs/paymaster-sdk": "^0.1.0",
     "@martianwallet/aptos-wallet-adapter": "^0.0.5",
     "@msafe/aptos-wallet-adapter": "^1.0.14",
@@ -63,6 +62,6 @@
     "tailwindcss": "^3.2.4"
   },
   "overrides": {
-    "@aptos-labs/ts-sdk": "^1.24.0"
+    "@aptos-labs/ts-sdk": "^1.25.0"
   }
 }
