@@ -68,7 +68,10 @@
         class="!tw-bg-dark-9"
         style="border: 1px solid #25262b; border-radius: 8px"
       >
-        <p class="tw-text-center tw-py-3 tw-px-5 !tw-mb-0">
+        <p
+          class="tw-text-center tw-uppercase tw-py-3 tw-px-5 !tw-mb-0"
+          style="font-size: 14px"
+        >
           Caution: Set whitelist an hour before minting!
         </p>
         <v-divider></v-divider>
@@ -101,7 +104,7 @@
           </div>
         </div>
         <div
-          class="tw-flex tw-px-5 tw-py-3 tw-mt-3 tw-gap-3 tw-justify-between tw-items-center"
+          class="tw-flex tw-px-5 tw-pt-3 tw-pb-5 tw-mt-3 tw-gap-3 tw-justify-between tw-items-center"
         >
           <button-primary
             :fullWidth="true"

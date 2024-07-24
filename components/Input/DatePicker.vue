@@ -24,7 +24,7 @@
         @change="handleChange"
         :disabled="disabled"
         class="wapal-input"
-        format="YYYY:MM:DD hh:mm"
+        format="YYYY:MM:DD hh:mm A"
       >
         <template v-slot:footer>
           <div
@@ -41,19 +41,19 @@
                   padding: 0 8px !important;
                 "
               >
-                {{ hour ? hour : "00" }}:{{ minute ? minute : "00 " }}
+                {{ hour ? hour : "00" }}:{{ minute ? minute : "00" }}
               </button>
               <div class="hour12-tab">
                 <button
                   class="hour12-tabs"
-                  @click.stop="toggleAM()"
+                  @click.stop="toggleAM"
                   :class="{ active: amActive }"
                 >
                   AM
                 </button>
                 <button
                   class="hour12-tabs"
-                  @click.stop="togglePM()"
+                  @click.stop="togglePM"
                   :class="{ active: pmActive }"
                 >
                   PM
@@ -62,8 +62,8 @@
             </div>
           </div>
           <div class="tw-w-full tw-text-xs tw-text-center tw-pb-2">
-            <span>Time Zone: </span
-            ><span class="tw-text-primary-1">{{ getTimeZone }}</span>
+            <span>Time Zone: </span>
+            <span class="tw-text-primary-1">{{ getTimeZone }}</span>
           </div>
         </template>
       </date-picker>
@@ -78,6 +78,7 @@
 import DatePicker from "vue2-datepicker";
 import "~/assets/css/datePicker.css";
 import { defaultTheme } from "@/theme/wapaltheme";
+
 export default {
   components: { DatePicker },
   props: {
@@ -134,23 +135,7 @@ export default {
   watch: {
     internalValue(newValue: any) {
       if (newValue) {
-        const time = newValue.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
-        const [hours, minutes, amPm] = time.split(/:| /);
-        this.hour = hours;
-        this.minute = minutes;
-        this.amPm = amPm;
-
-        if (amPm === "AM") {
-          this.amActive = true;
-          this.pmActive = false;
-        } else {
-          this.amActive = false;
-          this.pmActive = true;
-        }
+        this.updateTimeComponents(newValue);
       } else {
         this.showDatePickerTimePanel = false;
       }
@@ -158,6 +143,9 @@ export default {
   },
   mounted() {
     this.showDatePickerTimePanel = false;
+    if (this.internalValue) {
+      this.updateTimeComponents(this.internalValue);
+    }
   },
   computed: {
     internalValue: {
@@ -194,7 +182,6 @@ export default {
       this.pmActive = false;
       this.updateInternalValue();
     },
-
     togglePM() {
       this.amPm = "PM";
       this.amActive = false;
@@ -215,30 +202,45 @@ export default {
       const newDate = new Date(this.internalValue);
       newDate.setHours(hours);
       newDate.setMinutes(minutes);
-      this.internalValue = newDate;
+      this.$emit("input", newDate);
     },
     updateShowTimePanel(value: any) {
       this.showDatePickerTimePanel = value;
-
       if (this.internalValue) {
-        const time = this.internalValue.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
-        const [hours, minutes, amPm] = time.split(/:| /);
-        this.hour = hours;
-        this.minute = minutes;
-        this.amPm = amPm;
+        this.updateTimeComponents(this.internalValue);
       }
     },
-
     showTimePanel() {
       this.showDatePickerTimePanel = !this.showDatePickerTimePanel;
+    },
+    updateTimeComponents(date: {
+      toLocaleTimeString: (
+        arg0: never[],
+        arg1: { hour: string; minute: string; hour12: boolean }
+      ) => any;
+    }) {
+      const time = date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+      const [hours, minutes, amPm] = time.split(/:| /);
+      this.hour = hours;
+      this.minute = minutes;
+      this.amPm = amPm;
+
+      if (amPm === "AM") {
+        this.amActive = true;
+        this.pmActive = false;
+      } else {
+        this.amActive = false;
+        this.pmActive = true;
+      }
     },
   },
 };
 </script>
+
 <style>
 .mx-table-date thead {
   background: #1a1b1e !important;
