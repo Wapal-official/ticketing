@@ -177,7 +177,7 @@ export default {
     closeIcon(closeIcon: Boolean) {
       this.sidebarIsShowing = closeIcon;
     },
-    async getWhitelistSetup(newVal) {
+    async getWhitelistSetup(newVal: Boolean) {
       this.checkWhitelistPopup();  
     
     }
