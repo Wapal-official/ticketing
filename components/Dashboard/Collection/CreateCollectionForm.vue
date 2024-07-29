@@ -1133,7 +1133,11 @@ export default {
 
         this.message = "Collection Created Successfully";
         this.$toast.showMessage({ message: this.message, error: false });
+
         this.$router.push("/dashboard/collection/under-review");
+        setTimeout(() => {
+          this.$store.commit("general/setWhitelistSetup", true)
+        }, 2000);
       } catch (error: any) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
@@ -1529,6 +1533,9 @@ export default {
 
         this.$toast.showMessage({ message: "Draft Updated Successfully" });
         this.$router.push("/dashboard/collection/draft");
+        setTimeout(() => {
+          this.$store.commit("general/setWhitelistSetup", true)
+        }, 2000);
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({
