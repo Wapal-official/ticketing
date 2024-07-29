@@ -1,6 +1,7 @@
 // Vuex store
 export const state = () => ({
   selectedItem: [],
+  whitelistSetup: false,
 });
 
 export const mutations = {
@@ -12,4 +13,7 @@ export const mutations = {
       (item) => item.wallet_address !== payload.wallet_address
     );
   },
+  setWhitelistSetup(state, payload) {
+    state.whitelistSetup = payload;
+  }
 };

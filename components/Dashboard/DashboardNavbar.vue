@@ -24,9 +24,73 @@
         </button>
       </div>
     </nav>
+    <v-dialog
+      v-model="showWhitelistSetup" persistent
+      content-class=" !tw-w-full md:!tw-w-1/2 lg:!tw-w-[40%]"
+    >
+      <div
+        class="!tw-bg-dark-9"
+        style="border: 1px solid #25262b; border-radius: 8px"
+      >
+        <p
+          class="tw-text-center tw-uppercase tw-py-3 tw-px-5 !tw-mb-0"
+          style="font-size: 14px"
+        >
+        REMINDER: Set whitelist an hour before minting!
+        </p>
+        <v-divider></v-divider>
+        <div class="tw-py-3 tw-px-5">
+          <div class="swiper mySwiper" ref="swiper">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <p class="tw-text-center tw-text-dark-1">
+                  Step 1: Select Collection
+                </p>
+                <img
+                  class="tw-mx-auto"
+                  src="~/assets/img/dialogs/step1.jpg"
+                  alt="step1"
+                  style="width: 100%; max-width: 600px"
+                />
+              </div>
+              <div class="swiper-slide">
+                <p class="tw-text-center tw-text-dark-1">
+                  Step 2: Confirm Collection
+                </p>
+                <img
+                  class="tw-mx-auto"
+                  src="~/assets/img/dialogs/step2.jpg"
+                  alt="step2"
+                  style="width: 100%; max-width: 600px"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="tw-flex tw-px-5 tw-pt-3 tw-pb-5 tw-mt-3 tw-gap-3 tw-justify-between tw-items-center"
+        >
+          <button-primary
+            :fullWidth="true"
+            title="Don’t show this again"
+            :bordered="true"
+            @click="dontShowAgain"
+          ></button-primary>
+          <button-primary
+            title="Remind me later"
+            :fullWidth="true"
+            @click="remindMeLater"
+          ></button-primary>
+        </div>
+      </div>
+    </v-dialog>
   </div>
 </template>
 <script lang="ts">
+// @ts-ignore
+import Swiper from "swiper/swiper-bundle.min";
+
+import "swiper/swiper-bundle.min.css";
 import logo from "@/assets/img/logo/logo.svg";
 import ConnectWallet from "@/components/Reusable/ConnectWallet.vue";
 export default {
@@ -39,19 +103,70 @@ export default {
   data() {
     return {
       sidebarIsShowing: false,
-      logo,
+      logo, 
+      showWhitelistSetup: false,
     };
   },
-  methods: {
+  computed: {
+    getWhitelistSetup() {
+      return this.$store.state.general.whitelistSetup;
+    }
+  },
+  methods: { 
     toggleSidebar() {
       this.$emit("toggleSidebar", this.sidebarIsShowing);
       this.sidebarIsShowing = !this.sidebarIsShowing;
     },
+    dontShowAgain() {
+      localStorage.setItem("showWhitelistSetup", "false");
+      this.showWhitelistSetup = false;
+    },
+    remindMeLater() {
+      const remindTime = new Date().getTime() + 30 * 60 * 1000;
+      localStorage.setItem("remindWhitelistSetup", remindTime.toString());
+      this.showWhitelistSetup = false;
+    },
+    checkWhitelistPopup() {
+      const showWhitelistSetup = localStorage.getItem("showWhitelistSetup");
+      const getWhitelistSetup = this.getWhitelistSetup;
+      
+      if (showWhitelistSetup === "false" || !getWhitelistSetup) {
+        this.showWhitelistSetup = false;
+        return;
+      }
+
+      const remindTime = localStorage.getItem("remindWhitelistSetup");
+      if (remindTime) {
+        const currentTime = new Date().getTime();
+        if (currentTime < parseInt(remindTime)) {
+          this.showWhitelistSetup = false;
+          return;
+        }
+      }
+
+      this.showWhitelistSetup = true;
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      new Swiper(this.$refs.swiper, {
+        autoplay: {
+          delay: 3000,
+          disableOnInteraction: false,
+        },
+        loop: false,
+        grabCursor: true,
+      });
+    });
+    this.checkWhitelistPopup(); 
   },
   watch: {
     closeIcon(closeIcon: Boolean) {
       this.sidebarIsShowing = closeIcon;
     },
+    getWhitelistSetup(newVal) {
+      this.checkWhitelistPopup();  
+    }
   },
 };
 </script>
