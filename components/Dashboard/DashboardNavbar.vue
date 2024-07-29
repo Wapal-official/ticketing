@@ -17,16 +17,15 @@
         class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-4 lg:tw-hidden"
       >
         <button @click="toggleSidebar" class="tw-flex">
-          <v-icon class="!tw-text-wapal-gray" v-if="!sidebarIsShowing"
-            >mdi-menu</v-icon
-          >
+          <v-icon class="!tw-text-wapal-gray" v-if="!sidebarIsShowing">mdi-menu</v-icon>
           <v-icon class="!tw-text-wapal-gray" v-else>mdi-close</v-icon>
         </button>
       </div>
     </nav>
     <v-dialog
-      v-model="showWhitelistSetup" persistent
-      content-class=" !tw-w-full md:!tw-w-1/2 lg:!tw-w-[40%]"
+      v-model="showWhitelistSetup"
+      persistent
+      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[40%]"
     >
       <div
         class="!tw-bg-dark-9"
@@ -36,10 +35,18 @@
           class="tw-text-center tw-uppercase tw-py-3 tw-px-5 !tw-mb-0"
           style="font-size: 14px"
         >
-        REMINDER: Set whitelist an hour before minting!
+          REMINDER: Set whitelist an hour before minting!
         </p>
         <v-divider></v-divider>
-        <div class="tw-py-3 tw-px-5">
+        <div class="tw-py-3 tw-px-5 tw-relative">
+          <div class="icon-holder" v-if="!isSliderPlayed" @click="playSlider()">
+            <img
+              class="tw-mx-auto"
+              src="~/assets/img/dialogs/bx-play-circle.svg"
+              alt="playicon"
+              
+            />
+          </div>
           <div class="swiper mySwiper" ref="swiper">
             <div class="swiper-wrapper">
               <div class="swiper-slide">
@@ -89,7 +96,6 @@
 <script lang="ts">
 // @ts-ignore
 import Swiper from "swiper/swiper-bundle.min";
-
 import "swiper/swiper-bundle.min.css";
 import logo from "@/assets/img/logo/logo.svg";
 import ConnectWallet from "@/components/Reusable/ConnectWallet.vue";
@@ -103,16 +109,17 @@ export default {
   data() {
     return {
       sidebarIsShowing: false,
-      logo, 
+      logo,
       showWhitelistSetup: false,
+      isSliderPlayed: false,
     };
   },
   computed: {
     getWhitelistSetup() {
       return this.$store.state.general.whitelistSetup;
-    }
+    },
   },
-  methods: { 
+  methods: {
     toggleSidebar() {
       this.$emit("toggleSidebar", this.sidebarIsShowing);
       this.sidebarIsShowing = !this.sidebarIsShowing;
@@ -128,9 +135,7 @@ export default {
     },
     checkWhitelistPopup() {
       const showWhitelistSetup = localStorage.getItem("showWhitelistSetup");
-      const getWhitelistSetup = this.getWhitelistSetup;
-      
-      if (showWhitelistSetup === "false" || !getWhitelistSetup) {
+      if (showWhitelistSetup === "false" || !this.getWhitelistSetup) {
         this.showWhitelistSetup = false;
         return;
       }
@@ -146,27 +151,56 @@ export default {
 
       this.showWhitelistSetup = true;
     },
-  },
-  mounted() {
-    this.$nextTick(() => {
+    async playSlider() {
+      this.isSliderPlayed = true;
+      await this.$nextTick();
       new Swiper(this.$refs.swiper, {
         autoplay: {
-          delay: 3000,
+          delay: 2000,
           disableOnInteraction: false,
         },
-        loop: false,
+        loop: true,
         grabCursor: true,
       });
-    });
-    this.checkWhitelistPopup(); 
+    },
+    startReminderCheck() {
+      setInterval(() => {
+        const remindTime = localStorage.getItem("remindWhitelistSetup");
+        if (remindTime) {
+          const currentTime = new Date().getTime();
+          if (currentTime >= parseInt(remindTime)) {
+            this.showWhitelistSetup = true;
+            localStorage.removeItem("remindWhitelistSetup");
+          }
+        }
+      }, 60000); 
+    },
+  },
+  mounted() {
+    this.checkWhitelistPopup();
+    this.startReminderCheck();
   },
   watch: {
     closeIcon(closeIcon: Boolean) {
       this.sidebarIsShowing = closeIcon;
     },
-    getWhitelistSetup(newVal) {
-      this.checkWhitelistPopup();  
-    }
+    getWhitelistSetup() {
+      this.checkWhitelistPopup();
+    },
   },
 };
 </script>
+<style lang="css">
+.icon-holder {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; 
+  background: #00000073;
+  z-index: 2;
+  display: flex;
+  align-items: center; 
+  cursor: pointer;
+}
+</style>

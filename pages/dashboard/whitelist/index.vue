@@ -351,16 +351,7 @@ export default {
     this.whitelists = [];
 
     this.loading = false;
-    this.$nextTick(() => {
-      new Swiper(this.$refs.swiper, {
-        autoplay: {
-          delay: 3000,
-          disableOnInteraction: false,
-        },
-        loop: false,
-        grabCursor: true,
-      });
-    });
+   
     await this.mapCollections();
   },
 };
