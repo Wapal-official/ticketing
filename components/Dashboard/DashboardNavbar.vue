@@ -39,7 +39,15 @@
         REMINDER: Set whitelist an hour before minting!
         </p>
         <v-divider></v-divider>
-        <div class="tw-py-3 tw-px-5">
+        <div class="tw-py-3 tw-px-5 tw-relative">
+          <div class="icon-holder" v-if="!isSliderPlayed" @click="playSlider()">
+            <img
+                  class="tw-mx-auto"
+                  src="~/assets/img/dialogs/bx-play-circle.svg"
+                  alt="playicon"
+                  
+                />
+          </div>
           <div class="swiper mySwiper" ref="swiper">
             <div class="swiper-wrapper">
               <div class="swiper-slide">
@@ -105,6 +113,7 @@ export default {
       sidebarIsShowing: false,
       logo, 
       showWhitelistSetup: false,
+      isSliderPlayed: false,
     };
   },
   computed: {
@@ -129,6 +138,7 @@ export default {
     checkWhitelistPopup() {
       const showWhitelistSetup = localStorage.getItem("showWhitelistSetup");
       const getWhitelistSetup = this.getWhitelistSetup;
+      // const getWhitelistSetup = true;
       
       if (showWhitelistSetup === "false" || !getWhitelistSetup) {
         this.showWhitelistSetup = false;
@@ -146,27 +156,45 @@ export default {
 
       this.showWhitelistSetup = true;
     },
-  },
-  mounted() {
-    this.$nextTick(() => {
+    async playSlider() {
+      this.isSliderPlayed = true;
+      await this.$nextTick();
       new Swiper(this.$refs.swiper, {
         autoplay: {
-          delay: 3000,
+          delay: 2000,
           disableOnInteraction: false,
         },
-        loop: false,
+        loop: true,
         grabCursor: true,
       });
-    });
+    }
+  },
+  mounted() {
+ 
     this.checkWhitelistPopup(); 
   },
   watch: {
     closeIcon(closeIcon: Boolean) {
       this.sidebarIsShowing = closeIcon;
     },
-    getWhitelistSetup(newVal) {
+    async getWhitelistSetup(newVal) {
       this.checkWhitelistPopup();  
+    
     }
   },
 };
 </script>
+<style lang="css">
+.icon-holder {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; 
+  background: #00000073;
+  z-index: 2;
+  display: flex;
+  align-items: center; 
+  cursor: pointer;
+}
+</style>
