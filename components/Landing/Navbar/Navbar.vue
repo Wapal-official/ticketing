@@ -139,7 +139,7 @@
         v-if="ForMdScreenSize == true"
         class="tw-w-full tw-hidden tw-col-span-4 lg:tw-flex lg:tw-col-span-6 xl:tw-col-span-4"
       >
-        <div
+        <!-- <div
           @click="nftTransferAction()"
           class="tw-mr-3 lg:mr-0 d-flex align-center"
           style="cursor: pointer; min-width: 46px"
@@ -151,21 +151,21 @@
           >
             Nft
           </p>
-        </div>
+        </div> -->
         <landing-menu />
       </div>
       <div
         v-else
         class="tw-w-full tw-hidden tw-col-span-4 lg:tw-flex lg:tw-col-span-5 xl:tw-col-span-4"
       >
-        <div
+        <!-- <div
           v-if="!afterXlScreenSize"
           @click="nftTransferAction()"
           class="tw-mr-3 lg:mr-0 d-flex align-center"
           style="cursor: pointer; min-width: 46px"
         >
 
-        </div>
+        </div> -->
         <landing-menu />
       </div>
       <div
@@ -177,7 +177,7 @@
       <div
         class="tw-hidden tw-col-span-5 tw-w-full tw-flex-row tw-items-center tw-justify-end md:tw-flex lg:tw-hidden tw-gap-4"
       >
-        <div
+        <!-- <div
           @click="nftTransferAction()"
           class="tw-mr-2 lg:mr-3 tw-align-center tw-flex"
           style="cursor: pointer"
@@ -189,7 +189,7 @@
           >
             Nft
           </p>
-        </div>
+        </div> -->
         <button @click="toggleLandingMenu">
           <i
             class="bx bx-menu !tw-text-wapal-gray tw-text-2xl"
@@ -209,7 +209,7 @@
         >
           <img src="~/assets/img/star.svg" alt="new feature start" />
         </div> -->
-        <div
+        <!-- <div
           @click="nftTransferAction()"
           class="mr-2 mr-lg-3 d-flex align-center"
           style="cursor: pointer"
@@ -221,7 +221,7 @@
           >
             Nft
           </p>
-        </div>
+        </div> -->
         <button @click="displaySearchBar" class="tw-flex md:tw-hidden">
           <i class="bx bx-search !tw-text-wapal-gray tw-text-2xl"></i>
         </button>
@@ -293,13 +293,13 @@ export default {
     window.addEventListener("resize", this.checkScreenSize);
   },
   methods: {
-    async nftTransferAction() {
-      if (!this.getWalletStatus) {
-        this.showConnectWalletModal = true;
-      } else {
-        this.$store.commit("dialog/setNftTransferDialog", true);
-      }
-    },
+    // async nftTransferAction() {
+    //   if (!this.getWalletStatus) {
+    //     this.showConnectWalletModal = true;
+    //   } else {
+    //     this.$store.commit("dialog/setNftTransferDialog", true);
+    //   }
+    // },
     displayWalletConnectedMessage() {
       this.showConnectWalletModal = false;
 
