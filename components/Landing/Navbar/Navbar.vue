@@ -164,13 +164,7 @@
           class="tw-mr-3 lg:mr-0 d-flex align-center"
           style="cursor: pointer; min-width: 46px"
         >
-          <img src="~/assets/img/transfer.svg" alt="nft transfer" />
-          <p
-            class="transfer-text"
-            style="margin-left: 4px !important; margin-bottom: 0 !important"
-          >
-            Nft
-          </p>
+
         </div>
         <landing-menu />
       </div>

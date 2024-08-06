@@ -5,7 +5,7 @@
         class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-justify-between md:tw-items-center tw-pb-8"
       >
         <h2 class="tw-uppercase tw-text-white tw-font-bold tw-text-[2rem]">
-          Editions
+          All Events
         </h2>
         <button-primary
           :bordered="true"

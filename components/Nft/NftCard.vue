@@ -53,7 +53,7 @@
       <div class="tw-w-full tw-h-full tw-overflow-hidden tw-rounded-md">
         <img
           :src="domainImage"
-          alt="Domain Name"
+          alt="Domain Name" 
           class="tw-w-full tw-h-full tw-object-fill tw-transition-all tw-duration-200 tw-ease-linear tw-transform group-hover:tw-scale-110"
         />
       </div>
