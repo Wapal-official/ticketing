@@ -49,7 +49,8 @@
     "vue2-datepicker": "^3.11.1",
     "vuetify": "^2.6.10",
     "vuex-module-decorators": "^2.0.0",
-    "vuex-persistedstate": "^4.1.0"
+    "vuex-persistedstate": "^4.1.0",
+    "xxxx": "^3.0.4"
   },
   "devDependencies": {
     "@nuxt/postcss8": "^1.1.3",

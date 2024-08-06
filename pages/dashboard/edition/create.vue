@@ -11,7 +11,7 @@
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
         >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
-            Nft Collection Details
+            Event Details
           </h2>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -20,10 +20,10 @@
             v-slot="{ errors }"
           >
             <input-text-field
-              label="Collection Name"
+              label="Event Name"
               :required="true"
               v-model="collection.name"
-              placeholder="Collection Name"
+              placeholder="Event Name"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
@@ -34,10 +34,10 @@
             v-slot="{ errors }"
           >
             <input-text-area
-              label="Collection Description"
+              label="Event Description"
               :required="true"
               v-model="collection.description"
-              placeholder="Collection Description"
+              placeholder="Event Description"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>

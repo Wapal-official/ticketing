@@ -515,6 +515,7 @@ export const actions = {
 
     return signMessage;
   },
+
   async getSupplyAndMintedOfCollection(
     { state }: { state: any },
     {
@@ -522,59 +523,81 @@ export const actions = {
       candyMachineId,
     }: { resourceAccountAddress: string; candyMachineId: string }
   ) {
-    const res = await client.getAccountResources(resourceAccountAddress);
-
-    let resource: any = null;
-    for (let i = 0; i < res.length; i++) {
-      if (res[i].type === candyMachineId + "::candymachine::CandyMachine") {
-        resource = res[i].data;
-        break;
+    try { 
+      const res = await client.getAccountResources(resourceAccountAddress);
+  
+      let resource: any = null;
+      for (let i = 0; i < res.length; i++) {
+        if (res[i].type === candyMachineId + "::candymachine::CandyMachine") {
+          resource = res[i].data;
+          break;
+        }
       }
+   
+      const v2 = res.some((data: any) => {
+        return data.type === "0x1::object::ObjectCore";
+      });
+   
+      return {
+        total_supply: resource?.total_supply ?? 0,
+        minted: resource?.minted ?? 0,
+        paused: resource?.paused ?? false,
+        publicSaleMintLimit: resource?.public_mint_limit ?? 0,
+        v2: v2,
+      };
+    } catch (error) {
+      console.error("Error fetching supply and minted data:", error); 
+      return {
+        total_supply: 0,
+        minted: 0,
+        paused: false,
+        publicSaleMintLimit: 0,
+        v2: false,
+      };
     }
-
-    const v2 = res.some((data: any) => {
-      return data.type === "0x1::object::ObjectCore";
-    });
-
-    return {
-      total_supply: resource.total_supply,
-      minted: resource.minted,
-      paused: resource.paused,
-      publicSaleMintLimit: resource.public_mint_limit,
-      v2: v2,
-    };
   },
+
   async getSupplyAndMintedOfExternalCollection(
     {},
     { collectionId }: { collectionId: string }
   ) {
-    const query = {
-      query: `query GetMintedAndTotalSupplyOfCollection($COLLECTION_ID: String){
-        current_collections_v2(
-          where: {collection_id: {_eq: $COLLECTION_ID}}
-        ) {
-          max_supply
-          total_minted_v2
-        }
-      }`,
-      variables: {
-        COLLECTION_ID: collectionId,
-      },
-    };
-
-    const res = await axios.post(GRAPHQL_URL, query);
-
-    if (res.data.data.current_collections_v2[0]) {
-      const data = res.data.data.current_collections_v2[0];
-      return {
-        total_supply: data.max_supply,
-        minted: data.total_minted_v2,
-        v2: true,
+    try {
+      const query = {
+        query: `query GetMintedAndTotalSupplyOfCollection($COLLECTION_ID: String){
+          current_collections_v2(
+            where: {collection_id: {_eq: $COLLECTION_ID}}
+          ) {
+            max_supply
+            total_minted_v2
+          }
+        }`,
+        variables: {
+          COLLECTION_ID: collectionId,
+        },
       };
-    } else {
-      return { total_supply: 0, minted: 0, v2: false };
+  
+      const res = await axios.post(GRAPHQL_URL, query);
+  
+      if (res.data.data.current_collections_v2[0]) {
+        const data = res.data.data.current_collections_v2[0];
+        return {
+          total_supply: data.max_supply,
+          minted: data.total_minted_v2,
+          v2: true,
+        };
+      } else {
+        return { total_supply: 0, minted: 0, v2: false };
+      }
+    } catch (error) {
+      console.error("Error fetching supply and minted data from external collection:", error); 
+      return {
+        total_supply: 0,
+        minted: 0,
+        v2: false,
+      };
     }
   },
+  
   async setMerkleRoot(
     { state }: { state: any },
     {
