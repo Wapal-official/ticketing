@@ -46,7 +46,7 @@
       class="tw-mr-3 lg:mr-0 d-flex align-center"
       style="cursor: pointer; min-width: 46px"
     >
-      <img src="~/assets/img/transfer.svg" alt="nft transfer" />
+      
       <p
         class="transfer-text"
         style="margin-left: 4px !important; margin-bottom: 0 !important"
@@ -128,7 +128,7 @@ export default {
     checkWalletStatus() {
       if (this.getWalletStatus && this.getUserStatus) {
         this.$emit("close");
-        this.$router.push("/dashboard/assets");
+        this.$router.push("/dashboard/edition");
       } else if (!this.getWalletStatus) {
         this.showConnectWalletModal = true;
       } else {

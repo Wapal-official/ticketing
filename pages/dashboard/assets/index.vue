@@ -2,22 +2,7 @@
   <div
     class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
   >
-    <div
-      class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
-    >
-      <dashboard-page-heading heading="Assets" />
-      <button-primary
-        :bordered="true"
-        title="Create NFT Vault"
-        @click="newFolderDialog = true"
-      >
-        <template #prepend-icon>
-          <i class="bx bx-plus tw-text-xl tw-pr-2"></i>
-        </template>
-      </button-primary>
-    </div>
     <v-breadcrumbs
-      :items="breadcrumbs"
       class="breadcrumb !tw-text-base !tw-font-medium"
     >
       <template v-slot:divider>
@@ -152,7 +137,7 @@ export default {
       },
       currentFolder: { folder_name: "" },
       deleteFolderDialog: false,
-      breadcrumbs: [{ text: "Vaults" }],
+
       loading: true,
       vaultNameError: false,
       defaultTheme,
@@ -276,7 +261,7 @@ export default {
       this.folders = [];
 
       const res = await getAllFolder(this.$store.state.userStore.user.user_id);
-      this.folders.push({ _id: this.getFolderId, folder_name: "sample" });
+      this.folders.push({ _id: this.getFolderId, folder_name: "" });
 
       res.data.folderInfo.map((folder: any) => {
         this.folders.push(folder);
