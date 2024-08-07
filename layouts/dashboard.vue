@@ -39,7 +39,6 @@ import DashboardSidebar from "@/components/Dashboard/Sidebar/DashboardSidebar.vu
 import Toast from "@/components/Reusable/Toast.vue";
 import UploadProgress from "@/components/Dashboard/UploadProgress.vue";
 import Verification from "@/components/Landing/Verification.vue";
-import tourMixin from "@/mixins/tourMixin.js";
 import { uploadSocketState } from "@/sockets/socket";
 export default {
   components: {
@@ -50,7 +49,6 @@ export default {
     UploadProgress,
     Verification,
   },
-  mixins: [tourMixin],
   data() {
     return {
       sidebarClass: "-tw-translate-x-full",
