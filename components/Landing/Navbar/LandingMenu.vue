@@ -32,12 +32,12 @@
           link="/upcoming-collection"
           @close="close"
         />
-        <explore-list-item
+        <!-- <explore-list-item
           name="Domain Name"
           link="/domain-name"
           :last="true"
           @close="close"
-        />
+        /> -->
       </v-list-group>
     </div>
     <div
@@ -46,13 +46,6 @@
       class="tw-mr-3 lg:mr-0 d-flex align-center"
       style="cursor: pointer; min-width: 46px"
     >
-      
-      <p
-        class="transfer-text"
-        style="margin-left: 4px !important; margin-bottom: 0 !important"
-      >
-        Nft
-      </p>
     </div>
 
     <button-primary
