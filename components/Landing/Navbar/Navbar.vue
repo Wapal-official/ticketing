@@ -45,12 +45,12 @@
                 link="/upcoming-collection"
                 @close="close"
               />
-              <explore-list-item
+              <!-- <explore-list-item
                 name="Domain Name"
                 link="/domain-name"
                 :last="true"
                 @close="close"
-              />
+              /> -->
             </v-list>
           </v-menu>
         </div>
@@ -104,12 +104,12 @@
                 link="/upcoming-collection"
                 @close="close"
               />
-              <explore-list-item
+              <!-- <explore-list-item
                 name="Domain Name"
                 link="/domain-name"
                 :last="true"
                 @close="close"
-              />
+              /> -->
             </v-list>
           </v-menu>
         </div>

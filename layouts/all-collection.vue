@@ -23,11 +23,10 @@ export default {
       loading: true,
       tab: 0,
       tabs: [
-        "Latest Collection",
-        "Upcoming Collection",
-        "Soldout Collections",
-        "Editions",
-        "Auctions",
+        "Latest Events",
+        "Upcoming Events",
+        "Soldout Events",
+        "Events",
       ],
     };
   },
