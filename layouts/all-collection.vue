@@ -45,11 +45,11 @@ export default {
 
     this.collection = res[0];
 
-    if (this.$route.path === "/latest-collection") {
+    if (this.$route.path === "/live-editions") {
       this.tab = 0;
-    } else if (this.$route.path === "/upcoming-collection") {
+    } else if (this.$route.path === "/upcoming-editions") {
       this.tab = 1;
-    } else if (this.$route.path === "/fastest-soldout") {
+    } else if (this.$route.path === "/paused-editions") {
       this.tab = 2;
     } else if (this.$route.path === "/editions") {
       this.tab = 3;
@@ -65,22 +65,19 @@ export default {
 
       switch (tab) {
         case 0:
-          this.$router.push("/latest-collection");
+          this.$router.push("/live-editions");
           break;
         case 1:
-          this.$router.push("/upcoming-collection");
+          this.$router.push("/upcoming-editions");
           break;
         case 2:
-          this.$router.push("/fastest-soldout");
+          this.$router.push("/paused-editions");
           break;
         case 3:
           this.$router.push("/editions");
           break;
-        case 4:
-          this.$router.push("/auctions");
-          break;
         default:
-          this.$router.push("/latest-collection");
+          this.$router.push("/live-editions");
           break;
       }
     },
@@ -88,11 +85,11 @@ export default {
   watch: {
     path() {
       setTimeout(() => {
-        if (this.$route.path === "/latest-collection") {
+        if (this.$route.path === "/live-editions") {
           this.tab = 0;
-        } else if (this.$route.path === "/upcoming-collection") {
+        } else if (this.$route.path === "/upcoming-editions") {
           this.tab = 1;
-        } else if (this.$route.path === "/fastest-soldout") {
+        } else if (this.$route.path === "/paused-editions") {
           this.tab = 2;
         } else if (this.$route.path === "/editions") {
           this.tab = 3;
