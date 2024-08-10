@@ -32,17 +32,17 @@
             <v-list class="tw-bg-dark-7 !tw-min-w-[240px]">
               <explore-list-item
                 name="All NFT"
-                link="/latest-collection"
+                link="/live-editions"
                 @close="close"
               />
               <explore-list-item
                 name="Live"
-                link="/latest-collection"
+                link="/live-editions"
                 @close="close"
               />
               <explore-list-item
                 name="Upcoming"
-                link="/upcoming-collection"
+                link="/upcoming-editions"
                 @close="close"
               />
               <!-- <explore-list-item
