@@ -297,7 +297,7 @@ export const getApprovedDrafts = async (page: number, limit: number) => {
 //   const res = await publicRequest.patch(`/api/draft/${draftId}`, {
 //     data: data,
 //   });
-
+//
 //   return res;
 // };
 
