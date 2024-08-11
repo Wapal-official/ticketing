@@ -300,7 +300,7 @@ export const getApprovedDrafts = async (page: number, limit: number) => {
 //
 //   return res;
 // };
-
+//
 export const editDraft = async (draftId: string, formData: any) => {
   const config = {
     headers: { "content-type": "multipart/form-data" },
