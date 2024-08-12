@@ -1,6 +1,6 @@
 <template>
   <default-layout>
-    <nft-detail :collection="collection" v-if="!loading && collection" />
+    <nft-detail :collection="collection" v-if="!loading" />
     <loading-collection v-else-if="loading" />
     <div
       class="tw-container tw-mx-auto tw-px-8 tw-pb-24 lg:tw-px-[3.75em]"
@@ -15,6 +15,7 @@
 <script lang="ts">
 import { getFeaturedCollection } from "@/services/CollectionService";
 import DefaultLayout from "@/layouts/default.vue";
+import FeaturedAllNft from "@/Featured/FeaturedAllNft.vue";
 export default {
   layout: "default",
   components: { DefaultLayout },
@@ -38,7 +39,9 @@ export default {
   },
   async mounted() {
     await this.checkFeaturedEdition();
+    const res = await getFeaturedCollection();
 
+    this.collection = res[0];
     if (this.$route.path === "/live-editions") {
       this.tab = 0;
     } else if (this.$route.path === "/upcoming-editions") {
