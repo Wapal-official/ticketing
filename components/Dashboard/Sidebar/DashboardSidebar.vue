@@ -49,7 +49,7 @@ export default {
       showVerification: false,
       showSidebar: true,
       sidebarItems: [
-        { path: "/dashboard/edition", name: "Edition" },
+        { path: "/dashboard/edition", name: "Events" },
       ],
     };
   },

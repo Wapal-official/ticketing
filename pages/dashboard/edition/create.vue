@@ -33,14 +33,15 @@
             rules="required"
             v-slot="{ errors }"
           >
-            <input-text-area
+            <input-text-editor class=""
               label="Event Description"
               :required="true"
               v-model="collection.description"
               placeholder="Event Description"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-          </ValidationProvider>
+
+          </ValidationProvider> 
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="twitter"
@@ -535,7 +536,7 @@
               <div
                 class="tw-w-full tw-flex tw-items-center tw-flex-row tw-justify-end tw-py-5"
               >
-                <button-primary title="Create" @click="submit" />
+                <button-primary title="Create " @click="submit" />
               </div>
             </div>
           </div>
@@ -1404,9 +1405,9 @@ export default {
 
         formData.append("seedz", JSON.stringify(tempCollection.seedz));
         formData.append("coin_type", tempCollection.coinType);
-
+        console.log('formData', formData);
         const res = await createCollection(formData);
-
+        console.log('res', res);
         this.$toast.showMessage({
           message: "Open Edition Created Successfully",
           error: false,

@@ -39,7 +39,7 @@ import DashboardSidebar from "@/components/Dashboard/Sidebar/DashboardSidebar.vu
 import Toast from "@/components/Reusable/Toast.vue";
 import UploadProgress from "@/components/Dashboard/UploadProgress.vue";
 import Verification from "@/components/Landing/Verification.vue";
-import tourMixin from "@/mixins/tourMixin.js";
+
 import { uploadSocketState } from "@/sockets/socket";
 export default {
   components: {
@@ -50,7 +50,7 @@ export default {
     UploadProgress,
     Verification,
   },
-  mixins: [tourMixin],
+  mixins: [],
   data() {
     return {
       sidebarClass: "-tw-translate-x-full",
@@ -113,13 +113,13 @@ export default {
         this.$router.push("/");
         return;
       }
-      if (this.getVerifiedStatus) {
-        if (localStorage.getItem("seen_asset_tour") === null) {
-          this.startTour({ store: this.$store });
+      // if (this.getVerifiedStatus) {
+      //   if (localStorage.getItem("seen_asset_tour") === null) {
+      //     this.startTour({ store: this.$store });
 
-          localStorage.setItem("seen_asset_tour", "true");
-        }
-      }
+      //     localStorage.setItem("seen_asset_tour", "true");
+      //   }
+      // }
 
       window.addEventListener("dragenter", (e) => e.preventDefault());
       window.addEventListener("dragover", (e) => {

@@ -426,7 +426,7 @@
               <div
                 class="tw-w-full tw-flex tw-items-center tw-flex-row tw-justify-end tw-py-5"
               >
-                <button-primary title="Create" @click="submit" />
+                <button-primary title="Create Event" @click="submit" />
               </div>
             </div>
           </div>
