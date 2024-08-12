@@ -1,7 +1,7 @@
 <template>
   <default-layout>
-    <nft-detail :collection="collection" v-if="!loading" />
-    <loading-collection v-else />
+    <!-- <nft-detail :collection="collection" v-if="!loading" />
+    <loading-collection v-else /> -->
     <div
       class="tw-container tw-mx-auto tw-px-8 tw-pb-24 lg:tw-px-[3.75em]"
       ref="tab"
