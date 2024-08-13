@@ -20,7 +20,7 @@
           class="tw-w-1/5 tw-flex tw-flex-row tw-items-center tw-justify-end"
         >
           <button-primary
-            title="Create New Event"
+            title="Create Event"
             @click="$router.push('/dashboard/edition/create')"
             :bordered="true"
           >
@@ -54,7 +54,7 @@ export default {
     tabChanged(tab: number) {
       switch (tab) {
         case 0:
-          this.$router.push("/dashboard/edition/one-one");
+          this.$router.push("/dashboard/edition/open-edition");
           break;
         case 1:
           this.$router.push("/dashboard/edition/open-edition");
@@ -72,9 +72,9 @@ export default {
       this.$route.path === "/dashboard/edition" ||
       this.$route.path === "/dashboard/edition/"
     ) {
-      this.$router.push("/dashboard/edition/one-one");
+      this.$router.push("/dashboard/edition/open-edition"); //changed
       this.launchpadTab = 0;
-    } else if (this.$route.path === "/dashboard/edition/one-one") {
+    } else if (this.$route.path === "/dashboard/edition/open-edition") { //changed
       this.launchpadTab = 0;
     } else if (this.$route.path === "/dashboard/edition/open-edition") {
       this.launchpadTab = 1;
@@ -93,9 +93,9 @@ export default {
         this.path === "/dashboard/edition" ||
         this.path === "/dashboard/edition/"
       ) {
-        this.$router.push("/dashboard/edition/one-one");
+        this.$router.push("/dashboard/edition/open-edition"); //changed
         this.launchpadTab = 0;
-      } else if (this.path === "/dashboard/edition/one-one") {
+      } else if (this.path === "/dashboard/edition/open-edition") { //changed
         this.launchpadTab = 0;
       } else if (this.path === "/dashboard/edition/open-edition") {
         this.launchpadTab = 1;
