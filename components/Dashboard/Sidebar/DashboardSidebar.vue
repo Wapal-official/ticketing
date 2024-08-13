@@ -49,8 +49,8 @@ export default {
       showVerification: false,
       showSidebar: true,
       sidebarItems: [
-        { path: "/dashboard/edition", name: "Create Events" },
-        { path: "/dashboard/collection", name: "Events" }
+        { path: "/dashboard/edition", name: "Events" },
+        // { path: "/dashboard/collection", name: "Events" }
       ],
     };
   },

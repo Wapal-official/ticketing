@@ -9,7 +9,7 @@
       />
       <dashboard-no-collection
         message="You Do Not Have any NFTs of this type"
-        buttonTitle="Create"
+        buttonTitle="Create Event"
         @click="$router.push('/dashboard/edition/create')"
         v-if="editions.length === 0 && !loading"
       />
