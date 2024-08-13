@@ -1,6 +1,6 @@
 <template>
     <div class="tw-container tw-mx-auto">
-      <landing-section-heading heading="Upcoming Editions" class="tw-pb-8" />
+      <landing-section-heading heading="Upcoming Events" class="tw-pb-8" />
       <div
         v-if="!loading && collections.length === 0"
         class="tw-w-full tw-text-center tw-text-xl tw-text-primary-1"
