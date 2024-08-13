@@ -33,7 +33,7 @@
             rules="required"
             v-slot="{ errors }"
           >
-            <input-text-editor class=""
+            <input-text-editor 
               label="Event Description"
               :required="true"
               v-model="collection.description"
@@ -681,9 +681,9 @@ export default {
         { step: 2, name: "Creating Collection" },
       ],
       nftType: [
-        { name: "One on One", id: "1-1" },
+        // { name: "One on One", id: "1-1" },
         // { name: "Limited Edition", id: "limited-edition" },
-        { name: "Open Edition", id: "open-edition" },
+        { name: "Open Event", id: "open-edition" },
       ],
       coinTypes: getAvailableCoinTypes(),
       coinType: "APT",

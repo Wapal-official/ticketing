@@ -94,7 +94,28 @@
 
 <style lang="css">
     .ql-container.ql-snow{ border: none !important;}
-    .ql-toolbar.ql-snow { border: none !important;}
+    .ql-toolbar .ql-stroke {
+        fill: none;
+        stroke: #e5e7eb;
+    }
+
+    .ql-toolbar .ql-fill {
+        fill: #e5e7eb;
+    }
+
+    .ql-toolbar .ql-picker {
+        color: #e5e7eb;
+    }
+
+    .ql-toolbar .ql-picker .ql-picker-options{
+        color: #0b0c0d;
+    }
+    .ql-toolbar.ql-snow {
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgb(56 58 63 / var(--tw-border-opacity));
+}
 </style>
 
 

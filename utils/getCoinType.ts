@@ -79,7 +79,7 @@ export const getCoinType = (coinType: string) => {
 };
 
 export const getAvailableCoinTypes = () => {
-  return ["APT", "GUI", "SEEDZ", "CLST", "XENON"];
+  return ["APT"];
 };
 
 export const getAvailableCoinTypesForAuction = () => {
