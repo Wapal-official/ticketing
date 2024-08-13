@@ -1,6 +1,6 @@
 <template>
   <default-layout>
-    <nft-detail :collection="collection" v-if="!loading && collection" />
+    <nft-detail :collection="collection" v-if="!loading" />
     <loading-collection v-else-if="loading" />
     <div
       class="tw-container tw-mx-auto tw-px-8 tw-pb-24 lg:tw-px-[3.75em]"
@@ -15,6 +15,7 @@
 <script lang="ts">
 import { getFeaturedCollection } from "@/services/CollectionService";
 import DefaultLayout from "@/layouts/default.vue";
+import FeaturedAllNft from "@/Featured/FeaturedAllNft.vue";
 export default {
   layout: "default",
   components: { DefaultLayout },
@@ -23,7 +24,7 @@ export default {
       collection: null,
       loading: true,
       tab: 0,
-      tabs: ["Live Editions", "Ended Editions"],
+      tabs: ["Live Editions", "Upcoming Editions" ,"Ended Editions"],
     };
   },
   async asyncData({ from }: { from: any }) {
@@ -38,11 +39,16 @@ export default {
   },
   async mounted() {
     await this.checkFeaturedEdition();
+    const res = await getFeaturedCollection();
 
+    this.collection = res[0];
     if (this.$route.path === "/live-editions") {
       this.tab = 0;
-    } else if (this.$route.path === "/paused-editions") {
+    } else if (this.$route.path === "/upcoming-editions") {
       this.tab = 1;
+    }
+    else if (this.$route.path === "/paused-editions") {
+      this.tab = 2;
     }
 
     this.loading = false;
@@ -56,8 +62,11 @@ export default {
           this.$router.push("/live-editions");
           break;
         case 1:
-          this.$router.push("/paused-editions");
+          this.$router.push("/upcoming-editions");
           break;
+        case 2:
+        this.$router.push("/paused-editions");
+        break;
         default:
           this.$router.push("/live-editions");
           break;
@@ -84,8 +93,10 @@ export default {
       setTimeout(() => {
         if (this.$route.path === "/live-editions") {
           this.tab = 0;
-        } else if (this.$route.path === "/paused-editions") {
+        } else if (this.$route.path === "/upcoming-editions") {
           this.tab = 1;
+        }  else if (this.$route.path === "/paused-editions") {
+          this.tab = 2;
         }
 
         this.$refs.tab.scrollIntoView({ behavior: "smooth" });

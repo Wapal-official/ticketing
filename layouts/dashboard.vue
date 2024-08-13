@@ -50,7 +50,7 @@ export default {
     UploadProgress,
     Verification,
   },
-  mixins: [],
+
   data() {
     return {
       sidebarClass: "-tw-translate-x-full",
