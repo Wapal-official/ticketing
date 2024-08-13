@@ -1,6 +1,6 @@
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
-    <dashboard-page-heading heading="Collection" v-if="showTabs" />
+    <dashboard-page-heading heading="Events" v-if="showTabs" />
     <launchpad-guide
       v-if="showLaunchpadGuide"
       title="Collection Guide"
@@ -22,8 +22,8 @@
       >
         <button-primary
           :bordered="true"
-          title="Create New Collection"
-          @click="$router.push('/dashboard/create-collection')"
+          title="Create New Event"
+          @click="$router.push('/dashboard/edition/create')"
         >
           <template #prepend-icon>
             <i class="bx bx-plus tw-text-xl tw-pr-2"></i>

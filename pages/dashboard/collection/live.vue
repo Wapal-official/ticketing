@@ -8,9 +8,9 @@
         v-if="collections[0]"
       />
       <dashboard-no-collection
-        message="You do not have any Live Collection"
-        buttonTitle="Create Collection"
-        @click="$router.push('/dashboard/create-collection')"
+        message="You do not have any Live Events"
+        buttonTitle="Create New Event"
+        @click="$router.push('/dashboard/edition/create')"
         v-if="collections.length === 0 && !loading"
       />
     </div>

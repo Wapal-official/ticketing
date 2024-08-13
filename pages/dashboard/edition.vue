@@ -20,7 +20,7 @@
           class="tw-w-1/5 tw-flex tw-flex-row tw-items-center tw-justify-end"
         >
           <button-primary
-            title="Create Event"
+            title="Create New Event"
             @click="$router.push('/dashboard/edition/create')"
             :bordered="true"
           >
@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       launchpadTab: 0,
-      tabs: ["Open Edition"],
+      tabs: ["Open Event"],
     };
   },
   methods: {
