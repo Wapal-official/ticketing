@@ -24,7 +24,7 @@ export default {
       collection: null,
       loading: true,
       tab: 0,
-      tabs: ["Live Editions", "Upcoming Editions" ,"Ended Editions"],
+      tabs: ["Live Events", "Upcoming Events" ,"Ended Events"],
     };
   },
   async asyncData({ from }: { from: any }) {
