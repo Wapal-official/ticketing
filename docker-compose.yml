@@ -1,0 +1,22 @@
+version: '3.1'
+
+services:
+  ticketing:
+    container_name: ticketing
+    hostname: ticketing
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=development
+        - IMG=16.17-alpine3.15
+        - LOCATION=ticketing
+    restart: always
+    user: root:root
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - COMPOSE_PROJECT_NAME=ticketing
+    ports:
+      - ${PORT}:${PORT}

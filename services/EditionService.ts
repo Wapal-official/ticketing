@@ -43,3 +43,25 @@ export const getAllEditions = async ({
 
   return editions;
 };
+
+export const getUpcomingEditions = async ({
+  page,
+  limit,
+}: {
+  page: number;
+  limit: number;
+}) => {
+  const res = await publicRequest.get(
+
+    `/api/collection/edition/upcoming?page=${page}&limit=${limit}&edition=open-edition&isApproved=true`
+  );
+  console.log("checkUpcomingEditions",res)
+
+  const editions = res.data.data;
+
+  editions.map((edition: any) => {
+    edition.image = getCachedUrlOfImage(edition.image);
+  });
+
+  return editions;
+};
