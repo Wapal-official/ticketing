@@ -146,9 +146,13 @@
         <div
           v-if="collection.description !== 'looniess'"
           class="tw-pb-2 tw-text-dark-0 description"
-        >
-          {{ collection.description }}
+          
+          v-html="collection.description" 
+          id="test"
+          >
         </div>
+
+
         <div
           v-else
           class="tw-pb-2 tw-text-dark-0 description"
