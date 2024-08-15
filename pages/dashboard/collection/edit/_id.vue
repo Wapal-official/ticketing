@@ -61,7 +61,7 @@
             </template>
           </tool-tip>
         </div>
-        <div class="">{{ collection.description }}</div>
+        <div class="" v-html="collection.description" id="markup-desc"></div>
       </div>
 
       <div class="tw-w-full" v-if="!collection.isEdition">

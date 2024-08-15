@@ -480,3 +480,127 @@ input:disabled {
 .no-spin-button input[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* Markdown description */
+#markup-desc p{
+  font-size: 16px;
+}
+
+#markup-desc body {
+  font-size: 16px; /* Normal text */
+}
+
+/* Headings */
+#markup-desc h1 {
+  font-size: 2.5em;
+}
+
+#markup-desc h2 {
+  font-size: 2em; 
+}
+
+#markup-desc h3 {
+  font-size: 1.75em; 
+}
+
+#markup-desc h4 {
+  font-size: 1.5em; 
+}
+
+#markup-desc h5 {
+  font-size: 1.25em; 
+}
+
+#markup-desc h6 {
+  font-size: 1em; 
+}
+
+
+/* ordered list */
+#markup-desc ol {
+  list-style-type: decimal; /* Numbers */
+}
+
+/* Default styles for unordered lists */
+#markup-desc ul {
+  list-style-type: disc; /* Solid circles */
+}
+
+
+/* fonts  */
+#markup-desc .ql-font-serif{
+  font-family: serif;
+}
+
+#markup-desc .ql-font-serif{
+  font-family: serif;
+}
+
+#markup-desc .ql-font-monospace{
+  font-family: monospace;
+}
+
+#markup-desc blockquote {
+  padding: 0 0.3em ;
+  margin: 0.3em 0;
+  border-left: 4px solid #ccc;
+}
+
+#markup-desc pre.ql-syntax {
+  background-color: #23241F; /* Light grey background for code */
+  font-family: sans-serif;
+  border-radius: 4px; /* Rounded corners */
+  padding: 0.7em; /* Padding inside the block */
+}
+
+
+/* alignment */
+#markup-desc .ql-align-left{
+  text-align: left;
+}
+
+#markup-desc .ql-align-right{
+  text-align: right;
+}
+
+#markup-desc .ql-align-center{
+  text-align: center;
+}
+
+#markup-desc .ql-indent-1{
+  text-indent: 10%;
+}
+
+#markup-desc .ql-indent-2{
+  text-indent: 20%;
+}
+
+#markup-desc .ql-indent-3{
+  text-indent: 30%;
+}
+
+#markup-desc .ql-indent-4{
+  text-indent: 40%;
+}
+
+#markup-desc .ql-indent-5{
+  text-indent: 50%;
+}
+
+#markup-desc .ql-indent-6{
+  text-indent: 60%;
+}
+
+#markup-desc .ql-indent-7{
+  text-indent: 70%;
+}
+
+#markup-desc .ql-indent-8{
+  text-indent: 100%;
+}
+
+
+
+
+
+

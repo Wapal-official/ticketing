@@ -146,8 +146,10 @@
         <div
           v-if="collection.description !== 'looniess'"
           class="tw-pb-2 tw-text-dark-0 description"
+
+          v-html = "collection.description"
+          id="markup-desc"
         >
-          {{ collection.description }}
         </div>
         <div
           v-else
@@ -2116,6 +2118,7 @@ export default {
 };
 </script>
 <style lang="css">
+
 .video-detailed {
   max-width: 550px;
   height: 550px;
