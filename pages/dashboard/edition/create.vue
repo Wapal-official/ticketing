@@ -668,16 +668,16 @@ export default {
       error: false,
       oneOnOneSteps: [
         { step: 1, name: "Uploading Image and Metadata" },
-        { step: 2, name: "Creating Collection" },
+        { step: 2, name: "Creating Events" },
         { step: 3, name: "Minting Collection" },
       ],
       limitedEditionSteps: [
         { step: 1, name: "Uploading Image and Metadata" },
-        { step: 2, name: "Creating Collection" },
+        { step: 2, name: "Creating Events" },
       ],
       openEditionSteps: [
         { step: 1, name: "Uploading Image and Metadata" },
-        { step: 2, name: "Creating Collection" },
+        { step: 2, name: "Creating Events" },
       ],
       nftType: [
         { name: "One on One", id: "1-1" },
@@ -725,7 +725,7 @@ export default {
       }
     },
     getName() {
-      return "Create Edition";
+      return "Create events";
     },
     getDescription() {
       return `Please review and approve up to ${this.getSteps.length} transactions in your wallet window to create your edition.`;
