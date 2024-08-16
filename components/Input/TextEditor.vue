@@ -11,7 +11,7 @@
       "
       >{{ label }}</label>
         <div id="app" class="v-input  wapal-input tw-w-full v-textarea v-textarea--auto-grow v-textarea--no-resize v-input--hide-details theme--dark v-text-field v-text-field--single-line v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
-            <vue-editor v-model="internalValue"></vue-editor>
+            <vue-editor v-model="internalValue" :editor-toolbar="customToolbar"></vue-editor>
         </div>
     </div>
   </template>
@@ -19,7 +19,6 @@
 
   <script>
     import { VueEditor } from 'vue2-quill-editor'
-  
     export default {
 
   props: {
@@ -77,19 +76,31 @@
         },
     },
   
-    data() {
-        return {
-          content: '<h1>Some initial content</h1>'  
-        }
-        
-      },
+    data: () =>  ({
+          content: 'Hello', 
+          customToolbar: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          [{ 'script': 'sub' }, { 'script': 'super' }],
+          [{ 'indent': '-1' }, { 'indent': '+1' }],
+          [{ 'direction': 'rtl' }],
+           [{ 'header': [1, 2, 3, 4, 5, false] }],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'font': [] }],
+          [{ 'align': [] }],
+          ['link'],
+          ['clean']
+          
+        ],  
+      }),
 
     watch: {
         content(newValue) {
         console.log('Updated:', newValue);
         }
-    }
-    }
+    },
+    };
   </script> 
 
 <style lang="css">
@@ -115,7 +126,20 @@
     border-left: none !important;
     border-right: none !important;
     border-bottom: 1px solid rgb(56 58 63 / var(--tw-border-opacity));
-}
+    }
+  .ql-tooltip.ql-editing{
+      left: 0px !important;
+      /* transform: translateY(10px) translateX(50%); */
+    }
+
+    .ql-editor {
+      font-style: normal;
+    }
+
+  .ql-editor em {
+      font-style: italic;
+    }
+
 </style>
 
 
