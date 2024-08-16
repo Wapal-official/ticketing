@@ -523,7 +523,7 @@ input:disabled {
 
 /* Default styles for unordered lists */
 #markup-desc ul {
-  list-style-type: disc; /* Solid circles */
+  list-style-type: disc; 
 }
 
 
@@ -547,10 +547,10 @@ input:disabled {
 }
 
 #markup-desc pre.ql-syntax {
-  background-color: #23241F; /* Light grey background for code */
+  background-color: #23241F;
   font-family: sans-serif;
-  border-radius: 4px; /* Rounded corners */
-  padding: 0.7em; /* Padding inside the block */
+  border-radius: 4px;
+  padding: 0.7em; 
 }
 
 
@@ -599,8 +599,8 @@ input:disabled {
   text-indent: 100%;
 }
 
-
-
-
-
+/* for italic */
+#markup-desc em{
+  font-style: italic;
+}
 
