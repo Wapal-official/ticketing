@@ -33,7 +33,7 @@
             rules="required"
             v-slot="{ errors }"
           >
-            <input-text-editor
+            <input-H-T-M-Lbox
               label="Event Description"
               :required="true"
               v-model="collection.description"
