@@ -173,15 +173,5 @@
     background-color: #2b2b2b; /* Adjust color as needed */
     border-radius: 5px;
 }
-  
-  button {
-    background-color: royalBlue;
-    border: 0;
-    border-radius: 3px;
-    font-size: 16px;
-    color: white;
-    margin: 0 0 10px;
-    padding: 10px;
-  }
   </style>
   
