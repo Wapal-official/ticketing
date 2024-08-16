@@ -138,7 +138,9 @@ props: {
 .ql-editor em {
     font-style: italic;
   }
-
+  .ql-editor em u, .ql-editor u em {
+    font-style: italic !important;
+    }
 </style>
 
 

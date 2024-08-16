@@ -172,5 +172,8 @@
     background-color: #2b2b2b; /* Adjust color as needed */
     border-radius: 5px;
 }
+    .ql-editor em u, .ql-editor u em {
+    font-style: italic !important;
+    }
   </style>
   
