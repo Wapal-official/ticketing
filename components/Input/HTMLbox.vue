@@ -13,7 +13,7 @@
         id="app"
         class="v-input wapal-input tw-w-full v-textarea v-textarea--auto-grow v-textarea--no-resize v-input--hide-details theme--dark v-text-field v-text-field--single-line v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder"
       >
-        <vue-editor v-model="internalValue" ref="editor"></vue-editor>
+        <vue-editor v-model="internalValue" :editor-toolbar="customToolbar" ref="editor"></vue-editor>
       </div>
       <div class="info-panel v-input wapal-input tw-w-full v-textarea v-textarea--auto-grow v-textarea--no-resize v-input--hide-details theme--dark v-text-field v-text-field--single-line v-text-field--is-booted v-text-field--enclosed ">
         <code>
@@ -82,13 +82,25 @@
       VueEditor,
     },
   
-    data() {
-      return {
-        content: "<h1>Some initial content</h1>",
+    data: () =>  ({
+        content: 'Hello', 
         cursorPosition: 0,
-        selectedText: "",
-      };
-    },
+        selectedText: '',
+        customToolbar: [
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'script': 'sub' }, { 'script': 'super' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }],
+         [{ 'header': [1, 2, 3, 4, 5, false] }],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'font': [] }],
+        [{ 'align': [] }],
+        ['link'],
+        ['clean']
+      ],  
+    }),
   
     computed: {
       internalValue: {
