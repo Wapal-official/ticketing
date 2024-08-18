@@ -611,8 +611,7 @@ input:disabled {
   word-break: normal;
 }
 
-
-
-
-
-
+/* for italic */
+#markup-desc em{
+  font-style: italic;
+}

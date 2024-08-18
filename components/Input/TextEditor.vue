@@ -20,106 +20,49 @@
   <script>
     import { VueEditor } from 'vue2-quill-editor'
     export default {
+<script>
+  import { VueEditor } from 'vue2-quill-editor'
+  export default {
 
-  props: {
-        value: {
-        type: [String, Number],
-        },
-        placeholder: {
-        type: String,
-        },
-        type: {
-        type: String,
-        default: null,
-        },
-        counter: {
-        type: Number,
-        default: null,
-        },
-        error_messages: {
-        type: String,
-        default: null,
-        },
-        readOnly: {
-        type: Boolean,
-        default: false,
-        },
-        background: {
-        type: String,
-        },
-        disabled: {
-        type: Boolean,
-        default: false,
-        },
-        required: {
-        type: Boolean,
-        default: false,
-        },
-        label: {
-        type: String,
-        },
-   },
-
-   
-    components: {
-       VueEditor
-    },
-    computed: {
-        
-    internalValue: {
-      get() {
-        return this.value;  // Added to ensure binding with v-model
-            },
-      set(newValue) {
-        this.$emit('input', newValue);  // Emit changes to parent component
-            },
-        },
-    },
-  
-    data: () =>  ({
-          content: 'Hello', 
-          customToolbar: [
-          ['bold', 'italic', 'underline', 'strike'],
-          ['blockquote', 'code-block'],
-          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-          [{ 'script': 'sub' }, { 'script': 'super' }],
-          [{ 'indent': '-1' }, { 'indent': '+1' }],
-          [{ 'direction': 'rtl' }],
-           [{ 'header': [1, 2, 3, 4, 5, false] }],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'font': [] }],
-          [{ 'align': [] }],
-          ['link'],
-          ['clean']
-          
-        ],  
-      }),
-
-    watch: {
-        content(newValue) {
-        console.log('Updated:', newValue);
-        }
-    },
-    };
-  </script> 
 
 <style lang="css">
-    .ql-container.ql-snow{ border: none !important;}
-    .ql-toolbar .ql-stroke {
-        fill: none;
-        stroke: #e5e7eb;
-    }
+  .ql-container.ql-snow{ border: none !important;}
+  .ql-toolbar .ql-stroke {
+      fill: none;
+      stroke: #e5e7eb;
+  }
 
-    .ql-toolbar .ql-fill {
-        fill: #e5e7eb;
-    }
+  .ql-toolbar .ql-fill {
+      fill: #e5e7eb;
+  }
 
-    .ql-toolbar .ql-picker {
-        color: #e5e7eb;
-    }
+  .ql-toolbar .ql-picker {
+      color: #e5e7eb;
+  }
 
-    .ql-toolbar .ql-picker .ql-picker-options{
-        color: #0b0c0d;
+  .ql-toolbar .ql-picker .ql-picker-options{
+      color: #0b0c0d;
+  }
+  .ql-toolbar.ql-snow {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid rgb(56 58 63 / var(--tw-border-opacity));
+  }
+.ql-tooltip.ql-editing{
+    left: 0px !important;
+    /* transform: translateY(10px) translateX(50%); */
+  }
+
+  .ql-editor {
+    font-style: normal;
+  }
+
+.ql-editor em {
+    font-style: italic;
+  }
+  .ql-editor em u, .ql-editor u em {
+    font-style: italic !important;
     }
     .ql-toolbar.ql-snow {
     border-top: none !important;
@@ -139,7 +82,6 @@
   .ql-editor em {
       font-style: italic;
     }
-
 </style>
 
 
