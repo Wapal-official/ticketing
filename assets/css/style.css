@@ -603,3 +603,33 @@ input:disabled {
 #markup-desc em{
   font-style: italic;
 }
+
+/* Scrollable */
+#markup-desc{
+  width: 532px;
+  height: 350px;
+  padding: 14px;
+  overflow-y: scroll;
+  resize: none;
+  border: 1px solid #25262B;
+  border-radius: 6px;
+  }
+
+/* Custom scrollable */
+#markup-desc::-webkit-scrollbar {
+  width: 10px;
+}
+
+#markup-desc::-webkit-scrollbar-track {
+  background: #25262B;
+}
+
+#markup-desc::-webkit-scrollbar-thumb {
+  background-color: #00000062;
+  border-radius: 10px;
+  border: 2px solid #363638;
+}
+
+#markup-desc::-webkit-scrollbar-thumb:hover {
+  background-color: #000000;
+}
