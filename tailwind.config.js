@@ -20,7 +20,7 @@ module.exports = {
         "wapal-background": "#0E0D0D",
         "wapal-success": "#1C452C",
         "wapal-danger": "#7B0707",
-        "primary-1": "#8759FF",
+        "primary-1": "#8EE3FB",
         "primary-2": "#9D80FF",
         "primary-tint": "#9D80FF",
         "primary-dark": "#2D2545",

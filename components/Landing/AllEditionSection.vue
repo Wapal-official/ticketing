@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <section class="tw-w-full tw-bg-dark-8 tw-py-14 tw-min-h-[500px]" id="all-editions">
     <div class="tw-container tw-mx-auto tw-px-8 xl:tw-px-[3.75rem]">
       <div
@@ -62,4 +62,4 @@ export default {
     },
   },
 };
-</script>
+</script> -->

@@ -50,7 +50,7 @@
 
     <button-primary
       @click="checkWalletStatus"
-      title="Create"
+      title="Create Event"
       :bordered="true"
     />
     <connect-wallet @close="close" class="tw-mt-8 lg:tw-mt-0" />
