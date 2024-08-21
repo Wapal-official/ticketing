@@ -607,7 +607,7 @@ input:disabled {
 /* Scrollable */
 #markup-desc{
   width: 532px;
-  height: 350px;
+  max-height: max-content;
   padding: 14px;
   overflow-y: scroll;
   resize: none;
