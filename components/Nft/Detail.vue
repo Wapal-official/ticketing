@@ -192,7 +192,7 @@
           />
         </div>
         <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
           v-if="live"
         >
           <div

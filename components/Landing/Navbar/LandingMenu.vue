@@ -15,7 +15,7 @@
           class="focus:before:!tw-opacity-0"
           @click="showExploreMenu = !showExploreMenu"
         >
-          <span class="tw-w-full"> Exploreasa</span>
+          <span class="tw-w-full">Explore</span>
         </template>
         <explore-list-item
           name="All NFT"
