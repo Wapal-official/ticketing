@@ -52,19 +52,6 @@
           </div>
         </div>
         <div>
-          <a
-            :href="`${MARKETPLACE_URL}/collection/${collection.username}`"
-            class="!tw-text-primary-2 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium"
-            target="_blank"
-            v-if="
-              live &&
-              resource.minted > 0 &&
-              collection.username !== 'loonies-whitelist-ticket'
-            "
-          >
-            <span>List on Secondary</span>
-            <i class="bx bx-link-external"></i>
-          </a>
           <h1 class="tw-text-white tw-text-[2.5rem] tw-font-bold">
             {{ collection.name }}
           </h1>
@@ -143,7 +130,17 @@
             </div>
           </div>
         </div>
-        <div
+        <div 
+          class="tw-pb-2 tw-text-dark-0 description"
+        >
+          {{ collection.description }}
+        </div>
+        <div>
+          <h2 class="tw-text-white tw-text-[1.5rem] tw-font-bold">
+            {{ collection.name }}
+          </h2>
+        </div>
+        <!-- <div
           v-if="collection.description !== 'looniess'"
           class="tw-pb-2 tw-text-dark-0 description"
 
@@ -157,7 +154,7 @@
           style="opacity: 0; visibility: hidden"
         >
           {{ collection.description }}
-        </div>
+        </div> -->
 
         <div
           v-if="collection._id === '65803e82022bc90954ea3ea4'"
@@ -199,7 +196,7 @@
           v-if="live"
         >
           <div
-            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
+            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-3 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
           >
             <div
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
@@ -225,7 +222,19 @@
                 />
               </div>
             </div>
-            <div
+            <div class="tw-flex tw-justify-between tw-w-[100%]">
+                <div>
+                  <div class="tw-text-dark-2">Mint Date</div>
+                  <div>Jun 30, 04:45 AM</div>
+                </div>
+                <div>
+                  <div class="tw-text-dark-2 tw-text-right">Price</div>
+                  <div>1.30APT</div>
+                  <!-- <span class="block">Price</span>
+                  <span class="block">1.30APT</span> -->
+                </div>
+            </div>
+            <!-- <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-w-full"
             >
               <div
@@ -425,10 +434,53 @@
                   Limit {{ publicSaleMintLimit }} per wallet
                 </div>
               </div>
+            </div> -->
+          </div>
+          <div
+            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-3 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
+          >
+            <div
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+            >
+              <h2
+                class="tw-text-base tw-text-white tw-font-semibold tw-capitalize"
+              >
+                {{ currentSale.name }}
+              </h2>
+              <div
+                class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-1.5"
+                v-if="currentSale.id !== 'public-sale'"
+              >
+                <div
+                  class="tw-uppercase tw-text-dark-2 tw-text-xs tw-tracking-[3%] tw-font-semibold"
+                >
+                  Ends In
+                </div>
+                <count-down
+                  :small="true"
+                  :startTime="nextSale.mint_time"
+                  @countdownComplete="setEndedPhases"
+                />
+              </div>
+            </div>
+            <div class="tw-flex tw-justify-between tw-w-[100%]">
+                <div>
+                  <div class="tw-text-dark-2">Mint Date</div>
+                  <div>Jun 30, 04:45 AM</div>
+                  <!-- <span class="block">Mint Date</span>
+                  <span class="block">Jun 30, 04:45 AM</span> -->
+                </div>
+                <div>
+                  <div class="tw-text-dark-2 tw-text-right">Price</div>
+                  <div>1.30APT</div>
+                  <!-- <span class="block">Price</span>
+                  <span class="block">1.30APT</span> -->
+                </div>
             </div>
           </div>
+
         </div>
-        <div
+        <!-- <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-relative tw-rounded-lg"
           v-if="phaseCounter !== phases.length"
         >
@@ -475,7 +527,7 @@
               :publicSaleMintLimit="Number(publicSaleMintLimit)"
             />
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <v-dialog

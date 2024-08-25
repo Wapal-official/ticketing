@@ -1,13 +1,14 @@
 <template>
   <default-layout>
-    <nft-detail :collection="collection" v-if="!loading" />
-    <loading-collection v-else-if="loading" />
+    <!-- <nft-detail :collection="collection" v-if="!loading" /> -->
+    <!-- <loading-collection v-else-if="loading" /> -->
+    <landing-section-heading heading="Explore Events" class=" tw-text-center tw-mt-10" />
     <div
       class="tw-container tw-mx-auto tw-px-8 tw-pb-24 lg:tw-px-[3.75em]"
       ref="tab"
       :class="{ 'tw-pt-8': !loading }"
     >
-      <Tab :tab="tab" :tabs="tabs" @tabChanged="tabChanged" class="tw-mb-10" />
+      <Tab :tab="tab" :tabs="tabs" :textCenter="true" @tabChanged="tabChanged" class="tw-mb-10" />
       <NuxtChild />
     </div>
   </default-layout>
@@ -24,7 +25,7 @@ export default {
       collection: null,
       loading: true,
       tab: 0,
-      tabs: ["Live Events", "Upcoming Events" ,"Ended Events"],
+      tabs: ["Live", "Upcoming"],
     };
   },
   async asyncData({ from }: { from: any }) {
@@ -44,7 +45,7 @@ export default {
     this.collection = res[0];
     if (this.$route.path === "/live-editions") {
       this.tab = 0;
-    } else if (this.$route.path === "/upcoming-editions") {
+    } else if (this.$route.path === "/live-editions") {
       this.tab = 1;
     }
     else if (this.$route.path === "/paused-editions") {
@@ -62,7 +63,7 @@ export default {
           this.$router.push("/live-editions");
           break;
         case 1:
-          this.$router.push("/upcoming-editions");
+          this.$router.push("/live-editions");
           break;
         case 2:
         this.$router.push("/paused-editions");
@@ -93,7 +94,7 @@ export default {
       setTimeout(() => {
         if (this.$route.path === "/live-editions") {
           this.tab = 0;
-        } else if (this.$route.path === "/upcoming-editions") {
+        } else if (this.$route.path === "/live-editions") {
           this.tab = 1;
         }  else if (this.$route.path === "/paused-editions") {
           this.tab = 2;
