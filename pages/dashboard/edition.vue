@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       launchpadTab: 0,
-      tabs: ["Open Event"],
+      tabs: ["Live"],
     };
   },
   methods: {

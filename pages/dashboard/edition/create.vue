@@ -27,6 +27,7 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
+          // Hello world
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
@@ -41,6 +42,80 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
+        <div class="tw-flex  tw-gap-4">
+          <ValidationProvider
+              
+              rules=""
+              name="traitType"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+               ref="autocompleteInput"
+                label="Location"
+                placeholder="Enter Location"
+                v-model="collection.location"
+                :required="false"
+                :autocomplete="true"
+                @placeChanged="updateLocationPin"
+              >
+              <template #prepend-icon>
+                  <i class="bx bx-map tw-text-white tw-text-lg"></i> 
+                </template>
+            </input-text-field>
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              rules=""
+              name="traitType"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+               ref="autocompleteInput"
+                label="Venue"
+                placeholder="Enter Venue"
+                v-model="collection.venue"
+                :required="false"
+                :autocomplete="true"
+                @placeChanged="updateVenuePin"
+              >
+                <template #prepend-icon>
+                  <i class="bx bx-map tw-text-white tw-text-lg"></i> 
+                </template>
+            </input-text-field>
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
+          <GmapMap
+                v-bind:center="mapCenter"
+                :zoom="14"
+                map-type-id="terrain"
+                style="width: 500px; height: 300px; border-radius: 3px;"
+              >
+                <GmapMarker
+                  v-bind:key="index"
+                  v-for="(m, index) in markers"
+                  v-bind:position="m.position"
+                  v-bind:clickable="true"
+                  :draggable="true"
+                  @click="center=m.position"
+                />
+          </GmapMap>
+            <ValidationProvider
+              rules="email"
+              name="email"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                label="E-mail"
+                placeholder="E-mail"
+                v-model="collection.email"
+                
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="twitter"
@@ -98,7 +173,7 @@
               {{ socialErrorMessage }}
             </div>
           </ValidationProvider>
-          <ValidationProvider
+          <!-- <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="tweetLength"
             rules="tweetLength"
@@ -110,12 +185,23 @@
               placeholder="Craft your tweetable moment! It's shareable on Twitter after minting your NFT."
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-          </ValidationProvider>
+          </ValidationProvider> -->
+          <div class="tw-flex tw-gap-5 tw-justify-end">
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+            class="tw-w-auto"
+          >
+            <button-primary
+             title="Draft"
+             @click="validateFormForNextStep"
+             :bordered="true" 
+             class="tw-border-white"/>
+          </div>
+          <div
+            class="tw-w-auto"
           >
             <button-primary title="Next" @click="validateFormForNextStep" />
           </div>
+        </div>
         </ValidationObserver>
       </v-stepper-content>
       <v-stepper-content step="2">
@@ -134,9 +220,9 @@
           >
             <input-text-field
               :required="true"
-              label="Token Name"
+              label="Ticket Name"
               v-model="collection.tokenName"
-              placeholder="Token Name"
+              placeholder="Ticket Name"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
@@ -148,16 +234,16 @@
           >
             <input-text-area
               :required="true"
-              label="Token Description"
+              label="Ticket Description"
               v-model="collection.tokenDesc"
-              placeholder="Token Description"
+              placeholder="Ticket Description"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
           >
-            <ValidationProvider
+            <!-- <ValidationProvider
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
               name="type"
               rules="required"
@@ -173,8 +259,8 @@
                 itemValue="id"
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-            </ValidationProvider>
-            <ValidationProvider
+            </ValidationProvider> -->
+            <!-- <ValidationProvider
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
               name="royalty_percentage"
               rules="required|percentage"
@@ -188,7 +274,7 @@
                 :showPercentage="true"
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-            </ValidationProvider>
+            </ValidationProvider> -->
           </div>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
@@ -202,9 +288,9 @@
             >
               <input-date-picker
                 :required="true"
-                label="Mint Date"
+                label="Event Live In"
                 v-model="collection.public_sale_time"
-                placeholder="Select Mint Time"
+                placeholder="Date"
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
@@ -216,7 +302,7 @@
             >
               <input-text-field
                 :required="true"
-                label="Mint Price"
+                label="Ticket Price"
                 v-model="collection.public_sale_price"
                 placeholder="Eg. 1"
               >
@@ -232,11 +318,72 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
+              <div
+                v-for="(attribute, index) in collection.attributes"
+                :key="index"
+                class="tw-w-full"
+              >
+                <div
+                  class="tw-flex tw-flex-col tw-gap-6 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
+                >
+                  <!-- <ValidationProvider
+                    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
+                    <input-text-field
+                      v-model="attribute.trait_type"
+                      placeholder="Attribute Type"
+                      label="Attribute Type"
+                      :required="true"
+                    />
+                    <div class="tw-text-red-600 tw-text-sm">
+                      {{ errors[0] }}
+                    </div>
+                  </ValidationProvider> -->
+                  <ValidationProvider
+                    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
+                    <input-text-field
+                      v-model="attribute.value"
+                      placeholder="Vip Ticket"
+                      label="Ticket Type"
+                      :required="true"
+                    />
+
+                    <div class="tw-text-red-600 tw-text-sm">
+                      {{ errors[0] }}
+                    </div>
+                  </ValidationProvider>
+
+                  <button
+                    v-if="index !== 0" 
+                    @click="removeAttribute(index)" class="tw-mt-10">
+                    <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
+                  </button>
+                </div>
+              </div>
+              <div
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
+            >
+              <button-primary
+                title="Add Type"
+                :bordered="true"
+                @click="addAttribute"
+                 class="tw-inline-flex tw-items-center tw-px-3 tw-py-2 tw-gap-2 tw-border-t tw-border-gray-300 tw-rounded-tl-lg tw-w-auto"
+              >
+                <template #prepend-icon>
+                  <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
+                </template>
+              </button-primary>
+            </div>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
             v-if="collection.type !== '1-1'"
           >
-            <ValidationProvider
+            <!-- <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
               rules="required"
               v-slot="{ errors }"
@@ -248,7 +395,7 @@
                 placeholder="Eg. 10"
               />
               <div class="tw-text-red-600">{{ errors[0] }}</div>
-            </ValidationProvider>
+            </ValidationProvider> -->
             <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
               rules="required"
@@ -264,7 +411,7 @@
               <div class="tw-text-red-600">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-          <ValidationProvider
+          <!-- <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
             rules="required"
             v-slot="{ errors }"
@@ -279,7 +426,7 @@
               itemValue="id"
             />
             <div class="tw-text-red-600">{{ errors[0] }}</div>
-          </ValidationProvider>
+          </ValidationProvider> -->
           <div class="select-type tw-mb-3">
             <div class="tw-mb-3">Select your file type:</div>
             <div class="select-type-radio tw-flex tw-justify-between">
@@ -290,7 +437,7 @@
                   name="fileType"
                   value="Image"
                   v-model="selectedFileType"
-                  class="radio-input"
+                  class="radio-input tw-gap-8"
                 />
                 <label for="image">Image</label>
               </div>
@@ -305,7 +452,7 @@
                 />
                 <label for="video">Video</label>
               </div>
-              <div>
+              <!-- <div>
                 <input
                   type="radio"
                   id="audio"
@@ -315,16 +462,15 @@
                   class="radio-input"
                 />
                 <label for="audio">Audio</label>
-              </div>
+              </div> -->
             </div>
           </div>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
             <input-image-drag-and-drop
-              :label="'Featured' + ' ' + selectedFileType"
+              :label="'Featured ' + value + selectedFileType"
               :required="true"
-              label="Image/Video"
               :file="collection.image"
               :selectedType="selectedFileType"
               @cancel="clearFile"
@@ -337,46 +483,60 @@
               {{ imageErrorMessage }}
             </div>
           </ValidationProvider>
+          <div class="tw-flex tw-gap-5 tw-justify-end">
           <div
-            class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+            class="tw-w-auto"
           >
-            <button-primary title="Next" @click="validateFormForNextStep" />
+            <button-primary
+             title="Draft"
+             @click="validateFormForNextStep"
+             :bordered="true" 
+             class="tw-border-white"/>
+          </div>
+          <div
+            class="tw-w-auto"
+          >
+            <button-primary 
+            title="Next" 
+            @click="submit" />
+          </div>
           </div>
         </ValidationObserver>
       </v-stepper-content>
-      <v-stepper-content step="3">
+      <v-stepper-content step="3" class="tw-d-none">
         <ValidationObserver
           ref="attributeForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full"
         >
-          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+          <!-- <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Attributes
-          </h2>
+          </h2> -->
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-8 tw-pb-14 md:tw-items-start md:tw-justify-start lg:tw-flex-row lg:tw-justify-start"
             style="position: relative"
           >
             <div
               id="image-preview"
-              class="tw-h-[300px] tw-w-[300px]"
+              class="tw-h-[300px] tw-w-[300px] tw-d-none"
               style="background-color: #000"
+              
             ></div>
-            <div
+            <!-- <div
               v-if="audioCheck"
               id="thumbnail-preview"
               class="audio-bg tw-h-[300px] tw-w-[300px]"
               style="background-color: #000; opacity: 0.7 !important"
-            ></div>
-            <audio-player
+            ></div> -->
+            <!-- <audio-player
               v-if="audioCheck"
               class="audio-position audio-max-width"
               :audioSrc="this.audioUrl"
               style="top: 230px !important"
-            ></audio-player>
-            <div
+            ></audio-player> -->
+            <!-- <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
-            >
-              <div
+            > -->
+              <!-- <div
                 v-for="(attribute, index) in collection.attributes"
                 :key="index"
                 class="tw-w-full"
@@ -439,11 +599,11 @@
               >
                 <button-primary title="Next" @click="validateFormForNextStep" />
               </div>
-            </div>
+            </div> -->
           </div>
         </ValidationObserver>
       </v-stepper-content>
-      <v-stepper-content step="4">
+      <v-stepper-content step="4" class="tw-d-none">
         <div
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full"
         >
@@ -597,6 +757,14 @@ extend("link", {
   message: "Please enter a valid link",
 });
 
+extend("email", {
+  validate(value) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value);
+  },   
+  message: "Please enter a valid email",
+});
+
 extend("tweetLength", {
   validate(value) {
     if (value.length > 256) {
@@ -609,12 +777,22 @@ extend("tweetLength", {
 
 export default {
   layout: "dashboard",
-  components: { ValidationObserver, ValidationProvider },
+  components: { 
+    ValidationObserver, 
+    ValidationProvider,
+  },
   data() {
     return {
+      mapCenter: { lat: 27.7172, lng: 85.3240 }, // Default center (Kathmandu)
+      markers: [
+        { position: { lat: 27.7172, lng: 85.3240 } }, // Example marker
+      ],
       selectedFileType: "Image",
       step: 1,
       collection: {
+        location:"",
+        venue:"",
+        email:"",
         name: "",
         description: "",
         image: "",
@@ -622,7 +800,7 @@ export default {
         baseURL: "",
         royalty_payee_address:
           this.$store.state.walletStore.wallet.walletAddress,
-        royalty_percentage: "",
+        royalty_percentage: "0", //changed
         whitelist_sale_time: null,
         public_sale_time: null,
         public_sale_price: "",
@@ -638,13 +816,13 @@ export default {
         candy_id: process.env.CANDY_MACHINE_V2,
         tokenName: "",
         tokenDesc: "",
-        attributes: [{ trait_type: "", value: "" }],
+        attributes: [{ trait_type: "ticket type", value: "" }],
         twitter: "",
         instagram: "",
         discord: "",
         website: "",
-        type: "",
-        public_mint_limit: "",
+        type: "Open Event", //changed
+        public_mint_limit: "0",//changed
         seedz: false,
         coinType: "APT",
         tweet: "",
@@ -688,7 +866,8 @@ export default {
       coinType: "APT",
       socialError: false,
       socialErrorMessage: "",
-      formSteps: ["Details", "Token", "Attributes", "Review"],
+      // formSteps: ["Details", "Token", "Attributes", "Review"],  copy 
+      formSteps: ["Details", "Token"],
       formStepNumber: 1,
       checkVideo: false,
       audioUrl: "",
@@ -755,6 +934,21 @@ export default {
   },
   async mounted() {},
   methods: {
+
+      updateLocationPin(place) {
+      const location = place.geometry.location;
+      this.mapCenter = { lat: location.lat(), lng: location.lng() },
+      this.zoomLevel = 15,
+      this.markers = [
+    { position: { lat: location.lat(), lng: location.lng() } }
+  ];
+    },
+    updateVenuePin(place) {
+      const location = place.geometry.location;
+      this.mapCenter = { lat: location.lat(), lng: location.lng() };
+      this.zoomLevel = 15;
+    },
+
     saveStart(date) {
       this.$refs.startmenu.save(date);
     },
@@ -1113,7 +1307,7 @@ export default {
         case "1-1":
           await this.createOneOnOneCollection();
           break;
-        case "open-edition":
+        case "Open Event":
           await this.createOpenEdition();
           break;
         case "limited-edition":
@@ -1591,4 +1785,15 @@ export default {
   position: absolute;
   bottom: 30px;
 }
+
+.add-type-button {
+    width: 122px;
+    height: 44px;
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: 4px 0 0 0;
+    border-width: 1px 0 0 0;
+    opacity: 0; /* This will make the button invisible */
+}
+
 </style>

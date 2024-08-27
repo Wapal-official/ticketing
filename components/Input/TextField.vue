@@ -21,6 +21,7 @@
       </div>
       <v-text-field
         v-model="internalValue"
+        ref="autocompleteInput"
         :readonly="readOnly"
         outlined
         single-line
@@ -93,6 +94,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    autocomplete: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     internalValue: {
@@ -109,7 +114,28 @@ export default {
       defaultTheme,
     };
   },
-  mounted() {},
+  mounted() {
+    if (this.autocomplete) {
+      this.initializeAutocomplete();
+    }
+  },
+  methods: {
+    initializeAutocomplete() {
+      const options = {
+        types: ['geocode'], // Customize the types as needed
+      };
+      const autocomplete = new google.maps.places.Autocomplete(
+        this.$refs.autocompleteInput.$el.querySelector('input'),
+        options
+      );
+
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        this.$emit('input', place.formatted_address);
+        this.$emit('placeChanged', place);
+      });
+    },
+  },
 };
 </script>
 <style scoped></style>
