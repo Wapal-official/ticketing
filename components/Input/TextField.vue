@@ -114,25 +114,41 @@ export default {
       defaultTheme,
     };
   },
-  mounted() {
+  async mounted() {
     if (this.autocomplete) {
-      this.initializeAutocomplete();
+      this.waitForGoogleMaps().then(() => {
+        this.initializeAutocomplete();
+      });
     }
   },
   methods: {
-    initializeAutocomplete() {
+    waitForGoogleMaps() {
+      return new Promise((resolve) => {
+        const checkInterval = setInterval(() => {
+          if (
+            typeof google !== "undefined" &&
+            google.maps &&
+            google.maps.places
+          ) {
+            clearInterval(checkInterval);
+            resolve();
+          }
+        }, 100); // Check every 100ms
+      });
+    },
+    async initializeAutocomplete() {
       const options = {
-        types: ['geocode'], // Customize the types as needed
+        types: ["geocode"], // Customize the types as needed
       };
       const autocomplete = new google.maps.places.Autocomplete(
-        this.$refs.autocompleteInput.$el.querySelector('input'),
+        this.$refs.autocompleteInput.$el.querySelector("input"),
         options
       );
 
-      autocomplete.addListener('place_changed', () => {
-        const place = autocomplete.getPlace();
-        this.$emit('input', place.formatted_address);
-        this.$emit('placeChanged', place);
+      autocomplete.addListener("place_changed", async () => {
+        const place = await autocomplete.getPlace();
+        this.$emit("input", place.formatted_address);
+        this.$emit("placeChanged", place);
       });
     },
   },
