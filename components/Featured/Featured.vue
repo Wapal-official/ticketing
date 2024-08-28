@@ -310,7 +310,6 @@
               class="!tw-text-black"
               :title="!collection.status.sold_out ? 'Mint' : 'Get Ticket'"
               :fullWidth="true"
-              :disabled="minting || collection.status.sold_out"
               @click="mintCollection"
               v-else
             />

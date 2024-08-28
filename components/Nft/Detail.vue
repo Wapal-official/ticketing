@@ -1,6 +1,7 @@
 <template>
+  <div v-if="!loading">
   <div
-    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-w-[90%] lg:tw-pt-[5.5em] lg:tw-pb-[7.5em] 1xl:tw-w-[4/5] 1xl:!tw-max-w-[1100px]"
+    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-w-[90%] lg:tw-pt-[5.5em] lg:tw-pb-[7.5em] 1xl:tw-w-[4/5] 1xl:!tw-max-w-[1100px] tw-flex"
     v-if="!loading"
   >
     <div
@@ -31,7 +32,44 @@
           class="audio-bg"
           :audioSrc="collection.media2"
         ></audio-player>
+        <div>
+          <!-- Hosted by  -->
+          <div class="tw-my-6 tw-py-2 tw-border-b-2 tw-border-dark-6 tw-w-full">
+            <h2 class="tw-text-white tw-font-semibold ">
+              Hosted By
+            </h2>
+          </div>
+          <div>
+            <div class="tw-flex tw-items-center">
+              <img src="~/assets/img/logo/logo-vertical.png"
+               alt="Wapal logo"
+               width="32px"
+               height="32px"
+               />
+               <span class="w-text-sm tw-items-center tw-ml-2">Wapal</span>
+            </div>
+            <div id="email" class="tw-flex tw-items-center tw-mt-4 tw-text-white/70" @click="showPopup = true">
+              <a href="#" class="!tw-text-white/70">
+                <i class='bx bx-envelope tw-h-[20px] tw-w-[24px]'></i>
+                <span class="tw-items-center tw-ml-3">Contact the host</span>
+              </a>
+            </div>
+            <div>
+              <div class="tw-my-4 tw-py-2 tw-border-b-2 tw-border-dark-6 tw-w-full">
+                <h2 class="tw-text-white tw-font-semibold ">
+                  Location 
+                </h2>
+              </div>
+              <div class="tw-my-4 tw-text-white/70">
+                <span>Please register to see the exact location of this event.
+                Paris, Île-de-France</span>
+              </div>
+            </div>
+          </div>
+        </div>  
       </div>
+      </div>
+
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
       >
@@ -130,15 +168,106 @@
             </div>
           </div>
         </div>
-        <div 
-          class="tw-pb-2 tw-text-dark-0 description"
-        >
-          {{ collection.description }}
-        </div>
-        <div>
+        <!-- <div>
           <h2 class="tw-text-white tw-text-[1.5rem] tw-font-bold">
             {{ collection.name }}
           </h2>
+        </div> -->
+        <div>
+          <p class="tw-text-dark-0 tw-text-4">
+            {{ collection.description }}
+          </p>
+        </div>
+        <div id="ticket-details">
+            <!-- Calendar  -->
+          <div class="date box">
+            <div class="icon-box calendar">
+              <img
+              src="~/assets/img/Calendar.svg"
+              alt="Calendar Icon"
+              />
+            </div>
+            <div class="texts">
+              <p class="tw-pb-2">14 Sep, 2024</p>
+              <p>Tuesday, 4:00PM - 9:00PM</p>
+            </div>
+          </div>
+
+          <!-- Location/Venue  -->
+          <div class="location box">
+            <div class="icon-box venue">
+              <img
+              src="~/assets/img/Location.svg"
+              alt="Location Icon"
+              />
+            </div>
+            <div class="texts">
+              <p class="tw-pb-2" >Gala Convention Center</p>
+              <p>36 Guild Street London, UK </p>
+            </div>
+          </div>
+        </div>
+        <!-- Ticket owner overlapping photos -->
+        <div class="ticket-owner">
+          <div class="owner-box">
+            <img
+              src="~/assets/img/avatar3.png"
+              alt="Location Icon"
+              />
+          </div>
+          <div class="owner-box">
+            <img
+              src="~/assets/img/avatar2.png"
+              alt="Location Icon"
+              />
+          </div>
+          <div class="owner-box">
+            <img
+              src="~/assets/img/avatar1.png"
+              alt="Location Icon"
+              />
+          </div>
+          <!-- Going ticket Numbers -->
+            <span> +{{ resource.minted }} Going</span>
+        </div>
+
+        <a
+          class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+          :href="collection.mintDetails.link"
+          target="_blank"
+          v-if="collection.mintDetails && collection.mintDetails.link"
+        >
+          {{
+            collection.username === "wapal-santa"
+              ? "Reveal Your Present 🎁"
+              : "Mint"
+          }}
+        </a>
+        <NuxtLink
+          class="tw-w-full tw-mt-4 tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+          :to="`/nft/${collection.username}`"
+          v-else-if="collection.mintDetails"
+        >
+          {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
+        </NuxtLink>
+        <button-primary
+          class="!tw-text-black"
+          :title="!collection.status.sold_out ? 'Mint' : 'Get Ticket'"
+          :fullWidth="true"
+          @click="mintCollection"
+          v-else
+        />
+
+        <div class="tw-mt-10 tw-pb-2 tw-border-b-2 tw-border-dark-6 tw-w-full">
+          <h2 class="tw-text-white tw-font-semibold">
+            About Event
+          </h2>
+        </div>
+
+        <div>
+          <p class="tw-text-dark-0 tw-text-4">
+            {{ collection.description }}
+          </p>
         </div>
         <!-- <div
           v-if="collection.description !== 'looniess'"
@@ -195,7 +324,7 @@
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
           v-if="live"
         >
-          <div
+          <!-- <div
             class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-3 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
           >
             <div
@@ -230,11 +359,9 @@
                 <div>
                   <div class="tw-text-dark-2 tw-text-right">Price</div>
                   <div>1.30APT</div>
-                  <!-- <span class="block">Price</span>
-                  <span class="block">1.30APT</span> -->
                 </div>
             </div>
-            <!-- <div
+            <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-w-full"
             >
               <div
@@ -434,9 +561,9 @@
                   Limit {{ publicSaleMintLimit }} per wallet
                 </div>
               </div>
-            </div> -->
-          </div>
-          <div
+            </div>
+          </div> -->
+          <!-- <div
             class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-3 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
           >
             <div
@@ -467,20 +594,16 @@
                 <div>
                   <div class="tw-text-dark-2">Mint Date</div>
                   <div>Jun 30, 04:45 AM</div>
-                  <!-- <span class="block">Mint Date</span>
-                  <span class="block">Jun 30, 04:45 AM</span> -->
                 </div>
                 <div>
                   <div class="tw-text-dark-2 tw-text-right">Price</div>
                   <div>1.30APT</div>
-                  <!-- <span class="block">Price</span>
-                  <span class="block">1.30APT</span> -->
                 </div>
             </div>
-          </div>
+          </div> -->
 
         </div>
-        <!-- <div
+        <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-relative tw-rounded-lg"
           v-if="phaseCounter !== phases.length"
         >
@@ -527,9 +650,9 @@
               :publicSaleMintLimit="Number(publicSaleMintLimit)"
             />
           </div>
-        </div> -->
+        </div>
       </div>
-    </div>
+  </div>
     <v-dialog
       v-model="showConnectWalletModal"
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
@@ -628,6 +751,11 @@ import {
 } from "@/services/SponsoredTransactionService";
 import { getMintedTokenDataIdsFromTransaction } from "@/services/TokenDetailService";
 export default {
+  // data() {
+  //   return {
+  //     showPopup: false,
+  //   };
+  // },
   props: { collection: { type: Object } },
   data() {
     return {
