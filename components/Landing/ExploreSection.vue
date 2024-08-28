@@ -25,7 +25,7 @@
     getLiveCollections,
   } from "@/services/CollectionService";
   import { getUpcomingAuctions } from "@/services/AuctionService";
-  import { getAllEditions } from "@/services/EditionService";
+  import { getAllEditions, getUpcomingEditions } from "@/services/EditionService";
   export default {
     data() {
       return {
@@ -58,7 +58,7 @@
             await this.getEditions();
             break;
           case 2:
-            await this.getAuctions();
+            await this.getUpcomingEditions();
             break;
           default:
             await this.getFeaturedCollections();
@@ -129,15 +129,15 @@
         this.collections.push(...res);
         this.end = true;
       },
-      async getAuctions() {
+      async getUpcomingEditions() {
         this.page++;
         if (this.page === 1) {
           this.collections = [];
         }
         this.type = "auction";
-        const res = await getUpcomingAuctions({
-          perPage: this.limit,
+        const res = await getUpcomingEditions({
           page: this.page,
+          limit: this.limit,
         });
         this.collections.push(...res);
         if (res.length === 0) {
@@ -188,7 +188,7 @@
               await this.getEditions();
               break;
             case 2:
-              await this.getAuctions();
+              await this.getUpcomingEditions();
               break;
             default:
               await this.getFeaturedCollections();
@@ -200,5 +200,8 @@
     async mounted() {
       this.tabChanged(0);
     },
+    //   mounted(){
+//   console.log(this.getUpcomingEditions);  
+// }
   };
   </script>

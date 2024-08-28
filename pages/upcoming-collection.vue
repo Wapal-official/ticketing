@@ -1,6 +1,6 @@
 <template>
   <div class="tw-container tw-mx-auto">
-    <landing-section-heading heading="Upcoming Events" class="tw-pb-8" />
+    <!-- <landing-section-heading heading="Upcoming Events" class="tw-pb-8" /> -->
     <div
       v-if="!loading && collections.length === 0"
       class="tw-w-full tw-text-center tw-text-xl tw-text-primary-1"
@@ -36,9 +36,8 @@
 </template>
 <script lang="ts">
 import {
-  getApprovedDrafts,
-  getUpcomingCollections,
-} from "@/services/CollectionService";
+  getUpcomingEditions,
+} from "@/services/EditionService";
 import { getCachedUrlOfImage } from "@/utils/imageCache";
 export default {
   layout: "all-collection",
@@ -59,7 +58,7 @@ export default {
       this.page++;
       this.loading = true;
 
-      const collections = await getUpcomingCollections(this.page, 10);
+      const collections = await getUpcomingEditions({page:this.page,limit:this.limit});
 
       const cachedCollections = collections.map((collection: any) => ({
         ...collection,
@@ -74,46 +73,6 @@ export default {
       ) {
         this.collectionEnd = true;
         this.page = 1;
-      }
-
-      if (this.collectionEnd) {
-        const draftRes = await getApprovedDrafts(this.page, 10);
-        const drafts: any[] = [];
-
-        draftRes.map((draft: any) => {
-          drafts.push({
-            baseURL: draft.data.baseURL,
-            candy_id: draft.data.candy_id,
-            description: draft.data.description,
-            discord: draft.data.discord,
-            image: getCachedUrlOfImage(draft.data.image),
-            instagram: draft.data.instagram,
-            isApproved: draft.data.isApproved,
-            name: draft.data.name,
-            phases: draft.data.phases,
-            public_sale_price: draft.data.public_sale_price,
-            public_sale_time: draft.data.public_sale_time,
-            royalty_payee_address: draft.data.royalty_payee_address,
-            royalty_percentage: draft.data.royalty_percentage,
-            supply: draft.data.supply,
-            twitter: draft.data.twitter,
-            website: draft.data.website,
-            whitelist_price: draft.data.whitelist_price,
-            redirectTo: "landingDraft",
-            _id: draft._id,
-          });
-        });
-
-        const cachedDrafts = drafts.map((draft: any) => ({
-          ...draft,
-          image: getCachedUrlOfImage(draft.image),
-        }));
-
-        this.collections.push(...cachedDrafts);
-
-        if (drafts.length === 0) {
-          this.end = true;
-        }
       }
       this.loading = false;
     },

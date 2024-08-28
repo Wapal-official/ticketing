@@ -34,25 +34,11 @@
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
       >
-        <div>
-          <a
-            :href="MARKETPLACE_URL"
-            class="!tw-text-primary-2 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium"
-            target="_blank"
-            v-if="
-              !showLiveInTimer &&
-              resource.minted > 0 &&
-              collection.username !== 'loonies-whitelist-ticket'
-            "
-          >
-            <span>List on Secondary</span>
-            <i class="bx bx-link-external"></i>
-          </a> 
-
+      <div>
           <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
  
-            {{ collection.name }}
-          </h1>
+          {{ collection.name }}
+          </h1> 
         </div>
         <div
           v-if="collection.description !== 'Loonies'"
@@ -128,6 +114,19 @@
               </button>
             </div>
           </div>
+          <a
+            :href="MARKETPLACE_URL"
+            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+            target="_blank"
+            v-if="
+              !showLiveInTimer &&
+              resource.minted > 0 &&
+              collection.username !== 'loonies-whitelist-ticket'
+            "
+          >
+            <!-- <span>List on Secondary</span> -->
+            <i class="bx bx-link-external"></i>
+          </a> 
         </div>
         <div
           v-if="collection.description !== 'Loonies'"
@@ -135,7 +134,59 @@
         >
           {{ collection.description }}
         </div>
-        <div
+        <div id="ticket-details">
+            <!-- Calendar  -->
+          <div class="date box">
+            <div class="icon-box calendar">
+              <img
+              src="~/assets/img/Calendar.svg"
+              alt="Calendar Icon"
+              />
+            </div>
+            <div class="texts">
+              <p>14 Sep, 2024</p>
+              <p>Tuesday, 4:00PM - 9:00PM</p>
+            </div>
+          </div>
+
+          <!-- Location/Venue  -->
+          <div class="location box">
+            <div class="icon-box venue">
+              <img
+              src="~/assets/img/Location.svg"
+              alt="Location Icon"
+              />
+            </div>
+            <div class="texts">
+              <p>Gala Convention Center</p>
+              <p>36 Guild Street London, UK </p>
+            </div>
+          </div>
+        </div>
+        <!-- Ticket owner overlapping photos -->
+        <div class="ticket-owner">
+          <div class="owner-box">
+            <img
+              src="~/assets/img/avatar3.png"
+              alt="Location Icon"
+              />
+          </div>
+          <div class="owner-box">
+            <img
+              src="~/assets/img/avatar2.png"
+              alt="Location Icon"
+              />
+          </div>
+          <div class="owner-box">
+            <img
+              src="~/assets/img/avatar1.png"
+              alt="Location Icon"
+              />
+          </div>
+          <!-- Going ticket Numbers -->
+            <span> +{{ resource.minted }} Going</span>
+        </div>
+        <!-- <div
           v-if="collection._id === '65803e82022bc90954ea3ea4'"
           class="tw-pb-2 tw-text-dark-0"
         >
@@ -152,7 +203,7 @@
             <span class="tw-font-semibold">Ended</span>
           </h2>
           <div class="tw-text-dark-0">Creator has ended the mint.</div>
-        </div>
+        </div> -->
         <div class="tw-w-full">
           <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
@@ -205,7 +256,7 @@
                   </div>
                   <div v-else>Free Mint</div>
                 </div>
-                <div
+                <!-- <div
                   class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
                   v-else
                 >
@@ -223,9 +274,9 @@
                     </div>
                     <div v-else>Free Mint</div>
                   </div>
-                </div>
+                </div> -->
 
-                <div
+                <!-- <div
                   class="tw-w-full tw-relative tw-rounded-full tw-h-2.5 tw-bg-white/10"
                   v-if="collection.edition !== 'open-edition'"
                 >
@@ -233,7 +284,7 @@
                     class="tw-absolute tw-top-0 tw-h-2.5 tw-bg-primary-1 tw-rounded-full"
                     ref="mintProgress"
                   ></div>
-                </div>
+                </div> -->
               </div>
             </div>
             <a
@@ -253,12 +304,12 @@
               :to="`/nft/${collection.username}`"
               v-else-if="collection.mintDetails"
             >
-              {{ collection.status.sold_out ? "Soldout" : "Mint" }}
+              {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
             </NuxtLink>
             <button-primary
-              :title="!collection.status.sold_out ? 'Mint' : 'Soldout'"
+              class="!tw-text-black"
+              :title="!collection.status.sold_out ? 'Mint' : 'Get Ticket'"
               :fullWidth="true"
-              :disabled="minting || collection.status.sold_out"
               @click="mintCollection"
               v-else
             />
