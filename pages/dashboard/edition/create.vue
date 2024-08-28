@@ -27,7 +27,6 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-          // Hello world
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
@@ -192,7 +191,7 @@
           >
             <button-primary
              title="Draft"
-             @click="validateFormForNextStep"
+             @click="saveDraft()"
              :bordered="true" 
              class="tw-border-white"/>
           </div>
@@ -489,7 +488,7 @@
           >
             <button-primary
              title="Draft"
-             @click="validateFormForNextStep"
+             @click="saveDraft()"
              :bordered="true" 
              class="tw-border-white"/>
           </div>
@@ -715,7 +714,7 @@
   </div>
 </template>
 
-<script>
+<script >
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import {
   uploadAndCreateFile,

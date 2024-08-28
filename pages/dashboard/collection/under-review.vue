@@ -10,7 +10,7 @@
       <dashboard-no-collection
         message="You do not have any Collection"
         buttonTitle="Create Collection"
-        @click="$router.push('/dashboard/create-collection')"
+        @click="$router.push('/dashboard/edition/create')"
         v-if="collections.length === 0 && !loading"
       />
     </div>

@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       launchpadTab: 0,
-      tabs: ["Live"],
+      tabs: ["Live", "Under Review", "Draft"],
     };
   },
   methods: {
@@ -57,10 +57,10 @@ export default {
           this.$router.push("/dashboard/edition/open-edition");
           break;
         case 1:
-          this.$router.push("/dashboard/edition/open-edition");
+          this.$router.push("//dashboard/collection/under-review");
           break;
         case 2:
-          this.$router.push("/dashboard/edition/limited-edition");
+          this.$router.push("/dashboard/collection/draft");
           break;
         default:
           break;

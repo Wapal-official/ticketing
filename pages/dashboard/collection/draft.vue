@@ -10,7 +10,7 @@
       <dashboard-no-collection
         message="You do not have any Drafts"
         buttonTitle="Create Draft"
-        @click="$router.push('/dashboard/create-collection')"
+        @click="$router.push('/dashboard/edition/create')"
         v-if="drafts.length === 0 && !loading"
       />
     </div>
