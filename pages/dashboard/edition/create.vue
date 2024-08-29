@@ -819,7 +819,7 @@ export default {
         instagram: "",
         discord: "",
         website: "",
-        type: "Open Event", //changed
+        type: "open-edition", //changed
         public_mint_limit: "0", //changed
         seedz: false,
         coinType: "APT",
@@ -859,7 +859,7 @@ export default {
       nftType: [
         //{ name: "One on One", id: "1-1" },
         // { name: "Limited Edition", id: "limited-edition" },
-        { name: "Open Event", id: "open-edition" },
+        { name: "open-edition", id: "open-edition" },
       ],
       coinTypes: getAvailableCoinTypes(),
       coinType: "APT",
@@ -1305,7 +1305,7 @@ export default {
         case "1-1":
           await this.createOneOnOneCollection();
           break;
-        case "Open Event":
+        case "open-edition":
           await this.createOpenEdition();
           break;
         case "limited-edition":
