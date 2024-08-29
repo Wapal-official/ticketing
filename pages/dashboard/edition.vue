@@ -57,7 +57,7 @@ export default {
           this.$router.push("/dashboard/edition/open-edition");
           break;
         case 1:
-          this.$router.push("//dashboard/edition/under-review");
+          this.$router.push("/dashboard/edition/under-review");
           break;
         case 2:
           this.$router.push("/dashboard/edition/draft");
@@ -74,7 +74,8 @@ export default {
     ) {
       this.$router.push("/dashboard/edition/open-edition"); //changed
       this.launchpadTab = 0;
-    } else if (this.$route.path === "/dashboard/edition/open-edition") { //changed
+    } else if (this.$route.path === "/dashboard/edition/open-edition") {
+      //changed
       this.launchpadTab = 0;
     } else if (this.$route.path === "/dashboard/edition/open-edition") {
       this.launchpadTab = 1;
@@ -95,7 +96,8 @@ export default {
       ) {
         this.$router.push("/dashboard/edition/open-edition"); //changed
         this.launchpadTab = 0;
-      } else if (this.path === "/dashboard/edition/open-edition") { //changed
+      } else if (this.path === "/dashboard/edition/open-edition") {
+        //changed
         this.launchpadTab = 0;
       } else if (this.path === "/dashboard/edition/open-edition") {
         this.launchpadTab = 1;

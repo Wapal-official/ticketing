@@ -90,7 +90,7 @@ export default {
         page: this.page,
         limit: this.limit,
       });
-
+      console.log("es", res);
       const editionRes = await Promise.all(
         res.map(async (edition: any) => {
           const resource = await getCollectionDetails({

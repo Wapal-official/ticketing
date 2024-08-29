@@ -41,16 +41,15 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-        <div class="tw-flex  tw-gap-4">
-          <ValidationProvider
-              
+          <div class="tw-flex tw-gap-4">
+            <ValidationProvider
               rules=""
               name="traitType"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               v-slot="{ errors }"
             >
               <input-text-field
-               ref="autocompleteInput"
+                ref="autocompleteInput"
                 label="Location"
                 placeholder="Enter Location"
                 v-model="collection.location"
@@ -58,10 +57,10 @@
                 :autocomplete="true"
                 @placeChanged="updateLocationPin"
               >
-              <template #prepend-icon>
-                  <i class="bx bx-map tw-text-white tw-text-lg"></i> 
+                <template #prepend-icon>
+                  <i class="bx bx-map tw-text-white tw-text-lg"></i>
                 </template>
-            </input-text-field>
+              </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
             <ValidationProvider
@@ -71,7 +70,7 @@
               v-slot="{ errors }"
             >
               <input-text-field
-               ref="autocompleteInput"
+                ref="autocompleteInput"
                 label="Venue"
                 placeholder="Enter Venue"
                 v-model="collection.venue"
@@ -80,41 +79,40 @@
                 @placeChanged="updateVenuePin"
               >
                 <template #prepend-icon>
-                  <i class="bx bx-map tw-text-white tw-text-lg"></i> 
+                  <i class="bx bx-map tw-text-white tw-text-lg"></i>
                 </template>
-            </input-text-field>
+              </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
           <GmapMap
-                v-bind:center="mapCenter"
-                :zoom="14"
-                map-type-id="terrain"
-                style="width: 500px; height: 300px; border-radius: 3px;"
-              >
-                <GmapMarker
-                  v-bind:key="index"
-                  v-for="(m, index) in markers"
-                  v-bind:position="m.position"
-                  v-bind:clickable="true"
-                  :draggable="true"
-                  @click="center=m.position"
-                />
+            v-bind:center="mapCenter"
+            :zoom="14"
+            map-type-id="terrain"
+            style="width: 500px; height: 300px; border-radius: 3px"
+          >
+            <GmapMarker
+              v-bind:key="index"
+              v-for="(m, index) in markers"
+              v-bind:position="m.position"
+              v-bind:clickable="true"
+              :draggable="true"
+              @click="center = m.position"
+            />
           </GmapMap>
-            <ValidationProvider
-              rules="email"
-              name="email"
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-              v-slot="{ errors }"
-            >
-              <input-text-field
-                label="E-mail"
-                placeholder="E-mail"
-                v-model="collection.email"
-                
-              />
-              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-            </ValidationProvider>
+          <ValidationProvider
+            rules="email"
+            name="email"
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="E-mail"
+              placeholder="E-mail"
+              v-model="collection.email"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="twitter"
@@ -186,21 +184,18 @@
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider> -->
           <div class="tw-flex tw-gap-5 tw-justify-end">
-          <div
-            class="tw-w-auto"
-          >
-            <button-primary
-             title="Draft"
-             @click="saveDraft()"
-             :bordered="true" 
-             class="tw-border-white"/>
+            <div class="tw-w-auto">
+              <button-primary
+                title="Draft"
+                @click="saveDraft()"
+                :bordered="true"
+                class="tw-border-white"
+              />
+            </div>
+            <div class="tw-w-auto">
+              <button-primary title="Next" @click="validateFormForNextStep" />
+            </div>
           </div>
-          <div
-            class="tw-w-auto"
-          >
-            <button-primary title="Next" @click="validateFormForNextStep" />
-          </div>
-        </div>
         </ValidationObserver>
       </v-stepper-content>
       <v-stepper-content step="2">
@@ -317,15 +312,15 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-              <div
-                v-for="(attribute, index) in collection.attributes"
-                :key="index"
-                class="tw-w-full"
-              >
-                <div
-                  class="tw-flex tw-flex-col tw-gap-6 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
-                >
-                  <!-- <ValidationProvider
+          <div
+            v-for="(attribute, index) in collection.attributes"
+            :key="index"
+            class="tw-w-full"
+          >
+            <div
+              class="tw-flex tw-flex-col tw-gap-6 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
+            >
+              <!-- <ValidationProvider
                     class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
                     rules="required"
                     v-slot="{ errors }"
@@ -340,44 +335,46 @@
                       {{ errors[0] }}
                     </div>
                   </ValidationProvider> -->
-                  <ValidationProvider
-                    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-                    rules="required"
-                    v-slot="{ errors }"
-                  >
-                    <input-text-field
-                      v-model="attribute.value"
-                      placeholder="Vip Ticket"
-                      label="Ticket Type"
-                      :required="true"
-                    />
-
-                    <div class="tw-text-red-600 tw-text-sm">
-                      {{ errors[0] }}
-                    </div>
-                  </ValidationProvider>
-
-                  <button
-                    v-if="index !== 0" 
-                    @click="removeAttribute(index)" class="tw-mt-10">
-                    <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
-                  </button>
-                </div>
-              </div>
-              <div
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
-            >
-              <button-primary
-                title="Add Type"
-                :bordered="true"
-                @click="addAttribute"
-                 class="tw-inline-flex tw-items-center tw-px-3 tw-py-2 tw-gap-2 tw-border-t tw-border-gray-300 tw-rounded-tl-lg tw-w-auto"
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
               >
-                <template #prepend-icon>
-                  <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
-                </template>
-              </button-primary>
+                <input-text-field
+                  v-model="attribute.value"
+                  placeholder="Vip Ticket"
+                  label="Ticket Type"
+                  :required="true"
+                />
+
+                <div class="tw-text-red-600 tw-text-sm">
+                  {{ errors[0] }}
+                </div>
+              </ValidationProvider>
+
+              <button
+                v-if="index !== 0"
+                @click="removeAttribute(index)"
+                class="tw-mt-10"
+              >
+                <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
+              </button>
             </div>
+          </div>
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
+          >
+            <button-primary
+              title="Add Type"
+              :bordered="true"
+              @click="addAttribute"
+              class="tw-inline-flex tw-items-center tw-px-3 tw-py-2 tw-gap-2 tw-border-t tw-border-gray-300 tw-rounded-tl-lg tw-w-auto"
+            >
+              <template #prepend-icon>
+                <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
+              </template>
+            </button-primary>
+          </div>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
             v-if="collection.type !== '1-1'"
@@ -483,22 +480,17 @@
             </div>
           </ValidationProvider>
           <div class="tw-flex tw-gap-5 tw-justify-end">
-          <div
-            class="tw-w-auto"
-          >
-            <button-primary
-             title="Draft"
-             @click="saveDraft()"
-             :bordered="true" 
-             class="tw-border-white"/>
-          </div>
-          <div
-            class="tw-w-auto"
-          >
-            <button-primary 
-            title="Next" 
-            @click="submit" />
-          </div>
+            <div class="tw-w-auto">
+              <button-primary
+                title="Draft"
+                @click="saveDraft()"
+                :bordered="true"
+                class="tw-border-white"
+              />
+            </div>
+            <div class="tw-w-auto">
+              <button-primary title="Next" @click="submit" />
+            </div>
           </div>
         </ValidationObserver>
       </v-stepper-content>
@@ -518,7 +510,6 @@
               id="image-preview"
               class="tw-h-[300px] tw-w-[300px] tw-d-none"
               style="background-color: #000"
-              
             ></div>
             <!-- <div
               v-if="audioCheck"
@@ -535,7 +526,7 @@
             <!-- <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
             > -->
-              <!-- <div
+            <!-- <div
                 v-for="(attribute, index) in collection.attributes"
                 :key="index"
                 class="tw-w-full"
@@ -714,7 +705,7 @@
   </div>
 </template>
 
-<script >
+<script>
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import {
   uploadAndCreateFile,
@@ -768,7 +759,7 @@ extend("email", {
   validate(value) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(value);
-  },   
+  },
   message: "Please enter a valid email",
 });
 
@@ -784,22 +775,22 @@ extend("tweetLength", {
 
 export default {
   layout: "dashboard",
-  components: { 
-    ValidationObserver, 
+  components: {
+    ValidationObserver,
     ValidationProvider,
   },
   data() {
     return {
-      mapCenter: { lat: 27.7172, lng: 85.3240 }, // Default center (Kathmandu)
+      mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
       markers: [
-        { position: { lat: 27.7172, lng: 85.3240 } }, // Example marker
+        { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
       ],
       selectedFileType: "Image",
       step: 1,
       collection: {
-        location:"",
-        venue:"",
-        email:"",
+        location: "",
+        venue: "",
+        email: "",
         name: "",
         description: "",
         image: "",
@@ -829,7 +820,7 @@ export default {
         discord: "",
         website: "",
         type: "Open Event", //changed
-        public_mint_limit: "0",//changed
+        public_mint_limit: "0", //changed
         seedz: false,
         coinType: "APT",
         tweet: "",
@@ -874,7 +865,7 @@ export default {
       coinType: "APT",
       socialError: false,
       socialErrorMessage: "",
-      // formSteps: ["Details", "Token", "Attributes", "Review"],  copy 
+      // formSteps: ["Details", "Token", "Attributes", "Review"],  copy
       formSteps: ["Details", "Token"],
       formStepNumber: 1,
       checkVideo: false,
@@ -925,7 +916,7 @@ export default {
           selectedType = "1/1";
           break;
         case "open-edition":
-          selectedType = "Open Edition";
+          selectedType = "open-edition";
           break;
         case "limited-edition":
           selectedType = "Limited Edition";
@@ -942,14 +933,13 @@ export default {
   },
   async mounted() {},
   methods: {
-
-      updateLocationPin(place) {
+    updateLocationPin(place) {
       const location = place.geometry.location;
-      this.mapCenter = { lat: location.lat(), lng: location.lng() },
-      this.zoomLevel = 15,
-      this.markers = [
-    { position: { lat: location.lat(), lng: location.lng() } }
-  ];
+      (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
+        (this.zoomLevel = 15),
+        (this.markers = [
+          { position: { lat: location.lat(), lng: location.lng() } },
+        ]);
     },
     updateVenuePin(place) {
       const location = place.geometry.location;
@@ -1594,6 +1584,9 @@ export default {
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify([]));
         formData.append("tweet", tempCollection.tweet);
+        formData.append("location", tempCollection.location);
+        formData.append("venue", tempCollection.venue);
+        formData.append("email", tempCollection.email);
         if (videoUrl) {
           formData.append("image", imageUrl);
           formData.append("media2", videoUrl);
@@ -1742,16 +1735,16 @@ export default {
       formData.append("tweet", tempCollection.tweet);
 
       if (this.image && this.image.name) {
-    const fileType = this.checkFileType(this.image.name);
-    if (fileType === "image") {
-      formData.append("image", this.image);
-    } else {
-      formData.append("media2", this.image);
-      formData.append("image", this.thumbnail);
-    }
-  } else {
-    formData.append("image", tempCollection.image);
-  }
+        const fileType = this.checkFileType(this.image.name);
+        if (fileType === "image") {
+          formData.append("image", this.image);
+        } else {
+          formData.append("media2", this.image);
+          formData.append("image", this.thumbnail);
+        }
+      } else {
+        formData.append("image", tempCollection.image);
+      }
 
       if (!this.publicSaleTBD) {
         formData.append("public_sale_time", tempCollection.public_sale_time);
@@ -1871,7 +1864,7 @@ export default {
         this.$toast.showMessage({ message: "Draft Updated Successfully" });
         this.$router.push("/dashboard/collection/draft");
         setTimeout(() => {
-          this.$store.commit("general/setWhitelistSetup", true)
+          this.$store.commit("general/setWhitelistSetup", true);
         }, 2000);
       } catch (error) {
         console.log(error);
@@ -1967,13 +1960,12 @@ export default {
 }
 
 .add-type-button {
-    width: 122px;
-    height: 44px;
-    padding: 10px 12px;
-    gap: 10px;
-    border-radius: 4px 0 0 0;
-    border-width: 1px 0 0 0;
-    opacity: 0; /* This will make the button invisible */
+  width: 122px;
+  height: 44px;
+  padding: 10px 12px;
+  gap: 10px;
+  border-radius: 4px 0 0 0;
+  border-width: 1px 0 0 0;
+  opacity: 0; /* This will make the button invisible */
 }
-
 </style>
