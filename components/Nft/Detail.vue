@@ -1290,11 +1290,6 @@ export default {
             };
           }
 
-          if (res.total_supply === res.minted) {
-            await setSoldOut(this.collection._id);
-            this.collection.sold_out = true;
-          }
-
           this.numberOfNft = 1;
 
           await this.getOwnedCollectionOfUser();
@@ -2190,14 +2185,6 @@ export default {
       this.resource.mintedPercent = Math.floor(
         (this.resource.minted / this.resource.total_supply) * 100
       );
-
-      if (
-        this.resource.minted == this.resource.total_supply &&
-        !this.collection.status.sold_out
-      ) {
-        this.collection.status.sold_out = true;
-        await setSoldOut(this.collection._id);
-      }
 
       if (this.checkWhitelistSale) {
         const whitelistRes = await getWhitelistEntryById(
