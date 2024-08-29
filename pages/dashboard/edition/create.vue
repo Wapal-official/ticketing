@@ -727,6 +727,14 @@ import {
 import { createCollection } from "@/services/CollectionService";
 
 import axios from "axios";
+import {
+  createDraft,
+  sortPhases,
+  getDraftById,
+  editDraft,
+  editImage,
+  getDraftByIdInCreatorStudio,
+} from "@/services/CollectionService";
 import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
 
 extend("percentage", {
@@ -826,6 +834,7 @@ export default {
         coinType: "APT",
         tweet: "",
       },
+      saveAsDraft: false,
       metadata: null,
       attribute: "",
       value: "",
@@ -1699,6 +1708,178 @@ export default {
       const coinTypeObject = getCoinType(this.collection.coinType);
 
       this.collection.candy_id = coinTypeObject.candy_id;
+    },
+    async sendDataToCreateDraft(tempCollection) {
+      const formData = new FormData();
+
+      formData.append("name", tempCollection.name);
+      formData.append("description", tempCollection.description);
+      formData.append("location", tempCollection.location);
+      formData.append("venue", tempCollection.venue);
+      formData.append("email", tempCollection.email);
+      // formData.append("royalty_percentage", tempCollection.royalty_percentage);
+      formData.append(
+        "royalty_payee_address",
+        tempCollection.royalty_payee_address
+      );
+      formData.append("baseURL", tempCollection.baseURL);
+
+      // formData.append("supply", tempCollection.supply);
+      formData.append("tokenName", tempCollection.tokenName);
+      formData.append("tokenDesc", tempCollection.tokenDesc);
+      // formData.append("value", tempCollection.attribute.value);
+      formData.append("public_sale_price", tempCollection.public_sale_price);
+      formData.append("whitelist_price", tempCollection.whitelist_price);
+      formData.append("twitter", tempCollection.twitter);
+      formData.append("discord", tempCollection.discord);
+      formData.append("website", tempCollection.website);
+      formData.append("instagram", tempCollection.instagram);
+      formData.append("candy_id", tempCollection.candy_id);
+      formData.append("phases", JSON.stringify(tempCollection.phases));
+      formData.append("isApproved", "false");
+      formData.append("isEdition", JSON.stringify(false));
+      formData.append("coin_type", tempCollection.coinType);
+      formData.append("tweet", tempCollection.tweet);
+
+      if (this.image && this.image.name) {
+    const fileType = this.checkFileType(this.image.name);
+    if (fileType === "image") {
+      formData.append("image", this.image);
+    } else {
+      formData.append("media2", this.image);
+      formData.append("image", this.thumbnail);
+    }
+  } else {
+    formData.append("image", tempCollection.image);
+  }
+
+      if (!this.publicSaleTBD) {
+        formData.append("public_sale_time", tempCollection.public_sale_time);
+      }
+
+      if (!this.whitelistTBD) {
+        formData.append(
+          "whitelist_sale_time",
+          tempCollection.whitelist_sale_time
+        );
+      } else {
+        formData.append("whitelistTBD", "true");
+      }
+
+      await createDraft(formData);
+
+      this.submitting = false;
+
+      this.message = "Draft Created Successfully";
+      this.$toast.showMessage({ message: this.message, error: false });
+      this.$router.push("/dashboard/collection/draft");
+    },
+    async setCollectionDataFromDraft() {
+      try {
+        this.whitelistEnabled = true;
+        // this.whitelistEnabled = this.collection.whitelist_sale_time
+        //   ? true
+        //   : false;
+
+        const draftRes = await getDraftByIdInCreatorStudio(
+          this.$route.params.id
+        );
+
+        const draftData = draftRes.data.draft.data;
+
+        draftData.candy_id = this.collection.candy_id;
+
+        try {
+          draftData.phases = JSON.parse(draftData.phases);
+        } catch {
+          draftData.phases = [];
+        }
+
+        this.collection = draftData;
+
+        this.collection.phases.map((phase) => {
+          phase.mint_time = new Date(phase.mint_time);
+        });
+
+        // this.folders.map((folder) => {
+        //   // if (folder.metadata.baseURI === this.collection.baseURL) {
+
+        //   if (folder.metadataBaseURI === this.collection.baseURL) {
+        //     this.baseURL = folder.folder_name;
+        //   }
+        // });
+
+        // this.whitelistTBD = JSON.parse(this.collection.whitelistTBD)
+        //   ? true
+        //   : false;
+        this.whitelistTBD = this.collection.whitelist_sale_time ? false : true;
+        this.publicSaleTBD = this.collection.public_sale_time ? false : true;
+
+        if (this.collection.whitelist_sale_time) {
+          this.collection.whitelist_sale_time = new Date(
+            this.collection.whitelist_sale_time
+          );
+        }
+
+        if (this.collection.public_sale_time) {
+          this.collection.public_sale_time = new Date(
+            this.collection.public_sale_time
+          );
+        }
+      } catch (e) {
+        console.log("error", e);
+      }
+    },
+
+    async saveDraft() {
+      try {
+        const formData = new FormData();
+        // const selectedFolder = this.folders.find(
+        //   (folder: { folder_name: any }) => folder.folder_name === this.baseURL
+        // );
+        // if (selectedFolder) {
+        //   this.collection.baseURL = selectedFolder.metadata.baseURI;
+        // }
+
+        const tempCollection = structuredClone(this.collection);
+
+        for (const key in tempCollection) {
+          formData.append(
+            key,
+            key !== "phases"
+              ? tempCollection[key]
+              : JSON.stringify(tempCollection.phases)
+          );
+        }
+
+        if (this.image && this.image.name) {
+          const fileType = this.checkFileType(this.image.name);
+          if (fileType === "image") {
+            formData.append("image", this.image);
+          } else {
+            formData.append("media2", this.image);
+            formData.append("image", this.thumbnail);
+          }
+        }
+
+        if (this.$route.params.id) {
+          await editDraft(this.$route.params.id, formData);
+        } else {
+          await this.sendDataToCreateDraft(tempCollection);
+        }
+
+        this.$toast.showMessage({ message: "Draft Updated Successfully" });
+        this.$router.push("/dashboard/collection/draft");
+        setTimeout(() => {
+          this.$store.commit("general/setWhitelistSetup", true)
+        }, 2000);
+      } catch (error) {
+        console.log(error);
+        this.$toast.showMessage({
+          message: "Something went wrong. Please try again",
+          error: true,
+        });
+      }
     },
   },
 };

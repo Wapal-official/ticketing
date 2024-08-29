@@ -57,10 +57,10 @@ export default {
           this.$router.push("/dashboard/edition/open-edition");
           break;
         case 1:
-          this.$router.push("//dashboard/collection/under-review");
+          this.$router.push("//dashboard/edition/under-review");
           break;
         case 2:
-          this.$router.push("/dashboard/collection/draft");
+          this.$router.push("/dashboard/edition/draft");
           break;
         default:
           break;
