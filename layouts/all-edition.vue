@@ -16,7 +16,7 @@
 <script lang="ts">
 import { getFeaturedCollection } from "@/services/CollectionService";
 import DefaultLayout from "@/layouts/default.vue";
-import FeaturedAllNft from "@/Featured/FeaturedAllNft.vue";
+import { getUpcomingEditions } from "@/services/EditionService";
 export default {
   layout: "default",
   components: { DefaultLayout },
@@ -45,7 +45,7 @@ export default {
     this.collection = res[0];
     if (this.$route.path === "/live-editions") {
       this.tab = 0;
-    } else if (this.$route.path === "/live-editions") {
+    } else if (this.$route.path === "/upcoming-editions") {
       this.tab = 1;
     }
     else if (this.$route.path === "/paused-editions") {
@@ -63,7 +63,7 @@ export default {
           this.$router.push("/live-editions");
           break;
         case 1:
-          this.$router.push("/live-editions");
+          this.$router.push("/upcoming-editions");
           break;
         case 2:
         this.$router.push("/paused-editions");
@@ -94,7 +94,7 @@ export default {
       setTimeout(() => {
         if (this.$route.path === "/live-editions") {
           this.tab = 0;
-        } else if (this.$route.path === "/live-editions") {
+        } else if (this.$route.path === "/upcoming-editions") {
           this.tab = 1;
         }  else if (this.$route.path === "/paused-editions") {
           this.tab = 2;

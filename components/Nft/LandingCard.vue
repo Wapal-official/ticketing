@@ -339,6 +339,7 @@
         if (this.collection.username === "wapal-santa") {
           this.video = santa;
         }
+        console.log(this.collection,"collection-this")
       } catch (error) {
         this.resource = { paused: false, total_supply: 0, minted: 0 };
       }

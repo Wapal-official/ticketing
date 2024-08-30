@@ -125,7 +125,7 @@ export default {
     const limit = 4 
     const edition = await getUpcomingEditions({page, limit});
     console.log(edition,"upcoming data"); 
-    await this.getCollections();
+    await this.getCollections();  
 
     this.auctions = await getUpcomingAuctions({ page: 1, perPage: 4 });
 
