@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       launchpadTab: 0,
-      tabs: ["Open Event"],
+      tabs: ["Live", "Under Review", "draft"],
     };
   },
   methods: {
@@ -57,10 +57,10 @@ export default {
           this.$router.push("/dashboard/edition/open-edition");
           break;
         case 1:
-          this.$router.push("/dashboard/edition/open-edition");
+          this.$router.push("/dashboard/edition/under-review");
           break;
         case 2:
-          this.$router.push("/dashboard/edition/limited-edition");
+          this.$router.push("/dashboard/edition/draft");
           break;
         default:
           break;
@@ -74,9 +74,10 @@ export default {
     ) {
       this.$router.push("/dashboard/edition/open-edition"); //changed
       this.launchpadTab = 0;
-    } else if (this.$route.path === "/dashboard/edition/open-edition") { //changed
-      this.launchpadTab = 0;
     } else if (this.$route.path === "/dashboard/edition/open-edition") {
+      //changed
+      this.launchpadTab = 0;
+    } else if (this.$route.path === "/dashboard/edition/under-review") {
       this.launchpadTab = 1;
     } else {
       this.launchpadTab = 2;
@@ -95,9 +96,10 @@ export default {
       ) {
         this.$router.push("/dashboard/edition/open-edition"); //changed
         this.launchpadTab = 0;
-      } else if (this.path === "/dashboard/edition/open-edition") { //changed
-        this.launchpadTab = 0;
       } else if (this.path === "/dashboard/edition/open-edition") {
+        //changed
+        this.launchpadTab = 0;
+      } else if (this.path === "/dashboard/edition/under-review") {
         this.launchpadTab = 1;
       } else {
         this.launchpadTab = 2;

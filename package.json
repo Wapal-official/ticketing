@@ -11,6 +11,7 @@
   "dependencies": {
     "@aptos-connect/wallet-adapter-plugin": "^1.0.1",
     "@aptos-labs/wallet-adapter-core": "^4.11.0",
+    "@fawmi/vue-google-maps": "^0.9.79",
     "@kanalabs/paymaster-sdk": "^0.1.0",
     "@martianwallet/aptos-wallet-adapter": "^0.0.5",
     "@msafe/aptos-wallet-adapter": "^1.0.14",
@@ -47,6 +48,7 @@
     "vue-shepherd": "^3.0.0",
     "vue-template-compiler": "^2.7.10",
     "vue2-datepicker": "^3.11.1",
+    "vue2-google-maps": "^0.10.7",
     "vue2-quill-editor": "^2.0.26",
     "vuetify": "^2.6.10",
     "vuex-module-decorators": "^2.0.0",
