@@ -732,3 +732,7 @@ input:disabled {
   margin-left: 100px;
   font-weight:300;
 }
+
+#pop-up-btn{
+  background-color: #8EE3FB ;
+}

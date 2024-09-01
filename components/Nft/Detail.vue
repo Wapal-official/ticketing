@@ -59,23 +59,24 @@
                   <span class="tw-items-center tw-ml-3">Contact the host</span>
                 </a>
               </div>
+              <!-- Popup box -->
               <v-dialog v-model="showPopup" persistent max-width="400px" @click:outside="closePopup">
-                <v-card class="tw-bg-gray-800 tw-p-2 tw-rounded-lg tw-border tw-border-gray-700 tw-w-[400px]">
+                <v-card class="!tw-bg-dark-5 tw-mt-4 !tw-rounded-xl tw-w-[400px]">
                   <v-card-title class="tw-text-white tw-font-bold">Contact the Host</v-card-title>
                   <v-card-text class="tw-flex tw-flex-col">
-                    <p>Have a question about the event? You can send a message to the host.</p>
+                    <p class = "!tw-mb-3">Have a question about the event? You can send a message to the host.</p>
                     <textarea
-                      placeholder="write message"
+                      placeholder="Write Message"
                       class="tw-bg-dark-7 tw-text-white tw-p-3 tw-rounded-md tw-mb-4 tw-h-32"
                     ></textarea>
                   </v-card-text>
                   <v-card-actions>
                     <v-btn
-                      color="primary"
-                      class="tw-bg-dark-7 tw-w-full tw-text-black tw-font-bold"
+                      id="pop-up-btn"
+                      class="tw-w-full !tw-text-black tw-font-bold !tw-mb-6"
                       @click="sendMessage"
                     >
-                      Send Message
+                      Send Message  
                     </v-btn>
                   </v-card-actions>
                 </v-card>
