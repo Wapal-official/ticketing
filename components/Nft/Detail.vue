@@ -59,6 +59,27 @@
                   <span class="tw-items-center tw-ml-3">Contact the host</span>
                 </a>
               </div>
+              <v-dialog v-model="showPopup" persistent max-width="400px" @click:outside="closePopup">
+                <v-card class="tw-bg-gray-800 tw-p-2 tw-rounded-lg tw-border tw-border-gray-700 tw-w-[400px]">
+                  <v-card-title class="tw-text-white tw-font-bold">Contact the Host</v-card-title>
+                  <v-card-text class="tw-flex tw-flex-col">
+                    <p>Have a question about the event? You can send a message to the host.</p>
+                    <textarea
+                      placeholder="write message"
+                      class="tw-bg-dark-7 tw-text-white tw-p-3 tw-rounded-md tw-mb-4 tw-h-32"
+                    ></textarea>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                      color="primary"
+                      class="tw-bg-dark-7 tw-w-full tw-text-black tw-font-bold"
+                      @click="sendMessage"
+                    >
+                      Send Message
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
               <div>
                 <div
                   class="tw-my-4 tw-py-2 tw-border-b-2 tw-border-dark-6 tw-w-full"
@@ -235,8 +256,8 @@
               : "Mint"
           }}
         </a>
-        <NuxtLink
-          class="tw-w-full tw-mt-4 tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+        <!-- <NuxtLink
+          class="tw-w-full tw-mt-4 tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
           :to="`/nft/${collection.username}`"
           v-else-if="collection.mintDetails"
         >
@@ -248,7 +269,7 @@
           :fullWidth="true"
           @click="mintCollection"
           v-else
-        />
+        /> -->
 
         <div class="tw-mt-10 tw-pb-2 tw-border-b-2 tw-border-dark-6 tw-w-full">
           <h2 class="tw-text-white tw-font-semibold">About Event</h2>
@@ -817,6 +838,7 @@ export default {
       collectionUserName: "",
       imageNotFound,
       xLogo,
+      showPopup: false,
     };
   },
   methods: {
@@ -1974,6 +1996,16 @@ export default {
 
         return;
       });
+    },
+    // popup method 
+    togglePopup() {
+      this.showPopup = !this.showPopup;
+    },
+    closePopup() {
+      this.showPopup = false;
+    },
+    sendMessage() {
+      this.showPopup = false;
     },
   },
   computed: {
