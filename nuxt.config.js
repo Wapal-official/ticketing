@@ -12,6 +12,7 @@ let PROOF_API_URL = process.env.PROOF_API_URL;
 let CREATOR_STUDIO_API = process.env.CREATOR_STUDIO_API;
 const KANA_LABS_PROJECT_KEY = process.env.KANA_LABS_PROJECT_KEY;
 const DISCORD_BOT_URL = process.env.DISCORD_BOT_URL;
+const MAP_KEY = process.env.MAP_KEY;
 
 let CANDY_MACHINE_V2 =
   "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac";
@@ -125,6 +126,7 @@ export default {
     { src: "~/plugins/shepherd.js", mode: "client" },
     "~/plugins/toast.ts",
     "~/plugins/directive.client.ts",
+    {src: "~/plugins/map.js"}
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -211,6 +213,7 @@ export default {
         },
       });
     },
+    
     loaders: {
       vue: {
         transformAssetUrls: {
@@ -224,9 +227,11 @@ export default {
         autoprefixer: {},
       },
     },
+    vendor: ["vue2-google-maps"]
   },
   axios: { baseURL: API_URL },
   env: {
+    MAP_KEY: MAP_KEY,
     baseURL: API_URL,
     CANDY_MACHINE_ID: CANDY_MACHINE_ID,
     NETWORK: NETWORK,

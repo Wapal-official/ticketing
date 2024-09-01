@@ -69,13 +69,14 @@ export const createCollection = async (formData: any) => {
   const config = {
     headers: { "content-type": "multipart/form-data" },
   };
+  console.log("res create formData", formData);
 
   const res = await creatorStudioRequest.post(
     `/api/collection/create/`,
     formData,
     config
   );
-
+  console.log("res create collection", res);
   return res;
 };
 

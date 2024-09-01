@@ -1,21 +1,21 @@
 <template>
-  <div  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
->
-  <label
-    v-if="label"
-    class="tw-text-white tw-text-sm tw-font-medium"
-    :class="
-      required
-        ? `after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2`
-        : ''
-    "
-    >{{ label }}</label>
-      <div id="app" class="v-input  wapal-input tw-w-full v-textarea v-textarea--auto-grow v-textarea--no-resize v-input--hide-details theme--dark v-text-field v-text-field--single-line v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
-          <vue-editor v-model="internalValue" :editor-toolbar="customToolbar"></vue-editor>
-      </div>
-  </div>
-</template>
-
+    <div  class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+  >
+    <label
+      v-if="label"
+      class="tw-text-white tw-text-sm tw-font-medium"
+      :class="
+        required
+          ? `after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2`
+          : ''
+      "
+      >{{ label }}</label>
+        <div id="app" class="v-input  wapal-input tw-w-full v-textarea v-textarea--auto-grow v-textarea--no-resize v-input--hide-details theme--dark v-text-field v-text-field--single-line v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+            <vue-editor v-model="internalValue" :editor-toolbar="customToolbar"></vue-editor>
+        </div>
+    </div>
+  </template>
+  
 
 <script>
   import { VueEditor } from 'vue2-quill-editor'
@@ -68,10 +68,10 @@ props: {
       
   internalValue: {
     get() {
-      return this.value;  // Added to ensure binding with v-model
+      return this.value;  
           },
     set(newValue) {
-      this.$emit('input', newValue);  // Emit changes to parent component
+      this.$emit('input', newValue); 
           },
       },
   },
@@ -84,7 +84,6 @@ props: {
         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
         [{ 'script': 'sub' }, { 'script': 'super' }],
         [{ 'indent': '-1' }, { 'indent': '+1' }],
-        [{ 'direction': 'rtl' }],
          [{ 'header': [1, 2, 3, 4, 5, false] }],
         [{ 'color': [] }, { 'background': [] }],
         [{ 'font': [] }],
@@ -126,7 +125,7 @@ props: {
   border-right: none !important;
   border-bottom: 1px solid rgb(56 58 63 / var(--tw-border-opacity));
   }
-.ql-tooltip.ql-editing{
+  .ql-tooltip.ql-editing{
     left: 0px !important;
     /* transform: translateY(10px) translateX(50%); */
   }
@@ -135,12 +134,12 @@ props: {
     font-style: normal;
   }
 
-.ql-editor em {
+  .ql-editor em {
     font-style: italic;
   }
   .ql-editor em u, .ql-editor u em {
     font-style: italic !important;
-    }
+  }
 </style>
 
 

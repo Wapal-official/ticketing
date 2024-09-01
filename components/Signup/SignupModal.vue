@@ -122,7 +122,7 @@ export default {
 
         this.$toast.showMessage({ message: "Logged In Successfully" });
         this.$emit("close");
-        this.$router.push("/dashboard/assets");
+        this.$router.push("/dashboard/edition/open-edition");
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });

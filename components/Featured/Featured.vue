@@ -3,7 +3,7 @@
     class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[7em] lg:tw-pb-0 lg:tw-px-28 1xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px] 2xl:tw-pt-[7.5em]"
   >
     <div
-      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-start xl:tw-gap-[4.5em]"
+      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-start xl:tw-gap-[4.5em] tw-h-auto"
     >
       <div style="position: relative">
         <div
@@ -74,7 +74,7 @@
               class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
-          <a
+          <!-- <a
             :href="collection.website"
             target="_blank"
             v-if="collection.website"
@@ -83,7 +83,7 @@
             <i
               class="bx bx-globe tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
-          </a>
+          </a> -->
           <div class="tw-relative" v-if="collection.name !== 'Loonies'">
             <button
               class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
@@ -130,7 +130,7 @@
         </div>
         <div
           v-if="collection.description !== 'Loonies'"
-          class="tw-text-dark-0 tw-pb-4 description"
+          class="tw-text-dark-0 tw-pb-4 description tw-h-auto"
         >
           {{ collection.description }}
         </div>
@@ -243,7 +243,7 @@
                     collection.edition && collection.edition === 'open-edition'
                   "
                 >
-                  <div class="tw-text-white/70">
+                  <!-- <div class="tw-text-white/70">
                     Total Minted: {{ resource.minted }}
                   </div>
                   <div v-if="getCurrentPrice !== 0">
@@ -253,8 +253,8 @@
                         ? collection.seed.coin_type
                         : "APT"
                     }}
-                  </div>
-                  <div v-else>Free Mint</div>
+                  </div> -->
+                  <!-- <div v-else>Free Mint</div> -->
                 </div>
                 <!-- <div
                   class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
@@ -299,16 +299,17 @@
                   : "Mint"
               }}
             </a>
+            <!-- Its an Aptos Thing -->
             <NuxtLink
-              class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+              class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
               :to="`/nft/${collection.username}`"
               v-else-if="collection.mintDetails"
             >
               {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
             </NuxtLink>
             <button-primary
-              class="!tw-text-black"
-              :title="!collection.status.sold_out ? 'Mint' : 'Get Ticket'"
+              class="!tw-text-black !tw-font-semibold"
+              :title="!collection.status.sold_out ? 'Get Ticket' : 'Get Ticket'"
               :fullWidth="true"
               @click="mintCollection"
               v-else

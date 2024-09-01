@@ -99,7 +99,7 @@ export default {
         }  else if (this.$route.path === "/paused-editions") {
           this.tab = 2;
         }
-
+        
         this.$refs.tab.scrollIntoView({ behavior: "smooth" });
       }, 50);
     },

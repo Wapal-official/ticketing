@@ -521,9 +521,9 @@ input:disabled {
   list-style-type: decimal; /* Numbers */
 }
 
-/* Default styles for unordered lists */
+/* unordered lists  */
 #markup-desc ul {
-  list-style-type: disc; 
+  list-style-type: disc;
 }
 
 
@@ -550,7 +550,7 @@ input:disabled {
   background-color: #23241F;
   font-family: sans-serif;
   border-radius: 4px;
-  padding: 0.7em; 
+  padding: 0.7em;
 }
 
 
@@ -567,36 +567,48 @@ input:disabled {
   text-align: center;
 }
 
+#markup-desc .ql-align-justify{
+  text-align: justify;
+}
+
 #markup-desc .ql-indent-1{
   text-indent: 10%;
+  word-break: normal;
 }
 
 #markup-desc .ql-indent-2{
   text-indent: 20%;
+  word-break: normal;
 }
 
 #markup-desc .ql-indent-3{
   text-indent: 30%;
+  word-break: normal;
 }
 
 #markup-desc .ql-indent-4{
   text-indent: 40%;
+  word-break: normal;
 }
 
 #markup-desc .ql-indent-5{
   text-indent: 50%;
+  word-break: normal;
 }
 
 #markup-desc .ql-indent-6{
   text-indent: 60%;
+  word-break: normal;
 }
 
 #markup-desc .ql-indent-7{
   text-indent: 70%;
+  word-break: normal;
 }
 
 #markup-desc .ql-indent-8{
-  text-indent: 100%;
+  text-indent: 80%;
+  word-break: normal;
 }
 
 /* for italic */
@@ -719,4 +731,8 @@ input:disabled {
   color: #8EE3FB;
   margin-left: 100px;
   font-weight:300;
+}
+
+#pop-up-btn{
+  background-color: #8EE3FB ;
 }

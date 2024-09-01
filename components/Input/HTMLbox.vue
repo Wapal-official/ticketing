@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full">
       <label
         v-if="label"
@@ -175,5 +175,6 @@
     .ql-editor em u, .ql-editor u em {
     font-style: italic !important;
     }
+
   </style>
-  
+   -->
