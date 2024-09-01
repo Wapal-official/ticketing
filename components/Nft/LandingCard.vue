@@ -298,7 +298,6 @@ export default {
 
           return currentPhase.mint_price + this.getCoinType;
         }
-
         const currentPhase = startedPhases[startedPhases.length - 1];
 
         return currentPhase.mint_price + this.getCoinType;
