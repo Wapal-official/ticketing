@@ -43,18 +43,19 @@
           </ValidationProvider>
           <div class="tw-flex tw-gap-4">
             <ValidationProvider
-              rules=""
+              rules="required"
               name="traitType"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               v-slot="{ errors }"
             >
               <input-text-field
-                ref="autocompleteInput"
+                ref="LocationInput"
                 label="Location"
                 placeholder="Enter Location"
                 v-model="collection.location"
-                :required="false"
+                :required="true"
                 :autocomplete="true"
+                :autocompleteType="['locality', 'country', 'administrative_area_level_1','administrative_area_level_2']"
                 @placeChanged="updateLocationPin"
               >
                 <template #prepend-icon>
@@ -64,24 +65,26 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
             <ValidationProvider
-              rules=""
+              rules="required"
               name="traitType"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               v-slot="{ errors }"
             >
-              <input-text-field
-                ref="autocompleteInput"
+              <input-venue-field
+                ref="venueInput"
                 label="Venue"
                 placeholder="Enter Venue"
                 v-model="collection.venue"
-                :required="false"
+                :required="true"
                 :autocomplete="true"
+                autocompleteType="establishment"
+                :locationBias="venueBounds"
                 @placeChanged="updateVenuePin"
               >
                 <template #prepend-icon>
                   <i class="bx bx-map tw-text-white tw-text-lg"></i>
                 </template>
-              </input-text-field>
+              </input-venue-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
@@ -92,12 +95,11 @@
             style="width: 500px; height: 300px; border-radius: 3px"
           >
             <GmapMarker
-              v-bind:key="index"
               v-for="(m, index) in markers"
+              v-bind:key="index"
               v-bind:position="m.position"
               v-bind:clickable="true"
-              :draggable="true"
-              @click="center = m.position"
+              
             />
           </GmapMap>
           <ValidationProvider
@@ -204,7 +206,7 @@
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
         >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
-            Token Details
+            Ticket Details
           </h2>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -234,8 +236,8 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-          <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
+          <!-- <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between" -->
           >
             <!-- <ValidationProvider
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -269,7 +271,7 @@
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider> -->
-          </div>
+          <!-- </div> -->
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
             v-if="collection.type !== '1-1'"
@@ -785,7 +787,15 @@ export default {
       markers: [
         { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
       ],
-      selectedFileType: "Image",
+      venueBounds: {
+      north: 27.788, // These bounds define the Kathmandu area; adjust as needed
+      south: 27.664,
+      east: 85.514,
+      west: 85.254,
+    },
+      selectedLocation: null,
+      venueBounds: null,
+      selectedFileType: "",
       step: 1,
       collection: {
         location: "",
@@ -861,12 +871,14 @@ export default {
         // { name: "Limited Edition", id: "limited-edition" },
         { name: "open-edition", id: "open-edition" },
       ],
+      folderInfo: null,
+      folders: [],
       coinTypes: getAvailableCoinTypes(),
       coinType: "APT",
       socialError: false,
       socialErrorMessage: "",
       // formSteps: ["Details", "Token", "Attributes", "Review"],  copy
-      formSteps: ["Details", "Token"],
+      formSteps: ["Details", "Create Ticket"],
       formStepNumber: 1,
       checkVideo: false,
       audioUrl: "",
@@ -932,20 +944,34 @@ export default {
     },
   },
   async mounted() {},
+  
   methods: {
     updateLocationPin(place) {
       const location = place.geometry.location;
       (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
         (this.zoomLevel = 15),
-        (this.markers = [
-          { position: { lat: location.lat(), lng: location.lng() } },
-        ]);
+        (this.markers = []);
+        
+        const viewport = place.geometry.viewport;
+        if (viewport) {
+          this.venueBounds = {
+            north: viewport.getNorthEast().lat(),
+            south: viewport.getSouthWest().lat(),
+            east: viewport.getNorthEast().lng(),
+            west: viewport.getSouthWest().lng(),
+          };
+    }
     },
+    
     updateVenuePin(place) {
       const location = place.geometry.location;
       this.mapCenter = { lat: location.lat(), lng: location.lng() };
-      this.zoomLevel = 15;
+      this.zoomLevel = 15,
+      (this.markers = [
+          { position: { lat: location.lat(), lng: location.lng() } },
+        ]);
     },
+    
 
     saveStart(date) {
       this.$refs.startmenu.save(date);
@@ -1794,13 +1820,13 @@ export default {
           phase.mint_time = new Date(phase.mint_time);
         });
 
-        // this.folders.map((folder) => {
-        //   // if (folder.metadata.baseURI === this.collection.baseURL) {
+        this.folders.map((folder) => {
+          // if (folder.metadata.baseURI === this.collection.baseURL) {
 
-        //   if (folder.metadataBaseURI === this.collection.baseURL) {
-        //     this.baseURL = folder.folder_name;
-        //   }
-        // });
+          if (folder.metadataBaseURI === this.collection.baseURL) {
+            this.baseURL = folder.folder_name;
+          }
+        });
 
         // this.whitelistTBD = JSON.parse(this.collection.whitelistTBD)
         //   ? true
@@ -1827,12 +1853,12 @@ export default {
     async saveDraft() {
       try {
         const formData = new FormData();
-        // const selectedFolder = this.folders.find(
-        //   (folder: { folder_name: any }) => folder.folder_name === this.baseURL
-        // );
-        // if (selectedFolder) {
-        //   this.collection.baseURL = selectedFolder.metadata.baseURI;
-        // }
+        const selectedFolder = this.folders.find(
+          (folder) => folder.folder_name === this.baseURL
+        );
+        if (selectedFolder) {
+          this.collection.baseURL = selectedFolder.metadata.baseURI;
+        }
 
         const tempCollection = structuredClone(this.collection);
 

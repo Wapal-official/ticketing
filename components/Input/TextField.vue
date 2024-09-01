@@ -1,23 +1,11 @@
 <template>
-  <div
-    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-  >
-    <label
-      v-if="label"
-      class="tw-text-white tw-text-sm tw-font-medium"
-      :class="
-        required
-          ? `after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2`
-          : ''
-      "
-      >{{ label }}</label
-    >
-
+  <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full">
+    <label v-if="label" class="tw-text-white tw-text-sm tw-font-medium" :class="required ? `after:tw-content-['*'] after:tw-text-red-600 after:tw-pl-2` : ''">
+      {{ label }}
+    </label>
     <div class="tw-relative tw-w-full">
-      <div
-        class="tw-absolute tw-top-0 tw-left-[9px] tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-text-dark-2 tw-z-20"
-      >
-        <slot name="prepend-icon"> </slot>
+      <div class="tw-absolute tw-top-0 tw-left-[9px] tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-text-dark-2 tw-z-20">
+        <slot name="prepend-icon"></slot>
       </div>
       <v-text-field
         v-model="internalValue"
@@ -40,10 +28,8 @@
         @keyup.enter="$emit('enterClicked')"
       >
       </v-text-field>
-      <div
-        class="tw-absolute tw-top-0 tw-right-[9px] tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-text-dark-2"
-      >
-        <slot name="append-icon"> </slot>
+      <div class="tw-absolute tw-top-0 tw-right-[9px] tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-text-dark-2">
+        <slot name="append-icon"></slot>
       </div>
     </div>
   </div>
@@ -51,6 +37,7 @@
 
 <script>
 import { defaultTheme } from "@/theme/wapaltheme.ts";
+
 export default {
   props: {
     value: {
@@ -98,6 +85,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    autocompleteType: {
+      type: Array,
+     default: () => ['geocode'],
+    },
+    locationBias: {
+      type: Object,
+      default: null,
+    },
   },
   computed: {
     internalValue: {
@@ -112,7 +107,15 @@ export default {
   data() {
     return {
       defaultTheme,
+      autocompleteInstance: null,
     };
+  },
+  watch: {
+    locationBias(newValue) {
+      if (this.autocompleteInstance) {
+        this.updateAutocompleteOptions(newValue);
+      }
+    },
   },
   async mounted() {
     if (this.autocomplete) {
@@ -125,33 +128,64 @@ export default {
     waitForGoogleMaps() {
       return new Promise((resolve) => {
         const checkInterval = setInterval(() => {
-          if (
-            typeof google !== "undefined" &&
-            google.maps &&
-            google.maps.places
-          ) {
+          if (typeof google !== "undefined" && google.maps && google.maps.places) {
             clearInterval(checkInterval);
             resolve();
           }
-        }, 100); // Check every 100ms
+        }, 100);
       });
     },
     async initializeAutocomplete() {
-      const options = {
-        types: ["geocode"], // Customize the types as needed
-      };
-      const autocomplete = new google.maps.places.Autocomplete(
+      const options = this.getAutocompleteOptions();
+      this.autocompleteInstance = new google.maps.places.Autocomplete(
         this.$refs.autocompleteInput.$el.querySelector("input"),
         options
       );
 
-      autocomplete.addListener("place_changed", async () => {
-        const place = await autocomplete.getPlace();
-        this.$emit("input", place.formatted_address);
+      this.autocompleteInstance.addListener("place_changed", async () => {
+        const place = await this.autocompleteInstance.getPlace();
+        const formattedAddress = this.formatPlaceAddress(place);
+        this.$emit("input", formattedAddress);
         this.$emit("placeChanged", place);
       });
     },
+    getAutocompleteOptions() {
+      const options = {
+        types: this.autocompleteType,
+      };
+
+
+      if (this.locationBias) {
+        options.bounds = new google.maps.LatLngBounds(
+          new google.maps.LatLng(this.locationBias.south, this.locationBias.west),
+          new google.maps.LatLng(this.locationBias.north, this.locationBias.east)
+        );
+      }
+
+      return options;
+    },
+    
+    updateAutocompleteOptions(newLocationBias) {
+      if (this.autocompleteInstance) {
+        const options = this.getAutocompleteOptions();
+        this.autocompleteInstance.setOptions(options);
+      }
+    },
+    formatPlaceAddress(place) {
+  const addressComponents = place.address_components;
+  const cityComponent = addressComponents.find(component => component.types.includes('locality'));
+  const countryComponent = addressComponents.find(component => component.types.includes('country'));
+  
+  let formattedAddress = place.name; // Start with the place name (e.g., "Kathmandu")
+  
+  if (cityComponent && countryComponent && cityComponent.long_name !== countryComponent.long_name) {
+    formattedAddress += ', ' + countryComponent.long_name;
+  }
+  
+  return formattedAddress;
+},
+
+
   },
 };
 </script>
-<style scoped></style>
