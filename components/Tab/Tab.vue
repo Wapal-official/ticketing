@@ -4,12 +4,13 @@
     class="!tw-bg-transparent tw-rounded-lg tw-p-2 md:!tw-w-fit"
     slider-color="transparent"
     background-color="transparent"
+    :class="{ 'tw-mx-auto': textCenter}"
   >
     <v-tab
       v-for="(tab, index) in tabs"
       :key="tab"
       :ripple="false"
-      class="!tw-text-white tw-rounded-full !tw-h-[40px] !tw-max-h-[40px] tw-py-[0.62em] tw-px-6 !tw-capitalize !tw-text-sm !tw-font-medium tw-transition-all tw-duration-200 tw-ease-linear tw-border-solid tw-border tw-border-dark-4 hover:tw-border-white hover:!tw-bg-white hover:!tw-text-dark-9 hover:!tw-font-semibold"
+      class="!tw-text-white tw-rounded-sm !tw-h-[40px] !tw-max-h-[40px] tw-py-[0.62em] tw-px-6 !tw-capitalize !tw-text-sm !tw-font-medium tw-transition-all tw-duration-200 tw-ease-linear tw-border-solid tw-border tw-border-dark-4 hover:tw-border-white hover:!tw-bg-white hover:!tw-text-dark-9 hover:!tw-font-semibold"
       :class="{ 'tw-ml-3': index !== 0 }"
     >
       {{ tab }}
@@ -18,7 +19,7 @@
 </template>
 <script lang="ts">
 export default {
-  props: { tab: { type: Number, default: 0 }, tabs: { type: Array } },
+  props: { tab: { type: Number, default: 0 }, tabs: { type: Array } ,textCenter:{type: Boolean, default: false}},
   data() {
     return {};
   },

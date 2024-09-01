@@ -1,39 +1,105 @@
 <template>
-  <div
-    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-w-[90%] lg:tw-pt-[5.5em] lg:tw-pb-[7.5em] 1xl:tw-w-[4/5] 1xl:!tw-max-w-[1100px]"
-    v-if="!loading"
-  >
+  <div v-if="!loading">
     <div
-      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
+      class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-w-[90%] lg:tw-pt-[5.5em] lg:tw-pb-[7.5em] 1xl:tw-w-[4/5] 1xl:!tw-max-w-[1100px] tw-flex"
+      v-if="!loading"
     >
-      <div class="card-min-width" style="position: relative">
-        <div
-          class="tw-w-full tw-max-h-[338px] md:tw-w-[440px] md:tw-h-[440px] md:tw-max-h-[440px] lg:tw-w-[440px] lg:tw-min-w-[440px] lg:tw-h-[440px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
-          v-if="collection.video"
-        >
-          <video-player-featured :source="collection.video" />
-        </div>
-        <video-player-detailed
-          class="video-detailed"
-          v-else-if="isVideo(collection.media2)"
-          :source="collection.media2"
-        />
-
-        <utility-image
-          v-else
-          :source="collection.image"
-          :onerror="imageNotFound()"
-          :alt="collection.name"
-          class="tw-w-full tw-max-h-[338px] md:tw-w-[440px] md:tw-h-[440px] md:tw-max-h-[440px] lg:tw-w-[440px] lg:tw-min-w-[440px] lg:tw-h-[440px] tw-object-cover tw-rounded-xl"
-        />
-        <audio-player
-          v-if="isAudio(collection.media2)"
-          class="audio-bg"
-          :audioSrc="collection.media2"
-        ></audio-player>
-      </div>
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 lg:tw-w-[474px]"
+        class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
+      >
+        <div class="card-min-width" style="position: relative">
+          <div
+            class="tw-w-full tw-max-h-[338px] md:tw-w-[440px] md:tw-h-[440px] md:tw-max-h-[440px] lg:tw-w-[440px] lg:tw-min-w-[440px] lg:tw-h-[440px] xl:tw-w-[550px] xl:tw-h-[550px] xl:tw-max-h-[550px] tw-object-cover tw-rounded-xl"
+            v-if="collection.video"
+          >
+            <video-player-featured :source="collection.video" />
+          </div>
+          <video-player-detailed
+            class="video-detailed"
+            v-else-if="isVideo(collection.media2)"
+            :source="collection.media2"
+          />
+
+          <utility-image
+            v-else
+            :source="collection.image"
+            :onerror="imageNotFound()"
+            :alt="collection.name"
+            class="tw-w-full tw-max-h-[338px] md:tw-w-[440px] md:tw-h-[440px] md:tw-max-h-[440px] lg:tw-w-[440px] lg:tw-min-w-[440px] lg:tw-h-[440px] tw-object-cover tw-rounded-xl"
+          />
+          <audio-player
+            v-if="isAudio(collection.media2)"
+            class="audio-bg"
+            :audioSrc="collection.media2"
+          ></audio-player>
+          <div class="tw-w-[100%] tw-max-w-[440px]">
+            <!-- Hosted by  -->
+            <div
+              class="tw-my-6 tw-py-2 tw-border-b-2 tw-border-dark-6 tw-w-full"
+            >
+              <h2 class="tw-text-white tw-font-semibold">Hosted By</h2>
+            </div>
+            <div>
+              <div class="tw-flex tw-items-center">
+                <img
+                  src="~/assets/img/logo/logo-vertical.png"
+                  alt="Wapal logo"
+                  width="32px"
+                  height="32px"
+                />
+                <span class="w-text-sm tw-items-center tw-ml-2">Wapal</span>
+              </div>
+              <div
+                id="email"
+                class="tw-flex tw-items-center tw-mt-4 tw-text-white/70"
+                @click="showPopup = true"
+              >
+                <a href="#" class="!tw-text-white/70">
+                  <i class="bx bx-envelope tw-h-[20px] tw-w-[24px]"></i>
+                  <span class="tw-items-center tw-ml-3">Contact the host</span>
+                </a>
+              </div>
+              <v-dialog v-model="showPopup" persistent max-width="400px" @click:outside="closePopup">
+                <v-card class="tw-bg-gray-800 tw-p-2 tw-rounded-lg tw-border tw-border-gray-700 tw-w-[400px]">
+                  <v-card-title class="tw-text-white tw-font-bold">Contact the Host</v-card-title>
+                  <v-card-text class="tw-flex tw-flex-col">
+                    <p>Have a question about the event? You can send a message to the host.</p>
+                    <textarea
+                      placeholder="write message"
+                      class="tw-bg-dark-7 tw-text-white tw-p-3 tw-rounded-md tw-mb-4 tw-h-32"
+                    ></textarea>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                      color="primary"
+                      class="tw-bg-dark-7 tw-w-full tw-text-black tw-font-bold"
+                      @click="sendMessage"
+                    >
+                      Send Message
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <div>
+                <div
+                  class="tw-my-4 tw-py-2 tw-border-b-2 tw-border-dark-6 tw-w-full"
+                >
+                  <h2 class="tw-text-white tw-font-semibold">Location</h2>
+                </div>
+                <div class="tw-my-4 tw-text-white/70">
+                  <span
+                    >Please register to see the exact location of this event.
+                    Paris, Île-de-France</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
       >
         <div
           class="tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-3"
@@ -52,19 +118,6 @@
           </div>
         </div>
         <div>
-          <a
-            :href="`${MARKETPLACE_URL}/collection/${collection.username}`"
-            class="!tw-text-primary-2 tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1 tw-font-medium"
-            target="_blank"
-            v-if="
-              live &&
-              resource.minted > 0 &&
-              collection.username !== 'loonies-whitelist-ticket'
-            "
-          >
-            <span>List on Secondary</span>
-            <i class="bx bx-link-external"></i>
-          </a>
           <h1 class="tw-text-white tw-text-[2.5rem] tw-font-bold">
             {{ collection.name }}
           </h1>
@@ -143,7 +196,91 @@
             </div>
           </div>
         </div>
-        <div
+        <!-- <div>
+          <h2 class="tw-text-white tw-text-[1.5rem] tw-font-bold">
+            {{ collection.name }}
+          </h2>
+        </div> -->
+        <div>
+          <p class="tw-text-dark-0 tw-text-4">
+            {{ collection.description }}
+          </p>
+        </div>
+        <div id="ticket-details">
+          <!-- Calendar  -->
+          <div class="date box">
+            <div class="icon-box calendar">
+              <img src="~/assets/img/Calendar.svg" alt="Calendar Icon" />
+            </div>
+            <div class="texts">
+              <p class="tw-pb-2">14 Sep, 2024</p>
+              <p>Tuesday, 4:00PM - 9:00PM</p>
+            </div>
+          </div>
+
+          <!-- Location/Venue  -->
+          <div class="location box">
+            <div class="icon-box venue">
+              <img src="~/assets/img/Location.svg" alt="Location Icon" />
+            </div>
+            <div class="texts">
+              <p class="tw-pb-2">Gala Convention Center</p>
+              <p>36 Guild Street London, UK</p>
+            </div>
+          </div>
+        </div>
+        <!-- Ticket owner overlapping photos -->
+        <div class="ticket-owner">
+          <div class="owner-box">
+            <img src="~/assets/img/avatar3.png" alt="Location Icon" />
+          </div>
+          <div class="owner-box">
+            <img src="~/assets/img/avatar2.png" alt="Location Icon" />
+          </div>
+          <div class="owner-box">
+            <img src="~/assets/img/avatar1.png" alt="Location Icon" />
+          </div>
+          <!-- Going ticket Numbers -->
+          <span> +{{ resource.minted }} Going</span>
+        </div>
+
+        <a
+          class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+          :href="collection.mintDetails.link"
+          target="_blank"
+          v-if="collection.mintDetails && collection.mintDetails.link"
+        >
+          {{
+            collection.username === "wapal-santa"
+              ? "Reveal Your Present 🎁"
+              : "Mint"
+          }}
+        </a>
+        <!-- <NuxtLink
+          class="tw-w-full tw-mt-4 tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+          :to="`/nft/${collection.username}`"
+          v-else-if="collection.mintDetails"
+        >
+          {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
+        </NuxtLink>
+        <button-primary
+          class="!tw-text-black"
+          :title="!collection.status.sold_out ? 'Mint' : 'Get Ticket'"
+          :fullWidth="true"
+          @click="mintCollection"
+          v-else
+        /> -->
+
+        <div class="tw-mt-10 tw-pb-2 tw-border-b-2 tw-border-dark-6 tw-w-full">
+          <h2 class="tw-text-white tw-font-semibold">About Event</h2>
+        </div>
+
+        <div>
+          <p class="tw-text-dark-0 tw-text-4">
+            {{ collection.description }}
+          </p>
+        </div>
+        <!-- <div
           v-if="collection.description !== 'looniess'"
           class="tw-pb-2 tw-text-dark-0 description"
 
@@ -157,7 +294,7 @@
           style="opacity: 0; visibility: hidden"
         >
           {{ collection.description }}
-        </div>
+        </div> -->
 
         <div
           v-if="collection._id === '65803e82022bc90954ea3ea4'"
@@ -195,11 +332,11 @@
           />
         </div>
         <div
-          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+          class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
           v-if="live"
         >
-          <div
-            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-5 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
+          <!-- <div
+            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-3 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
           >
             <div
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
@@ -224,6 +361,16 @@
                   @countdownComplete="setEndedPhases"
                 />
               </div>
+            </div>
+            <div class="tw-flex tw-justify-between tw-w-[100%]">
+                <div>
+                  <div class="tw-text-dark-2">Mint Date</div>
+                  <div>Jun 30, 04:45 AM</div>
+                </div>
+                <div>
+                  <div class="tw-text-dark-2 tw-text-right">Price</div>
+                  <div>1.30APT</div>
+                </div>
             </div>
             <div
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 tw-w-full"
@@ -426,7 +573,45 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
+          <!-- <div
+            class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-3 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
+          >
+            <div
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
+            >
+              <h2
+                class="tw-text-base tw-text-white tw-font-semibold tw-capitalize"
+              >
+                {{ currentSale.name }}
+              </h2>
+              <div
+                class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-1.5"
+                v-if="currentSale.id !== 'public-sale'"
+              >
+                <div
+                  class="tw-uppercase tw-text-dark-2 tw-text-xs tw-tracking-[3%] tw-font-semibold"
+                >
+                  Ends In
+                </div>
+                <count-down
+                  :small="true"
+                  :startTime="nextSale.mint_time"
+                  @countdownComplete="setEndedPhases"
+                />
+              </div>
+            </div>
+            <div class="tw-flex tw-justify-between tw-w-[100%]">
+                <div>
+                  <div class="tw-text-dark-2">Mint Date</div>
+                  <div>Jun 30, 04:45 AM</div>
+                </div>
+                <div>
+                  <div class="tw-text-dark-2 tw-text-right">Price</div>
+                  <div>1.30APT</div>
+                </div>
+            </div>
+          </div> -->
         </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-relative tw-rounded-lg"
@@ -576,6 +761,11 @@ import {
 } from "@/services/SponsoredTransactionService";
 import { getMintedTokenDataIdsFromTransaction } from "@/services/TokenDetailService";
 export default {
+  // data() {
+  //   return {
+  //     showPopup: false,
+  //   };
+  // },
   props: { collection: { type: Object } },
   data() {
     return {
@@ -648,6 +838,7 @@ export default {
       collectionUserName: "",
       imageNotFound,
       xLogo,
+      showPopup: false,
     };
   },
   methods: {
@@ -1119,11 +1310,6 @@ export default {
               total_supply: 955,
               paused: this.resource.paused,
             };
-          }
-
-          if (res.total_supply === res.minted) {
-            await setSoldOut(this.collection._id);
-            this.collection.sold_out = true;
           }
 
           this.numberOfNft = 1;
@@ -1811,6 +1997,16 @@ export default {
         return;
       });
     },
+    // popup method 
+    togglePopup() {
+      this.showPopup = !this.showPopup;
+    },
+    closePopup() {
+      this.showPopup = false;
+    },
+    sendMessage() {
+      this.showPopup = false;
+    },
   },
   computed: {
     getCurrentPrice() {
@@ -2022,14 +2218,6 @@ export default {
         (this.resource.minted / this.resource.total_supply) * 100
       );
 
-      if (
-        this.resource.minted == this.resource.total_supply &&
-        !this.collection.status.sold_out
-      ) {
-        this.collection.status.sold_out = true;
-        await setSoldOut(this.collection._id);
-      }
-
       if (this.checkWhitelistSale) {
         const whitelistRes = await getWhitelistEntryById(
           this.collection._id,
@@ -2118,7 +2306,6 @@ export default {
 };
 </script>
 <style lang="css">
-
 .video-detailed {
   max-width: 550px;
   height: 550px;

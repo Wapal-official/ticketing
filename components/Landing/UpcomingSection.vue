@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     goToExplorePage() {
-      this.$router.push("/explore/upcoming");
+      this.$router.push("/explore/live-editions");
     },
   },
 };

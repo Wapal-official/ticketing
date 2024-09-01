@@ -56,6 +56,9 @@ export const getUpcomingEditions = async ({
     `/api/collection/edition/upcoming?page=${page}&limit=${limit}&edition=open-edition&isApproved=true`
   );
   console.log("checkUpcomingEditions",res)
+//   mounted(){
+//   console.log(this.getUpcomingEditions);  
+// }
 
   const editions = res.data.data;
 

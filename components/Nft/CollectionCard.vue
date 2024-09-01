@@ -43,10 +43,16 @@
           class="tw-flex tw-flex-col tw-items-start tw-justify-start"
           v-if="getPrice !== null && getPrice !== undefined && getPrice !== ''"
         >
-          <div class="tw-uppercase tw-text-xs tw-font-semibold tw-text-dark-2">
-            Price
+          <div class="tw-uppercase tw-text-xs tw-font-semibold tw-mb-2 tw-text-dark-2">
+            Thu, 9 Sep • 5:00 PM
           </div>
-          <div
+          <div class="tw-text-xs tw-font-semibold tw-mb-4 tw-text-dark-2">
+            Singapore
+          </div>
+          <div class="tw-mb-4 tw-text-xs tw-font-normal tw-text-white tw-text-opacity-70 text-sm">
+            Price 1.2APT
+          </div>
+          <!-- <div
             class="tw-text-white tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-start tw-gap-1"
             v-if="getPrice !== 0"
           >
@@ -58,11 +64,11 @@
                 width="14px"
                 height="14px"
             /></span>
-          </div>
-          <div class="tw-text-white tw-font-normal" v-else>Free Mint</div>
+          </div> -->
+          <!-- <div class="tw-text-white tw-font-normal" v-else>Free Mint</div> -->
         </div>
         <div v-else></div>
-        <div
+        <!-- <div
           class="tw-flex tw-flex-col tw-items-end tw-justify-end"
           v-if="collection?.isEdition"
         >
@@ -72,7 +78,7 @@
           <div class="tw-text-white tw-font-normal">
             {{ this.resource.paused ? "Ended" : "Live" }}
           </div>
-        </div>
+        </div> -->
         <div class="tw-flex tw-flex-col tw-items-end tw-justify-end" v-else>
           <div class="tw-uppercase tw-text-xs tw-font-semibold tw-text-dark-2">
             Item
@@ -80,7 +86,7 @@
           <div class="tw-text-white tw-font-normal">{{ getSupply }}</div>
         </div>
       </div>
-      <div
+      <!-- <div
         class="tw-border-t tw-border-solid tw-border-t-dark-4 tw-py-4 tw-flex tw-flex-row tw-items-center tw-justify-center tw-w-full tw-px-4"
         v-if="status"
       >
@@ -110,7 +116,7 @@
           </div>
         </div>
         <button-secondary title="View NFT" :small="true" />
-      </div>
+      </div> -->
     </div>
   </NuxtLink>
 </template>

@@ -166,5 +166,9 @@ export default {
       return this.collection;
     },
   },
+  // mounted(){
+  //   console.log(this.getCollection);  
+  // }
+
 };
 </script>

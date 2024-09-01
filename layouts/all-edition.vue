@@ -1,13 +1,14 @@
 <template>
   <default-layout>
-    <nft-detail :collection="collection" v-if="!loading" />
-    <loading-collection v-else-if="loading" />
+    <!-- <nft-detail :collection="collection" v-if="!loading" /> -->
+    <!-- <loading-collection v-else-if="loading" /> -->
+    <landing-section-heading heading="Explore Events" class=" tw-text-center tw-mt-10" />
     <div
       class="tw-container tw-mx-auto tw-px-8 tw-pb-24 lg:tw-px-[3.75em]"
       ref="tab"
       :class="{ 'tw-pt-8': !loading }"
     >
-      <Tab :tab="tab" :tabs="tabs" @tabChanged="tabChanged" class="tw-mb-10" />
+      <Tab :tab="tab" :tabs="tabs" :textCenter="true" @tabChanged="tabChanged" class="tw-mb-10" />
       <NuxtChild />
     </div>
   </default-layout>
@@ -15,7 +16,7 @@
 <script lang="ts">
 import { getFeaturedCollection } from "@/services/CollectionService";
 import DefaultLayout from "@/layouts/default.vue";
-import FeaturedAllNft from "@/Featured/FeaturedAllNft.vue";
+import { getUpcomingEditions } from "@/services/EditionService";
 export default {
   layout: "default",
   components: { DefaultLayout },
@@ -24,7 +25,7 @@ export default {
       collection: null,
       loading: true,
       tab: 0,
-      tabs: ["Live Events", "Upcoming Events" ,"Ended Events"],
+      tabs: ["Live", "Upcoming"],
     };
   },
   async asyncData({ from }: { from: any }) {
@@ -98,7 +99,7 @@ export default {
         }  else if (this.$route.path === "/paused-editions") {
           this.tab = 2;
         }
-
+        
         this.$refs.tab.scrollIntoView({ behavior: "smooth" });
       }, 50);
     },
