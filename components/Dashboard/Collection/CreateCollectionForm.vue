@@ -359,7 +359,7 @@
                       {{ errors[0] }}
                     </div>
                   </ValidationProvider> -->
-              <!-- <ValidationProvider
+              <ValidationProvider
                 class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
                 rules="required"
                 v-slot="{ errors }"
@@ -374,7 +374,7 @@
                 <div class="tw-text-red-600 tw-text-sm">
                   {{ errors[0] }}
                 </div>
-              </ValidationProvider> -->
+              </ValidationProvider>
 
               <button
                 v-if="index !== 0"
@@ -416,7 +416,7 @@
               />
               <div class="tw-text-red-600">{{ errors[0] }}</div>
             </ValidationProvider> -->
-            <ValidationProvider
+            <!-- <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
               rules="required"
               v-slot="{ errors }"
@@ -429,7 +429,7 @@
                 placeholder="Eg. 2"
               />
               <div class="tw-text-red-600">{{ errors[0] }}</div>
-            </ValidationProvider>
+            </ValidationProvider> -->
           </div>
   
           <!-- <ValidationProvider
@@ -492,8 +492,8 @@
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider> -->
 
-          <!-- <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+          <ValidationProvider 
+            class="tw-d-none tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
             name="coinType"
             rules="required"
             v-slot="{ errors }"
@@ -506,7 +506,7 @@
               :required="true"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-          </ValidationProvider> -->
+          </ValidationProvider>
           <div class="select-type tw-mb-3">
             <div class="tw-mb-3">Select your file type:</div>
             <div class="select-type-radio tw-flex tw-justify-between">
@@ -574,11 +574,11 @@
               @click="saveDraft()"
               style="color: #fff !important"
             />
-            <button-primary title="Next" @click="saveDraft()" />
+            <button-primary title="Next" @click="submitCollection" />
           </div>
         </ValidationObserver>
       </v-stepper-content>
-      <!-- <v-stepper-content step="3" class="tw-d-none">
+      <v-stepper-content step="3" class="hide tw-d-none">
         <ValidationObserver
           ref="phaseForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px] tw-d-none "
@@ -917,8 +917,8 @@
             </div>
           </div>
         </ValidationObserver>
-      </v-stepper-content> -->
-      <v-stepper-content step="3" class="tw-d-none">
+      </v-stepper-content>
+      <v-stepper-content step="4" class="tw-d-none">
         <div
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-w-full xl:tw-w-[658px]"
         >
@@ -1032,8 +1032,18 @@
         </div>
       </v-stepper-content>
     </stepper>
+    <reusable-progress-modal
+      :showProgressModal="createEditionModal"
+      :showClose="showCloseModal"
+      :progress="progress"
+      :error="error"
+      
+      :name="getName"
+      
+      @closeProgressModal="createEditionModal = false"
+    />
   </div>
-  <reusable-loading v-else />
+  
 </template>
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
@@ -1051,6 +1061,11 @@ import {
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 import { createCollectionV2 } from "@/services/AptosCollectionService";
 import generateName from "@/utils/generateName";
+import {
+  uploadAndCreateFile,
+  uploadAndCreateVideoFile,
+} from "@/services/AuctionService"; //changed
+import axios from "axios"; //changed
 extend("required", {
   ...required,
   message: "This field is required",
@@ -1098,31 +1113,31 @@ extend("saleTime", {
   message: "Sale time should be greater than current time",
 });
 
-extend("phase_sale_time", {
-  params: ["target"],
-  validate(value, target: any) {
-    if (new Date(value).getTime() >= new Date(target.target).getTime()) {
-      return false;
-    }
-    return true;
-  },
-  message: "Sale time in phase should be less than Public Sale Time",
-});
+// extend("phase_sale_time", {
+//   params: ["target"],
+//   validate(value, target: any) {
+//     if (new Date(value).getTime() >= new Date(target.target).getTime()) {
+//       return false;
+//     }
+//     return true;
+//   },
+//   message: "Sale time in phase should be less than Public Sale Time",
+// });
 
-extend("percentage", {
-  validate(value) {
-    const getDecimalVal = value.toString().indexOf(".");
-    if (getDecimalVal < 1) {
-      return true;
-    }
-    const decimalPart = value.toString().substring(getDecimalVal + 1);
-    if (decimalPart.length > 1) {
-      return false;
-    }
-    return true;
-  },
-  message: "Please enter only one decimal point in percentage",
-});
+// extend("percentage", {
+//   validate(value) {
+//     const getDecimalVal = value.toString().indexOf(".");
+//     if (getDecimalVal < 1) {
+//       return true;
+//     }
+//     const decimalPart = value.toString().substring(getDecimalVal + 1);
+//     if (decimalPart.length > 1) {
+//       return false;
+//     }
+//     return true;
+//   },
+//   message: "Please enter only one decimal point in percentage",
+// });
 
 extend("number", {
   validate(value) {
@@ -1204,12 +1219,12 @@ export default {
         baseURL: "",
         royalty_payee_address:
           this.$store.state.walletStore.wallet.walletAddress,
-        royalty_percentage: "",
+        royalty_percentage: "0",
         whitelist_sale_time: null,
         public_sale_time: null,
         public_sale_price: "",
         whitelist_price: "",
-        supply: "",
+        supply: "2",
         twitter: "",
         media2: "",
         discord: "",
@@ -1218,9 +1233,9 @@ export default {
         resource_account: "",
         txnhash: "",
         un: "",
-        phases: [{ name: "", mint_time: null, mint_price: null }],
+        phases: [{ name: "", mint_time: null, mint_price: "0" }],
         public_mint_limit: "0",
-        coinType: "APT",
+        coinType: "",
         tweet: "",
       },
       message: "",
@@ -1255,6 +1270,11 @@ export default {
       loading: false,
       saveAsDraft: false,
       coinTypes: getAvailableCoinTypes(),
+      coinType: "APT",
+      error: false,
+      createEditionModal: false,
+      progress: 0,
+      showCloseModal: false,
       isNonRandom: false,
       isSoulBound: false,
     };
@@ -1341,6 +1361,7 @@ export default {
           }
 
           this.stepNumber++;
+          console.log("This is case2")
           break;
         case 3:
           const phaseValidated = await this.$refs.phaseForm.validate();
@@ -1367,64 +1388,76 @@ export default {
             return;
           }
           this.stepNumber++;
+          console.log("This is case3")
           break;
         default:
           break;
       }
     },
     async submitCollection() {
-      const phaseValidated = await this.$refs.phaseForm.validate();
+      // const phaseValidated = await this.$refs.phaseForm.validate();
 
-      if (!phaseValidated) {
-        return;
-      }
+      // if (!phaseValidated) {
+      //   return;
+      // }
       try {
-        this.submitting = true;
+        this.error = false; //changed
+        this.loading = true; //changed
+        this.createEditionModal = true; //changed
 
-        const selectedFolder = this.folders.find(
-          (folder: any) => folder.folder_name === this.baseURL
-        );
-        // this.collection.baseURL = selectedFolder.metadata.baseURI;
+        this.progress = 1; //changed
 
-        this.collection.baseURL = selectedFolder.metadataBaseURI;
+        // this.submitting = true; //changed
+        console.log("agadi")
+        await this.createOpenEditionInChain();
+        console.log("pachadi")
+        // const selectedFolder = this.folders.find(
+        //   (folder: any) => folder.folder_name === this.baseURL
+        // );
+        // // this.collection.baseURL = selectedFolder.metadata.baseURI;
 
-        this.checkCoinType();
+        // this.collection.baseURL = selectedFolder.metadataBaseURI;
 
-        const tempCollection = { ...this.collection };
+        // this.checkCoinType();
+        const tempCollection = structuredClone(this.collection); //changed
+        // const tempCollection = { ...this.collection };
+        const metadataRes = await axios.get(this.collection.baseURL);
 
-        tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
-          ? new Date(tempCollection.whitelist_sale_time).toISOString()
-          : "";
+        const metadata = metadataRes.data;
+
+        // tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
+        //   ? new Date(tempCollection.whitelist_sale_time).toISOString()
+        //   : "";
 
         tempCollection.public_sale_time = tempCollection.public_sale_time
           ? new Date(tempCollection.public_sale_time).toISOString()
           : "";
 
-        const phases: any[] = [];
+        // const phases: any[] = [];
 
-        tempCollection.phases.map((phase: any) => {
-          const id = generateName(phase.name);
+        // tempCollection.phases.map((phase: any) => {
+        //   const id = generateName(phase.name);
 
-          phases.push({
-            id: id,
-            name: phase.name,
-            mint_time: phase.mint_time,
-            mint_price: phase.mint_price,
-          });
-        });
+        //   phases.push({
+        //     id: id,
+        //     name: phase.name,
+        //     mint_time: phase.mint_time,
+        //     mint_price: phase.mint_price,
+        //   });
+        // });
 
-        if (this.whitelistEnabled && !this.tbd && !this.saveAsDraft) {
-          phases.push({
-            id: "whitelist",
-            name: "whitelist sale",
-            mint_time: this.collection.whitelist_sale_time,
-            mint_price: this.collection.whitelist_price,
-          });
-        }
+        // if (this.whitelistEnabled && !this.tbd && !this.saveAsDraft) {
+        //   phases.push({
+        //     id: "whitelist",
+        //     name: "whitelist sale",
+        //     mint_time: this.collection.whitelist_sale_time,
+        //     mint_price: this.collection.whitelist_price,
+        //   });
+        // }
 
-        const sortedPhases = sortPhases(phases);
+        // const sortedPhases = sortPhases(phases);
 
-        tempCollection.phases = sortedPhases;
+        // tempCollection.phases = sortedPhases;
 
         if (this.tbd || this.saveAsDraft) {
           if (this.draft) {
@@ -1434,11 +1467,16 @@ export default {
           }
           return;
         }
+        const imageUrl = metadata.image;
+        let videoUrl;
+        if (metadata.properties) {
+          videoUrl = this.metadata.videoUri;
+        }
 
-        await this.sendDataToCandyMachineCreator();
+        // await this.sendDataToCandyMachineCreator();
 
-        tempCollection.txnhash = this.collection.txnhash;
-        tempCollection.resource_account = this.collection.resource_account;
+        // tempCollection.txnhash = this.collection.txnhash;
+        // tempCollection.resource_account = this.collection.resource_account;
 
         const formData = new FormData();
 
@@ -1454,7 +1492,7 @@ export default {
         );
         formData.append(
           "whitelist_sale_time",
-          tempCollection.whitelist_sale_time
+          tempCollection.public_sale_mint_time
         );
         formData.append("public_sale_time", tempCollection.public_sale_time);
         formData.append("public_sale_price", tempCollection.public_sale_price);
@@ -1467,10 +1505,16 @@ export default {
         formData.append("resource_account", tempCollection.resource_account);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
-        formData.append("phases", JSON.stringify(tempCollection.phases));
-        formData.append("isEdition", JSON.stringify(false));
+        formData.append("phases", JSON.stringify([]));
+        formData.append("isEdition", JSON.stringify(true));
+        formData.append("location", tempCollection.location);
+        formData.append("venue", tempCollection.venue);
         formData.append("coin_type", tempCollection.coinType);
         formData.append("tweet", tempCollection.tweet);
+        formData.append("email", tempCollection.email);
+        formData.append("seedz", JSON.stringify(tempCollection.seedz));
+        
+
 
         const draft_id = this.$route.params.id;
 
@@ -1492,12 +1536,12 @@ export default {
 
         await createCollection(formData);
 
-        this.submitting = false;
+        this.submitting = false;  
 
         this.message = "Collection Created Successfully";
         this.$toast.showMessage({ message: this.message, error: false });
 
-        this.$router.push("/dashboard/collection/under-review");
+        this.$router.push("/dashboard/edition/under-review");
         setTimeout(() => {
           this.$store.commit("general/setWhitelistSetup", true)
         }, 2000);
@@ -1506,8 +1550,114 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
 
         this.submitting = false;
+        this.loading = false;
+        this.error = true;
+        this.showCloseModal = true;
       }
     },  
+    async createOpenEditionInChain() {
+      console.log("createOpenEdition")
+      let metadataUri = null;
+      metadataUri = this.metadata = await this.uploadImageAndMetadata();
+
+      this.progress = 2;
+
+      this.collection.baseURL = metadataUri.metaUri
+        ? metadataUri.metaUri
+        : metadataUri;
+
+      const tempCollection = structuredClone(this.collection);
+
+      const mintTime = Math.floor(
+        new Date(tempCollection.public_sale_time).getTime() / 1000
+      );
+
+      const mint_price = parseFloat(
+        (tempCollection.public_sale_price * Math.pow(10, 8)).toFixed(4)
+      );
+
+      console.log("candymachine");
+      console.log(this.collection.name, "name");
+      console.log(this.collection.description, "description");
+      console.log(this.collection.baseURL, "baseuri");
+      console.log(this.collection.royalty_payee_address, "royalty_payee_address");
+      // console.log(royalty_points_denominator, "royalty_points_denominator");
+      console.log(this.collection.royalty_percentage, " royalty_points_numerator");
+      console.log(mintTime, "presale_mint_time");
+      console.log(mintTime + 1, "public_sale_mint_time");
+      console.log(mint_price, "presale_mint_price");
+      console.log(mint_price, "public_sale_mint_price");
+      // console.log(this.collection.name, "total_supply");
+      console.log(this.collection.public_mint_limit, "public_mint_limit");
+      // console.log(this.collection.name, "is_open_edition");
+      console.log(this.collection.coinType, "coinType");
+      // console.log(this.collection.name, "isRandom");
+      
+
+      const candyMachineArguments = {
+        collection_name: this.collection.name,
+        collection_description: this.collection.description,
+        baseuri: this.collection.baseURL,
+        royalty_payee_address: this.collection.royalty_payee_address,
+        royalty_points_denominator: 1000,
+        royalty_points_numerator: this.collection.royalty_percentage * 10,
+        presale_mint_time: mintTime,
+        public_sale_mint_time: mintTime + 1,
+        presale_mint_price: mint_price,
+        public_sale_mint_price: mint_price,
+        total_supply: 1,
+        public_mint_limit: this.collection.public_mint_limit,
+        is_open_edition: true,
+        coinType: this.collection.coinType,
+        isRandom: true,
+        
+      };
+      
+
+      const res = await createCollectionV2(candyMachineArguments);
+
+      this.collection.resource_account = res.resourceAccount;
+      this.collection.txnhash = res.transactionHash;
+    },
+
+    async uploadImageAndMetadata() {
+      const aptRes = await this.$store.dispatch(
+        "walletStore/getAptForFileUpload"
+      );
+
+      const transactionRes = await this.$store.dispatch(
+        "walletStore/signTransactionForFileUpload",
+        aptRes.requiredBalance
+      );
+
+      if (!transactionRes.success && !transactionRes.hash) {
+        throw new Error("Transaction Not Successful Please Try Again");
+      }
+      const fileExtension = this.getFileExtension(this.file.name);
+      let metaUri;
+      if (this.checkVideo === true) {
+        const res = await uploadAndCreateVideoFile(this.file, this.thumbnail, {
+          name: this.collection.tokenName,
+          description: this.collection.tokenDesc,
+          attributes: this.collection.attributes,
+        });
+        metaUri = res.metadata + "/";
+        const videoUri = res.video + "/0." + fileExtension;
+        return {
+          metaUri: metaUri,
+          videoUri: videoUri,
+          imageUri: res.image,
+        };
+      } else {
+        metaUri =
+          (await uploadAndCreateFile(this.file, {
+            name: this.collection.tokenName,
+            description: this.collection.tokenDesc,
+            attributes: this.collection.attributes,
+          })) + "/";
+      }
+      return metaUri;
+    }, //changed
     checkFileType(fileName: any) {
       if (!fileName) {
         return false;
@@ -1816,37 +1966,37 @@ export default {
 
         draftData.candy_id = this.collection.candy_id;
 
-        try {
-          draftData.phases = JSON.parse(draftData.phases);
-        } catch {
-          draftData.phases = [];
-        }
+        // try {
+        //   draftData.phases = JSON.parse(draftData.phases);
+        // } catch {
+        //   draftData.phases = [];
+        // }
 
         this.collection = draftData;
 
-        this.collection.phases.map((phase: any) => {
-          phase.mint_time = new Date(phase.mint_time);
-        });
+        // this.collection.phases.map((phase: any) => {
+        //   phase.mint_time = new Date(phase.mint_time);
+        // });
 
-        this.folders.map((folder: any) => {
-          // if (folder.metadata.baseURI === this.collection.baseURL) {
+        // this.folders.map((folder: any) => {
+        //   // if (folder.metadata.baseURI === this.collection.baseURL) {
 
-          if (folder.metadataBaseURI === this.collection.baseURL) {
-            this.baseURL = folder.folder_name;
-          }
-        });
+        //   if (folder.metadataBaseURI === this.collection.baseURL) {
+        //     this.baseURL = folder.folder_name;
+        //   }
+        // });
 
         // this.whitelistTBD = JSON.parse(this.collection.whitelistTBD)
         //   ? true
         //   : false;
-        this.whitelistTBD = this.collection.whitelist_sale_time ? false : true;
+        // this.whitelistTBD = this.collection.whitelist_sale_time ? false : true;
         this.publicSaleTBD = this.collection.public_sale_time ? false : true;
 
-        if (this.collection.whitelist_sale_time) {
-          this.collection.whitelist_sale_time = new Date(
-            this.collection.whitelist_sale_time
-          );
-        }
+        // if (this.collection.whitelist_sale_time) {
+        //   this.collection.whitelist_sale_time = new Date(
+        //     this.collection.whitelist_sale_time
+        //   );
+        // }
 
         if (this.collection.public_sale_time) {
           this.collection.public_sale_time = new Date(
@@ -1860,12 +2010,12 @@ export default {
     async saveDraft() {
       try {
         const formData = new FormData();
-        const selectedFolder = this.folders.find(
-          (folder: { folder_name: any }) => folder.folder_name === this.baseURL
-        );
-        if (selectedFolder) {
-          this.collection.baseURL = selectedFolder.metadata.baseURI;
-        }
+        // const selectedFolder = this.folders.find(
+        //   (folder: { folder_name: any }) => folder.folder_name === this.baseURL
+        // );
+        // if (selectedFolder) {
+        //   this.collection.baseURL = selectedFolder.metadata.baseURI;
+        // }
 
         const tempCollection = structuredClone(this.collection);
 
@@ -1933,6 +2083,9 @@ export default {
       } catch (e) {
         return getCoinType("APT");
       }
+    },
+    getName() {
+      return "Create events";
     },
   },
   async mounted() {
@@ -2039,5 +2192,9 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.hide {
+  display: none;
 }
 </style>
