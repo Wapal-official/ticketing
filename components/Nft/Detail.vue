@@ -174,16 +174,16 @@
               class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
-          <a
-            :href="collection.website"
-            target="_blank"
-            v-if="collection.website"
-            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
-          >
-            <i
-              class="bx bx-globe tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
-            ></i>
-          </a>
+            <!-- <a
+              :href="collection.website"
+              target="_blank"
+              v-if="collection.website"
+              class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+            >
+              <i
+                class="bx bx-globe tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
+              ></i>
+            </a> -->
           <div class="tw-relative">
             <button
               class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
@@ -225,10 +225,16 @@
             {{ collection.description }}
           </p>
         </div> -->
+        <!-- detail description  -->
         <div 
-          class="tw-text-dark-0 tw-text-4" 
-          v-html="collection.description" 
-          id="markup-desc">
+          class="tw-text-dark-0 tw-pb-4 description" 
+          id="first-markup-desc">
+          <p>This</p>
+          <h1>is</h1>
+          <span>Made</span>
+          <ol>
+            <li>Static Data</li>
+          </ol>
         </div>
 
         <div id="ticket-details">
@@ -255,7 +261,7 @@
           </div>
         </div>
         <!-- Ticket owner overlapping photos -->
-        <div class="ticket-owner">
+        <div class="ticket-owner tw-mb-6">
           <div class="owner-box">
             <img src="~/assets/img/avatar3.png" alt="Location Icon" />
           </div>
@@ -315,7 +321,10 @@
           <h2 class="tw-text-white tw-font-semibold">About Event</h2>
         </div>
 
-        <div class="" v-html="collection.description" id="markup-desc"></div>
+        <div class="" 
+          v-html="collection.description" 
+          id="first-markup-desc">
+        </div>
         <!-- <div
           v-if="collection.description !== 'looniess'"
           class="tw-pb-2 tw-text-dark-0 description"
@@ -902,6 +911,32 @@ export default {
           ].includes(extension)
         : false;
     },
+    updateLocationPin(place) {
+      const location = place.geometry.location;
+      (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
+        (this.zoomLevel = 15),
+        (this.markers = []);
+        
+        const viewport = place.geometry.viewport;
+        if (viewport) {
+          this.venueBounds = {
+            north: viewport.getNorthEast().lat(),
+            south: viewport.getSouthWest().lat(),
+            east: viewport.getNorthEast().lng(),
+            west: viewport.getSouthWest().lng(),
+          };
+    }
+    },
+    
+    updateVenuePin(place) {
+      const location = place.geometry.location;
+      this.mapCenter = { lat: location.lat(), lng: location.lng() };
+      this.zoomLevel = 15,
+      (this.markers = [
+          { position: { lat: location.lat(), lng: location.lng() } },
+        ]);
+    },
+    
     isVideo(source) {
       if (!source) {
         return false;

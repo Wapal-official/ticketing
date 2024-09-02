@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[7em] lg:tw-pb-0 lg:tw-px-28 1xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px] 2xl:tw-pt-[7.5em]"
+    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[7em] lg:tw-pb-8 lg:tw-px-28 1xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px] 2xl:tw-pt-[7.5em]"
   >
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-start xl:tw-gap-[4.5em] tw-h-auto"
@@ -135,8 +135,23 @@
         >
           {{ collection.description }}
         </div> -->
+
         <div class="tw-text-dark-0 tw-pb-4 description" 
-          v-html="collection.description" id="markup-desc"></div>
+          id="markup-desc">
+          <p>This</p>
+          <h2>is</h2>
+          <span>Made</span>
+          <ol>
+            <li>Static Data</li>
+          </ol>
+          <!-- readmore  -->
+        </div>
+        <button class="read-more-btn" @click="redirectCollection">
+          Read More
+        <i class='bx bx-chevron-down'></i>
+        </button>
+        
+        
         <div id="ticket-details">
             <!-- Calendar  -->
           <div class="date box">

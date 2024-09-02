@@ -616,23 +616,39 @@ input:disabled {
   font-style: italic;
 }
 
-/* Scrollable */
-#markup-desc{
+/* Readmore */
+#markup-desc {
   width: 532px;
   max-height: 72px;
-  padding: 14px;
+  padding: 14px 0px 14px 4px;
   overflow-y: hidden;
   resize: none;
-  border: 1px solid #25262B;
-  border-radius: 6px;
-  }
+  position: relative; /* Added to position the button absolutely within this container */
+}
 
-  /* Map */
-  #gmap-box{
-    border-radius: 8px;
-  }
+.read-more-btn {
+  padding-left: 4px;
+  color: #8EE3FB;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
-/* Custom scrollable */
+.read-more-btn i {
+  font-size: 20px; /* Increase icon size */
+}
+
+/* Showing Details   */
+#first-markup-desc{
+  height: auto;
+}
 
 #ticket-details .icon-box{
   background-color:#24272B;
@@ -679,7 +695,6 @@ input:disabled {
   display: flex;
   justify-content: left;
   align-items: center;
-
 }
 
 .owner-box {
