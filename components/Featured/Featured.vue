@@ -147,8 +147,7 @@
           <!-- readmore  -->
         </div>
         <button class="read-more-btn" @click="redirectCollection">
-          Read More
-        <i class='bx bx-chevron-down'></i>
+          Read More...
         </button>
         
         
@@ -162,8 +161,8 @@
               />
             </div>
             <div class="texts">
-              <p>14 Sep, 2024</p>
-              <p>Tuesday, 4:00PM - 9:00PM</p>
+              <p class="tw-pb-2">{{ formattedDate }}</p>
+              <p>{{ formattedTime }}</p>
             </div>
           </div>
 
@@ -176,8 +175,8 @@
               />
             </div>
             <div class="texts">
-              <p>Gala Convention Center</p>
-              <p>36 Guild Street London, UK </p>
+              <p class="tw-pb-2">{{ venue }}</p>
+              <p>{{ location }}</p>
             </div>
           </div>
         </div>
@@ -457,6 +456,11 @@ export default {
       showShareModal: false,
       imageNotFound,
       xLogo,
+      location: '',
+      venue: '',
+      publicSaleTime: '',
+      formattedDate: '',
+      formattedTime: '',
     };
   },
   methods: {
@@ -487,6 +491,31 @@ export default {
             "m2ts",
           ].includes(extension)
         : false;
+    },
+    formatDateTime(dateString: string) {
+      const date = new Date(dateString);
+
+      // Extract components for date
+      const day = date.toLocaleDateString('en-GB', { day: '2-digit' });
+      const month = date.toLocaleDateString('en-GB', { month: 'short' });
+      const year = date.toLocaleDateString('en-GB', { year: 'numeric' });
+      const formattedDate = `${day} ${month} , ${year}`; // Custom format with comma
+
+      // Extract components for time
+      const optionsTime: Intl.DateTimeFormatOptions = { 
+        weekday: 'long', // "long" ensures full weekday name (e.g., "Tuesday")
+        hour: '2-digit', // "2-digit" ensures hours in two digits (e.g., "04")
+        minute: '2-digit', // "2-digit" ensures minutes in two digits (e.g., "00")
+        hour12: true // Ensure 12-hour format with AM/PM
+      };
+      const time = date.toLocaleTimeString('en-GB', optionsTime); // e.g., "4:00 PM"
+      const weekday = date.toLocaleDateString('en-GB', { weekday: 'long' }); // e.g., "Tuesday"
+      const formattedTime = `${weekday}, ${time}`; // Combine weekday and time with a comma
+
+      return {
+        date: formattedDate,
+        time: formattedTime,
+      };
     },
     isAudio(source: string) {
       if (!source) {
@@ -936,6 +965,19 @@ export default {
         delete this.collection["candyMachine"].whitelist_price;
 
         delete this.collection.phases;
+      }
+
+      if (this.collection) {
+        console.log("check clect", this.collection);
+        // location and venue
+        this.location = this.collection.location.location; // "nepal"
+        this.venue = this.collection.location.venue; // "Thamel, Kathmandu 44600, Nepal"   
+        
+        // Assign and format public_sale_time
+        this.publicSaleTime = this.collection.candyMachine.public_sale_time;
+        const { date, time } = this.formatDateTime(this.publicSaleTime);
+        this.formattedDate = date;
+        this.formattedTime = time;
       }
 
       if (this.collection.username === "proudlionsclub") {

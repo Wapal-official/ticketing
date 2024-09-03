@@ -640,11 +640,6 @@ input:disabled {
   align-items: center;
   gap: 4px;
 }
-
-.read-more-btn i {
-  font-size: 20px; /* Increase icon size */
-}
-
 /* Showing Details   */
 #first-markup-desc{
   height: auto;

@@ -96,17 +96,18 @@
                 <!-- gmap  -->
                 <div style="width: 440px; height: 195px; border-radius: 8px; overflow: hidden;">
                   <GmapMap
-                  v-bind:center="mapCenter"
-                  :zoom="14"
-                  map-type-id="terrain"
-                  style="width: 100%; height: 100%;"
+                    v-bind:center="mapCenter"
+                    :zoom="14"
+                    map-type-id="terrain"
+                    style="width: 100%; height: 100%;"
                   >
-                  <GmapMarker
-                    v-for="(m, index) in markers"
+                    <!-- Only one marker should be rendered here -->
+                    <GmapMarker
+                      v-for="(m, index) in markers"
                     v-bind:key="index"
                     v-bind:position="m.position"
                     v-bind:clickable="true"
-                    :draggable="true"
+                      :draggable="true"
                     @click="center = m.position"
                     />
                   </GmapMap>
@@ -244,8 +245,8 @@
               <img src="~/assets/img/Calendar.svg" alt="Calendar Icon" />
             </div>
             <div class="texts">
-              <p class="tw-pb-2">14 Sep, 2024</p>
-              <p>Tuesday, 4:00PM - 9:00PM</p>
+              <p class="tw-pb-2">{{ formattedDate }}</p>
+              <p>{{ formattedTime }}</p>
             </div>
           </div>
 
@@ -255,8 +256,8 @@
               <img src="~/assets/img/Location.svg" alt="Location Icon" />
             </div>
             <div class="texts">
-              <p class="tw-pb-2">Gala Convention Center</p>
-              <p>36 Guild Street London, UK</p>
+              <p class="tw-pb-2">{{ venue }}</p>
+              <p>{{ location }}</p>
             </div>
           </div>
         </div>
@@ -806,18 +807,15 @@ import {
 } from "@/services/SponsoredTransactionService";
 import { getMintedTokenDataIdsFromTransaction } from "@/services/TokenDetailService";
 export default {
-  // data() {
-  //   return {
-  //     showPopup: false,
-  //   };
-  // },
   props: { collection: { type: Object } },
   data() {
     return {
-      mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
-      markers: [
-        { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
-      ],
+        mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
+        markers: [
+          { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
+        ],
+        zoomLevel: 10,
+        venueBounds: null, // Initialize bounds if needed
       loading: true,
       whitelistSaleDate: null,
       publicSaleDate: null,
@@ -868,6 +866,11 @@ export default {
       phaseChangeMessage:
         "If you don't see your WL eligibility, please refresh the page as the server scales",
       showPhaseChangeMessage: false,
+      location: '',
+      venue: '',
+      publicSaleTime: '',
+      formattedDate: '',
+      formattedTime: '',
       // mintedTokens: [
       //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
       //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
@@ -892,6 +895,31 @@ export default {
     };
   },
   methods: {
+    formatDateTime(dateString) {
+      const date = new Date(dateString);
+
+      // Extract components for date
+      const day = date.toLocaleDateString('en-GB', { day: '2-digit' });
+      const month = date.toLocaleDateString('en-GB', { month: 'short' });
+      const year = date.toLocaleDateString('en-GB', { year: 'numeric' });
+      const formattedDate = `${day} ${month} , ${year}`; // Custom format with comma
+
+      // Extract components for time
+      const optionsTime = { 
+        weekday: 'long', 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true // Ensure 12-hour format with AM/PM
+      };
+      const time = date.toLocaleTimeString('en-GB', optionsTime); // e.g., "4:00 PM"
+      const weekday = date.toLocaleDateString('en-GB', { weekday: 'long' }); // e.g., "Tuesday"
+      const formattedTime = `${weekday}, ${time}`; // Combine weekday and time with a comma
+
+      return {
+        date: formattedDate,
+        time: formattedTime,
+      };
+    },
     isImage(source) {
       if (!source) {
         return false;
@@ -911,6 +939,7 @@ export default {
           ].includes(extension)
         : false;
     },
+    
     updateLocationPin(place) {
       const location = place.geometry.location;
       (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
@@ -964,6 +993,7 @@ export default {
           ].includes(extension)
         : false;
     },
+    
     isAudio(source) {
       if (!source) {
         return false;
@@ -2149,7 +2179,16 @@ export default {
     if (this.collection) {
       console.log("check clect", this.collection);
       this.collectionTweet = this.collection.tweet;
-      this.collectionUserName = this.collection.username;
+      this.collectionUserName = this.collection.username; 
+      // location and venue
+      this.location = this.collection.location.location; // "nepal"
+      this.venue = this.collection.location.venue; // "Thamel, Kathmandu 44600, Nepal"   
+      
+      // Assign and format public_sale_time
+      this.publicSaleTime = this.collection.candyMachine.public_sale_time;
+      const { date, time } = this.formatDateTime(this.publicSaleTime);
+      this.formattedDate = date;
+      this.formattedTime = time;
 
       // this.collection.tweet = this.collectionTweet;
       // this.collection.username = this.collectionUserName;
