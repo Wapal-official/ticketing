@@ -902,17 +902,16 @@ export default {
       const day = date.toLocaleDateString('en-GB', { day: '2-digit' });
       const month = date.toLocaleDateString('en-GB', { month: 'short' });
       const year = date.toLocaleDateString('en-GB', { year: 'numeric' });
-      const formattedDate = `${day} ${month} , ${year}`; // Custom format with comma
+      const formattedDate = `${day} ${month} ${year}`; // Custom format without comma
 
       // Extract components for time
       const optionsTime = { 
-        weekday: 'long', 
         hour: '2-digit', 
         minute: '2-digit',
         hour12: true // Ensure 12-hour format with AM/PM
       };
-      const time = date.toLocaleTimeString('en-GB', optionsTime); // e.g., "4:00 PM"
-      const weekday = date.toLocaleDateString('en-GB', { weekday: 'long' }); // e.g., "Tuesday"
+      const time = date.toLocaleTimeString('en-GB', optionsTime); // e.g., "01:30 PM"
+      const weekday = date.toLocaleDateString('en-GB', { weekday: 'long' }); // e.g., "Thursday"
       const formattedTime = `${weekday}, ${time}`; // Combine weekday and time with a comma
 
       return {
