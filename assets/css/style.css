@@ -648,7 +648,7 @@ input:disabled {
 #ticket-details .icon-box{
   background-color:#24272B;
   border-radius: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 #ticket-details .icon-box.calendar{
@@ -679,7 +679,7 @@ input:disabled {
 }
 
 #ticket-details .box .texts p:nth-of-type(2) {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 /* Ticket owner image */

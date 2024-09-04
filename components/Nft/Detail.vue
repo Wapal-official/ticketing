@@ -262,7 +262,7 @@
           </div>
         </div>
         <!-- Ticket owner overlapping photos -->
-        <div class="ticket-owner tw-mb-6">
+        <div class="ticket-owner tw-mb-5">
           <div class="owner-box">
             <img src="~/assets/img/avatar3.png" alt="Location Icon" />
           </div>

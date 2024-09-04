@@ -9,7 +9,7 @@
         <div
           class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
           v-if="collection.video"
-        >
+        > 
           <video-player-featured :source="collection.video" />
         </div>
         <video-player-detailed
@@ -244,7 +244,7 @@
             />
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
             v-else
           >
             <div
