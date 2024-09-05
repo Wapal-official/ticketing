@@ -338,7 +338,7 @@
           </div>
           <div
             v-for="(attribute, index) in collection.attributes"
-            v-bind:key="index"
+            :key="index"
             class="tw-w-full"
           >
             <div
@@ -1591,7 +1591,7 @@ export default {
       console.log(this.collection.public_mint_limit, "public_mint_limit");
       // console.log(this.collection.name, "is_open_edition");
       console.log(this.collection.coinType, "coinType");
-      // console.log(this.collection.name, "isRandom");
+      console.log(this.collection.name, "isRandom");
       
 
       const candyMachineArguments = {
@@ -1908,6 +1908,7 @@ export default {
       formData.append("public_sale_price", tempCollection.public_sale_price);
       formData.append("whitelist_price", tempCollection.whitelist_price);
       formData.append("twitter", tempCollection.twitter);
+      formData.append("value", tempCollection.attributes.value);
       formData.append("discord", tempCollection.discord);
       formData.append("website", tempCollection.website);
       formData.append("instagram", tempCollection.instagram);

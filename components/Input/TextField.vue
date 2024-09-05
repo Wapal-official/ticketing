@@ -176,7 +176,7 @@ export default {
   const cityComponent = addressComponents.find(component => component.types.includes('locality'));
   const countryComponent = addressComponents.find(component => component.types.includes('country'));
   
-  let formattedAddress = place.name; // Start with the place name (e.g., "Kathmandu")
+  let formattedAddress = place.name;
   
   if (cityComponent && countryComponent && cityComponent.long_name !== countryComponent.long_name) {
     formattedAddress += ', ' + countryComponent.long_name;
