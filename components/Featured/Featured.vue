@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[7em] lg:tw-pb-0 lg:tw-px-28 1xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px] 2xl:tw-pt-[7.5em]"
+    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[7em] lg:tw-pb-8 lg:tw-px-28 1xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px] 2xl:tw-pt-[7.5em]"
   >
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-start xl:tw-gap-[4.5em] tw-h-auto"
@@ -9,7 +9,7 @@
         <div
           class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
           v-if="collection.video"
-        >
+        > 
           <video-player-featured :source="collection.video" />
         </div>
         <video-player-detailed
@@ -135,8 +135,22 @@
         >
           {{ collection.description }}
         </div> -->
+
         <div class="tw-text-dark-0 tw-pb-4 description" 
-          v-html="collection.description" id="markup-desc"></div>
+          id="markup-desc">
+          <p>This</p>
+          <h2>is</h2>
+          <span>Made</span>
+          <ol>
+            <li>Static Data</li>
+          </ol>
+          <!-- readmore  -->
+        </div>
+        <button class="read-more-btn" @click="redirectCollection">
+          Read More...
+        </button>
+        
+        
         <div id="ticket-details">
             <!-- Calendar  -->
           <div class="date box">
@@ -147,8 +161,8 @@
               />
             </div>
             <div class="texts">
-              <p>14 Sep, 2024</p>
-              <p>Tuesday, 4:00PM - 9:00PM</p>
+              <p class="tw-pb-2">{{ formattedDate }}</p>
+              <p>{{ formattedTime }}</p>
             </div>
           </div>
 
@@ -161,8 +175,8 @@
               />
             </div>
             <div class="texts">
-              <p>Gala Convention Center</p>
-              <p>36 Guild Street London, UK </p>
+              <p class="tw-pb-2">{{ venue }}</p>
+              <p>{{ location }}</p>
             </div>
           </div>
         </div>
@@ -230,7 +244,7 @@
             />
           </div>
           <div
-            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
             v-else
           >
             <div
@@ -442,6 +456,11 @@ export default {
       showShareModal: false,
       imageNotFound,
       xLogo,
+      location: '',
+      venue: '',
+      publicSaleTime: '',
+      formattedDate: '',
+      formattedTime: '',
     };
   },
   methods: {
@@ -472,6 +491,30 @@ export default {
             "m2ts",
           ].includes(extension)
         : false;
+    },
+    formatDateTime(dateString: string): { date: string; time: string } {
+      const date = new Date(dateString);
+
+      // Extract components for date
+      const day = date.toLocaleDateString('en-GB', { day: '2-digit' });
+      const month = date.toLocaleDateString('en-GB', { month: 'short' });
+      const year = date.toLocaleDateString('en-GB', { year: 'numeric' });
+      const formattedDate = `${day} ${month} ${year}`; // Custom format without comma
+
+      // Extract components for time
+      const optionsTime: Intl.DateTimeFormatOptions = { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true // Ensure 12-hour format with AM/PM
+      };
+      const time = date.toLocaleTimeString('en-GB', optionsTime); // e.g., "01:30 PM"
+      const weekday = date.toLocaleDateString('en-GB', { weekday: 'long' }); // e.g., "Thursday"
+      const formattedTime = `${weekday}, ${time}`; // Combine weekday and time with a comma
+
+      return {
+        date: formattedDate,
+        time: formattedTime,
+      };
     },
     isAudio(source: string) {
       if (!source) {
@@ -921,6 +964,19 @@ export default {
         delete this.collection["candyMachine"].whitelist_price;
 
         delete this.collection.phases;
+      }
+
+      if (this.collection) {
+        console.log("check clect", this.collection);
+        // location and venue
+        this.location = this.collection.location.location; // "nepal"
+        this.venue = this.collection.location.venue; // "Thamel, Kathmandu 44600, Nepal"   
+        
+        // Assign and format public_sale_time
+        this.publicSaleTime = this.collection.candyMachine.public_sale_time;
+        const { date, time } = this.formatDateTime(this.publicSaleTime);
+        this.formattedDate = date;
+        this.formattedTime = time;
       }
 
       if (this.collection.username === "proudlionsclub") {

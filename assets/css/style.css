@@ -616,28 +616,39 @@ input:disabled {
   font-style: italic;
 }
 
-/* Scrollable */
-#markup-desc{
+/* Readmore */
+#markup-desc {
   width: 532px;
   max-height: 72px;
-  padding: 14px;
+  padding: 14px 0px 14px 4px;
   overflow-y: hidden;
   resize: none;
-  border: 1px solid #25262B;
-  border-radius: 6px;
-  }
+  position: relative; /* Added to position the button absolutely within this container */
+}
 
-  /* Map */
-  #gmap-box{
-    border-radius: 8px;
-  }
-
-/* Custom scrollable */
+.read-more-btn {
+  padding-left: 4px;
+  color: #8EE3FB;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+/* Showing Details   */
+#first-markup-desc{
+  height: auto;
+}
 
 #ticket-details .icon-box{
   background-color:#24272B;
   border-radius: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 #ticket-details .icon-box.calendar{
@@ -668,7 +679,7 @@ input:disabled {
 }
 
 #ticket-details .box .texts p:nth-of-type(2) {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 /* Ticket owner image */
@@ -679,7 +690,6 @@ input:disabled {
   display: flex;
   justify-content: left;
   align-items: center;
-
 }
 
 .owner-box {

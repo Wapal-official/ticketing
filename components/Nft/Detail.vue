@@ -96,17 +96,18 @@
                 <!-- gmap  -->
                 <div style="width: 440px; height: 195px; border-radius: 8px; overflow: hidden;">
                   <GmapMap
-                  v-bind:center="mapCenter"
-                  :zoom="14"
-                  map-type-id="terrain"
-                  style="width: 100%; height: 100%;"
+                    v-bind:center="mapCenter"
+                    :zoom="14"
+                    map-type-id="terrain"
+                    style="width: 100%; height: 100%;"
                   >
-                  <GmapMarker
-                    v-for="(m, index) in markers"
+                    <!-- Only one marker should be rendered here -->
+                    <GmapMarker
+                      v-for="(m, index) in markers"
                     v-bind:key="index"
                     v-bind:position="m.position"
                     v-bind:clickable="true"
-                    :draggable="true"
+                      :draggable="true"
                     @click="center = m.position"
                     />
                   </GmapMap>
@@ -174,16 +175,16 @@
               class="bx bxl-instagram tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
             ></i>
           </a>
-          <a
-            :href="collection.website"
-            target="_blank"
-            v-if="collection.website"
-            class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
-          >
-            <i
-              class="bx bx-globe tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
-            ></i>
-          </a>
+            <!-- <a
+              :href="collection.website"
+              target="_blank"
+              v-if="collection.website"
+              class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6 !tw-text-white hover:!tw-text-primary-1"
+            >
+              <i
+                class="bx bx-globe tw-text-lg tw-transition tw-duration-200 tw-ease-linear"
+              ></i>
+            </a> -->
           <div class="tw-relative">
             <button
               class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-dark-6"
@@ -225,10 +226,16 @@
             {{ collection.description }}
           </p>
         </div> -->
+        <!-- detail description  -->
         <div 
-          class="tw-text-dark-0 tw-text-4" 
-          v-html="collection.description" 
-          id="markup-desc">
+          class="tw-text-dark-0 tw-pb-4 description" 
+          id="first-markup-desc">
+          <p>This</p>
+          <h1>is</h1>
+          <span>Made</span>
+          <ol>
+            <li>Static Data</li>
+          </ol>
         </div>
 
         <div id="ticket-details">
@@ -238,8 +245,8 @@
               <img src="~/assets/img/Calendar.svg" alt="Calendar Icon" />
             </div>
             <div class="texts">
-              <p class="tw-pb-2">14 Sep, 2024</p>
-              <p>Tuesday, 4:00PM - 9:00PM</p>
+              <p class="tw-pb-2">{{ formattedDate }}</p>
+              <p>{{ formattedTime }}</p>
             </div>
           </div>
 
@@ -249,13 +256,13 @@
               <img src="~/assets/img/Location.svg" alt="Location Icon" />
             </div>
             <div class="texts">
-              <p class="tw-pb-2">Gala Convention Center</p>
-              <p>36 Guild Street London, UK</p>
+              <p class="tw-pb-2">{{ venue }}</p>
+              <p>{{ location }}</p>
             </div>
           </div>
         </div>
         <!-- Ticket owner overlapping photos -->
-        <div class="ticket-owner">
+        <div class="ticket-owner tw-mb-5">
           <div class="owner-box">
             <img src="~/assets/img/avatar3.png" alt="Location Icon" />
           </div>
@@ -315,7 +322,10 @@
           <h2 class="tw-text-white tw-font-semibold">About Event</h2>
         </div>
 
-        <div class="" v-html="collection.description" id="markup-desc"></div>
+        <div class="" 
+          v-html="collection.description" 
+          id="first-markup-desc">
+        </div>
         <!-- <div
           v-if="collection.description !== 'looniess'"
           class="tw-pb-2 tw-text-dark-0 description"
@@ -797,18 +807,15 @@ import {
 } from "@/services/SponsoredTransactionService";
 import { getMintedTokenDataIdsFromTransaction } from "@/services/TokenDetailService";
 export default {
-  // data() {
-  //   return {
-  //     showPopup: false,
-  //   };
-  // },
   props: { collection: { type: Object } },
   data() {
     return {
-      mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
-      markers: [
-        { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
-      ],
+        mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
+        markers: [
+          { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
+        ],
+        zoomLevel: 10,
+        venueBounds: null, // Initialize bounds if needed
       loading: true,
       whitelistSaleDate: null,
       publicSaleDate: null,
@@ -859,6 +866,11 @@ export default {
       phaseChangeMessage:
         "If you don't see your WL eligibility, please refresh the page as the server scales",
       showPhaseChangeMessage: false,
+      location: '',
+      venue: '',
+      publicSaleTime: '',
+      formattedDate: '',
+      formattedTime: '',
       // mintedTokens: [
       //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
       //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
@@ -883,6 +895,30 @@ export default {
     };
   },
   methods: {
+    formatDateTime(dateString) {
+      const date = new Date(dateString);
+
+      // Extract components for date
+      const day = date.toLocaleDateString('en-GB', { day: '2-digit' });
+      const month = date.toLocaleDateString('en-GB', { month: 'short' });
+      const year = date.toLocaleDateString('en-GB', { year: 'numeric' });
+      const formattedDate = `${day} ${month} ${year}`; // Custom format without comma
+
+      // Extract components for time
+      const optionsTime = { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true // Ensure 12-hour format with AM/PM
+      };
+      const time = date.toLocaleTimeString('en-GB', optionsTime); // e.g., "01:30 PM"
+      const weekday = date.toLocaleDateString('en-GB', { weekday: 'long' }); // e.g., "Thursday"
+      const formattedTime = `${weekday}, ${time}`; // Combine weekday and time with a comma
+
+      return {
+        date: formattedDate,
+        time: formattedTime,
+      };
+    },
     isImage(source) {
       if (!source) {
         return false;
@@ -902,6 +938,33 @@ export default {
           ].includes(extension)
         : false;
     },
+    
+    updateLocationPin(place) {
+      const location = place.geometry.location;
+      (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
+        (this.zoomLevel = 15),
+        (this.markers = []);
+        
+        const viewport = place.geometry.viewport;
+        if (viewport) {
+          this.venueBounds = {
+            north: viewport.getNorthEast().lat(),
+            south: viewport.getSouthWest().lat(),
+            east: viewport.getNorthEast().lng(),
+            west: viewport.getSouthWest().lng(),
+          };
+    }
+    },
+    
+    updateVenuePin(place) {
+      const location = place.geometry.location;
+      this.mapCenter = { lat: location.lat(), lng: location.lng() };
+      this.zoomLevel = 15,
+      (this.markers = [
+          { position: { lat: location.lat(), lng: location.lng() } },
+        ]);
+    },
+    
     isVideo(source) {
       if (!source) {
         return false;
@@ -929,6 +992,7 @@ export default {
           ].includes(extension)
         : false;
     },
+    
     isAudio(source) {
       if (!source) {
         return false;
@@ -2114,7 +2178,16 @@ export default {
     if (this.collection) {
       console.log("check clect", this.collection);
       this.collectionTweet = this.collection.tweet;
-      this.collectionUserName = this.collection.username;
+      this.collectionUserName = this.collection.username; 
+      // location and venue
+      this.location = this.collection.location.location; // "nepal"
+      this.venue = this.collection.location.venue; // "Thamel, Kathmandu 44600, Nepal"   
+      
+      // Assign and format public_sale_time
+      this.publicSaleTime = this.collection.candyMachine.public_sale_time;
+      const { date, time } = this.formatDateTime(this.publicSaleTime);
+      this.formattedDate = date;
+      this.formattedTime = time;
 
       // this.collection.tweet = this.collectionTweet;
       // this.collection.username = this.collectionUserName;
