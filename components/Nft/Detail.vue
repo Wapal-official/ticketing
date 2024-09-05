@@ -93,6 +93,24 @@
                     Paris, Île-de-France</span
                   >
                 </div>
+                <!-- gmap  -->
+                <div style="width: 440px; height: 195px; border-radius: 8px; overflow: hidden;">
+                  <GmapMap
+                  v-bind:center="mapCenter"
+                  :zoom="14"
+                  map-type-id="terrain"
+                  style="width: 100%; height: 100%;"
+                  >
+                  <GmapMarker
+                    v-for="(m, index) in markers"
+                    v-bind:key="index"
+                    v-bind:position="m.position"
+                    v-bind:clickable="true"
+                    :draggable="true"
+                    @click="center = m.position"
+                    />
+                  </GmapMap>
+                </div>
               </div>
             </div>
           </div>
@@ -202,11 +220,17 @@
             {{ collection.name }}
           </h2>
         </div> -->
-        <div>
+        <!-- <div>
           <p class="tw-text-dark-0 tw-text-4">
             {{ collection.description }}
           </p>
+        </div> -->
+        <div 
+          class="tw-text-dark-0 tw-text-4" 
+          v-html="collection.description" 
+          id="markup-desc">
         </div>
+
         <div id="ticket-details">
           <!-- Calendar  -->
           <div class="date box">
@@ -272,15 +296,26 @@
           v-else
         /> -->
 
+        <NuxtLink
+              class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+              :to="`/nft/${collection.username}`"
+              v-else-if="collection.mintDetails"
+            >
+              {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
+        </NuxtLink>
+        <button-primary
+          class="!tw-text-black !tw-font-semibold"
+          :title="!collection.status.sold_out ? 'Get Ticket' : 'Get Ticket'"
+          :fullWidth="true"
+          @click="redirectCollection"
+          v-else
+        />
+
         <div class="tw-mt-10 tw-pb-2 tw-border-b-2 tw-border-dark-6 tw-w-full">
           <h2 class="tw-text-white tw-font-semibold">About Event</h2>
         </div>
 
-        <div>
-          <p class="tw-text-dark-0 tw-text-4">
-            {{ collection.description }}
-          </p>
-        </div>
+        <div class="" v-html="collection.description" id="markup-desc"></div>
         <!-- <div
           v-if="collection.description !== 'looniess'"
           class="tw-pb-2 tw-text-dark-0 description"
@@ -770,6 +805,10 @@ export default {
   props: { collection: { type: Object } },
   data() {
     return {
+      mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
+      markers: [
+        { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
+      ],
       loading: true,
       whitelistSaleDate: null,
       publicSaleDate: null,
@@ -840,6 +879,7 @@ export default {
       imageNotFound,
       xLogo,
       showPopup: false,
+      isExpanded: false,
     };
   },
   methods: {

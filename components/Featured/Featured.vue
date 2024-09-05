@@ -128,12 +128,15 @@
             <i class="bx bx-link-external"></i>
           </a> 
         </div>
-        <div
-          v-if="collection.description !== 'Loonies'"
+        <!-- <div
           class="tw-text-dark-0 tw-pb-4 description tw-h-auto"
+          v-html="collection.description" 
+          id="markup-desc"
         >
           {{ collection.description }}
-        </div>
+        </div> -->
+        <div class="tw-text-dark-0 tw-pb-4 description" 
+          v-html="collection.description" id="markup-desc"></div>
         <div id="ticket-details">
             <!-- Calendar  -->
           <div class="date box">
@@ -311,7 +314,7 @@
               class="!tw-text-black !tw-font-semibold"
               :title="!collection.status.sold_out ? 'Get Ticket' : 'Get Ticket'"
               :fullWidth="true"
-              @click="mintCollection"
+              @click="redirectCollection"
               v-else
             />
           </div>
@@ -534,6 +537,9 @@ export default {
       setTimeout(() => {
         this.showEndInTimer = true;
       }, 1);
+    },
+    redirectCollection(){
+      this.$router.push(`/nft/${this.collection.username}`);
     },
     async mintCollection() {
       try {

@@ -619,38 +619,25 @@ input:disabled {
 /* Scrollable */
 #markup-desc{
   width: 532px;
-  max-height: max-content;
+  max-height: 72px;
   padding: 14px;
-  overflow-y: scroll;
+  overflow-y: hidden;
   resize: none;
   border: 1px solid #25262B;
   border-radius: 6px;
   }
 
+  /* Map */
+  #gmap-box{
+    border-radius: 8px;
+  }
+
 /* Custom scrollable */
-#markup-desc::-webkit-scrollbar {
-  width: 10px;
-}
-
-#markup-desc::-webkit-scrollbar-track {
-  background: #25262B;
-}
-
-#markup-desc::-webkit-scrollbar-thumb {
-  background-color: #00000062;
-  border-radius: 10px;
-  border: 2px solid #363638;
-}
-
-#markup-desc::-webkit-scrollbar-thumb:hover {
-  background-color: #000000;
-}
 
 #ticket-details .icon-box{
   background-color:#24272B;
   border-radius: 12px;
   margin-bottom: 24px;
-
 }
 
 #ticket-details .icon-box.calendar{
