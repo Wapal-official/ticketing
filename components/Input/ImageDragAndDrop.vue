@@ -674,10 +674,13 @@ export default {
     },
   },
   mounted() {
+    console.log("image huhuhuhsuhuuhuhuhuhuuhuhu")
+    console.log("image hahhahahahahahahaahahahhaahahahhahaahahahahahaha", this.file)
     if (this.file) {
       this.extension = this.file.slice(this.file.lastIndexOf("."));
       // this.checkFileType();
       const fileType = this.checkFileType();
+      
       if (fileType == "image") {
         this.checkFeaturedFile = false;
         this.isImage = true;

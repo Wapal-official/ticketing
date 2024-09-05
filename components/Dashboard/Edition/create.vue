@@ -464,6 +464,7 @@
               </div> -->
             </div>
           </div>
+          {{collection.image}}
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
@@ -475,7 +476,7 @@
               @cancel="clearFile"
               @fileSelected="selectImage"
               @fileSelectedThumbnail="thumbnailSelected"
-              :thumbnail="collection.thumbnail"
+              :thumbnail="collection.image"
               fileSize="Upto 15 MB"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
@@ -809,7 +810,7 @@ export default {
         thumbnail: "",
         baseURL: "",
         royalty_payee_address:
-          this.$store.state.walletStore.wallet.walletAddress,
+        this.$store.state.walletStore.wallet.walletAddress,
         royalty_percentage: "0", //changed
         whitelist_sale_time: null,
         public_sale_time: null,
@@ -1029,7 +1030,7 @@ export default {
     addAttribute() {
       this.collection.attributes.push({
         trait_type: "ticket type",
-        value: ""
+        value: "",
       });
     },
     removeAttribute(index) {
@@ -1037,37 +1038,26 @@ export default {
     },
     displayImage() {
       const previewImgElement = document.createElement("img");
-      const reviewImgElement = document.createElement("img");
+  const reviewImgElement = document.createElement("img");
 
-      reviewImgElement.src = previewImgElement.src = URL.createObjectURL(
-        this.file
-      );
-      previewImgElement.classList.add("tw-w-full");
-      previewImgElement.classList.add("tw-h-full");
-      previewImgElement.classList.add("tw-object-fill");
-      previewImgElement.classList.add("tw-max-h-[300px]");
-      previewImgElement.classList.add("tw-rounded");
+  const imageUrl = this.file instanceof File ? URL.createObjectURL(this.file) : this.file;
 
-      reviewImgElement.classList.add("tw-w-full");
-      reviewImgElement.classList.add("tw-h-full");
-      reviewImgElement.classList.add("tw-object-fill");
-      reviewImgElement.classList.add("tw-max-h-[300px]");
-      reviewImgElement.classList.add("tw-rounded");
+  previewImgElement.src = reviewImgElement.src = imageUrl;
+  previewImgElement.classList.add("tw-w-full", "tw-h-full", "tw-object-fill", "tw-max-h-[300px]", "tw-rounded");
+  reviewImgElement.classList.add("tw-w-full", "tw-h-full", "tw-object-fill", "tw-max-h-[300px]", "tw-rounded");
 
-      const previewElement = document.getElementById("image-preview");
-      const reviewElement = document.getElementById("image-review");
+  const previewElement = document.getElementById("image-preview");
+  const reviewElement = document.getElementById("image-review");
 
-      if (previewElement.firstChild) {
-        previewElement.removeChild(previewElement.firstChild);
-      }
+  if (previewElement) {
+    previewElement.innerHTML = '';
+    previewElement.appendChild(previewImgElement);
+  }
 
-      if (reviewElement.firstChild) {
-        reviewElement.removeChild(reviewElement.firstChild);
-      }
-
-      previewElement.prepend(previewImgElement);
-
-      reviewElement.prepend(reviewImgElement);
+  if (reviewElement) {
+    reviewElement.innerHTML = '';
+    reviewElement.appendChild(reviewImgElement);
+  }
     },
     displayThumbnail(file) {
       if (!file) {
@@ -1228,35 +1218,58 @@ export default {
       this.image = "";
       this.thumbnail = "";
     },
-    selectImage(file) {
-      this.file = file;
-      if (this.isImage(file.name)) {
-        this.checkVideo = false;
-        this.audioCheck = false;
 
+    selectImage(file) {
+  console.log("selectImage called with:", file);
+  if (file instanceof File) {
+    this.file = file;
+    this.$set(this.collection, 'image', file);
+  } else if (typeof file === 'string' && file.startsWith('http')) {
+    // If it's a URL, create a File object
+    fetch(file)
+      .then(response => response.blob())
+      .then(blob => {
+        const newFile = new File([blob], 'draft_image.jpg', { type: 'image/jpeg' });
+        this.file = newFile;
+        this.$set(this.collection, 'image', newFile);
         this.displayImage();
-      } else if (this.isVideo(file.name)) {
-        this.checkVideo = true;
-        this.audioCheck = false;
-        this.getFileExtension(file.name);
-        this.displayVideo();
-        if (this.thumbnail) {
-          this.displayThumbnail(this.thumbnail);
-        }
-      } else if (this.isAudio(file.name)) {
-        this.audioCheck = true;
-        this.checkVideo = true;
-        this.displayAudio();
-        if (this.thumbnail) {
-          this.displayThumbnail(this.thumbnail);
-        }
-      } else {
-        this.$toast.showMessage({
-          message: "File error",
-          error: true,
-        });
-      }
-    },
+      });
+    return; // Exit early as we're handling the file asynchronously
+  } else {
+    console.error("Invalid file type:", file);
+    this.$toast.showMessage({
+      message: "Invalid file type",
+      error: true,
+    });
+    return;
+  }
+
+  if (this.isImage(this.file.name)) {
+    this.checkVideo = false;
+    this.audioCheck = false;
+    this.displayImage();
+  } else if (this.isVideo(this.file.name)) {
+    this.checkVideo = true;
+    this.audioCheck = false;
+    this.getFileExtension(this.file.name);
+    this.displayVideo();
+    if (this.thumbnail) {
+      this.displayThumbnail(this.thumbnail);
+    }
+  } else if (this.isAudio(this.file.name)) {
+    this.audioCheck = true;
+    this.checkVideo = true;
+    this.displayAudio();
+    if (this.thumbnail) {
+      this.displayThumbnail(this.thumbnail);
+    }
+  } else {
+    this.$toast.showMessage({
+      message: "File error",
+      error: true,
+    });
+  }
+},
     thumbnailSelected(file) {
       this.thumbnail = file;
       if (Math.floor(this.thumbnail.size / (1024 * 1024)) >= 15) {
@@ -1333,13 +1346,29 @@ export default {
         : false;
     },
     async submit() {
+      console.log("Submit function called");
       const validate = await this.$refs.attributeForm.validate();
+      console.log("Validation result:", validate);
 
       if (!validate) {
+        console.log("Validation failed");
         return;
       }
+      if (!this.collection.type) {
+      console.warn("Collection type is undefined, setting default to open-edition");
+      this.collection.type = "open-edition";
+    }
+    if (!this.collection.coinType) {
+      console.warn("Coin type is undefined, setting default to APT");
+      this.collection.coinType = "APT";
+    }
 
+    console.log("Collection type:", this.collection.type);
+    console.log("Coin type:", this.collection.coinType);
+    
       this.checkCoinType();
+      console.log("Collection type:", this.collection.type);
+      console.log("Coin type:", this.collection.coinType);
 
       switch (this.collection.type) {
         case "1-1":
@@ -1617,6 +1646,7 @@ export default {
         formData.append("whitelist_price", tempCollection.public_sale_price);
         formData.append("supply", tempCollection.supply);
         formData.append("twitter", tempCollection.twitter);
+    
         formData.append("discord", tempCollection.discord);
         formData.append("website", tempCollection.website);
         formData.append("instagram", tempCollection.instagram);
@@ -1728,7 +1758,7 @@ export default {
         presale_mint_price: mint_price,
         public_sale_mint_price: mint_price,
         total_supply: 1,
-        public_mint_limit: this.collection.public_mint_limit,
+        public_mint_limit: 0,
         is_open_edition: true,
         coinType: this.collection.coinType,
         isRandom: true,
@@ -1758,12 +1788,12 @@ export default {
         "royalty_payee_address",
         tempCollection.royalty_payee_address
       );
+      formData.append("edition", tempCollection.type);
       formData.append("baseURL", tempCollection.baseURL);
 
       // formData.append("supply", tempCollection.supply);
       formData.append("tokenName", tempCollection.tokenName);
-      formData.append("tokenDesc", tempCollection.tokenDesc);
-      formData.append("value", tempCollection.attributes.value);
+      formData.append("tokenDesc", tempCollection.tokenDesc); 
       formData.append("public_sale_price", tempCollection.public_sale_price);
       formData.append("whitelist_price", tempCollection.whitelist_price);
       formData.append("twitter", tempCollection.twitter);
@@ -1772,15 +1802,19 @@ export default {
       formData.append("instagram", tempCollection.instagram);
       formData.append("candy_id", tempCollection.candy_id);
       formData.append("phases", JSON.stringify(tempCollection.phases));
-      formData.append("attributes", JSON.stringify(tempCollection.attributes));
       formData.append("isApproved", "false");
       formData.append("isEdition", JSON.stringify(false));
+      if (Array.isArray(tempCollection.attributes)) {
+  formData.append("attributes", JSON.stringify(tempCollection.attributes));
+} else {
+  formData.append("attributes", JSON.stringify([{ trait_type: "ticket type", value: "" }]));
+}
       formData.append("coin_type", tempCollection.coinType);
       formData.append("tweet", tempCollection.tweet);
 
       if (this.file && this.file.name) {
     const fileType = this.checkFileType(this.file.name);
-    console.log("File type:", fileType); // Debug log
+    console.log("File type:", fileType);
     if (fileType === "image") {
       formData.append("image", this.file);
     } else {
@@ -1833,14 +1867,44 @@ export default {
 
         draftData.candy_id = this.collection.candy_id;
 
-        try {
-          draftData.phases = JSON.parse(draftData.phases);
-        } catch {
-          draftData.phases = [];
-        }
+        // try {
+        //   draftData.phases = JSON.parse(draftData.phases);
+        // } catch {
+        //   draftData.phases = [];
+        // }
+
+        if (typeof draftData.attributes === 'string') {
+      try {
+        draftData.attributes = JSON.parse(draftData.attributes);
+      } catch (error) {
+        console.error("Error parsing attributes:", error);
+        draftData.attributes = [{ trait_type: "ticket type", value: "" }];
+      }
+    } else if (!Array.isArray(draftData.attributes)) {
+      draftData.attributes = [{ trait_type: "ticket type", value: "" }];
+    }
 
         this.collection = draftData;
         console.log("Image after setting collection:", this.collection.image);
+        
+        if (this.collection.image) {
+      if (typeof this.collection.image === 'string' && this.collection.image.startsWith('http')) {
+        // If it's a URL, create a File object
+        const response = await fetch(this.collection.image);
+        const blob = await response.blob();
+        const file = new File([blob], 'draft_image.jpg', { type: 'image/jpeg' });
+        this.$nextTick(() => {
+          this.selectImage(file);
+        });
+      } else {
+        this.$nextTick(() => {
+          this.selectImage(this.collection.image);
+        });
+      }
+    }
+
+
+        this.$set(this.collection, 'attributes', [...this.collection.attributes]);
 
         this.collection.phases.map((phase) => {
           phase.mint_time = new Date(phase.mint_time);
@@ -1906,10 +1970,9 @@ export default {
             formData.append("image", this.thumbnail);
           }
         } else {
- 
-          formData.append("image", this.collection.image);
+          
+            formData.append("image", this.collection.image);
           }
-
 
         if (this.$route.params.id) {
           await editDraft(this.$route.params.id, formData);
