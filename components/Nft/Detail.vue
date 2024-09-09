@@ -2227,7 +2227,7 @@ export default {
       this.collectionTweet = this.collection.tweet;
       this.collectionUserName = this.collection.username;
       // location and venue
-      if (this.location) {
+      if (this.collection.location.location) {
         this.location = this.collection.location.location; // "nepal"
         this.venue = this.collection.location.venue; // "Thamel, Kathmandu 44600, Nepal"
       }
