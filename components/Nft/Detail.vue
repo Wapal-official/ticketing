@@ -60,39 +60,40 @@
                 </a>
               </div>
               <!-- Popup box -->
-              <v-dialog
-                v-model="showPopup"
-                persistent
-                max-width="400px"
-                @click:outside="closePopup"
+              <!-- <div
+                id="email"
+                class="tw-flex tw-items-center tw-mt-4 tw-text-white/70"
+                @click="showPopup = true"
               >
-                <v-card
-                  class="!tw-bg-dark-5 tw-mt-4 !tw-rounded-xl tw-w-[400px]"
-                >
-                  <v-card-title class="tw-text-white tw-font-bold"
-                    >Contact the Host</v-card-title
-                  >
-                  <v-card-text class="tw-flex tw-flex-col">
-                    <p class="!tw-mb-3">
-                      Have a question about the event? You can send a message to
-                      the host.
-                    </p>
-                    <textarea
-                      placeholder="Write Message"
-                      class="tw-bg-dark-7 tw-text-white tw-p-3 tw-rounded-md tw-mb-4 tw-h-32"
-                    ></textarea>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-btn
-                      id="pop-up-btn"
-                      class="tw-w-full !tw-text-black tw-font-bold !tw-mb-6"
-                      @click="sendMessage"
-                    >
-                      Send Message
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
+                <a href="#" class="!tw-text-white/70">
+                  <i class="bx bx-envelope tw-h-[20px] tw-w-[24px]"></i>
+                  <span class="tw-items-center tw-ml-3">Contact the host</span>
+                </a>
+              </div> -->
+
+              <!-- Popup box -->
+                <v-dialog v-model="showPopup" persistent max-width="400px" @click:outside="closePopup">
+                  <v-card class="!tw-bg-dark-5 tw-mt-4 !tw-rounded-xl tw-w-[400px]">
+                    <v-card-title class="tw-text-white tw-font-bold">Contact the Host</v-card-title>
+                    <v-card-text class="tw-flex tw-flex-col">
+                      <p class="!tw-mb-3">Have a question about the event? You can send a message to the host.</p>
+                      <textarea
+                        v-model="userMessage"
+                        placeholder="Write Message"
+                        class="tw-bg-dark-7 tw-text-white tw-p-3 tw-rounded-md tw-mb-4 tw-h-32"
+                      ></textarea>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-btn
+                        id="pop-up-btn"
+                        class="tw-w-full !tw-text-black tw-font-bold !tw-mb-6"
+                        @click="sendMessage"
+                      >
+                        Send Message  
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
               <div>
                 <div
                   class="tw-my-4 tw-py-2 tw-border-b-2 tw-border-dark-6 tw-w-full"
@@ -268,7 +269,7 @@
           </div>
 
           <!-- Location/Venue  -->
-          <div class="location box">
+          <div class="location box" v-if="location">
             <div class="icon-box venue">
               <img src="~/assets/img/Location.svg" alt="Location Icon" />
             </div>
@@ -305,7 +306,7 @@
               : "Mint"
           }}
         </a>
-        <!-- <NuxtLink
+        <NuxtLink
           class="tw-w-full tw-mt-4 tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
           :to="`/nft/${collection.username}`"
           v-else-if="collection.mintDetails"
@@ -316,16 +317,16 @@
           class="!tw-text-black"
           :title="!collection.status.sold_out ? 'Mint' : 'Get Ticket'"
           :fullWidth="true"
-          @click="mintCollection"
+          @click="mintBulkCollection"
           v-else
-        /> -->
+        />
+        <!-- <NuxtLink
+              class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+              :to="`/nft/${collection.username}`"
+              v-else-if="collection.mintDetails"
+            >
+              {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
 
-        <NuxtLink
-          class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
-          :to="`/nft/${collection.username}`"
-          v-else-if="collection.mintDetails"
-        >
-          {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
         </NuxtLink>
         <button-primary
           class="!tw-text-black !tw-font-semibold"
@@ -333,7 +334,7 @@
           :fullWidth="true"
           @click="redirectCollection"
           v-else
-        />
+        /> -->
 
         <div class="tw-mt-10 tw-pb-2 tw-border-b-2 tw-border-dark-6 tw-w-full">
           <h2 class="tw-text-white tw-font-semibold">About Event</h2>
@@ -399,6 +400,8 @@
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
           v-if="live"
         >
+
+        <!-- Comment starts here  -->
           <!-- <div
             class="tw-w-full tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-py-3 tw-px-4 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 md:tw-flex-col md:tw-items-start md:tw-justify-start"
           >
@@ -808,9 +811,10 @@
   <loading-collection v-else />
 </template>
 <script>
-import { setSoldOut } from "@/services/CollectionService";
+// import { setSoldOut } from "@/services/CollectionService";
 import { getProof, getMintLimit } from "@/services/WhitelistService";
 import { getWhitelistEntryById } from "@/services/WhitelistService";
+// import emailjs from 'emailjs-com';
 import {
   mintCollection,
   anotherCoinMintCollection,
@@ -884,11 +888,15 @@ export default {
       phaseChangeMessage:
         "If you don't see your WL eligibility, please refresh the page as the server scales",
       showPhaseChangeMessage: false,
-      location: "",
-      venue: "",
-      publicSaleTime: "",
-      formattedDate: "",
-      formattedTime: "",
+      location: '',
+      venue: '',
+      publicSaleTime: '',
+      formattedDate: '',
+      formattedTime: '',
+      showPopup: false,
+      userMessage: '', // Stores the user's message
+      // fromName: 'Madhu',
+      // toName: 'Nidiv', 
       // mintedTokens: [
       //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
       //   "0x2492723897521532f79ca5021acddc30a22f6f1bce2151a21744239016fde0d",
@@ -985,7 +993,6 @@ export default {
           ].includes(extension)
         : false;
     },
-
     updateLocationPin(place) {
       const location = place.geometry.location;
       (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
@@ -1011,7 +1018,40 @@ export default {
           { position: { lat: location.lat(), lng: location.lng() } },
         ]);
     },
+    // emails 
+    // sendMessage() {
+    //   console.log('sendMessage method called');
 
+    //   if (this.userMessage === '') {
+    //     alert('Please write a message before sending.');
+    //     return;
+    //   }
+
+    //   const serviceID = 'service_76wa09a'; // Replace with your EmailJS service ID
+    //   const templateID = 'template_tzub29v'; // Replace with your EmailJS template ID
+    //   const publicKey = 'Tw3_bgKE0BSsz1Jl5'; // Replace with your EmailJS public key
+
+    //   const templateParams = {
+    //     from_name: this.fromName,
+    //     to_name: this.toName,
+    //     message: this.userMessage
+    //   };
+
+    //   emailjs.send(serviceID, templateID, templateParams, publicKey)
+    //     .then((response) => {
+    //       console.log('Email sent successfully!', response.status, response.text);
+    //       alert('Your message has been sent successfully.');
+    //       this.closePopup();
+    //     })
+    //     .catch((error) => {
+    //       console.error('Error sending email:', error);
+    //       alert('Failed to send message. Please try again later.');
+    //     });
+    // },
+    // closePopup() {
+    //   this.showPopup = false;
+    //   this.userMessage = ''; // Clear the message after sending
+    // },
     isVideo(source) {
       if (!source) {
         return false;
