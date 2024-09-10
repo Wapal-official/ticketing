@@ -96,7 +96,7 @@ export default {
             minted: 0,
             total: draft.data.supply,
             progressPercent: Math.floor((0 / draft.data.supply) * 100),
-            text: `0/${draft.data.supply} Minted`,
+            text: `0/${draft.data.supply} sold`,
           };
 
           draft.data.progress = collectionResource;

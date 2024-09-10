@@ -465,19 +465,24 @@
             </div>
           </div>
           {{collection.image}}
+          <div v-if="file">
+      <p>File: {{ file }}</p>
+      <img :src="file" class="preview-image"/>
+    </div>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
             <input-image-drag-and-drop
               :label="'Featured ' + value + selectedFileType"
               :required="true"
-              :file="collection.image"
               :selectedType="selectedFileType"
               @cancel="clearFile"
               @fileSelected="selectImage"
               @fileSelectedThumbnail="thumbnailSelected"
               :thumbnail="collection.image"
               fileSize="Upto 15 MB"
+              :file='collection.image'
+              :previewUrl="collection.image"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
               {{ imageErrorMessage }}
@@ -848,6 +853,7 @@ export default {
       startMenu: false,
       endMenu: false,
       file: null,
+      image: { name: null },
       thumbnail: { name: null },
       imageError: false,
       imageErrorMessage: "",
@@ -903,6 +909,10 @@ export default {
     },
   },
   computed: {
+    quotedImage() {
+      return `'${this.collection.image}'`;  // Quote the URL as a string
+    },
+  
     walletAddress() {
       return this.$store.state.walletStore.wallet.walletAddress;
     },
@@ -1037,28 +1047,28 @@ export default {
       this.collection.attributes.splice(index, 1);
     },
     displayImage() {
-      const previewImgElement = document.createElement("img");
-  const reviewImgElement = document.createElement("img");
-
-  const imageUrl = this.file instanceof File ? URL.createObjectURL(this.file) : this.file;
-
-  previewImgElement.src = reviewImgElement.src = imageUrl;
-  previewImgElement.classList.add("tw-w-full", "tw-h-full", "tw-object-fill", "tw-max-h-[300px]", "tw-rounded");
-  reviewImgElement.classList.add("tw-w-full", "tw-h-full", "tw-object-fill", "tw-max-h-[300px]", "tw-rounded");
-
+      console.log("Displaying image:", this.collection.image);
   const previewElement = document.getElementById("image-preview");
   const reviewElement = document.getElementById("image-review");
 
-  if (previewElement) {
-    previewElement.innerHTML = '';
-    previewElement.appendChild(previewImgElement);
+  if (!previewElement || !reviewElement) {
+    console.error("Preview or review element not found");
+    return;
   }
 
-  if (reviewElement) {
-    reviewElement.innerHTML = '';
-    reviewElement.appendChild(reviewImgElement);
-  }
-    },
+  const imageUrl = this.collection.image;
+
+  const imageHtml = `
+    <img 
+      src="${imageUrl}" 
+      class="tw-w-full tw-h-full tw-object-cover tw-max-h-[300px] tw-rounded" 
+      alt="Preview" 
+      onerror="this.onerror=null; this.src='/path/to/fallback-image.jpg'; console.error('Image load error:', this.src);" 
+    />`;
+
+  previewElement.innerHTML = imageHtml;
+  reviewElement.innerHTML = imageHtml;
+},
     displayThumbnail(file) {
       if (!file) {
         console.error("File is null or undefined.");
@@ -1215,26 +1225,30 @@ export default {
       return parts[parts.length - 1];
     },
     clearFile() {
-      this.image = "";
-      this.thumbnail = "";
+      his.$set(this.collection, 'image', '');
+  this.file = null;
+  this.thumbnail = { name: null };
     },
-
-    selectImage(file) {
+selectImage(file) {
   console.log("selectImage called with:", file);
+  
   if (file instanceof File) {
     this.file = file;
-    this.$set(this.collection, 'image', file);
-  } else if (typeof file === 'string' && file.startsWith('http')) {
-    // If it's a URL, create a File object
-    fetch(file)
-      .then(response => response.blob())
-      .then(blob => {
-        const newFile = new File([blob], 'draft_image.jpg', { type: 'image/jpeg' });
-        this.file = newFile;
-        this.$set(this.collection, 'image', newFile);
-        this.displayImage();
+    this.$set(this.collection, 'image', URL.createObjectURL(file));
+  } else if (typeof file === 'string') {
+    // Remove quotes if present
+    const cleanUrl = file.replace(/^"|"$/g, '');
+    if (cleanUrl.startsWith('http')) {
+      this.file = cleanUrl;
+      this.$set(this.collection, 'image', cleanUrl);
+    } else {
+      console.error("Invalid URL:", file);
+      this.$toast.showMessage({
+        message: "Invalid URL",
+        error: true,
       });
-    return; // Exit early as we're handling the file asynchronously
+      return;
+    }
   } else {
     console.error("Invalid file type:", file);
     this.$toast.showMessage({
@@ -1244,31 +1258,7 @@ export default {
     return;
   }
 
-  if (this.isImage(this.file.name)) {
-    this.checkVideo = false;
-    this.audioCheck = false;
-    this.displayImage();
-  } else if (this.isVideo(this.file.name)) {
-    this.checkVideo = true;
-    this.audioCheck = false;
-    this.getFileExtension(this.file.name);
-    this.displayVideo();
-    if (this.thumbnail) {
-      this.displayThumbnail(this.thumbnail);
-    }
-  } else if (this.isAudio(this.file.name)) {
-    this.audioCheck = true;
-    this.checkVideo = true;
-    this.displayAudio();
-    if (this.thumbnail) {
-      this.displayThumbnail(this.thumbnail);
-    }
-  } else {
-    this.$toast.showMessage({
-      message: "File error",
-      error: true,
-    });
-  }
+  console.log("Image set:", this.collection.image);
 },
     thumbnailSelected(file) {
       this.thumbnail = file;
@@ -1886,21 +1876,13 @@ export default {
 
         this.collection = draftData;
         console.log("Image after setting collection:", this.collection.image);
+
         
         if (this.collection.image) {
-      if (typeof this.collection.image === 'string' && this.collection.image.startsWith('http')) {
-        // If it's a URL, create a File object
-        const response = await fetch(this.collection.image);
-        const blob = await response.blob();
-        const file = new File([blob], 'draft_image.jpg', { type: 'image/jpeg' });
-        this.$nextTick(() => {
-          this.selectImage(file);
-        });
-      } else {
-        this.$nextTick(() => {
-          this.selectImage(this.collection.image);
-        });
-      }
+      this.file = this.collection.image;
+      this.$nextTick(() => {
+        this.selectImage(this.collection.image);
+      });
     }
 
 

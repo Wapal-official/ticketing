@@ -94,6 +94,6 @@ export default {
 }
 
 a.nuxt-link-exact-active {
-  @apply !tw-text-primary-2 tw-bg-dark-6;
+  @apply !tw-text-primary-1 tw-bg-dark-6;
 }
 </style>

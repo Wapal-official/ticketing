@@ -382,19 +382,19 @@
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
             v-if="collection.type !== '1-1'"
           >
-            <!-- <ValidationProvider
+            <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
               rules="required"
               v-slot="{ errors }"
             >
               <input-text-field
                 v-model="collection.public_mint_limit"
-                label="Mint Limit (0 for unlimited mint)"
+                label="Ticket Limit (0 for unlimited mint)"
                 :required="true"
                 placeholder="Eg. 10"
               />
               <div class="tw-text-red-600">{{ errors[0] }}</div>
-            </ValidationProvider> -->
+            </ValidationProvider>
             <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
               rules="required"
@@ -832,7 +832,7 @@ export default {
         discord: "",
         website: "",
         type: "open-edition", //changed
-        public_mint_limit: "0", //changed
+        public_mint_limit: "", //changed
         seedz: false,
         coinType: "APT",
         tweet: "",
@@ -1332,7 +1332,7 @@ export default {
           ].includes(extension)
         : false;
     },
-    async submit() {
+    async   submit() {
       const validate = await this.$refs.attributeForm.validate();
 
       if (!validate) {
@@ -1803,13 +1803,6 @@ export default {
       } else {
         formData.append("whitelistTBD", "true");
       }
-
-       // Debugging logs
-  console.log("Form Data Entries:");
-  for (let pair of formData.entries()) {
-    console.log(pair[0] + ': ' + pair[1]);
-  }
-  
       await createDraft(formData);
 
       this.submitting = false;

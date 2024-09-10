@@ -20,12 +20,12 @@
           class="tw-w-1/5 tw-flex tw-flex-row tw-items-center tw-justify-end"
         >
           <button-primary
-            title="Create Event"
+            title="Create"
             @click="$router.push('/dashboard/edition/create')"
             :bordered="true"
           >
-            <template #prepend-icon>
-              <i class="bx bx-plus tw-text-xl tw-pr-2"></i>
+            <template #append-icon>
+              <i class="bx bx-plus tw-text-xl tw-pl-2"></i>
             </template>
           </button-primary>
         </div>

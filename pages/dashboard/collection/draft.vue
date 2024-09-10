@@ -44,7 +44,7 @@ export default {
       page: 0,
       tableHeaders: [
         {
-          text: "Collection Name",
+          text: "Event Name",
           align: "start",
           sortable: true,
           value: "name",
@@ -54,7 +54,7 @@ export default {
           showSerialNumber: true,
         },
         {
-          text: "Price",
+          text: "Ticket Price",
           align: "start",
           sortable: true,
           value: "price",
@@ -71,7 +71,7 @@ export default {
           class: "default-data-table-header",
         },
         {
-          text: "Minted",
+          text: "Ticket Sold",
           align: "start",
           sortable: true,
           value: "progress",
