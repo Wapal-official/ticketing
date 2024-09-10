@@ -7,7 +7,7 @@
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
         >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
-            Nft Collection Details
+            Event Details
           </h2>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -16,10 +16,10 @@
             v-slot="{ errors }"
           >
             <input-text-field
-              label="Collection Name"
+              label="Event Name"
               :required="true"
               v-model="collection.name"
-              placeholder="Collection Name"
+              placeholder="Event Name"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
@@ -29,14 +29,90 @@
             rules="required|descriptionLength"
             v-slot="{ errors }"
           >
-            <input-text-area
-              label="Collection Description"
+            <input-text-editor
+              label="Event Description"
               :required="true"
               v-model="collection.description"
-              placeholder="Collection Description"
+              placeholder="Event Description"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
+          <div class="tw-flex  tw-gap-4">
+          <ValidationProvider
+              
+              rules=""
+              name="traitType"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+               ref="autocompleteInput"
+                label="Location"
+                placeholder="Enter Location"
+                v-model="collection.location"
+                :required="true"
+                :autocomplete="true"
+                @placeChanged="updateLocationPin"
+              >
+              <template #prepend-icon>
+                  <i class="bx bx-map tw-text-white tw-text-lg"></i> 
+                </template>
+            </input-text-field>
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              rules=""
+              name="traitType"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+              v-slot="{ errors }"
+            >
+              <input-venue-field
+               ref="autocompleteInput"
+                label="Venue"
+                placeholder="Enter Venue"
+                v-model="collection.venue"
+                :required="false"
+                :autocomplete="true"
+                autocompleteType="establishment"
+                :locationBias="venueBounds"
+                @placeChanged="updateVenuePin"
+              >
+                <template #prepend-icon>
+                  <i class="bx bx-map tw-text-white tw-text-lg"></i> 
+                </template>
+            </input-venue-field>
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
+          <!-- <GmapMap
+                v-bind:center="mapCenter"
+                :zoom="14"
+                map-type-id="terrain"
+                style="width: 500px; height: 300px; border-radius: 3px;"
+              >
+                <GmapMarker
+                  v-bind:key="index"
+                  v-for="(m, index) in markers"
+                  v-bind:position="m.position"
+                  v-bind:clickable="true"
+                  :draggable="true"
+                  @click="mapCenter=m.position"
+                />
+          </GmapMap> -->
+          <ValidationProvider
+              rules="email"
+              name="email"
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                label="E-mail"
+                placeholder="E-mail"
+                v-model="collection.email"
+                
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="twitter"
@@ -98,7 +174,7 @@
               {{ socialErrorMessage }}
             </div>
           </ValidationProvider>
-          <ValidationProvider
+          <!-- <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="tweetLength"
             rules="tweetLength"
@@ -108,6 +184,326 @@
               label="Tweet Template (Optional)"
               v-model="collection.tweet"
               placeholder="Craft your tweetable moment! It's shareable on Twitter after minting your NFT."
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider> -->
+          <div
+            class="tw-mb-5 tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
+          >
+            <button-secondary
+              class="tw-mr-4"
+              :bordered="true"
+              :paddingTwoHalf="false"
+              title="Draft"
+              @click="saveDraft()"
+              style="color: #fff !important"
+            />
+            <button-primary title="Next" @click="validateFormForNextStep" />
+          </div>
+        </ValidationObserver>
+      </v-stepper-content>
+      <v-stepper-content step="2">
+        <ValidationObserver
+          ref="royaltyForm"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+        >
+          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
+            Ticket Details
+          </h2>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="tokenName"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              :required="true"
+              label="Ticket Name"
+              v-model="collection.tokenName"
+              placeholder="Ticket Name"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+            <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="tokenDescription"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-area
+              :required="true"
+              label="Ticket Description"
+              v-model="collection.tokenDesc"
+              placeholder="Ticket Description"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
+            <!-- <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider> -->
+           <!-- <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-start"
+          >
+            <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+              name="publicSaleTime"
+              :rules="
+                !tbd
+                  ? 'required|saleTime|public_sale_time:@whitelistSaleTime'
+                  : 'saleTime|public_sale_time:@whitelistSaleTime'
+              "
+              v-slot="{ errors }"
+            >
+              <input-date-picker
+                v-model="collection.public_sale_time"
+                type="datetime"
+                placeholder="Select Public Sale time"
+                :disabled="publicSaleTBD"
+                label="Public Sale Time"
+                :required="!publicSaleTBD"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+
+              <v-checkbox
+                v-model="publicSaleTBD"
+                label="TBD"
+                :ripple="false"
+                class="!tw-text-dark-2"
+              ></v-checkbox>
+            </ValidationProvider> -->
+            <!-- <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+              name="publicSalePrice"
+              :rules="!tbd ? 'required|number' : 'number'"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                v-model="collection.public_sale_price"
+                placeholder="Eg: 0.1"
+                label="Public Sale Price"
+                :required="!publicSaleTBD"
+              >
+                <template #append-icon>
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
+                </template>
+              </input-text-field>
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider> -->
+          <!-- </div> -->
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
+            v-if="collection.type !== '1-1'"
+          >
+            <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="mint_time"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <input-date-picker
+                :required="true"
+                label="Event Live In"
+                v-model="collection.public_sale_time"
+                placeholder="Date"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="mint_price"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                :required="true"
+                label="Ticket Price"
+                v-model="collection.public_sale_price"
+                placeholder="Eg. 1"
+              >
+                <template #append-icon>
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
+                </template>
+              </input-text-field>
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+          </div>
+          <div
+            v-for="(attribute, index) in collection.attributes"
+            :key="index"
+            class="tw-w-full"
+          >
+            <div
+              class="tw-flex tw-flex-col tw-gap-6 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
+            >
+              <!-- <ValidationProvider
+                    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
+                    <input-text-field
+                      v-model="attribute.trait_type"
+                      placeholder="Attribute Type"
+                      label="Attribute Type"
+                      :required="true"
+                    />
+                    <div class="tw-text-red-600 tw-text-sm">
+                      {{ errors[0] }}
+                    </div>
+                  </ValidationProvider> -->
+              <ValidationProvider
+                class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <input-text-field
+                  v-model="attribute.value"
+                  placeholder="Vip Ticket"
+                  label="Ticket Type"
+                  :required="true"
+                />
+
+                <div class="tw-text-red-600 tw-text-sm">
+                  {{ errors[0] }}
+                </div>
+              </ValidationProvider>
+
+              <button
+                v-if="index !== 0"
+                @click="removeAttribute(index)"
+                class="tw-mt-10"
+              >
+                <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
+              </button>
+            </div>
+          </div>
+          <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-5 tw-w-full lg:tw-w-[540px]"
+          >
+            <button-primary
+              title="Add Type"
+              :bordered="true"
+              @click="addAttribute"
+              class="tw-inline-flex tw-items-center tw-px-3 tw-py-2 tw-gap-2 tw-border-t tw-border-gray-300 tw-rounded-tl-lg tw-w-auto"
+            >
+              <template #prepend-icon>
+                <i class="bx bx-plus tw-text-xl tw-pr-4"></i>
+              </template>
+            </button-primary>
+          </div>
+          <div
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
+            v-if="collection.type !== '1-1'"
+          >
+            <!-- <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                v-model="collection.public_mint_limit"
+                label="Mint Limit (0 for unlimited mint)"
+                :required="true"
+                placeholder="Eg. 10"
+              />
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider> -->
+            <!-- <ValidationProvider
+              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
+              rules="required"
+              v-slot="{ errors }"
+              v-if="collection.type === 'limited-edition'"
+            >
+              <input-text-field
+                v-model="collection.supply"
+                label="Supply"
+                :required="true"
+                placeholder="Eg. 2"
+              />
+              <div class="tw-text-red-600">{{ errors[0] }}</div>
+            </ValidationProvider> -->
+          </div>
+  
+          <!-- <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="royaltyPayeeAddress"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              v-model="collection.royalty_payee_address"
+              label="Royalty Payee Address"
+              :required="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider> -->
+          <!-- <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="royaltyPercentage"
+            rules="required|number|percentage"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              v-model="collection.royalty_percentage"
+              label="Royalty Percentage"
+              placeholder="Eg. 5.5"
+              :required="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider> -->
+          <!-- <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="baseurl"
+            :rules="!tbd ? 'required' : ''"
+            v-slot="{ errors }"
+          >
+            <input-auto-complete
+              v-model="baseURL"
+              :items="folders"
+              placeholder="Select your NFT Vault"
+              text="folder_name"
+              @change="setSupply"
+              label="Assets"
+              :required="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider> -->
+          <!-- <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="supply"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              v-model="collection.supply"
+              :disabled="true"
+              label="Supply"
+              placeholder="Supply"
+              :required="true"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider> -->
+
+          <ValidationProvider 
+            class="tw-d-none tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
+            name="coinType"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-auto-complete
+              v-model="collection.coinType"
+              :items="coinTypes"
+              placeholder="Select Coin Type"
+              label="Coin Type"
+              :required="true"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
@@ -136,7 +532,7 @@
                 />
                 <label for="video">Video</label>
               </div>
-              <div>
+              <!-- <div>
                 <input
                   type="radio"
                   id="audio"
@@ -146,7 +542,7 @@
                   class="radio-input"
                 />
                 <label for="audio">Audio</label>
-              </div>
+              </div> -->
             </div>
           </div>
           <div
@@ -168,123 +564,24 @@
             </div>
           </div>
           <div
-            class="tw-mb-5 tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
-          >
-            <button-secondary
-              class="tw-mr-4"
-              :bordered="true"
-              :paddingTwoHalf="false"
-              title="Save As Draft"
-              @click="saveDraft()"
-              style="color: #fff !important"
-            />
-            <button-primary title="Next" @click="validateFormForNextStep" />
-          </div>
-        </ValidationObserver>
-      </v-stepper-content>
-      <v-stepper-content step="2">
-        <ValidationObserver
-          ref="royaltyForm"
-          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
-        >
-          <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
-            Royalty and Assets
-          </h2>
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
-            name="royaltyPayeeAddress"
-            rules="required"
-            v-slot="{ errors }"
-          >
-            <input-text-field
-              v-model="collection.royalty_payee_address"
-              label="Royalty Payee Address"
-              :required="true"
-            />
-            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-          </ValidationProvider>
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
-            name="royaltyPercentage"
-            rules="required|number|percentage"
-            v-slot="{ errors }"
-          >
-            <input-text-field
-              v-model="collection.royalty_percentage"
-              label="Royalty Percentage"
-              placeholder="Eg. 5.5"
-              :required="true"
-            />
-            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-          </ValidationProvider>
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
-            name="baseurl"
-            :rules="!tbd ? 'required' : ''"
-            v-slot="{ errors }"
-          >
-            <input-auto-complete
-              v-model="baseURL"
-              :items="folders"
-              placeholder="Select your NFT Vault"
-              text="folder_name"
-              @change="setSupply"
-              label="Assets"
-              :required="true"
-            />
-            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-          </ValidationProvider>
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
-            name="supply"
-            rules="required"
-            v-slot="{ errors }"
-          >
-            <input-text-field
-              v-model="collection.supply"
-              :disabled="true"
-              label="Supply"
-              placeholder="Supply"
-              :required="true"
-            />
-            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-          </ValidationProvider>
-
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
-            name="coinType"
-            rules="required"
-            v-slot="{ errors }"
-          >
-            <input-auto-complete
-              v-model="collection.coinType"
-              :items="coinTypes"
-              placeholder="Select Coin Type"
-              label="Coin Type"
-              :required="true"
-            />
-            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-          </ValidationProvider>
-
-          <div
             class="tw-w-full tw-flex tw-flex-row tw-items-end tw-justify-end"
           >
             <button-secondary
               class="tw-mr-4"
               :bordered="true"
               :paddingTwoHalf="false"
-              title="Save As Draft"
+              title="Draft"
               @click="saveDraft()"
               style="color: #fff !important"
             />
-            <button-primary title="Next" @click="validateFormForNextStep" />
+            <button-primary title="Next" @click="submitCollection" />
           </div>
         </ValidationObserver>
       </v-stepper-content>
-      <v-stepper-content step="3">
+      <v-stepper-content step="3" class="hide tw-d-none">
         <ValidationObserver
           ref="phaseForm"
-          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px] tw-d-none "
         >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Sale Phase
@@ -608,7 +905,7 @@
                 class="tw-mr-4"
                 :bordered="true"
                 :paddingTwoHalf="false"
-                title="Save As Draft"
+                title="Draft"
                 @click="saveDraft()"
                 style="color: #fff !important"
               />
@@ -621,7 +918,7 @@
           </div>
         </ValidationObserver>
       </v-stepper-content>
-      <v-stepper-content step="4">
+      <v-stepper-content step="4" class="tw-d-none">
         <div
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-w-full xl:tw-w-[658px]"
         >
@@ -735,8 +1032,18 @@
         </div>
       </v-stepper-content>
     </stepper>
+    <reusable-progress-modal
+      :showProgressModal="createEditionModal"
+      :showClose="showCloseModal"
+      :progress="progress"
+      :error="error"
+      
+      :name="getName"
+      
+      @closeProgressModal="createEditionModal = false"
+    />
   </div>
-  <reusable-loading v-else />
+  
 </template>
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
@@ -754,6 +1061,11 @@ import {
 import { getAllFolder, getFolderById } from "@/services/AssetsService";
 import { createCollectionV2 } from "@/services/AptosCollectionService";
 import generateName from "@/utils/generateName";
+import {
+  uploadAndCreateFile,
+  uploadAndCreateVideoFile,
+} from "@/services/AuctionService"; //changed
+import axios from "axios"; //changed
 extend("required", {
   ...required,
   message: "This field is required",
@@ -769,6 +1081,14 @@ extend("link", {
     return true;
   },
   message: "Please enter a valid link",
+});
+
+extend("email", {
+  validate(value) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value);
+  },
+  message: "Please enter a valid email",
 });
 
 extend("public_sale_time", {
@@ -793,31 +1113,31 @@ extend("saleTime", {
   message: "Sale time should be greater than current time",
 });
 
-extend("phase_sale_time", {
-  params: ["target"],
-  validate(value, target: any) {
-    if (new Date(value).getTime() >= new Date(target.target).getTime()) {
-      return false;
-    }
-    return true;
-  },
-  message: "Sale time in phase should be less than Public Sale Time",
-});
+// extend("phase_sale_time", {
+//   params: ["target"],
+//   validate(value, target: any) {
+//     if (new Date(value).getTime() >= new Date(target.target).getTime()) {
+//       return false;
+//     }
+//     return true;
+//   },
+//   message: "Sale time in phase should be less than Public Sale Time",
+// });
 
-extend("percentage", {
-  validate(value) {
-    const getDecimalVal = value.toString().indexOf(".");
-    if (getDecimalVal < 1) {
-      return true;
-    }
-    const decimalPart = value.toString().substring(getDecimalVal + 1);
-    if (decimalPart.length > 1) {
-      return false;
-    }
-    return true;
-  },
-  message: "Please enter only one decimal point in percentage",
-});
+// extend("percentage", {
+//   validate(value) {
+//     const getDecimalVal = value.toString().indexOf(".");
+//     if (getDecimalVal < 1) {
+//       return true;
+//     }
+//     const decimalPart = value.toString().substring(getDecimalVal + 1);
+//     if (decimalPart.length > 1) {
+//       return false;
+//     }
+//     return true;
+//   },
+//   message: "Please enter only one decimal point in percentage",
+// });
 
 extend("number", {
   validate(value) {
@@ -868,24 +1188,43 @@ export default {
   props: { draft: { type: Boolean, default: false } },
   data() {
     return {
+      mapCenter: { lat: 27.7172, lng: 85.3240 }, // Default center (Kathmandu)
+      markers: [
+        { position: { lat: 27.7172, lng: 85.3240 } }, // Example marker
+      ],
+      venueBounds: {
+      north: 27.788, // These bounds define the Kathmandu area; adjust as needed
+      south: 27.664,
+      east: 85.514,
+      west: 85.254,
+    },
       selectedFileType: "Image",
-      steps: ["Details", "Royalty", "Phase", "Review"],
+      steps: ["Details", "Create Ticket"],
       stepNumber: 1,
       checkFeaturedFile: true,
       collection: {
+        location: "",
+        venue:"",
+        email:"",
+        type:"",
+        attributes: [
+          { trait_type: "ticket type", value: "" }
+        ],
         name: "",
         description: "",
+        tokenName:"",
+        tokenDesc:"",
         image: "",
         thumbnail: "",
         baseURL: "",
         royalty_payee_address:
           this.$store.state.walletStore.wallet.walletAddress,
-        royalty_percentage: "",
+        royalty_percentage: "0",
         whitelist_sale_time: null,
         public_sale_time: null,
         public_sale_price: "",
         whitelist_price: "",
-        supply: "",
+        supply: "2",
         twitter: "",
         media2: "",
         discord: "",
@@ -894,9 +1233,9 @@ export default {
         resource_account: "",
         txnhash: "",
         un: "",
-        phases: [{ name: "", mint_time: null, mint_price: null }],
-        public_mint_limit: null,
-        coinType: "APT",
+        phases: [{ name: "", mint_time: null, mint_price: "0" }],
+        public_mint_limit: "0",
+        coinType: "",
         tweet: "",
       },
       message: "",
@@ -918,6 +1257,9 @@ export default {
         },
       ],
       folders: [],
+      attribute: "",
+      value: "",
+      attributeError: false,
       folderInfo: null,
       baseURL: null,
       whitelistEnabled: false,
@@ -928,11 +1270,52 @@ export default {
       loading: false,
       saveAsDraft: false,
       coinTypes: getAvailableCoinTypes(),
+      coinType: "APT",
+      error: false,
+      createEditionModal: false,
+      progress: 0,
+      showCloseModal: false,
       isNonRandom: false,
       isSoulBound: false,
     };
   },
   methods: {
+
+    updateLocationPin(place: any) {
+      const location = place.geometry.location;
+      (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
+        (this.zoomLevel = 15),
+        (this.markers = []);
+        
+        const viewport = place.geometry.viewport;
+        if (viewport) {
+          this.venueBounds = {
+            north: viewport.getNorthEast().lat(),
+            south: viewport.getSouthWest().lat(),
+            east: viewport.getNorthEast().lng(),
+            west: viewport.getSouthWest().lng(),
+          };
+    }
+    },
+    updateVenuePin(place: any) {
+      const location = place.geometry.location;
+      this.mapCenter = { lat: location.lat(), lng: location.lng() };
+      this.zoomLevel = 15;
+    },
+    addAttribute() {
+      if (!Array.isArray(this.collection.attributes)) {
+    // Initialize the attributes array if it doesn't exist or isn't an array
+    this.$set(this.collection, 'attributes', []);
+  }
+  this.collection.attributes.push({
+    trait_type: "ticket type",
+    value: "",
+  });
+},
+    removeAttribute(index: any) {
+      this.collection.attributes.splice(index, 1);
+    },
+    
     async changeStep(step: number) {
       this.stepNumber = step;
     },
@@ -967,6 +1350,25 @@ export default {
 
             break;
           }
+
+          this.stepNumber++;
+          break;
+        case 2:
+          const royaltyValidated = await this.$refs.royaltyForm.validate();
+
+          if (!royaltyValidated) {
+            break;
+          }
+
+          this.stepNumber++;
+          console.log("This is case2")
+          break;
+        case 3:
+          const phaseValidated = await this.$refs.phaseForm.validate();
+
+          if (!phaseValidated) {
+            break;
+          }
           if (!this.image.name && !this.collection.image) {
             this.imageError = true;
             this.imageErrorMessage = "Please select an image for collection";
@@ -985,83 +1387,77 @@ export default {
           if (this.imageError) {
             return;
           }
-
           this.stepNumber++;
-          break;
-        case 2:
-          const royaltyValidated = await this.$refs.royaltyForm.validate();
-
-          if (!royaltyValidated) {
-            break;
-          }
-
-          this.stepNumber++;
-          break;
-        case 3:
-          const phaseValidated = await this.$refs.phaseForm.validate();
-
-          if (!phaseValidated) {
-            break;
-          }
-          this.stepNumber++;
+          console.log("This is case3")
           break;
         default:
           break;
       }
     },
     async submitCollection() {
-      const phaseValidated = await this.$refs.phaseForm.validate();
+      // const phaseValidated = await this.$refs.phaseForm.validate();
 
-      if (!phaseValidated) {
-        return;
-      }
+      // if (!phaseValidated) {
+      //   return;
+      // }
       try {
-        this.submitting = true;
+        this.error = false; //changed
+        this.loading = true; //changed
+        this.createEditionModal = true; //changed
 
-        const selectedFolder = this.folders.find(
-          (folder: any) => folder.folder_name === this.baseURL
-        );
-        // this.collection.baseURL = selectedFolder.metadata.baseURI;
+        this.progress = 1; //changed
 
-        this.collection.baseURL = selectedFolder.metadataBaseURI;
+        // this.submitting = true; //changed
+        console.log("agadi")
+        await this.createOpenEditionInChain();
+        console.log("pachadi")
+        // const selectedFolder = this.folders.find(
+        //   (folder: any) => folder.folder_name === this.baseURL
+        // );
+        // // this.collection.baseURL = selectedFolder.metadata.baseURI;
 
-        this.checkCoinType();
+        // this.collection.baseURL = selectedFolder.metadataBaseURI;
 
-        const tempCollection = { ...this.collection };
+        // this.checkCoinType();
+        const tempCollection = structuredClone(this.collection); //changed
+        // const tempCollection = { ...this.collection };
+        const metadataRes = await axios.get(this.collection.baseURL);
 
-        tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
-          ? new Date(tempCollection.whitelist_sale_time).toISOString()
-          : "";
+        const metadata = metadataRes.data;
+
+        // tempCollection.whitelist_sale_time = tempCollection.whitelist_sale_time
+        //   ? new Date(tempCollection.whitelist_sale_time).toISOString()
+        //   : "";
 
         tempCollection.public_sale_time = tempCollection.public_sale_time
           ? new Date(tempCollection.public_sale_time).toISOString()
           : "";
 
-        const phases: any[] = [];
+        // const phases: any[] = [];
 
-        tempCollection.phases.map((phase: any) => {
-          const id = generateName(phase.name);
+        // tempCollection.phases.map((phase: any) => {
+        //   const id = generateName(phase.name);
 
-          phases.push({
-            id: id,
-            name: phase.name,
-            mint_time: phase.mint_time,
-            mint_price: phase.mint_price,
-          });
-        });
+        //   phases.push({
+        //     id: id,
+        //     name: phase.name,
+        //     mint_time: phase.mint_time,
+        //     mint_price: phase.mint_price,
+        //   });
+        // });
 
-        if (this.whitelistEnabled && !this.tbd && !this.saveAsDraft) {
-          phases.push({
-            id: "whitelist",
-            name: "whitelist sale",
-            mint_time: this.collection.whitelist_sale_time,
-            mint_price: this.collection.whitelist_price,
-          });
-        }
+        // if (this.whitelistEnabled && !this.tbd && !this.saveAsDraft) {
+        //   phases.push({
+        //     id: "whitelist",
+        //     name: "whitelist sale",
+        //     mint_time: this.collection.whitelist_sale_time,
+        //     mint_price: this.collection.whitelist_price,
+        //   });
+        // }
 
-        const sortedPhases = sortPhases(phases);
+        // const sortedPhases = sortPhases(phases);
 
-        tempCollection.phases = sortedPhases;
+        // tempCollection.phases = sortedPhases;
 
         if (this.tbd || this.saveAsDraft) {
           if (this.draft) {
@@ -1071,11 +1467,16 @@ export default {
           }
           return;
         }
+        const imageUrl = metadata.image;
+        let videoUrl;
+        if (metadata.properties) {
+          videoUrl = this.metadata.videoUri;
+        }
 
-        await this.sendDataToCandyMachineCreator();
+        // await this.sendDataToCandyMachineCreator();
 
-        tempCollection.txnhash = this.collection.txnhash;
-        tempCollection.resource_account = this.collection.resource_account;
+        // tempCollection.txnhash = this.collection.txnhash;
+        // tempCollection.resource_account = this.collection.resource_account;
 
         const formData = new FormData();
 
@@ -1091,7 +1492,7 @@ export default {
         );
         formData.append(
           "whitelist_sale_time",
-          tempCollection.whitelist_sale_time
+          tempCollection.public_sale_mint_time
         );
         formData.append("public_sale_time", tempCollection.public_sale_time);
         formData.append("public_sale_price", tempCollection.public_sale_price);
@@ -1104,10 +1505,16 @@ export default {
         formData.append("resource_account", tempCollection.resource_account);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
-        formData.append("phases", JSON.stringify(tempCollection.phases));
-        formData.append("isEdition", JSON.stringify(false));
+        formData.append("phases", JSON.stringify([]));
+        formData.append("isEdition", JSON.stringify(true));
+        formData.append("location", tempCollection.location);
+        formData.append("venue", tempCollection.venue);
         formData.append("coin_type", tempCollection.coinType);
         formData.append("tweet", tempCollection.tweet);
+        formData.append("email", tempCollection.email);
+        formData.append("seedz", JSON.stringify(tempCollection.seedz));
+        
+
 
         const draft_id = this.$route.params.id;
 
@@ -1129,12 +1536,12 @@ export default {
 
         await createCollection(formData);
 
-        this.submitting = false;
+        this.submitting = false;  
 
         this.message = "Collection Created Successfully";
         this.$toast.showMessage({ message: this.message, error: false });
 
-        this.$router.push("/dashboard/collection/under-review");
+        this.$router.push("/dashboard/edition/under-review");
         setTimeout(() => {
           this.$store.commit("general/setWhitelistSetup", true)
         }, 2000);
@@ -1143,8 +1550,114 @@ export default {
         this.$toast.showMessage({ message: error, error: true });
 
         this.submitting = false;
+        this.loading = false;
+        this.error = true;
+        this.showCloseModal = true;
       }
+    },  
+    async createOpenEditionInChain() {
+      console.log("createOpenEdition")
+      let metadataUri = null;
+      metadataUri = this.metadata = await this.uploadImageAndMetadata();
+
+      this.progress = 2;
+
+      this.collection.baseURL = metadataUri.metaUri
+        ? metadataUri.metaUri
+        : metadataUri;
+
+      const tempCollection = structuredClone(this.collection);
+
+      const mintTime = Math.floor(
+        new Date(tempCollection.public_sale_time).getTime() / 1000
+      );
+
+      const mint_price = parseFloat(
+        (tempCollection.public_sale_price * Math.pow(10, 8)).toFixed(4)
+      );
+
+      console.log("candymachine");
+      console.log(this.collection.name, "name");
+      console.log(this.collection.description, "description");
+      console.log(this.collection.baseURL, "baseuri");
+      console.log(this.collection.royalty_payee_address, "royalty_payee_address");
+      // console.log(royalty_points_denominator, "royalty_points_denominator");
+      console.log(this.collection.royalty_percentage, " royalty_points_numerator");
+      console.log(mintTime, "presale_mint_time");
+      console.log(mintTime + 1, "public_sale_mint_time");
+      console.log(mint_price, "presale_mint_price");
+      console.log(mint_price, "public_sale_mint_price");
+      // console.log(this.collection.name, "total_supply");
+      console.log(this.collection.public_mint_limit, "public_mint_limit");
+      // console.log(this.collection.name, "is_open_edition");
+      console.log(this.collection.coinType, "coinType");
+      console.log(this.collection.name, "isRandom");
+      
+
+      const candyMachineArguments = {
+        collection_name: this.collection.name,
+        collection_description: this.collection.description,
+        baseuri: this.collection.baseURL,
+        royalty_payee_address: this.collection.royalty_payee_address,
+        royalty_points_denominator: 1000,
+        royalty_points_numerator: this.collection.royalty_percentage * 10,
+        presale_mint_time: mintTime,
+        public_sale_mint_time: mintTime + 1,
+        presale_mint_price: mint_price,
+        public_sale_mint_price: mint_price,
+        total_supply: 1,
+        public_mint_limit: this.collection.public_mint_limit,
+        is_open_edition: true,
+        coinType: this.collection.coinType,
+        isRandom: true,
+        
+      };
+      
+
+      const res = await createCollectionV2(candyMachineArguments);
+
+      this.collection.resource_account = res.resourceAccount;
+      this.collection.txnhash = res.transactionHash;
     },
+
+    async uploadImageAndMetadata() {
+      const aptRes = await this.$store.dispatch(
+        "walletStore/getAptForFileUpload"
+      );
+
+      const transactionRes = await this.$store.dispatch(
+        "walletStore/signTransactionForFileUpload",
+        aptRes.requiredBalance
+      );
+
+      if (!transactionRes.success && !transactionRes.hash) {
+        throw new Error("Transaction Not Successful Please Try Again");
+      }
+      const fileExtension = this.getFileExtension(this.file.name);
+      let metaUri;
+      if (this.checkVideo === true) {
+        const res = await uploadAndCreateVideoFile(this.file, this.thumbnail, {
+          name: this.collection.tokenName,
+          description: this.collection.tokenDesc,
+          attributes: this.collection.attributes,
+        });
+        metaUri = res.metadata + "/";
+        const videoUri = res.video + "/0." + fileExtension;
+        return {
+          metaUri: metaUri,
+          videoUri: videoUri,
+          imageUri: res.image,
+        };
+      } else {
+        metaUri =
+          (await uploadAndCreateFile(this.file, {
+            name: this.collection.tokenName,
+            description: this.collection.tokenDesc,
+            attributes: this.collection.attributes,
+          })) + "/";
+      }
+      return metaUri;
+    }, //changed
     checkFileType(fileName: any) {
       if (!fileName) {
         return false;
@@ -1395,6 +1908,7 @@ export default {
       formData.append("public_sale_price", tempCollection.public_sale_price);
       formData.append("whitelist_price", tempCollection.whitelist_price);
       formData.append("twitter", tempCollection.twitter);
+      formData.append("value", tempCollection.attributes.value);
       formData.append("discord", tempCollection.discord);
       formData.append("website", tempCollection.website);
       formData.append("instagram", tempCollection.instagram);
@@ -1453,37 +1967,37 @@ export default {
 
         draftData.candy_id = this.collection.candy_id;
 
-        try {
-          draftData.phases = JSON.parse(draftData.phases);
-        } catch {
-          draftData.phases = [];
-        }
+        // try {
+        //   draftData.phases = JSON.parse(draftData.phases);
+        // } catch {
+        //   draftData.phases = [];
+        // }
 
         this.collection = draftData;
 
-        this.collection.phases.map((phase: any) => {
-          phase.mint_time = new Date(phase.mint_time);
-        });
+        // this.collection.phases.map((phase: any) => {
+        //   phase.mint_time = new Date(phase.mint_time);
+        // });
 
-        this.folders.map((folder: any) => {
-          // if (folder.metadata.baseURI === this.collection.baseURL) {
+        // this.folders.map((folder: any) => {
+        //   // if (folder.metadata.baseURI === this.collection.baseURL) {
 
-          if (folder.metadataBaseURI === this.collection.baseURL) {
-            this.baseURL = folder.folder_name;
-          }
-        });
+        //   if (folder.metadataBaseURI === this.collection.baseURL) {
+        //     this.baseURL = folder.folder_name;
+        //   }
+        // });
 
         // this.whitelistTBD = JSON.parse(this.collection.whitelistTBD)
         //   ? true
         //   : false;
-        this.whitelistTBD = this.collection.whitelist_sale_time ? false : true;
+        // this.whitelistTBD = this.collection.whitelist_sale_time ? false : true;
         this.publicSaleTBD = this.collection.public_sale_time ? false : true;
 
-        if (this.collection.whitelist_sale_time) {
-          this.collection.whitelist_sale_time = new Date(
-            this.collection.whitelist_sale_time
-          );
-        }
+        // if (this.collection.whitelist_sale_time) {
+        //   this.collection.whitelist_sale_time = new Date(
+        //     this.collection.whitelist_sale_time
+        //   );
+        // }
 
         if (this.collection.public_sale_time) {
           this.collection.public_sale_time = new Date(
@@ -1497,12 +2011,12 @@ export default {
     async saveDraft() {
       try {
         const formData = new FormData();
-        const selectedFolder = this.folders.find(
-          (folder: { folder_name: any }) => folder.folder_name === this.baseURL
-        );
-        if (selectedFolder) {
-          this.collection.baseURL = selectedFolder.metadata.baseURI;
-        }
+        // const selectedFolder = this.folders.find(
+        //   (folder: { folder_name: any }) => folder.folder_name === this.baseURL
+        // );
+        // if (selectedFolder) {
+        //   this.collection.baseURL = selectedFolder.metadata.baseURI;
+        // }
 
         const tempCollection = structuredClone(this.collection);
 
@@ -1571,6 +2085,9 @@ export default {
         return getCoinType("APT");
       }
     },
+    getName() {
+      return "Create events";
+    },
   },
   async mounted() {
     if (this.draft) {
@@ -1583,7 +2100,7 @@ export default {
         ? "642aeb3da50447f2631f38f3"
         : "64e88318505087cecc568176"
     );
-
+    console.log(folderRes);
     folderRes.data.folderInfo.metadataBaseURI =
       folderRes.data.folderInfo.metadata.baseURI;
     folderRes.data.folderInfo.metadata = 2;
@@ -1591,7 +2108,7 @@ export default {
     this.folders.push(folderRes.data.folderInfo);
 
     const res = await getAllFolder(this.$store.state.userStore.user.user_id);
-
+    console.log(res);
     res.data.folderInfo.map((folder: any) => {
       // if (folder.metadata.baseURI) {
 
@@ -1599,11 +2116,12 @@ export default {
         this.folders.push(folder);
       }
     });
-
+    console.log(this.draft);
     if (this.draft) {
       await this.setCollectionDataFromDraft();
     }
     this.loading = false;
+    console.log(this.collection, "this.draft");
   },
   watch: {
     whitelistTBD() {
@@ -1624,6 +2142,16 @@ export default {
 };
 </script>
 <style scoped>
+.upload-bar {
+  margin: 0px 0px 30px 0px;
+  width: 100%;
+  border: 2px dashed #d9d9d9;
+}
+
+.v-stepper_content {
+  padding: 0px !important;
+}
+
 .image-collection {
   display: none;
   background-color: #878787;
@@ -1665,5 +2193,9 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.hide {
+  display: none;
 }
 </style>
