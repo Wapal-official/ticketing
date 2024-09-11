@@ -1,6 +1,6 @@
 <template>
   <section
-    class="swiper mySwiper tw-w-full tw-container tw-flex"
+    class="swiper mySwiper tw-w-full tw-container tw-flex tw-flex-col lg:tw-flex-row"
     ref="swiper"
     v-if="!loading"
   >
@@ -25,7 +25,7 @@
     </div>
 
     <div
-      class="tw-w-4/5 tw-mx-auto tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-4 tw-mr-10 tw-mr-[40px] tw-mb-3 lg:tw-pt-6 lg:tw-pb-15 2xl:tw-pb-24 1xl:!tw-max-w-[1320px] tw-self-end tw-z-[4] tw-relative"
+      class="tw-w-4/5 tw-mx-auto tw-justify-end tw-flex tw-flex-row tw-items-center tw-gap-4 tw-mr-10 tw-mr-[40px] tw-mb-3 lg:tw-pt-6 lg:tw-pb-15 2xl:tw-pb-24 1xl:!tw-max-w-[1320px] tw-self-end tw-z-[4] tw-relative"
     >
       <button
         class="tw-w-12 tw-h-12 tw-border tw-border-solid tw-border-dark-3 tw-rounded-full tw-transition-all tw-duration-150 tw-ease-linear tw-flex tw-flex-col tw-items-center tw-justify-center tw-group hover:tw-bg-dark-0"
