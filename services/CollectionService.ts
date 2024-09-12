@@ -269,6 +269,31 @@ export const getOwnedCollectionOfUser = async (
   return 0;
 };
 
+export const ticketCollectionUri = async (
+
+  collection_name: string
+) => {
+  console.log(collection_name);
+  const res = await axios.post(`${process.env.GRAPHQL_URL}`, {
+    operationName: "SingleCollectionOfUser",
+    query: `
+    query SingleCollectionOfUser {
+      current_collections_v2(where: {collection_name: {_eq: "${collection_name}"}}) {
+    uri
+  }
+    }
+    `,
+  });
+
+  // const data = res.data.data.current_collection_ownership_v2_view;
+
+  // if (data[0]) {
+  //   return data[0].distinct_tokens;
+  // }
+
+  return res.data.data.current_collections_v2[0].uri;
+};
+
 export const sortPhases = (phases: any[]) => {
   const sortedPhases = phases.sort((firstPhase: any, secondPhase: any): any => {
     return (
