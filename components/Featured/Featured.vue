@@ -3,7 +3,7 @@
     class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-24 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[7em] lg:tw-pb-20 lg:tw-px-28 1xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px] 2xl:tw-pt-[5.0em]"
   >
     <div
-      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center lg:tw-justify-start xl:tw-gap-[4.5em] tw-h-auto"
+      class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center xl:tw-gap-[4.5em] tw-h-auto"
     >
       <div style="position: relative">
         <div
@@ -138,12 +138,7 @@
 
         <div class="tw-text-dark-0 tw-pb-4 description" 
           id="markup-desc">
-          <p>This</p>
-          <h2>is</h2>
-          <span>Made</span>
-          <ol>
-            <li>Static Data</li>
-          </ol>
+          <p> {{ collectionDescription }}</p>
           <!-- readmore  -->
         </div>
         <button class="read-more-btn" @click="redirectCollection">
@@ -392,6 +387,7 @@
 <script lang="ts">
 import { setSoldOut } from "@/services/CollectionService";
 import imageNotFound from "@/utils/imageNotFound";
+import { ticketCollectionUri } from "@/services/CollectionService";
 import {
   mintCollection,
   anotherCoinMintCollection,
@@ -461,6 +457,7 @@ export default {
       publicSaleTime: '',
       formattedDate: '',
       formattedTime: '',
+      collectionDescription: '',
     };
   },
   methods: {
@@ -977,6 +974,14 @@ export default {
         const { date, time } = this.formatDateTime(this.publicSaleTime);
         this.formattedDate = date;
         this.formattedTime = time;
+        const collection_name = await ticketCollectionUri(this.collection.name);
+        const res = await this.$axios.get(collection_name);
+        console.log(res)
+
+      // Assign only the description to the data property
+      this.collectionDescription = res.data.description;
+
+      console.log("Collection_name", collection_name)
       }
 
       if (this.collection.username === "proudlionsclub") {

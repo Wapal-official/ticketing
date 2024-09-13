@@ -1,5 +1,5 @@
-<!-- <template>
-  <section class="tw-w-full tw-bg-dark-8 tw-py-14 tw-min-h-[500px]" id="all-editions">
+<template>
+  <!-- <section class="tw-w-full tw-bg-dark-8 tw-py-14 tw-min-h-[500px]" id="all-editions">
     <div class="tw-container tw-mx-auto tw-px-8 xl:tw-px-[3.75rem]">
       <div
         class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-justify-between md:tw-items-center tw-pb-8"
@@ -41,9 +41,9 @@
         ></div>
       </div>
     </div>
-  </section>
+  </section> -->
 </template>
-<script lang="ts">
+<!-- <script lang="ts">
 import { getAllEditions } from "@/services/EditionService";
 export default {
   data() {

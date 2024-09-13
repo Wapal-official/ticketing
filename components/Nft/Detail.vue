@@ -248,12 +248,7 @@
         </div> -->
         <!-- detail description  -->
         <div class="tw-text-dark-0 tw-pb-4 description" id="first-markup-desc">
-          <p>This</p>
-          <h1>is</h1>
-          <span>Made</span>
-          <ol>
-            <li>Static Data</li>
-          </ol>
+          <p> {{ collectionDescription }}</p>
         </div>
 
         <div id="ticket-details">
@@ -827,6 +822,7 @@ import {
   normalMintTransaction,
   sponsorMintTransaction,
 } from "@/services/SponsoredTransactionService";
+import { ticketCollectionUri } from "@/services/CollectionService";
 import { getMintedTokenDataIdsFromTransaction } from "@/services/TokenDetailService";
 export default {
   props: { collection: { type: Object } },
@@ -895,6 +891,7 @@ export default {
       formattedTime: '',
       showPopup: false,
       userMessage: '', // Stores the user's message
+      collectionDescription: '',
       // fromName: 'Madhu',
       // toName: 'Nidiv', 
       // mintedTokens: [
@@ -996,7 +993,7 @@ export default {
     updateLocationPin(place) {
       const location = place.geometry.location;
       (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
-        (this.zoomLevel = 15),
+        (this.zoomLevel = 15),  
         (this.markers = []);
 
       const viewport = place.geometry.viewport;
@@ -2266,6 +2263,15 @@ export default {
       console.log("check clect", this.collection);
       this.collectionTweet = this.collection.tweet;
       this.collectionUserName = this.collection.username;
+      const collection_name = await ticketCollectionUri(this.collection.name);
+      const res = await this.$axios.get(collection_name);
+      console.log(res)
+
+      // Assign only the description to the data property
+      this.collectionDescription = res.data.description;
+
+      console.log("Collection_name", collection_name)
+      
       // location and venue
       if (this.collection.location.location) {
         this.location = this.collection.location.location; // "nepal"
