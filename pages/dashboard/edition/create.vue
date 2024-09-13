@@ -324,7 +324,7 @@
               class="tw-flex tw-flex-col tw-gap-6 tw-items-start tw-justify-between tw-w-full md:tw-flex-row"
             >
               <!-- <ValidationProvider
-                    class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
+                    class="tw-flex hidden tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
                     rules="required"
                     v-slot="{ errors }"
                   >
@@ -382,7 +382,7 @@
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
             v-if="collection.type !== '1-1'"
           >
-            <ValidationProvider
+            <!-- <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
               rules="required"
               v-slot="{ errors }"
@@ -394,7 +394,7 @@
                 placeholder="Eg. 10"
               />
               <div class="tw-text-red-600">{{ errors[0] }}</div>
-            </ValidationProvider>
+            </ValidationProvider> -->
             <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 tw-w-full"
               rules="required"
@@ -1332,7 +1332,7 @@ export default {
           ].includes(extension)
         : false;
     },
-    async   submit() {
+    async  submit() {
       const validate = await this.$refs.attributeForm.validate();
 
       if (!validate) {
@@ -1621,6 +1621,8 @@ export default {
         formData.append("website", tempCollection.website);
         formData.append("instagram", tempCollection.instagram);
         formData.append("resource_account", tempCollection.resource_account);
+        formData.append("value", tempCollection.attributes.value);
+        formData.append("traitType", tempCollection.attributes.trait_type);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify([]));
@@ -1642,7 +1644,13 @@ export default {
         formData.append("seedz", JSON.stringify(tempCollection.seedz));
         formData.append("coin_type", tempCollection.coinType);
 
+        console.log("Form Data Entries:");
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ': ' + pair[1]);
+  }
+
         const res = await createCollection(formData);
+        console.log("formData", res);
 
         this.$toast.showMessage({
           message: "Open Event Created Successfully",
@@ -1763,6 +1771,7 @@ export default {
       // formData.append("supply", tempCollection.supply);
       formData.append("tokenName", tempCollection.tokenName);
       formData.append("tokenDesc", tempCollection.tokenDesc);
+      formData.append("traitType", tempCollection.attributes.trait_type);
       formData.append("value", tempCollection.attributes.value);
       formData.append("public_sale_price", tempCollection.public_sale_price);
       formData.append("whitelist_price", tempCollection.whitelist_price);
