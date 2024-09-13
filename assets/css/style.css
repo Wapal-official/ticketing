@@ -616,6 +616,11 @@ input:disabled {
   font-style: italic;
 }
 
+
+#first-markup-desc p{
+  font-size: 16px;
+}
+
 /* Readmore */
 #markup-desc {
   width: 532px;
