@@ -138,10 +138,25 @@
 
         <div class="tw-text-dark-0 tw-pb-4 description" 
           id="markup-desc">
-          <p> {{ collectionDescription }}</p>
+          <p ref="descText"> 
+            {{ collectionDescription }}
+          </p>
           <!-- readmore  -->
         </div>
-        <button class="read-more-btn" @click="redirectCollection">
+      <!--         
+        <div class="tw-text-dark-0 tw-pb-4 description" 
+          id="markup-desc">
+          <p ref="descText"> 
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
+            Voluptate aspernatur aut facere sit veritatis, nostrum dolor sint iste iusto sunt corporis distinctio 
+            tempora, pariatur placeat, consectetur maiores laborum consequatur dolorem.
+          </p>
+        </div> -->
+        <button 
+          class="read-more-btn" 
+          @click="redirectCollection"
+          v-if="isOverflowing"
+          >
           Read More...
         </button>
         
@@ -458,6 +473,7 @@ export default {
       formattedDate: '',
       formattedTime: '',
       collectionDescription: '',
+      isOverflowing: false        // Boolean to control the display of 'Read More' button
     };
   },
   methods: {
@@ -580,6 +596,17 @@ export default {
     },
     redirectCollection(){
       this.$router.push(`/nft/${this.collection.username}`);
+    },
+    checkOverflow() {
+      // Get the p element using the ref
+      const descElement = this.$refs.descText;
+      
+      // Check if the content height exceeds the max-height (72px)
+      if (descElement.scrollHeight > 72) {
+        this.isOverflowing = true;
+      } else {
+        this.isOverflowing = false;
+      }
     },
     async mintCollection() {
       try {
@@ -982,6 +1009,7 @@ export default {
       this.collectionDescription = res.data.description;
 
       console.log("Collection_name", collection_name)
+      this.checkOverflow();
       }
 
       if (this.collection.username === "proudlionsclub") {
@@ -1097,6 +1125,10 @@ export default {
       console.log(error);
       this.loading = true;
     }
+  },
+  updated() {
+    // Run the overflow check every time the content updates
+    this.checkOverflow();
   },
   beforeDestroy() {
     clearInterval(this.progressInterval);
