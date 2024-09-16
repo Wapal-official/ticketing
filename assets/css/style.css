@@ -624,30 +624,29 @@ input:disabled {
 /* Readmore */
 #markup-desc {
   width: 532px;
-  max-height: 72px;
+  max-height: 116px;
   padding: 14px 0px 14px 4px;
   overflow-y: hidden;
   resize: none;
   position: relative; /* Added to position the button absolutely within this container */
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* Limit to 3 lines */
+  -webkit-box-orient: vertical;
 }
 
-.read-more-btn {
-  padding-left: 4px;
-  color: #8EE3FB;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 400;
-  text-align: center;
+.read-more-link {
+  color: #8EE3FB !important;;
+  cursor: pointer !important;;
   text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+}
+
+.read-more-link:hover {
+  text-decoration: underline;
 }
 /* Showing Details   */
 #first-markup-desc{
   height: auto;
+  width: auto;
 }
 
 #ticket-details .icon-box{
@@ -667,6 +666,7 @@ input:disabled {
 #ticket-details .icon-box.venue img{
   margin-right: auto;
   margin-left: auto;
+  max-width: none;
 }
 
 #ticket-details .box{

@@ -136,14 +136,31 @@
           {{ collection.description }}
         </div> -->
 
+
+        <!-- readmore  -->
         <div class="tw-text-dark-0 tw-pb-4 description" 
           id="markup-desc">
-          <p> {{ collectionDescription }}</p>
-          <!-- readmore  -->
+           <!-- Display the truncated description with "Read More" link inside -->
+          <p ref="descText"
+            v-html="truncatedDescription"> 
+          </p>
         </div>
-        <button class="read-more-btn" @click="redirectCollection">
+              
+        <!-- <div class="tw-text-dark-0 tw-pb-4 description" 
+          id="markup-desc">
+          <p ref="descText"> 
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
+            Voluptate aspernatur aut facere sit veritatis, nostrum dolor sint iste iusto sunt corporis distinctio 
+            tempora, pariatur placeat, consectetur maiores laborum consequatur dolorem.
+          </p>
+        </div> -->
+        <!-- <button 
+          class="read-more-btn" 
+          @click="redirectCollection"
+          v-if="isOverflowing"
+          >
           Read More...
-        </button>
+        </button> -->
         
         
         <div id="ticket-details">
@@ -458,6 +475,9 @@ export default {
       formattedDate: '',
       formattedTime: '',
       collectionDescription: '',
+      expanded: false,
+      truncatedDescription: '',   // Truncated description
+      maxLength: 150              // Maximum length before truncating
     };
   },
   methods: {
@@ -577,6 +597,40 @@ export default {
       setTimeout(() => {
         this.showEndInTimer = true;
       }, 1);
+    },
+    async fetchData() {
+      try {
+        // Replace with your API call to get dynamic content
+        const collection_name = await ticketCollectionUri(this.collection.name);
+        const res = await this.$axios.get(collection_name);
+        this.collectionDescription = res.data.description; // Update with dynamic content
+        
+        this.updateTruncatedDescription();  // Update description after fetching data
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    },
+    updateTruncatedDescription() {
+      if (this.collectionDescription.length > this.maxLength) {
+        const truncated = this.collectionDescription.slice(0, this.maxLength) + '...';
+        this.truncatedDescription = `${truncated} <a href="#" class="read-more-link">Read More</a>`;
+        this.$nextTick(() => {
+          // Add event listener after the DOM is updated
+          this.addReadMoreListener();
+        });
+      } else {
+        this.truncatedDescription = this.collectionDescription; // Show full description if it's short
+      }
+    },
+    addReadMoreListener() {
+      const readMoreLink = this.$el.querySelector('.read-more-link');
+      if (readMoreLink) {
+        // Type the event parameter as MouseEvent
+        readMoreLink.addEventListener('click', (event: MouseEvent) => {
+          event.preventDefault();
+          this.redirectCollection();
+        });
+      }
     },
     redirectCollection(){
       this.$router.push(`/nft/${this.collection.username}`);
@@ -974,15 +1028,25 @@ export default {
         const { date, time } = this.formatDateTime(this.publicSaleTime);
         this.formattedDate = date;
         this.formattedTime = time;
-        const collection_name = await ticketCollectionUri(this.collection.name);
-        const res = await this.$axios.get(collection_name);
-        console.log(res)
+      //   const collection_name = await ticketCollectionUri(this.collection.name);
+      //   const res = await this.$axios.get(collection_name);
+      //   console.log(res)
 
-      // Assign only the description to the data property
-      this.collectionDescription = res.data.description;
+      // // Assign only the description to the data property
+      // this.collectionDescription = res.data.description;
 
-      console.log("Collection_name", collection_name)
-      }
+      // console.log("Collection_name", collection_name)
+      // this.checkOverflow();
+
+      // Static data for testing
+      // this.collectionDescription = `Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
+      //   Voluptate aspernatur aut facere sit veritatis, nostrum dolor sint iste iusto sunt corporis distinctio 
+      //   tempora, pariatur placeat, consectetur maiores laborum consequatur dolorem.`;
+
+      // this.updateTruncatedDescription();
+  }
+      // For dynamic data for testing
+      this.fetchData();
 
       if (this.collection.username === "proudlionsclub") {
         this.MARKETPLACE_URL = `${this.MARKETPLACE_URL}/collection/proud-lions-club`;
@@ -1098,6 +1162,9 @@ export default {
       this.loading = true;
     }
   },
+  // updated() {
+  //   this.checkOverflow();
+  // },
   beforeDestroy() {
     clearInterval(this.progressInterval);
   },
