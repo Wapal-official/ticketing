@@ -1,11 +1,11 @@
 <template>
   <div v-if="!loading">
     <div
-      class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-w-[90%] lg:tw-pt-[5.5em] lg:tw-pb-[7.5em] 1xl:tw-w-[4/5] 1xl:!tw-max-w-[1100px] tw-flex"
+      class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-8 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-w-[90%] lg:tw-pt-[5.5em] lg:tw-pb-[7.5em] 1xl:tw-w-[4/5] 1xl:!tw-max-w-[1100px] lg:tw-flex"
       v-if="!loading"
     >
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
+        class="tw-w-full sm:tw-flex sm:tw-flex-col sm:tw-items-center sm:tw-justify-center tw-mb-10 tw-gap-6 tw-place-items-center lg:tw-mb-0 lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
       >
         <div class="card-min-width" style="position: relative">
           <div
@@ -109,7 +109,7 @@
                 <!-- gmap  -->
                 <div
                   style="
-                    width: 440px;
+                    width: 100%;
                     height: 195px;
                     border-radius: 8px;
                     overflow: hidden;
@@ -158,7 +158,7 @@
           </div>
         </div>
         <div>
-          <h1 class="tw-text-white tw-text-[2.5rem] tw-font-bold">
+          <h1 class="tw-text-white tw-font-bold tw-text-2xl sm:tw-text-3xl md:tw-text-4xl lg:tw-text-[2.5rem]">
             {{ collection.name }}
           </h1>
         </div>
