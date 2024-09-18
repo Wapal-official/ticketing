@@ -12,7 +12,7 @@ export const getOpenEditionsOfUser = async ({
   user_id: string;
 }) => {
   const res = await creatorStudioRequest.get(
-    `/api/collection/editions?user_id=${user_id}&edition=open-edition&page=${page}&limit=${limit}`
+    `/api/collection/editions?user_id=${user_id}&edition=ticket-open-edition&page=${page}&limit= 100`
   );
 
   const editions = res.data.data;
@@ -21,6 +21,7 @@ export const getOpenEditionsOfUser = async ({
     edition.image = getCachedUrlOfImage(edition.image);
   });
 
+  console.log("editions", editions)
   return editions;
 };
 

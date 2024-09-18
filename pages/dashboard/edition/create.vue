@@ -194,8 +194,8 @@
                 class="tw-border-white"
               />
             </div>
-            <div class="tw-w-auto">
-              <button-primary title="Next" @click="validateFormForNextStep" />
+            <div class="tw-w-auto ">
+              <button-primary class="!tw-text-black" title="Next" @click="validateFormForNextStep" />
             </div>
           </div>
         </ValidationObserver>
@@ -491,8 +491,8 @@
                 class="tw-border-white"
               />
             </div>
-            <div class="tw-w-auto">
-              <button-primary title="Next" @click="submit" />
+            <div class="tw-w-auto !tw-text-black">
+              <button-primary class="!tw-text-black" title="Next" @click="submit" />
             </div>
           </div>
         </ValidationObserver>
@@ -831,7 +831,7 @@ export default {
         instagram: "",
         discord: "",
         website: "",
-        type: "open-edition", //changed
+        type: "ticket-open-edition", //changed
         public_mint_limit: "", //changed
         seedz: false,
         coinType: "APT",
@@ -871,7 +871,7 @@ export default {
       nftType: [
         //{ name: "One on One", id: "1-1" },
         // { name: "Limited Edition", id: "limited-edition" },
-        { name: "open-edition", id: "open-edition" },
+        { name: "ticket-open-edition", id: "open-edition" },
       ],
       folderInfo: null,
       folders: [],
@@ -930,7 +930,7 @@ export default {
         case "1-1":
           selectedType = "1/1";
           break;
-        case "open-edition":
+        case "ticket-open-edition":
           selectedType = "open-edition";
           break;
         case "limited-edition":
@@ -1345,7 +1345,7 @@ export default {
         case "1-1":
           await this.createOneOnOneCollection();
           break;
-        case "open-edition":
+        case "ticket-open-edition":
           await this.createOpenEdition();
           break;
         case "limited-edition":
@@ -1612,6 +1612,7 @@ export default {
           "whitelist_sale_time",
           tempCollection.public_sale_mint_time
         );
+        formData.append("isApproved", "true");
         formData.append("public_sale_time", tempCollection.public_sale_time);
         formData.append("public_sale_price", tempCollection.public_sale_price);
         formData.append("whitelist_price", tempCollection.public_sale_price);
@@ -1657,7 +1658,7 @@ export default {
           error: false,
         });
 
-        this.$router.push("/dashboard/edition/under-review");
+        this.$router.push("/dashboard/edition/open-edition");
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });
@@ -1782,7 +1783,7 @@ export default {
       formData.append("candy_id", tempCollection.candy_id);
       formData.append("phases", JSON.stringify(tempCollection.phases));
       formData.append("attributes", JSON.stringify(tempCollection.attributes));
-      formData.append("isApproved", "false");
+      formData.append("isApproved", "true");
       formData.append("isEdition", JSON.stringify(false));
       formData.append("coin_type", tempCollection.coinType);
       formData.append("tweet", tempCollection.tweet);
