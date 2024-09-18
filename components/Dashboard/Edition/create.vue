@@ -194,8 +194,8 @@
                 class="tw-border-white"
               />
             </div>
-            <div class="tw-w-auto">
-              <button-primary title="Next" @click="validateFormForNextStep" />
+            <div class="tw-w-auto !tw-text-black">
+              <button-primary class="!tw-text-black" title="Next" @click="validateFormForNextStep" />
             </div>
           </div>
         </ValidationObserver>
@@ -497,8 +497,8 @@
                 class="tw-border-white"
               />
             </div>
-            <div class="tw-w-auto">
-              <button-primary title="Next" @click="submit" />
+            <div class="tw-w-auto !tw-text-black">
+              <button-primary class="!tw-text-black" title="Next" @click="submit" />
             </div>
           </div>
         </ValidationObserver>
@@ -837,7 +837,7 @@ export default {
         instagram: "",
         discord: "",
         website: "",
-        type: "open-edition", //changed
+        type: "ticket-open-edition", //changed
         public_mint_limit: "0", //changed
         seedz: false,
         coinType: "APT",
@@ -878,7 +878,7 @@ export default {
       nftType: [
         //{ name: "One on One", id: "1-1" },
         // { name: "Limited Edition", id: "limited-edition" },
-        { name: "open-edition", id: "open-edition" },
+        { name: "ticket-open-edition", id: "open-edition" },
       ],
       folderInfo: null,
       folders: [],
@@ -941,7 +941,7 @@ export default {
         case "1-1":
           selectedType = "1/1";
           break;
-        case "open-edition":
+        case "ticket-open-edition":
           selectedType = "open-edition";
           break;
         case "limited-edition":
@@ -1346,7 +1346,7 @@ selectImage(file) {
       }
       if (!this.collection.type) {
       console.warn("Collection type is undefined, setting default to open-edition");
-      this.collection.type = "open-edition";
+      this.collection.type = "ticekt-open-edition";
     }
     if (!this.collection.coinType) {
       console.warn("Coin type is undefined, setting default to APT");
@@ -1364,7 +1364,7 @@ selectImage(file) {
         case "1-1":
           await this.createOneOnOneCollection();
           break;
-        case "open-edition":
+        case "ticekt-open-edition":
           await this.createOpenEdition();
           break;
         case "limited-edition":
@@ -1669,7 +1669,7 @@ selectImage(file) {
           error: false,
         });
 
-        this.$router.push("/dashboard/edition/under-review");
+        this.$router.push("/dashboard/edition/open-edition");
       } catch (error) {
         console.log(error);
         this.$toast.showMessage({ message: error, error: true });

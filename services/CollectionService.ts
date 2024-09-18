@@ -72,7 +72,7 @@ export const createCollection = async (formData: any) => {
   console.log("res create formData", formData);
 
   const res = await creatorStudioRequest.post(
-    `/api/collection/create/`,
+    `/api/collection/create?edition=ticket-open-edition&isApproved=true&isFeatured=true`,
     formData,
     config
   );

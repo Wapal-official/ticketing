@@ -1,11 +1,11 @@
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
     <dashboard-page-heading heading="Events" v-if="showTabs" />
-    <launchpad-guide
+    <!-- <launchpad-guide
       v-if="showLaunchpadGuide"
       title="Collection Guide"
       itemLink="https://docs.wapal.io/launchpad-overall-guide/create-a-collection"
-    ></launchpad-guide>
+    ></launchpad-guide> -->
     <div
       class="tw-w-full tw-pb-6 tw-pt-2 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-center md:tw-justify-between"
       v-if="showTabs"
@@ -38,16 +38,16 @@
 </template>
 
 <script lang="ts">
-import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
+// import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
 
 export default {
   layout: "dashboard",
   components: {
-    LaunchpadGuide,
+    // LaunchpadGuide,
   },
   data() {
     return {
-      launchpadTabs: ["Live", "Under Review", "Draft"],
+      launchpadTabs: ["Live", "Draft"],
       launchpadTab: 0,
     };
   },
@@ -56,7 +56,7 @@ export default {
       if (tab === 0) {
         this.$router.push("/dashboard/collection/live");
       } else if (tab === 1) {
-        this.$router.push("/dashboard/collection/under-review");
+        this.$router.push("/dashboard/collection/draft");
       } else {
         this.$router.push("/dashboard/collection/draft");
       }
@@ -71,7 +71,7 @@ export default {
       this.launchpadTab = 0;
     } else if (this.$route.path === "/dashboard/collection/live") {
       this.launchpadTab = 0;
-    } else if (this.$route.path === "/dashboard/collection/under-review") {
+    } else if (this.$route.path === "/dashboard/collection/draft") {
       this.launchpadTab = 1;
     } else {
       this.launchpadTab = 2;
@@ -91,11 +91,11 @@ export default {
     path() {
       return this.$route.path;
     },
-    showLaunchpadGuide() {
-      return !/^\/dashboard\/collection\/edit(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i.test(
-        this.$route.path
-      );
-    },
+    // showLaunchpadGuide() {
+    //   return !/^\/dashboard\/collection\/edit(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i.test(
+    //     this.$route.path
+    //   );
+    // },
   },
   watch: {
     path() {

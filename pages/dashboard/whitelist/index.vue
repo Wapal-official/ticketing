@@ -68,7 +68,7 @@ import Swiper from "swiper/swiper-bundle.min";
 
 import "swiper/swiper-bundle.min.css";
 
-import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
+// import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
 import {
   getCollectionInCreatorStudio,
   getCollectionsOfUser,
@@ -81,7 +81,7 @@ import { getCollectionDetails } from "@/services/AptosCollectionService";
 export default {
   layout: "dashboard",
   components: {
-    LaunchpadGuide,
+    // LaunchpadGuide,
   },
   data() {
     return {

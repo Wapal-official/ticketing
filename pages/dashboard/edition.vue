@@ -2,10 +2,10 @@
   <div class="tw-w-full">
     <div v-if="this.$route.path !== '/dashboard/edition/create'">
       <h1 class="tw-text-white tw-text-3xl">NFTs</h1>
-      <launchpad-guide
+      <!-- <launchpad-guide
         title="Edition Guide"
         itemLink="https://docs.wapal.io/launchpad-overall-guide/create-editions"
-      ></launchpad-guide>
+      ></launchpad-guide> -->
       <div
         class="tw-pb-6 tw-pt-3 tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4 md:tw-flex-row md:tw-items-center md:tw-justify-between"
       >
@@ -17,7 +17,7 @@
           />
         </div>
         <div
-          class="tw-w-1/5 tw-flex tw-flex-row tw-items-center tw-justify-end"
+          class="tw-w-1/5"
         >
           <button-primary
             title="Create"
@@ -37,17 +37,17 @@
   </div>
 </template>
 <script lang="ts">
-import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
+// import LaunchpadGuide from "~/components/Dashboard/launchpadGuide.vue";
 
 export default {
   layout: "dashboard",
   components: {
-    LaunchpadGuide,
+    // LaunchpadGuide,
   },
   data() {
     return {
       launchpadTab: 0,
-      tabs: ["Live", "Under Review", "draft"],
+      tabs: ["Live", "draft"],
     };
   },
   methods: {
@@ -57,7 +57,7 @@ export default {
           this.$router.push("/dashboard/edition/open-edition");
           break;
         case 1:
-          this.$router.push("/dashboard/edition/under-review");
+          this.$router.push("/dashboard/edition/draft");
           break;
         case 2:
           this.$router.push("/dashboard/edition/draft");
@@ -77,7 +77,7 @@ export default {
     } else if (this.$route.path === "/dashboard/edition/open-edition") {
       //changed
       this.launchpadTab = 0;
-    } else if (this.$route.path === "/dashboard/edition/under-review") {
+    } else if (this.$route.path === "/dashboard/edition/draft") {
       this.launchpadTab = 1;
     } else {
       this.launchpadTab = 2;
@@ -99,7 +99,7 @@ export default {
       } else if (this.path === "/dashboard/edition/open-edition") {
         //changed
         this.launchpadTab = 0;
-      } else if (this.path === "/dashboard/edition/under-review") {
+      } else if (this.path === "/dashboard/edition/draft") {
         this.launchpadTab = 1;
       } else {
         this.launchpadTab = 2;

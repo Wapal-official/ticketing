@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <div class="tw-w-full">
     <div class="tw-w-full">
       <dashboard-collection-table
@@ -106,7 +106,7 @@ export default {
         minted: resource.minted,
         total: Infinity, 
         progressPercent: 0, 
-        text: `${resource.minted} Minted`,
+        text: `${resource.minted} Sold`,
         
       };
 
@@ -123,9 +123,9 @@ export default {
     },
   },
 };
-</script> -->
+</script>
 
-<template>
+<!-- <template>
   <div class="tw-w-full">
     <div class="tw-w-full">
       <dashboard-collection-table
@@ -276,4 +276,4 @@ export default {
     this.collections = [];
   },
 };
-</script>
+</script> -->

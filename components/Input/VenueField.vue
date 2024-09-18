@@ -147,11 +147,23 @@
         );
   
         this.autocompleteInstance.addListener("place_changed", async () => {
-          const place = await this.autocompleteInstance.getPlace();
+          const place = this.autocompleteInstance.getPlace();
+          if (place.geometry) {
           this.$emit("input", place.name);
           this.$emit("placeChanged", place);
-        });
-      },
+        } else {
+          this.$emit("input", this.internalValue);
+        }
+      });
+      this.$refs.autocompleteInput.$el.querySelector("input").addEventListener("keydown", this.handleKeyDown);
+    },
+
+    handleKeyDown(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.$emit("input", this.internalValue);
+      }
+    },
       
       getAutocompleteOptions() {
         const options = {
@@ -175,6 +187,11 @@
         }
       },
     },
+    beforeDestroy() {
+    if (this.$refs.autocompleteInput) {
+      this.$refs.autocompleteInput.$el.querySelector("input").removeEventListener("keydown", this.handleKeyDown);
+    }
+  }
   };
   </script>
   
