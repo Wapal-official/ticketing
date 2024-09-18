@@ -256,7 +256,7 @@
 </template>
 
 <script lang="ts">
-import logo from "@/assets/img/logo/logo.svg";
+import logo from "@/assets/img/logo/wapal-ticket.svg";
 import LandingMenu from "@/components/Landing/Navbar/LandingMenu.vue";
 import SearchBar from "@/components/Landing/Navbar/SearchBar.vue";
 import ExploreListItem from "@/components/Landing/Navbar/ExploreListItem.vue";

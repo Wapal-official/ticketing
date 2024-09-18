@@ -32,7 +32,7 @@ export const getAllEditions = async ({
   limit: number;
 }) => {
   const res = await publicRequest.get(
-    `/api/collection/editions?page=${page}&limit=${limit}&edition=open-edition&isApproved=true`
+    `/api/collection/editions?edition=ticket-open-edition&isApproved=true&page=${page}&limit=${limit}`
   );
 
   const editions = res.data.data;
@@ -40,7 +40,7 @@ export const getAllEditions = async ({
   editions.map((edition: any) => {
     edition.image = getCachedUrlOfImage(edition.image);
   });
-
+  console.log(editions,"ticket-open-editions")
   return editions;
 };
 
