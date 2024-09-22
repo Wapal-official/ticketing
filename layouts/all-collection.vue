@@ -41,7 +41,7 @@ export default {
     },
   },
   async mounted() {
-    const res = await getFeaturedCollection(this.page,this.limit);
+    const res = await getFeaturedCollection(this.page, this.limit);
 
     this.collection = res[0];
 

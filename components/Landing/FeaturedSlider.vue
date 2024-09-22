@@ -26,11 +26,10 @@
     <style>
       @media (min-width: 1536px) {
         .xl\:tw-pb-24 {
-          padding-bottom: 7rem; /* 96px (equivalent to tw-pb-24) */       
+          padding-bottom: 7rem;
         }
       }
-      </style>
-
+    </style>
     <div
       class="tw-w-4/5 tw-mx-auto tw-justify-end tw-flex tw-flex-row tw-items-center tw-gap-4 tw-mr-10 tw-mr-[40px] tw-mb-3 lg:tw-pt-6 lg:tw-pb-15 xl:tw-pb-24 1xl:!tw-max-w-[1320px] tw-self-end tw-z-[4] tw-relative"
     >
