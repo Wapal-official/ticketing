@@ -328,7 +328,7 @@ export default {
 
 .selected {
   background-color: #25262b;
-  border: 3px solid #8759ff !important;
+  border: 3px solid #8EE3fB !important;
   transition: 0.3s ease-in-out;
 }
 

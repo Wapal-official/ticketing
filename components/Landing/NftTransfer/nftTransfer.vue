@@ -588,7 +588,7 @@ export default {
   border: 1px solid #25262b;
 }
 .transfer-text {
-  color: #8759ff;
+  color: #8EE3fB;
 }
 
 .sellectAll-text {
