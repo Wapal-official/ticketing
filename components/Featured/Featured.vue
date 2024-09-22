@@ -32,7 +32,8 @@
         ></audio-player>
       </div>
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-center tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em] lg:tw-h-[68vh] xl:tw-h-[68vh]"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-center tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em] lg:tw-h-[68vh] xl:tw-h-[76vh]"
+      >
       <div>
           <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
  
@@ -346,27 +347,28 @@
         </div>
       </div>
     </div>
-    <v-dialog
-      v-model="showConnectWalletModal"
-      content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
-    >
-      <connect-wallet-modal
+    <div>
+        <v-dialog
+        v-model="showConnectWalletModal"
+        content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
+        >
+        <connect-wallet-modal
         message="Please Connect your wallet to Mint"
         @closeModal="showConnectWalletModal = false"
         @walletConnected="displayWalletConnectedMessage"
-      />
-    </v-dialog>
-    <v-dialog
+        />
+      </v-dialog>
+      <v-dialog
       v-model="showShareModal"
       content-class="!tw-w-full md:!tw-w-1/2 lg:!tw-w-[30%]"
       :persistent="true"
-    >
-      <div
-        class="tw-w-full tw-bg-dark-9 tw-text-white tw-px-4 tw-py-4 tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
       >
-        <div
-          class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
-        >
+      <div
+      class="tw-w-full tw-bg-dark-9 tw-text-white tw-px-4 tw-py-4 tw-rounded tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
+      >
+      <div
+      class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
+          >
           <button @click="showShareModal = false">
             <i class="bx bx-x tw-text-xl"></i>
           </button>
@@ -376,28 +378,29 @@
         </div>
         <div class="tw-w-full h-full tw-rounded">
           <img
-            :src="collection.image"
-            class="tw-w-full tw-h-full tw-rounded"
-            :alt="collection.name"
+          :src="collection.image"
+          class="tw-w-full tw-h-full tw-rounded"
+          :alt="collection.name"
           />
         </div>
         <button-primary
-          :fullWidth="true"
-          title="Share on Twitter"
-          :bordered="true"
-          @click="shareOnTwitterAfterMinting"
+        :fullWidth="true"
+        title="Share on Twitter"
+        :bordered="true"
+        @click="shareOnTwitterAfterMinting"
         >
-          <template #prepend-icon>
-            <img
-              :src="xLogo"
-              alt="X"
-              width="32px"
-              height="32px"
-              class="tw-pr-4"
-            /> </template
-        ></button-primary>
-      </div>
-    </v-dialog>
+        <template #prepend-icon>
+          <img
+          :src="xLogo"
+                alt="X"
+                width="32px"
+                height="32px"
+                class="tw-pr-4"
+                /> </template
+                ></button-primary>
+              </div>
+      </v-dialog>
+    </div>
   </div>
 </template>
 <script lang="ts">
