@@ -137,12 +137,11 @@ export const getFeaturedCollection = async (page: number, limit: number) => {
       `${process.env.baseURL}/api/collection/editions?edition=ticket-open-edition&page=${page}&limit=${limit}`
     );
 
-    console.log(res.data);
+    // console.log(res.data);
 
     const collections = res.data.data;
 
     if (collections && Array.isArray(collections)) {
-      // Get only the first 7 items from the collections
       const recentCollections = collections.slice(0, 7);
 
       recentCollections.map((collection: any) => {
@@ -290,7 +289,7 @@ export const ticketCollectionUri = async (
 
   collection_name: string
 ) => {
-  console.log(collection_name);
+  // console.log(collection_name);
   const res = await axios.post(`${process.env.GRAPHQL_URL}`, {
     operationName: "SingleCollectionOfUser",
     query: `

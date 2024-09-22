@@ -33,7 +33,6 @@
       </div>
       <div
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-center tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em] lg:tw-h-[68vh] xl:tw-h-[68vh]"
-      >
       <div>
           <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
  
