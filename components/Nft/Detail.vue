@@ -42,7 +42,7 @@
             <div>
               <div class="tw-flex tw-items-center">
                 <img
-                  src="~/assets/img/logo/logo-vertical.png"
+                  src="~/assets/img/logo/wapal-ticket-logo.svg"
                   alt="Wapal logo"
                   width="32px"
                   height="32px"
@@ -2260,17 +2260,17 @@ export default {
   },
   async mounted() {
     if (this.collection) {
-      console.log("check clect", this.collection);
+      // console.log("check clect", this.collection);
       this.collectionTweet = this.collection.tweet;
       this.collectionUserName = this.collection.username;
       const collection_name = await ticketCollectionUri(this.collection.name);
       const res = await this.$axios.get(collection_name);
-      console.log(res)
+      // console.log(res)
 
       // Assign only the description to the data property
       this.collectionDescription = res.data.description;
 
-      console.log("Collection_name", collection_name)
+      // console.log("Collection_name", collection_name)
       
       // location and venue
       if (this.collection.location.location) {
