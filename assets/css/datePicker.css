@@ -355,12 +355,12 @@
 
 .mx-calendar-content .cell:hover {
     color: #FFF;
-    background-color: #8759ff !important;
+    background-color: #8EE3fB !important;
 }
 
 .mx-calendar-content .cell.active {
     color: #fff;
-    background-color: #8759ff !important;
+    background-color: #8EE3fB !important;
     border-radius: 4px;
 }
 
@@ -431,7 +431,7 @@
 }
 
 .mx-table-date .today {
-    color: #9D80FF !important
+    color: #8EE3FB !important
 }
 
 .mx-table-date .cell.not-current-month {
@@ -521,12 +521,12 @@
 
 .mx-time-column .mx-time-item:hover {
     color: #FFF;
-    background-color: #8759ff !important;
+    background-color: #8EE3fB !important;
 }
 
 .mx-time-column .mx-time-item.active {
     color: #FFF;
-    background-color: #8759ff !important;
+    background-color: #8EE3fB !important;
     font-weight: 700
 }
 
@@ -550,7 +550,7 @@
 
 .mx-time-option.active {
     color: #FFF;
-    background-color: #8759ff;
+    background-color: #8EE3fB;
     font-weight: 700
 }
 

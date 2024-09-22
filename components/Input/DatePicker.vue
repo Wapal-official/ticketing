@@ -278,7 +278,7 @@ export default {
 }
 
 .hour12-tabs.active {
-  background-color: #8759ff;
+  background-color: #8EE3fB;
 }
 ::v-deep .mx-input {
   @apply !tw-h-[40px] !tw-bg-dark-6;
@@ -318,7 +318,7 @@ export default {
 }
 
 .active-color {
-  background: #8759ff;
+  background: #8EE3fB;
   border-radius: 4px;
   max-width: 40px;
   margin: 0 auto;

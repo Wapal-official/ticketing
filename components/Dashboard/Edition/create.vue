@@ -91,8 +91,9 @@
           <GmapMap
             v-bind:center="mapCenter"
             :zoom="14"
-            map-type-id="terrain"
+            map-type-id="roadmap"
             style="width: 500px; height: 300px; border-radius: 3px"
+            :options="{ mapTypeControl: false, streetViewControl: false }"
           >
             <GmapMarker
               v-for="(m, index) in markers"
@@ -293,7 +294,7 @@
             <ValidationProvider
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
               name="mint_price"
-              rules="required"
+              rules="required|numeric"
               v-slot="{ errors }"
             >
               <input-text-field
@@ -301,6 +302,8 @@
                 label="Ticket Price"
                 v-model="collection.public_sale_price"
                 placeholder="Eg. 1"
+                type="number" 
+                min="0"
               >
                 <template #append-icon>
                   <img
@@ -464,10 +467,7 @@
               </div> -->
             </div>
           </div>
-          {{collection.image}}
           <div v-if="file">
-      <p>File: {{ file }}</p>
-      <img :src="file" class="preview-image"/>
     </div>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -1230,7 +1230,6 @@ export default {
   this.thumbnail = { name: null };
     },
 selectImage(file) {
-  console.log("selectImage called with:", file);
   
   if (file instanceof File) {
     this.file = file;
@@ -1257,8 +1256,6 @@ selectImage(file) {
     });
     return;
   }
-
-  console.log("Image set:", this.collection.image);
 },
     thumbnailSelected(file) {
       this.thumbnail = file;
@@ -2042,7 +2039,7 @@ selectImage(file) {
   cursor: pointer;
 }
 .radio-input:checked {
-  background-color: #8759ff;
+  background-color: #8EE3fB;
 }
 .radio-input:checked::before {
   content: " ";

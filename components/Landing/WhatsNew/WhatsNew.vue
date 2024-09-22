@@ -182,7 +182,7 @@ export default {
 }
 
 .active-item {
-  background-color: #8759ff;
+  background-color: #8EE3fB;
   color: #ffffff;
 }
 </style>

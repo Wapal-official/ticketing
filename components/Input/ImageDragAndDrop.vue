@@ -779,8 +779,8 @@ export default {
 }
 
 .btn-border {
-  color: rgb(135 89 255) !important;
-  border: 1px solid rgb(135 89 255) !important;
+  color: #8EE3fB  !important;
+  border: 1px solid #8EE3fB !important;
 }
 /* .resize-icon-holder {
   background-color: #8759ff;
@@ -802,7 +802,7 @@ export default {
 .change-btn {
   display: flex;
   align-items: center;
-  color: #8759ff;
+  color: #8EE3fB;
   padding: 0 12px;
   cursor: pointer;
 }
