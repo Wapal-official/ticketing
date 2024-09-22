@@ -269,7 +269,7 @@
                 <div
                   class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
                   v-if="
-                    collection.edition && collection.edition === 'open-edition'
+                    collection.edition && collection.edition === 'ticket-open-edition'
                   "
                 >
                   <!-- <div class="tw-text-white/70">
@@ -808,7 +808,7 @@ export default {
 
         if (
           !this.collection.isEdition ||
-          this.collection.edition !== "open-edition"
+          this.collection.edition !== "ticket-open-edition"
         ) {
           this.resource.mintedPercent = Math.floor(
             (this.resource.minted / this.resource.total_supply) * 100
@@ -1137,7 +1137,7 @@ export default {
       }
       if (
         !this.collection.isEdition ||
-        this.collection.edition !== "open-edition"
+        this.collection.edition !== "ticket-open-edition"
       ) {
         this.resource.mintedPercent = Math.floor(
           (this.resource.minted / this.resource.total_supply) * 100

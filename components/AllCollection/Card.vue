@@ -36,7 +36,7 @@
       <div class="tw-font-medium">{{ collection?.name }}</div>
       <div
         class="tw-text-dark-2 tw-text-sm tw-font-medium"
-        v-if="collection?.edition && collection?.edition === 'open-edition'"
+        v-if="collection?.edition && collection?.edition === 'ticket-open-edition'"
       >
         {{ minted }}
         Minted
@@ -156,7 +156,7 @@ export default {
 
         if (
           this.collection.edition &&
-          this.collection.edition === "open-edition" &&
+          this.collection.edition === "ticket-open-edition" &&
           new Date(this.collection.candyMachine.public_sale_time).getTime() >
             Date.now()
         ) {
