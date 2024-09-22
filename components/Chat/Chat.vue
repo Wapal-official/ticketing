@@ -119,7 +119,7 @@ export default {
   width: 50px;
   height: 50px;
   border-radius: 100%;
-  background: #8759ff;
+  background: #8EE3fB;
   color: #fff;
   display: flex;
   flex-direction: column;

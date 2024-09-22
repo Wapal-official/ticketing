@@ -17,7 +17,7 @@
           />
         </div>
         <div
-          class="tw-w-1/5"
+          class="tw-w-full md:tw-w-1/5 tw-flex tw-justify-start md:tw-justify-end"
         >
           <button-primary
             title="Create"

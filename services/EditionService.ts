@@ -41,7 +41,7 @@ export const getAllEditions = async ({
   editions.map((edition: any) => {
     edition.image = getCachedUrlOfImage(edition.image);
   });
-
+  console.log(editions,"Edition-data")
   return editions;
 };
 

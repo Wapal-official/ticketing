@@ -110,7 +110,7 @@
                 <i
                   class="bx bxs-badge-check verified-icon verified-icon-small tw-pl-1"
                   v-if="item.isVerified"
-                  style="color: #8759ff !important"
+                  style="color: #8EE3fB !important"
                 ></i>
               </span>
             </div>

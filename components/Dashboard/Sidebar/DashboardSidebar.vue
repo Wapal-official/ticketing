@@ -63,11 +63,14 @@ export default {
       this.$emit("hidden");
     },
     checkCurrentPageRegex(path: string) {
-      if (this.$route.path.includes(path)) {
-        return true;
-      }
-      return false;
-    },
+  // Check for both edition and draft paths
+  if (path === '/dashboard/edition' && 
+     (this.$route.path.includes('/dashboard/edition') || 
+      this.$route.path.includes('/dashboard/draft'))) {
+    return true;
+  }
+  return false;
+},
     getDashboardClass(index: number) {
       return `dashboard-${index + 1}`;
     },

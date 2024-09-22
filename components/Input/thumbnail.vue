@@ -585,7 +585,7 @@ export default {
   border: 1px solid rgb(135 89 255) !important;
 }
 .resize-icon-holder {
-  background-color: #8759ff;
+  background-color: #8EE3fB;
   border-radius: 50%;
   height: 26px;
   width: 26px;

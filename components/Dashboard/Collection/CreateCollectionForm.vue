@@ -1024,7 +1024,7 @@
             class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
           >
             <button-primary
-              title="Create"
+              title="Createe"
               :loading="submitting"
               @click="submitCollection"
             />
@@ -2181,7 +2181,7 @@ export default {
   cursor: pointer;
 }
 .radio-input:checked {
-  background-color: #8759ff;
+  background-color: #8EE3fB;
 }
 .radio-input:checked::before {
   content: " ";

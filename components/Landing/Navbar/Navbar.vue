@@ -256,7 +256,7 @@
 </template>
 
 <script lang="ts">
-import logo from "@/assets/img/logo/logo.svg";
+import logo from "@/assets/img/logo/wapal-ticket.svg";
 import LandingMenu from "@/components/Landing/Navbar/LandingMenu.vue";
 import SearchBar from "@/components/Landing/Navbar/SearchBar.vue";
 import ExploreListItem from "@/components/Landing/Navbar/ExploreListItem.vue";
@@ -346,7 +346,7 @@ export default {
   height: calc(100vh - 95px);
 }
 .transfer-text {
-  color: #8759ff;
+  color: #8EE3fB;
 }
 ::v-deep .v-list-item {
   padding: 0rem 0.375rem !important;
