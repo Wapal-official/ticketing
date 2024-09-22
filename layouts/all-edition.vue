@@ -40,8 +40,7 @@ export default {
   },
   async mounted() {
     await this.checkFeaturedEdition();
-    const res = await getFeaturedCollection();
-
+    const res = await getFeaturedCollection(this.page, this.limit);
     this.collection = res[0];
     if (this.$route.path === "/live-editions") {
       this.tab = 0;
@@ -74,7 +73,7 @@ export default {
       }
     },
     async checkFeaturedEdition() {
-      const res = await getFeaturedCollection();
+      const res = await getFeaturedCollection(this.page, this.limit);
 
       const editions = [];
 

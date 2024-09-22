@@ -33,7 +33,7 @@ export const getAllEditions = async ({
   limit: number;
 }) => {
   const res = await publicRequest.get(
-    `/api/collection/editions?page=${page}&limit=${limit}&edition=open-edition&isApproved=true`
+    `/api/collection/editions?edition=ticket-open-edition&page=${page}&limit=${limit}`
   );
 
   const editions = res.data.data;

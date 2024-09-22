@@ -125,7 +125,7 @@ export default {
       if (currentTime < looniesCollection.candyMachine.public_sale_time) {
         this.collections.push(looniesCollection);
       }
-      const res = await getFeaturedCollection();
+      const res = await getFeaturedCollection(this.page, this.limit);
       this.collections.push(...res);
       this.end = true;
     },

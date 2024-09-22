@@ -131,16 +131,33 @@ export const getCollectionByUsernameInCreatorStudio = async (
   return collection;
 };
 
-export const getFeaturedCollection = async () => {
-  const res = await axios.get(`${process.env.baseURL}/api/collection/featured`);
+export const getFeaturedCollection = async (page: number, limit: number) => {
+  try {
+    const res = await axios.get(
+      `${process.env.baseURL}/api/collection/editions?edition=ticket-open-edition&page=${page}&limit=${limit}`
+    );
 
-  const collections = res.data.collection;
+    console.log(res.data);
 
-  collections.map((collection: any) => {
-    collection.image = getCachedUrlOfImage(collection.image);
-  });
+    const collections = res.data.data;
 
-  return collections;
+    if (collections && Array.isArray(collections)) {
+      // Get only the first 7 items from the collections
+      const recentCollections = collections.slice(0, 7);
+
+      recentCollections.map((collection: any) => {
+        collection.image = getCachedUrlOfImage(collection.image);
+      });
+
+      return recentCollections;
+    } else {
+      console.error("Collections not found or not an array.");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching collections:", error);
+    return [];
+  }
 };
 
 export const getLiveCollections = async (page: number, limit: number) => {
