@@ -1282,7 +1282,7 @@ export default {
 
         if (
           this.collection.isEdition &&
-          this.collection.edition === "open-edition"
+          this.collection.edition === "ticket-open-edition"
         ) {
           return;
         } else {
@@ -2474,7 +2474,7 @@ export default {
         } else {
           if (
             this.collection.isEdition &&
-            this.collection.edition === "open-edition"
+            this.collection.edition === "ticket-open-edition"
           ) {
             return;
           } else {

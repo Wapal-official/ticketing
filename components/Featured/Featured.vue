@@ -32,7 +32,7 @@
         ></audio-player>
       </div>
       <div
-        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em]"
+        class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-center tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em] lg:tw-h-[68vh] xl:tw-h-[65vh]"
       >
       <div>
           <h1 class="tw-text-4xl tw-font-bold tw-tracking-[-0.025em]">
@@ -269,7 +269,7 @@
                 <div
                   class="tw-flex tw-flex-row tw-w-full tw-items-center tw-justify-between"
                   v-if="
-                    collection.edition && collection.edition === 'open-edition'
+                    collection.edition && collection.edition === 'ticket-open-edition'
                   "
                 >
                   <!-- <div class="tw-text-white/70">
@@ -808,7 +808,7 @@ export default {
 
         if (
           !this.collection.isEdition ||
-          this.collection.edition !== "open-edition"
+          this.collection.edition !== "ticket-open-edition"
         ) {
           this.resource.mintedPercent = Math.floor(
             (this.resource.minted / this.resource.total_supply) * 100
@@ -1137,7 +1137,7 @@ export default {
       }
       if (
         !this.collection.isEdition ||
-        this.collection.edition !== "open-edition"
+        this.collection.edition !== "ticket-open-edition"
       ) {
         this.resource.mintedPercent = Math.floor(
           (this.resource.minted / this.resource.total_supply) * 100
