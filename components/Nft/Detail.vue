@@ -1279,7 +1279,7 @@ export default {
         this.resource.mintedPercent = Math.floor(
           (this.resource.minted / this.resource.total_supply) * 100
         );
-
+        // test 
         if (
           this.collection.isEdition &&
           this.collection.edition === "ticket-open-edition"
