@@ -949,6 +949,12 @@ export default {
     },
   },
   async mounted() {
+    this.$refs.myMap.$mapPromise.then((map) => {
+      map.setOptions({
+        fullscreenControl: true,
+      })
+    });
+    
     if (this.draft) {
       this.loading = true;
     };
@@ -2028,5 +2034,9 @@ export default {
   border-radius: 4px 0 0 0;
   border-width: 1px 0 0 0;
   opacity: 0; /* This will make the button invisible */
+}
+
+button[aria-label="Toggle fullscreen view"] {
+  display: block !important;
 }
 </style>
