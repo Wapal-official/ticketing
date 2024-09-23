@@ -66,7 +66,9 @@ export default {
   // Check for both edition and draft paths
   if (path === '/dashboard/edition' && 
      (this.$route.path.includes('/dashboard/edition') || 
-      this.$route.path.includes('/dashboard/draft'))) {
+      this.$route.path.includes('/dashboard/draft') ||
+      this.$route.path.includes('/dashboard/collection')
+    )) {
     return true;
   }
   return false;

@@ -407,6 +407,7 @@
           </button>
 
           <button-primary
+          class="tw-text-black"
             title="Pause Mint"
             @click="pauseOrResumeMint"
             :fullWidth="true"
