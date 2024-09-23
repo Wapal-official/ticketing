@@ -14,7 +14,7 @@
         <faq-card>
           <template #question> 1. What is Wapal? </template>
           <template #answer>
-            Wapal is a No Code Creator Studio and Launchpad on Aptos. Wapal is
+            Wapal is a No Code Creator Studio and Lau nchpad on Aptos. Wapal is
             developed by Mokshya, Mokshya is an open-source protocol that builds
             customizable smart contract libraries, SDKs, and developer tools on
             Aptos Blockchain..

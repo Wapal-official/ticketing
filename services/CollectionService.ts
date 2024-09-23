@@ -90,6 +90,8 @@ export const getCollectionsOfUser = async (userId: string) => {
 
 export const searchCollection = async (query: string) => {
   const res = await axios.get(
+        // `${process.env.baseURL}/api/collection/editions?edition=ticket-open-edition&page=${page}&limit=${limit}`
+
     `${process.env.baseURL}/api/collection/search?page=1&limit=100&q=${query}`
   );
 
