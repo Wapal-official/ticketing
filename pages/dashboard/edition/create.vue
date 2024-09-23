@@ -88,7 +88,18 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
+          <div class="tw-flex tw-gap-5 tw-justify-end">
+            <div class="tw-w-auto">
+              <button-primary
+                title="Map"
+                @click="toggleMap"
+                :bordered="true"
+                class="tw-border-white"
+              />
+            </div>
+          </div>
           <GmapMap
+          v-if="mapVisible"
             v-bind:center="mapCenter"
             :zoom="14"
             map-type-id="roadmap"
@@ -787,6 +798,7 @@ export default {
   props: { draft: { type: Boolean, default: false } },
   data() {
     return {
+      mapVisible: false,
       mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
       markers: [
         { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
@@ -949,12 +961,6 @@ export default {
     },
   },
   async mounted() {
-    this.$refs.myMap.$mapPromise.then((map) => {
-      map.setOptions({
-        fullscreenControl: true,
-      })
-    });
-    
     if (this.draft) {
       this.loading = true;
     };
@@ -968,6 +974,9 @@ export default {
   },
   
   methods: {
+    toggleMap() {
+    this.mapVisible = !this.mapVisible; // Toggle the visibility
+  },
     updateLocationPin(place) {
       const location = place.geometry.location;
       (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
@@ -2034,9 +2043,5 @@ export default {
   border-radius: 4px 0 0 0;
   border-width: 1px 0 0 0;
   opacity: 0; /* This will make the button invisible */
-}
-
-button[aria-label="Toggle fullscreen view"] {
-  display: block !important;
 }
 </style>
