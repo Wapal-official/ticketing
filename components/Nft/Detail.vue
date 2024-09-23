@@ -5,7 +5,7 @@
       v-if="!loading"
     >
       <div
-        class="tw-w-full sm:tw-flex sm:tw-flex-col sm:tw-items-center sm:tw-justify-center tw-mb-10 tw-gap-6 tw-place-items-center lg:tw-mb-0 lg:tw-flex-row lg:tw-items-start lg:tw-justify-start xl:tw-gap-[4.5em]"
+        class="tw-w-full sm:tw-flex sm:tw-flex-col sm:tw-items-center sm:tw-justify-center tw-mb-10 tw-gap-6 tw-place-items-center lg:tw-mb-0 lg:tw-flex-row lg:tw-items-start lg:tw-justify-center xl:tw-gap-[4.5em]"
       >
         <div class="card-min-width" style="position: relative">
           <div
@@ -100,13 +100,17 @@
                 >
                   <h2 class="tw-text-white tw-font-semibold">Location</h2>
                 </div>
-                <div class="tw-my-4 tw-text-white/70">
-                  <span
-                    >Please register to see the exact location of this event.
-                    Paris, Île-de-France</span
-                  >
+                <div class="tw-flex tw-items-center tw-mb-4">
+                  <div>
+                    <img src="~/assets/img/Location.svg" alt="Location-Icon" class="tw-w-[30px] tw-h-[30px] tw-mr-2"/>
+                  </div>
+                  <div class="tw-text-white/70">
+                    <span>{{ capitalizeLocation(location) }}</span>
+                    <br v-if="location && venue">
+                    <span>{{ venue }}</span>
+                  </div>
                 </div>
-                <!-- gmap  -->
+                  <!-- gmap  -->
                 <div
                   style="
                     width: 100%;
@@ -939,6 +943,10 @@ export default {
       } catch (error) {
         console.error("Error fetching location coordinates: ", error);
       }
+    },
+    capitalizeLocation(location) {
+      if (!location) return '';
+      return location.charAt(0).toUpperCase() + location.slice(1);
     },
     updateLocationOnMap(location) {
       this.mapCenter = { lat: location.lat(), lng: location.lng() };
@@ -2521,7 +2529,7 @@ export default {
 <style lang="css">
 .video-detailed {
   max-width: 550px;
-  height: 550px;
+  height: 450px;
   border-radius: 0.25rem !important;
 }
 @media (max-width: 600px) {

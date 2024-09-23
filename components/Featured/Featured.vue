@@ -240,7 +240,7 @@
           >
             <h3
               v-if="collection.description !== 'Loonies'"
-              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm"
+              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm tw-mt-3"
             >
               {{ currentSale.name }} Starts In
             </h3>
