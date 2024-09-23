@@ -93,7 +93,7 @@
             :zoom="14"
             map-type-id="roadmap"
             style="width: 500px; height: 300px; border-radius: 3px"
-            :options="{ streetViewControl: false }"
+            :options="{ streetViewControl: false, fullscreenControl: true }"
           >
             <GmapMarker
               v-for="(m, index) in markers"

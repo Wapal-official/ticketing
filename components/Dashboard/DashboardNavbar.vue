@@ -97,7 +97,7 @@
 // @ts-ignore
 import Swiper from "swiper/swiper-bundle.min";
 import "swiper/swiper-bundle.min.css";
-import logo from "@/assets/img/logo/logo.svg";
+import logo from "@/assets/img/logo/wapal-ticket.svg";
 import ConnectWallet from "@/components/Reusable/ConnectWallet.vue";
 export default {
   components: { ConnectWallet },
