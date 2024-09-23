@@ -362,7 +362,7 @@ export default {
       dropZoneClass: "tw-border-dark-4",
       videoFile: "",
       acceptFile:
-        ".png, .jpg, .jpeg, .gif, .webp, .mp4, .webm, .mkv, .m4v, .bmp, .svg, .ico, .tiff, .avi, .mov, .wmv, .flv, .3gp, .ogv, .mpeg, .mpg, .divx, .rm, .asf, .vob, .ts, .m2ts, video, .audio, .mp3, .wav, .ogg, .aac, .flac, .wma, .alac, .aiff, .opus/*",
+        ".png, .jpg, .jpeg, .gif, .webp, .webm, .mkv, .m4v, .bmp, .svg, .ico, .tiff, .avi, .mov, .wmv, .flv, .3gp, .ogv, .mpeg, .mpg, .divx, .rm, .asf, .vob, .ts, .m2ts, video/*" ,
       resizeAcive: false,
       isVideo: false,
       acceptFileThumnail:
