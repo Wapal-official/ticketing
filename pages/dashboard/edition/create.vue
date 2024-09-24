@@ -79,6 +79,7 @@
                 :autocomplete="true"
                 autocompleteType="establishment"
                 :locationBias="venueBounds"
+                :selectedCountry="selectedCountry"
                 @placeChanged="updateVenuePin"
               >
                 <template #prepend-icon>
@@ -88,7 +89,7 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-          <div class="tw-flex tw-gap-5 tw-justify-end">
+          <!-- <div class="tw-flex tw-gap-5 tw-justify-end">
             <div class="tw-w-auto">
               <button-primary
                 title="Map"
@@ -97,9 +98,9 @@
                 class="tw-border-white"
               />
             </div>
-          </div>
+          </div> -->
           <GmapMap
-          v-if="mapVisible"
+          
             v-bind:center="mapCenter"
             :zoom="14"
             map-type-id="roadmap"
@@ -810,6 +811,8 @@ export default {
       west: 85.254,
     },
     selectedFileType: "Image",
+    selectedCountry: null,
+    isNepalFocused: false,
       selectedLocation: null,
       venueBounds: null,
       step: 1,
@@ -977,22 +980,37 @@ export default {
     toggleMap() {
     this.mapVisible = !this.mapVisible; // Toggle the visibility
   },
-    updateLocationPin(place) {
-      const location = place.geometry.location;
-      (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
-        (this.zoomLevel = 15),
-        (this.markers = []);
-        
-        const viewport = place.geometry.viewport;
-        if (viewport) {
-          this.venueBounds = {
-            north: viewport.getNorthEast().lat(),
-            south: viewport.getSouthWest().lat(),
-            east: viewport.getNorthEast().lng(),
-            west: viewport.getSouthWest().lng(),
-          };
+  updateLocationPin(place) {
+    if (place.geometry && place.geometry.location) {
+      const { lat, lng } = place.geometry.location;
+      this.mapCenter = { lat: lat(), lng: lng() };
+      this.zoomLevel = 15;
+      this.markers = [];
+
+      const viewport = place.geometry.viewport;
+      if (viewport) {
+        this.venueBounds = {
+          north: viewport.getNorthEast().lat(),
+          south: viewport.getSouthWest().lat(),
+          east: viewport.getNorthEast().lng(),
+          west: viewport.getSouthWest().lng(),
+        };
+      }
+
+      // Determine the selected country
+      const countryComponent = place.address_components.find(component => 
+        component.types.includes('country')
+      );
+
+      if (countryComponent) {
+        this.selectedCountry = countryComponent.short_name; // Set the selected country
+      } else {
+        this.selectedCountry = null; // Reset if no country found
+      }
+    } else {
+      this.selectedCountry = null; // Reset if no valid place is selected
     }
-    },
+  },
     
     updateVenuePin(place) {
       const location = place.geometry.location;
