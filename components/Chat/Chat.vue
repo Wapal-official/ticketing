@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-container">
+  <!-- <div class="chat-container">
     <button
       @click="loadChatBox"
       class="chat-icon"
@@ -17,9 +17,9 @@
         </button>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
-<script>
+<!-- <script>
 export default {
   data() {
     return {
@@ -155,4 +155,4 @@ export default {
     height: 500px;
   }
 }
-</style>
+</style> -->
