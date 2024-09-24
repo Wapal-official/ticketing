@@ -97,6 +97,10 @@
       type: Object,
       default: null,
     },
+    selectedCountry: {
+      type: String,
+    default: null,
+    }
     },
     computed: {
       internalValue: {
@@ -169,13 +173,19 @@
         const options = {
           types: ['establishment'],
         };
-  
+        
+        if (this.selectedCountry) {
+    options.componentRestrictions = { country: this.selectedCountry.toLowerCase() }; // Restrict to the selected country
+  } else {
+    options.componentRestrictions = {}; // No restrictions for other countries
+  }
+
         if (this.locationBias) {
           options.bounds = new google.maps.LatLngBounds(
             new google.maps.LatLng(this.locationBias.south, this.locationBias.west),
             new google.maps.LatLng(this.locationBias.north, this.locationBias.east)
           );
-          options.strictBounds = true;
+          options.strictBounds = false;
         }
   
         return options;
