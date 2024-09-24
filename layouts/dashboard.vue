@@ -13,7 +13,7 @@
           ref="container"
           id="container"
         >
-          <Nuxt class="!tw-pl-6 !tw-pr-6 xl:!tw-pl-6 !tw-pt-8 height-view" />
+          <Nuxt class="!tw-pl-6 !tw-pr-6 xl:!tw-pl-6 !tw-pt-5 height-view" />
         </div>
       </div>
       <div
