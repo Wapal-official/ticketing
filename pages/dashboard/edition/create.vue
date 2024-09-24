@@ -89,7 +89,7 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-          <!-- <div class="tw-flex tw-gap-5 tw-justify-end">
+          <div class="tw-flex tw-gap-5 tw-justify-end">
             <div class="tw-w-auto">
               <button-primary
                 title="Map"
@@ -98,9 +98,9 @@
                 class="tw-border-white"
               />
             </div>
-          </div> -->
+          </div>
           <GmapMap
-          
+            v-if="mapVisible"
             v-bind:center="mapCenter"
             :zoom="14"
             map-type-id="roadmap"
