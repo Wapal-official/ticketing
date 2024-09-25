@@ -54,7 +54,7 @@ export const getUpcomingEditions = async ({
 }) => {
   const res = await publicRequest.get(
 
-    `/api/collection/edition/upcoming?page=${page}&limit=${limit}&edition=open-edition&isApproved=true`
+    `/api/collection/edition/upcoming?page=${page}&limit=${limit}&edition=ticket-open-edition`
   );
   console.log("checkUpcomingEditions",res)
 //   mounted(){

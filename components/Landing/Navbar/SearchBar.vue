@@ -42,7 +42,6 @@
           :key="result._id"
           :collection="result"
           @close="close"
-          v-else
         />
       </div>
       <v-progress-circular
@@ -78,7 +77,7 @@ export default {
         this.showSearchResults = true;
         clearTimeout(this.debounce);
         this.debounce = setTimeout(async () => {
-          const res = await searchCollection(this.searchInput);
+          const res = await searchCollection(this.searchInput,1,100);
           this.searchResult = res.data.result;
           this.loading = false;
         }, 500);
