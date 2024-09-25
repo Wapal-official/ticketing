@@ -88,12 +88,15 @@ export const getCollectionsOfUser = async (userId: string) => {
   return res;
 };
 
-export const searchCollection = async (query: string) => {
-  const res = await axios.get(
-        // `${process.env.baseURL}/api/collection/editions?edition=ticket-open-edition&page=${page}&limit=${limit}`
-
-    `${process.env.baseURL}/api/collection/search?page=1&limit=100&q=${query}`
-  );
+export const searchCollection = async (query: string,page: number, limit: number) => {
+  const res = await axios.get(`${process.env.baseURL}/api/collection/search`, {
+    params: {
+      q: query,
+      page: page,
+      limit: limit,
+      edition: 'ticket-open-edition',
+    },
+  });
 
   return res;
 };

@@ -236,7 +236,7 @@
       </div>
     </nav>
     <div
-      class="tw-overflow-auto tw-px-4 tw-transition-all tw-duration-500 tw-ease-linear tw-bg-wapal-background tw-text-white tw-absolute tw-z-40 tw-top-[95px] tw-left-0 tw-w-screen tw-transform lg:tw-hidden mobile-menu"
+      class="tw-overflow-auto tw-px-4 tw-transition-all tw-duration-500 tw-ease-linear tw-bg-wapal-background tw-text-white tw-absolute tw-z-40 tw-top-[88px] tw-left-0 tw-w-screen tw-transform lg:tw-hidden mobile-menu"
       :class="landingMenuClass"
     >
       <landing-menu class="tw-py-4" @close="close" />

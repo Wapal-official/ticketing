@@ -42,7 +42,7 @@
             <div>
               <div class="tw-flex tw-items-center">
                 <img
-                  src="~/assets/img/logo/wapal-ticket-logo.svg"
+                  src="~/assets/img/logo/new-logo.svg"
                   alt="Wapal logo"
                   width="32px"
                   height="32px"
@@ -52,11 +52,18 @@
               <div
                 id="email"
                 class="tw-flex tw-items-center tw-mt-4 tw-text-white/70"
-                @click="showPopup = true"
               >
-                <a href="#" class="!tw-text-white/70">
-                  <i class="bx bx-envelope tw-h-[20px] tw-w-[24px]"></i>
-                  <span class="tw-items-center tw-ml-3">Contact the host</span>
+                <a 
+                  :href="composeGmailLink" 
+                  target="_blank" 
+                  class="tw-flex !tw-text-white/70">
+                  <img
+                  src="~/assets/img/mail-logo-3.svg"
+                  alt="Wapal logo"
+                  width="24px"
+                  height="24px"
+                />
+                <span class="tw-items-center tw-ml-3">Contact the host</span>
                 </a>
               </div>
               <!-- Popup box -->
@@ -832,6 +839,9 @@ export default {
   props: { collection: { type: Object } },
   data() {
     return {
+      recipient: "nidiv@gmail.com",
+      subject: "Dynamic Subject",  
+      body: "This is a dynamically generated email.", 
       mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
       markers: [
         { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
@@ -2206,6 +2216,9 @@ export default {
     },
   },
   computed: {
+    composeGmailLink() {
+      return `https://mail.google.com/mail/u/1/#inbox?compose=new&to=${this.recipient}&su=${encodeURIComponent(this.subject)}&body=${encodeURIComponent(this.body)}`;
+    },
     getCurrentPrice() {
       if (
         this.collection.candyMachine.public_sale_price ==
