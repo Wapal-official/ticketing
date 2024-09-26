@@ -44,10 +44,10 @@
                 <img
                   src="~/assets/img/logo/new-logo.svg"
                   alt="Wapal logo"
-                  width="32px"
-                  height="32px"
+                  width="28px"
+                  height="28px"
                 />
-                <span class="w-text-sm tw-items-center tw-ml-2">Wapal</span>
+                <span class="w-text-sm tw-items-center tw-ml-2">Broski</span>
               </div>
               <div
                 id="email"
@@ -108,9 +108,8 @@
                   <h2 class="tw-text-white tw-font-semibold">Location</h2>
                 </div>
                 <div class="tw-flex tw-items-center tw-mb-4">
-                  <div>
-                    <img src="~/assets/img/Location.svg" alt="Location-Icon" class="tw-w-[30px] tw-h-[30px] tw-mr-2"/>
-                  </div>
+                      <i class="bx bx-map tw-text-white tw-text-2xl tw-mr-3"></i>
+                    <!-- alt="Location-Icon" class="tw-w-[30px] tw-h-[30px] tw-mr-2"/> -->
                   <div class="tw-text-white/70">
                     <span>{{ capitalizeLocation(location) }}</span>
                     <br v-if="location && venue">
@@ -129,8 +128,9 @@
                   <GmapMap
                     v-bind:center="mapCenter"
                     :zoom="14"
-                    map-type-id="terrain"
+                    map-type-id="roadmap"
                     style="width: 100%; height: 100%"
+                    :options="{ streetViewControl: false, fullscreenControl: true, zoomControl: true, }"
                   >
                     <!-- Only one marker should be rendered here -->
                     <GmapMarker
@@ -1748,7 +1748,7 @@ export default {
       }
 
       const publicSale = {
-        name: "public sale",
+        name: "Ticket Price",
         id: "public-sale",
         mint_price: this.collection.candyMachine.public_sale_price,
         mint_time: this.collection.candyMachine.public_sale_time,

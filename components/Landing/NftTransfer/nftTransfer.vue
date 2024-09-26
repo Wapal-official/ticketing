@@ -600,9 +600,9 @@ export default {
   font-weight: 500;
   line-height: 24px;
 }
-.theme--dark.v-tabs > .v-tabs-bar {
+/* .theme--dark.v-tabs > .v-tabs-bar {
   background-color: #101113 !important;
-}
+} */
 .v-tabs:not(.v-tabs--vertical):not(.v-tabs--right)
   > .v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(
     .v-slide-group--has-affixes

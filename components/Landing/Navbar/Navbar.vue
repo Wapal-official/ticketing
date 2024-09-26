@@ -13,7 +13,7 @@
           <img
             :src="logo"
             alt="logo"
-            class="tw-min-w-[106px] tw-max-w-[106px] tw-min-h-[28px] tw-max-h-[28px]"
+            class="tw-min-w-[106px] tw-max-w-[106px] tw-min-h-[28px] tw-max-h-[28px] tw-pb-1"
           />
         </NuxtLink>
         <div class="tw-hidden lg:tw-flex">
@@ -256,7 +256,7 @@
 </template>
 
 <script lang="ts">
-import logo from "@/assets/img/logo/wapal-ticket.svg";
+import logo from "@/assets/img/logo/Logo-Horizontal-White.svg";
 import LandingMenu from "@/components/Landing/Navbar/LandingMenu.vue";
 import SearchBar from "@/components/Landing/Navbar/SearchBar.vue";
 import ExploreListItem from "@/components/Landing/Navbar/ExploreListItem.vue";

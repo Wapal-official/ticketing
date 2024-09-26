@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-24 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[7em] lg:tw-pb-20 lg:tw-px-28 1xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px] 2xl:tw-pt-[5.0em]"
+    class="tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-12 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[7em] lg:tw-pb-20 lg:tw-px-28 1xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px] 2xl:tw-pt-[5.0em]"
   >
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center xl:tw-gap-[4.5em] tw-h-auto"
@@ -33,7 +33,6 @@
       </div>
       <div
         class="clickable-div tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-center tw-gap-3 lg:tw-mb-8 lg:tw-w-[512px] xl:tw-pr-[7em] lg:tw-h-[68vh] xl:tw-h-[76vh]"
-         @click="redirectCollection" 
         >
       <div
         @click="redirectCollection"
@@ -245,7 +244,7 @@
               v-if="collection.description !== 'Loonies'"
               class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm tw-mt-3"
             >
-              {{ currentSale.name }} Starts In
+              Ticket Sale Starts In
             </h3>
             <count-down-custom
               v-if="collection.description === 'Loonies'"
@@ -257,6 +256,14 @@
               :startTime="currentSale.mint_time"
               @countdownComplete="countdownComplete"
             />
+            <span>
+              <a
+                @click.prevent="redirectCollection"
+                class="!tw-underline"
+              >
+                Details...
+              </a>
+            </span>
           </div>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
