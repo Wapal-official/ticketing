@@ -103,6 +103,10 @@ props: {
 
 <style lang="css">
   .ql-container.ql-snow{ border: none !important;}
+  .ql-container.ql-snow{
+  height: 280px !important; 
+  /* min-height: ; */
+}
   .ql-toolbar .ql-stroke {
       fill: none;
       stroke: #e5e7eb;

@@ -92,7 +92,7 @@
             v-bind:center="mapCenter"
             :zoom="14"
             map-type-id="roadmap"
-            style="width: 500px; height: 300px; border-radius: 3px"
+            style="width: 500px; height: 300px; border-radius: 3px; display: none;"
             :options="{ mapTypeControl: false, streetViewControl: false }"
           >
             <GmapMarker
@@ -104,7 +104,7 @@
             />
           </GmapMap>
           <ValidationProvider
-            rules="email"
+            rules="email|required"
             name="email"
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
             v-slot="{ errors }"
@@ -112,6 +112,7 @@
             <input-text-field
               label="E-mail"
               placeholder="E-mail"
+              :required="true"
               v-model="collection.email"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
@@ -303,7 +304,6 @@
                 v-model="collection.public_sale_price"
                 placeholder="Eg. 1"
                 type="number" 
-                min="0"
               >
                 <template #append-icon>
                   <img
@@ -467,8 +467,7 @@
               </div> -->
             </div>
           </div>
-          <div v-if="file">
-    </div>
+          
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
@@ -479,7 +478,7 @@
               @cancel="clearFile"
               @fileSelected="selectImage"
               @fileSelectedThumbnail="thumbnailSelected"
-              :thumbnail="collection.image"
+              :thumbnail="collection.thumbnail"
               fileSize="Upto 15 MB"
               :file='collection.image'
               :previewUrl="collection.image"
@@ -803,6 +802,7 @@ export default {
     },
     selectedFileType: "Image",
       selectedLocation: null,
+      selectedLocation: null,
       venueBounds: null,
       step: 1,
       collection: {
@@ -819,7 +819,7 @@ export default {
         royalty_percentage: "0", //changed
         whitelist_sale_time: null,
         public_sale_time: null,
-        public_sale_price: "",
+        public_sale_price: null,
         whitelist_price: "",
         supply: "",
         twitter: "",
@@ -1638,6 +1638,7 @@ selectImage(file) {
         formData.append("website", tempCollection.website);
         formData.append("instagram", tempCollection.instagram);
         formData.append("resource_account", tempCollection.resource_account);
+        formData.append("value", tempCollection.attributes.value);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify([]));
@@ -1780,7 +1781,9 @@ selectImage(file) {
 
       // formData.append("supply", tempCollection.supply);
       formData.append("tokenName", tempCollection.tokenName);
-      formData.append("tokenDesc", tempCollection.tokenDesc); 
+      formData.append("tokenDesc", tempCollection.tokenDesc);
+      formData.append("traitType", tempCollection.attributes.trait_type); 
+      formData.append("value", tempCollection.attributes.value)
       formData.append("public_sale_price", tempCollection.public_sale_price);
       formData.append("whitelist_price", tempCollection.whitelist_price);
       formData.append("twitter", tempCollection.twitter);
@@ -1789,13 +1792,10 @@ selectImage(file) {
       formData.append("instagram", tempCollection.instagram);
       formData.append("candy_id", tempCollection.candy_id);
       formData.append("phases", JSON.stringify(tempCollection.phases));
-      formData.append("isApproved", "false");
+      formData.append("isApproved", "true");
       formData.append("isEdition", JSON.stringify(false));
-      if (Array.isArray(tempCollection.attributes)) {
-  formData.append("attributes", JSON.stringify(tempCollection.attributes));
-} else {
-  formData.append("attributes", JSON.stringify([{ trait_type: "ticket type", value: "" }]));
-}
+      formData.append("attributes", JSON.stringify(tempCollection.attributes));
+
       formData.append("coin_type", tempCollection.coinType);
       formData.append("tweet", tempCollection.tweet);
 
@@ -1859,7 +1859,7 @@ selectImage(file) {
         // } catch {
         //   draftData.phases = [];
         // }
-
+        console
         if (typeof draftData.attributes === 'string') {
       try {
         draftData.attributes = JSON.parse(draftData.attributes);

@@ -146,10 +146,10 @@ export default {
       return false;
     },
     getUserStatus() {
-      if (this.$store.state.userStore.user.token) {
+      // if (this.$store.state.userStore.user.token) {
         return true;
-      }
-      return false;
+      // }
+      // return false;
     },
   },
 };
