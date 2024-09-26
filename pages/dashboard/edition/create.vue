@@ -89,23 +89,12 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-          <div class="tw-flex tw-gap-5 tw-justify-end">
-            <div class="tw-w-auto">
-              <button-primary
-                title="Map"
-                @click="toggleMap"
-                :bordered="true"
-                class="tw-border-white"
-              />
-            </div>
-          </div>
           <GmapMap
-            v-if="mapVisible"
             v-bind:center="mapCenter"
             :zoom="14"
             map-type-id="roadmap"
-            style="width: 500px; height: 300px; border-radius: 3px"
-            :options="{ streetViewControl: false, fullscreenControl: true }"
+            style="width: 500px; height: 300px; border-radius: 3px; display: none;"
+            :options="{ streetViewControl: false, fullscreenControl: true, zoomControl: true, }"
           >
             <GmapMarker
               v-for="(m, index) in markers"
@@ -116,13 +105,14 @@
             />
           </GmapMap>
           <ValidationProvider
-            rules="email"
+            rules="email|required"
             name="email"
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
             v-slot="{ errors }"
           >
             <input-text-field
               label="E-mail"
+              :required="true"
               placeholder="E-mail"
               v-model="collection.email"
             />
@@ -314,7 +304,7 @@
                 label="Ticket Price"
                 v-model="collection.public_sale_price"
                 placeholder="Eg. 1"
-                type="number" 
+                 
               >
                 <template #append-icon>
                   <img
@@ -799,7 +789,6 @@ export default {
   props: { draft: { type: Boolean, default: false } },
   data() {
     return {
-      mapVisible: false,
       mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
       markers: [
         { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
@@ -830,7 +819,7 @@ export default {
         royalty_percentage: "0", //changed
         whitelist_sale_time: null,
         public_sale_time: null,
-        public_sale_price: "",
+        public_sale_price: null,
         whitelist_price: "",
         supply: "",
         twitter: "",
@@ -977,9 +966,6 @@ export default {
   },
   
   methods: {
-    toggleMap() {
-    this.mapVisible = !this.mapVisible; // Toggle the visibility
-  },
   updateLocationPin(place) {
     if (place.geometry && place.geometry.location) {
       const { lat, lng } = place.geometry.location;
