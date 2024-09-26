@@ -59,7 +59,7 @@ export default {
       if (tab === 0) {
         this.$router.push(`/explore/all`);
       } else if (tab === 1) {
-        this.$router.push(`/explore/live`);
+          this.$router.push(`/explore/live`);
       } else if (tab === 2) {
         this.$router.push(`/explore/upcoming`);
       }

@@ -4,18 +4,30 @@
     id="explore"
   >
     <div class="tw-container tw-mx-auto md:tw-px-8 xl:tw-px-[3.75rem]">
+    <div class="tw-block md:tw-flex sm:tw-items-center tw-mb-10">
       <tab
         :tab="tabNumber"
         :tabs="tabs"
         @tabChanged="tabChanged"
-        class="tw-mb-10"
+        class=""
       />
-      <landing-explore-slider
+      <div 
+        v-if="tabNumber === 1 || tabNumber === 2" 
+        class="tw-ml-2 tw-mt-2">
+        <a href="#"
+          class="!tw-text-white tw-rounded-sm !tw-h-[40px] !tw-max-h-[40px] tw-py-[0.62em] tw-px-6 !tw-capitalize !tw-text-sm !tw-font-medium tw-transition-all tw-duration-200 tw-ease-linear tw-border-solid tw-border tw-border-dark-4 hover:tw-border-white hover:!tw-bg-white hover:!tw-text-dark-9 hover:!tw-font-semibold"
+         @click.prevent="redirectToExplore">
+          View all  
+        </a>
+      </div>
+    </div>
+      <landing-explore-slider 
         :collections="collections"
         :type="type"
         v-if="!loading"
       />
       <loading-collections v-else />
+
     </div>
   </section>
 </template>
@@ -41,6 +53,13 @@ export default {
     };
   },
   methods: {
+    redirectToExplore() {
+      if (this.tabNumber === 1) {
+        this.$router.push('/live-editions');
+      } else if (this.tabNumber === 2) {
+        this.$router.push('/upcoming-editions');
+      }
+    },
     async tabChanged(tab: number) {
       this.tabNumber = tab;
       this.end = true;

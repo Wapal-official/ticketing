@@ -623,7 +623,7 @@ input:disabled {
 
 /* Readmore */
 #markup-desc {
-  width: 532px;
+  width: auto;
   max-height: 116px;
   padding: 14px 0px 14px 4px;
   overflow-y: hidden;
