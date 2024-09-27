@@ -29,7 +29,7 @@
         <div
           class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
         >
-          Mint Date
+          Ticket Sale Date
         </div>
         <div class="tw-text-white">
           {{ getFormattedMintDate }}
@@ -116,7 +116,7 @@ export default {
       }
 
       return this.phase?.mint_price == 0
-        ? "Free Mint"
+        ? "Free Tickets"
         : this.phase?.mint_price + this.coinType;
     },
   },

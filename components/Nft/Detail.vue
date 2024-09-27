@@ -690,9 +690,6 @@
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-relative tw-rounded-lg"
           v-if="phaseCounter !== phases.length"
         >
-          <h2 class="tw-text-white tw-text-[1.375em] tw-font-bold">
-            Mint Phases
-          </h2>
           <div
             v-if="collection.id == 'loonies'"
             class="tw-w-full tw-overflow-auto no-scrollbar tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-rounded-lg"
