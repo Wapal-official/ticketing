@@ -296,7 +296,7 @@
             <ValidationProvider
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
               name="mint_price"
-              rules="required|numeric"
+              rules="custom_numeric|required"
               v-slot="{ errors }"
             >
               <input-text-field
@@ -304,7 +304,7 @@
                 label="Ticket Price"
                 v-model="collection.public_sale_price"
                 placeholder="Eg. 1"
-                 
+                type="number"
               >
                 <template #append-icon>
                   <img
@@ -734,6 +734,13 @@ import {
   getDraftByIdInCreatorStudio,
 } from "@/services/CollectionService";
 import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
+
+extend("custom_numeric", {
+  validate(value) {
+    return !isNaN(value) && value >= 0;
+  },
+  message: "Please enter a valid number."
+});
 
 extend("percentage", {
   validate(value) {

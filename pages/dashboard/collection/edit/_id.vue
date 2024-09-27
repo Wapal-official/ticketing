@@ -277,7 +277,7 @@
         class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
       >
         <div class="tw-text-white tw-font-semibold tw-capitalize">
-          Public Sale
+          Ticket Sale
         </div>
         <div
           class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-flex-row md:tw-items-baseline md:tw-justify-between"
@@ -286,7 +286,7 @@
             <div
               class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
             >
-              Public Sale Time
+              Ticket Sale Time
             </div>
             <div
               class="tw-w-full tw-text-white tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-2 md:tw-justify-start"
@@ -408,7 +408,7 @@
 
           <button-primary
           class="tw-text-black"
-            title="Pause Mint"
+            title="Pause Ticekt Sale"
             @click="pauseOrResumeMint"
             :fullWidth="true"
             v-else
