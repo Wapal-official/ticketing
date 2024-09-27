@@ -320,11 +320,11 @@
           {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
         </NuxtLink>
         <button-primary
-          class="!tw-text-black"
-          :title="!collection.status.sold_out ? 'Mint' : 'Get Ticket'"
+          class="!tw-text-black !tw-font-semibold"
+          :title="!collection.status.sold_out ? 'Buy Ticket' : 'Get Ticket'"
           :fullWidth="true"
           @click="mintBulkCollection"
-          v-else
+          v-else-if="checkLiveStatus()"
         />
         <!-- <NuxtLink
               class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
