@@ -119,7 +119,7 @@
             />
           </GmapMap>
           <ValidationProvider
-            rules="email|required"
+            rules="required"
             name="email"
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
             v-slot="{ errors }"
