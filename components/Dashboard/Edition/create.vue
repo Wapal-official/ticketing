@@ -55,7 +55,13 @@
                 v-model="collection.location"
                 :required="true"
                 :autocomplete="true"
-                :autocompleteType="['locality', 'sublocality', 'country', 'administrative_area_level_1','administrative_area_level_2']"
+                :autocompleteType="[
+                  'locality',
+                  'sublocality',
+                  'country',
+                  'administrative_area_level_1',
+                  'administrative_area_level_2',
+                ]"
                 @placeChanged="updateLocationPin"
               >
                 <template #prepend-icon>
@@ -92,7 +98,12 @@
             v-bind:center="mapCenter"
             :zoom="14"
             map-type-id="roadmap"
-            style="width: 500px; height: 300px; border-radius: 3px; display: none;"
+            style="
+              width: 500px;
+              height: 300px;
+              border-radius: 3px;
+              display: none;
+            "
             :options="{ mapTypeControl: false, streetViewControl: false }"
           >
             <GmapMarker
@@ -100,7 +111,6 @@
               v-bind:key="index"
               v-bind:position="m.position"
               v-bind:clickable="true"
-              
             />
           </GmapMap>
           <ValidationProvider
@@ -197,7 +207,11 @@
               />
             </div>
             <div class="tw-w-auto !tw-text-black">
-              <button-primary class="!tw-text-black" title="Next" @click="validateFormForNextStep" />
+              <button-primary
+                class="!tw-text-black"
+                title="Next"
+                @click="validateFormForNextStep"
+              />
             </div>
           </div>
         </ValidationObserver>
@@ -303,7 +317,7 @@
                 label="Ticket Price"
                 v-model="collection.public_sale_price"
                 placeholder="Eg. 1"
-                type="number" 
+                type="number"
               >
                 <template #append-icon>
                   <img
@@ -317,7 +331,7 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-          
+
           <div
             v-for="(attribute, index) in collection.attributes"
             :key="index"
@@ -467,7 +481,7 @@
               </div> -->
             </div>
           </div>
-          
+
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
           >
@@ -480,7 +494,7 @@
               @fileSelectedThumbnail="thumbnailSelected"
               :thumbnail="collection.thumbnail"
               fileSize="Upto 15 MB"
-              :file='collection.image'
+              :file="collection.image"
               :previewUrl="collection.image"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
@@ -497,7 +511,11 @@
               />
             </div>
             <div class="tw-w-auto !tw-text-black">
-              <button-primary class="!tw-text-black" title="Next" @click="submit" />
+              <button-primary
+                class="!tw-text-black"
+                title="Next"
+                @click="submit"
+              />
             </div>
           </div>
         </ValidationObserver>
@@ -715,6 +733,7 @@
 
 <script>
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+import { email } from "vee-validate/dist/rules";
 import {
   uploadAndCreateFile,
   uploadAndCreateVideoFile,
@@ -738,9 +757,9 @@ import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
 
 extend("custom_numeric", {
   validate(value) {
-    return !isNaN(value) && value >= 0; 
+    return !isNaN(value) && value >= 0;
   },
-  message: "Please enter a valid number."
+  message: "Please enter a valid number.",
 });
 
 extend("percentage", {
@@ -771,11 +790,8 @@ extend("link", {
 });
 
 extend("email", {
-  validate(value) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(value);
-  },
-  message: "Please enter a valid email",
+  ...email,
+  message: "Please enter a valid email address",
 });
 
 extend("tweetLength", {
@@ -802,12 +818,12 @@ export default {
         { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
       ],
       venueBounds: {
-      north: 27.788, // These bounds define the Kathmandu area; adjust as needed
-      south: 27.664,
-      east: 85.514,
-      west: 85.254,
-    },
-    selectedFileType: "Image",
+        north: 27.788, // These bounds define the Kathmandu area; adjust as needed
+        south: 27.664,
+        east: 85.514,
+        west: 85.254,
+      },
+      selectedFileType: "Image",
       selectedLocation: null,
       selectedLocation: null,
       venueBounds: null,
@@ -822,7 +838,7 @@ export default {
         thumbnail: "",
         baseURL: "",
         royalty_payee_address:
-        this.$store.state.walletStore.wallet.walletAddress,
+          this.$store.state.walletStore.wallet.walletAddress,
         royalty_percentage: "0", //changed
         whitelist_sale_time: null,
         public_sale_time: null,
@@ -917,9 +933,9 @@ export default {
   },
   computed: {
     quotedImage() {
-      return `'${this.collection.image}'`;  // Quote the URL as a string
+      return `'${this.collection.image}'`; // Quote the URL as a string
     },
-  
+
     walletAddress() {
       return this.$store.state.walletStore.wallet.walletAddress;
     },
@@ -967,43 +983,41 @@ export default {
   async mounted() {
     if (this.draft) {
       this.loading = true;
-    };
+    }
     console.log(this.draft);
     if (this.draft) {
       await this.setCollectionDataFromDraft();
     }
     this.loading = false;
     console.log(this.collection, "this.draft");
-
   },
-  
+
   methods: {
     updateLocationPin(place) {
       const location = place.geometry.location;
       (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
         (this.zoomLevel = 15),
         (this.markers = []);
-        
-        const viewport = place.geometry.viewport;
-        if (viewport) {
-          this.venueBounds = {
-            north: viewport.getNorthEast().lat(),
-            south: viewport.getSouthWest().lat(),
-            east: viewport.getNorthEast().lng(),
-            west: viewport.getSouthWest().lng(),
-          };
-    }
+
+      const viewport = place.geometry.viewport;
+      if (viewport) {
+        this.venueBounds = {
+          north: viewport.getNorthEast().lat(),
+          south: viewport.getSouthWest().lat(),
+          east: viewport.getNorthEast().lng(),
+          west: viewport.getSouthWest().lng(),
+        };
+      }
     },
-    
+
     updateVenuePin(place) {
       const location = place.geometry.location;
       this.mapCenter = { lat: location.lat(), lng: location.lng() };
-      this.zoomLevel = 15,
-      (this.markers = [
+      (this.zoomLevel = 15),
+        (this.markers = [
           { position: { lat: location.lat(), lng: location.lng() } },
         ]);
     },
-    
 
     saveStart(date) {
       this.$refs.startmenu.save(date);
@@ -1055,17 +1069,17 @@ export default {
     },
     displayImage() {
       console.log("Displaying image:", this.collection.image);
-  const previewElement = document.getElementById("image-preview");
-  const reviewElement = document.getElementById("image-review");
+      const previewElement = document.getElementById("image-preview");
+      const reviewElement = document.getElementById("image-review");
 
-  if (!previewElement || !reviewElement) {
-    console.error("Preview or review element not found");
-    return;
-  }
+      if (!previewElement || !reviewElement) {
+        console.error("Preview or review element not found");
+        return;
+      }
 
-  const imageUrl = this.collection.image;
+      const imageUrl = this.collection.image;
 
-  const imageHtml = `
+      const imageHtml = `
     <img 
       src="${imageUrl}" 
       class="tw-w-full tw-h-full tw-object-cover tw-max-h-[300px] tw-rounded" 
@@ -1073,9 +1087,9 @@ export default {
       onerror="this.onerror=null; this.src='/path/to/fallback-image.jpg'; console.error('Image load error:', this.src);" 
     />`;
 
-  previewElement.innerHTML = imageHtml;
-  reviewElement.innerHTML = imageHtml;
-},
+      previewElement.innerHTML = imageHtml;
+      reviewElement.innerHTML = imageHtml;
+    },
     displayThumbnail(file) {
       if (!file) {
         console.error("File is null or undefined.");
@@ -1232,38 +1246,37 @@ export default {
       return parts[parts.length - 1];
     },
     clearFile() {
-      his.$set(this.collection, 'image', '');
-  this.file = null;
-  this.thumbnail = { name: null };
+      his.$set(this.collection, "image", "");
+      this.file = null;
+      this.thumbnail = { name: null };
     },
-selectImage(file) {
-  
-  if (file instanceof File) {
-    this.file = file;
-    this.$set(this.collection, 'image', URL.createObjectURL(file));
-  } else if (typeof file === 'string') {
-    // Remove quotes if present
-    const cleanUrl = file.replace(/^"|"$/g, '');
-    if (cleanUrl.startsWith('http')) {
-      this.file = cleanUrl;
-      this.$set(this.collection, 'image', cleanUrl);
-    } else {
-      console.error("Invalid URL:", file);
-      this.$toast.showMessage({
-        message: "Invalid URL",
-        error: true,
-      });
-      return;
-    }
-  } else {
-    console.error("Invalid file type:", file);
-    this.$toast.showMessage({
-      message: "Invalid file type",
-      error: true,
-    });
-    return;
-  }
-},
+    selectImage(file) {
+      if (file instanceof File) {
+        this.file = file;
+        this.$set(this.collection, "image", URL.createObjectURL(file));
+      } else if (typeof file === "string") {
+        // Remove quotes if present
+        const cleanUrl = file.replace(/^"|"$/g, "");
+        if (cleanUrl.startsWith("http")) {
+          this.file = cleanUrl;
+          this.$set(this.collection, "image", cleanUrl);
+        } else {
+          console.error("Invalid URL:", file);
+          this.$toast.showMessage({
+            message: "Invalid URL",
+            error: true,
+          });
+          return;
+        }
+      } else {
+        console.error("Invalid file type:", file);
+        this.$toast.showMessage({
+          message: "Invalid file type",
+          error: true,
+        });
+        return;
+      }
+    },
     thumbnailSelected(file) {
       this.thumbnail = file;
       if (Math.floor(this.thumbnail.size / (1024 * 1024)) >= 15) {
@@ -1349,17 +1362,19 @@ selectImage(file) {
         return;
       }
       if (!this.collection.type) {
-      console.warn("Collection type is undefined, setting default to open-edition");
-      this.collection.type = "ticekt-open-edition";
-    }
-    if (!this.collection.coinType) {
-      console.warn("Coin type is undefined, setting default to APT");
-      this.collection.coinType = "APT";
-    }
+        console.warn(
+          "Collection type is undefined, setting default to open-edition"
+        );
+        this.collection.type = "ticekt-open-edition";
+      }
+      if (!this.collection.coinType) {
+        console.warn("Coin type is undefined, setting default to APT");
+        this.collection.coinType = "APT";
+      }
 
-    console.log("Collection type:", this.collection.type);
-    console.log("Coin type:", this.collection.coinType);
-    
+      console.log("Collection type:", this.collection.type);
+      console.log("Coin type:", this.collection.coinType);
+
       this.checkCoinType();
       console.log("Collection type:", this.collection.type);
       console.log("Coin type:", this.collection.coinType);
@@ -1603,7 +1618,7 @@ selectImage(file) {
 
         await this.createOpenEditionInChain();
 
-        console.log("temp", this.collection)
+        console.log("temp", this.collection);
         const tempCollection = structuredClone(this.collection);
 
         tempCollection.public_sale_time = new Date(
@@ -1640,7 +1655,7 @@ selectImage(file) {
         formData.append("whitelist_price", tempCollection.public_sale_price);
         formData.append("supply", tempCollection.supply);
         formData.append("twitter", tempCollection.twitter);
-    
+
         formData.append("discord", tempCollection.discord);
         formData.append("website", tempCollection.website);
         formData.append("instagram", tempCollection.instagram);
@@ -1789,8 +1804,8 @@ selectImage(file) {
       // formData.append("supply", tempCollection.supply);
       formData.append("tokenName", tempCollection.tokenName);
       formData.append("tokenDesc", tempCollection.tokenDesc);
-      formData.append("traitType", tempCollection.attributes.trait_type); 
-      formData.append("value", tempCollection.attributes.value)
+      formData.append("traitType", tempCollection.attributes.trait_type);
+      formData.append("value", tempCollection.attributes.value);
       formData.append("public_sale_price", tempCollection.public_sale_price);
       formData.append("whitelist_price", tempCollection.whitelist_price);
       formData.append("twitter", tempCollection.twitter);
@@ -1807,12 +1822,12 @@ selectImage(file) {
       formData.append("tweet", tempCollection.tweet);
 
       if (this.file && this.file.name) {
-    const fileType = this.checkFileType(this.file.name);
-    console.log("File type:", fileType);
-    if (fileType === "image") {
-      formData.append("image", this.file);
-    } else {
-      formData.append("media2", this.file);
+        const fileType = this.checkFileType(this.file.name);
+        console.log("File type:", fileType);
+        if (fileType === "image") {
+          formData.append("image", this.file);
+        } else {
+          formData.append("media2", this.file);
           formData.append("image", this.thumbnail);
         }
       } else {
@@ -1832,12 +1847,12 @@ selectImage(file) {
         formData.append("whitelistTBD", "true");
       }
 
-       // Debugging logs
-  console.log("Form Data Entries:");
-  for (let pair of formData.entries()) {
-    console.log(pair[0] + ': ' + pair[1]);
-  }
-  
+      // Debugging logs
+      console.log("Form Data Entries:");
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ": " + pair[1]);
+      }
+
       await createDraft(formData);
 
       this.submitting = false;
@@ -1866,31 +1881,31 @@ selectImage(file) {
         // } catch {
         //   draftData.phases = [];
         // }
-        console
-        if (typeof draftData.attributes === 'string') {
-      try {
-        draftData.attributes = JSON.parse(draftData.attributes);
-      } catch (error) {
-        console.error("Error parsing attributes:", error);
-        draftData.attributes = [{ trait_type: "ticket type", value: "" }];
-      }
-    } else if (!Array.isArray(draftData.attributes)) {
-      draftData.attributes = [{ trait_type: "ticket type", value: "" }];
-    }
+        console;
+        if (typeof draftData.attributes === "string") {
+          try {
+            draftData.attributes = JSON.parse(draftData.attributes);
+          } catch (error) {
+            console.error("Error parsing attributes:", error);
+            draftData.attributes = [{ trait_type: "ticket type", value: "" }];
+          }
+        } else if (!Array.isArray(draftData.attributes)) {
+          draftData.attributes = [{ trait_type: "ticket type", value: "" }];
+        }
 
         this.collection = draftData;
         console.log("Image after setting collection:", this.collection.image);
 
-        
         if (this.collection.image) {
-      this.file = this.collection.image;
-      this.$nextTick(() => {
-        this.selectImage(this.collection.image);
-      });
-    }
+          this.file = this.collection.image;
+          this.$nextTick(() => {
+            this.selectImage(this.collection.image);
+          });
+        }
 
-
-        this.$set(this.collection, 'attributes', [...this.collection.attributes]);
+        this.$set(this.collection, "attributes", [
+          ...this.collection.attributes,
+        ]);
 
         this.collection.phases.map((phase) => {
           phase.mint_time = new Date(phase.mint_time);
@@ -1956,9 +1971,8 @@ selectImage(file) {
             formData.append("image", this.thumbnail);
           }
         } else {
-          
-            formData.append("image", this.collection.image);
-          }
+          formData.append("image", this.collection.image);
+        }
 
         if (this.$route.params.id) {
           await editDraft(this.$route.params.id, formData);
@@ -2046,7 +2060,7 @@ selectImage(file) {
   cursor: pointer;
 }
 .radio-input:checked {
-  background-color: #8EE3fB;
+  background-color: #8ee3fb;
 }
 .radio-input:checked::before {
   content: " ";
