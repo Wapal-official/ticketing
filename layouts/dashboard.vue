@@ -87,9 +87,9 @@ export default {
       return uploadSocketState.progress > 0;
     },
     getVerifiedStatus() {
-      // if (process.client) {
-      //   return JSON.parse(localStorage.getItem("verified") || "true");
-      // }
+      if (process.client) {
+        return JSON.parse(localStorage.getItem("verified") || "true");
+      }
       return true;
     },
     getUploadingBar() {

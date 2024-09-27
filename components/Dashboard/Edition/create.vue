@@ -295,7 +295,7 @@
             <ValidationProvider
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
               name="mint_price"
-              rules="required|numeric"
+              rules="required|custom_numeric"
               v-slot="{ errors }"
             >
               <input-text-field
@@ -682,7 +682,7 @@
               <div class="tw-w-full tw-pt-2" v-if="collection.type !== '1-1'">
                 <nft-mint-phase-box
                   :phase="{
-                    name: 'Public Sale',
+                    name: 'Ticket Sale',
                     mint_time: collection.public_sale_time,
                     mint_price: collection.public_sale_price,
                   }"
@@ -735,6 +735,13 @@ import {
   getDraftByIdInCreatorStudio,
 } from "@/services/CollectionService";
 import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
+
+extend("custom_numeric", {
+  validate(value) {
+    return !isNaN(value) && value >= 0; 
+  },
+  message: "Please enter a valid number."
+});
 
 extend("percentage", {
   validate(value) {
