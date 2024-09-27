@@ -41,10 +41,10 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-          <!-- <div class="tw-flex tw-gap-4">
+          <div class="tw-flex tw-gap-4">
             <ValidationProvider
               rules="required"
-              name="traitType"
+              name="location"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               v-slot="{ errors }"
             >
@@ -55,7 +55,13 @@
                 v-model="collection.location"
                 :required="true"
                 :autocomplete="true"
-                :autocompleteType="['locality', 'sublocality', 'country', 'administrative_area_level_1','administrative_area_level_2']"
+                :autocompleteType="[
+                  'locality',
+                  'sublocality',
+                  'country',
+                  'administrative_area_level_1',
+                  'administrative_area_level_2',
+                ]"
                 @placeChanged="updateLocationPin"
               >
                 <template #prepend-icon>
@@ -66,7 +72,7 @@
             </ValidationProvider>
             <ValidationProvider
               rules="required"
-              name="traitType"
+              name="venue"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               v-slot="{ errors }"
             >
@@ -88,8 +94,8 @@
               </input-venue-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
-          </div> -->
-          <!-- <GmapMap
+          </div>
+          <GmapMap
             v-bind:center="mapCenter"
             :zoom="14"
             map-type-id="roadmap"
@@ -111,7 +117,7 @@
               v-bind:position="m.position"
               v-bind:clickable="true"
             />
-          </GmapMap> -->
+          </GmapMap>
           <ValidationProvider
             rules="email|required"
             name="email"
