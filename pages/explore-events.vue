@@ -8,7 +8,6 @@
         No Editions
       </div>
       <div
-        class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-x-6 tw-gap-y-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 1xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
         v-else
       >
         <nft-collection-card

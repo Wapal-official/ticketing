@@ -90,7 +90,7 @@
             </template>
             <v-list class="tw-bg-dark-7 !tw-min-w-[240px]">
               <explore-list-item
-                name="All NFTTTTTTTTTT"
+                name="All Events"
                 link="/live-editions"
                 @close="close"
               />
