@@ -5,7 +5,7 @@
     <div
       class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-6 tw-place-items-center lg:tw-flex-row lg:tw-items-center xl:tw-gap-[4.5em] tw-h-auto"
     >
-      <div style="position: relative">
+      <div style="position: relative" @click="redirectCollection">
         <div
           class="tw-w-full tw-max-h-[338px] md:tw-w-[400px] md:tw-h-[400px] md:tw-max-h-[400px] lg:tw-w-[400px] lg:tw-min-w-[400px] lg:tw-h-[400px] xl:tw-w-[400px] xl:tw-h-[400px] xl:tw-max-h-[400px] tw-object-cover tw-rounded-xl"
           v-if="collection.video"
@@ -13,7 +13,7 @@
           <video-player-featured :source="collection.video" />
         </div>
         <video-player-detailed
-          class="video-featured"
+          class="clickable-div video-featured"
           v-else-if="isVideo(collection.media2)"
           :source="collection.media2"
         />
