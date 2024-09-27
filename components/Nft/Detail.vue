@@ -47,7 +47,7 @@
                   width="28px"
                   height="28px"
                 />
-                <span class="w-text-sm tw-items-center tw-ml-2">Broski</span>
+                <span class="w-text-sm tw-items-center tw-ml-2">Wapal</span>
               </div>
               <div
                 id="email"
