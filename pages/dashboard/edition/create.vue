@@ -41,7 +41,7 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-          <div class="tw-flex tw-gap-4">
+          <!-- <div class="tw-flex tw-gap-4">
             <ValidationProvider
               rules="required"
               name="traitType"
@@ -88,22 +88,30 @@
               </input-venue-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
-          </div>
-          <GmapMap
+          </div> -->
+          <!-- <GmapMap
             v-bind:center="mapCenter"
             :zoom="14"
             map-type-id="roadmap"
-            style="width: 500px; height: 300px; border-radius: 3px; display: none;"
-            :options="{ streetViewControl: false, fullscreenControl: true, zoomControl: true, }"
+            style="
+              width: 500px;
+              height: 300px;
+              border-radius: 3px;
+              display: none;
+            "
+            :options="{
+              streetViewControl: false,
+              fullscreenControl: true,
+              zoomControl: true,
+            }"
           >
             <GmapMarker
               v-for="(m, index) in markers"
               v-bind:key="index"
               v-bind:position="m.position"
               v-bind:clickable="true"
-              
             />
-          </GmapMap>
+          </GmapMap> -->
           <ValidationProvider
             rules="email|required"
             name="email"
@@ -197,8 +205,12 @@
                 class="tw-border-white"
               />
             </div>
-            <div class="tw-w-auto ">
-              <button-primary class="!tw-text-black" title="Next" @click="validateFormForNextStep" />
+            <div class="tw-w-auto">
+              <button-primary
+                class="!tw-text-black"
+                title="Next"
+                @click="validateFormForNextStep"
+              />
             </div>
           </div>
         </ValidationObserver>
@@ -318,7 +330,7 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-          
+
           <div
             v-for="(attribute, index) in collection.attributes"
             :key="index"
@@ -496,7 +508,11 @@
               />
             </div>
             <div class="tw-w-auto !tw-text-black">
-              <button-primary class="!tw-text-black" title="Next" @click="submit" />
+              <button-primary
+                class="!tw-text-black"
+                title="Next"
+                @click="submit"
+              />
             </div>
           </div>
         </ValidationObserver>
@@ -739,7 +755,7 @@ extend("custom_numeric", {
   validate(value) {
     return !isNaN(value) && value >= 0;
   },
-  message: "Please enter a valid number."
+  message: "Please enter a valid number.",
 });
 
 extend("percentage", {
@@ -801,14 +817,14 @@ export default {
         { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
       ],
       venueBounds: {
-      north: 27.788, // These bounds define the Kathmandu area; adjust as needed
-      south: 27.664,
-      east: 85.514,
-      west: 85.254,
-    },
-    selectedFileType: "Image",
-    selectedCountry: null,
-    isNepalFocused: false,
+        north: 27.788, // These bounds define the Kathmandu area; adjust as needed
+        south: 27.664,
+        east: 85.514,
+        west: 85.254,
+      },
+      selectedFileType: "Image",
+      selectedCountry: null,
+      isNepalFocused: false,
       selectedLocation: null,
       venueBounds: null,
       step: 1,
@@ -962,58 +978,56 @@ export default {
   async mounted() {
     if (this.draft) {
       this.loading = true;
-    };
+    }
     console.log(this.draft);
     if (this.draft) {
       await this.setCollectionDataFromDraft();
     }
     this.loading = false;
     console.log(this.collection, "this.draft");
-
   },
-  
+
   methods: {
-  updateLocationPin(place) {
-    if (place.geometry && place.geometry.location) {
-      const { lat, lng } = place.geometry.location;
-      this.mapCenter = { lat: lat(), lng: lng() };
-      this.zoomLevel = 15;
-      this.markers = [];
+    updateLocationPin(place) {
+      if (place.geometry && place.geometry.location) {
+        const { lat, lng } = place.geometry.location;
+        this.mapCenter = { lat: lat(), lng: lng() };
+        this.zoomLevel = 15;
+        this.markers = [];
 
-      const viewport = place.geometry.viewport;
-      if (viewport) {
-        this.venueBounds = {
-          north: viewport.getNorthEast().lat(),
-          south: viewport.getSouthWest().lat(),
-          east: viewport.getNorthEast().lng(),
-          west: viewport.getSouthWest().lng(),
-        };
-      }
+        const viewport = place.geometry.viewport;
+        if (viewport) {
+          this.venueBounds = {
+            north: viewport.getNorthEast().lat(),
+            south: viewport.getSouthWest().lat(),
+            east: viewport.getNorthEast().lng(),
+            west: viewport.getSouthWest().lng(),
+          };
+        }
 
-      // Determine the selected country
-      const countryComponent = place.address_components.find(component => 
-        component.types.includes('country')
-      );
+        // Determine the selected country
+        const countryComponent = place.address_components.find((component) =>
+          component.types.includes("country")
+        );
 
-      if (countryComponent) {
-        this.selectedCountry = countryComponent.short_name; // Set the selected country
+        if (countryComponent) {
+          this.selectedCountry = countryComponent.short_name; // Set the selected country
+        } else {
+          this.selectedCountry = null; // Reset if no country found
+        }
       } else {
-        this.selectedCountry = null; // Reset if no country found
+        this.selectedCountry = null; // Reset if no valid place is selected
       }
-    } else {
-      this.selectedCountry = null; // Reset if no valid place is selected
-    }
-  },
-    
+    },
+
     updateVenuePin(place) {
       const location = place.geometry.location;
       this.mapCenter = { lat: location.lat(), lng: location.lng() };
-      this.zoomLevel = 15,
-      (this.markers = [
+      (this.zoomLevel = 15),
+        (this.markers = [
           { position: { lat: location.lat(), lng: location.lng() } },
         ]);
     },
-    
 
     saveStart(date) {
       this.$refs.startmenu.save(date);
@@ -1057,7 +1071,7 @@ export default {
     addAttribute() {
       this.collection.attributes.push({
         trait_type: "ticket type",
-        value: ""
+        value: "",
       });
     },
     removeAttribute(index) {
@@ -1360,7 +1374,7 @@ export default {
           ].includes(extension)
         : false;
     },
-    async  submit() {
+    async submit() {
       const validate = await this.$refs.attributeForm.validate();
 
       if (!validate) {
@@ -1608,7 +1622,7 @@ export default {
 
         await this.createOpenEditionInChain();
 
-        console.log("temp", this.collection)
+        console.log("temp", this.collection);
         const tempCollection = structuredClone(this.collection);
 
         tempCollection.public_sale_time = new Date(
@@ -1674,9 +1688,9 @@ export default {
         formData.append("coin_type", tempCollection.coinType);
 
         console.log("Form Data Entries:");
-  for (let pair of formData.entries()) {
-    console.log(pair[0] + ': ' + pair[1]);
-  }
+        for (let pair of formData.entries()) {
+          console.log(pair[0] + ": " + pair[1]);
+        }
 
         const res = await createCollection(formData);
         console.log("formData", res);
@@ -1817,12 +1831,12 @@ export default {
       formData.append("tweet", tempCollection.tweet);
 
       if (this.file && this.file.name) {
-    const fileType = this.checkFileType(this.file.name);
-    console.log("File type:", fileType); // Debug log
-    if (fileType === "image") {
-      formData.append("image", this.file);
-    } else {
-      formData.append("media2", this.file);
+        const fileType = this.checkFileType(this.file.name);
+        console.log("File type:", fileType); // Debug log
+        if (fileType === "image") {
+          formData.append("image", this.file);
+        } else {
+          formData.append("media2", this.file);
           formData.append("image", this.thumbnail);
         }
       } else {
@@ -1937,10 +1951,8 @@ export default {
             formData.append("image", this.thumbnail);
           }
         } else {
- 
           formData.append("image", this.collection.image);
-          }
-
+        }
 
         if (this.$route.params.id) {
           await editDraft(this.$route.params.id, formData);
@@ -2028,7 +2040,7 @@ export default {
   cursor: pointer;
 }
 .radio-input:checked {
-  background-color: #8EE3fB;
+  background-color: #8ee3fb;
 }
 .radio-input:checked::before {
   content: " ";
