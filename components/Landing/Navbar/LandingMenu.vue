@@ -18,18 +18,18 @@
           <span class="tw-w-full">Explore</span>
         </template>
         <explore-list-item
-          name="All NFT"
-          link="/latest-collection"
+          name="All Events"
+          link="/live-editions"
           @close="close"
         />
         <explore-list-item
           name="Live"
-          link="/latest-collection"
+          link="/live-editions"
           @close="close"
         />
         <explore-list-item
           name="Upcoming"
-          link="/upcoming-collection"
+          link="/upcoming-editions"
           @close="close"
         />
         <!-- <explore-list-item

@@ -13,7 +13,7 @@
           <img
             :src="logo"
             alt="logo"
-            class="tw-min-w-[106px] tw-max-w-[106px] tw-min-h-[28px] tw-max-h-[28px] tw-pb-1"
+            class="tw-min-w-[106px] tw-max-w-[106px] tw-min-h-[28px] tw-max-h-[28px]"
           />
         </NuxtLink>
         <div class="tw-hidden lg:tw-flex">
@@ -21,7 +21,7 @@
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
                 <NuxtLink
-                  to="/explore-events"
+                  to="/live-editions"
                   class="!tw-text-[#A6A7AB] tw-transition tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-center tw-gap-0.5 tw-justify-start hover:!tw-text-primary-1"
                 >
                   <span class="tw-text-white">Explore</span>
@@ -31,7 +31,7 @@
             </template>
             <v-list class="tw-bg-dark-7 !tw-min-w-[240px]">
               <explore-list-item
-                name="All NFT"
+                name="All Events"
                 link="/live-editions"
                 @close="close"
               />
@@ -80,7 +80,7 @@
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
                 <NuxtLink
-                  to="/latest-collection"
+                  to="/live-editions"
                   class="!tw-text-[#A6A7AB] tw-transition tw-duration-200 tw-ease-linear tw-flex tw-flex-row tw-items-center tw-gap-0.5 tw-justify-start hover:!tw-text-primary-1"
                 >
                   <span>Explore</span>
@@ -90,18 +90,18 @@
             </template>
             <v-list class="tw-bg-dark-7 !tw-min-w-[240px]">
               <explore-list-item
-                name="All NFT"
-                link="/latest-collection"
+                name="All Events"
+                link="/live-editions"
                 @close="close"
               />
               <explore-list-item
                 name="Live"
-                link="/latest-collection"
+                link="/live-editions"
                 @close="close"
               />
               <explore-list-item
                 name="Upcoming"
-                link="/upcoming-collection"
+                link="/upcoming-editions"
                 @close="close"
               />
               <!-- <explore-list-item
@@ -256,7 +256,7 @@
 </template>
 
 <script lang="ts">
-import logo from "@/assets/img/logo/Logo-Horizontal-White.svg";
+import logo from "@/assets/img/logo/wapal-ticket.svg";
 import LandingMenu from "@/components/Landing/Navbar/LandingMenu.vue";
 import SearchBar from "@/components/Landing/Navbar/SearchBar.vue";
 import ExploreListItem from "@/components/Landing/Navbar/ExploreListItem.vue";

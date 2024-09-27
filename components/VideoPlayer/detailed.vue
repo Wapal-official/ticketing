@@ -1,5 +1,5 @@
 <template>
-  <div class="video-holder-detailed" @click.stop="playVideo">
+  <div class="video-holder-detailed">
     <video
       ref="videoPlayer"
       :controls="videoControl"
