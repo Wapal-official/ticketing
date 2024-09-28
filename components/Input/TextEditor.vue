@@ -11,7 +11,11 @@
       "
       >{{ label }}</label>
         <div id="app" class="v-input  wapal-input tw-w-full v-textarea v-textarea--auto-grow v-textarea--no-resize v-input--hide-details theme--dark v-text-field v-text-field--single-line v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
-            <vue-editor v-model="internalValue" :editor-toolbar="customToolbar"></vue-editor>
+            <vue-editor 
+            v-model="internalValue"
+            :editor-toolbar="customToolbar"
+            >
+          </vue-editor>
         </div>
     </div>
   </template>
@@ -65,7 +69,6 @@ props: {
      VueEditor
   },
   computed: {
-      
   internalValue: {
     get() {
       return this.value;  
