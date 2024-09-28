@@ -279,7 +279,7 @@ import {
 import { creatorStudioRequest } from "@/services/CreatorStudioInterceptor";
 extend("required", {
   ...required,
-  message: "This field is required",
+  message: "This field is required start",
 });
 
 extend("bidAmount", {

@@ -86,10 +86,10 @@ import papa from "papaparse";
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
 
-extend("required", {
-  ...required,
-  message: "This field is required",
-});
+// extend("required", {
+//   ...required,
+//   message: "This field is required import",
+// });
 export default {
   props: { assetLength: { type: Number }, folderName: { type: String } },
   components: { ValidationObserver, ValidationProvider },
