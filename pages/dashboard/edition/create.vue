@@ -211,6 +211,7 @@
         <ValidationObserver
           ref="tokenDetailForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+           v-slot="{ invalid }"
         >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Ticket Details
@@ -500,7 +501,9 @@
               />
             </div>
             <div class="tw-w-auto !tw-text-black">
-              <button-primary class="!tw-text-black" title="Next" @click="submit" />
+              <button-primary 
+              class="!tw-text-black" title="Next" @click="submit" :disabled=invalid
+              />
             </div>
           </div>
         </ValidationObserver>
@@ -763,16 +766,16 @@ extend("required", {
 
 extend("texteditor", {
   validate(value, params) {
-    // Ensure params is an object
+    
     const options = Array.isArray(params) ? {} : params || {};
     
     const minLength = 'minLength' in options ? parseInt(options.minLength, 10) : 0;
     const maxLength = 'maxLength' in options ? parseInt(options.maxLength, 10) : Infinity;
     
-    // Strip HTML tags to get plain text
+    
     const plainText = (value || '').replace(/<[^>]*>/g, '').trim();
     
-    // Check if the content is empty (only whitespace or HTML tags)
+    
     if (plainText.length === 0) {
       return {
         valid: false,
@@ -781,7 +784,7 @@ extend("texteditor", {
       };
     }
     
-    // Check minimum length
+    
     if (plainText.length < minLength) {
       return {
         valid: false,
@@ -790,7 +793,7 @@ extend("texteditor", {
       };
     }
     
-    // Check maximum length
+   
     if (plainText.length > maxLength) {
       return {
         valid: false,
@@ -1347,6 +1350,10 @@ export default {
       this.thumbnail = "";
     },
     selectImage(file) {
+      if (file) {
+    this.imageError = false; // Clear the error
+  }
+  
       this.file = file;
       if (this.isImage(file.name)) {
         this.checkVideo = false;
@@ -1451,6 +1458,13 @@ export default {
         : false;
     },
     async  submit() {
+      this.imageError = !this.collection.image; // Check if image is selected
+
+if (this.imageError) {
+  this.imageErrorMessage = "Please select a file";
+  return;
+}
+
       const validate = await this.$refs.attributeForm.validate();
 
       if (!validate) {
