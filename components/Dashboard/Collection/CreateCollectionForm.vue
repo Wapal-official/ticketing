@@ -31,22 +31,21 @@
           >
             <input-text-editor
               label="Event Description"
-              :required="true"
+              :required="false"
               v-model="collection.description"
               placeholder="Event Description"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-          <div class="tw-flex  tw-gap-4">
-          <ValidationProvider
-              
+          <div class="tw-flex tw-gap-4">
+            <ValidationProvider
               rules=""
               name="traitType"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               v-slot="{ errors }"
             >
               <input-text-field
-               ref="autocompleteInput"
+                ref="autocompleteInput"
                 label="Location"
                 placeholder="Enter Location"
                 v-model="collection.location"
@@ -54,10 +53,10 @@
                 :autocomplete="true"
                 @placeChanged="updateLocationPin"
               >
-              <template #prepend-icon>
-                  <i class="bx bx-map tw-text-white tw-text-lg"></i> 
+                <template #prepend-icon>
+                  <i class="bx bx-map tw-text-white tw-text-lg"></i>
                 </template>
-            </input-text-field>
+              </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
             <ValidationProvider
@@ -67,7 +66,7 @@
               v-slot="{ errors }"
             >
               <input-venue-field
-               ref="autocompleteInput"
+                ref="autocompleteInput"
                 label="Venue"
                 placeholder="Enter Venue"
                 v-model="collection.venue"
@@ -78,9 +77,9 @@
                 @placeChanged="updateVenuePin"
               >
                 <template #prepend-icon>
-                  <i class="bx bx-map tw-text-white tw-text-lg"></i> 
+                  <i class="bx bx-map tw-text-white tw-text-lg"></i>
                 </template>
-            </input-venue-field>
+              </input-venue-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
@@ -100,19 +99,18 @@
                 />
           </GmapMap> -->
           <ValidationProvider
-              rules="email"
-              name="email"
-              class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-              v-slot="{ errors }"
-            >
-              <input-text-field
-                label="E-mail"
-                placeholder="E-mail"
-                v-model="collection.email"
-                
-              />
-              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-            </ValidationProvider>
+            rules="email"
+            name="email"
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="E-mail"
+              placeholder="E-mail"
+              v-model="collection.email"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="twitter"
@@ -224,7 +222,7 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-            <ValidationProvider
+          <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="tokenDescription"
             rules="required"
@@ -238,9 +236,9 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-            <!-- <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          <!-- <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider> -->
-           <!-- <div
+          <!-- <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 md:tw-gap-8 tw-w-full md:tw-flex-row md:tw-items-start"
           >
             <ValidationProvider
@@ -270,7 +268,7 @@
                 class="!tw-text-dark-2"
               ></v-checkbox>
             </ValidationProvider> -->
-            <!-- <ValidationProvider
+          <!-- <ValidationProvider
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full md:tw-w-1/2"
               name="publicSalePrice"
               :rules="!tbd ? 'required|number' : 'number'"
@@ -431,7 +429,7 @@
               <div class="tw-text-red-600">{{ errors[0] }}</div>
             </ValidationProvider> -->
           </div>
-  
+
           <!-- <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
             name="royaltyPayeeAddress"
@@ -492,7 +490,7 @@
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider> -->
 
-          <ValidationProvider 
+          <ValidationProvider
             class="tw-d-none tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2"
             name="coinType"
             rules="required"
@@ -581,7 +579,7 @@
       <v-stepper-content step="3" class="hide tw-d-none">
         <ValidationObserver
           ref="phaseForm"
-          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px] tw-d-none "
+          class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px] tw-d-none"
         >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Sale Phase
@@ -1037,13 +1035,10 @@
       :showClose="showCloseModal"
       :progress="progress"
       :error="error"
-      
       :name="getName"
-      
       @closeProgressModal="createEditionModal = false"
     />
   </div>
-  
 </template>
 <script lang="ts">
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
@@ -1188,32 +1183,30 @@ export default {
   props: { draft: { type: Boolean, default: false } },
   data() {
     return {
-      mapCenter: { lat: 27.7172, lng: 85.3240 }, // Default center (Kathmandu)
+      mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
       markers: [
-        { position: { lat: 27.7172, lng: 85.3240 } }, // Example marker
+        { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
       ],
       venueBounds: {
-      north: 27.788, // These bounds define the Kathmandu area; adjust as needed
-      south: 27.664,
-      east: 85.514,
-      west: 85.254,
-    },
+        north: 27.788, // These bounds define the Kathmandu area; adjust as needed
+        south: 27.664,
+        east: 85.514,
+        west: 85.254,
+      },
       selectedFileType: "Image",
       steps: ["Details", "Create Ticket"],
       stepNumber: 1,
       checkFeaturedFile: true,
       collection: {
         location: "",
-        venue:"",
-        email:"",
-        type:"",
-        attributes: [
-          { trait_type: "ticket type", value: "" }
-        ],
+        venue: "",
+        email: "",
+        type: "",
+        attributes: [{ trait_type: "ticket type", value: "" }],
         name: "",
         description: "",
-        tokenName:"",
-        tokenDesc:"",
+        tokenName: "",
+        tokenDesc: "",
         image: "",
         thumbnail: "",
         baseURL: "",
@@ -1280,22 +1273,21 @@ export default {
     };
   },
   methods: {
-
     updateLocationPin(place: any) {
       const location = place.geometry.location;
       (this.mapCenter = { lat: location.lat(), lng: location.lng() }),
         (this.zoomLevel = 15),
         (this.markers = []);
-        
-        const viewport = place.geometry.viewport;
-        if (viewport) {
-          this.venueBounds = {
-            north: viewport.getNorthEast().lat(),
-            south: viewport.getSouthWest().lat(),
-            east: viewport.getNorthEast().lng(),
-            west: viewport.getSouthWest().lng(),
-          };
-    }
+
+      const viewport = place.geometry.viewport;
+      if (viewport) {
+        this.venueBounds = {
+          north: viewport.getNorthEast().lat(),
+          south: viewport.getSouthWest().lat(),
+          east: viewport.getNorthEast().lng(),
+          west: viewport.getSouthWest().lng(),
+        };
+      }
     },
     updateVenuePin(place: any) {
       const location = place.geometry.location;
@@ -1304,18 +1296,18 @@ export default {
     },
     addAttribute() {
       if (!Array.isArray(this.collection.attributes)) {
-    // Initialize the attributes array if it doesn't exist or isn't an array
-    this.$set(this.collection, 'attributes', []);
-  }
-  this.collection.attributes.push({
-    trait_type: "ticket type",
-    value: "",
-  });
-},
+        // Initialize the attributes array if it doesn't exist or isn't an array
+        this.$set(this.collection, "attributes", []);
+      }
+      this.collection.attributes.push({
+        trait_type: "ticket type",
+        value: "",
+      });
+    },
     removeAttribute(index: any) {
       this.collection.attributes.splice(index, 1);
     },
-    
+
     async changeStep(step: number) {
       this.stepNumber = step;
     },
@@ -1361,7 +1353,7 @@ export default {
           }
 
           this.stepNumber++;
-          console.log("This is case2")
+          console.log("This is case2");
           break;
         case 3:
           const phaseValidated = await this.$refs.phaseForm.validate();
@@ -1388,7 +1380,7 @@ export default {
             return;
           }
           this.stepNumber++;
-          console.log("This is case3")
+          console.log("This is case3");
           break;
         default:
           break;
@@ -1408,9 +1400,9 @@ export default {
         this.progress = 1; //changed
 
         // this.submitting = true; //changed
-        console.log("agadi")
+        console.log("agadi");
         await this.createOpenEditionInChain();
-        console.log("pachadi")
+        console.log("pachadi");
         // const selectedFolder = this.folders.find(
         //   (folder: any) => folder.folder_name === this.baseURL
         // );
@@ -1513,8 +1505,6 @@ export default {
         formData.append("tweet", tempCollection.tweet);
         formData.append("email", tempCollection.email);
         formData.append("seedz", JSON.stringify(tempCollection.seedz));
-        
-
 
         const draft_id = this.$route.params.id;
 
@@ -1536,14 +1526,14 @@ export default {
 
         await createCollection(formData);
 
-        this.submitting = false;  
+        this.submitting = false;
 
         this.message = "Collection Created Successfully";
         this.$toast.showMessage({ message: this.message, error: false });
 
         this.$router.push("/dashboard/edition/under-review");
         setTimeout(() => {
-          this.$store.commit("general/setWhitelistSetup", true)
+          this.$store.commit("general/setWhitelistSetup", true);
         }, 2000);
       } catch (error: any) {
         console.log(error);
@@ -1554,9 +1544,9 @@ export default {
         this.error = true;
         this.showCloseModal = true;
       }
-    },  
+    },
     async createOpenEditionInChain() {
-      console.log("createOpenEdition")
+      console.log("createOpenEdition");
       let metadataUri = null;
       metadataUri = this.metadata = await this.uploadImageAndMetadata();
 
@@ -1580,9 +1570,15 @@ export default {
       console.log(this.collection.name, "name");
       console.log(this.collection.description, "description");
       console.log(this.collection.baseURL, "baseuri");
-      console.log(this.collection.royalty_payee_address, "royalty_payee_address");
+      console.log(
+        this.collection.royalty_payee_address,
+        "royalty_payee_address"
+      );
       // console.log(royalty_points_denominator, "royalty_points_denominator");
-      console.log(this.collection.royalty_percentage, " royalty_points_numerator");
+      console.log(
+        this.collection.royalty_percentage,
+        " royalty_points_numerator"
+      );
       console.log(mintTime, "presale_mint_time");
       console.log(mintTime + 1, "public_sale_mint_time");
       console.log(mint_price, "presale_mint_price");
@@ -1592,7 +1588,6 @@ export default {
       // console.log(this.collection.name, "is_open_edition");
       console.log(this.collection.coinType, "coinType");
       console.log(this.collection.name, "isRandom");
-      
 
       const candyMachineArguments = {
         collection_name: this.collection.name,
@@ -1610,9 +1605,7 @@ export default {
         is_open_edition: true,
         coinType: this.collection.coinType,
         isRandom: true,
-        
       };
-      
 
       const res = await createCollectionV2(candyMachineArguments);
 
@@ -2048,7 +2041,7 @@ export default {
         this.$toast.showMessage({ message: "Draft Updated Successfully" });
         this.$router.push("/dashboard/collection/draft");
         setTimeout(() => {
-          this.$store.commit("general/setWhitelistSetup", true)
+          this.$store.commit("general/setWhitelistSetup", true);
         }, 2000);
       } catch (error) {
         console.log(error);
@@ -2181,7 +2174,7 @@ export default {
   cursor: pointer;
 }
 .radio-input:checked {
-  background-color: #8EE3fB;
+  background-color: #8ee3fb;
 }
 .radio-input:checked::before {
   content: " ";
