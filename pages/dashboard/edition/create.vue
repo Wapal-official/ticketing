@@ -948,6 +948,7 @@ export default {
         seedz: false,
         coinType: "APT",
         tweet: "",
+        someValue: false,
       },
       saveAsDraft: false,
       metadata: null,
@@ -1001,6 +1002,7 @@ export default {
       audioUrl: "",
       audioUrlReview: "",
       audioCheck: false,
+      showValue: false,
     };
   },
   watch: {
@@ -1073,6 +1075,10 @@ export default {
   },
 
   methods: {
+    handleInputClick() {
+      console.log("asbd");
+      this.showValue = true;
+    },
     handleDescriptionValidation(isValid) {
       this.isDescriptionValid = isValid;
     },
@@ -1468,7 +1474,7 @@ export default {
         : false;
     },
 
-    async  submit() {
+    async submit() {
       this.imageError = !this.file; // Check if image is selected
 
       if (this.imageError) {
