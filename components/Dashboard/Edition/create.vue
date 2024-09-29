@@ -33,7 +33,7 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
-            rules="texteditor:1, 4000"
+            rules="texteditorRequired|texteditorMaxLength:4000"
             v-slot="{ errors }"
           >
             <input-text-editor
@@ -783,15 +783,8 @@ extend("required", {
   message: "This field is required",
 });
 
-extend("texteditor", {
-  validate(value, params) {
-    const options = Array.isArray(params) ? {} : params || {};
-
-    const minLength =
-      "minLength" in options ? parseInt(options.minLength, 10) : 0;
-    const maxLength =
-      "maxLength" in options ? parseInt(options.maxLength, 10) : Infinity;
-
+extend("texteditorRequired", {
+  validate(value) {
     const plainText = (value || "").replace(/<[^>]*>/g, "").trim();
 
     if (plainText.length === 0) {
@@ -802,30 +795,32 @@ extend("texteditor", {
       };
     }
 
-    if (plainText.length < minLength) {
-      return {
-        valid: false,
-        required: true,
-        message: `Please enter at least ${minLength} characters`,
-      };
-    }
+    return {
+      valid: true,
+      required: true,
+    };
+  },
+  message: "This field is required",
+  computesRequired: true,
+});
+
+extend("texteditorMaxLength", {
+  validate(value, { maxLength }) {
+    const plainText = (value || "").replace(/<[^>]*>/g, "").trim();
 
     if (plainText.length > maxLength) {
       return {
         valid: false,
-        required: true,
         message: `Please enter no more than ${maxLength} characters`,
       };
     }
 
     return {
       valid: true,
-      required: true,
     };
   },
-  params: ["minLength", "maxLength"],
-  computesRequired: true,
-  message: "This field is required",
+  params: ["maxLength"],
+  message: "Please enter no more than 4000 characters",
 });
 
 extend("custom_numeric", {
@@ -1449,7 +1444,7 @@ if (this.imageError) {
         console.warn(
           "Collection type is undefined, setting default to open-edition"
         );
-        this.collection.type = "ticekt-open-edition";
+        this.collection.type = "ticket-open-edition";
       }
       if (!this.collection.coinType) {
         console.warn("Coin type is undefined, setting default to APT");
@@ -1467,7 +1462,7 @@ if (this.imageError) {
         case "1-1":
           await this.createOneOnOneCollection();
           break;
-        case "ticekt-open-edition":
+        case "ticket-open-edition":
           await this.createOpenEdition();
           break;
         case "limited-edition":
