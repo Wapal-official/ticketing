@@ -8,7 +8,7 @@
         @rowClicked="redirectToMintPage"
       />
       <dashboard-no-collection
-        message="You Do Not Have any NFTs of this type"
+        message="You Do Not Have any Events"
         buttonTitle="Create Event"
         @click="$router.push('/dashboard/edition/create')"
         v-if="editions.length === 0 && !loading"
@@ -69,7 +69,7 @@ export default {
           value: "progress",
           width: "200px",
           class: "default-data-table-header",
-           progress: true,
+          progress: true,
         },
       ],
       end: false,
@@ -103,12 +103,11 @@ export default {
           edition.minted = resource.minted;
 
           edition.progress = {
-        minted: resource.minted,
-        total: Infinity, 
-        progressPercent: 0, 
-        text: `${resource.minted} Sold`,
-        
-      };
+            minted: resource.minted,
+            total: Infinity,
+            progressPercent: 0,
+            text: `${resource.minted} Sold`,
+          };
 
           this.editions.push(edition);
         })
