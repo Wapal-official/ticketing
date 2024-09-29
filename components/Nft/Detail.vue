@@ -53,18 +53,17 @@
                 id="email"
                 class="tw-flex tw-items-center tw-mt-4 tw-text-white/70"
               >
-                <a 
-                  :href="composeGmailLink" 
-                  target="_blank" 
+              <a 
+                :href="`mailto:${recipient}`"  
                   class="tw-flex !tw-text-white/70">
-                  <img
+                <img
                   src="~/assets/img/mail-logo-3.svg"
-                  alt="Wapal logo"
+                  alt="Mail logo"
                   width="24px"
                   height="24px"
                 />
-                <span class="tw-items-center tw-ml-3">Contact the host</span>
-                </a>
+                <span class="tw-items-center tw-ml-3">{{ recipient || 'host email' }}</span> <!-- Dynamic text -->
+              </a>
               </div>
               <!-- Popup box -->
               <!-- <div
@@ -836,7 +835,7 @@ export default {
   props: { collection: { type: Object } },
   data() {
     return {
-      recipient: "nidiv@gmail.com",
+      recipient: this.collection.email || "",
       subject: "Dynamic Subject",  
       body: "This is a dynamically generated email.", 
       mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
@@ -2213,9 +2212,10 @@ export default {
     },
   },
   computed: {
-    composeGmailLink() {
-      return `https://mail.google.com/mail/u/1/#inbox?compose=new&to=${this.recipient}&su=${encodeURIComponent(this.subject)}&body=${encodeURIComponent(this.body)}`;
-    },
+    // composeGmailLink() {
+    //   // Return the mailto link
+    //   return `mailto:${this.recipient}`;
+    // },
     getCurrentPrice() {
       if (
         this.collection.candyMachine.public_sale_price ==

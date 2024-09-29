@@ -758,11 +758,10 @@ input:disabled {
 #featured-markup-desc {
   width: auto;
   height: auto;
-  padding: 14px 0px 0px 4px;
 }
 
 .read-more-link {
-  color: #8EE3FB !important;;
+  color: #C1C2C5 !important;;
   cursor: pointer !important;;
   text-decoration: none;
 }
