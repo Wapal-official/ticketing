@@ -402,13 +402,13 @@
             <div
               class="tw-w-full tw-h-full tw-rounded-sm tw-absolute tw-top-0 tw-left-0 tw-py-2.5 tw-bg-black/40"
             >
-              <span>Resume Mint</span>
+              <span>Resume Ticket Sale</span>
             </div>
           </button>
 
           <button-primary
           class="tw-text-black"
-            title="Pause Ticekt Sale"
+            title="Pause Ticket Sale"
             @click="pauseOrResumeMint"
             :fullWidth="true"
             v-else
