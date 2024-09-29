@@ -1,7 +1,7 @@
 <template>
   <div class="tw-w-full">
     <div v-if="this.$route.path !== '/dashboard/edition/create'">
-      <h1 class="tw-text-white tw-text-3xl">NFTs</h1>
+      <h1 class="tw-text-white tw-text-3xl">Events</h1>
       <!-- <launchpad-guide
         title="Edition Guide"
         itemLink="https://docs.wapal.io/launchpad-overall-guide/create-editions"

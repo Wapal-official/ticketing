@@ -1467,8 +1467,9 @@ export default {
           ].includes(extension)
         : false;
     },
-    async submit() {
-      this.imageError = !this.collection.image; // Check if image is selected
+
+    async  submit() {
+      this.imageError = !this.file; // Check if image is selected
 
       if (this.imageError) {
         this.imageErrorMessage = "Please select a file";
