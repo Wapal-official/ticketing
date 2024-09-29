@@ -9,7 +9,7 @@
         <ValidationObserver
           ref="detailForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
-           v-slot="{ invalid }"
+          v-slot="{ invalid }"
         >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Event Details
@@ -26,7 +26,9 @@
               v-model="collection.name"
               placeholder="Event Name"
             />
-            <div v-if="errors[0]" class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            <div v-if="errors[0]" class="tw-text-red-600 tw-text-sm">
+              {{ errors[0] }}
+            </div>
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -36,7 +38,7 @@
           >
             <input-text-editor
               label="Event Description"
-              :required="true"
+              :required="false"
               v-model="collection.description"
               placeholder="Event Description"
             />
@@ -56,7 +58,13 @@
                 v-model="collection.location"
                 :required="true"
                 :autocomplete="true"
-                :autocompleteType="['locality', 'sublocality', 'country', 'administrative_area_level_1','administrative_area_level_2']"
+                :autocompleteType="[
+                  'locality',
+                  'sublocality',
+                  'country',
+                  'administrative_area_level_1',
+                  'administrative_area_level_2',
+                ]"
                 @placeChanged="updateLocationPin"
               >
                 <template #prepend-icon>
@@ -94,13 +102,18 @@
             v-bind:center="mapCenter"
             :zoom="14"
             map-type-id="roadmap"
-            style="width: 500px; height: 300px; border-radius: 3px; display: none;"
+            style="
+              width: 500px;
+              height: 300px;
+              border-radius: 3px;
+              display: none;
+            "
           >
             <GmapMarker
               v-for="(m, index) in markers"
               v-bind:key="index"
               v-bind:position="m.position"
-              v-bind:clickable="true"  
+              v-bind:clickable="true"
             />
           </GmapMap>
           <ValidationProvider
@@ -211,7 +224,7 @@
         <ValidationObserver
           ref="tokenDetailForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
-           v-slot="{ invalid }"
+          v-slot="{ invalid }"
         >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Ticket Details
@@ -323,7 +336,7 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-          
+
           <div
             v-for="(attribute, index) in collection.attributes"
             :key="index"
@@ -501,8 +514,11 @@
               />
             </div>
             <div class="tw-w-auto !tw-text-black">
-              <button-primary 
-              class="!tw-text-black" title="Next" @click="submit" :disabled=invalid
+              <button-primary
+                class="!tw-text-black"
+                title="Next"
+                @click="submit"
+                :disabled="invalid"
               />
             </div>
           </div>
@@ -742,81 +758,77 @@ import {
 } from "@/services/CollectionService";
 import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
 
-
 extend("required", {
   validate(value, params) {
     const allowFalse = params && params.allowFalse ? params.allowFalse : false;
 
     if (allowFalse) {
       return {
-        valid: value !== undefined && value !== null && value !== '',
-        required: true
+        valid: value !== undefined && value !== null && value !== "",
+        required: true,
       };
     }
 
     return {
       valid: !!value,
-      required: true
+      required: true,
     };
   },
-  params: ['allowFalse'],
+  params: ["allowFalse"],
   computesRequired: true,
-  message: "This field is required"
+  message: "This field is required",
 });
 
 extend("texteditor", {
   validate(value, params) {
-    
     const options = Array.isArray(params) ? {} : params || {};
-    
-    const minLength = 'minLength' in options ? parseInt(options.minLength, 10) : 0;
-    const maxLength = 'maxLength' in options ? parseInt(options.maxLength, 10) : Infinity;
-    
-    
-    const plainText = (value || '').replace(/<[^>]*>/g, '').trim();
-    
-    
+
+    const minLength =
+      "minLength" in options ? parseInt(options.minLength, 10) : 0;
+    const maxLength =
+      "maxLength" in options ? parseInt(options.maxLength, 10) : Infinity;
+
+    const plainText = (value || "").replace(/<[^>]*>/g, "").trim();
+
     if (plainText.length === 0) {
       return {
         valid: false,
         required: true,
-        message: "This field is required"
+        message: "This field is required",
       };
     }
-    
-    
+
     if (plainText.length < minLength) {
       return {
         valid: false,
         required: true,
-        message: `Please enter at least ${minLength} characters`
+        message: `Please enter at least ${minLength} characters`,
       };
     }
-    
-   
+
     if (plainText.length > maxLength) {
       return {
         valid: false,
         required: true,
-        message: `Please enter no more than ${maxLength} characters`
+        message: `Please enter no more than ${maxLength} characters`,
       };
     }
-    
+
     return {
       valid: true,
-      required: true
+      required: true,
     };
   },
-  params: ['minLength', 'maxLength'],
+  params: ["minLength", "maxLength"],
   computesRequired: true,
-  message: "This field is required"
+  message: "This field is required",
 });
 
 extend("custom_numeric", {
   validate(value) {
     return !isNaN(value) && value >= 0;
   },
-  message: "Please enter a valid number."
+  message: "Please enter a valid number.",
 });
 
 extend("percentage", {
@@ -888,14 +900,14 @@ export default {
         { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
       ],
       venueBounds: {
-      north: 27.788, // These bounds define the Kathmandu area; adjust as needed
-      south: 27.664,
-      east: 85.514,
-      west: 85.254,
-    },
-    selectedFileType: "Image",
-    selectedCountry: null,
-    isNepalFocused: false,
+        north: 27.788, // These bounds define the Kathmandu area; adjust as needed
+        south: 27.664,
+        east: 85.514,
+        west: 85.254,
+      },
+      selectedFileType: "Image",
+      selectedCountry: null,
+      isNepalFocused: false,
       selectedLocation: null,
       venueBounds: null,
       step: 1,
@@ -1051,62 +1063,60 @@ export default {
   async mounted() {
     if (this.draft) {
       this.loading = true;
-    };
+    }
     console.log(this.draft);
     if (this.draft) {
       await this.setCollectionDataFromDraft();
     }
     this.loading = false;
     console.log(this.collection, "this.draft");
-
   },
-  
+
   methods: {
     handleDescriptionValidation(isValid) {
-    this.isDescriptionValid = isValid;
-  },
+      this.isDescriptionValid = isValid;
+    },
 
-  updateLocationPin(place) {
-    if (place.geometry && place.geometry.location) {
-      const { lat, lng } = place.geometry.location;
-      this.mapCenter = { lat: lat(), lng: lng() };
-      this.zoomLevel = 15;
-      this.markers = [];
+    updateLocationPin(place) {
+      if (place.geometry && place.geometry.location) {
+        const { lat, lng } = place.geometry.location;
+        this.mapCenter = { lat: lat(), lng: lng() };
+        this.zoomLevel = 15;
+        this.markers = [];
 
-      const viewport = place.geometry.viewport;
-      if (viewport) {
-        this.venueBounds = {
-          north: viewport.getNorthEast().lat(),
-          south: viewport.getSouthWest().lat(),
-          east: viewport.getNorthEast().lng(),
-          west: viewport.getSouthWest().lng(),
-        };
-      }
+        const viewport = place.geometry.viewport;
+        if (viewport) {
+          this.venueBounds = {
+            north: viewport.getNorthEast().lat(),
+            south: viewport.getSouthWest().lat(),
+            east: viewport.getNorthEast().lng(),
+            west: viewport.getSouthWest().lng(),
+          };
+        }
 
-      // Determine the selected country
-      const countryComponent = place.address_components.find(component => 
-        component.types.includes('country')
-      );
+        // Determine the selected country
+        const countryComponent = place.address_components.find((component) =>
+          component.types.includes("country")
+        );
 
-      if (countryComponent) {
-        this.selectedCountry = countryComponent.short_name; // Set the selected country
+        if (countryComponent) {
+          this.selectedCountry = countryComponent.short_name; // Set the selected country
+        } else {
+          this.selectedCountry = null; // Reset if no country found
+        }
       } else {
-        this.selectedCountry = null; // Reset if no country found
+        this.selectedCountry = null; // Reset if no valid place is selected
       }
-    } else {
-      this.selectedCountry = null; // Reset if no valid place is selected
-    }
-  },
-    
+    },
+
     updateVenuePin(place) {
       const location = place.geometry.location;
       this.mapCenter = { lat: location.lat(), lng: location.lng() };
-      this.zoomLevel = 15,
-      (this.markers = [
+      (this.zoomLevel = 15),
+        (this.markers = [
           { position: { lat: location.lat(), lng: location.lng() } },
         ]);
     },
-    
 
     saveStart(date) {
       this.$refs.startmenu.save(date);
@@ -1150,7 +1160,7 @@ export default {
     addAttribute() {
       this.collection.attributes.push({
         trait_type: "ticket type",
-        value: ""
+        value: "",
       });
     },
     removeAttribute(index) {
@@ -1351,9 +1361,9 @@ export default {
     },
     selectImage(file) {
       if (file) {
-    this.imageError = false; // Clear the error
-  }
-  
+        this.imageError = false; // Clear the error
+      }
+
       this.file = file;
       if (this.isImage(file.name)) {
         this.checkVideo = false;
@@ -1457,13 +1467,14 @@ export default {
           ].includes(extension)
         : false;
     },
+
     async  submit() {
       this.imageError = !this.file; // Check if image is selected
 
-if (this.imageError) {
-  this.imageErrorMessage = "Please select a file";
-  return;
-}
+      if (this.imageError) {
+        this.imageErrorMessage = "Please select a file";
+        return;
+      }
 
       const validate = await this.$refs.attributeForm.validate();
 
@@ -1621,21 +1632,21 @@ if (this.imageError) {
           const isValid = await this.$refs.detailForm.validate();
 
           if (!isValid) {
-        console.log('Form validation failed');
-        // Force re-render to ensure error messages are displayed
-        this.EventDescription = true;
-        this.EventDescriptionErrorMessage = "This field is required";
-        // this.$forceUpdate();
-        return;
-      }
+            console.log("Form validation failed");
+            // Force re-render to ensure error messages are displayed
+            this.EventDescription = true;
+            this.EventDescriptionErrorMessage = "This field is required";
+            // this.$forceUpdate();
+            return;
+          }
 
-    //       if (!detailValidated || !this.isDescriptionValid) {
-    //   console.log('Form validation failed');
-    //   if (!this.collection.description.trim()) {
-    //     console.log('Description is empty');
-    //   }
-    //   break;
-    // }
+          //       if (!detailValidated || !this.isDescriptionValid) {
+          //   console.log('Form validation failed');
+          //   if (!this.collection.description.trim()) {
+          //     console.log('Description is empty');
+          //   }
+          //   break;
+          // }
 
           if (!detailValidated) {
             break;
@@ -1731,7 +1742,7 @@ if (this.imageError) {
 
         await this.createOpenEditionInChain();
 
-        console.log("temp", this.collection)
+        console.log("temp", this.collection);
         const tempCollection = structuredClone(this.collection);
 
         tempCollection.public_sale_time = new Date(
@@ -1797,9 +1808,9 @@ if (this.imageError) {
         formData.append("coin_type", tempCollection.coinType);
 
         console.log("Form Data Entries:");
-  for (let pair of formData.entries()) {
-    console.log(pair[0] + ': ' + pair[1]);
-  }
+        for (let pair of formData.entries()) {
+          console.log(pair[0] + ": " + pair[1]);
+        }
 
         const res = await createCollection(formData);
         console.log("formData", res);
@@ -1940,12 +1951,12 @@ if (this.imageError) {
       formData.append("tweet", tempCollection.tweet);
 
       if (this.file && this.file.name) {
-    const fileType = this.checkFileType(this.file.name);
-    console.log("File type:", fileType); // Debug log
-    if (fileType === "image") {
-      formData.append("image", this.file);
-    } else {
-      formData.append("media2", this.file);
+        const fileType = this.checkFileType(this.file.name);
+        console.log("File type:", fileType); // Debug log
+        if (fileType === "image") {
+          formData.append("image", this.file);
+        } else {
+          formData.append("media2", this.file);
           formData.append("image", this.thumbnail);
         }
       } else {
@@ -2060,10 +2071,8 @@ if (this.imageError) {
             formData.append("image", this.thumbnail);
           }
         } else {
- 
           formData.append("image", this.collection.image);
-          }
-
+        }
 
         if (this.$route.params.id) {
           await editDraft(this.$route.params.id, formData);
@@ -2151,7 +2160,7 @@ if (this.imageError) {
   cursor: pointer;
 }
 .radio-input:checked {
-  background-color: #8EE3fB;
+  background-color: #8ee3fb;
 }
 .radio-input:checked::before {
   content: " ";

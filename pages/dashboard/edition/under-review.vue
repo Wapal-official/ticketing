@@ -161,7 +161,7 @@ export default {
         @rowClicked="redirectToMintPage"
       />
       <dashboard-no-collection
-        message="You Do Not Have any NFTs of this type"
+        message="You Do Not Have any Events"
         buttonTitle="Create Event"
         @click="$router.push('/dashboard/edition/create')"
         v-if="editions.length === 0 && !loading"
@@ -256,15 +256,15 @@ export default {
           edition.price = edition.candyMachine.public_sale_price;
           edition.minted = resource.minted;
 
-      //     edition.progress = {
-      //   minted: resource.minted,
-      //   total: resource.total_supply, 
-      //   // progressPercent: 0, 
-      //   progressPercent: Math.floor((0 / resource.total_supp) * 100),
-      //   text: `${resource.minted} /${resource.supply} sold`,
-      //   // `0/${draft.data.supply} sold`,
-        
-      // };
+          //     edition.progress = {
+          //   minted: resource.minted,
+          //   total: resource.total_supply,
+          //   // progressPercent: 0,
+          //   progressPercent: Math.floor((0 / resource.total_supp) * 100),
+          //   text: `${resource.minted} /${resource.supply} sold`,
+          //   // `0/${draft.data.supply} sold`,
+
+          // };
 
           this.editions.push(edition);
         })

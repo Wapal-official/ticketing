@@ -31,7 +31,7 @@
     </button>
   </div>
   <div class="tw-text-center tw-text-xl tw-text-primary-1" v-else>
-    No Collections
+    No Events
   </div>
 </template>
 <script>

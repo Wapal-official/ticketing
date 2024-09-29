@@ -5,10 +5,10 @@
       v-if="!loading && collections.length === 0"
       class="tw-w-full tw-text-center tw-text-xl tw-text-primary-1"
     >
-      No Editions
+      No Events
     </div>
     <div
-      class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-x-6 tw-gap-y-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 1xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
+      class="custom-gap-grid tw-w-full tw-grid tw-grid-cols-1 tw-gap-x-6 tw-gap-y-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 1xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
       v-else
     >
       <nft-collection-card
@@ -34,6 +34,16 @@
     </v-card>
   </div>
 </template>
+
+<style scoped>
+/* Apply column-gap specifically between 1024px and 1280px */
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .custom-gap-grid {
+    column-gap: 5rem; /* 3.5rem = 56px */
+  }
+}
+</style>
+
 <script lang="ts">
 import { getAllEditions } from "@/services/EditionService";
 
