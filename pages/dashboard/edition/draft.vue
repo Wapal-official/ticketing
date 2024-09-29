@@ -44,7 +44,7 @@ export default {
       page: 0,
       tableHeaders: [
         {
-          text: "Collection Name",
+          text: "Event Name",
           align: "start",
           sortable: true,
           value: "name",
@@ -70,15 +70,15 @@ export default {
           width: "200px",
           class: "default-data-table-header",
         },
-        {
-          text: "Minted",
-          align: "start",
-          sortable: true,
-          value: "progress",
-          width: "200px",
-          class: "default-data-table-header",
-          progress: true,
-        },
+        // {
+        //   text: "Minted",
+        //   align: "start",
+        //   sortable: true,
+        //   value: "progress",
+        //   width: "200px",
+        //   class: "default-data-table-header",
+        //   progress: true,
+        // },
       ],
     };
   },

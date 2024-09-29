@@ -1458,7 +1458,7 @@ export default {
         : false;
     },
     async  submit() {
-      this.imageError = !this.collection.image; // Check if image is selected
+      this.imageError = !this.file; // Check if image is selected
 
 if (this.imageError) {
   this.imageErrorMessage = "Please select a file";
