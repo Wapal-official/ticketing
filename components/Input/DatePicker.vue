@@ -148,14 +148,13 @@ export default {
         this.showDatePickerTimePanel = false;
       }
     },
-    calendarHide(newValue) {
+    calendarHide(newValue: any) {
       if (newValue) {
         const datePickerPopup = document.querySelector(
           ".mx-datepicker-popup"
         ) as HTMLElement;
 
         if (datePickerPopup) {
-          // Dynamically append the CSS to hide the date picker popup
           datePickerPopup.style.opacity = "0";
           datePickerPopup.style.visibility = "hidden";
           datePickerPopup.style.position = "absolute";
@@ -167,7 +166,6 @@ export default {
         ) as HTMLElement;
 
         if (datePickerPopup) {
-          // Dynamically append the CSS to hide the date picker popup
           datePickerPopup.style.opacity = "1";
           datePickerPopup.style.visibility = "visible";
           datePickerPopup.style.position = "absolute";
