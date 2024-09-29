@@ -33,7 +33,7 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
-            rules="texteditor:1,500"
+            rules="texteditor:1,2500"
             v-slot="{ errors }"
           >
             <input-text-editor
