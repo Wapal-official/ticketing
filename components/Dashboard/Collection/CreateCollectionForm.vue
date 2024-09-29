@@ -1024,7 +1024,7 @@
             class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-end"
           >
             <button-primary
-              title="Createe"
+              title="Create"
               :loading="submitting"
               @click="submitCollection"
             />

@@ -5,7 +5,7 @@
     <input-text-field
       v-model="searchInput"
       @input="search"
-      placeholder="Search Nfts, Collections"
+      placeholder="Search Events"
     >
       <template #prepend-icon>
         <i class="bx bx-search tw-text-dark-2 tw-text-lg"></i>

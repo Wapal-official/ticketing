@@ -574,7 +574,7 @@ import AWS from "aws-sdk";
 
 extend("required", {
   ...required,
-  message: "This field is required",
+  message: "This field is required verification",
 });
 
 extend("email", {

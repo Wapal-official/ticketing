@@ -9,6 +9,7 @@
         <ValidationObserver
           ref="detailForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+           v-slot="{ invalid }"
         >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Event Details
@@ -25,12 +26,12 @@
               v-model="collection.name"
               placeholder="Event Name"
             />
-            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            <div v-if="errors[0]" class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
-            rules="required"
+            rules="texteditor:1,500"
             v-slot="{ errors }"
           >
             <input-text-editor
@@ -44,7 +45,7 @@
           <div class="tw-flex tw-gap-4">
             <ValidationProvider
               rules="required"
-              name="location"
+              name="traitType"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               v-slot="{ errors }"
             >
@@ -55,13 +56,7 @@
                 v-model="collection.location"
                 :required="true"
                 :autocomplete="true"
-                :autocompleteType="[
-                  'locality',
-                  'sublocality',
-                  'country',
-                  'administrative_area_level_1',
-                  'administrative_area_level_2',
-                ]"
+                :autocompleteType="['locality', 'sublocality', 'country', 'administrative_area_level_1','administrative_area_level_2']"
                 @placeChanged="updateLocationPin"
               >
                 <template #prepend-icon>
@@ -72,7 +67,7 @@
             </ValidationProvider>
             <ValidationProvider
               rules="required"
-              name="venue"
+              name="traitType"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               v-slot="{ errors }"
             >
@@ -99,27 +94,17 @@
             v-bind:center="mapCenter"
             :zoom="14"
             map-type-id="roadmap"
-            style="
-              width: 500px;
-              height: 300px;
-              border-radius: 3px;
-              display: none;
-            "
-            :options="{
-              streetViewControl: false,
-              fullscreenControl: true,
-              zoomControl: true,
-            }"
+            style="width: 500px; height: 300px; border-radius: 3px; display: none;"
           >
             <GmapMarker
               v-for="(m, index) in markers"
               v-bind:key="index"
               v-bind:position="m.position"
-              v-bind:clickable="true"
+              v-bind:clickable="true"  
             />
           </GmapMap>
           <ValidationProvider
-            rules="required"
+            rules="email|required"
             name="email"
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
             v-slot="{ errors }"
@@ -216,6 +201,7 @@
                 class="!tw-text-black"
                 title="Next"
                 @click="validateFormForNextStep"
+                :disabled="invalid"
               />
             </div>
           </div>
@@ -225,6 +211,7 @@
         <ValidationObserver
           ref="tokenDetailForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
+           v-slot="{ invalid }"
         >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Ticket Details
@@ -336,7 +323,7 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div>
-
+          
           <div
             v-for="(attribute, index) in collection.attributes"
             :key="index"
@@ -514,10 +501,8 @@
               />
             </div>
             <div class="tw-w-auto !tw-text-black">
-              <button-primary
-                class="!tw-text-black"
-                title="Next"
-                @click="submit"
+              <button-primary 
+              class="!tw-text-black" title="Next" @click="submit" :disabled=invalid
               />
             </div>
           </div>
@@ -736,6 +721,7 @@
 
 <script>
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+import { required } from "vee-validate/dist/rules";
 import {
   uploadAndCreateFile,
   uploadAndCreateVideoFile,
@@ -745,7 +731,6 @@ import {
   mintCollection,
 } from "@/services/AptosCollectionService";
 import { createCollection } from "@/services/CollectionService";
-
 import axios from "axios";
 import {
   createDraft,
@@ -757,11 +742,81 @@ import {
 } from "@/services/CollectionService";
 import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
 
+
+extend("required", {
+  validate(value, params) {
+    const allowFalse = params && params.allowFalse ? params.allowFalse : false;
+
+    if (allowFalse) {
+      return {
+        valid: value !== undefined && value !== null && value !== '',
+        required: true
+      };
+    }
+
+    return {
+      valid: !!value,
+      required: true
+    };
+  },
+  params: ['allowFalse'],
+  computesRequired: true,
+  message: "This field is required"
+});
+
+extend("texteditor", {
+  validate(value, params) {
+    
+    const options = Array.isArray(params) ? {} : params || {};
+    
+    const minLength = 'minLength' in options ? parseInt(options.minLength, 10) : 0;
+    const maxLength = 'maxLength' in options ? parseInt(options.maxLength, 10) : Infinity;
+    
+    
+    const plainText = (value || '').replace(/<[^>]*>/g, '').trim();
+    
+    
+    if (plainText.length === 0) {
+      return {
+        valid: false,
+        required: true,
+        message: "This field is required"
+      };
+    }
+    
+    
+    if (plainText.length < minLength) {
+      return {
+        valid: false,
+        required: true,
+        message: `Please enter at least ${minLength} characters`
+      };
+    }
+    
+   
+    if (plainText.length > maxLength) {
+      return {
+        valid: false,
+        required: true,
+        message: `Please enter no more than ${maxLength} characters`
+      };
+    }
+    
+    return {
+      valid: true,
+      required: true
+    };
+  },
+  params: ['minLength', 'maxLength'],
+  computesRequired: true,
+  message: "This field is required"
+});
+
 extend("custom_numeric", {
   validate(value) {
     return !isNaN(value) && value >= 0;
   },
-  message: "Please enter a valid number.",
+  message: "Please enter a valid number."
 });
 
 extend("percentage", {
@@ -809,6 +864,16 @@ extend("tweetLength", {
   message: "This field must not exceed 256 characters",
 });
 
+extend("saleTime", {
+  validate(value) {
+    if (new Date(value).getTime() <= Date.now()) {
+      return false;
+    }
+    return true;
+  },
+  message: "Sale time should be greater than current time",
+});
+
 export default {
   layout: "dashboard",
   components: {
@@ -823,14 +888,14 @@ export default {
         { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
       ],
       venueBounds: {
-        north: 27.788, // These bounds define the Kathmandu area; adjust as needed
-        south: 27.664,
-        east: 85.514,
-        west: 85.254,
-      },
-      selectedFileType: "Image",
-      selectedCountry: null,
-      isNepalFocused: false,
+      north: 27.788, // These bounds define the Kathmandu area; adjust as needed
+      south: 27.664,
+      east: 85.514,
+      west: 85.254,
+    },
+    selectedFileType: "Image",
+    selectedCountry: null,
+    isNepalFocused: false,
       selectedLocation: null,
       venueBounds: null,
       step: 1,
@@ -915,6 +980,8 @@ export default {
       coinType: "APT",
       socialError: false,
       socialErrorMessage: "",
+      EventDescription: false,
+      EventDescriptionErrorMessage: "",
       // formSteps: ["Details", "Token", "Attributes", "Review"],  copy
       formSteps: ["Details", "Create Ticket"],
       formStepNumber: 1,
@@ -984,56 +1051,62 @@ export default {
   async mounted() {
     if (this.draft) {
       this.loading = true;
-    }
+    };
     console.log(this.draft);
     if (this.draft) {
       await this.setCollectionDataFromDraft();
     }
     this.loading = false;
     console.log(this.collection, "this.draft");
+
+  },
+  
+  methods: {
+    handleDescriptionValidation(isValid) {
+    this.isDescriptionValid = isValid;
   },
 
-  methods: {
-    updateLocationPin(place) {
-      if (place.geometry && place.geometry.location) {
-        const { lat, lng } = place.geometry.location;
-        this.mapCenter = { lat: lat(), lng: lng() };
-        this.zoomLevel = 15;
-        this.markers = [];
+  updateLocationPin(place) {
+    if (place.geometry && place.geometry.location) {
+      const { lat, lng } = place.geometry.location;
+      this.mapCenter = { lat: lat(), lng: lng() };
+      this.zoomLevel = 15;
+      this.markers = [];
 
-        const viewport = place.geometry.viewport;
-        if (viewport) {
-          this.venueBounds = {
-            north: viewport.getNorthEast().lat(),
-            south: viewport.getSouthWest().lat(),
-            east: viewport.getNorthEast().lng(),
-            west: viewport.getSouthWest().lng(),
-          };
-        }
-
-        // Determine the selected country
-        const countryComponent = place.address_components.find((component) =>
-          component.types.includes("country")
-        );
-
-        if (countryComponent) {
-          this.selectedCountry = countryComponent.short_name; // Set the selected country
-        } else {
-          this.selectedCountry = null; // Reset if no country found
-        }
-      } else {
-        this.selectedCountry = null; // Reset if no valid place is selected
+      const viewport = place.geometry.viewport;
+      if (viewport) {
+        this.venueBounds = {
+          north: viewport.getNorthEast().lat(),
+          south: viewport.getSouthWest().lat(),
+          east: viewport.getNorthEast().lng(),
+          west: viewport.getSouthWest().lng(),
+        };
       }
-    },
 
+      // Determine the selected country
+      const countryComponent = place.address_components.find(component => 
+        component.types.includes('country')
+      );
+
+      if (countryComponent) {
+        this.selectedCountry = countryComponent.short_name; // Set the selected country
+      } else {
+        this.selectedCountry = null; // Reset if no country found
+      }
+    } else {
+      this.selectedCountry = null; // Reset if no valid place is selected
+    }
+  },
+    
     updateVenuePin(place) {
       const location = place.geometry.location;
       this.mapCenter = { lat: location.lat(), lng: location.lng() };
-      (this.zoomLevel = 15),
-        (this.markers = [
+      this.zoomLevel = 15,
+      (this.markers = [
           { position: { lat: location.lat(), lng: location.lng() } },
         ]);
     },
+    
 
     saveStart(date) {
       this.$refs.startmenu.save(date);
@@ -1077,7 +1150,7 @@ export default {
     addAttribute() {
       this.collection.attributes.push({
         trait_type: "ticket type",
-        value: "",
+        value: ""
       });
     },
     removeAttribute(index) {
@@ -1277,6 +1350,10 @@ export default {
       this.thumbnail = "";
     },
     selectImage(file) {
+      if (file) {
+    this.imageError = false; // Clear the error
+  }
+  
       this.file = file;
       if (this.isImage(file.name)) {
         this.checkVideo = false;
@@ -1380,7 +1457,14 @@ export default {
           ].includes(extension)
         : false;
     },
-    async submit() {
+    async  submit() {
+      this.imageError = !this.collection.image; // Check if image is selected
+
+if (this.imageError) {
+  this.imageErrorMessage = "Please select a file";
+  return;
+}
+
       const validate = await this.$refs.attributeForm.validate();
 
       if (!validate) {
@@ -1530,9 +1614,28 @@ export default {
       this.attributeError = false;
       this.socialError = false;
       this.imageError = false;
+      this.EventDescription = false;
       switch (this.formStepNumber) {
         case 1:
           const detailValidated = await this.$refs.detailForm.validate();
+          const isValid = await this.$refs.detailForm.validate();
+
+          if (!isValid) {
+        console.log('Form validation failed');
+        // Force re-render to ensure error messages are displayed
+        this.EventDescription = true;
+        this.EventDescriptionErrorMessage = "This field is required";
+        // this.$forceUpdate();
+        return;
+      }
+
+    //       if (!detailValidated || !this.isDescriptionValid) {
+    //   console.log('Form validation failed');
+    //   if (!this.collection.description.trim()) {
+    //     console.log('Description is empty');
+    //   }
+    //   break;
+    // }
 
           if (!detailValidated) {
             break;
@@ -1628,7 +1731,7 @@ export default {
 
         await this.createOpenEditionInChain();
 
-        console.log("temp", this.collection);
+        console.log("temp", this.collection)
         const tempCollection = structuredClone(this.collection);
 
         tempCollection.public_sale_time = new Date(
@@ -1694,9 +1797,9 @@ export default {
         formData.append("coin_type", tempCollection.coinType);
 
         console.log("Form Data Entries:");
-        for (let pair of formData.entries()) {
-          console.log(pair[0] + ": " + pair[1]);
-        }
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ': ' + pair[1]);
+  }
 
         const res = await createCollection(formData);
         console.log("formData", res);
@@ -1837,12 +1940,12 @@ export default {
       formData.append("tweet", tempCollection.tweet);
 
       if (this.file && this.file.name) {
-        const fileType = this.checkFileType(this.file.name);
-        console.log("File type:", fileType); // Debug log
-        if (fileType === "image") {
-          formData.append("image", this.file);
-        } else {
-          formData.append("media2", this.file);
+    const fileType = this.checkFileType(this.file.name);
+    console.log("File type:", fileType); // Debug log
+    if (fileType === "image") {
+      formData.append("image", this.file);
+    } else {
+      formData.append("media2", this.file);
           formData.append("image", this.thumbnail);
         }
       } else {
@@ -1957,8 +2060,10 @@ export default {
             formData.append("image", this.thumbnail);
           }
         } else {
+ 
           formData.append("image", this.collection.image);
-        }
+          }
+
 
         if (this.$route.params.id) {
           await editDraft(this.$route.params.id, formData);
@@ -2046,7 +2151,7 @@ export default {
   cursor: pointer;
 }
 .radio-input:checked {
-  background-color: #8ee3fb;
+  background-color: #8EE3fB;
 }
 .radio-input:checked::before {
   content: " ";

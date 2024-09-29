@@ -59,7 +59,7 @@ import { required } from "vee-validate/dist/rules";
 
 extend("required", {
   ...required,
-  message: "This field is required",
+  message: "This field is required set",
 });
 export default {
   props: { folderName: { type: String } },
