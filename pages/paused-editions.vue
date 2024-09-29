@@ -5,7 +5,7 @@
       v-if="!loading && collections.length === 0"
       class="tw-w-full tw-text-center tw-text-xl tw-text-primary-1"
     >
-      No Editions
+      No Events
     </div>
     <div
       class="tw-w-full tw-grid tw-grid-cols-1 tw-gap-x-6 tw-gap-y-8 md:tw-grid-cols-2 lg:tw-grid-cols-3 1xl:tw-grid-cols-4 3xl:tw-grid-cols-5"
