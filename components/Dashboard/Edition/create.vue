@@ -9,7 +9,8 @@
         <ValidationObserver
           ref="detailForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
-        >
+          v-slot="{ invalid }"
+          >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Event Details
           </h2>
@@ -25,17 +26,19 @@
               v-model="collection.name"
               placeholder="Event Name"
             />
-            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            <div v-if="errors[0]" class="tw-text-red-600 tw-text-sm">
+              {{ errors[0] }}
+            </div>
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
-            rules="required"
+            rules="texteditor:1,500"
             v-slot="{ errors }"
           >
             <input-text-editor
               label="Event Description"
-              :required="false"
+              :required="true"
               v-model="collection.description"
               placeholder="Event Description"
             />
@@ -198,19 +201,20 @@
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider> -->
           <div class="tw-flex tw-gap-5 tw-justify-end">
-            <div class="tw-w-auto">
+            <!-- <div class="tw-w-auto">
               <button-primary
                 title="Draft"
                 @click="saveDraft()"
                 :bordered="true"
                 class="tw-border-white"
               />
-            </div>
+            </div> -->
             <div class="tw-w-auto !tw-text-black">
               <button-primary
                 class="!tw-text-black"
                 title="Next"
                 @click="validateFormForNextStep"
+                :disabled="invalid"
               />
             </div>
           </div>
@@ -220,7 +224,8 @@
         <ValidationObserver
           ref="tokenDetailForm"
           class="tw-py-4 tw-flex tw-flex-col tw-gap-4 tw-text-wapal-gray tw-w-full xl:tw-w-[658px]"
-        >
+          v-slot="{ invalid }" 
+          >
           <h2 class="tw-text-white tw-font-semibold tw-text-[1.375em] tw-pb-4">
             Ticket Details
           </h2>
@@ -502,19 +507,20 @@
             </div>
           </ValidationProvider>
           <div class="tw-flex tw-gap-5 tw-justify-end">
-            <div class="tw-w-auto">
+            <!-- <div class="tw-w-auto">
               <button-primary
                 title="Draft"
                 @click="saveDraft()"
                 :bordered="true"
                 class="tw-border-white"
               />
-            </div>
+            </div> -->
             <div class="tw-w-auto !tw-text-black">
               <button-primary
                 class="!tw-text-black"
                 title="Next"
                 @click="submit"
+                :disabled="invalid"
               />
             </div>
           </div>
@@ -754,6 +760,72 @@ import {
   getDraftByIdInCreatorStudio,
 } from "@/services/CollectionService";
 import { getAvailableCoinTypes, getCoinType } from "@/utils/getCoinType";
+
+extend("required", {
+  validate(value, params) {
+    const allowFalse = params && params.allowFalse ? params.allowFalse : false;
+
+    if (allowFalse) {
+      return {
+        valid: value !== undefined && value !== null && value !== "",
+        required: true,
+      };
+    }
+
+    return {
+      valid: !!value,
+      required: true,
+    };
+  },
+  params: ["allowFalse"],
+  computesRequired: true,
+  message: "This field is required",
+});
+
+extend("texteditor", {
+  validate(value, params) {
+    const options = Array.isArray(params) ? {} : params || {};
+
+    const minLength =
+      "minLength" in options ? parseInt(options.minLength, 10) : 0;
+    const maxLength =
+      "maxLength" in options ? parseInt(options.maxLength, 10) : Infinity;
+
+    const plainText = (value || "").replace(/<[^>]*>/g, "").trim();
+
+    if (plainText.length === 0) {
+      return {
+        valid: false,
+        required: true,
+        message: "This field is required",
+      };
+    }
+
+    if (plainText.length < minLength) {
+      return {
+        valid: false,
+        required: true,
+        message: `Please enter at least ${minLength} characters`,
+      };
+    }
+
+    if (plainText.length > maxLength) {
+      return {
+        valid: false,
+        required: true,
+        message: `Please enter no more than ${maxLength} characters`,
+      };
+    }
+
+    return {
+      valid: true,
+      required: true,
+    };
+  },
+  params: ["minLength", "maxLength"],
+  computesRequired: true,
+  message: "This field is required",
+});
 
 extend("custom_numeric", {
   validate(value) {
@@ -1251,6 +1323,9 @@ export default {
       this.thumbnail = { name: null };
     },
     selectImage(file) {
+      if (file) {
+    this.imageError = false; // Clear the error
+  }
       if (file instanceof File) {
         this.file = file;
         this.$set(this.collection, "image", URL.createObjectURL(file));
@@ -1353,6 +1428,13 @@ export default {
         : false;
     },
     async submit() {
+      this.imageError = !this.file; // Check if image is selected
+
+if (this.imageError) {
+  this.imageErrorMessage = "Please select a file";
+  return;
+}
+
       console.log("Submit function called");
       const validate = await this.$refs.attributeForm.validate();
       console.log("Validation result:", validate);

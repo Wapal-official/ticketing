@@ -38,7 +38,7 @@
           >
             <input-text-editor
               label="Event Description"
-              :required="false"
+              :required="true"
               v-model="collection.description"
               placeholder="Event Description"
             />
