@@ -948,7 +948,6 @@ export default {
         seedz: false,
         coinType: "APT",
         tweet: "",
-        someValue: false,
       },
       saveAsDraft: false,
       metadata: null,
@@ -1075,10 +1074,6 @@ export default {
   },
 
   methods: {
-    handleInputClick() {
-      console.log("asbd");
-      this.showValue = true;
-    },
     handleDescriptionValidation(isValid) {
       this.isDescriptionValid = isValid;
     },
