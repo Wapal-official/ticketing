@@ -140,10 +140,10 @@
 
 
         <!-- readmore  -->
-        <div class="tw-text-dark-0 tw-pb-4 description" 
-          id="markup-desc">
+        <div class="tw-text-dark-0 description" 
+          id="featured-markup-desc">
            <!-- Display the truncated description with "Read More" link inside -->
-          <p ref="descText"
+          <p
             v-html="truncatedDescription"> 
           </p>
         </div>
@@ -489,7 +489,7 @@ export default {
       collectionDescription: '',
       expanded: false,
       truncatedDescription: '',   // Truncated description
-      maxLength: 150              // Maximum length before truncating
+      maxLength: 150             // Maximum length before truncating
     };
   },
   methods: {
@@ -624,7 +624,7 @@ export default {
     },
     updateTruncatedDescription() {
       if (this.collectionDescription.length > this.maxLength) {
-        const truncated = this.collectionDescription.slice(0, this.maxLength) + '...';
+        const truncated = this.collectionDescription.slice(0, this.maxLength) + '...Readmore';
         this.truncatedDescription = `${truncated} <a href="#" class="read-more-link">Read More</a>`;
         this.$nextTick(() => {
           // Add event listener after the DOM is updated

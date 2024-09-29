@@ -258,7 +258,7 @@
           </p>
         </div> -->
         <!-- detail description  -->
-        <div class="tw-text-dark-0 tw-pb-4 description" id="first-markup-desc">
+        <div class="tw-text-dark-0 description" id="detailed-markup-desc">
           <p> {{ collectionDescription }}</p>
         </div>
 
