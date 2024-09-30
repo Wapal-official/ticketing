@@ -37,10 +37,10 @@
             <div
               class="tw-my-6 tw-py-2 tw-border-b-2 tw-border-dark-6 tw-w-full"
             >
-              <h2 class="tw-text-white tw-font-semibold">Hosted By</h2>
+              <h2 class="tw-text-white tw-font-semibold">Event Name</h2>
             </div>
             <div>
-              <div class="tw-flex tw-items-center">
+              <!-- <div class="tw-flex tw-items-center">
                 <img
                   src="~/assets/img/logo/new-logo.svg"
                   alt="Wapal logo"
@@ -48,7 +48,7 @@
                   height="28px"
                 />
                 <span class="w-text-sm tw-items-center tw-ml-2">Wapal</span>
-              </div>
+              </div> -->
               <div
                 id="email"
                 class="tw-flex tw-items-center tw-mt-4 tw-text-white/70"
