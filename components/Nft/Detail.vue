@@ -37,7 +37,7 @@
             <div
               class="tw-my-6 tw-py-2 tw-border-b-2 tw-border-dark-6 tw-w-full"
             >
-              <h2 class="tw-text-white tw-font-semibold">Event Name</h2>
+              <h2 class="w-text-sm tw-text-white">Event Name</h2>
             </div>
             <div>
               <!-- <div class="tw-flex tw-items-center">
