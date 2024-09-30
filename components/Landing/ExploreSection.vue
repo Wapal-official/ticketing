@@ -12,7 +12,7 @@
         class=""
       />
       <div 
-        v-if="tabNumber === 1 || tabNumber === 2" 
+        v-if="tabNumber === 0 || tabNumber === 1" 
         class="tw-ml-2 tw-mt-2">
         <a href="#"
           class="!tw-text-white tw-rounded-sm !tw-h-[40px] !tw-max-h-[40px] tw-py-[0.62em] tw-px-6 !tw-capitalize !tw-text-sm !tw-font-medium tw-transition-all tw-duration-200 tw-ease-linear tw-border-solid tw-border tw-border-dark-4 hover:tw-border-white hover:!tw-bg-white hover:!tw-text-dark-9 hover:!tw-font-semibold"
@@ -41,7 +41,7 @@ import { getAllEditions, getUpcomingEditions } from "@/services/EditionService";
 export default {
   data() {
     return {
-      tabs: ["Featured", "Live", "Upcoming"],
+      tabs: ["Live", "Upcoming"],
       tabNumber: 0,
       collections: [],
       loading: true,
@@ -54,12 +54,12 @@ export default {
   },
   methods: {
     redirectToExplore() {
-      if (this.tabNumber === 1) {
-        this.$router.push('/live-editions');
-      } else if (this.tabNumber === 2) {
-        this.$router.push('/upcoming-editions');
-      }
-    },
+    if (this.tabNumber === 0) {
+      this.$router.push('/live-editions');
+    } else if (this.tabNumber === 1) {
+      this.$router.push('/upcoming-editions');
+    }
+  },
     async tabChanged(tab: number) {
       this.tabNumber = tab;
       this.end = true;
@@ -70,19 +70,16 @@ export default {
       this.loading = true;
       this.type = "collection";
       switch (tab) {
-        case 0:
-          await this.getFeaturedCollections();
-          break;
-        case 1:
-          await this.getEditions();
-          break;
-        case 2:
-          await this.getUpcomingEditions();
-          break;
-        default:
-          await this.getFeaturedCollections();
-          break;
-      }
+      case 0:
+        await this.getEditions();  // Now case 0 is "Live"
+        break;
+      case 1:
+        await this.getUpcomingEditions();
+        break;
+      default:
+        await this.getEditions();  // Default is also "Live"
+        break;
+    }
       this.startFetchInterval();
       this.loading = false;
     },
