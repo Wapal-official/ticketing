@@ -105,6 +105,7 @@ export default {
     //   }
 
     const res = await getFeaturedCollection();
+    // console.log(res,"dataaaaa")
     this.featuredCollections.push(...res);
     const auctionRes = await getFeaturedAuctions();
 

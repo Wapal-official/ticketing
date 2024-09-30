@@ -137,7 +137,7 @@
                       v-bind:key="index"
                       v-bind:position="m.position"
                       v-bind:clickable="true"
-                      :draggable="true"
+                      :draggable="false"
                       @click="center = m.position"
                     />
                   </GmapMap>
