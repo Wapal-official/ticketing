@@ -242,7 +242,7 @@
           >
             <h3
               v-if="collection.description !== 'Loonies'"
-              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm tw-mt-1"
+              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm tw-mt-2"
             >
               Ticket Sale Starts In
             </h3>
