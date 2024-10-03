@@ -32,6 +32,22 @@
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="name"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Host Name"
+              :required="true"
+              v-model="collection.create_by"
+              placeholder="Host Name"
+            />
+            <div v-if="errors[0]" class="tw-text-red-600 tw-text-sm">
+              {{ errors[0] }}
+            </div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
             rules="texteditorRequired|texteditorMaxLength:4000"
             v-slot="{ errors }"
@@ -293,6 +309,20 @@
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
           </div> -->
+          <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="mint_time"
+              rules="required|saleTime"
+              v-slot="{ errors }"
+            >
+              <input-date-picker
+                :required="true"
+                label="Event Live In"
+                v-model="collection.some_field"
+                placeholder="Date"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
             v-if="collection.type !== '1-1'"
@@ -300,18 +330,32 @@
             <ValidationProvider
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
               name="mint_time"
-              rules="required"
+              rules="required|saleTime"
               v-slot="{ errors }"
             >
               <input-date-picker
                 :required="true"
-                label="Event Live In"
+                label="Ticket sale starts in"
                 v-model="collection.public_sale_time"
                 placeholder="Date"
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
             </ValidationProvider>
             <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="mint_time"
+              rules="required|saleTime"
+              v-slot="{ errors }"
+            >
+              <input-date-picker
+                :required="true"
+                label="Ticket sale ends in"
+                v-model="collection.ends_at"
+                placeholder="Date"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
+            <!-- <ValidationProvider
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
               name="mint_price"
               rules="custom_numeric|required"
@@ -334,11 +378,11 @@
                 </template>
               </input-text-field>
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-            </ValidationProvider>
+            </ValidationProvider> -->
           </div>
 
           <div
-            v-for="(attribute, index) in collection.attributes"
+            v-for="(token_details, index) in collection.token_details"
             :key="index"
             class="tw-w-full"
           >
@@ -366,8 +410,8 @@
                 v-slot="{ errors }"
               >
                 <input-text-field
-                  v-model="attribute.value"
-                  placeholder="Vip Ticket"
+                  v-model="token_details.ticket_type"
+                  placeholder="Select Ticket Type"
                   label="Ticket Type"
                   :required="true"
                 />
@@ -376,6 +420,30 @@
                   {{ errors[0] }}
                 </div>
               </ValidationProvider>
+               <ValidationProvider
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="mint_price"
+              rules="custom_numeric|required"
+              v-slot="{ errors }"
+            >
+              <input-text-field
+                :required="true"
+                label="Ticket Price"
+                v-model="token_details.public_sale_price"
+                placeholder="Eg. 1"
+                type="number"
+              >
+                <template #append-icon>
+                  <img
+                    :src="selectedCoinType.imageWhite"
+                    alt="Coin Type"
+                    width="14px"
+                    height="14px"
+                  />
+                </template>
+              </input-text-field>
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider>
 
               <button
                 v-if="index !== 0"
@@ -910,6 +978,7 @@ export default {
         venue: "",
         email: "",
         name: "",
+        create_by: "",
         description: "",
         image: "",
         thumbnail: "",
@@ -919,6 +988,8 @@ export default {
         royalty_percentage: "0", //changed
         whitelist_sale_time: null,
         public_sale_time: null,
+        ends_at: null,
+        // some_field: null,
         public_sale_price: null,
         whitelist_price: "",
         supply: "",
@@ -933,6 +1004,17 @@ export default {
         tokenName: "",
         tokenDesc: "",
         attributes: [{ trait_type: "ticket type", value: "" }],
+        myobj: {
+        token_data: [
+          { ticket_type: "vip", public_sale_price: 2 },
+          { ticket_type: "normal", public_sale_price: 3 },
+          { ticket_type: "vvip", public_sale_price: 4 },
+        ],
+        event_date: "date_value",
+      },
+        token_details: [
+                      {ticket_type: '', public_sale_price: ""}],
+        some_field: '',
         twitter: "",
         instagram: "",
         discord: "",
@@ -979,6 +1061,10 @@ export default {
         // { name: "Limited Edition", id: "limited-edition" },
         { name: "ticket-open-edition", id: "open-edition" },
       ],
+      ticketType: [
+        { name: "VIP", id:"vip"},
+        { name: "Normal", id:"normal"}
+      ],
       folderInfo: null,
       folders: [],
       image: { name: null },
@@ -995,7 +1081,6 @@ export default {
       audioUrl: "",
       audioUrlReview: "",
       audioCheck: false,
-      showValue: false,
     };
   },
   watch: {
@@ -1152,14 +1237,24 @@ export default {
 
       this.step = 2;
     },
+    // addAttribute() {
+    //   this.collection.attributes.push({
+    //     trait_type: "ticket type",
+    //     value: "",
+    //     ticket_type: "",
+    //   });
+    // },
+
     addAttribute() {
-      this.collection.attributes.push({
-        trait_type: "ticket type",
+      this.collection.token_details.push({
         value: "",
       });
     },
+    // removeAttribute(index) {
+    //   this.collection.attributes.splice(index, 1);
+    // },
     removeAttribute(index) {
-      this.collection.attributes.splice(index, 1);
+      this.collection.token_details.splice(index, 1);
     },
     displayImage() {
       const previewImgElement = document.createElement("img");
@@ -1463,7 +1558,7 @@ export default {
         : false;
     },
 
-    async submit() {
+    async  submit() {
       this.imageError = !this.file; // Check if image is selected
 
       if (this.imageError) {
@@ -1744,6 +1839,14 @@ export default {
           tempCollection.public_sale_time
         ).toISOString();
 
+        tempCollection.ends_at = new Date(
+          tempCollection.ends_at
+        ).toISOString();
+
+        tempCollection.some_field = new Date(
+          tempCollection.some_field
+        ).toISOString();
+
         const metadataRes = await axios.get(this.collection.baseURL);
 
         const metadata = metadataRes.data;
@@ -1753,9 +1856,18 @@ export default {
         if (metadata.properties) {
           videoUrl = this.metadata.videoUri;
         }
+
+        const updatedTokenDetails = tempCollection.token_details.map(detail => {
+    return {
+        ...detail,
+        some_field: this.collection.some_field // Add some_field to each object
+    };
+});
+
         const formData = new FormData();
 
         formData.append("name", tempCollection.name);
+        formData.append("host_name", tempCollection.create_by);
         formData.append("description", tempCollection.description);
         formData.append(
           "royalty_percentage",
@@ -1770,6 +1882,7 @@ export default {
           tempCollection.public_sale_mint_time
         );
         formData.append("isApproved", "true");
+        formData.append("ends_at", tempCollection.ends_at);
         formData.append("public_sale_time", tempCollection.public_sale_time);
         formData.append("public_sale_price", tempCollection.public_sale_price);
         formData.append("whitelist_price", tempCollection.public_sale_price);
@@ -1780,6 +1893,7 @@ export default {
         formData.append("instagram", tempCollection.instagram);
         formData.append("resource_account", tempCollection.resource_account);
         formData.append("value", tempCollection.attributes.value);
+        formData.append("ticket_details", JSON.stringify(this.myobj));
         formData.append("traitType", tempCollection.attributes.trait_type);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
@@ -1914,6 +2028,7 @@ export default {
       const formData = new FormData();
 
       formData.append("name", tempCollection.name);
+      formData.append("host_name", tempCollection.create_by);
       formData.append("description", tempCollection.description);
       formData.append("location", tempCollection.location);
       formData.append("venue", tempCollection.venue);
@@ -1931,6 +2046,7 @@ export default {
       formData.append("tokenDesc", tempCollection.tokenDesc);
       formData.append("traitType", tempCollection.attributes.trait_type);
       formData.append("value", tempCollection.attributes.value);
+      formData.append("ticket_type", tempCollection.token_details.ticket_type);
       formData.append("public_sale_price", tempCollection.public_sale_price);
       formData.append("whitelist_price", tempCollection.whitelist_price);
       formData.append("twitter", tempCollection.twitter);
