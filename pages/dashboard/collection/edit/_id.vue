@@ -52,10 +52,12 @@
                 class="tw-flex tw-flex-col tw-items-start-tw-justify-start tw-text-white tw-text-sm"
               >
                 <div class="tw-font-semibold">Caution</div>
-                <div>Make sure to click 'Set Whitelist' button</div>
+                <div>Ensure you verify event details and ticket prices</div>
                 <div>
-                  in whitelist page after editing mint price or mint time in
-                  phases
+                   before completing your purchase.
+                </div>
+                <div>
+                  Once confirmed, tickets are non-refundable.
                 </div>
               </div>
             </template>

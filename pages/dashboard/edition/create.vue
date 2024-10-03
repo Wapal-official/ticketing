@@ -60,6 +60,22 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="hostName"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Host Name"
+              :required="true"
+              v-model="collection.myobj.create_by"
+              placeholder="Host Name"
+            />
+            <div v-if="errors[0]" class="tw-text-red-600 tw-text-sm">
+              {{ errors[0] }}
+            </div>
+          </ValidationProvider>
           <div class="tw-flex tw-gap-4">
             <ValidationProvider
               rules="required"
@@ -318,7 +334,7 @@
               <input-date-picker
                 :required="true"
                 label="Event Live In"
-                v-model="collection.some_field"
+                v-model="collection.myobj.event_date"
                 placeholder="Date"
               />
               <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
@@ -382,7 +398,7 @@
           </div>
 
           <div
-            v-for="(token_details, index) in collection.token_details"
+            v-for="(token_data, index) in collection.myobj.token_data"
             :key="index"
             class="tw-w-full"
           >
@@ -410,7 +426,7 @@
                 v-slot="{ errors }"
               >
                 <input-text-field
-                  v-model="token_details.ticket_type"
+                  v-model="token_data.ticket_type"
                   placeholder="Select Ticket Type"
                   label="Ticket Type"
                   :required="true"
@@ -429,7 +445,7 @@
               <input-text-field
                 :required="true"
                 label="Ticket Price"
-                v-model="token_details.public_sale_price"
+                v-model="token_data.public_sale_price"
                 placeholder="Eg. 1"
                 type="number"
               >
@@ -1006,15 +1022,12 @@ export default {
         attributes: [{ trait_type: "ticket type", value: "" }],
         myobj: {
         token_data: [
-          { ticket_type: "vip", public_sale_price: 2 },
-          { ticket_type: "normal", public_sale_price: 3 },
-          { ticket_type: "vvip", public_sale_price: 4 },
+
+          { ticket_type: "", public_sale_price: "" }
         ],
-        event_date: "date_value",
+        event_date: "",
+        create_by:"",
       },
-        token_details: [
-                      {ticket_type: '', public_sale_price: ""}],
-        some_field: '',
         twitter: "",
         instagram: "",
         discord: "",
@@ -1246,15 +1259,16 @@ export default {
     // },
 
     addAttribute() {
-      this.collection.token_details.push({
-        value: "",
+      this.collection.myobj.token_data.push({
+        ticket_type:"",
+        public_sale_price:"",
       });
     },
     // removeAttribute(index) {
     //   this.collection.attributes.splice(index, 1);
     // },
     removeAttribute(index) {
-      this.collection.token_details.splice(index, 1);
+      this.collection.myobj.token_data.splice(index, 1);
     },
     displayImage() {
       const previewImgElement = document.createElement("img");
@@ -1824,6 +1838,7 @@ export default {
     },
     async createOpenEdition() {
       try {
+        console.log("myobj", this.collection.myobj);
         this.error = false;
         this.loading = true;
         this.createEditionModal = true;
@@ -1842,9 +1857,8 @@ export default {
         tempCollection.ends_at = new Date(
           tempCollection.ends_at
         ).toISOString();
-
-        tempCollection.some_field = new Date(
-          tempCollection.some_field
+        tempCollection.myobj.event_date = new Date(
+          tempCollection.myobj.event_date
         ).toISOString();
 
         const metadataRes = await axios.get(this.collection.baseURL);
@@ -1893,7 +1907,7 @@ export default {
         formData.append("instagram", tempCollection.instagram);
         formData.append("resource_account", tempCollection.resource_account);
         formData.append("value", tempCollection.attributes.value);
-        formData.append("ticket_details", JSON.stringify(this.myobj));
+        formData.append("ticket_details", JSON.stringify(this.collection.myobj));
         formData.append("traitType", tempCollection.attributes.trait_type);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
@@ -2046,7 +2060,7 @@ export default {
       formData.append("tokenDesc", tempCollection.tokenDesc);
       formData.append("traitType", tempCollection.attributes.trait_type);
       formData.append("value", tempCollection.attributes.value);
-      formData.append("ticket_type", tempCollection.token_details.ticket_type);
+      formData.append("ticket_details", JSON.stringify(this.collection.myobj));
       formData.append("public_sale_price", tempCollection.public_sale_price);
       formData.append("whitelist_price", tempCollection.whitelist_price);
       formData.append("twitter", tempCollection.twitter);
