@@ -142,22 +142,22 @@ export const getFeaturedCollection = async (page: number, limit: number) => {
       `${process.env.baseURL}/api/collection/editions?edition=ticket-open-edition&page=${page}&limit=${limit}`
     );
 
-    // console.log(res.data);
-
     const collections = res.data.data;
 
-    if (collections && Array.isArray(collections)) {
-      const recentCollections = collections.slice(0, 7);
-
-      recentCollections.map((collection: any) => {
-        collection.image = getCachedUrlOfImage(collection.image);
-      });
-
-      return recentCollections;
-    } else {
+    // Early return if collections are not an array
+    if (!Array.isArray(collections)) {
       console.error("Collections not found or not an array.");
       return [];
     }
+
+    // Directly slice and map in one step to minimize operations
+    const recentCollections = collections.slice(0, 7).map((collection: any) => {
+      collection.image = getCachedUrlOfImage(collection.image);
+      return collection;
+    });
+
+    return recentCollections;
+
   } catch (error) {
     console.error("Error fetching collections:", error);
     return [];

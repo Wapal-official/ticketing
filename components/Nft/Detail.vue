@@ -53,18 +53,17 @@
                 id="email"
                 class="tw-flex tw-items-center tw-mt-4 tw-text-white/70"
               >
-                <a 
-                  :href="composeGmailLink" 
-                  target="_blank" 
+              <a 
+                :href="`mailto:${recipient}`"  
                   class="tw-flex !tw-text-white/70">
-                  <img
+                <img
                   src="~/assets/img/mail-logo-3.svg"
-                  alt="Wapal logo"
+                  alt="Mail logo"
                   width="24px"
                   height="24px"
                 />
-                <span class="tw-items-center tw-ml-3">Contact the host</span>
-                </a>
+                <span class="tw-items-center tw-ml-3">{{ recipient || 'host email' }}</span> <!-- Dynamic text -->
+              </a>
               </div>
               <!-- Popup box -->
               <!-- <div
@@ -138,7 +137,7 @@
                       v-bind:key="index"
                       v-bind:position="m.position"
                       v-bind:clickable="true"
-                      :draggable="true"
+                      :draggable="false"
                       @click="center = m.position"
                     />
                   </GmapMap>
@@ -258,7 +257,7 @@
           </p>
         </div> -->
         <!-- detail description  -->
-        <div class="tw-text-dark-0 tw-pb-4 description" id="first-markup-desc">
+        <div class="tw-text-dark-0 description" id="detailed-markup-desc">
           <p> {{ collectionDescription }}</p>
         </div>
 
@@ -300,7 +299,7 @@
           <span> +{{ resource.minted }} Going</span>
         </div>
 
-        <a
+        <!-- <a
           class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
           :href="collection.mintDetails.link"
           target="_blank"
@@ -325,7 +324,133 @@
           :fullWidth="true"
           @click="mintBulkCollection"
           v-else-if="checkLiveStatus()"
-        />
+        /> -->
+        <div
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
+            v-if="showLiveInTimer"
+          >
+            <h3
+              v-if="collection.description !== 'Loonies'"
+              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm tw-mt-2"
+            >
+              Ticket Sale Starts In
+            </h3>
+            <count-down-custom
+              v-if="collection.description === 'Loonies'"
+              :startTime="currentSale.mint_time"
+              @countdownComplete="countdownComplete"
+            />
+            <count-down
+              v-else
+              :startTime="currentSale.mint_time"
+              @countdownComplete="countdownComplete"
+            />
+            <!-- <span>
+              <a
+                @click.prevent="redirectCollection"
+                class="!tw-underline"
+              >
+                Details...
+              </a>
+            </span> -->
+          </div>
+
+          <!-- select ticket box  -->
+          <div
+           v-if="checkLiveStatus()" 
+           class = "tw-w-full tw-border tw-border-solid tw-border-dark-6 tw-rounded-lg tw-py-5 tw-px-4 tw-space-y-3">
+            <span>
+              Select Ticket:
+            </span>
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-bg-dark-8 tw-border tw-border-solid tw-border-dark-6 tw-rounded tw-pt-2 tw-pr-3 tw-pb-3 tw-pl-3"
+            >
+              <div class="tw-flex tw-flex-col tw-items-start tw-justify-end tw-gap-1">
+                <div
+                  class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+                >
+                  General
+                </div>
+                <div class="tw-text-white">
+                  1.30APT
+                </div>
+              </div>
+              <!-- Get ticket btn  -->
+              <div>
+                <a
+                  class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+                  :href="collection.mintDetails.link"
+                  target="_blank"
+                  v-if="collection.mintDetails && collection.mintDetails.link"
+                >
+                  {{
+                    collection.username === "wapal-santa"
+                      ? "Reveal Your Present 🎁"
+                      : "Mint"
+                  }}
+                </a>
+                <NuxtLink
+                  class="tw-w-full tw-mt-4 tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+                  :to="`/nft/${collection.username}`"
+                  v-else-if="collection.mintDetails"
+                >
+                  {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
+                </NuxtLink>
+                <button-primary
+                  class="!tw-text-black !tw-font-semibold"
+                  :title="!collection.status.sold_out ? 'Get ticket' : 'Get Ticket'"
+                  :fullWidth="true"
+                  @click="mintBulkCollection"
+                  v-else-if="checkLiveStatus()"
+                />
+              </div>
+            </div>
+              <!-- 2nd box  -->
+            <div
+              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-bg-dark-8 tw-border tw-border-solid tw-border-dark-6 tw-rounded tw-pt-2 tw-pr-3 tw-pb-3 tw-pl-3"
+            >
+              <div class="tw-flex tw-flex-col tw-items-start tw-justify-end tw-gap-1">
+                <div
+                  class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
+                >
+                  VIP
+                </div>
+                <div class="tw-text-white">
+                  5.30APT
+                </div>
+              </div>
+              <!-- Get ticket btn  -->
+              <div>
+                <a
+                  class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+                  :href="collection.mintDetails.link"
+                  target="_blank"
+                  v-if="collection.mintDetails && collection.mintDetails.link"
+                >
+                  {{
+                    collection.username === "wapal-santa"
+                      ? "Reveal Your Present 🎁"
+                      : "Mint"
+                  }}
+                </a>
+                <NuxtLink
+                  class="tw-w-full tw-mt-4 tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+                  :to="`/nft/${collection.username}`"
+                  v-else-if="collection.mintDetails"
+                >
+                  {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
+                </NuxtLink>
+                <button-primary
+                  class="!tw-text-black !tw-font-semibold"
+                  :title="!collection.status.sold_out ? 'Get ticket' : 'Get Ticket'"
+                  :fullWidth="true"
+                  @click="mintBulkCollection"
+                  v-else-if="checkLiveStatus()"
+                />
+              </div>
+            </div>
+
+          </div>
         <!-- <NuxtLink
               class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
               :to="`/nft/${collection.username}`"
@@ -836,9 +961,7 @@ export default {
   props: { collection: { type: Object } },
   data() {
     return {
-      recipient: "nidiv@gmail.com",
-      subject: "Dynamic Subject",  
-      body: "This is a dynamically generated email.", 
+      recipient: this.collection.email || "",
       mapCenter: { lat: 27.7172, lng: 85.324 }, // Default center (Kathmandu)
       markers: [
         { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
@@ -2213,9 +2336,10 @@ export default {
     },
   },
   computed: {
-    composeGmailLink() {
-      return `https://mail.google.com/mail/u/1/#inbox?compose=new&to=${this.recipient}&su=${encodeURIComponent(this.subject)}&body=${encodeURIComponent(this.body)}`;
-    },
+    // composeGmailLink() {
+    //   // Return the mailto link
+    //   return `mailto:${this.recipient}`;
+    // },
     getCurrentPrice() {
       if (
         this.collection.candyMachine.public_sale_price ==

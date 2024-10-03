@@ -25,8 +25,15 @@
         :disabled="disabled"
         class="wapal-input"
         format="YYYY:MM:DD hh:mm A"
+        @focus="openCalendar()"
       >
         <template v-slot:footer>
+          <button
+            class="tw-absolute tw-top-[-9px] tw-right-[-10px] tw-text-xl tw-bg-primary-1 tw-text-black tw-rounded-full tw-w-6 tw-h-6 tw-flex tw-items-center tw-justify-center"
+            @click.stop="closeCalendar"
+          >
+            &times;
+          </button>
           <div
             class="tw-flex tw-align-center tw-justify-between tw-pb-2 tw-px-3"
           >
@@ -130,6 +137,7 @@ export default {
       amActive: true,
       pmActive: false,
       open: false,
+      calendarHide: false,
     };
   },
   watch: {
@@ -138,6 +146,31 @@ export default {
         this.updateTimeComponents(newValue);
       } else {
         this.showDatePickerTimePanel = false;
+      }
+    },
+    calendarHide(newValue: any) {
+      if (newValue) {
+        const datePickerPopup = document.querySelector(
+          ".mx-datepicker-popup"
+        ) as HTMLElement;
+
+        if (datePickerPopup) {
+          datePickerPopup.style.opacity = "0";
+          datePickerPopup.style.visibility = "hidden";
+          datePickerPopup.style.position = "absolute";
+          datePickerPopup.style.zIndex = "-9";
+        }
+      } else {
+        const datePickerPopup = document.querySelector(
+          ".mx-datepicker-popup"
+        ) as HTMLElement;
+
+        if (datePickerPopup) {
+          datePickerPopup.style.opacity = "1";
+          datePickerPopup.style.visibility = "visible";
+          datePickerPopup.style.position = "absolute";
+          datePickerPopup.style.zIndex = "9";
+        }
       }
     },
   },
@@ -171,6 +204,12 @@ export default {
     },
   },
   methods: {
+    openCalendar() {
+      this.calendarHide = false;
+    },
+    closeCalendar() {
+      this.calendarHide = true;
+    },
     handleChange(value: any, type: string) {
       if (type === "date") {
         this.showDatePickerTimePanel = false;
@@ -278,7 +317,7 @@ export default {
 }
 
 .hour12-tabs.active {
-  background-color: #8EE3fB;
+  background-color: #8ee3fb;
 }
 ::v-deep .mx-input {
   @apply !tw-h-[40px] !tw-bg-dark-6;
@@ -318,7 +357,7 @@ export default {
 }
 
 .active-color {
-  background: #8EE3fB;
+  background: #8ee3fb;
   border-radius: 4px;
   max-width: 40px;
   margin: 0 auto;

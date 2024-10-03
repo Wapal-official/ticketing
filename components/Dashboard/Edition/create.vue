@@ -560,6 +560,7 @@
 
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            v-if="!loading && collection"
           >
             <input-image-drag-and-drop
               :label="'Featured ' + value + selectedFileType"
@@ -568,10 +569,10 @@
               @cancel="clearFile"
               @fileSelected="selectImage"
               @fileSelectedThumbnail="thumbnailSelected"
-              :thumbnail="collection.thumbnail"
+              :thumbnail="collectionImage"
               fileSize="Upto 15 MB"
-              :file="collection.image"
-              :previewUrl="collection.image"
+              :file="collectionImage"
+              :previewUrl="collectionImage"
             />
             <div class="tw-text-red-600 tw-text-sm" v-if="imageError">
               {{ imageErrorMessage }}
@@ -975,6 +976,7 @@ export default {
       selectedLocation: null,
       venueBounds: null,
       step: 1,
+      collectionImage: "",
       collection: {
         location: "",
         venue: "",
@@ -1152,7 +1154,7 @@ export default {
       await this.setCollectionDataFromDraft();
     }
     this.loading = false;
-    console.log(this.collection, "this.draft");
+    console.log(this.file, "this.draft");
   },
 
   methods: {
@@ -2086,7 +2088,7 @@ if (this.imageError) {
 
         this.collection = draftData;
         console.log("Image after setting collection:", this.collection.image);
-
+        this.collectionImage = this.collection.image;
         if (this.collection.image) {
           this.file = this.collection.image;
           this.$nextTick(() => {

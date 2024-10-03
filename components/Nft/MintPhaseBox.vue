@@ -1,5 +1,5 @@
 <template>
-  <div
+  <!-- <div
     class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-3 tw-rounded-lg tw-border tw-border-solid tw-border-dark-6 tw-px-4 tw-py-5"
   >
     <div
@@ -86,7 +86,7 @@
         Limit {{ publicSaleMintLimit }} per wallet
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 <script lang="ts">
 import moment from "moment";

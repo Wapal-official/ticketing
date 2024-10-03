@@ -32,6 +32,22 @@
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="name"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <input-text-field
+              label="Host Name"
+              :required="true"
+              v-model="collection.create_by"
+              placeholder="Host Name"
+            />
+            <div v-if="errors[0]" class="tw-text-red-600 tw-text-sm">
+              {{ errors[0] }}
+            </div>
+          </ValidationProvider>
+          <ValidationProvider
+            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
             rules="texteditorRequired|texteditorMaxLength:4000"
             v-slot="{ errors }"
@@ -1006,6 +1022,7 @@ export default {
         attributes: [{ trait_type: "ticket type", value: "" }],
         myobj: {
         token_data: [
+
           { ticket_type: "", public_sale_price: "" }
         ],
         event_date: "",
@@ -1840,7 +1857,6 @@ export default {
         tempCollection.ends_at = new Date(
           tempCollection.ends_at
         ).toISOString();
-
         tempCollection.myobj.event_date = new Date(
           tempCollection.myobj.event_date
         ).toISOString();
@@ -1854,6 +1870,14 @@ export default {
         if (metadata.properties) {
           videoUrl = this.metadata.videoUri;
         }
+
+        const updatedTokenDetails = tempCollection.token_details.map(detail => {
+    return {
+        ...detail,
+        some_field: this.collection.some_field // Add some_field to each object
+    };
+});
+
         const formData = new FormData();
 
         formData.append("name", tempCollection.name);

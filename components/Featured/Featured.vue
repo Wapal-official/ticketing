@@ -140,10 +140,10 @@
 
 
         <!-- readmore  -->
-        <div class="tw-text-dark-0 tw-pb-4 description" 
-          id="markup-desc">
+        <div class="tw-text-dark-0 description" 
+          id="featured-markup-desc">
            <!-- Display the truncated description with "Read More" link inside -->
-          <p ref="descText"
+          <p class="!tw-mb-0"
             v-html="truncatedDescription"> 
           </p>
         </div>
@@ -242,7 +242,7 @@
           >
             <h3
               v-if="collection.description !== 'Loonies'"
-              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm tw-mt-3"
+              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm tw-mt-2"
             >
               Ticket Sale Starts In
             </h3>
@@ -256,14 +256,14 @@
               :startTime="currentSale.mint_time"
               @countdownComplete="countdownComplete"
             />
-            <span>
+            <!-- <span>
               <a
                 @click.prevent="redirectCollection"
                 class="!tw-underline"
               >
                 Details...
               </a>
-            </span>
+            </span> -->
           </div>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
@@ -489,7 +489,7 @@ export default {
       collectionDescription: '',
       expanded: false,
       truncatedDescription: '',   // Truncated description
-      maxLength: 150              // Maximum length before truncating
+      maxLength: 100             // Maximum length before truncating
     };
   },
   methods: {
@@ -637,7 +637,7 @@ export default {
     addReadMoreListener() {
       const readMoreLink = this.$el.querySelector('.read-more-link');
       if (readMoreLink) {
-        // Type the event parameter as MouseEvent
+        // Handle the click event for 'Read More' link
         readMoreLink.addEventListener('click', (event: MouseEvent) => {
           event.preventDefault();
           this.redirectCollection();
