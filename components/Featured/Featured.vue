@@ -174,9 +174,13 @@
               alt="Calendar Icon"
               />
             </div>
-            <div class="texts">
-              <p class="tw-pb-2">{{ formattedDate }}</p>
-              <p>{{ formattedTime }}</p>
+            <div class="texts" v-if="!formattedEventDate.date">
+              <p class="tw-pb-2">{{ formattedDateee }}</p>
+              <p>{{ formattedTimeee }}</p>
+            </div>
+            <div class="texts" v-else>
+              <p class="tw-pb-2">{{ formattedEventDate.date }}</p>
+              <p>{{ formattedEventDate.time }}</p>
             </div>
           </div>
 
@@ -484,8 +488,13 @@ export default {
       location: '',
       venue: '',
       publicSaleTime: '',
-      formattedDate: '',
-      formattedTime: '',
+      event_date:'',
+      formattedEventDate: {
+          date: '',
+          time: '',
+      },
+      formattedDateee: '',
+      formattedTimeee: '',
       collectionDescription: '',
       expanded: false,
       truncatedDescription: '',   // Truncated description
@@ -493,6 +502,40 @@ export default {
     };
   },
   methods: {
+    formatEventDateTime(dateString: string): { date: string; time: string } {
+      const date = new Date(dateString);
+
+      // Extract components for date
+      const day = date.toLocaleDateString('en-GB', { day: '2-digit' });
+      const month = date.toLocaleDateString('en-GB', { month: 'short' });
+      const year = date.toLocaleDateString('en-GB', { year: 'numeric' });
+      const formattedDate = `${day} ${month} ${year}`; // Custom format without comma
+
+      // Extract components for time
+      const optionsTime: Intl.DateTimeFormatOptions = {
+        hour: '2-digit',    // Correct type for hour
+        minute: '2-digit',  // Correct type for minute
+        hour12: true,        // This remains fine
+        timeZone: 'UTC',
+      };
+      const time = date.toLocaleTimeString('en-GB', optionsTime); // e.g., "01:30 PM"
+      const weekday = date.toLocaleDateString('en-GB', { weekday: 'long' }); // e.g., "Thursday"
+      const formattedTime = `${weekday}, ${time}`; // Combine weekday and time
+
+      return {
+        date: formattedDate,
+        time: formattedTime,
+      };
+    },
+    setEventDate() {
+      // Check if collection and ticket_details exist before accessing event_date
+      if (this.collection && this.collection.ticket_details && this.collection.ticket_details.event_date) {
+        this.formattedEventDate = this.formatEventDateTime(this.collection.ticket_details.event_date);
+      } else {
+        // Handle case where event_date or ticket_details are missing
+        this.formattedEventDate = { date: '', time: '' }; // Or handle it according to your logic
+      }
+    },
     isVideo(source: string) {
       if (!source) {
         return false;
@@ -528,7 +571,7 @@ export default {
       const day = date.toLocaleDateString('en-GB', { day: '2-digit' });
       const month = date.toLocaleDateString('en-GB', { month: 'short' });
       const year = date.toLocaleDateString('en-GB', { year: 'numeric' });
-      const formattedDate = `${day} ${month} ${year}`; // Custom format without comma
+      const formattedDateee = `${day} ${month} ${year}`; // Custom format without comma
 
       // Extract components for time
       const optionsTime: Intl.DateTimeFormatOptions = { 
@@ -538,11 +581,11 @@ export default {
       };
       const time = date.toLocaleTimeString('en-GB', optionsTime); // e.g., "01:30 PM"
       const weekday = date.toLocaleDateString('en-GB', { weekday: 'long' }); // e.g., "Thursday"
-      const formattedTime = `${weekday}, ${time}`; // Combine weekday and time with a comma
+      const formattedTimeee = `${weekday}, ${time}`; // Combine weekday and time with a comma
 
       return {
-        date: formattedDate,
-        time: formattedTime,
+        date: formattedDateee,
+        time: formattedTimeee,
       };
     },
     isAudio(source: string) {
@@ -1035,7 +1078,12 @@ export default {
         this.location = this.collection.location.location; // "nepal"
         this.venue = this.collection.location.venue; // "Thamel, Kathmandu 44600, Nepal"   
         
-        // Assign and format public_sale_time
+        this.setEventDate(); // Format the event date when the component is mounted
+          if(this.collection.ticket_details.event_date)
+          {
+            this.event_date = this.collection.ticket_details.event_date;
+          }
+            // Assign and format public_sale_time
         this.publicSaleTime = this.collection.candyMachine.public_sale_time;
         const { date, time } = this.formatDateTime(this.publicSaleTime);
         this.formattedDate = date;

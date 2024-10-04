@@ -37,18 +37,18 @@
             <div
               class="tw-my-6 tw-py-2 tw-border-b-2 tw-border-dark-6 tw-w-full"
             >
-              <h2 class="w-text-sm tw-text-white">Event Name</h2>
+              <h2 class="w-text-sm tw-text-white">Hosted By</h2>
             </div>
             <div>
-              <!-- <div class="tw-flex tw-items-center">
-                <img
+              <div class="tw-flex tw-items-center">
+                <!-- <img
                   src="~/assets/img/logo/new-logo.svg"
                   alt="Wapal logo"
                   width="28px"
                   height="28px"
-                />
-                <span class="w-text-sm tw-items-center tw-ml-2">Wapal</span>
-              </div> -->
+                /> -->
+                <span class="w-text-sm tw-items-center">Host Name</span>
+              </div>
               <div
                 id="email"
                 class="tw-flex tw-items-center tw-mt-4 tw-text-white/70"
@@ -268,8 +268,8 @@
               <img src="~/assets/img/Calendar.svg" alt="Calendar Icon" />
             </div>
             <div class="texts">
-              <p class="tw-pb-2">{{ formattedDate }}</p>
-              <p>{{ formattedTime }}</p>
+              <p class="tw-pb-2">{{ event_date.date }}</p>
+              <p>{{ event_date.time }}</p>
             </div>
           </div>
 
@@ -330,18 +330,11 @@
             v-if="showLiveInTimer"
           >
             <h3
-              v-if="collection.description !== 'Loonies'"
               class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm tw-mt-2"
             >
               Ticket Sale Starts In
             </h3>
-            <count-down-custom
-              v-if="collection.description === 'Loonies'"
-              :startTime="currentSale.mint_time"
-              @countdownComplete="countdownComplete"
-            />
             <count-down
-              v-else
               :startTime="currentSale.mint_time"
               @countdownComplete="countdownComplete"
             />
@@ -362,6 +355,7 @@
             <span>
               Select Ticket:
             </span>
+            <!-- 1st box  -->
             <div
               class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-bg-dark-8 tw-border tw-border-solid tw-border-dark-6 tw-rounded tw-pt-2 tw-pr-3 tw-pb-3 tw-pl-3"
             >
@@ -369,11 +363,9 @@
                 <div
                   class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
                 >
-                  General
-                </div>
+                  {{ ticketDetails.token_data[1]?.ticket_type || 'N/A' }}                </div>
                 <div class="tw-text-white">
-                  1.30APT
-                </div>
+                  {{ ticketDetails.token_data[1]?.public_sale_price || 'N/A' }} APT                </div>
               </div>
               <!-- Get ticket btn  -->
               <div>
@@ -413,10 +405,10 @@
                 <div
                   class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
                 >
-                  VIP
-                </div>
+                {{ ticketDetails.token_data[0]?.ticket_type || 'N/A' }} 
+              </div>
                 <div class="tw-text-white">
-                  5.30APT
+                  {{ ticketDetails.token_data[0]?.public_sale_price || 'N/A' }} APT
                 </div>
               </div>
               <!-- Get ticket btn  -->
@@ -467,7 +459,7 @@
           v-else
         /> -->
 
-        <div class="tw-mt-10 tw-pb-2 tw-border-b-2 tw-border-dark-6 tw-w-full">
+        <div class="tw-mt-2 tw-pb-2 tw-border-b-2 tw-border-dark-6 tw-w-full">
           <h2 class="tw-text-white tw-font-semibold">About Event</h2>
         </div>
 
@@ -1026,6 +1018,12 @@ export default {
       showPopup: false,
       userMessage: '', // Stores the user's message
       collectionDescription: '',
+      event_date: '',
+      ticketDetails: {
+        event_date: '',
+        token_data: [
+        ], // Initialize with an empty array
+      },
       // fromName: 'Madhu',
       // toName: 'Nidiv', 
       // mintedTokens: [
@@ -1099,6 +1097,7 @@ export default {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true, // Ensure 12-hour format with AM/PM
+        timeZone: "UTC",
       };
       const time = date.toLocaleTimeString("en-GB", optionsTime); // e.g., "01:30 PM"
       const weekday = date.toLocaleDateString("en-GB", { weekday: "long" }); // e.g., "Thursday"
@@ -2401,14 +2400,36 @@ export default {
     },
   },
   async mounted() {
-    if (this.collection) {
+    if (this.collection && this.collection.ticket_details) {
       // console.log("check clect", this.collection);
       this.collectionTweet = this.collection.tweet;
       this.collectionUserName = this.collection.username;
       const collection_name = await ticketCollectionUri(this.collection.name);
       const res = await this.$axios.get(collection_name);
       // console.log(res)
+      if (this.collection.ticket_details.event_date) {
+        this.event_date = this.formatDateTime(this.collection.ticket_details.event_date);
+      }
+    //   if (this.collection.ticket_details.token_data && this.collection.ticket_details.token_data.length > 0) {
+    //   this.token_data = this.collection.ticket_details.token_data.map(ticket => ({
+    //     ticket_type: ticket.ticket_type,
+    //     public_sale_price: ticket.public_sale_price
+    //   }));
+    // }
 
+    if (this.collection.ticket_details.token_data && this.collection.ticket_details.token_data.length > 0) {
+      this.ticketDetails.token_data = []; // Ensure it is initialized
+      this.collection.ticket_details.token_data.forEach(ticket => {
+        this.ticketDetails.token_data.push({
+          ticket_type: ticket.ticket_type,
+          public_sale_price: ticket.public_sale_price,
+        });
+      });
+    }
+      // this.ticketDetails = {
+      //   event_date: this.collection.event_date,
+      //   token_data: this.collection.token_data
+      // };
       // Assign only the description to the data property
       this.collectionDescription = res.data.description;
 
