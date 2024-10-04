@@ -32,22 +32,6 @@
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-            name="name"
-            rules="required"
-            v-slot="{ errors }"
-          >
-            <input-text-field
-              label="Host Name"
-              :required="true"
-              v-model="collection.create_by"
-              placeholder="Host Name"
-            />
-            <div v-if="errors[0]" class="tw-text-red-600 tw-text-sm">
-              {{ errors[0] }}
-            </div>
-          </ValidationProvider>
-          <ValidationProvider
-            class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="description"
             rules="texteditorRequired|texteditorMaxLength:4000"
             v-slot="{ errors }"
