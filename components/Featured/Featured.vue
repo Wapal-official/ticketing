@@ -167,7 +167,7 @@
         
         <div id="ticket-details">
             <!-- Calendar  -->
-          <div class="date box">
+          <div class="date box" v-if="formattedEventDate.date">
             <div class="icon-box calendar">
               <img
               src="~/assets/img/Calendar.svg"
@@ -271,7 +271,6 @@
           </div>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
-            v-else
           >
             <div
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6"
@@ -489,10 +488,17 @@ export default {
       venue: '',
       publicSaleTime: '',
       event_date:'',
+      ends_at:'',
       formattedEventDate: {
           date: '',
           time: '',
       },
+      ticketDetails: {
+        create_by:'',
+        event_date: '',
+        token_data: [
+        ], // Initialize with an empty array
+      },  
       formattedDateee: '',
       formattedTimeee: '',
       collectionDescription: '',
@@ -502,6 +508,13 @@ export default {
     };
   },
   methods: {
+    checkLiveStatus() {
+      const mintTime = new Date(this.currentSale.mint_time);
+      if (mintTime < new Date()) {
+        return true;
+      }
+      return false;
+    },
     formatEventDateTime(dateString: string): { date: string; time: string } {
       const date = new Date(dateString);
 
@@ -1084,10 +1097,14 @@ export default {
             this.event_date = this.collection.ticket_details.event_date;
           }
             // Assign and format public_sale_time
+        this.ends_at = this.collection.ends_at;
         this.publicSaleTime = this.collection.candyMachine.public_sale_time;
         const { date, time } = this.formatDateTime(this.publicSaleTime);
         this.formattedDate = date;
         this.formattedTime = time;
+        if (this.collection.ticket_details.event_date) {
+          this.event_date = this.formatDateTime(this.collection.ticket_details.event_date);
+        }
       //   const collection_name = await ticketCollectionUri(this.collection.name);
       //   const res = await this.$axios.get(collection_name);
       //   console.log(res)

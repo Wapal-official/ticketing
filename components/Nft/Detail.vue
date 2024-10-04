@@ -47,7 +47,9 @@
                   width="28px"
                   height="28px"
                 /> -->
-                <span class="w-text-sm tw-items-center">Host Name</span>
+                <span class="w-text-sm tw-items-center">
+                  {{ create_by }}
+                </span>
               </div>
               <div
                 id="email"
@@ -299,7 +301,7 @@
           <span> +{{ resource.minted }} Going</span>
         </div>
 
-        <!-- <a
+          <!-- <a
           class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
           :href="collection.mintDetails.link"
           target="_blank"
@@ -327,16 +329,16 @@
         /> -->
         <div
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
-            v-if="showLiveInTimer"
           >
             <h3
               class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm tw-mt-2"
             >
-              Ticket Sale Starts In
+            {{ checkLiveStatus() ? 'Ticket Sale Ends In' : 'Ticket Sale Starts In' }}
+              <!-- {{ mint_time }} -->
             </h3>
             <count-down
-              :startTime="currentSale.mint_time"
-              @countdownComplete="countdownComplete"
+            :startTime="checkLiveStatus() ? ends_at : currentSale.mint_time"              
+            @countdownComplete="countdownComplete"
             />
             <!-- <span>
               <a
@@ -1013,17 +1015,20 @@ export default {
       location: '',
       venue: '',
       publicSaleTime: '',
+      ends_at:'',
       formattedDate: '',
       formattedTime: '',
       showPopup: false,
       userMessage: '', // Stores the user's message
       collectionDescription: '',
       event_date: '',
+      create_by:'',
       ticketDetails: {
+        create_by:'',
         event_date: '',
         token_data: [
         ], // Initialize with an empty array
-      },
+      },  
       // fromName: 'Madhu',
       // toName: 'Nidiv', 
       // mintedTokens: [
@@ -2406,7 +2411,11 @@ export default {
       this.collectionUserName = this.collection.username;
       const collection_name = await ticketCollectionUri(this.collection.name);
       const res = await this.$axios.get(collection_name);
+      this.ends_at = this.collection.ends_at;
       // console.log(res)
+      if (this.collection.ticket_details.create_by) {
+        this.create_by = this.collection.ticket_details.create_by;
+      }
       if (this.collection.ticket_details.event_date) {
         this.event_date = this.formatDateTime(this.collection.ticket_details.event_date);
       }
