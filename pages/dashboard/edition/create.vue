@@ -978,6 +978,7 @@ export default {
         venue: "",
         email: "",
         name: "",
+        create_by: "",
         description: "",
         image: "",
         thumbnail: "",
@@ -1854,9 +1855,17 @@ export default {
           videoUrl = this.metadata.videoUri;
         }
 
+        const updatedTokenDetails = tempCollection.token_details.map(detail => {
+    return {
+        ...detail,
+        some_field: this.collection.some_field // Add some_field to each object
+    };
+});
+
         const formData = new FormData();
 
         formData.append("name", tempCollection.name);
+        formData.append("host_name", tempCollection.create_by);
         formData.append("description", tempCollection.description);
         formData.append(
           "royalty_percentage",
@@ -2017,6 +2026,7 @@ export default {
       const formData = new FormData();
 
       formData.append("name", tempCollection.name);
+      formData.append("host_name", tempCollection.create_by);
       formData.append("description", tempCollection.description);
       formData.append("location", tempCollection.location);
       formData.append("venue", tempCollection.venue);
@@ -2035,7 +2045,6 @@ export default {
       formData.append("traitType", tempCollection.attributes.trait_type);
       formData.append("value", tempCollection.attributes.value);
       formData.append("ticket_details", JSON.stringify(this.collection.myobj));
-      formData.append("host_name", tempCollection.myobj.create_by);
       formData.append("public_sale_price", tempCollection.public_sale_price);
       formData.append("whitelist_price", tempCollection.whitelist_price);
       formData.append("twitter", tempCollection.twitter);
@@ -2049,8 +2058,6 @@ export default {
       formData.append("isEdition", JSON.stringify(false));
       formData.append("coin_type", tempCollection.coinType);
       formData.append("tweet", tempCollection.tweet);
-
-     
 
       if (this.file && this.file.name) {
         const fileType = this.checkFileType(this.file.name);
@@ -2077,25 +2084,13 @@ export default {
       } else {
         formData.append("whitelistTBD", "true");
       }
-       try {
-    console.log("Calling createDraft with formData");
-    const result = await createDraft(formData);
-    console.log("Draft Creation Result:", result);
-    this.message = "Draft Created Successfully";
-  } catch (error) {
-    console.error("Error creating draft:", error);
-    this.message = "Failed to Create Draft";
-  }
-      
-      console.log("Form Draft Data Entries:");
-        for (let pair of formData.entries()) {
-          console.log(pair[0] + ": " + pair[1]);
-        }
+      await createDraft(formData);
+
       this.submitting = false;
 
       this.message = "Draft Created Successfully";
       this.$toast.showMessage({ message: this.message, error: false });
-      this.$router.push("/dashboard/edition/draft");
+      this.$router.push("/dashboard/collection/draft");
     },
     async setCollectionDataFromDraft() {
       try {
@@ -2112,42 +2107,13 @@ export default {
 
         draftData.candy_id = this.collection.candy_id;
 
-        if (typeof draftData.myobj === "string") {
-          try {
-            draftData.myobj = JSON.parse(draftData.myobj);
-          } catch (error) {
-            console.error("Error parsing myobj:", error);
-            // Set default values in case of parsing error
-            draftData.myobj = {
-              token_data: [
-                { ticket_type: "", public_sale_price: "" }
-              ],
-              event_date: "",
-              create_by: ""
-            };
-          }
-        } else if (typeof draftData.myobj !== "object" || !Array.isArray(draftData.myobj.token_data)) {
-          // Set default values if myobj is not an object or token_data is not an array
-          draftData.myobj = {
-            token_data: [
-              { ticket_type: "", public_sale_price: "" }
-            ],
-            event_date: "",
-            create_by: ""
-          };
-        }
-
-        this.$set(this.collection, "myobj", draftData.myobj);
-
         try {
           draftData.phases = JSON.parse(draftData.phases);
         } catch {
           draftData.phases = [];
         }
 
-        this.$nextTick(() => {
-            this.collection = draftData;
-          });
+        this.collection = draftData;
         console.log("Image after setting collection:", this.collection.image);
 
         this.collection.phases.map((phase) => {
@@ -2224,7 +2190,7 @@ export default {
         }
 
         this.$toast.showMessage({ message: "Draft Updated Successfully" });
-        this.$router.push("/dashboard/edition/draft");
+        this.$router.push("/dashboard/collection/draft");
         setTimeout(() => {
           this.$store.commit("general/setWhitelistSetup", true);
         }, 2000);
