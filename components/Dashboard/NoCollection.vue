@@ -6,9 +6,9 @@
       <h2 class="tw-text-base tw-font-semibold tw-text-center">
         {{ message }}
       </h2>
-      <button-primary :title="buttonTitle" @click="$emit('click')">
+      <button-primary :title="buttonTitle" class="tw-text-black" @click="$emit('click')">
         <template #prepend-icon>
-          <i class="bx bx-plus tw-text-white tw-text-xl"></i>
+          <i class="bx bx-plus tw-text-black tw-text-xl"></i>
         </template>
       </button-primary>
     </div>

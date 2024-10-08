@@ -142,3 +142,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.default-button {
+  color: black; /* Default button color */
+}
+
+/* Additional styles if needed */
+</style>

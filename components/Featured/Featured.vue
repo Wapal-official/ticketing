@@ -199,27 +199,25 @@
           </div>
         </div>
         <!-- Ticket owner overlapping photos -->
-        <div class="ticket-owner">
-          <div class="owner-box">
-            <img
-              src="~/assets/img/avatar3.png"
-              alt="Location Icon"
-              />
-          </div>
-          <div class="owner-box">
-            <img
-              src="~/assets/img/avatar2.png"
-              alt="Location Icon"
-              />
-          </div>
-          <div class="owner-box">
-            <img
-              src="~/assets/img/avatar1.png"
-              alt="Location Icon"
-              />
-          </div>
+        <div class="ticket-owner tw-mb-2"
+        v-if="resource.minted > 0"
+        >
+        <div
+          class="owner-box"
+          v-for="index in avatarCount"
+          :key="index"
+        >
+          <img
+            :src="require(`@/assets/img/avatar${index}.png`)" 
+            alt="Avatar"
+          />
+        </div>
           <!-- Going ticket Numbers -->
-            <span> +{{ resource.minted }} Going</span>
+            <span :style="{ marginLeft: ((avatarCount - 1) * 25 + 50) + 'px', color: '#8EE3FB', fontWeight: 300 }"
+            > +{{ resource.minted }} Going</span>
+        </div>
+        <div v-else>
+          <span class="tw-text-primary-1"> Be the first one to get ticket</span>
         </div>
         <!-- <div
           v-if="collection._id === '65803e82022bc90954ea3ea4'"
@@ -246,7 +244,7 @@
           >
             <h3
               v-if="collection.description !== 'Loonies'"
-              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm tw-mt-2"
+              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm"
             >
               Ticket Sale Starts In
             </h3>
@@ -464,6 +462,11 @@ export default {
         },
         video: "",
         media2: "",
+        avatars: [
+        '~/assets/img/avatar1.png',
+        '~/assets/img/avatar2.png',
+        '~/assets/img/avatar3.png'
+      ]
       },
       whitelistSaleDate: null,
       publicSaleDate: null,
@@ -1048,6 +1051,9 @@ export default {
         return this.collection.candyMachine.public_sale_price;
       }
     },
+    avatarCount() {
+      return Math.min(this.resource.minted, 3);
+    },
     showMintBox() {
       if (this.phases.length < 2) {
         return !this.showPublicSaleTimer;
@@ -1105,6 +1111,7 @@ export default {
         if (this.collection.ticket_details.event_date) {
           this.event_date = this.formatDateTime(this.collection.ticket_details.event_date);
         }
+        
       //   const collection_name = await ticketCollectionUri(this.collection.name);
       //   const res = await this.$axios.get(collection_name);
       //   console.log(res)
