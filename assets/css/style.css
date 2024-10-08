@@ -855,11 +855,11 @@ input:disabled {
 }
 
 /* Going ticket Numbers  */
-.ticket-owner span{
+/* .ticket-owner span{
   color: #8EE3FB;
   margin-left: 100px;
   font-weight:300;
-}
+} */
 
 #pop-up-btn{
   background-color: #8EE3FB ;

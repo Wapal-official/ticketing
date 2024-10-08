@@ -17,7 +17,7 @@
         Wallet Currently Connected
       </div>
     </div>
-    <button-primary title="Disconnect Wallet" @click="disconnectWallet" />
+    <button-primary class="tw-text-black" title="Disconnect Wallet" @click="disconnectWallet" />
   </div>
 </template>
 

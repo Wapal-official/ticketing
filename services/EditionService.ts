@@ -53,19 +53,23 @@ export const getUpcomingEditions = async ({
   limit: number;
 }) => {
   const res = await publicRequest.get(
-
-    `/api/collection/edition/upcoming?page=${page}&limit=${limit}&edition=ticket-open-edition`
+    `/api/collection/editions?edition=ticket-open-edition&page=${page}&limit=${limit}`
   );
-  console.log("checkUpcomingEditions",res)
-//   mounted(){
-//   console.log(this.getUpcomingEditions);  
-// }
+
+  // console.log("checkUpcomingEditions", res);
 
   const editions = res.data.data;
 
-  editions.map((edition: any) => {
+  const upcomingEditions = editions.filter((edition: any) => {
+    // console.log('Unfiltered public_sale_time:', edition.candyMachine.public_sale_time);
+    const publicSaleTime = new Date(edition.candyMachine.public_sale_time);
+    return publicSaleTime > new Date(); 
+  });
+
+  upcomingEditions.map((edition: any) => {
     edition.image = getCachedUrlOfImage(edition.image);
   });
 
-  return editions;
+  return upcomingEditions;
 };
+

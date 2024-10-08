@@ -10,7 +10,7 @@
         <i class="bx bxs-user !tw-text-primary-1 tw-text-xl tw-pr-[0.62em]"></i>
       </template>
     </button-primary>
-    <button-primary @click="connectWallet" title="Connect Wallet" v-else />
+    <button-primary @click="connectWallet" class="tw-text-black" title="Connect Wallet" v-else />
     <v-dialog
       v-model="showConnectWalletDialog"
       content-class="!tw-w-full md:!tw-w-1/2 xl:!tw-w-1/3"

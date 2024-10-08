@@ -10,7 +10,7 @@
     <p class="tw-text-sm md:tw-text-lg tw-font-normal tw-pb-4 tw-text-dark-0">
       {{ message }}
     </p>
-    <button-primary @click="signMessage" title="Sign Message" />
+    <button-primary @click="signMessage" title="Sign Message" class="tw-text-black" />
   </div>
 </template>
 <script lang="ts">
