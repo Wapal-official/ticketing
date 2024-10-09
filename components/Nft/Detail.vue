@@ -286,20 +286,27 @@
             </div>
           </div>
         </div>
-        <!-- Ticket owner overlapping photos -->
-        <div class="ticket-owner tw-mb-5">
-          <div class="owner-box">
-            <img src="~/assets/img/avatar3.png" alt="Location Icon" />
+          <!-- Ticket owner overlapping photos -->
+          <div class="ticket-owner tw-mb-2"
+            v-if="resource.minted > 0"
+            >
+            <div
+              class="owner-box"
+              v-for="index in avatarCount"
+              :key="index"
+            >
+              <img
+                :src="require(`@/assets/img/avatar${index}.png`)" 
+                alt="Avatar"
+              />
+            </div>
+              <!-- Going ticket Numbers -->
+                <span :style="{ marginLeft: ((avatarCount - 1) * 25 + 50) + 'px', color: '#8EE3FB', fontWeight: 300 }"
+                > +{{ resource.minted }} Going</span>
           </div>
-          <div class="owner-box">
-            <img src="~/assets/img/avatar2.png" alt="Location Icon" />
+          <div v-else>
+            <span class="tw-text-primary-1"> Be the first one to get ticket</span>
           </div>
-          <div class="owner-box">
-            <img src="~/assets/img/avatar1.png" alt="Location Icon" />
-          </div>
-          <!-- Going ticket Numbers -->
-          <span> +{{ resource.minted }} Going</span>
-        </div>
 
           <!-- <a
           class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
@@ -327,7 +334,7 @@
           @click="mintBulkCollection"
           v-else-if="checkLiveStatus()"
         /> -->
-        <div
+        <div v-if="this.showCountdown"
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
           >
             <h3
@@ -352,7 +359,7 @@
 
           <!-- select ticket box  -->
           <div
-           v-if="checkLiveStatus()" 
+           v-if="checkLiveStatus() && this.showCountdown" 
            class = "tw-w-full tw-border tw-border-solid tw-border-dark-6 tw-rounded-lg tw-py-5 tw-px-4 tw-space-y-3">
             <span>
               Select Ticket:
@@ -960,6 +967,7 @@ export default {
       markers: [
         { position: { lat: 27.7172, lng: 85.324 } }, // Example marker
       ],
+      showCountdown: true,
       zoomLevel: 10,
       venueBounds: null, // Initialize bounds if needed
       loading: true,
@@ -2344,6 +2352,9 @@ export default {
     //   // Return the mailto link
     //   return `mailto:${this.recipient}`;
     // },
+    avatarCount() {
+      return Math.min(this.resource.minted, 3);
+    },
     getCurrentPrice() {
       if (
         this.collection.candyMachine.public_sale_price ==
