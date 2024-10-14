@@ -46,7 +46,7 @@
           </ValidationProvider>
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-            name="hostName"
+            name="host_name"
             rules="required"
             v-slot="{ errors }"
           >
@@ -409,14 +409,11 @@
                 rules="required"
                 v-slot="{ errors }"
               >
-                <input-auto-complete
+                <input-text-field
                   v-model="token_data.ticket_type"
                   placeholder="Select Ticket Type"
                   label="Ticket Type"
                   :required="true"
-                  :items="ticketType"
-                  text="name"
-                  itemValue="id"
                 />
 
                 <div class="tw-text-red-600 tw-text-sm">
@@ -982,7 +979,6 @@ export default {
         venue: "",
         email: "",
         name: "",
-        create_by: "",
         description: "",
         image: "",
         thumbnail: "",
@@ -1014,9 +1010,6 @@ export default {
         event_date: "",
         create_by:""
       },
-        token_details: [
-                  {ticket_type: '', public_sale_price: ""}],
-        some_field: '',
         twitter: "",
         instagram: "",
         discord: "",
@@ -1064,10 +1057,10 @@ export default {
         // { name: "Limited Edition", id: "limited-edition" },
         { name: "ticket-open-edition", id: "open-edition" },
       ],
-      ticketType: [
-        { name: "VIP", id:"vip"},
-        { name: "Normal", id:"normal"}
-      ],
+      // ticketType: [
+      //   { name: "VIP", id:"vip"},
+      //   { name: "Normal", id:"normal"}
+      // ],
       folderInfo: null,
       folders: [],
       image: { name: null },
@@ -1787,6 +1780,7 @@ if (this.imageError) {
       return date;
     },
     async createOpenEdition() {
+      console.log("createOpenEdition");
       try {
         this.error = false;
         this.loading = true;
@@ -1823,7 +1817,6 @@ if (this.imageError) {
         const formData = new FormData();
 
         formData.append("name", tempCollection.name);
-        formData.append("host_name", tempCollection.create_by);
         formData.append("description", tempCollection.description);
         formData.append(
           "royalty_percentage",
@@ -1851,7 +1844,6 @@ if (this.imageError) {
         formData.append("instagram", tempCollection.instagram);
         formData.append("resource_account", tempCollection.resource_account);
         formData.append("value", tempCollection.attributes.value);
-        formData.append("ticket_type", tempCollection.token_details.ticket_type);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
         formData.append("phases", JSON.stringify([]));
@@ -1874,7 +1866,13 @@ if (this.imageError) {
         formData.append("seedz", JSON.stringify(tempCollection.seedz));
         formData.append("coin_type", tempCollection.coinType);
 
+        console.log("Form Data Entries:");
+        for (let pair of formData.entries()) {
+          console.log(pair[0] + ": " + pair[1]);
+        }
+
         const res = await createCollection(formData);
+        console.log("formData", res);
 
         this.$toast.showMessage({
           message: "Open Event Created Successfully",
@@ -1980,7 +1978,6 @@ if (this.imageError) {
       const formData = new FormData();
 
       formData.append("name", tempCollection.name);
-      formData.append("host_name", tempCollection.create_by);
       formData.append("description", tempCollection.description);
       formData.append("location", tempCollection.location);
       formData.append("venue", tempCollection.venue);
@@ -1999,7 +1996,8 @@ if (this.imageError) {
       formData.append("tokenDesc", tempCollection.tokenDesc);
       formData.append("traitType", tempCollection.attributes.trait_type);
       formData.append("value", tempCollection.attributes.value);
-      formData.append("ticket_details", JSON.stringify(this.collection.myobj));
+      formData.append("ends_at", tempCollection.ends_at);
+      formData.append("myobj", JSON.stringify(this.collection.myobj));
       formData.append("whitelist_price", tempCollection.whitelist_price);
       formData.append("twitter", tempCollection.twitter);
       formData.append("discord", tempCollection.discord);
@@ -2046,7 +2044,15 @@ if (this.imageError) {
         console.log(pair[0] + ": " + pair[1]);
       }
 
-      await createDraft(formData);
+      try {
+    console.log("Calling createDraft with formData");
+    const result = await createDraft(formData);
+    console.log("Draft Creation Result:", result);
+    this.message = "Draft Created Successfully";
+  } catch (error) {
+    console.error("Error creating draft:", error);
+    this.message = "Failed to Create Draft";
+  }
 
       this.submitting = false;
 
@@ -2064,8 +2070,23 @@ if (this.imageError) {
         const draftRes = await getDraftByIdInCreatorStudio(
           this.$route.params.id
         );
+        console.log("draftRes", draftRes)
 
         const draftData = draftRes.data.draft.data;
+        console.log("draftData", draftData)
+        function checkTypes(obj) {
+          for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+              if (typeof obj[key] === 'object' && obj[key] !== null) {
+                console.log(`${key}: object`);
+                checkTypes(obj[key]); // Recursively check nested objects
+              } else {
+                console.log(`${key}: ${typeof obj[key]}`);
+              }
+            }
+          }
+        }
+        checkTypes(draftData);
 
         draftData.candy_id = this.collection.candy_id;
 
@@ -2086,7 +2107,34 @@ if (this.imageError) {
           draftData.attributes = [{ trait_type: "ticket type", value: "" }];
         }
 
-        this.collection = draftData;
+        if (typeof draftData.myobj === "string") {
+          try {
+            draftData.myobj = JSON.parse(draftData.myobj);
+          } catch (error) {
+            console.error("Error parsing myobj:", error);
+            // Set default values in case of parsing error
+            draftData.myobj = {
+              token_data: [
+                { ticket_type: "", public_sale_price: "" }
+              ],
+              event_date: "",
+              create_by: ""
+            };
+          }
+        } else if (typeof draftData.myobj !== "object" || !Array.isArray(draftData.myobj.token_data)) {
+          // Set default values if myobj is not an object or token_data is not an array
+          draftData.myobj = {
+            token_data: [
+              { ticket_type: "", public_sale_price: "" }
+            ],
+            event_date: "",
+            create_by: ""
+          };
+        }
+
+        this.$nextTick(() => {
+            this.collection = draftData;
+          });
         console.log("Image after setting collection:", this.collection.image);
         this.collectionImage = this.collection.image;
         if (this.collection.image) {
@@ -2099,11 +2147,9 @@ if (this.imageError) {
         this.$set(this.collection, "attributes", [
           ...this.collection.attributes,
         ]);
-
-        this.collection.phases.map((phase) => {
-          phase.mint_time = new Date(phase.mint_time);
-        });
-
+        // this.collection.phases.map((phase) => {
+        //   phase.mint_time = new Date(phase.mint_time);
+        // });
         this.folders.map((folder) => {
           // if (folder.metadata.baseURI === this.collection.baseURL) {
 
