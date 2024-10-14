@@ -1882,7 +1882,7 @@ export default {
         formData.append("instagram", tempCollection.instagram);
         formData.append("resource_account", tempCollection.resource_account);
         formData.append("value", tempCollection.attributes.value);
-        formData.append("myobj", JSON.stringify(this.collection.myobj));
+        formData.append("ticket_details", JSON.stringify(this.collection.myobj));
         formData.append("traitType", tempCollection.attributes.trait_type);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
