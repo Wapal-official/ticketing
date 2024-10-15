@@ -359,68 +359,27 @@
 
           <!-- select ticket box  -->
           <div
-           v-if="checkLiveStatus() && this.showCountdown" 
-           class = "tw-w-full tw-border tw-border-solid tw-border-dark-6 tw-rounded-lg tw-py-5 tw-px-4 tw-space-y-3">
-            <span>
-              Select Ticket:
-            </span>
-            <!-- 1st box  -->
+            v-if="checkLiveStatus() && this.showCountdown"
+            class="tw-w-full tw-border tw-border-solid tw-border-dark-6 tw-rounded-lg tw-py-5 tw-px-4 tw-space-y-3"
+          >
+            <span>Select Ticket:</span>
+
+            <!-- Dynamically render boxes for each ticket -->
             <div
+              v-for="(ticket, index) in ticketDetails.token_data"
+              :key="index"
               class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-bg-dark-8 tw-border tw-border-solid tw-border-dark-6 tw-rounded tw-pt-2 tw-pr-3 tw-pb-3 tw-pl-3"
             >
               <div class="tw-flex tw-flex-col tw-items-start tw-justify-end tw-gap-1">
-                <div
-                  class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
-                >
-                  {{ ticketDetails.token_data[1]?.ticket_type || 'N/A' }}                </div>
+                <div class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1">
+                  {{ ticket.ticket_type || 'N/A' }}
+                </div>
                 <div class="tw-text-white">
-                  {{ ticketDetails.token_data[1]?.public_sale_price || 'N/A' }} APT                </div>
-              </div>
-              <!-- Get ticket btn  -->
-              <div>
-                <a
-                  class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
-                  :href="collection.mintDetails.link"
-                  target="_blank"
-                  v-if="collection.mintDetails && collection.mintDetails.link"
-                >
-                  {{
-                    collection.username === "wapal-santa"
-                      ? "Reveal Your Present 🎁"
-                      : "Mint"
-                  }}
-                </a>
-                <NuxtLink
-                  class="tw-w-full tw-mt-4 tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
-                  :to="`/nft/${collection.username}`"
-                  v-else-if="collection.mintDetails"
-                >
-                  {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
-                </NuxtLink>
-                <button-primary
-                  class="!tw-text-black !tw-font-semibold"
-                  :title="!collection.status.sold_out ? 'Get ticket' : 'Get Ticket'"
-                  :fullWidth="true"
-                  @click="mintBulkCollection"
-                  v-else-if="checkLiveStatus()"
-                />
-              </div>
-            </div>
-              <!-- 2nd box  -->
-            <div
-              class="tw-w-full tw-flex tw-flex-row tw-items-center tw-justify-between tw-bg-dark-8 tw-border tw-border-solid tw-border-dark-6 tw-rounded tw-pt-2 tw-pr-3 tw-pb-3 tw-pl-3"
-            >
-              <div class="tw-flex tw-flex-col tw-items-start tw-justify-end tw-gap-1">
-                <div
-                  class="tw-text-xs tw-font-semibold tw-text-dark-2 tw-uppercase tw-pb-1"
-                >
-                {{ ticketDetails.token_data[0]?.ticket_type || 'N/A' }} 
-              </div>
-                <div class="tw-text-white">
-                  {{ ticketDetails.token_data[0]?.public_sale_price || 'N/A' }} APT
+                  {{ ticket.public_sale_price || 'N/A' }} APT
                 </div>
               </div>
-              <!-- Get ticket btn  -->
+
+              <!-- Get ticket button -->
               <div>
                 <a
                   class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-white tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
@@ -428,19 +387,17 @@
                   target="_blank"
                   v-if="collection.mintDetails && collection.mintDetails.link"
                 >
-                  {{
-                    collection.username === "wapal-santa"
-                      ? "Reveal Your Present 🎁"
-                      : "Mint"
-                  }}
+                  {{ collection.username === 'wapal-santa' ? 'Reveal Your Present 🎁' : 'Mint' }}
                 </a>
+
                 <NuxtLink
                   class="tw-w-full tw-mt-4 tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-normal tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
                   :to="`/nft/${collection.username}`"
                   v-else-if="collection.mintDetails"
                 >
-                  {{ collection.status.sold_out ? "Get Ticket" : "Mint" }}
+                  {{ collection.status.sold_out ? 'Get Ticket' : 'Mint' }}
                 </NuxtLink>
+
                 <button-primary
                   class="!tw-text-black !tw-font-semibold"
                   :title="!collection.status.sold_out ? 'Get ticket' : 'Get Ticket'"
@@ -450,8 +407,8 @@
                 />
               </div>
             </div>
-
           </div>
+
         <!-- <NuxtLink
               class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
               :to="`/nft/${collection.username}`"
