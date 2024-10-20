@@ -238,34 +238,19 @@
           <div class="tw-text-dark-0">Creator has ended the mint.</div>
         </div> -->
         <div class="tw-w-full">
-          <div
+          <div v-if="this.showCountdown && event_date"
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-1"
-            v-if="showLiveInTimer"
           >
             <h3
-              v-if="collection.description !== 'Loonies'"
-              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm"
+              class="tw-uppercase tw-text-dark-2 tw-font-semibold tw-text-sm tw-mt-2"
             >
-              Ticket Sale Starts In
+            {{ checkLiveStatus() ? 'Ticket Sale Ends In' : 'Ticket Sale Starts In' }}
+              <!-- {{ mint_time }} -->
             </h3>
-            <count-down-custom
-              v-if="collection.description === 'Loonies'"
-              :startTime="currentSale.mint_time"
-              @countdownComplete="countdownComplete"
-            />
             <count-down
-              v-else
-              :startTime="currentSale.mint_time"
-              @countdownComplete="countdownComplete"
+            :startTime="checkLiveStatus() ? ends_at : currentSale.mint_time"              
+            @countdownComplete="countdownComplete"
             />
-            <!-- <span>
-              <a
-                @click.prevent="redirectCollection"
-                class="!tw-underline"
-              >
-                Details...
-              </a>
-            </span> -->
           </div>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-4"
@@ -439,8 +424,7 @@ export default {
           resource_account: null,
           whitelist_price: null,
           whitelist_sale_time: "",
-        },
-        _id: null,
+        },        _id: null,
         name: "",
         description: null,
         image: "",
@@ -468,6 +452,7 @@ export default {
         '~/assets/img/avatar3.png'
       ]
       },
+      showCountdown: true,
       whitelistSaleDate: null,
       publicSaleDate: null,
       showWhitelistSaleTimer: false,
@@ -624,8 +609,7 @@ export default {
         : false;
     },
     countdownComplete() {
-      this.showPublicSaleTimer = false;
-      this.showWhitelistSaleTimer = false;
+      this.showCountdown = false;
     },
     whitelistCountdownComplete() {
       this.showWhitelistSaleTimer = false;
