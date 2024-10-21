@@ -32,7 +32,7 @@
     </style>
     <!-- The independent div with absolute positioning -->
     <div
-      class="tw-w-4/5 tw-absolute tw-right-20 tw-bottom-[-10px] tw-justify-end tw-flex tw-flex-row tw-items-center tw-gap-4 tw-mb-3 lg:tw-pt-6 lg:tw-pb-15 xl:tw-pb-24 1xl:!tw-max-w-[1320px] tw-self-end tw-z-[4] lg:tw-gap-2"
+      class="tw-w-4/5 tw-absolute tw-right-20 tw-bottom-[-18px] tw-justify-end tw-flex tw-flex-row tw-items-center tw-gap-4 tw-mb-3 lg:tw-pt-6 lg:tw-pb-15 xl:tw-pb-24 1xl:!tw-max-w-[1320px] tw-self-end tw-z-[4] lg:tw-gap-2"
     >
       <button
         class="tw-w-12 tw-h-12 tw-border tw-border-solid tw-border-dark-3 tw-rounded-full tw-transition-all tw-duration-150 tw-ease-linear tw-flex tw-flex-col tw-items-center tw-justify-center tw-group hover:tw-bg-dark-0"
