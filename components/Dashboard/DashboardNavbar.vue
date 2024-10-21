@@ -1,7 +1,7 @@
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-w-full">
     <nav
-      class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-py-4"
+      class="tw-flex tw-flex-row tw-container tw-mx-auto tw-items-center tw-justify-between tw-gap-8 tw-text-white tw-w-full tw-px-6 tw-py-4"
     >
       <NuxtLink to="/">
         <img

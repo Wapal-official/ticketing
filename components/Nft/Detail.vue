@@ -128,6 +128,7 @@
                     v-bind:center="mapCenter"
                     :zoom="14"
                     map-type-id="roadmap"
+                     :options="{ fullscreenControl: true }"
                     style="width: 100%; height: 100%"
                     :options="{ streetViewControl: false, fullscreenControl: true, zoomControl: true, }"
                   >

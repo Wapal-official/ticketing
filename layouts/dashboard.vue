@@ -2,11 +2,12 @@
   <v-app
     class="tw-w-full tw-h-full tw-overflow-hidden !tw-bg-dark-8 no-scrollbar"
   >
+  <!-- tw-w-[90%] tw-container tw-mx-auto tw-pt-16 tw-pb-12 tw-transition-all tw-duration-200 tw-ease-linear md:tw-px-0 md:tw-w-4/5 lg:tw-pt-[7em] lg:tw-pb-20 lg:tw-px-28 1xl:!tw-w-[1320px] 1xl:!tw-max-w-[1320px] 2xl:tw-pt-[5.0em]" -->
     <verification v-if="!getVerifiedStatus" />
     <div v-else>
       <dashboard-navbar :closeIcon="closeIcon" @toggleSidebar="toggleSidebar" />
-      <div class="tw-w-full tw-h-[1px] tw-bg-dark-6"></div>
-      <div class="tw-flex tw-flex-row tw-items-start relative tw-w-full">
+      <div class="tw-w-full tw-container tw-mx-auto tw-h-[1px] tw-bg-dark-6"></div>
+      <div class="tw-flex tw-container tw-mx-auto tw-flex-row tw-items-start relative tw-w-full">
         <dashboard-sidebar class="tw-hidden lg:tw-flex" />
         <div
           class="dashboard-container tw-overflow-auto no-scrollbar"
