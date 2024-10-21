@@ -52,18 +52,12 @@ export const getUpcomingEditions = async ({
   page: number;
   limit: number;
 }) => {
-  const res = await publicRequest.get(
-    `/api/collection/editions?edition=ticket-open-edition&page=${page}&limit=${limit}`
-  );
-
-  // console.log("checkUpcomingEditions", res);
-
-  const editions = res.data.data;
+  // Fetching the editions data from getAllEditions instead of making API request
+  const editions = await getAllEditions({ page, limit });
 
   const upcomingEditions = editions.filter((edition: any) => {
-    // console.log('Unfiltered public_sale_time:', edition.candyMachine.public_sale_time);
     const publicSaleTime = new Date(edition.candyMachine.public_sale_time);
-    return publicSaleTime > new Date(); 
+    return publicSaleTime > new Date();
   });
 
   upcomingEditions.map((edition: any) => {
