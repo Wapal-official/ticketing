@@ -45,7 +45,7 @@
 </style>
 
 <script lang="ts">
-import { getAllEditions } from "@/services/EditionService";
+import { getLiveEditions } from "@/services/EditionService";
 
 export default {
   layout: "all-edition",
@@ -66,7 +66,7 @@ export default {
       this.page++;
       this.loading = true;
 
-      const collections = await getAllEditions({ page: this.page, limit: 10 });
+      const collections = await getLiveEditions({ page: this.page, limit: 10 });
 
       const pausedRes = await Promise.all(
         collections.map(async (collection: any) => {
