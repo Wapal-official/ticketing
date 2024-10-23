@@ -187,7 +187,7 @@
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
           </ValidationProvider>
-          <ValidationProvider
+          <!-- <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="instagram"
             rules="link"
@@ -202,7 +202,7 @@
             <div class="tw-text-red-600 tw-text-sm" v-if="socialError">
               {{ socialErrorMessage }}
             </div>
-          </ValidationProvider>
+          </ValidationProvider> -->
           <!-- <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="tweetLength"
