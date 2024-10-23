@@ -41,7 +41,7 @@ export const getAllEditions = async ({
   editions.map((edition: any) => {
     edition.image = getCachedUrlOfImage(edition.image);
   });
-  console.log(editions,"Edition-data")
+  // console.log(editions,"Edition-data")
   return editions;
 };
 
@@ -67,3 +67,30 @@ export const getUpcomingEditions = async ({
   return upcomingEditions;
 };
 
+  export const getLiveEditions = async ({
+    page,
+    limit,
+  }: {
+    page: number;
+    limit: number;
+  }) => {
+    // Fetching the editions data from getAllEditions instead of making API request
+    const editions = await getAllEditions({ page, limit });
+
+    // Filtering live editions based on sale time
+    const liveEditions = editions.filter((edition: any) => {
+      const publicSaleTime = new Date(edition.candyMachine.public_sale_time);
+      const endTime = new Date(edition.ends_at); // Assuming there's an end_time field
+      const currentTime = new Date();
+
+      // Checking if current time is within the public sale period
+      return currentTime >= publicSaleTime && currentTime <= endTime;
+    });
+
+    // Map the editions to cache images
+    liveEditions.map((edition: any) => {
+      edition.image = getCachedUrlOfImage(edition.image);
+    });
+
+    return liveEditions;
+  };

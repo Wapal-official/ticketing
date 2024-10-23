@@ -36,8 +36,7 @@ import {
   getFeaturedCollection,
   getLiveCollections,
 } from "@/services/CollectionService";
-import { getUpcomingAuctions } from "@/services/AuctionService";
-import { getAllEditions, getUpcomingEditions } from "@/services/EditionService";
+import { getAllEditions, getUpcomingEditions, getLiveEditions } from "@/services/EditionService";
 export default {
   data() {
     return {
@@ -178,7 +177,7 @@ export default {
       if (this.page === 1) {
         this.collections = [];
       }
-      const res = await getAllEditions({ page: this.page, limit: this.limit });
+      const res = await getLiveEditions({ page: this.page, limit: this.limit });
       this.collections.push(...res);
       if (res.length === 0) {
         this.end = true;
@@ -198,19 +197,16 @@ export default {
         }
         switch (this.tabNumber) {
           case 0:
-            await this.getFeaturedCollections();
-            break;
-          case 1:
             await this.getEditions();
             break;
-          case 2:
+          case 1:
             await this.getUpcomingEditions();
             break;
           default:
-            await this.getFeaturedCollections();
+            await this.getEditions();
             break;
         }
-      }, 6000);
+      }, 10);
     },
   },
   async mounted() {
