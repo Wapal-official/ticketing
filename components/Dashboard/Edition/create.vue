@@ -63,7 +63,7 @@
           <div class="tw-flex tw-gap-4">
             <ValidationProvider
               rules="required"
-              name="traitType"
+              name="location"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               v-slot="{ errors }"
             >
@@ -91,7 +91,7 @@
             </ValidationProvider>
             <ValidationProvider
               rules="required"
-              name="traitType"
+              name="venue"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               v-slot="{ errors }"
             >
@@ -186,6 +186,9 @@
               placeholder="Website Link"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            <div class="tw-text-red-600 tw-text-sm" v-if="socialError">
+              {{ socialErrorMessage }}
+            </div>
           </ValidationProvider>
           <!-- <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -230,7 +233,6 @@
                 class="!tw-text-black"
                 title="Next"
                 @click="validateFormForNextStep"
-                :disabled="invalid"
               />
             </div>
           </div>
@@ -311,7 +313,7 @@
           </div> -->
           <ValidationProvider
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-              name="mint_time"
+              name="live_time"
               rules="required|saleTime"
               v-slot="{ errors }"
             >
@@ -329,7 +331,7 @@
           >
             <ValidationProvider
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-              name="mint_time"
+              name="start_time"
               rules="required|saleTime"
               v-slot="{ errors }"
             >
@@ -589,7 +591,6 @@
                 class="!tw-text-black"
                 title="Create"
                 @click="submit"
-                :disabled="invalid"
               />
             </div>
           </div>
@@ -947,6 +948,17 @@ extend("tweetLength", {
     return true;
   },
   message: "This field must not exceed 256 characters",
+});
+
+extend("social", {
+  params: ["twitter", "discord"],
+  validate(value, target) {
+    if (!value && !target.twitter && !target.discord) {
+      return false;
+    }
+    return true;
+  },
+  message: "Twitter URL, Discord URL or Website is required",
 });
 
 export default {
@@ -1523,33 +1535,31 @@ if (this.imageError) {
   this.imageErrorMessage = "Please select a file";
   return;
 }
+const tokenDetailForm = this.$refs.tokenDetailForm;
+    const isValid = await tokenDetailForm.validate();
 
-      console.log("Submit function called");
+    if (!this.file) {
+      this.imageError = true;
+      this.imageErrorMessage = "Please select a file";
+    }
+
+    if (!isValid || this.imageError) {
+      return;
+    }
+
       const validate = await this.$refs.attributeForm.validate();
       console.log("Validation result:", validate);
 
       if (!validate) {
-        console.log("Validation failed");
         return;
       }
       if (!this.collection.type) {
-        console.warn(
-          "Collection type is undefined, setting default to open-edition"
-        );
         this.collection.type = "ticket-open-edition";
       }
       if (!this.collection.coinType) {
-        console.warn("Coin type is undefined, setting default to APT");
         this.collection.coinType = "APT";
       }
-
-      console.log("Collection type:", this.collection.type);
-      console.log("Coin type:", this.collection.coinType);
-
       this.checkCoinType();
-      console.log("Collection type:", this.collection.type);
-      console.log("Coin type:", this.collection.coinType);
-
       switch (this.collection.type) {
         case "1-1":
           await this.createOneOnOneCollection();
