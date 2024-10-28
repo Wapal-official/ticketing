@@ -53,7 +53,7 @@ if (API_URL.includes("staging")) {
   PROOF_API_URL = API_URL;
   CREATOR_STUDIO_API = API_URL;
   CANDY_MACHINE_V2 =
-    "0xded9e977cba96693ed36492482490cd8abf7738f9210b2b74a26b5a5d43d9011";
+    "0xa6c1fcec3601b9e274a0d589617d7f4c60f14a56e41d0f5dcd3059ba9de96bb6";
   AUCTION_PID =
     "0x74e404c04364b11201e6ad17c25044c84a15aed0302e4050f1624a37012c8e52";
 
@@ -126,7 +126,7 @@ export default {
     { src: "~/plugins/shepherd.js", mode: "client" },
     "~/plugins/toast.ts",
     "~/plugins/directive.client.ts",
-    {src: "~/plugins/map.js"}
+    { src: "~/plugins/map.js" },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -213,7 +213,7 @@ export default {
         },
       });
     },
-    
+
     loaders: {
       vue: {
         transformAssetUrls: {
@@ -227,7 +227,7 @@ export default {
         autoprefixer: {},
       },
     },
-    vendor: ["vue2-google-maps"]
+    vendor: ["vue2-google-maps"],
   },
   axios: { baseURL: API_URL },
   env: {
