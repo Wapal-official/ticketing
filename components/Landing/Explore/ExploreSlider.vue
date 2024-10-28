@@ -30,7 +30,7 @@
       <i class="bx bx-chevron-right !tw-text-black tw-text-2xl"></i>
     </button>
   </div>
-  <div class="tw-text-center tw-text-xl tw-text-primary-1" v-else>
+  <div class="tw-text-center tw-text-xl tw-text-primary-1 tw-mt-20 tw-mb-20 md:tw-mt-32 md:tw-mb-32 lg:tw-mt-40 lg:tw-mb-40" v-else>
     No Events
   </div>
 </template>
