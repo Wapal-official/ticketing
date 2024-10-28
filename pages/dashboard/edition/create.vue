@@ -63,7 +63,7 @@
           <div class="tw-flex tw-gap-4">
             <ValidationProvider
               rules="required"
-              name="traitType"
+              name="location"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
               v-slot="{ errors }"
             >
@@ -91,9 +91,9 @@
             </ValidationProvider>
             <ValidationProvider
               rules="required"
-              name="traitType"
+              name="venue"
               class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 tw-w-full"
-              v-slot="{ errors }"
+              v-slot="{ errors }" 
             >
               <input-venue-field
                 ref="venueInput"
@@ -149,13 +149,14 @@
           <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
             name="twitter"
-            rules="link"
+            rules="link|required"
             v-slot="{ errors }"
           >
             <input-text-field
               label="Twitter Link"
               v-model="collection.twitter"
               placeholder="Twitter Link"
+              :required="true"
             />
             <div class="tw-text-red-600 tw-text-sm">
               {{ errors[0] }}
@@ -186,6 +187,9 @@
               placeholder="Website Link"
             />
             <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            <div class="tw-text-red-600 tw-text-sm" v-if="socialError">
+              {{ socialErrorMessage }}
+            </div>
           </ValidationProvider>
           <!-- <ValidationProvider
             class="tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
@@ -230,7 +234,7 @@
                 class="!tw-text-black"
                 title="Next"
                 @click="validateFormForNextStep"
-                :disabled="invalid"
+                
               />
             </div>
           </div>
@@ -310,26 +314,27 @@
             </ValidationProvider>
           </div> -->
           <ValidationProvider
-            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-            name="mint_time"
-            rules="required|saleTime"
-            v-slot="{ errors }"
-          >
-            <input-date-picker
-              :required="true"
-              label="Event Live In"
-              v-model="collection.myobj.event_date"
-              placeholder="Date"
-            />
-            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-          </ValidationProvider>
+ 
+              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+              name="live_time"
+              rules="required|saleTime"
+              v-slot="{ errors }"
+            >
+              <input-date-picker
+                :required="true"
+                label="Event Live In"
+                v-model="collection.myobj.event_date"
+                placeholder="Date"
+              />
+              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+            </ValidationProvider> 
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
             v-if="collection.type !== '1-1'"
           >
             <ValidationProvider
               class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-              name="mint_time"
+              name="start_time"
               rules="required|saleTime"
               v-slot="{ errors }"
             >
@@ -586,7 +591,6 @@
                 class="!tw-text-black"
                 title="Create"
                 @click="submit"
-                :disabled="invalid"
               />
             </div>
           </div>
@@ -946,6 +950,17 @@ extend("saleTime", {
     return true;
   },
   message: "Sale time should be greater than current time",
+});
+
+extend("social", {
+  params: ["twitter", "discord"],
+  validate(value, target) {
+    if (!value && !target.twitter && !target.discord) {
+      return false;
+    }
+    return true;
+  },
+  message: "Twitter URL, Discord URL or Website is required",
 });
 
 export default {
@@ -1553,35 +1568,41 @@ export default {
     },
 
     async submit() {
-      this.imageError = !this.file; // Check if image is selected
+ 
+  try {
+    
+    this.imageError = false;
+    this.imageErrorMessage = '';
+    
+    const tokenDetailForm = this.$refs.tokenDetailForm;
+    const isValid = await tokenDetailForm.validate();
 
-      if (this.imageError) {
-        this.imageErrorMessage = "Please select a file";
-        return;
-      }
+    if (!this.file) {
+      this.imageError = true;
+      this.imageErrorMessage = "Please select a file";
+    } 
 
-      const validate = await this.$refs.attributeForm.validate();
+    if (!isValid || this.imageError) {
+      return;
+    }
+    this.checkCoinType();
 
-      if (!validate) {
-        return;
-      }
-
-      this.checkCoinType();
-
-      switch (this.collection.type) {
-        case "1-1":
-          await this.createOneOnOneCollection();
-          break;
-        case "ticket-open-edition":
-          await this.createOpenEdition();
-          break;
-        case "limited-edition":
-          await this.createLimitedEdition();
-          break;
-        default:
-          break;
-      }
-    },
+    switch (this.collection.type) {
+      case "1-1":
+        await this.createOneOnOneCollection();
+        break;
+      case "ticket-open-edition":
+        await this.createOpenEdition();
+        break;
+      case "limited-edition":
+        await this.createLimitedEdition();
+        break;
+      default:
+        break;
+    }
+  } catch (error) {
+  }
+},
     async createOneOnOneCollection() {
       try {
         if (!this.collection.attributes.length > 0) {
