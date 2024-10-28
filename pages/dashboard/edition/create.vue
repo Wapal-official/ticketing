@@ -310,19 +310,19 @@
             </ValidationProvider>
           </div> -->
           <ValidationProvider
-              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-              name="mint_time"
-              rules="required|saleTime"
-              v-slot="{ errors }"
-            >
-              <input-date-picker
-                :required="true"
-                label="Event Live In"
-                v-model="collection.myobj.event_date"
-                placeholder="Date"
-              />
-              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-            </ValidationProvider>
+            class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+            name="mint_time"
+            rules="required|saleTime"
+            v-slot="{ errors }"
+          >
+            <input-date-picker
+              :required="true"
+              label="Event Live In"
+              v-model="collection.myobj.event_date"
+              placeholder="Date"
+            />
+            <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+          </ValidationProvider>
           <div
             class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-6 md:tw-flex-row md:tw-items-start md:tw-justify-between"
             v-if="collection.type !== '1-1'"
@@ -420,30 +420,30 @@
                   {{ errors[0] }}
                 </div>
               </ValidationProvider>
-               <ValidationProvider
-              class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
-              name="mint_price"
-              rules="custom_numeric|required"
-              v-slot="{ errors }"
-            >
-              <input-text-field
-                :required="true"
-                label="Ticket Price"
-                v-model="token_data.public_sale_price"
-                placeholder="Eg. 1"
-                type="number"
+              <ValidationProvider
+                class="tw-w-full tw-flex tw-flex-col tw-items-start tw-justify-start tw-gap-2 dashboard-text-field-group"
+                name="mint_price"
+                rules="custom_numeric|required"
+                v-slot="{ errors }"
               >
-                <template #append-icon>
-                  <img
-                    :src="selectedCoinType.imageWhite"
-                    alt="Coin Type"
-                    width="14px"
-                    height="14px"
-                  />
-                </template>
-              </input-text-field>
-              <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
-            </ValidationProvider>
+                <input-text-field
+                  :required="true"
+                  label="Ticket Price"
+                  v-model="token_data.public_sale_price"
+                  placeholder="Eg. 1"
+                  type="number"
+                >
+                  <template #append-icon>
+                    <img
+                      :src="selectedCoinType.imageWhite"
+                      alt="Coin Type"
+                      width="14px"
+                      height="14px"
+                    />
+                  </template>
+                </input-text-field>
+                <div class="tw-text-red-600 tw-text-sm">{{ errors[0] }}</div>
+              </ValidationProvider>
 
               <button
                 v-if="index !== 0"
@@ -1004,13 +1004,10 @@ export default {
         tokenDesc: "",
         attributes: [{ trait_type: "ticket type", value: "" }],
         myobj: {
-        token_data: [
-
-          { ticket_type: "", public_sale_price: "" }
-        ],
-        event_date: "",
-        create_by:"",
-      },
+          token_data: [{ ticket_type: "", public_sale_price: "" }],
+          event_date: "",
+          create_by: "",
+        },
         twitter: "",
         instagram: "",
         discord: "",
@@ -1058,8 +1055,8 @@ export default {
         { name: "ticket-open-edition", id: "open-edition" },
       ],
       ticketType: [
-        { name: "VIP", id:"vip"},
-        { name: "Normal", id:"normal"}
+        { name: "VIP", id: "vip" },
+        { name: "Normal", id: "normal" },
       ],
       folderInfo: null,
       folders: [],
@@ -1243,8 +1240,8 @@ export default {
 
     addAttribute() {
       this.collection.myobj.token_data.push({
-        ticket_type:"",
-        public_sale_price:"",
+        ticket_type: "",
+        public_sale_price: "",
       });
     },
     // removeAttribute(index) {
@@ -1555,7 +1552,7 @@ export default {
         : false;
     },
 
-    async  submit() {
+    async submit() {
       this.imageError = !this.file; // Check if image is selected
 
       if (this.imageError) {
@@ -1837,9 +1834,7 @@ export default {
           tempCollection.public_sale_time
         ).toISOString();
 
-        tempCollection.ends_at = new Date(
-          tempCollection.ends_at
-        ).toISOString();
+        tempCollection.ends_at = new Date(tempCollection.ends_at).toISOString();
         tempCollection.myobj.event_date = new Date(
           tempCollection.myobj.event_date
         ).toISOString();
@@ -1882,7 +1877,10 @@ export default {
         formData.append("instagram", tempCollection.instagram);
         formData.append("resource_account", tempCollection.resource_account);
         formData.append("value", tempCollection.attributes.value);
-        formData.append("ticket_details", JSON.stringify(this.collection.myobj));
+        formData.append(
+          "ticket_details",
+          JSON.stringify(this.collection.myobj)
+        );
         formData.append("traitType", tempCollection.attributes.trait_type);
         formData.append("txnhash", tempCollection.txnhash);
         formData.append("candy_id", tempCollection.candy_id);
@@ -1977,13 +1975,23 @@ export default {
 
       const tempCollection = structuredClone(this.collection);
 
-      const mintTime = Math.floor(
-        new Date(tempCollection.public_sale_time).getTime() / 1000
+      const mintTime = BigInt(
+        Math.floor(new Date(tempCollection.public_sale_time).getTime() / 1000) +
+          1
       );
+      // const mintTime = Math.floor(
+      //   new Date(tempCollection.public_sale_time).getTime() / 1000
+      // );
 
-      const mint_price = parseFloat(
-        (tempCollection.public_sale_price * Math.pow(10, 8)).toFixed(4)
-      );
+      // const mint_price = parseFloat(
+      //   (tempCollection.public_sale_price * Math.pow(10, 8)).toFixed(4)
+      // );
+
+      // const mint_prices = tempCollection.myobj.token_data.map(
+      //   (price) => parseFloat((price * Math.pow(10, 8)).toFixed(4)) // Convert each price to BigInt for u64 compatibility
+      // );
+      const mint_prices = [2, 12];
+      const ticket_types = ["VIP", "Regular"];
 
       const candyMachineArguments = {
         collection_name: this.collection.name,
@@ -1992,15 +2000,14 @@ export default {
         royalty_payee_address: this.collection.royalty_payee_address,
         royalty_points_denominator: 1000,
         royalty_points_numerator: this.collection.royalty_percentage * 10,
-        presale_mint_time: mintTime,
-        public_sale_mint_time: mintTime + 1,
-        presale_mint_price: mint_price,
-        public_sale_mint_price: mint_price,
+        public_sale_mint_time: mintTime,
+        public_sale_mint_price: mint_prices,
         total_supply: 1,
         public_mint_limit: this.collection.public_mint_limit,
         is_open_edition: true,
         coinType: this.collection.coinType,
         isRandom: true,
+        ticket_type: ticket_types,
       };
 
       const res = await createCollectionV2(candyMachineArguments);
@@ -2076,20 +2083,20 @@ export default {
       } else {
         formData.append("whitelistTBD", "true");
       }
-       try {
-    console.log("Calling createDraft with formData");
-    const result = await createDraft(formData);
-    console.log("Draft Creation Result:", result);
-    this.message = "Draft Created Successfully";
-  } catch (error) {
-    console.error("Error creating draft:", error);
-    this.message = "Failed to Create Draft";
-  }
-      
+      try {
+        console.log("Calling createDraft with formData");
+        const result = await createDraft(formData);
+        console.log("Draft Creation Result:", result);
+        this.message = "Draft Created Successfully";
+      } catch (error) {
+        console.error("Error creating draft:", error);
+        this.message = "Failed to Create Draft";
+      }
+
       console.log("Form Draft Data Entries:");
-        for (let pair of formData.entries()) {
-          console.log(pair[0] + ": " + pair[1]);
-        }
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ": " + pair[1]);
+      }
       this.submitting = false;
 
       this.message = "Draft Created Successfully";
@@ -2118,21 +2125,20 @@ export default {
             console.error("Error parsing myobj:", error);
             // Set default values in case of parsing error
             draftData.myobj = {
-              token_data: [
-                { ticket_type: "", public_sale_price: "" }
-              ],
+              token_data: [{ ticket_type: "", public_sale_price: "" }],
               event_date: "",
-              create_by: ""
+              create_by: "",
             };
           }
-        } else if (typeof draftData.myobj !== "object" || !Array.isArray(draftData.myobj.token_data)) {
+        } else if (
+          typeof draftData.myobj !== "object" ||
+          !Array.isArray(draftData.myobj.token_data)
+        ) {
           // Set default values if myobj is not an object or token_data is not an array
           draftData.myobj = {
-            token_data: [
-              { ticket_type: "", public_sale_price: "" }
-            ],
+            token_data: [{ ticket_type: "", public_sale_price: "" }],
             event_date: "",
-            create_by: ""
+            create_by: "",
           };
         }
 
@@ -2145,8 +2151,8 @@ export default {
         }
 
         this.$nextTick(() => {
-            this.collection = draftData;
-          });
+          this.collection = draftData;
+        });
         console.log("Image after setting collection:", this.collection.image);
 
         this.collection.phases.map((phase) => {

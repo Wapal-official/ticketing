@@ -253,6 +253,7 @@ export const mintCollection = async ({
   sender,
   mint_price,
   simulatedMerkleMint,
+  ticket_type,
 }: MintCollectionInterface) => {
   await checkWalletConnected();
   checkNetwork();
@@ -264,6 +265,7 @@ export const mintCollection = async ({
         candy_object,
         sender,
         mint_price,
+        ticket_type,
       });
 
       return res;
@@ -274,6 +276,7 @@ export const mintCollection = async ({
         amount,
         sender,
         mint_price,
+        ticket_type,
       });
       return res;
     }
@@ -311,13 +314,14 @@ export const mintSingleNft = async ({
   candy_machine_id,
   candy_object,
   sender,
+  ticket_type,
 }: MintCollectionInterface) => {
   try {
     const mint_script: InputGenerateTransactionPayloadData = {
       function:
         `${candy_machine_id}::candymachine::mint_script` as `${string}::${string}::${string}`,
       typeArguments: [],
-      functionArguments: [candy_object],
+      functionArguments: [candy_object, ticket_type],
     };
 
     const simulateRes = await simulateTransaction({
@@ -342,13 +346,14 @@ export const mintManyNft = async ({
   candy_object,
   amount,
   sender,
+  ticket_type,
 }: MintCollectionInterface) => {
   try {
     const mint_script_many: InputGenerateTransactionPayloadData = {
       function:
         `${candy_machine_id}::candymachine::mint_script_many` as `${string}::${string}::${string}`,
       typeArguments: [],
-      functionArguments: [candy_object, amount?.toString()],
+      functionArguments: [candy_object, amount?.toString(), ticket_type],
     };
 
     const simulateRes = await simulateTransaction({
@@ -556,12 +561,6 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
     ? candyMachineArguments.is_open_edition
     : false;
 
-  const pre_sale_price = convertPriceToSendInSmartContract({
-    price: candyMachineArguments.presale_mint_price,
-    isConverted: true,
-    coinType: candyMachineArguments.coinType,
-  });
-
   const public_sale_price = convertPriceToSendInSmartContract({
     price: candyMachineArguments.public_sale_mint_price,
     isConverted: true,
@@ -579,9 +578,7 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
       candyMachineArguments.royalty_payee_address,
       candyMachineArguments.royalty_points_denominator,
       candyMachineArguments.royalty_points_numerator,
-      candyMachineArguments.presale_mint_time,
       candyMachineArguments.public_sale_mint_time,
-      pre_sale_price,
       public_sale_price,
       candyMachineArguments.total_supply,
       [false, false, false],
@@ -590,6 +587,7 @@ export const createCollectionV2 = async (candyMachineArguments: any) => {
       false,
       "" + makeId(5),
       isOpenEdition,
+      candyMachineArguments.ticket_type,
     ],
   };
 
