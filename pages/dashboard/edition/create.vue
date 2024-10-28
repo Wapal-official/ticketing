@@ -2011,8 +2011,19 @@ export default {
       // const mint_prices = tempCollection.myobj.token_data.map(
       //   (price) => parseFloat((price * Math.pow(10, 8)).toFixed(4)) // Convert each price to BigInt for u64 compatibility
       // );
-      const mint_prices = [2, 12];
-      const ticket_types = ["VIP", "Regular"];
+
+      const mint_prices = tempCollection.myobj.token_data.map(
+        (price) => parseFloat((price.public_sale_price * Math.pow(10, 8)).toFixed(4)) // Convert each price to BigInt for u64 compatibility
+      );
+      console.log('mintprices', mint_prices)
+
+      const ticket_types = tempCollection.myobj.token_data.map(
+        (types) => types.ticket_type
+      );
+      console.log('ticekt_types', ticket_types)
+
+      // const mint_prices = [2, 12];
+      // const ticket_types = ["VIP", "Regular"];
 
       const candyMachineArguments = {
         collection_name: this.collection.name,
