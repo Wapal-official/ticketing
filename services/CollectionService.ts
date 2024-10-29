@@ -12,7 +12,7 @@ const filterApprovedCollections = (collections: any[]) => {
 
   return tempCollections;
 };
-
+const token = localStorage.getItem('authToken');
 export const getCollections = async (page: number, limit: number) => {
   try {
     const res = await axios.get(
@@ -31,6 +31,45 @@ export const getCollections = async (page: number, limit: number) => {
     return {};
   }
 };
+
+export const deleteDraft = async (draftId: any) => {
+  try {
+    console.log("draftID", draftId)
+    const res = await publicRequest.delete(`/api/draft/${draftId}}`);
+
+    const collection = res.data;
+    console.log("collection", collection)
+
+    return collection;
+  } catch (error) {
+    console.error("Error fetching collections:", error);
+    return {};
+  }
+};
+
+// export const deleteDraft = async (draftId: any) => {
+//   try {
+//     const token = localStorage.getItem('authToken'); // Make sure token is retrieved correctly
+//     const response = await fetch(`http://localhost:3000/api/draft/${draftId}`, {
+//       method: 'DELETE',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${token}`
+//       }
+//     });
+    
+//     if (!response.ok) {
+//       // Log the response as text to debug any HTML or non-JSON responses
+//       console.log(await response.text());
+//       throw new Error('Failed to delete draft');
+//     }
+
+//     return await response.json();
+//   } catch (error) {
+//     console.error('Error deleting draft:', error);
+//     throw error;
+//   }
+// };
 
 export const getCollection = async (collectionId: string) => {
   try {

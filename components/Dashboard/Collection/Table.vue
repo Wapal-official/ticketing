@@ -48,6 +48,7 @@
                 <span>{{ header.text }}</span>
               </div>
             </th>
+            <th>Actions</th>
           </tr>
         </thead>
       </template>
@@ -93,18 +94,6 @@
                   :alt="item[header.value]"
                   class="tw-w-[64px] tw-h-[64px] tw-object-cover tw-rounded"
                 />
-                <!-- <video-player-listed
-                  v-else-if="isVideo(item.image)"
-                  :source="item.image"
-                  style="max-width: 65px !important; height: 65px"
-                /> -->
-                <!-- <audio-player-list
-                  v-if="isAudio(item.src)"
-                  class="audio-list-bg-2"
-                  :audioSrc="item.src"
-                  iconSize="34"
-                  @click.prevent.stop="checkit()"
-                ></audio-player-list> -->
                 {{ item[header.value] }}
               </div>
               <div
@@ -173,6 +162,17 @@
               </div>
               <div v-else>{{ item[header.value] }}</div>
             </td>
+            <td v-if= "$route.path === '/dashboard/edition/draft'"
+            class="!tw-border-b-dark-6 !tw-border-t-dark-6 !tw-w-16"
+            
+            >
+              <button
+                @click.stop="removeItem(itemIndex)"
+                class="tw-flex tw-items-center tw-justify-center tw-p-2 hover:tw-bg-dark-5 tw-rounded-full tw-transition-all"
+              >
+                <i class="bx bxs-trash tw-text-xl tw-text-dark-3"></i>
+              </button>
+            </td>
           </tr>
         </tbody>
       </template>
@@ -219,6 +219,9 @@ export default {
     },
   },
   methods: {
+    removeItem(index) {
+      this.$emit('remove-item', index);
+    },
     isImage(source) {
       const extension = source.split(".").pop()?.toLowerCase();
       return extension
@@ -285,7 +288,6 @@ export default {
         this.$store.commit("general/removeSelectedItem", item);
       }
     },
-
     handleHeaderClick(header) {
       if (header.text === "Wallet Address") {
         this.selectedItems = [];
