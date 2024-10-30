@@ -402,7 +402,7 @@
                   class="!tw-text-black !tw-font-semibold"
                   :title="!collection.status.sold_out ? 'Get ticket' : 'Get Ticket'"
                   :fullWidth="true"
-                  @click="mintBulkCollection"
+                  @click="mintBulkCollection(ticket.ticket_type || 'default_type')"                  
                   v-else-if="checkLiveStatus()"
                 />
               </div>
@@ -410,7 +410,8 @@
           </div>
 
         <!-- <NuxtLink
-              class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-black tw-px-6 tw-py-2.5 tw-box-border tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
+              class="tw-w-full tw-rounded-md tw-bg-primary-1 !tw-text-black tw-
+              px-6 tw-py-2.5 tw-box-border tw-font-semibold tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-text-sm disabled:tw-cursor-not-allowed"
               :to="`/nft/${collection.username}`"
               v-else-if="collection.mintDetails"
             >
@@ -1468,7 +1469,8 @@ export default {
         return;
       }
     },
-    async mintBulkCollection() {
+    async mintBulkCollection(ticket_type) {
+      console.log("Ticket Type:", ticket_type);  // Log the ticket type
       try {
         if (!this.$store.state.walletStore.wallet.wallet) {
           this.showConnectWalletModal = true;
@@ -1505,6 +1507,7 @@ export default {
         //   }
         // }
         let mintRes = null;
+        console.log("myobj_ticket:", ticket_type)
         if (!this.v2) {
           mintRes = await this.$store.dispatch("walletStore/mintBulk", {
             resourceAccount: this.collection.candyMachine.resource_account,
@@ -1542,6 +1545,7 @@ export default {
               sender: this.getSender,
               mint_price: this.currentSale.mint_price,
               simulatedMerkleMint: this.simulatedMerkleMint,
+              ticket_type: this.ticket_type,
             });
           }
         }
